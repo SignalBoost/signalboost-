@@ -1,763 +1,807 @@
-(No subject)
-Luis Claudio
-​You​
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SignalBoost</title>
-<style>
-:root{
---bg:#f6f8fc;
---surface:#ffffff;
---surface-2:#f8fbff;
---border:#d9e2ef;
---text:#0f172a;
---muted:#64748b;
---blue:#2563eb;
---blue-soft:#dbeafe;
---shadow:0 8px 24px rgba(15,23,42,.08);
---radius:18px;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalBoost AI</title>
+  <style>
+    :root {
+      --bg: #eef4ff;
+      --surface: rgba(255,255,255,0.78);
+      --surface-strong: #ffffff;
+      --border: rgba(148, 163, 184, 0.28);
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --accent: #06b6d4;
+      --success: #16a34a;
+      --warning: #d97706;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max: 1440px;
+    }
 
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-body{
-margin:0;
-font-family:Arial, Helvetica, sans-serif;
-background:linear-gradient(180deg,#edf4ff 0%, #f8fbff 35%, #ffffff 100%);
-color:var(--text);
-}
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(6,182,212,0.12), transparent 24%),
+        linear-gradient(180deg, #eaf2ff 0%, #f6f9ff 34%, #fbfdff 100%);
+    }
 
-a{
-color:inherit;
-text-decoration:none;
-}
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
 
-.app{
-max-width:1580px;
-margin:0 auto;
-padding:14px;
-}
+    .app {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 16px;
+    }
 
-.topbar{
-position:sticky;
-top:0;
-z-index:50;
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:14px;
-background:rgba(255,255,255,.95);
-border:1px solid var(--border);
-border-radius:16px;
-padding:10px 14px;
-box-shadow:var(--shadow);
-backdrop-filter:blur(8px);
-}
+    .topbar {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(255,255,255,0.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
 
-.brand{
-display:flex;
-align-items:center;
-gap:10px;
-font-size:20px;
-font-weight:700;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
 
-.logo{
-width:40px;
-height:40px;
-border-radius:12px;
-background:#fff;
-border:1px solid var(--border);
-display:flex;
-align-items:center;
-justify-content:center;
-padding:4px;
-flex-shrink:0;
-}
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #dbeafe, #ecfeff);
+      border: 1px solid rgba(37,99,235,0.18);
+      color: #1d4ed8;
+      font-weight: 900;
+    }
 
-.logo svg{width:100%;height:100%}
-.tower{stroke:#4b5563;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.waves{stroke:#4b5563;stroke-width:8;stroke-linecap:round;fill:none}
-.dot{fill:#4b5563}
+    .nav, .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-.nav{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-}
+    .nav a, .ghost-btn, .chip-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.78);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-.nav a{
-padding:9px 12px;
-border-radius:999px;
-border:1px solid var(--border);
-background:#fff;
-font-size:12px;
-font-weight:700;
-}
+    .primary-btn {
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(37,99,235,0.22);
+      cursor: pointer;
+    }
 
-.hero{
-margin-top:14px;
-display:grid;
-grid-template-columns:1.35fr .65fr;
-gap:14px;
-}
+    .hero {
+      display: grid;
+      grid-template-columns: 1.45fr 0.85fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
 
-.card{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:var(--radius);
-box-shadow:var(--shadow);
-}
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
 
-.hero-card{
-padding:18px;
-}
+    .hero-main {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
 
-.hero-card h1{
-margin:0 0 8px 0;
-font-size:clamp(1.8rem,4vw,3rem);
-line-height:1.05;
-}
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--border);
+      color: #1e40af;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
 
-.hero-card p{
-margin:0;
-color:var(--muted);
-line-height:1.6;
-font-size:14px;
-max-width:900px;
-}
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4.4vw, 4.4rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      max-width: 12ch;
+    }
 
-.pill-row{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin-top:12px;
-}
+    .hero-copy {
+      margin: 14px 0 0;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
 
-.pill{
-padding:7px 10px;
-border-radius:999px;
-background:#eef4ff;
-border:1px solid #d9e7ff;
-color:#26405f;
-font-size:11px;
-font-weight:700;
-}
+    .prompt-shell {
+      margin-top: 22px;
+      background: rgba(255,255,255,0.90);
+      border: 1px solid rgba(37,99,235,0.14);
+      border-radius: 24px;
+      padding: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
 
-.stats{
-padding:16px;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
+    .prompt-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
 
-.mini-stat{
-border:1px solid var(--border);
-background:var(--surface-2);
-border-radius:14px;
-padding:12px;
-}
+    .prompt-input {
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      font-size: 18px;
+      color: var(--text);
+      padding: 10px 6px;
+    }
 
-.mini-stat .label{
-font-size:11px;
-color:var(--muted);
-margin-bottom:6px;
-}
+    .suggestions {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-.mini-stat .value{
-font-size:18px;
-font-weight:700;
-}
+    .suggestion {
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f8fbff;
+      color: #1e293b;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
-.layout{
-margin-top:14px;
-display:grid;
-grid-template-columns:minmax(0,2.8fr) minmax(270px,.7fr);
-gap:14px;
-align-items:start;
-}
+    .hero-footer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
 
-.main-stack{
-display:flex;
-flex-direction:column;
-gap:14px;
-min-width:0;
-}
+    .micro-card {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--border);
+    }
 
-.side-stack{
-display:flex;
-flex-direction:column;
-gap:14px;
-position:sticky;
-top:78px;
-}
+    .micro-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
 
-.section-card{
-padding:14px;
-}
+    .micro-value {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
 
-.section-card h2{
-margin:0 0 6px 0;
-font-size:23px;
-}
+    .hero-side {
+      display: grid;
+      gap: 16px;
+    }
 
-.section-card p{
-margin:0 0 12px 0;
-color:var(--muted);
-line-height:1.55;
-font-size:13px;
-}
+    .status-card, .assistant-card, .rail-card, .module, .timeline-card {
+      padding: 20px;
+    }
 
-.platform-toolbar{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin-bottom:12px;
-}
+    .status-card h2, .assistant-card h2, .module h2, .timeline-card h2 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+    }
 
-.chip{
-border:1px solid var(--border);
-background:#fff;
-padding:8px 10px;
-border-radius:999px;
-font-size:12px;
-font-weight:700;
-color:#334155;
-}
+    .subcopy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
 
-.platform-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:12px;
-}
+    .signal-list, .task-list {
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+    }
 
-.platform-card{
-border:1px solid var(--border);
-background:#fff;
-border-radius:16px;
-overflow:hidden;
-box-shadow:var(--shadow);
-min-width:0;
-display:flex;
-flex-direction:column;
-height:100%;
-}
+    .signal-item, .task-item {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.82);
+      display: grid;
+      gap: 6px;
+    }
 
-.platform-thumb{
-height:110px;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:12px;
-font-size:18px;
-font-weight:700;
-color:#1e3a8a;
-background:linear-gradient(135deg,#dbeafe,#bfdbfe,#e0f2fe);
-}
+    .row-between {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
 
-.platform-body{
-padding:12px;
-display:flex;
-flex-direction:column;
-flex:1;
-}
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--primary-soft);
+      color: #1d4ed8;
+    }
 
-.platform-tag{
-display:inline-block;
-margin-bottom:8px;
-padding:5px 8px;
-border-radius:999px;
-background:#eef4ff;
-color:#1d4ed8;
-font-size:11px;
-font-weight:700;
-}
+    .score {
+      font-weight: 800;
+      color: var(--success);
+      font-size: 12px;
+    }
 
-.platform-body h3{
-margin:0 0 6px 0;
-font-size:15px;
-line-height:1.35;
-}
+    .layout {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1.6fr 0.85fr;
+      gap: 16px;
+      align-items: start;
+    }
 
-.platform-body p{
-margin:0 0 10px 0;
-color:var(--muted);
-line-height:1.45;
-font-size:12px;
-flex:1;
-}
+    .main {
+      display: grid;
+      gap: 16px;
+    }
 
-.platform-meta{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-color:var(--muted);
-font-size:11px;
-margin-bottom:10px;
-}
+    .assistant-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+    }
 
-.btn{
-border:none;
-border-radius:10px;
-padding:9px 12px;
-font-weight:700;
-font-size:12px;
-cursor:pointer;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-}
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
 
-.btn-primary{
-background:linear-gradient(135deg,#7dd3fc,#60a5fa);
-color:#082032;
-}
+    .workspace-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.84);
+      display: grid;
+      gap: 10px;
+      min-height: 180px;
+    }
 
-.btn-secondary{
-background:#eef2ff;
-color:#1e293b;
-border:1px solid var(--border);
-}
+    .workspace-card h3, .rail-card h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
 
-.side-card{
-padding:14px;
-}
+    .workspace-card p, .rail-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
 
-.side-card h3{
-margin:0 0 8px 0;
-font-size:18px;
-}
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-.side-card p{
-margin:0 0 10px 0;
-color:var(--muted);
-line-height:1.5;
-font-size:13px;
-}
+    .pill {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #f8fbff;
+      border: 1px solid var(--border);
+      color: #334155;
+      font-size: 11px;
+      font-weight: 800;
+    }
 
-.simple-list{
-margin:0;
-padding-left:18px;
-color:var(--muted);
-line-height:1.65;
-font-size:13px;
-}
+    .assistant-preview {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(219,234,254,0.9), rgba(236,254,255,0.82));
+      border: 1px solid rgba(37,99,235,0.12);
+    }
 
-@media (max-width: 1300px){
-.platform-grid{grid-template-columns:repeat(3,1fr)}
-}
+    .assistant-reply {
+      margin-top: 8px;
+      color: #1e293b;
+      line-height: 1.7;
+      font-size: 14px;
+    }
 
-@media (max-width: 1100px){
-.hero{grid-template-columns:1fr}
-.layout{grid-template-columns:1fr}
-.side-stack{position:static}
-}
+    .side {
+      display: grid;
+      gap: 16px;
+      position: sticky;
+      top: 84px;
+    }
 
-@media (max-width: 800px){
-.platform-grid{grid-template-columns:repeat(2,1fr)}
-.stats{grid-template-columns:1fr 1fr}
-}
+    .rail-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
 
-@media (max-width: 560px){
-.platform-grid{grid-template-columns:1fr}
-.stats{grid-template-columns:1fr}
-.topbar{
-flex-direction:column;
-align-items:flex-start;
-}
-}
-</style>
+    .rail-item {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid var(--border);
+    }
+
+    .rail-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .kpi {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.82);
+    }
+
+    .kpi .num {
+      margin-top: 6px;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .timeline-step {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary-soft), #ecfeff);
+      color: #1d4ed8;
+      font-weight: 800;
+      border: 1px solid rgba(37,99,235,0.18);
+    }
+
+    .step-card {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.84);
+    }
+
+    .step-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1180px) {
+      .hero,
+      .layout,
+      .assistant-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .hero-footer,
+      .workspace-grid,
+      .kpi-grid,
+      .prompt-row {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h1 {
+        max-width: none;
+      }
+
+      .hero-main,
+      .status-card,
+      .assistant-card,
+      .rail-card,
+      .module,
+      .timeline-card {
+        padding: 18px;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-<div class="topbar">
-<div class="brand">
-<div class="logo" aria-hidden="true">
-<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-<path class="waves" d="M32 30c-10 10-10 26 0 36"/>
-<path class="waves" d="M22 20c-16 16-16 46 0 62"/>
-<path class="waves" d="M88 30c10 10 10 26 0 36"/>
-<path class="waves" d="M98 20c16 16 16 46 0 62"/>
-<circle class="dot" cx="60" cy="28" r="5"/>
-<path class="tower" d="M60 33v10"/>
-<path class="tower" d="M60 43L36 98"/>
-<path class="tower" d="M60 43l24 55"/>
-<path class="tower" d="M47 69h26"/>
-<path class="tower" d="M42 81l18-12 18 12"/>
-<path class="tower" d="M51 98h18"/>
-</svg>
-</div>
-<span>SignalBoost</span>
-</div>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">SB</div>
+        <span>SignalBoost AI</span>
+      </div>
 
-<div class="nav">
-<a href="#platforms">Platforms</a>
-<a href="#social">Social</a>
-<a href="#services">Services</a>
-</div>
-</div>
+      <nav class="nav">
+        <a href="#assistant">Assistant</a>
+        <a href="#workspaces">Workspaces</a>
+        <a href="#signals">Signals</a>
+        <a href="#roadmap">Roadmap</a>
+      </nav>
 
-<section class="hero">
-<div class="card hero-card">
-<h1>One place to reach more platforms</h1>
-<p>
-SignalBoost brings together major communication, social, professional, travel, and discovery platforms in a compact, cleaner layout that uses the page width more effectively.
-</p>
-<div class="pill-row">
-<span class="pill">Telegram</span>
-<span class="pill">Signal</span>
-<span class="pill">LinkedIn</span>
-<span class="pill">Facebook</span>
-<span class="pill">Reddit</span>
-<span class="pill">YouTube</span>
-</div>
-</div>
+      <div class="top-actions">
+        <button class="ghost-btn">Design mode</button>
+        <button class="primary-btn">Launch assistant</button>
+      </div>
+    </header>
 
-<div class="card stats">
-<div class="mini-stat">
-<div class="label">Live clock</div>
-<div id="live-clock" class="value">--:--:--</div>
-</div>
-<div class="mini-stat">
-<div class="label">Visible platforms</div>
-<div class="value">12</div>
-</div>
-<div class="mini-stat">
-<div class="label">Current focus</div>
-<div class="value">Platform wall</div>
-</div>
-<div class="mini-stat">
-<div class="label">Layout style</div>
-<div class="value">Dense feed</div>
-</div>
-</div>
-</section>
+    <section class="hero">
+      <div class="panel hero-main">
+        <div class="eyebrow">AI-first interface • HMI-focused design</div>
+        <h1>What do you want to accomplish today?</h1>
+        <p class="hero-copy">
+          SignalBoost is evolving into an AI-driven control center where the interface guides decisions,
+          adapts to intent, and makes complex actions feel simple.
+        </p>
 
-<div class="layout">
-<div class="main-stack">
-<section id="platforms" class="card section-card">
-<h2>Platform Wall</h2>
-<p>
-Fast access to major platforms across messaging, social media, professional networks, travel, and discovery.
-</p>
+        <div class="prompt-shell">
+          <div class="prompt-row">
+            <input id="promptInput" class="prompt-input" value="Plan a business trip and surface the best next actions" />
+            <button class="primary-btn" id="runPromptBtn">Ask AI</button>
+          </div>
+          <div class="suggestions">
+            <button class="suggestion">Discover trends</button>
+            <button class="suggestion">Plan travel</button>
+            <button class="suggestion">Compare platforms</button>
+            <button class="suggestion">Build a campaign</button>
+            <button class="suggestion">Find opportunities</button>
+          </div>
+        </div>
 
-<div class="platform-toolbar">
-<div class="chip">Messaging</div>
-<div class="chip">Social</div>
-<div class="chip">Professional</div>
-<div class="chip">Travel</div>
-<div class="chip">Discovery</div>
-</div>
+        <div class="hero-footer">
+          <div class="micro-card">
+            <div class="micro-label">Interaction model</div>
+            <div class="micro-value">Conversational + visual</div>
+          </div>
+          <div class="micro-card">
+            <div class="micro-label">Primary focus</div>
+            <div class="micro-value">Guided decisions</div>
+          </div>
+          <div class="micro-card">
+            <div class="micro-label">Current phase</div>
+            <div class="micro-value">Design system</div>
+          </div>
+        </div>
+      </div>
 
-<div class="platform-grid">
-<div class="platform-card">
-<div class="platform-thumb">Telegram</div>
-<div class="platform-body">
-<span class="platform-tag">Messaging</span>
-<h3>Telegram channels and communities</h3>
-<div class="platform-meta">
-<span>Fast access</span>
-<span>External</span>
-</div>
-<p>Use Telegram for groups, channels, updates, and broader community discovery.</p>
-<a class="btn btn-secondary" href="https://telegram.org/" target="_blank" rel="noopener noreferrer">Open Telegram</a>
-</div>
-</div>
+      <div class="hero-side">
+        <section class="panel status-card" id="signals">
+          <h2>Live priorities</h2>
+          <p class="subcopy">A preview of how the AI layer can surface ranked actions and explain why they matter.</p>
+          <div class="signal-list">
+            <div class="signal-item">
+              <div class="row-between">
+                <span class="tag">Travel</span>
+                <span class="score">92 confidence</span>
+              </div>
+              <strong>Flight and stay decision stack</strong>
+              <span class="muted">Suggested first because it affects timing, budget, and the rest of the plan.</span>
+            </div>
+            <div class="signal-item">
+              <div class="row-between">
+                <span class="tag">Finance</span>
+                <span class="score">88 confidence</span>
+              </div>
+              <strong>Cross-border payment setup</strong>
+              <span class="muted">Useful before departure so spending, cards, and transfers are ready.</span>
+            </div>
+            <div class="signal-item">
+              <div class="row-between">
+                <span class="tag">Lifestyle</span>
+                <span class="score">76 confidence</span>
+              </div>
+              <strong>Local arrival plan</strong>
+              <span class="muted">Food, transport, and neighborhood suggestions can reduce friction on day one.</span>
+            </div>
+          </div>
+        </section>
 
-<div class="platform-card">
-<div class="platform-thumb">Signal</div>
-<div class="platform-body">
-<span class="platform-tag">Messaging</span>
-<h3>Signal private communication</h3>
-<div class="platform-meta">
-<span>Private messaging</span>
-<span>External</span>
-</div>
-<p>Direct access to Signal for private and secure communication.</p>
-<a class="btn btn-secondary" href="https://signal.org/" target="_blank" rel="noopener noreferrer">Open Signal</a>
-</div>
-</div>
+        <section class="panel assistant-card" id="assistant">
+          <h2>Assistant preview</h2>
+          <p class="subcopy">The AI should feel visible immediately, not hidden behind a separate tool.</p>
+          <div class="assistant-preview">
+            <div class="micro-label">Suggested response</div>
+            <div id="assistantReply" class="assistant-reply">
+              I would start with travel timing, then booking options, then payment setup. That order lowers uncertainty and helps every later decision fit the trip.
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
 
-<div class="platform-card">
-<div class="platform-thumb">LinkedIn</div>
-<div class="platform-body">
-<span class="platform-tag">Professional</span>
-<h3>LinkedIn network and business content</h3>
-<div class="platform-meta">
-<span>Professional</span>
-<span>External</span>
-</div>
-<p>Professional networking, business travel context, relocation, and work-related discovery.</p>
-<a class="btn btn-secondary" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">Open LinkedIn</a>
-</div>
-</div>
+    <section class="layout">
+      <div class="main">
+        <section class="panel module" id="workspaces">
+          <h2>AI workspaces</h2>
+          <p class="subcopy">Instead of one giant wall of links, the interface should organize the user into focused action zones.</p>
+          <div class="workspace-grid">
+            <article class="workspace-card">
+              <span class="tag">Travel workspace</span>
+              <h3>Plan, compare, and decide faster</h3>
+              <p>Show itinerary building, entry checks, stays, local transport, and recommended next steps in one guided flow.</p>
+              <div class="pill-row">
+                <span class="pill">Flights</span>
+                <span class="pill">Hotels</span>
+                <span class="pill">Entry rules</span>
+                <span class="pill">Arrival prep</span>
+              </div>
+            </article>
+            <article class="workspace-card">
+              <span class="tag">Signals workspace</span>
+              <h3>Rank what matters now</h3>
+              <p>Convert noisy feeds into prioritized signals with reasons, confidence, and recommended actions.</p>
+              <div class="pill-row">
+                <span class="pill">Trending</span>
+                <span class="pill">Momentum</span>
+                <span class="pill">Why it matters</span>
+              </div>
+            </article>
+            <article class="workspace-card">
+              <span class="tag">Campaign workspace</span>
+              <h3>Turn insights into actions</h3>
+              <p>Use the assistant to propose campaigns, compare channels, and surface the highest-value moves first.</p>
+              <div class="pill-row">
+                <span class="pill">Channels</span>
+                <span class="pill">Creative</span>
+                <span class="pill">Sequence</span>
+              </div>
+            </article>
+            <article class="workspace-card">
+              <span class="tag">Relocation workspace</span>
+              <h3>Support longer-term decisions</h3>
+              <p>Bring housing, finance, work, and local services into one interface that reduces overwhelm.</p>
+              <div class="pill-row">
+                <span class="pill">Housing</span>
+                <span class="pill">Banking</span>
+                <span class="pill">Local setup</span>
+              </div>
+            </article>
+          </div>
+        </section>
 
-<div class="platform-card">
-<div class="platform-thumb">Facebook</div>
-<div class="platform-body">
-<span class="platform-tag">Social</span>
-<h3>Facebook groups and community reach</h3>
-<div class="platform-meta">
-<span>Social</span>
-<span>External</span>
-</div>
-<p>Groups, events, pages, and broad community-based discovery.</p>
-<a class="btn btn-secondary" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Open Facebook</a>
-</div>
-</div>
+        <section class="assistant-grid">
+          <section class="panel module">
+            <h2>HMI design principles</h2>
+            <p class="subcopy">These are the interface rules shaping the product direction.</p>
+            <div class="task-list">
+              <div class="task-item">
+                <strong>One obvious next action</strong>
+                <span class="muted">Every screen should make the first move obvious and reduce hesitation.</span>
+              </div>
+              <div class="task-item">
+                <strong>Visible system feedback</strong>
+                <span class="muted">Recommendations, loading states, confidence, and rationale should always be shown clearly.</span>
+              </div>
+              <div class="task-item">
+                <strong>Adaptive interface</strong>
+                <span class="muted">The layout should respond to user intent such as travel, finance, research, or campaigns.</span>
+              </div>
+            </div>
+          </section>
 
-<div class="platform-card">
-<div class="platform-thumb">Reddit</div>
-<div class="platform-body">
-<span class="platform-tag">Community</span>
-<h3>Reddit discussions and niche communities</h3>
-<div class="platform-meta">
-<span>Community</span>
-<span>External</span>
-</div>
-<p>Travel tips, local opinions, trends, and community-driven recommendations.</p>
-<a class="btn btn-secondary" href="https://www.reddit.com/" target="_blank" rel="noopener noreferrer">Open Reddit</a>
-</div>
-</div>
+          <section class="panel module">
+            <h2>Interface KPIs</h2>
+            <p class="subcopy">Early design targets to keep the experience human-centered.</p>
+            <div class="kpi-grid">
+              <div class="kpi">
+                <div class="micro-label">Decision clarity</div>
+                <div class="num">High</div>
+              </div>
+              <div class="kpi">
+                <div class="micro-label">Cognitive load</div>
+                <div class="num">Low</div>
+              </div>
+              <div class="kpi">
+                <div class="micro-label">AI visibility</div>
+                <div class="num">Always on</div>
+              </div>
+              <div class="kpi">
+                <div class="micro-label">Flow state</div>
+                <div class="num">Guided</div>
+              </div>
+            </div>
+          </section>
+        </section>
 
-<div class="platform-card">
-<div class="platform-thumb">YouTube</div>
-<div class="platform-body">
-<span class="platform-tag">Video</span>
-<h3>YouTube travel and guide content</h3>
-<div class="platform-meta">
-<span>Video</span>
-<span>External</span>
-</div>
-<p>Longer-form guides, reviews, airport walkthroughs, and destination planning content.</p>
-<a class="btn btn-secondary" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">Open YouTube</a>
-</div>
-</div>
+        <section class="panel timeline-card" id="roadmap">
+          <h2>Design-first roadmap</h2>
+          <p class="subcopy">A simple sequence for moving from concept to AI functionality without losing the HMI focus.</p>
+          <div class="timeline">
+            <div class="timeline-step">
+              <div class="dot">1</div>
+              <div class="step-card">
+                <strong>Homepage redesign</strong>
+                <span class="muted">Finalize the AI-first layout, hierarchy, navigation, and module types.</span>
+              </div>
+            </div>
+            <div class="timeline-step">
+              <div class="dot">2</div>
+              <div class="step-card">
+                <strong>Interaction layer</strong>
+                <span class="muted">Add microinteractions, mode switching, prompt behavior, and stateful panels.</span>
+              </div>
+            </div>
+            <div class="timeline-step">
+              <div class="dot">3</div>
+              <div class="step-card">
+                <strong>AI integration</strong>
+                <span class="muted">Connect prompts, recommendations, memory, rankings, and workspace-specific intelligence.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
-<div class="platform-card">
-<div class="platform-thumb">Instagram</div>
-<div class="platform-body">
-<span class="platform-tag">Social</span>
-<h3>Instagram visuals and reels</h3>
-<div class="platform-meta">
-<span>Reels</span>
-<span>External</span>
-</div>
-<p>Travel visuals, restaurant highlights, nightlife, and local lifestyle clips.</p>
-<a class="btn btn-secondary" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Open Instagram</a>
-</div>
-</div>
+      <aside class="side">
+        <section class="panel rail-card">
+          <h3>Session state</h3>
+          <p>Give the user a persistent sense of what the system is helping with right now.</p>
+          <div class="rail-list">
+            <div class="rail-item">
+              <strong>Current goal</strong>
+              <span class="muted">Create an AI-first homepage with better human guidance.</span>
+            </div>
+            <div class="rail-item">
+              <strong>Design mode</strong>
+              <span class="muted">Homepage concept, module layout, visual hierarchy.</span>
+            </div>
+            <div class="rail-item">
+              <strong>Next step</strong>
+              <span class="muted">Refine the style, colors, cards, and assistant behavior.</span>
+            </div>
+          </div>
+        </section>
 
-<div class="platform-card">
-<div class="platform-thumb">TikTok</div>
-<div class="platform-body">
-<span class="platform-tag">Video</span>
-<h3>TikTok short-form discovery</h3>
-<div class="platform-meta">
-<span>Short clips</span>
-<span>External</span>
-</div>
-<p>Fast-moving destination clips, city guides, and local discovery content.</p>
-<a class="btn btn-secondary" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">Open TikTok</a>
-</div>
-</div>
+        <section class="panel rail-card">
+          <h3>Quick actions</h3>
+          <div class="rail-list">
+            <div class="rail-item">
+              <strong>Switch to dark mode</strong>
+              <span class="muted">Future visual mode for focus-heavy sessions.</span>
+            </div>
+            <div class="rail-item">
+              <strong>Open workspace picker</strong>
+              <span class="muted">Travel, signals, relocation, finance, campaigns.</span>
+            </div>
+            <div class="rail-item">
+              <strong>Preview adaptive layout</strong>
+              <span class="muted">See how the interface changes by user intent.</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </div>
 
-<div class="platform-card">
-<div class="platform-thumb">WhatsApp</div>
-<div class="platform-body">
-<span class="platform-tag">Messaging</span>
-<h3>WhatsApp communication</h3>
-<div class="platform-meta">
-<span>Messaging</span>
-<span>External</span>
-</div>
-<p>Quick access to one of the most commonly used communication platforms.</p>
-<a class="btn btn-secondary" href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer">Open WhatsApp</a>
-</div>
-</div>
+  <script>
+    const promptInput = document.getElementById('promptInput');
+    const assistantReply = document.getElementById('assistantReply');
+    const runPromptBtn = document.getElementById('runPromptBtn');
+    const suggestions = document.querySelectorAll('.suggestion');
 
-<div class="platform-card">
-<div class="platform-thumb">X</div>
-<div class="platform-body">
-<span class="platform-tag">Social</span>
-<h3>X posts and live public conversation</h3>
-<div class="platform-meta">
-<span>Social</span>
-<span>External</span>
-</div>
-<p>Follow current public discussions, news reactions, and fast-moving topics.</p>
-<a class="btn btn-secondary" href="https://x.com/" target="_blank" rel="noopener noreferrer">Open X</a>
-</div>
-</div>
+    const replies = {
+      'Discover trends': 'I would surface the strongest live signals first, explain why they matter, and separate noise from actionable momentum.',
+      'Plan travel': 'I would guide the user through route timing, stay choices, payment readiness, and a clean arrival plan in that order.',
+      'Compare platforms': 'I would show side-by-side strengths, likely outcomes, and the best-fit recommendation based on the user\'s goal.',
+      'Build a campaign': 'I would turn signals into a recommended campaign structure with priorities, channels, and a suggested sequence.',
+      'Find opportunities': 'I would rank opportunities by relevance, urgency, and expected impact so the user sees where to act first.'
+    };
 
-<div class="platform-card">
-<div class="platform-thumb">Pinterest</div>
-<div class="platform-body">
-<span class="platform-tag">Discovery</span>
-<h3>Pinterest inspiration boards</h3>
-<div class="platform-meta">
-<span>Ideas</span>
-<span>External</span>
-</div>
-<p>Inspiration for destinations, style, events, and visual planning.</p>
-<a class="btn btn-secondary" href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer">Open Pinterest</a>
-</div>
-</div>
+    suggestions.forEach(button => {
+      button.addEventListener('click', () => {
+        promptInput.value = button.textContent;
+        assistantReply.textContent = replies[button.textContent] || 'The assistant will interpret this goal and guide the next best step.';
+      });
+    });
 
-<div class="platform-card">
-<div class="platform-thumb">TripAdvisor</div>
-<div class="platform-body">
-<span class="platform-tag">Travel</span>
-<h3>TripAdvisor reviews and places</h3>
-<div class="platform-meta">
-<span>Travel</span>
-<span>External</span>
-</div>
-<p>Destination reviews, activities, hotels, and local place comparisons.</p>
-<a class="btn btn-secondary" href="https://www.tripadvisor.com/" target="_blank" rel="noopener noreferrer">Open TripAdvisor</a>
-</div>
-</div>
-</div>
-</section>
-
-<section id="social" class="card section-card">
-<h2>Social and Messaging</h2>
-<p>
-Messaging and social platforms can sit side by side inside SignalBoost as part of the broader digital mall direction.
-</p>
-
-<div class="platform-grid">
-<div class="platform-card">
-<div class="platform-thumb">Telegram</div>
-<div class="platform-body">
-<span class="platform-tag">Messaging</span>
-<h3>Groups and channels</h3>
-<p>Useful for updates, communities, and wide broadcast-style communication.</p>
-</div>
-</div>
-
-<div class="platform-card">
-<div class="platform-thumb">Signal</div>
-<div class="platform-body">
-<span class="platform-tag">Messaging</span>
-<h3>Private conversations</h3>
-<p>Stronger privacy-oriented communication option.</p>
-</div>
-</div>
-
-<div class="platform-card">
-<div class="platform-thumb">Facebook</div>
-<div class="platform-body">
-<span class="platform-tag">Social</span>
-<h3>Groups and events</h3>
-<p>Strong for community discovery and local group participation.</p>
-</div>
-</div>
-
-<div class="platform-card">
-<div class="platform-thumb">LinkedIn</div>
-<div class="platform-body">
-<span class="platform-tag">Professional</span>
-<h3>Business and work networks</h3>
-<p>Important for the professional side of the platform.</p>
-</div>
-</div>
-</div>
-</section>
-
-<section id="services" class="card section-card">
-<h2>Service Direction</h2>
-<p>
-The platform wall can grow into a larger navigation layer across communication, content, travel, finance, and business tools.
-</p>
-
-<div class="platform-grid">
-<div class="platform-card">
-<div class="platform-thumb">Travel</div>
-<div class="platform-body">
-<span class="platform-tag">Category</span>
-<h3>Trips and local life</h3>
-<p>Flights, stays, activities, food, and destination planning.</p>
-</div>
-</div>
-
-<div class="platform-card">
-<div class="platform-thumb">Finance</div>
-<div class="platform-body">
-<span class="platform-tag">Category</span>
-<h3>Payments and services</h3>
-<p>Payment tools, partner services, and future merchant options.</p>
-</div>
-</div>
-
-<div class="platform-card">
-<div class="platform-thumb">Content</div>
-<div class="platform-body">
-<span class="platform-tag">Category</span>
-<h3>Media and discovery</h3>
-<p>Video, discussion, visual inspiration, and community discovery.</p>
-</div>
-</div>
-
-<div class="platform-card">
-<div class="platform-thumb">Work</div>
-<div class="platform-body">
-<span class="platform-tag">Category</span>
-<h3>Professional network</h3>
-<p>Business travel, relocation, and work-related discovery.</p>
-</div>
-</div>
-</div>
-</section>
-</div>
-
-<aside class="side-stack">
-<div class="card side-card">
-<h3>Featured platforms</h3>
-<ul class="simple-list">
-<li>Telegram</li>
-<li>Signal</li>
-<li>LinkedIn</li>
-<li>Facebook</li>
-<li>Reddit</li>
-<li>YouTube</li>
-</ul>
-</div>
-
-<div class="card side-card">
-<h3>Layout focus</h3>
-<p>
-The page uses a denser card wall so more platforms can appear on screen at once without oversized empty areas.
-</p>
-</div>
-</aside>
-</div>
-</div>
-
-<script>
-(function () {
-const clockEl = document.getElementById("live-clock");
-
-function updateClock() {
-clockEl.textContent = new Date().toLocaleTimeString();
-}
-
-updateClock();
-setInterval(updateClock, 1000);
-
-document.addEventListener("visibilitychange", function () {
-if (document.visibilityState === "visible") {
-updateClock();
-}
-});
-
-window.addEventListener("focus", updateClock);
-})();
-</script>
+    runPromptBtn.addEventListener('click', () => {
+      const value = promptInput.value.trim();
+      if (!value) return;
+      assistantReply.textContent = `You want to: ${value}. The interface should now adapt the next panel, rank the best actions, and explain the reasoning in simple language.`;
+    });
+  </script>
 </body>
 </html>
