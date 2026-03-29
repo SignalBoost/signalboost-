@@ -25,14 +25,17 @@ CURRENT FEATURES
 - Modules now dynamically hide/show per mode
 - Additional insight and planning modules
 - Automatic mode detection from prompt meaning
+- Prompt scoring with confidence feedback
+- Fallback to General mode when intent is unclear or tied
 
 NEXT STEPS
-- Improve intent detection accuracy beyond simple keyword matching
+- Add prompt suggestions when confidence is low
 - Real AI integration (API / LLM)
 - State memory (session awareness)
 - Workspaces (task-based UI environments)
 - Add saved session handoff patterns for new chats
 - Introduce multi-step AI workflows
+- Replace keyword scoring with real semantic intent detection later
 
 NOTES
 - This file acts as BOTH UI and documentation
@@ -409,11 +412,11 @@ function quick(text){
 }
 
 function detectModeFromPrompt(text){
-  const value = (text || '').toLowerCase();
+  const value = (text || '').toLowerCase().trim();
 
-  const travelWords = ['travel','trip','flight','hotel','visa','airport','stay','itinerary','arrival','vacation'];
-  const financeWords = ['finance','money','bank','budget','card','cards','payment','payments','transfer','spending','account','accounts'];
-  const socialWords = ['social','trend','trends','platform','platforms','post','posts','content','audience','creator','creators','campaign','publish'];
+  const travelWords = ['travel','trip','flight','hotel','visa','airport','stay','itinerary','arrival','vacation','tour','destination','booking'];
+  const financeWords = ['finance','money','bank','budget','card','cards','payment','payments','transfer','spending','account','accounts','wallet','expense','expenses'];
+  const socialWords = ['social','trend','trends','platform','platforms','post','posts','content','audience','creator','creators','campaign','publish','engagement','viral','channel'];
 
   const countMatches = words => words.reduce((total, word) => total + (value.includes(word) ? 1 : 0), 0);
 
@@ -421,12 +424,42 @@ function detectModeFromPrompt(text){
   const financeScore = countMatches(financeWords);
   const socialScore = countMatches(socialWords);
 
-  const maxScore = Math.max(travelScore, financeScore, socialScore);
-  if (maxScore === 0) return 'general';
-  if (travelScore === maxScore && travelScore > financeScore && travelScore > socialScore) return 'travel';
-  if (financeScore === maxScore && financeScore > travelScore && financeScore > socialScore) return 'finance';
-  if (socialScore === maxScore && socialScore > travelScore && socialScore > financeScore) return 'social';
-  return 'general';
+  const scores = {
+    travel: travelScore,
+    finance: financeScore,
+    social: socialScore
+  };
+
+  const ranked = Object.entries(scores).sort((a,b) => b[1] - a[1]);
+  const topMode = ranked[0][0];
+  const topScore = ranked[0][1];
+  const secondScore = ranked[1][1];
+
+  let confidence = 'low';
+  if (topScore >= 3 && topScore - secondScore >= 2) confidence = 'high';
+  else if (topScore >= 2 && topScore - secondScore >= 1) confidence = 'medium';
+
+  if (topScore === 0) {
+    return {
+      mode: 'general',
+      confidence: 'low',
+      scores
+    };
+  }
+
+  if (topScore === secondScore) {
+    return {
+      mode: 'general',
+      confidence: 'low',
+      scores
+    };
+  }
+
+  return {
+    mode: topMode,
+    confidence,
+    scores
+  };
 }
 
 let currentMode = 'general';
@@ -440,18 +473,20 @@ function runAI(){
   r.style.display='none';
 
   setTimeout(()=>{
-    const detectedMode = detectModeFromPrompt(inputValue);
-    currentMode = detectedMode;
+    const detection = detectModeFromPrompt(inputValue);
+    currentMode = detection.mode;
 
     t.style.opacity=0;
     render(currentMode);
     r.style.display='block';
 
     const modeLabel = currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
+    const scoreText = `Travel ${detection.scores.travel} • Finance ${detection.scores.finance} • Social ${detection.scores.social}`;
+
     if(currentMode === 'general'){
-      r.innerText = `AI could not strongly detect a specialized workspace from: "${inputValue}". The system stays in General mode and keeps the full interface visible.`;
+      r.innerText = `AI could not strongly detect a specialized workspace from: "${inputValue}". Confidence is ${detection.confidence}. The system stays in General mode. Score view: ${scoreText}. Try a more specific prompt.`;
     } else {
-      r.innerText = `AI detected ${modeLabel} mode from: "${inputValue}" and reconfigured the interface to match that intent.`;
+      r.innerText = `AI detected ${modeLabel} mode from: "${inputValue}" with ${detection.confidence} confidence. The interface has been reconfigured to match that intent. Score view: ${scoreText}.`;
     }
   },1000);
 }
