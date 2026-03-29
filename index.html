@@ -29,6 +29,7 @@ CURRENT FEATURES
 - Fallback to General mode when intent is unclear or tied
 - Low-confidence guidance panel
 - Suggested prompts for recovery when intent is weak
+- Manual mode override buttons (Travel / Finance / Social)
 
 NEXT STEPS
 - Add clickable mode override buttons inside low-confidence guidance
@@ -37,7 +38,7 @@ NEXT STEPS
 - Workspaces (task-based UI environments)
 - Add saved session handoff patterns for new chats
 - Introduce multi-step AI workflows
-- Replace keyword scoring with real semantic inte
+- Replace keyword scoring with real semantic intent detection later
 
 NOTES
 - This file acts as BOTH UI and documentation
@@ -364,6 +365,8 @@ body.dark .card{background:rgba(30,40,60,.6)}
       <h4>Need a clearer prompt?</h4>
       <p id="suggestionReason">The system could not confidently map your request to a workspace.</p>
       <div class="suggestion-actions" id="suggestionActions"></div>
+      <div class="suggestion-actions" id="modeOverrides" style="margin-top:8px"></div>
+    </div>
     </div>
 
     <div class="suggestions">
@@ -485,15 +488,46 @@ function showLowConfidenceGuidance(inputValue, detection){
   const panel = document.getElementById('suggestionPanel');
   const reason = document.getElementById('suggestionReason');
   const actions = document.getElementById('suggestionActions');
+  const overrides = document.getElementById('modeOverrides');
 
+  const maxScore = Math.max(detection.scores.travel, detection.scores.finance, detection.scores.social);
   const isTie = (detection.scores.travel === detection.scores.finance) || (detection.scores.travel === detection.scores.social) || (detection.scores.finance === detection.scores.social);
 
   if(detection.confidence === 'low'){
     panel.style.display = 'block';
 
-    if(Math.max(detection.scores.travel, detection.scores.finance, detection.scores.social) === 0){
-      reason.textContent = 'Your request is too broad right now. Try mentioning the goal, domain, or next action more clearly.';
+    if(maxScore === 0){
+      reason.textContent = 'Your request is too broad. Mention a goal and domain (travel, finance, or social).';
     } else if(isTie){
+      reason.textContent = 'Your request overlaps multiple workspaces. Make it more specific or choose a mode.';
+    } else {
+      reason.textContent = 'The signal is weak. You can refine the prompt or pick a mode.';
+    }
+
+    const prompts = buildLowConfidenceSuggestions(inputValue, detection);
+    actions.innerHTML = prompts.map(p => `<button class="chip" onclick="applySuggestedPrompt(${JSON.stringify(p)})">${p}</button>`).join('');
+
+    // Manual overrides
+    overrides.innerHTML = [
+      `<button class="chip" onclick="forceMode('travel')">Use Travel mode</button>`,
+      `<button class="chip" onclick="forceMode('finance')">Use Finance mode</button>`,
+      `<button class="chip" onclick="forceMode('social')">Use Social mode</button>`
+    ].join('');
+  } else {
+    panel.style.display = 'none';
+    actions.innerHTML = '';
+    overrides.innerHTML = '';
+  }
+}
+
+function forceMode(mode){
+  currentMode = mode;
+  render(mode);
+  const r = document.getElementById('response');
+  const label = mode.charAt(0).toUpperCase() + mode.slice(1);
+  r.style.display='block';
+  r.innerText = `Mode manually set to ${label}. The interface has been reconfigured.`;
+} else if(isTie){
       reason.textContent = 'Your request overlaps multiple workspaces. Try making it more specific so the interface can adapt better.';
     } else {
       reason.textContent = 'The system found a weak signal, but not enough confidence to fully trust the workspace switch.';
