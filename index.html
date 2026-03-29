@@ -2,99 +2,820 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SignalBoost AI Travel</title>
-
 <style>
-body {
-margin: 0;
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg, #0b1220, #172554);
-color: white;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-min-height: 100vh;
+:root{
+--bg1:#081120;
+--bg2:#0f172a;
+--bg3:#172554;
+--card:rgba(255,255,255,0.08);
+--card-2:rgba(255,255,255,0.05);
+--line:rgba(255,255,255,0.14);
+--text:#f8fafc;
+--muted:#cbd5e1;
+--muted-2:#94a3b8;
+--accent:#67e8f9;
+--accent-2:#60a5fa;
+--good:#86efac;
+--warn:#fde68a;
 }
 
-.container {
-text-align: center;
-padding: 30px;
-border-radius: 18px;
-background: rgba(255,255,255,0.08);
-border: 1px solid rgba(255,255,255,0.15);
-box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-max-width: 500px;
-width: 90%;
+*{box-sizing:border-box}
+
+html{
+scroll-behavior:smooth;
 }
 
-h1 {
-margin-bottom: 20px;
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+color:var(--text);
+background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+min-height:100vh;
 }
 
-#live-clock {
-font-size: 36px;
-font-weight: bold;
-margin-bottom: 20px;
+a{
+color:inherit;
 }
 
-.button {
-display: inline-block;
-padding: 14px 20px;
-margin-top: 20px;
-background: #3b82f6;
-color: white;
-text-decoration: none;
-border-radius: 10px;
-font-weight: bold;
-transition: 0.3s;
+.wrap{
+max-width:1200px;
+margin:0 auto;
+padding:18px;
 }
 
-.button:hover {
-background: #2563eb;
+.topbar{
+position:sticky;
+top:10px;
+z-index:20;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+padding:14px 16px;
+border:1px solid var(--line);
+border-radius:18px;
+background:rgba(7,12,30,0.72);
+backdrop-filter:blur(10px);
+margin-bottom:18px;
 }
 
-.description {
-margin-top: 10px;
-color: #cbd5e1;
-font-size: 14px;
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+font-weight:700;
+font-size:20px;
+}
+
+.logo{
+width:42px;
+height:42px;
+border-radius:12px;
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:4px;
+flex-shrink:0;
+}
+
+.logo svg{width:100%;height:100%}
+.tower{stroke:#4b5563;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.waves{stroke:#4b5563;stroke-width:8;stroke-linecap:round;fill:none}
+.dot{fill:#4b5563}
+
+.nav{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.nav a{
+text-decoration:none;
+padding:10px 14px;
+border-radius:999px;
+border:1px solid var(--line);
+background:rgba(255,255,255,0.04);
+font-weight:700;
+font-size:14px;
+}
+
+.hero{
+display:grid;
+grid-template-columns:1.15fr .85fr;
+gap:16px;
+margin-bottom:16px;
+}
+
+.panel{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:22px;
+padding:22px;
+box-shadow:0 18px 50px rgba(0,0,0,0.18);
+}
+
+.hero h1{
+margin:0 0 10px 0;
+font-size:clamp(2rem,5vw,3.5rem);
+line-height:1.02;
+}
+
+.hero p{
+margin:0;
+color:var(--muted);
+line-height:1.65;
+font-size:16px;
+}
+
+.pill-row{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:16px;
+}
+
+.pill{
+padding:8px 12px;
+border-radius:999px;
+background:rgba(255,255,255,0.05);
+border:1px solid var(--line);
+color:#dbeafe;
+font-size:12px;
+font-weight:700;
+}
+
+.stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.stat{
+background:var(--card-2);
+border:1px solid var(--line);
+border-radius:16px;
+padding:14px;
+}
+
+.stat-label{
+font-size:12px;
+color:var(--muted-2);
+margin-bottom:6px;
+}
+
+.stat-value{
+font-size:24px;
+font-weight:700;
+}
+
+.assistant-strip{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+margin-bottom:16px;
+}
+
+.assistant-box{
+background:rgba(103,232,249,0.08);
+border:1px solid rgba(103,232,249,0.18);
+border-radius:18px;
+padding:18px;
+}
+
+.assistant-box h3{
+margin:0 0 8px 0;
+font-size:18px;
+}
+
+.assistant-box p{
+margin:0;
+color:#dbeafe;
+line-height:1.6;
+}
+
+.planner{
+margin-bottom:16px;
+}
+
+.planner h2,
+.section h2{
+margin:0 0 8px 0;
+font-size:28px;
+}
+
+.planner p,
+.section p{
+margin:0 0 16px 0;
+color:var(--muted);
+line-height:1.6;
+}
+
+.planner-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin-bottom:12px;
+}
+
+.planner-grid input,
+.planner-grid select{
+width:100%;
+padding:13px 14px;
+border-radius:12px;
+border:1px solid var(--line);
+background:rgba(255,255,255,0.05);
+color:var(--text);
+outline:none;
+font-size:14px;
+}
+
+.planner-actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:16px;
+}
+
+.btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+text-decoration:none;
+cursor:pointer;
+border:none;
+border-radius:12px;
+padding:13px 16px;
+font-weight:700;
+font-size:14px;
+transition:transform .15s ease, opacity .15s ease;
+}
+
+.btn:hover{
+transform:translateY(-1px);
+opacity:0.96;
+}
+
+.btn-primary{
+background:linear-gradient(135deg,var(--accent),var(--accent-2));
+color:#082032;
+}
+
+.btn-secondary{
+background:#334155;
+color:white;
+border:1px solid var(--line);
+}
+
+.result{
+display:grid;
+grid-template-columns:1.05fr .95fr;
+gap:16px;
+margin-top:14px;
+}
+
+.result-card{
+background:var(--card-2);
+border:1px solid var(--line);
+border-radius:18px;
+padding:18px;
+}
+
+.result-card h3{
+margin:0 0 10px 0;
+font-size:24px;
+}
+
+.badge-row{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:12px;
+}
+
+.badge{
+padding:6px 10px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+background:#334155;
+color:#e2e8f0;
+display:inline-block;
+}
+
+.badge-good{background:#14532d;color:#dcfce7}
+.badge-blue{background:#1d4ed8;color:#dbeafe}
+.badge-gold{background:#78350f;color:#fde68a}
+
+.meta-list{
+margin:0;
+padding-left:18px;
+color:var(--muted);
+line-height:1.7;
+}
+
+.why,
+.tip,
+.official-box{
+margin-top:12px;
+border-radius:14px;
+padding:12px;
+border:1px solid var(--line);
+background:rgba(255,255,255,0.04);
+line-height:1.6;
+color:#dbeafe;
+}
+
+.tip{
+background:rgba(251,191,36,0.10);
+border-color:rgba(251,191,36,0.20);
+color:#fef3c7;
+}
+
+.official-box{
+background:rgba(134,239,172,0.08);
+border-color:rgba(134,239,172,0.18);
+color:#dcfce7;
+}
+
+.links-row{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:14px;
+}
+
+.links-row a,
+.links-row button{
+text-decoration:none;
+}
+
+.section{
+margin-top:18px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:14px;
+}
+
+.mini-card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:18px;
+padding:18px;
+}
+
+.mini-card h3{
+margin:0 0 8px 0;
+font-size:20px;
+}
+
+.mini-card p{
+margin:0 0 12px 0;
+color:var(--muted);
+line-height:1.6;
+font-size:14px;
+}
+
+.clock{
+font-size:34px;
+font-weight:700;
+letter-spacing:0.5px;
+}
+
+.small{
+font-size:13px;
+color:var(--muted-2);
+line-height:1.6;
+}
+
+.footer-note{
+margin-top:18px;
+padding:14px 16px;
+border-radius:14px;
+background:rgba(255,255,255,0.04);
+border:1px solid var(--line);
+color:var(--muted);
+line-height:1.6;
+font-size:13px;
+}
+
+@media (max-width: 980px){
+.hero,
+.assistant-strip,
+.result{
+grid-template-columns:1fr;
+}
+
+.planner-grid{
+grid-template-columns:1fr 1fr;
+}
+
+.grid{
+grid-template-columns:1fr 1fr;
+}
+}
+
+@media (max-width: 680px){
+.planner-grid,
+.grid,
+.stats{
+grid-template-columns:1fr;
+}
+
+.topbar{
+align-items:flex-start;
+}
 }
 </style>
 </head>
-
 <body>
+<div class="wrap">
+<div class="topbar">
+<div class="brand">
+<div class="logo" aria-hidden="true">
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+<path class="waves" d="M32 30c-10 10-10 26 0 36"/>
+<path class="waves" d="M22 20c-16 16-16 46 0 62"/>
+<path class="waves" d="M88 30c10 10 10 26 0 36"/>
+<path class="waves" d="M98 20c16 16 16 46 0 62"/>
+<circle class="dot" cx="60" cy="28" r="5"/>
+<path class="tower" d="M60 33v10"/>
+<path class="tower" d="M60 43L36 98"/>
+<path class="tower" d="M60 43l24 55"/>
+<path class="tower" d="M47 69h26"/>
+<path class="tower" d="M42 81l18-12 18 12"/>
+<path class="tower" d="M51 98h18"/>
+</svg>
+</div>
+<span>SignalBoost</span>
+</div>
 
-<div class="container">
-<h1>SignalBoost AI Travel</h1>
+<div class="nav">
+<a href="#planner">Planner</a>
+<a href="#travel-tools">Travel Tools</a>
+<a href="#monetization">Monetization</a>
+</div>
+</div>
 
-<!-- CLOCK -->
-<div id="live-clock">--:--:--</div>
+<section class="hero">
+<div class="panel">
+<h1>AI-guided travel planning that saves time</h1>
+<p>
+SignalBoost is built to help people compare the best next travel option faster.
+Instead of forcing users to search across many sites, the platform gives a simpler
+action path: trip idea, estimated direction, official links when needed, and trusted booking options.
+</p>
 
-<!-- AI RESULT EXAMPLE -->
-<p>Top things to do in Paris:</p>
-<ul style="text-align:left;">
+<div class="pill-row">
+<span class="pill">AI Travel Planner</span>
+<span class="pill">Official links</span>
+<span class="pill">Affiliate ready</span>
+<span class="pill">Clock auto-refresh</span>
+</div>
+</div>
+
+<div class="panel">
+<div class="stats">
+<div class="stat">
+<div class="stat-label">Live clock</div>
+<div id="live-clock" class="stat-value clock">--:--:--</div>
+</div>
+<div class="stat">
+<div class="stat-label">Site status</div>
+<div class="stat-value">Live</div>
+</div>
+<div class="stat">
+<div class="stat-label">Planner mode</div>
+<div class="stat-value">Travel</div>
+</div>
+<div class="stat">
+<div class="stat-label">Affiliate provider</div>
+<div class="stat-value">Viator</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="assistant-strip">
+<div class="assistant-box">
+<h3>AI summary</h3>
+<p id="assistant-summary">
+Start with destination, dates, and purpose of trip. SignalBoost will suggest a likely best direction, show a trusted activity link, and display an official application or information link where relevant.
+</p>
+</div>
+
+<div class="assistant-box">
+<h3>Best next step</h3>
+<p id="assistant-next-step">
+Fill the planner below. The page will update without needing a full refresh when you return to the tab.
+</p>
+</div>
+</section>
+
+<section id="planner" class="panel planner">
+<h2>AI Travel Planner</h2>
+<p>
+Use this simplified planner to test the SignalBoost experience. It shows destination guidance,
+a Viator affiliate activity link, and an official link area for government or visa-related actions.
+</p>
+
+<div class="planner-grid">
+<input id="destination" type="text" placeholder="Destination (e.g. Paris)" value="Paris" />
+<input id="startDate" type="date" />
+<input id="endDate" type="date" />
+<select id="travelers">
+<option value="1">1 traveler</option>
+<option value="2" selected>2 travelers</option>
+<option value="3">3 travelers</option>
+<option value="4">4 travelers</option>
+<option value="5+">5+ travelers</option>
+</select>
+<select id="tripType">
+<option value="leisure" selected>Leisure</option>
+<option value="business">Business</option>
+<option value="family">Family</option>
+<option value="relocation">Relocation</option>
+</select>
+</div>
+
+<div class="planner-actions">
+<button class="btn btn-primary" onclick="runPlanner()">Plan Trip</button>
+<button class="btn btn-secondary" onclick="resetPlanner()">Reset</button>
+</div>
+
+<div class="result">
+<div class="result-card">
+<div class="badge-row">
+<span class="badge badge-blue" id="result-destination-badge">Paris</span>
+<span class="badge badge-good" id="result-trip-badge">Leisure</span>
+<span class="badge badge-gold" id="result-travelers-badge">2 travelers</span>
+</div>
+
+<h3 id="result-title">Top things to do in Paris</h3>
+
+<ul class="meta-list" id="activity-list">
 <li>Eiffel Tower guided tour</li>
 <li>Seine River cruise</li>
 <li>Louvre Museum visit</li>
 </ul>
 
-<!-- 🔥 YOUR AFFILIATE LINK -->
+<div class="why" id="why-box">
+<strong>Why this matters:</strong>
+This gives the user a fast first action path instead of sending them to multiple sites before they know what to do next.
+</div>
+
+<div class="tip" id="tip-box">
+<strong>Best next step:</strong>
+Open the activities page in a new tab. Your current SignalBoost tab stays open, so the user can return easily without losing context.
+</div>
+
+<div class="links-row">
 <a
-class="button"
+id="viator-link"
+class="btn btn-primary"
 href="https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link"
 target="_blank"
+rel="noopener noreferrer"
 >
-Explore Activities in Paris
+Explore Activities
 </a>
 
-<div class="description">
-Book top experiences and tours with trusted providers.
+<button class="btn btn-secondary" onclick="copyCurrentLink()">Copy Activity Link</button>
 </div>
 </div>
 
-<!-- CLOCK SCRIPT -->
+<div class="result-card">
+<h3>Official action area</h3>
+
+<div class="official-box" id="official-box">
+<strong>Official information:</strong>
+Always verify visa, entry, immigration, or work-permit requirements with an official government source before acting.
+</div>
+
+<div class="links-row">
+<a
+id="official-info-link"
+class="btn btn-secondary"
+href="https://travel.state.gov/content/travel/en/international-travel.html"
+target="_blank"
+rel="noopener noreferrer"
+>
+Official Info
+</a>
+
+<a
+id="official-apply-link"
+class="btn btn-secondary"
+href="https://travel.state.gov/content/travel/en/international-travel.html"
+target="_blank"
+rel="noopener noreferrer"
+>
+Official Application
+</a>
+</div>
+
+<div style="margin-top:16px;" class="small" id="official-note">
+If a destination does not require a direct application link in this demo, the official buttons will still point to a trusted information source.
+</div>
+</div>
+</div>
+</section>
+
+<section id="travel-tools" class="section">
+<h2>Travel tools inside SignalBoost</h2>
+<p>
+The larger goal is to make SignalBoost feel like a travel mall: planning, activities, stays, finance, and official action points in one experience.
+</p>
+
+<div class="grid">
+<div class="mini-card">
+<h3>Destination planning</h3>
+<p>
+Users enter where they want to go, when, and why. SignalBoost gives a simpler recommendation instead of forcing them to compare many sites first.
+</p>
+</div>
+
+<div class="mini-card">
+<h3>Official links</h3>
+<p>
+For visas, entry, or applications, the platform should show official government information separately from commercial booking links.
+</p>
+</div>
+
+<div class="mini-card">
+<h3>Booking options</h3>
+<p>
+Affiliate links should support flights, hotels, and activities. In this current version, the activities link is connected to Viator.
+</p>
+</div>
+</div>
+</section>
+
+<section id="monetization" class="section">
+<h2>Monetization direction</h2>
+<p>
+This version restores your full homepage feel while keeping the affiliate demonstration in the right place.
+</p>
+
+<div class="grid">
+<div class="mini-card">
+<h3>Activities</h3>
+<p>
+Viator links can monetize local tours, museums, day trips, and other experiences.
+</p>
+</div>
+
+<div class="mini-card">
+<h3>Stays</h3>
+<p>
+Hotel or apartment partners can be added later in the same travel result flow.
+</p>
+</div>
+
+<div class="mini-card">
+<h3>Trust</h3>
+<p>
+Separating official links from affiliate links helps users trust the platform and makes the business model cleaner.
+</p>
+</div>
+</div>
+</section>
+
+<div class="footer-note">
+This is a corrected full page. It restores the larger SignalBoost layout, keeps the live clock, and includes your Viator affiliate link in the planner result instead of replacing the whole site with a tiny demo card.
+</div>
+</div>
+
 <script>
+const travelData = {
+paris: {
+title: "Top things to do in Paris",
+activities: [
+"Eiffel Tower guided tour",
+"Seine River cruise",
+"Louvre Museum visit"
+],
+viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/France.html",
+officialApply: "https://france-visas.gouv.fr/en/",
+why: "Paris is a high-conversion destination for activities, museums, and guided experiences. It is a strong starting point for the activities side of SignalBoost.",
+tip: "Open the activities link in a new tab. The current SignalBoost tab stays open so the user can come right back."
+},
+rome: {
+title: "Top things to do in Rome",
+activities: [
+"Colosseum guided tour",
+"Vatican Museums visit",
+"Rome city highlights tour"
+],
+viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Italy.html",
+officialApply: "https://vistoperitalia.esteri.it/home/en",
+why: "Rome works well for historic tours, skip-the-line experiences, and bundled city activities. It is another strong affiliate-friendly destination.",
+tip: "Users can compare a city activity page first before moving to flights or hotels."
+},
+madrid: {
+title: "Top things to do in Madrid",
+activities: [
+"Madrid city walking tour",
+"Prado Museum visit",
+"Day trip from Madrid"
+],
+viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Spain.html",
+officialApply: "https://www.exteriores.gob.es/Consulados/londres/en/ServiciosConsulares/Paginas/Consular/Visados.aspx",
+why: "Madrid fits your original business use case well because it can combine work travel, food, nightlife, and local experiences.",
+tip: "For Madrid, the planner can later expand to include long-stay suggestions and after-work activities."
+},
+london: {
+title: "Top things to do in London",
+activities: [
+"London sightseeing tour",
+"Tower of London visit",
+"Thames River experience"
+],
+viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/UnitedKingdom.html",
+officialApply: "https://www.gov.uk/check-uk-visa",
+why: "London is strong for both tourism and business travel. It is useful for demonstrating official info plus affiliate experience links together.",
+tip: "This is a good example of keeping official immigration info separate from tours and booking links."
+},
+newyork: {
+title: "Top things to do in New York",
+activities: [
+"Statue of Liberty tour",
+"Top of the Rock visit",
+"New York city highlights tour"
+],
+viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://travel.state.gov/content/travel/en/us-visas/tourism-visit.html",
+officialApply: "https://esta.cbp.dhs.gov/",
+why: "New York supports activities, food, family travel, and business travel. It is also useful when showing official entry information for the U.S.",
+tip: "For U.S. travel, this planner can later show ESTA or visa reminders based on nationality."
+}
+};
+
+function normalizeDestination(value) {
+return value.toLowerCase().replace(/\s+/g, "");
+}
+
+function renderActivities(items) {
+return items.map(item => `<li>${item}</li>`).join("");
+}
+
+function runPlanner() {
+const destinationInput = document.getElementById("destination").value.trim();
+const tripType = document.getElementById("tripType").value;
+const travelers = document.getElementById("travelers").value;
+
+const key = normalizeDestination(destinationInput);
+const selected = travelData[key] || travelData.paris;
+
+document.getElementById("result-title").textContent = selected.title;
+document.getElementById("activity-list").innerHTML = renderActivities(selected.activities);
+document.getElementById("viator-link").href = selected.viator;
+document.getElementById("official-info-link").href = selected.officialInfo;
+document.getElementById("official-apply-link").href = selected.officialApply;
+document.getElementById("why-box").innerHTML = "<strong>Why this matters:</strong> " + selected.why;
+document.getElementById("tip-box").innerHTML = "<strong>Best next step:</strong> " + selected.tip;
+
+document.getElementById("result-destination-badge").textContent = destinationInput || "Paris";
+document.getElementById("result-trip-badge").textContent = tripType.charAt(0).toUpperCase() + tripType.slice(1);
+document.getElementById("result-travelers-badge").textContent = travelers + (travelers === "1" ? " traveler" : " travelers");
+
+document.getElementById("assistant-summary").textContent =
+"SignalBoost is currently showing a destination-specific travel action path for " +
+(destinationInput || "Paris") +
+". This includes a monetizable activity link and an official information/application area.";
+
+document.getElementById("assistant-next-step").textContent =
+"Open the activity link in a new tab so the user stays anchored inside SignalBoost. For official requirements, use the government link area instead of mixing it with commercial links.";
+
+document.getElementById("official-note").textContent =
+"Official links should always be treated as trust-first actions. Affiliate links should remain clearly labeled as booking or activity options.";
+}
+
+function resetPlanner() {
+document.getElementById("destination").value = "Paris";
+document.getElementById("travelers").value = "2";
+document.getElementById("tripType").value = "leisure";
+runPlanner();
+}
+
+function copyCurrentLink() {
+const link = document.getElementById("viator-link").href;
+navigator.clipboard.writeText(link).then(() => {
+alert("Activity link copied.");
+}).catch(() => {
+alert("Could not copy link.");
+});
+}
+
 (function () {
 const clockEl = document.getElementById("live-clock");
 
@@ -104,7 +825,6 @@ clockEl.textContent = now.toLocaleTimeString();
 }
 
 updateClock();
-
 setInterval(updateClock, 1000);
 
 document.addEventListener("visibilitychange", function () {
@@ -115,7 +835,8 @@ updateClock();
 
 window.addEventListener("focus", updateClock);
 })();
-</script>
 
+runPlanner();
+</script>
 </body>
 </html>
