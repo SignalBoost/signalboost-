@@ -88,7 +88,11 @@ body{
   background:var(--surface);
   padding:30px;
   border-radius:24px;
-  border:1px solid var(--border)
+  border:1px solid var(--border);
+  display:grid;
+  grid-template-columns:1.3fr .9fr;
+  gap:18px;
+  align-items:start;
 }
 
 h1{font-size:42px;margin:0}
@@ -157,7 +161,77 @@ input{
   margin-top:20px;
   display:flex;
   gap:10px;
+  flex-wrap:wrap;
 }
+
+.hero-side-panel{
+  padding:16px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.55);
+}
+
+body.dark .hero-side-panel{background:rgba(30,40,60,.55)}
+
+.hero-side-panel h3{
+  margin:0 0 10px 0;
+  font-size:18px;
+}
+
+.hero-list{
+  display:grid;
+  gap:10px;
+}
+
+.hero-list-item{
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.45);
+  font-size:13px;
+  line-height:1.5;
+}
+
+body.dark .hero-list-item{background:rgba(17,24,39,.55)}
+
+.layout-shell{
+  display:grid;
+  grid-template-columns:1.4fr .8fr;
+  gap:20px;
+}
+
+.side-rail{
+  display:grid;
+  gap:20px;
+}
+
+.rail-card{
+  margin-top:20px;
+  padding:20px;
+  border-radius:20px;
+  background:var(--surface);
+  border:1px solid var(--border);
+}
+
+.rail-card h2{
+  margin:0 0 10px 0;
+}
+
+.rail-list{
+  display:grid;
+  gap:10px;
+}
+
+.rail-list-item{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.45);
+  font-size:13px;
+  line-height:1.5;
+}
+
+body.dark .rail-list-item{background:rgba(17,24,39,.55)}
 
 .module{
   margin-top:20px;
@@ -192,8 +266,13 @@ body.dark .card{background:rgba(30,40,60,.6)}
 .label{font-size:11px;color:var(--muted)}
 .strong{font-weight:800}
 
+@media(max-width:1000px){
+  .hero,.layout-shell{grid-template-columns:1fr}
+}
+
 @media(max-width:800px){
   .grid{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -208,27 +287,36 @@ body.dark .card{background:rgba(30,40,60,.6)}
   </div>
 </div>
 
+<div class="layout-shell">
+<div>
 <section class="hero">
-  <h1>What do you want to do?</h1>
+  <div>
+    <h1>What do you want to do?</h1>
 
-  <div class="prompt">
-    <input id="input" placeholder="Ask anything..." />
-    <button class="btn primary" onclick="runAI()">Go</button>
+    <div class="prompt">
+      <input id="input" placeholder="Ask anything..." />
+      <button class="btn primary" onclick="runAI()">Go</button>
+    </div>
+
+    <div id="thinking" class="thinking">AI thinking...</div>
+    <div id="response" class="response" style="display:none"></div>
+
+    <div class="suggestions">
+      <div class="chip" onclick="quick('Plan travel')">Plan travel</div>
+      <div class="chip" onclick="quick('Find trends')">Find trends</div>
+      <div class="chip" onclick="quick('Compare platforms')">Compare</div>
+    </div>
+
+    <div class="mode-switch">
+      <button class="ghost" onclick="setMode('travel')">Travel</button>
+      <button class="ghost" onclick="setMode('finance')">Finance</button>
+      <button class="ghost" onclick="setMode('social')">Social</button>
+    </div>
   </div>
 
-  <div id="thinking" class="thinking">AI thinking...</div>
-  <div id="response" class="response" style="display:none"></div>
-
-  <div class="suggestions">
-    <div class="chip" onclick="quick('Plan travel')">Plan travel</div>
-    <div class="chip" onclick="quick('Find trends')">Find trends</div>
-    <div class="chip" onclick="quick('Compare platforms')">Compare</div>
-  </div>
-
-  <div class="mode-switch">
-    <button class="ghost" onclick="setMode('travel')">Travel</button>
-    <button class="ghost" onclick="setMode('finance')">Finance</button>
-    <button class="ghost" onclick="setMode('social')">Social</button>
+  <div id="heroPanel" class="hero-side-panel">
+    <h3 id="heroPanelTitle">AI overview</h3>
+    <div id="heroPanelList" class="hero-list"></div>
   </div>
 </section>
 
@@ -246,7 +334,19 @@ body.dark .card{background:rgba(30,40,60,.6)}
   <h2>Optional</h2>
   <div class="grid" id="optional"></div>
 </section>
+</div>
 
+<aside class="side-rail">
+  <section class="rail-card">
+    <h2>Session state</h2>
+    <div id="sessionList" class="rail-list"></div>
+  </section>
+
+  <section class="rail-card">
+    <h2>Why this mode</h2>
+    <div id="whyMode" class="rail-list"></div>
+  </section>
+</aside>
 </div>
 
 <script>
@@ -298,97 +398,18 @@ function render(mode){
   const hero=document.querySelector('.hero');
   const response=document.getElementById('response');
   const buttons=document.querySelectorAll('.mode-switch .ghost');
+  const heroPanelTitle=document.getElementById('heroPanelTitle');
+  const heroPanelList=document.getElementById('heroPanelList');
+  const sessionList=document.getElementById('sessionList');
+  const whyMode=document.getElementById('whyMode');
+
+  const list = items => items.map(item => `<div class='hero-list-item'>${item}</div>`).join('');
+  const rail = items => items.map(item => `<div class='rail-list-item'>${item}</div>`).join('');
 
   buttons.forEach(btn => btn.style.background='transparent');
   if(mode==='travel' && buttons[0]) buttons[0].style.background='rgba(37,99,235,.08)';
   if(mode==='finance' && buttons[1]) buttons[1].style.background='rgba(37,99,235,.08)';
-  if(mode==='social' && buttons[2]) buttons[2].style.background='rgba(37,99,235,.08)';
-
-  hero.style.transition = '.3s';
-
-  if(mode==='travel'){
-    hero.style.background='linear-gradient(135deg, rgba(59,130,246,.12), rgba(6,182,212,.10))';
-    actions.innerHTML = [
-      card('Book flight','Start with timing, route, and travel window.'),
-      card('Check entry rules','Confirm passport, visa, and arrival requirements.'),
-      card('Set arrival plan','Prepare transport and first-day essentials.')
-    ].join('');
-    rec.innerHTML = [
-      card('Choose hotel','Compare location, safety, and access.'),
-      card('Compare local transport','Rank airport transfer and city mobility options.'),
-      card('Build itinerary','Turn ideas into a practical sequence.')
-    ].join('');
-    opt.innerHTML = [
-      card('Explore food','Save a few strong nearby options.'),
-      card('Find activities','Keep flexible discovery ideas ready.'),
-      card('Pack checklist','Reduce last-minute mistakes.')
-    ].join('');
-    response.style.display='block';
-    response.innerText='Travel mode restructures the interface around movement, timing, entry requirements, stay decisions, and arrival confidence.';
-  }
-  else if(mode==='finance'){
-    hero.style.background='linear-gradient(135deg, rgba(16,185,129,.10), rgba(37,99,235,.08))';
-    actions.innerHTML = [
-      card('Setup account','Start with the main financial tool you need first.'),
-      card('Check payment access','Make sure cards and transfers will work where needed.'),
-      card('Set budget guardrails','Define a safe range before spending decisions.')
-    ].join('');
-    rec.innerHTML = [
-      card('Compare cards','Surface the best options for rewards or low fees.'),
-      card('Track spending','Create a simple overview of current outflow.'),
-      card('Review transfer options','Choose the most practical path for moving money.')
-    ].join('');
-    opt.innerHTML = [
-      card('Watch exchange rates','Useful if you are moving across currencies.'),
-      card('Create savings target','Optional planning for a larger goal.'),
-      card('Review subscriptions','Trim low-value recurring costs.')
-    ].join('');
-    response.style.display='block';
-    response.innerText='Finance mode simplifies money decisions by prioritizing setup, access, comparison, and financial control before optional tools.';
-  }
-  else if(mode==='social'){
-    hero.style.background='linear-gradient(135deg, rgba(168,85,247,.10), rgba(236,72,153,.08))';
-    actions.innerHTML = [
-      card('Review signals','Start with the strongest live conversations.'),
-      card('Compare platforms','Match the message to the right channel.'),
-      card('Choose audience path','Decide where attention matters most first.')
-    ].join('');
-    rec.innerHTML = [
-      card('Draft content angle','Shape the main idea before publishing.'),
-      card('Rank best channels','Identify where the content will perform best.'),
-      card('Plan release order','Sequence the rollout instead of posting randomly.')
-    ].join('');
-    opt.innerHTML = [
-      card('Explore creators','Find possible collaborators.'),
-      card('Save trend references','Keep examples for later use.'),
-      card('Review engagement later','Optional follow-up analysis.')
-    ].join('');
-    response.style.display='block';
-    response.innerText='Social mode shifts the experience toward trends, audience fit, content direction, and platform-based decision making.';
-  }
-  else {
-    hero.style.background='var(--surface)';
-    actions.innerHTML = [
-      card('Review signals','Top trends ranked and simplified.'),
-      card('Choose a mode','Travel, finance, or social.'),
-      card('Start a prompt','Tell the system your goal.')
-    ].join('');
-    rec.innerHTML = [
-      card('Compare options','Best choices surfaced first.'),
-      card('Reduce noise','Hide low-value paths quickly.'),
-      card('Focus next step','Keep the user moving with clarity.')
-    ].join('');
-    opt.innerHTML = [
-      card('Explore more','Additional discovery.'),
-      card('Save directions','Keep useful paths for later.'),
-      card('Refine intent','Improve the system response.')
-    ].join('');
-    response.style.display='block';
-    response.innerText='General mode introduces the AI control center and prepares the user to shift into a more specialized workspace.';
-  }
-}
-
-render('general');
+  if(mode==='social' && b
 </script>
 
 </body>
