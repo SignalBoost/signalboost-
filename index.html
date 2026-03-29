@@ -6,22 +6,23 @@
 <title>SignalBoost</title>
 <style>
 :root{
---bg:#f5f7fb;
+--bg:#f4f7fb;
 --surface:#ffffff;
---surface-2:#f7f9fd;
---border:#d9e2ef;
+--surface-2:#f7faff;
+--border:#d7e3f0;
 --text:#0f172a;
---muted:#607086;
+--muted:#617187;
 --blue:#2563eb;
 --blue-soft:#dbeafe;
+--green:#166534;
 --green-soft:#dcfce7;
+--gold:#92400e;
 --gold-soft:#fef3c7;
---gold:#b45309;
---shadow:0 8px 22px rgba(15,23,42,.07);
---official-bg:#fff1bf;
+--official-bg:#ffe8a3;
 --official-border:#f59e0b;
 --official-text:#6b3f00;
 --danger:#b91c1c;
+--shadow:0 8px 24px rgba(15,23,42,.08);
 }
 
 *{box-sizing:border-box}
@@ -30,17 +31,14 @@ html{scroll-behavior:smooth}
 body{
 margin:0;
 font-family:Arial, Helvetica, sans-serif;
-background:linear-gradient(180deg,#eef4ff 0%, #f7f9fd 35%, #ffffff 100%);
+background:linear-gradient(180deg,#eef4ff 0%, #f8fbff 36%, #ffffff 100%);
 color:var(--text);
 }
 
-a{
-color:inherit;
-text-decoration:none;
-}
+a{color:inherit;text-decoration:none}
 
 .app{
-max-width:1500px;
+max-width:1550px;
 margin:0 auto;
 padding:14px;
 }
@@ -53,7 +51,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 gap:14px;
-background:rgba(255,255,255,.94);
+background:rgba(255,255,255,.95);
 border:1px solid var(--border);
 border-radius:16px;
 padding:10px 14px;
@@ -89,8 +87,8 @@ flex-shrink:0;
 
 .nav{
 display:flex;
-gap:8px;
 flex-wrap:wrap;
+gap:8px;
 }
 
 .nav a{
@@ -98,7 +96,7 @@ padding:9px 12px;
 border-radius:999px;
 border:1px solid var(--border);
 background:#fff;
-font-size:13px;
+font-size:12px;
 font-weight:700;
 }
 
@@ -137,7 +135,7 @@ font-size:14px;
 display:flex;
 gap:8px;
 flex-wrap:wrap;
-margin-top:14px;
+margin-top:12px;
 }
 
 .pill{
@@ -178,7 +176,7 @@ font-weight:700;
 .layout{
 margin-top:14px;
 display:grid;
-grid-template-columns:minmax(0,2.35fr) minmax(290px,.85fr);
+grid-template-columns:minmax(0,2.55fr) minmax(290px,.75fr);
 gap:14px;
 align-items:start;
 }
@@ -187,6 +185,7 @@ align-items:start;
 display:flex;
 flex-direction:column;
 gap:14px;
+min-width:0;
 }
 
 .section-card{
@@ -195,7 +194,7 @@ padding:14px;
 
 .section-card h2{
 margin:0 0 6px 0;
-font-size:24px;
+font-size:23px;
 }
 
 .section-card p{
@@ -207,9 +206,22 @@ font-size:13px;
 
 .planner-grid{
 display:grid;
-grid-template-columns:1.55fr .95fr .95fr .9fr .9fr .95fr;
+grid-template-columns:1fr 1.15fr 1.15fr 1.15fr .9fr .9fr .85fr .85fr;
 gap:8px;
 margin-bottom:10px;
+}
+
+.field{
+display:flex;
+flex-direction:column;
+gap:4px;
+}
+
+.field label{
+font-size:11px;
+color:var(--muted);
+font-weight:700;
+padding-left:2px;
 }
 
 input, select{
@@ -225,8 +237,7 @@ outline:none;
 
 option{color:#000}
 
-.actions,
-.links-row{
+.actions,.links-row{
 display:flex;
 gap:8px;
 flex-wrap:wrap;
@@ -265,7 +276,7 @@ border:1px solid var(--border);
 
 .result-grid{
 display:grid;
-grid-template-columns:1.15fr .85fr;
+grid-template-columns:1.35fr .95fr;
 gap:10px;
 margin-top:6px;
 }
@@ -275,6 +286,7 @@ border:1px solid var(--border);
 border-radius:16px;
 padding:14px;
 background:#fff;
+min-width:0;
 }
 
 .badge-row{
@@ -294,12 +306,13 @@ color:#334155;
 }
 
 .badge-blue{background:#dbeafe;color:#1d4ed8}
-.badge-green{background:var(--green-soft);color:#166534}
-.badge-gold{background:var(--gold-soft);color:#92400e}
+.badge-green{background:var(--green-soft);color:var(--green)}
+.badge-gold{background:var(--gold-soft);color:var(--gold)}
 
 .result-box h3{
 margin:0 0 8px 0;
 font-size:20px;
+line-height:1.3;
 }
 
 .meta-list{
@@ -330,7 +343,7 @@ color:#7c5700;
 background:linear-gradient(135deg,var(--official-bg),#ffd66b);
 color:var(--official-text);
 border:2px solid var(--official-border);
-box-shadow:0 8px 18px rgba(245,158,11,.20);
+box-shadow:0 8px 18px rgba(245,158,11,.18);
 font-weight:700;
 }
 
@@ -345,9 +358,54 @@ font-weight:700;
 background:#ffefc2;
 }
 
-.official-note-domestic{
+.domestic-note{
 color:var(--danger);
 font-weight:700;
+}
+
+.price-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin-top:10px;
+}
+
+.price-card{
+border:1px solid var(--border);
+border-radius:12px;
+padding:10px;
+background:#f8fbff;
+}
+
+.price-card h4{
+margin:0 0 4px 0;
+font-size:13px;
+line-height:1.3;
+}
+
+.price-card .small{
+color:var(--muted);
+font-size:11px;
+line-height:1.45;
+}
+
+.price-card .price{
+margin-top:6px;
+font-size:18px;
+font-weight:700;
+}
+
+.airport-box{
+margin-top:10px;
+border:1px solid var(--border);
+border-radius:12px;
+padding:10px;
+background:#f8fbff;
+}
+
+.airport-box h4{
+margin:0 0 8px 0;
+font-size:14px;
 }
 
 .feed-grid{
@@ -365,14 +423,14 @@ box-shadow:var(--shadow);
 }
 
 .thumb{
-height:110px;
+height:108px;
 background:linear-gradient(135deg,#dbeafe,#bfdbfe,#e0f2fe);
 display:flex;
 align-items:center;
 justify-content:center;
 font-weight:700;
 color:#1e3a8a;
-font-size:16px;
+font-size:15px;
 text-align:center;
 padding:10px;
 }
@@ -435,19 +493,6 @@ line-height:1.65;
 font-size:13px;
 }
 
-.airport-box{
-margin-top:10px;
-border:1px solid var(--border);
-border-radius:12px;
-padding:10px;
-background:#f8fbff;
-}
-
-.airport-box h4{
-margin:0 0 8px 0;
-font-size:14px;
-}
-
 .footer-note{
 margin:14px 0 4px;
 padding:12px 14px;
@@ -459,7 +504,8 @@ line-height:1.55;
 font-size:12px;
 }
 
-@media (max-width: 1300px){
+@media (max-width: 1360px){
+.planner-grid{grid-template-columns:1fr 1fr 1fr 1fr}
 .feed-grid{grid-template-columns:repeat(3,1fr)}
 }
 
@@ -467,12 +513,12 @@ font-size:12px;
 .hero{grid-template-columns:1fr}
 .layout{grid-template-columns:1fr}
 .side-stack{position:static}
-.feed-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 @media (max-width: 900px){
-.planner-grid{grid-template-columns:1fr 1fr 1fr}
 .result-grid{grid-template-columns:1fr}
+.feed-grid{grid-template-columns:repeat(2,1fr)}
+.price-grid{grid-template-columns:1fr}
 }
 
 @media (max-width: 700px){
@@ -524,19 +570,18 @@ align-items:flex-start;
 
 <section class="hero">
 <div class="card hero-card">
-<h1>One page. More options. Smarter next steps.</h1>
+<h1>Plan better. Compare smarter. Keep your place.</h1>
 <p>
-SignalBoost is your AI-powered digital mall. It helps users move across travel,
-communities, payments, local life, and useful online services without losing their place.
-The layout is tighter, brighter, and uses the page width better for feed content.
+SignalBoost is your AI-powered digital mall. It supports round trips, one-way trips, and multi-city planning,
+suggests airports for major cities, shows official government links only when they apply, and keeps the layout compact enough for more content on screen.
 </p>
 <div class="pill-row">
-<span class="pill">AI travel</span>
-<span class="pill">Official links</span>
+<span class="pill">Round trip</span>
+<span class="pill">One way</span>
+<span class="pill">Multi-city</span>
 <span class="pill">Airport choice</span>
-<span class="pill">Video-style feed</span>
-<span class="pill">Communities</span>
-<span class="pill">Payments</span>
+<span class="pill">Cabin class</span>
+<span class="pill">Official links</span>
 </div>
 </div>
 
@@ -565,21 +610,46 @@ The layout is tighter, brighter, and uses the page width better for feed content
 <section id="planner" class="card section-card">
 <h2>Trip Planner</h2>
 <p>
-Search a destination, choose your trip scope, and get a cleaner next step. Domestic trips hide the official-government section automatically.
+Choose your trip structure, set your route, and compare estimated OTA paths. City searches can show airport choices automatically.
 </p>
 
 <div class="planner-grid">
-<input id="destination" type="text" placeholder="Destination (e.g. Washington DC, Paris, United States)" />
-<select id="originCountry">
-<option value="United States" selected>Origin: United States</option>
-<option value="France">Origin: France</option>
-<option value="Spain">Origin: Spain</option>
-<option value="Italy">Origin: Italy</option>
-<option value="United Kingdom">Origin: United Kingdom</option>
-<option value="Other">Origin: Other</option>
+<div class="field">
+<label for="tripStructure">Trip type</label>
+<select id="tripStructure" onchange="updateTripStructureUI()">
+<option value="roundtrip" selected>Round trip</option>
+<option value="oneway">One way</option>
+<option value="multicity">Multi-city</option>
 </select>
-<input id="startDate" type="date" />
-<input id="endDate" type="date" />
+</div>
+
+<div class="field">
+<label for="departingFrom">Departing from</label>
+<input id="departingFrom" list="citySuggestions" placeholder="City or country" />
+</div>
+
+<div class="field">
+<label for="goingTo">Going to</label>
+<input id="goingTo" list="citySuggestions" placeholder="City or country" />
+</div>
+
+<div class="field" id="returningField">
+<label for="returningFrom" id="returningLabel">Returning from</label>
+<input id="returningFrom" list="citySuggestions" placeholder="Return city or next destination" />
+</div>
+
+<div class="field">
+<label for="departureDate">Departure</label>
+<input id="departureDate" type="date" />
+</div>
+
+<div class="field" id="returnDateField">
+<label for="returnDate" id="returnDateLabel">Return</label>
+<input id="returnDate" type="date" />
+</div>
+
+<div class="field">
+<label for="travelers">Travelers</label>
 <select id="travelers">
 <option value="1">1 traveler</option>
 <option value="2" selected>2 travelers</option>
@@ -587,13 +657,32 @@ Search a destination, choose your trip scope, and get a cleaner next step. Domes
 <option value="4">4 travelers</option>
 <option value="5">5 travelers</option>
 </select>
-<select id="tripType">
-<option value="leisure" selected>Leisure</option>
+</div>
+
+<div class="field">
+<label for="cabinClass">Cabin class</label>
+<select id="cabinClass">
+<option value="economy" selected>Economy</option>
+<option value="premium economy">Premium economy</option>
 <option value="business">Business</option>
-<option value="family">Family</option>
-<option value="relocation">Relocation</option>
+<option value="first">First</option>
 </select>
 </div>
+</div>
+
+<datalist id="citySuggestions">
+<option value="Washington DC"></option>
+<option value="New York"></option>
+<option value="Paris"></option>
+<option value="Madrid"></option>
+<option value="Rome"></option>
+<option value="London"></option>
+<option value="United States"></option>
+<option value="France"></option>
+<option value="Spain"></option>
+<option value="Italy"></option>
+<option value="United Kingdom"></option>
+</datalist>
 
 <div class="actions">
 <button class="btn btn-primary" onclick="runPlanner()">Plan Trip</button>
@@ -603,15 +692,15 @@ Search a destination, choose your trip scope, and get a cleaner next step. Domes
 <div class="result-grid">
 <div class="result-box">
 <div class="badge-row">
-<span class="badge badge-blue" id="badge-destination">No search yet</span>
-<span class="badge badge-green" id="badge-type">Leisure</span>
-<span class="badge badge-gold" id="badge-travelers">2 travelers</span>
+<span class="badge badge-blue" id="badge-destination">No route yet</span>
+<span class="badge badge-green" id="badge-structure">Round trip</span>
+<span class="badge badge-gold" id="badge-cabin">Economy</span>
 </div>
 
 <h3 id="result-title">Trip results will appear here</h3>
 
 <ul class="meta-list" id="activity-list">
-<li>Enter a destination and click Plan Trip.</li>
+<li>Choose a route and click Plan Trip.</li>
 </ul>
 
 <div class="airport-box" id="airport-box" style="display:none;">
@@ -629,7 +718,15 @@ SignalBoost gives users a simpler first action instead of sending them to many s
 External links open in a new tab so the user can return to SignalBoost easily.
 </div>
 
-<div class="links-row">
+<div class="price-grid" id="price-grid">
+<div class="price-card">
+<h4>Estimated OTA option</h4>
+<div class="small">Fill the planner to see estimated OTA paths.</div>
+<div class="price">—</div>
+</div>
+</div>
+
+<div class="links-row" style="margin-top:10px;">
 <a
 id="viator-link"
 class="btn btn-primary"
@@ -661,6 +758,7 @@ rel="noopener noreferrer"
 >
 Official Info
 </a>
+
 <a
 id="official-apply-link"
 class="btn btn-secondary"
@@ -680,14 +778,14 @@ Official information stays separate from commercial booking and affiliate links.
 </section>
 
 <section id="feed" class="card section-card">
-<h2>Content Feed</h2>
+<h2>Platform Feed</h2>
 <p>
-This area updates by destination, but it uses platform search links for now. Live pulled videos/posts require APIs or backend integrations.
+These cards update by destination and route. They are destination-aware platform links, not live pulled videos from platform APIs.
 </p>
 
 <div class="feed-grid" id="feed-grid">
 <div class="feed-card">
-<div class="thumb">Travel Conversations</div>
+<div class="thumb">Travel Discussions</div>
 <div class="feed-body">
 <h3>Reddit travel discussions</h3>
 <div class="meta">
@@ -702,18 +800,18 @@ This area updates by destination, but it uses platform search links for now. Liv
 <div class="feed-card">
 <div class="thumb">Travel Videos</div>
 <div class="feed-body">
-<h3>YouTube destination videos</h3>
+<h3>YouTube travel videos</h3>
 <div class="meta">
 <span>Platform: YouTube</span>
 <span>Type: Video</span>
 </div>
-<p>Watch travel guides, city walks, and planning videos.</p>
+<p>Watch travel guides, city walks, airport reviews, and planning videos.</p>
 <a class="btn btn-secondary" href="https://www.youtube.com/results?search_query=travel+guide" target="_blank" rel="noopener noreferrer">Open YouTube</a>
 </div>
 </div>
 
 <div class="feed-card">
-<div class="thumb">Activity Deals</div>
+<div class="thumb">Travel Activities</div>
 <div class="feed-body">
 <h3>Viator experiences</h3>
 <div class="meta">
@@ -733,7 +831,7 @@ This area updates by destination, but it uses platform search links for now. Liv
 <span>Platform: Booking</span>
 <span>Type: Accommodation</span>
 </div>
-<p>Search accommodation after the destination is chosen.</p>
+<p>Search accommodation after the route is chosen.</p>
 <a class="btn btn-secondary" href="https://www.booking.com" target="_blank" rel="noopener noreferrer">Open Booking</a>
 </div>
 </div>
@@ -784,194 +882,186 @@ SignalBoost is bigger than travel alone. The platform connects categories that n
 
 <aside class="side-stack">
 <div class="card side-card">
-<h3>Search behavior</h3>
+<h3>Planner logic</h3>
 <p>
-The planner keeps the result visible, resets the form after a search, and hides official-government links when the trip is domestic.
+The planner supports round trip, one way, and multi-city. It can suggest airports for selected cities and hide official visa steps for domestic trips.
 </p>
 <ul class="simple-list">
-<li>Destination drives official links</li>
-<li>City can drive airport options</li>
-<li>Domestic trips hide official box</li>
+<li>Departing from</li>
+<li>Going to</li>
+<li>Returning from / next stop</li>
+<li>Cabin class</li>
+<li>Airport selection</li>
 </ul>
 </div>
 
 <div class="card side-card">
-<h3>Airport logic</h3>
+<h3>Price note</h3>
 <p>
-Cities with multiple airports now show an airport selector. Example: Washington DC can show DCA, IAD, and BWI.
+The OTA prices below are estimated examples, not live fares. Real cheapest-fare research needs live travel APIs or OTA partnerships.
 </p>
 </div>
 </aside>
 </div>
 
 <div class="footer-note">
-This version connects the destination to the official-info area, hides official-government actions for domestic trips, adds airport choices for selected cities, and uses a denser feed-style layout.
+This version restores a fuller route planner, adds departing-from and returning-from logic, shows one-way and multi-city options, includes cabin class and airport choices, hides official boxes for domestic trips, and keeps a denser vertical layout. Live pulled platform videos still require platform APIs or backend integrations.
 </div>
 </div>
 
 <script>
-const travelData = {
+const locationData = {
 paris: {
-title: "Top things to do in Paris",
+label: "Paris",
 country: "France",
+viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
+officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
 activities: [
 "Eiffel Tower guided tour",
 "Seine River cruise",
 "Louvre Museum visit"
 ],
-viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
-officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
 why: "Paris is strong for activities, museums, and high-interest visitor experiences.",
 tip: "Open the activity link in a new tab and keep SignalBoost open for the next decision."
 },
-
 france: {
-title: "Top things to do in France",
+label: "France",
 country: "France",
+viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
+officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
 activities: [
 "Paris city highlights",
 "Museum and culture passes",
 "Regional day trips"
 ],
-viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
-officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
 why: "France requires country-specific official visa guidance depending on the traveler profile.",
 tip: "Check official entry requirements before booking activities."
 },
-
 unitedstates: {
-title: "Top things to do in the United States",
+label: "United States",
 country: "United States",
+viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.cbp.gov/travel/international-visitors",
+officialApply: "https://esta.cbp.dhs.gov/",
 activities: [
 "New York city highlights",
 "National parks trip ideas",
 "Food and culture experiences"
 ],
-viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.cbp.gov/travel/international-visitors",
-officialApply: "https://esta.cbp.dhs.gov/",
-why: "For U.S. travel, official actions should point to U.S. government entry sources, not embassy pages from another country.",
+why: "For U.S. travel, official actions should point to U.S. government entry sources.",
 tip: "Use the official U.S. links first for entry rules, then move to activities and bookings."
 },
-
 washingtondc: {
-title: "Top things to do in Washington DC",
+label: "Washington DC",
 country: "United States",
+viator: "https://www.viator.com/Washington-DC/d657-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.cbp.gov/travel/international-visitors",
+officialApply: "https://esta.cbp.dhs.gov/",
 activities: [
 "National Mall and monuments",
 "Smithsonian museums",
 "Government and history tours"
 ],
-viator: "https://www.viator.com/Washington-DC/d657-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.cbp.gov/travel/international-visitors",
-officialApply: "https://esta.cbp.dhs.gov/",
-why: "Washington DC has multiple airport choices and is a strong example of city-specific travel planning.",
+why: "Washington DC is a strong example of city-specific planning with multiple airport choices.",
 tip: "Choose the airport that best matches your destination and transport needs."
 },
-
 newyork: {
-title: "Top things to do in New York",
+label: "New York",
 country: "United States",
+viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.cbp.gov/travel/international-visitors",
+officialApply: "https://esta.cbp.dhs.gov/",
 activities: [
 "Statue of Liberty tour",
 "Top of the Rock visit",
 "New York city highlights"
 ],
-viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.cbp.gov/travel/international-visitors",
-officialApply: "https://esta.cbp.dhs.gov/",
-why: "New York supports tourism, business travel, and a high number of activity options.",
+why: "New York supports tourism, business travel, and multiple-airport route planning.",
 tip: "Choose your airport carefully because the city is served by multiple airports."
 },
-
 spain: {
-title: "Top things to do in Spain",
+label: "Spain",
 country: "Spain",
+viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
+officialApply: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
 activities: [
 "Madrid city walking tour",
 "Museum passes",
 "Regional day trips"
 ],
+why: "Spain combines work travel, lifestyle, food, and local discovery very well.",
+tip: "Check the official Spain government information first."
+},
+madrid: {
+label: "Madrid",
+country: "Spain",
 viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
 officialInfo: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
 officialApply: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
-why: "Spain combines work travel, lifestyle, food, and local discovery very well.",
-tip: "Check the official Spain government consular information first."
-},
-
-madrid: {
-title: "Top things to do in Madrid",
-country: "Spain",
 activities: [
 "Madrid city walking tour",
 "Prado Museum visit",
 "Day trip from Madrid"
 ],
-viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
-officialApply: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
-why: "Madrid fits your original work-travel and local-life use case very well.",
+why: "Madrid fits work travel, nightlife, and local-life discovery well.",
 tip: "Madrid can later combine food, nightlife, and longer-stay suggestions."
 },
-
 italy: {
-title: "Top things to do in Italy",
+label: "Italy",
 country: "Italy",
+viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://vistoperitalia.esteri.it/home/en",
+officialApply: "https://vistoperitalia.esteri.it/home/en",
 activities: [
 "Historic city tours",
 "Museum visits",
 "Regional experiences"
 ],
-viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://vistoperitalia.esteri.it/home/en",
-officialApply: "https://vistoperitalia.esteri.it/home/en",
 why: "Italy works well for culture, history, and city-based guided experiences.",
 tip: "Use Italy’s official visa portal first if entry approval is needed."
 },
-
 rome: {
-title: "Top things to do in Rome",
+label: "Rome",
 country: "Italy",
+viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://vistoperitalia.esteri.it/home/en",
+officialApply: "https://vistoperitalia.esteri.it/home/en",
 activities: [
 "Colosseum guided tour",
 "Vatican Museums visit",
 "Rome city highlights tour"
 ],
-viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://vistoperitalia.esteri.it/home/en",
-officialApply: "https://vistoperitalia.esteri.it/home/en",
 why: "Rome works well for historic attractions and guided city experiences.",
 tip: "Rome is a strong mix of culture, activities, and travel planning."
 },
-
 unitedkingdom: {
-title: "Top things to do in the United Kingdom",
+label: "United Kingdom",
 country: "United Kingdom",
+viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.gov.uk/check-uk-visa",
+officialApply: "https://www.gov.uk/check-uk-visa",
 activities: [
 "London sightseeing",
 "Museum and landmark visits",
 "Cultural city experiences"
 ],
-viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.gov.uk/check-uk-visa",
-officialApply: "https://www.gov.uk/check-uk-visa",
 why: "The UK is strong for both tourism and business travel decisions.",
 tip: "Use the UK government visa checker first for official entry guidance."
 },
-
 london: {
-title: "Top things to do in London",
+label: "London",
 country: "United Kingdom",
+viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.gov.uk/check-uk-visa",
+officialApply: "https://www.gov.uk/check-uk-visa",
 activities: [
 "London sightseeing tour",
 "Tower of London visit",
 "Thames River experience"
 ],
-viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.gov.uk/check-uk-visa",
-officialApply: "https://www.gov.uk/check-uk-visa",
 why: "London supports both tourism and business travel decisions.",
 tip: "This destination is useful for showing official and commercial links side by side."
 }
@@ -991,8 +1081,8 @@ washington: "washingtondc",
 dc: "washingtondc",
 
 "new york": "newyork",
-nyc: "newyork",
 "new york city": "newyork",
+nyc: "newyork",
 
 france: "france",
 paris: "paris",
@@ -1040,12 +1130,37 @@ rome: [
 ]
 };
 
-function normalizeDestination(value) {
-return value.toLowerCase().trim();
+function normalizePlace(value) {
+return (value || "").toLowerCase().trim();
 }
 
-function renderActivities(items) {
-return items.map(item => `<li>${item}</li>`).join("");
+function resolvePlace(value) {
+const normalized = normalizePlace(value);
+const key = aliases[normalized] || null;
+return key ? { key, data: locationData[key] } : null;
+}
+
+function updateTripStructureUI() {
+const structure = document.getElementById("tripStructure").value;
+const returningField = document.getElementById("returningField");
+const returningLabel = document.getElementById("returningLabel");
+const returnDateField = document.getElementById("returnDateField");
+const returnDateLabel = document.getElementById("returnDateLabel");
+
+if (structure === "oneway") {
+returningField.style.display = "none";
+returnDateField.style.display = "none";
+} else if (structure === "multicity") {
+returningField.style.display = "flex";
+returnDateField.style.display = "flex";
+returningLabel.textContent = "Next destination";
+returnDateLabel.textContent = "Next date";
+} else {
+returningField.style.display = "flex";
+returnDateField.style.display = "flex";
+returningLabel.textContent = "Returning from";
+returnDateLabel.textContent = "Return";
+}
 }
 
 function updateAirportOptions(key) {
@@ -1066,11 +1181,41 @@ airportSelect.innerHTML = airports
 airportBox.style.display = "block";
 }
 
+function buildPriceCards(base, cabinClass, structure) {
+const cabinMultiplier = {
+"economy": 1,
+"premium economy": 1.35,
+"business": 2.15,
+"first": 3.05
+}[cabinClass] || 1;
+
+const structureMultiplier = {
+"oneway": 0.62,
+"roundtrip": 1,
+"multicity": 1.38
+}[structure] || 1;
+
+const adjusted = Math.round(base * cabinMultiplier * structureMultiplier);
+
+const offers = [
+{ agency: "Skyscanner", price: adjusted },
+{ agency: "Booking", price: adjusted + 28 },
+{ agency: "Trip.com", price: adjusted + 41 }
+];
+
+document.getElementById("price-grid").innerHTML = offers.map(offer => `
+<div class="price-card">
+<h4>${offer.agency}</h4>
+<div class="small">Estimated OTA path, not a live fare.</div>
+<div class="price">$${offer.price}</div>
+</div>
+`).join("");
+}
+
 function updateFeedForDestination(destinationText) {
 const encoded = encodeURIComponent(destinationText || "travel");
-const feedGrid = document.getElementById("feed-grid");
 
-feedGrid.innerHTML = `
+document.getElementById("feed-grid").innerHTML = `
 <div class="feed-card">
 <div class="thumb">${destinationText || "Travel"} Discussions</div>
 <div class="feed-body">
@@ -1118,7 +1263,7 @@ feedGrid.innerHTML = `
 <span>Platform: Booking</span>
 <span>Type: Accommodation</span>
 </div>
-<p>Search accommodation after the destination is chosen.</p>
+<p>Search accommodation after the route is chosen.</p>
 <a class="btn btn-secondary" href="https://www.booking.com/searchresults.html?ss=${encoded}" target="_blank" rel="noopener noreferrer">Open Booking</a>
 </div>
 </div>
@@ -1126,43 +1271,45 @@ feedGrid.innerHTML = `
 }
 
 function runPlanner() {
-const destinationInput = document.getElementById("destination");
-const originCountryInput = document.getElementById("originCountry");
-const travelersInput = document.getElementById("travelers");
-const tripTypeInput = document.getElementById("tripType");
-const startDateInput = document.getElementById("startDate");
-const endDateInput = document.getElementById("endDate");
+const structure = document.getElementById("tripStructure").value;
+const departingFrom = document.getElementById("departingFrom").value.trim();
+const goingTo = document.getElementById("goingTo").value.trim();
+const returningFrom = document.getElementById("returningFrom").value.trim();
+const travelers = document.getElementById("travelers").value;
+const cabinClass = document.getElementById("cabinClass").value;
 
-const destinationValue = destinationInput.value.trim();
-const normalized = normalizeDestination(destinationValue);
-const key = aliases[normalized] || "paris";
-const selected = travelData[key];
-const shownDestination = destinationValue || "Paris";
-const travelersValue = travelersInput.value;
-const tripTypeValue = tripTypeInput.value;
-const originCountry = originCountryInput.value;
+const fromResolved = resolvePlace(departingFrom);
+const toResolved = resolvePlace(goingTo) || resolvePlace("paris");
+const returnResolved = resolvePlace(returningFrom);
 
-const destinationCountry = selected.country || "";
-const isDomestic = originCountry !== "Other" && originCountry === destinationCountry;
+let routeTitle = "";
+if (structure === "roundtrip") {
+routeTitle = `${departingFrom || "Origin"} → ${goingTo || "Destination"} → ${returningFrom || departingFrom || "Origin"}`;
+} else if (structure === "oneway") {
+routeTitle = `${departingFrom || "Origin"} → ${goingTo || "Destination"}`;
+} else {
+routeTitle = `${departingFrom || "Origin"} → ${goingTo || "Destination"} → ${returningFrom || "Next destination"}`;
+}
 
-document.getElementById("result-title").textContent = selected.title;
-document.getElementById("activity-list").innerHTML = renderActivities(selected.activities);
-document.getElementById("viator-link").href = selected.viator;
+document.getElementById("result-title").textContent = routeTitle;
+document.getElementById("activity-list").innerHTML =
+toResolved.data.activities.map(item => `<li>${item}</li>`).join("");
 
+document.getElementById("viator-link").href = toResolved.data.viator;
 document.getElementById("why-box").innerHTML =
-"<strong>Why this recommendation works:</strong> " + selected.why;
-
+`<strong>Why this recommendation works:</strong> ${toResolved.data.why}`;
 document.getElementById("tip-box").innerHTML =
-"<strong>Tip:</strong> " + selected.tip;
+`<strong>Tip:</strong> ${toResolved.data.tip}`;
 
-document.getElementById("badge-destination").textContent = shownDestination;
-document.getElementById("badge-type").textContent =
-tripTypeValue.charAt(0).toUpperCase() + tripTypeValue.slice(1);
-document.getElementById("badge-travelers").textContent =
-travelersValue + (travelersValue === "1" ? " traveler" : " travelers");
+document.getElementById("badge-destination").textContent = goingTo || toResolved.data.label;
+document.getElementById("badge-structure").textContent =
+structure === "roundtrip" ? "Round trip" :
+structure === "oneway" ? "One way" : "Multi-city";
+document.getElementById("badge-cabin").textContent =
+cabinClass.charAt(0).toUpperCase() + cabinClass.slice(1);
 
-updateAirportOptions(key);
-updateFeedForDestination(shownDestination);
+updateAirportOptions(toResolved.key);
+updateFeedForDestination(goingTo || toResolved.data.label);
 
 const officialPanel = document.getElementById("official-panel");
 const officialInfoLink = document.getElementById("official-info-link");
@@ -1170,45 +1317,77 @@ const officialApplyLink = document.getElementById("official-apply-link");
 const officialBox = document.getElementById("official-box");
 const officialNote = document.getElementById("official-note");
 
-if (isDomestic) {
-officialInfoLink.removeAttribute("href");
-officialApplyLink.removeAttribute("href");
-officialPanel.style.opacity = "0.95";
-officialBox.innerHTML = `<strong>Domestic trip:</strong> official immigration or visa steps do not apply for a trip within ${destinationCountry}.`;
-officialNote.innerHTML = `<span class="official-note-domestic">No official visa/application links are needed for this domestic trip.</span>`;
+const domestic =
+fromResolved &&
+toResolved &&
+fromResolved.data.country === toResolved.data.country;
+
+if (domestic) {
+officialPanel.style.opacity = "0.97";
 officialInfoLink.style.display = "none";
 officialApplyLink.style.display = "none";
+officialBox.innerHTML =
+`<strong>Domestic trip:</strong> official immigration or visa steps do not apply for travel within ${toResolved.data.country}.`;
+officialNote.innerHTML =
+`<span class="domestic-note">No official visa/application links are needed for this domestic trip.</span>`;
 } else {
 officialPanel.style.opacity = "1";
-officialInfoLink.href = selected.officialInfo;
-officialApplyLink.href = selected.officialApply;
 officialInfoLink.style.display = "inline-flex";
 officialApplyLink.style.display = "inline-flex";
+officialInfoLink.href = toResolved.data.officialInfo;
+officialApplyLink.href = toResolved.data.officialApply;
 officialBox.innerHTML =
-"<strong>Important official guidance:</strong> Use the highlighted official government links below for " + shownDestination + ".";
+`<strong>Important official guidance:</strong> Use the highlighted official government links below for ${goingTo || toResolved.data.label}.`;
 officialNote.textContent =
 "Official information stays separate from commercial booking and affiliate links.";
 }
 
+let basePrice = 240;
+
+if (fromResolved && toResolved && fromResolved.data.country !== toResolved.data.country) {
+basePrice += 260;
+} else {
+basePrice += 80;
+}
+
+if (toResolved.key === "washingtondc" || toResolved.key === "newyork" || toResolved.key === "london") {
+basePrice += 90;
+}
+
+if (structure === "multicity") {
+basePrice += 180;
+}
+
+basePrice = basePrice * Number(travelers);
+buildPriceCards(basePrice, cabinClass, structure);
+
 document.getElementById("planner-status").textContent = "Updated";
 
 setTimeout(() => {
-destinationInput.value = "";
-startDateInput.value = "";
-endDateInput.value = "";
-travelersInput.value = "2";
-tripTypeInput.value = "leisure";
+document.getElementById("departingFrom").value = "";
+document.getElementById("goingTo").value = "";
+document.getElementById("returningFrom").value = "";
+document.getElementById("departureDate").value = "";
+document.getElementById("returnDate").value = "";
+document.getElementById("travelers").value = "2";
+document.getElementById("cabinClass").value = "economy";
+document.getElementById("tripStructure").value = "roundtrip";
+updateTripStructureUI();
 }, 300);
 }
 
 function clearPlannerInputs() {
-document.getElementById("destination").value = "";
-document.getElementById("startDate").value = "";
-document.getElementById("endDate").value = "";
+document.getElementById("departingFrom").value = "";
+document.getElementById("goingTo").value = "";
+document.getElementById("returningFrom").value = "";
+document.getElementById("departureDate").value = "";
+document.getElementById("returnDate").value = "";
 document.getElementById("travelers").value = "2";
-document.getElementById("tripType").value = "leisure";
+document.getElementById("cabinClass").value = "economy";
+document.getElementById("tripStructure").value = "roundtrip";
 document.getElementById("planner-status").textContent = "Ready";
 document.getElementById("airport-box").style.display = "none";
+updateTripStructureUI();
 }
 
 function copyCurrentLink() {
@@ -1222,22 +1401,16 @@ alert("Could not copy link.");
 
 (function () {
 const clockEl = document.getElementById("live-clock");
-
 function updateClock() {
-const now = new Date();
-clockEl.textContent = now.toLocaleTimeString();
+clockEl.textContent = new Date().toLocaleTimeString();
 }
-
 updateClock();
 setInterval(updateClock, 1000);
-
 document.addEventListener("visibilitychange", function () {
-if (document.visibilityState === "visible") {
-updateClock();
-}
+if (document.visibilityState === "visible") updateClock();
 });
-
 window.addEventListener("focus", updateClock);
+updateTripStructureUI();
 })();
 </script>
 </body>
