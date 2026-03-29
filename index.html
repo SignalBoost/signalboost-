@@ -24,9 +24,10 @@ CURRENT FEATURES
 - Mode-based module reordering
 - Modules now dynamically hide/show per mode
 - Additional insight and planning modules
+- Automatic mode detection from prompt meaning
 
 NEXT STEPS
-- Connect prompt meaning to automatic mode selection
+- Improve intent detection accuracy beyond simple keyword matching
 - Real AI integration (API / LLM)
 - State memory (session awareness)
 - Workspaces (task-based UI environments)
@@ -407,24 +408,51 @@ function quick(text){
   runAI();
 }
 
+function detectModeFromPrompt(text){
+  const value = (text || '').toLowerCase();
+
+  const travelWords = ['travel','trip','flight','hotel','visa','airport','stay','itinerary','arrival','vacation'];
+  const financeWords = ['finance','money','bank','budget','card','cards','payment','payments','transfer','spending','account','accounts'];
+  const socialWords = ['social','trend','trends','platform','platforms','post','posts','content','audience','creator','creators','campaign','publish'];
+
+  const countMatches = words => words.reduce((total, word) => total + (value.includes(word) ? 1 : 0), 0);
+
+  const travelScore = countMatches(travelWords);
+  const financeScore = countMatches(financeWords);
+  const socialScore = countMatches(socialWords);
+
+  const maxScore = Math.max(travelScore, financeScore, socialScore);
+  if (maxScore === 0) return 'general';
+  if (travelScore === maxScore && travelScore > financeScore && travelScore > socialScore) return 'travel';
+  if (financeScore === maxScore && financeScore > travelScore && financeScore > socialScore) return 'finance';
+  if (socialScore === maxScore && socialScore > travelScore && socialScore > financeScore) return 'social';
+  return 'general';
+}
+
 let currentMode = 'general';
 
 function runAI(){
   const t=document.getElementById('thinking');
   const r=document.getElementById('response');
+  const inputValue=document.getElementById('input').value;
 
   t.style.opacity=1;
   r.style.display='none';
 
   setTimeout(()=>{
+    const detectedMode = detectModeFromPrompt(inputValue);
+    currentMode = detectedMode;
+
     t.style.opacity=0;
+    render(currentMode);
     r.style.display='block';
 
-    const val=document.getElementById('input').value;
-
-    r.innerText=`AI suggests starting with the most important step for: "${val}". The interface now highlights the best next actions and reduces unnecessary choices.`;
-
-    render(currentMode);
+    const modeLabel = currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
+    if(currentMode === 'general'){
+      r.innerText = `AI could not strongly detect a specialized workspace from: "${inputValue}". The system stays in General mode and keeps the full interface visible.`;
+    } else {
+      r.innerText = `AI detected ${modeLabel} mode from: "${inputValue}" and reconfigured the interface to match that intent.`;
+    }
   },1000);
 }
 
