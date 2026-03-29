@@ -2,1109 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SignalBoost AI Mall</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SignalBoost AI Travel</title>
+
 <style>
-:root{
---bg:#0f172a;
---bg2:#111827;
---card:#1e293b;
---line:rgba(255,255,255,0.12);
---text:#f8fafc;
---muted:#94a3b8;
---accent:#67e8f9;
---accent2:#60a5fa;
---good:#86efac;
---warn:#fbbf24;
---bad:#f87171;
---soft:#dbeafe;
-}
-
-*{box-sizing:border-box}
-
-body{
-margin:0;
-font-family:Arial, Helvetica, sans-serif;
-color:var(--text);
-background:linear-gradient(135deg,#081120,#0f172a,#172554);
-}
-
-.wrap{
-max-width:1280px;
-margin:auto;
-padding:16px;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:12px;
-padding:12px 14px;
-margin-bottom:16px;
-border:1px solid var(--line);
-border-radius:16px;
-background:rgba(255,255,255,0.05);
-position:sticky;
-top:10px;
-z-index:20;
-backdrop-filter:blur(10px);
-flex-wrap:wrap;
-}
-
-.brand{
-display:flex;
-align-items:center;
-gap:10px;
-font-weight:700;
-}
-
-.logo{
-width:38px;
-height:38px;
-border-radius:10px;
-background:#fff;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:4px;
-flex-shrink:0;
-}
-
-.logo svg{width:100%;height:100%}
-.tower{stroke:#4b5563;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.waves{stroke:#4b5563;stroke-width:8;stroke-linecap:round;fill:none}
-.dot{fill:#4b5563}
-
-.nav{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-}
-
-.nav button,.btn,.chip{
-border:none;
-cursor:pointer;
-border-radius:999px;
-padding:9px 12px;
-font-weight:700;
-}
-
-.nav button,.chip{
-background:rgba(255,255,255,0.05);
-color:var(--text);
-border:1px solid var(--line);
-}
-
-.nav button.active,.chip.active{
-background:rgba(103,232,249,0.14);
-border-color:rgba(103,232,249,0.30);
-color:#dffcff;
-}
-
-.hero{
-display:grid;
-grid-template-columns:1.3fr .9fr;
-gap:16px;
-margin-bottom:16px;
-}
-
-.panel{
-background:rgba(255,255,255,0.05);
-border:1px solid var(--line);
-border-radius:20px;
-padding:18px;
-}
-
-.hero h1{
-margin:0 0 8px 0;
-font-size:clamp(2rem,5vw,3.2rem);
-line-height:1;
-}
-
-.hero p{
-margin:0;
-color:var(--muted);
-line-height:1.65;
-}
-
-.hero-pills{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-top:16px;
-}
-
-.pill{
-display:inline-block;
-padding:8px 11px;
-border-radius:999px;
-background:rgba(255,255,255,0.05);
-border:1px solid var(--line);
-font-size:12px;
-color:#dffcff;
-font-weight:700;
-}
-
-.stats{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-.stat{
-background:rgba(255,255,255,0.04);
-border:1px solid var(--line);
-border-radius:16px;
-padding:12px;
-}
-
-.stat .label{
-color:var(--muted);
-font-size:12px;
-margin-bottom:6px;
-}
-
-.stat .value{
-font-size:22px;
-font-weight:700;
-}
-
-.assistant-bar{
-display:grid;
-grid-template-columns:1fr 1fr 1fr auto;
-gap:10px;
-margin-bottom:14px;
-}
-
-input, select{
-width:100%;
-padding:12px 14px;
-border-radius:12px;
-border:1px solid var(--line);
-background:rgba(255,255,255,0.05);
-color:var(--text);
-outline:none;
-}
-
-.btn{
-background:linear-gradient(135deg,var(--accent),var(--accent2));
-color:#082032;
-text-decoration:none;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-font-size:14px;
-}
-
-.btn.secondary{
-background:#334155;
-color:white;
-}
-
-.btn.ghost{
-background:rgba(255,255,255,0.05);
-color:var(--text);
-border:1px solid var(--line);
-}
-
-.intent-row{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:14px;
-}
-
-.section{
-margin-top:18px;
-}
-
-.section h2{
-margin:0 0 6px 0;
-font-size:1.22rem;
-}
-
-.section p{
-margin:0 0 12px 0;
-color:var(--muted);
-font-size:14px;
-line-height:1.55;
-}
-
-.ai-strip{
-display:grid;
-grid-template-columns:1.1fr .9fr;
-gap:14px;
-margin-bottom:14px;
-}
-
-.assistant-box{
-background:rgba(103,232,249,0.08);
-border:1px solid rgba(103,232,249,0.18);
-border-radius:18px;
-padding:16px;
-}
-
-.assistant-box h3{
-margin:0 0 8px 0;
-font-size:1rem;
-}
-
-.assistant-box p{
-margin:0;
-color:var(--soft);
-line-height:1.6;
-font-size:14px;
-}
-
-.travel-planner{
-display:grid;
-grid-template-columns:1.2fr .8fr;
-gap:14px;
-margin-bottom:14px;
-}
-
-.planner-form{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-}
-
-.planner-form .full{
-grid-column:1 / -1;
-}
-
-.planner-actions{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-}
-
-.planner-result{
-background:rgba(255,255,255,0.04);
-border:1px solid var(--line);
-border-radius:16px;
-padding:14px;
-}
-
-.planner-result h3{
-margin:0 0 8px 0;
-}
-
-.planner-block{
-background:rgba(255,255,255,0.03);
-border:1px solid var(--line);
-border-radius:12px;
-padding:10px;
-margin-top:10px;
-font-size:13px;
-line-height:1.55;
-color:#dbeafe;
-}
-
-.planner-link{
-margin-top:8px;
-display:inline-block;
-color:#a5f3fc;
-text-decoration:none;
-font-size:13px;
-word-break:break-word;
-}
-
-.featured{
-display:grid;
-grid-template-columns:1.05fr .95fr;
-overflow:hidden;
-margin-bottom:14px;
-}
-
-.featured-left{
-min-height:250px;
-position:relative;
-background:#0b1220;
-}
-
-.featured-left img{
-width:100%;
-height:100%;
-object-fit:cover;
-display:block;
-}
-
-.featured-left .fallback{
-width:100%;
-height:100%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:26px;
-font-weight:700;
-color:#dffcff;
-background:linear-gradient(135deg,#1e293b,#0f172a);
-}
-
-.featured-overlay{
-position:absolute;
-inset:0;
-background:linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.08));
-display:flex;
-align-items:flex-end;
-padding:18px;
-}
-
-.featured-right{
-padding:18px;
-}
-
-.badge-row{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:10px;
-}
-
-.badge{
-font-size:11px;
-padding:5px 8px;
-border-radius:999px;
-background:#334155;
-color:#e5e7eb;
-display:inline-block;
-}
-
-.badge.score{color:var(--good);font-weight:700}
-.badge.viral{background:#7f1d1d;color:#fecaca}
-.badge.rising{background:#78350f;color:#fde68a}
-.badge.source{background:#0f766e;color:#ccfbf1}
-.badge.platform{background:#1d4ed8;color:#dbeafe}
-.badge.intent{background:#3f3f46;color:#e5e7eb}
-.badge.money{background:#4c1d95;color:#ede9fe}
-
-.featured h3{
-margin:0 0 10px 0;
-font-size:1.45rem;
-line-height:1.15;
-}
-
-.meta,.mini{
-color:var(--muted);
-font-size:13px;
-line-height:1.5;
-}
-
-.why{
-margin-top:10px;
-font-size:13px;
-line-height:1.55;
-color:#dbeafe;
-background:rgba(255,255,255,0.04);
-border:1px solid var(--line);
-padding:10px;
-border-radius:12px;
-}
-
-.next-step{
-margin-top:10px;
-font-size:13px;
-line-height:1.55;
-color:#fef3c7;
-background:rgba(251,191,36,0.10);
-border:1px solid rgba(251,191,36,0.25);
-padding:10px;
-border-radius:12px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:14px;
-}
-
-.card{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:16px;
-overflow:hidden;
-display:flex;
-flex-direction:column;
-min-height:340px;
-}
-
-.thumb{
-height:150px;
-background:#0b1220;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.thumb img{
-width:100%;
-height:100%;
-object-fit:cover;
-display:block;
-}
-
-.thumb-fallback{
-padding:16px;
-text-align:center;
-color:#dffcff;
-font-weight:700;
-}
-
-.card-body{
-padding:14px;
-display:flex;
-flex-direction:column;
-gap:10px;
-flex:1;
-}
-
-.card h3{
-margin:0;
-font-size:1rem;
-line-height:1.35;
-}
-
-.actions{
-margin-top:auto;
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-}
-
-.message{
-color:var(--muted);
-margin-bottom:14px;
-}
-
-.empty{
-padding:24px;
-text-align:center;
-color:var(--muted);
-border:1px dashed var(--line);
-border-radius:14px;
-background:rgba(255,255,255,0.03);
-}
-
-.legal{
-margin-top:10px;
-color:var(--muted);
-font-size:12px;
-line-height:1.5;
-}
-
-@media (max-width: 980px){
-.hero,.assistant-bar,.ai-strip,.featured,.stats,.travel-planner{
-grid-template-columns:1fr 1fr;
-}
-.grid{
-grid-template-columns:1fr 1fr;
-}
-}
-
-@media (max-width: 680px){
-.hero,.assistant-bar,.ai-strip,.featured,.stats,.travel-planner,.planner-form{
-grid-template-columns:1fr;
-}
-.grid{
-grid-template-columns:1fr;
-}
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+background: linear-gradient(135deg, #0b1220, #172554);
+color: white;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+}
+
+.container {
+text-align: center;
+padding: 30px;
+border-radius: 18px;
+background: rgba(255,255,255,0.08);
+border: 1px solid rgba(255,255,255,0.15);
+box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+max-width: 500px;
+width: 90%;
+}
+
+h1 {
+margin-bottom: 20px;
+}
+
+#live-clock {
+font-size: 36px;
+font-weight: bold;
+margin-bottom: 20px;
+}
+
+.button {
+display: inline-block;
+padding: 14px 20px;
+margin-top: 20px;
+background: #3b82f6;
+color: white;
+text-decoration: none;
+border-radius: 10px;
+font-weight: bold;
+transition: 0.3s;
+}
+
+.button:hover {
+background: #2563eb;
+}
+
+.description {
+margin-top: 10px;
+color: #cbd5e1;
+font-size: 14px;
 }
 </style>
 </head>
+
 <body>
-<div class="wrap">
 
-<div class="topbar">
-<div class="brand">
-<div class="logo" aria-hidden="true">
-<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-<path class="waves" d="M32 30c-10 10-10 26 0 36"/>
-<path class="waves" d="M22 20c-16 16-16 46 0 62"/>
-<path class="waves" d="M88 30c10 10 10 26 0 36"/>
-<path class="waves" d="M98 20c16 16 16 46 0 62"/>
-<circle class="dot" cx="60" cy="28" r="5"/>
-<path class="tower" d="M60 33v10"/>
-<path class="tower" d="M60 43L36 98"/>
-<path class="tower" d="M60 43l24 55"/>
-<path class="tower" d="M47 69h26"/>
-<path class="tower" d="M42 81l18-12 18 12"/>
-<path class="tower" d="M51 98h18"/>
-</svg>
-</div>
-<span>SignalBoost</span>
-</div>
+<div class="container">
+<h1>SignalBoost AI Travel</h1>
 
-<div class="nav">
-<button class="active" onclick="showTab('home', this)">Home</button>
-<button onclick="showTab('explore', this)">Explore</button>
-<button onclick="showTab('travel', this)">Travel</button>
-<button onclick="showTab('realestate', this)">Real Estate</button>
-<button onclick="showTab('lifestyle', this)">Lifestyle</button>
-<button onclick="showTab('finance', this)">Finance</button>
+<!-- CLOCK -->
+<div id="live-clock">--:--:--</div>
+
+<!-- AI RESULT EXAMPLE -->
+<p>Top things to do in Paris:</p>
+<ul style="text-align:left;">
+<li>Eiffel Tower guided tour</li>
+<li>Seine River cruise</li>
+<li>Louvre Museum visit</li>
+</ul>
+
+<!-- 🔥 YOUR AFFILIATE LINK -->
+<a
+class="button"
+href="https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link"
+target="_blank"
+>
+Explore Activities in Paris
+</a>
+
+<div class="description">
+Book top experiences and tours with trusted providers.
 </div>
 </div>
 
-<div class="hero panel">
-<div class="panel">
-<h1>AI-guided life mall</h1>
-<p>
-SignalBoost reduces overload, explains decisions, and guides people toward useful next steps across travel, living, finance, and discovery.
-</p>
-<div class="hero-pills">
-<span class="pill">Human-centered</span>
-<span class="pill">AI-guided</span>
-<span class="pill">Travel planner</span>
-<span class="pill">Affiliate-ready</span>
-</div>
-</div>
-
-<div class="stats">
-<div class="stat">
-<div class="label">Status</div>
-<div class="value" id="status">Loading</div>
-</div>
-<div class="stat">
-<div class="label">Visible signals</div>
-<div class="value" id="visibleCount">0</div>
-</div>
-<div class="stat">
-<div class="label">Partner-ready</div>
-<div class="value" id="favoriteCount">3</div>
-</div>
-<div class="stat">
-<div class="label">Updated</div>
-<div class="value" id="updatedAt">-</div>
-</div>
-</div>
-</div>
-
-<div class="assistant-bar">
-<input id="search" placeholder="What are you trying to do right now?">
-<select id="intent">
-<option value="general">General</option>
-<option value="business">Business travel</option>
-<option value="family">Family travel</option>
-<option value="relocation">Relocation / long stay</option>
-<option value="nightlife">Nightlife / social</option>
-<option value="finance">Money / banking</option>
-</select>
-<select id="category">
-<option value="all">All</option>
-<option value="live">Live Reddit</option>
-<option value="youtube">YouTube</option>
-<option value="news">News / Politics</option>
-<option value="technology">Technology</option>
-<option value="video">Video / Entertainment</option>
-<option value="social">Social / Culture</option>
-</select>
-<button class="btn" onclick="loadSignals()">Refresh</button>
-</div>
-
-<div class="intent-row">
-<button class="chip active" onclick="setIntentChip('general', this)">General</button>
-<button class="chip" onclick="setIntentChip('business', this)">Business</button>
-<button class="chip" onclick="setIntentChip('family', this)">Family</button>
-<button class="chip" onclick="setIntentChip('relocation', this)">Relocation</button>
-<button class="chip" onclick="setIntentChip('nightlife', this)">Nightlife</button>
-<button class="chip" onclick="setIntentChip('finance', this)">Finance</button>
-</div>
-
-<div class="message" id="message"></div>
-
-<div id="homeTab">
-<div class="travel-planner">
-<div class="panel">
-<h2>AI Travel Planner</h2>
-<p>Tell SignalBoost where you want to go and get a fast starting plan before checking many sites.</p>
-
-<div class="planner-form">
-<div class="full">
-<input id="tripDestination" placeholder="Destination city, e.g. Madrid">
-</div>
-<div>
-<input id="tripStart" type="date">
-</div>
-<div>
-<input id="tripEnd" type="date">
-</div>
-<div>
-<input id="tripPeople" type="number" min="1" value="1" placeholder="Travelers">
-</div>
-<div>
-<select id="tripPurpose">
-<option value="business">Business</option>
-<option value="family">Family</option>
-<option value="relocation">Relocation</option>
-<option value="leisure">Leisure</option>
-<option value="nightlife">Nightlife</option>
-</select>
-</div>
-<div class="full">
-<select id="tripBudget">
-<option value="low">Budget-conscious</option>
-<option value="medium" selected>Mid-range</option>
-<option value="high">Higher comfort</option>
-</select>
-</div>
-<div class="full planner-actions">
-<button class="btn" onclick="runTravelPlanner()">Build trip plan</button>
-<button class="btn ghost" onclick="resetTravelPlanner()">Reset</button>
-</div>
-</div>
-</div>
-
-<div class="planner-result">
-<h3>Planner result</h3>
-<div id="tripSummary" class="planner-block">Enter a destination and build a plan.</div>
-<div id="tripPrice" class="planner-block">Estimated price guidance will appear here.</div>
-<div id="tripVisa" class="planner-block">Visa and entry reminders will appear here.</div>
-<div id="tripStay" class="planner-block">Stay guidance will appear here.</div>
-<div id="tripLocal" class="planner-block">Local suggestions will appear here.</div>
-<div id="tripTransport" class="planner-block">Local transport guidance will appear here.</div>
-<div id="tripNext" class="planner-block">Best next step will appear here.</div>
-</div>
-</div>
-
-<div class="ai-strip">
-<div class="assistant-box">
-<h3>AI assistant summary</h3>
-<p id="assistantSummary">Loading guidance...</p>
-</div>
-<div class="assistant-box">
-<h3>Best next step</h3>
-<p id="assistantNextStep">Preparing recommendation...</p>
-</div>
-</div>
-
-<div class="panel featured" id="featured"></div>
-
-<div class="section">
-<h2>Recommended for you now</h2>
-<p>Top-ranked items based on your current intent and context.</p>
-<div class="grid" id="feed"></div>
-</div>
-
-<div class="section">
-<h2>Quick decision set</h2>
-<p>Smaller, easier choices to reduce overload.</p>
-<div class="grid" id="quickGrid"></div>
-</div>
-
-<div class="section">
-<h2>Trip partner shortcuts</h2>
-<p>Partner handoff points for bookings and planning. Open always uses a new tab, so SignalBoost stays open.</p>
-<div class="grid" id="tripPartnerGrid"></div>
-</div>
-</div>
-
-<div id="exploreTab" style="display:none;">
-<div class="section">
-<h2>Explore the mall</h2>
-<p>Choose a zone based on what you need to solve.</p>
-<div class="grid" id="exploreGrid"></div>
-</div>
-</div>
-
-<div id="travelTab" style="display:none;">
-<div class="section">
-<h2>Travel & Mobility</h2>
-<p>Fast planning for flights, stays, visas, relocation, and things to do.</p>
-<div class="grid" id="travelGrid"></div>
-<div class="legal">
-Visa, entry, and immigration information can change. Verify official requirements before acting.
-</div>
-</div>
-</div>
-
-<div id="realestateTab" style="display:none;">
-<div class="section">
-<h2>Real Estate & Stays</h2>
-<p>Short stays, long stays, furnished housing, and relocation-friendly options.</p>
-<div class="grid" id="realEstateGrid"></div>
-</div>
-</div>
-
-<div id="lifestyleTab" style="display:none;">
-<div class="section">
-<h2>Lifestyle & Delivery</h2>
-<p>Food, nightlife, events, and practical daily-use services.</p>
-<div class="grid" id="lifestyleGrid"></div>
-</div>
-</div>
-
-<div id="financeTab" style="display:none;">
-<div class="section">
-<h2>Finance</h2>
-<p>Banking, cards, investing, and money tools for life across borders.</p>
-<div class="grid" id="financeGrid"></div>
-</div>
-</div>
-</div>
-
+<!-- CLOCK SCRIPT -->
 <script>
-let allSignals = [];
-let intentViews = {};
+(function () {
+const clockEl = document.getElementById("live-clock");
 
-const exploreCards = [
-{ platform:"Media", title:"Media zone", url:"#", desc:"Watch what is rising online right now.", category:"explore", sourceCategory:"zone" },
-{ platform:"Travel", title:"Travel & mobility", url:"#", desc:"Plan movement, entry, and local discovery.", category:"explore", sourceCategory:"zone" },
-{ platform:"Real Estate", title:"Stays & housing", url:"#", desc:"Short stays, long stays, and relocation options.", category:"explore", sourceCategory:"zone" },
-{ platform:"Lifestyle", title:"Lifestyle", url:"#", desc:"Food, nightlife, delivery, and local activity.", category:"explore", sourceCategory:"zone" },
-{ platform:"Finance", title:"Finance", url:"#", desc:"Money tools, banking, and cards across countries.", category:"explore", sourceCategory:"zone" },
-{ platform:"Work Abroad", title:"Work abroad", url:"#", desc:"Relocation and long-stay practical planning.", category:"explore", sourceCategory:"zone" }
-];
-
-const travelCards = [
-{ platform:"Flights", title:"Best flight starting point", url:"https://www.skyscanner.com", desc:"Start with a broad flight search to compare routes.", category:"travel", sourceCategory:"travel", whyTrending:"Fastest way to reduce booking uncertainty.", summary:"Compare routes and dates first.", value:78, volume:68, viewers:82, momentum:59, freshness:60, totalScore:79, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Hotels", title:"Find a safe stay", url:"https://www.booking.com", desc:"Start with accommodation close to where you work.", category:"travel", sourceCategory:"travel", whyTrending:"Stay location affects stress, cost, and routine.", summary:"Choose location before luxury.", value:80, volume:70, viewers:84, momentum:60, freshness:61, totalScore:80, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Visa", title:"Check entry rules first", url:"https://www.iatatravelcentre.com", desc:"Verify whether you need a visa before finalizing plans.", category:"travel", sourceCategory:"travel", whyTrending:"Prevents costly travel mistakes.", summary:"Entry requirements should be checked before booking.", value:88, volume:60, viewers:68, momentum:50, freshness:66, totalScore:76, change:0, isViral:false, isRising:false, thumb:"" }
-];
-
-const realEstateCards = [
-{ platform:"Stay", title:"Short stays", url:"https://www.airbnb.com", desc:"Flexible accommodation for short and medium stays.", category:"realestate", sourceCategory:"realestate", whyTrending:"Useful for work travel and family flexibility.", summary:"Good when plans may change.", value:79, volume:67, viewers:83, momentum:58, freshness:60, totalScore:78, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Rental", title:"Long-stay rentals", url:"https://www.zillow.com", desc:"Explore rental options and local housing patterns.", category:"realestate", sourceCategory:"realestate", whyTrending:"Useful for long assignments and relocation.", summary:"Best for stability and monthly cost control.", value:82, volume:61, viewers:74, momentum:49, freshness:56, totalScore:72, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Furnished", title:"Furnished apartments", url:"https://www.apartments.com", desc:"Move-in-ready options for professionals abroad.", category:"realestate", sourceCategory:"realestate", whyTrending:"Reduces setup friction for long stays.", summary:"Best when you need speed and convenience.", value:77, volume:54, viewers:64, momentum:43, freshness:55, totalScore:66, change:0, isViral:false, isRising:false, thumb:"" }
-];
-
-const lifestyleCards = [
-{ platform:"Food", title:"Restaurants", url:"https://www.tripadvisor.com/Restaurants", desc:"Discover reliable places to eat.", category:"lifestyle", sourceCategory:"lifestyle", whyTrending:"Daily utility, especially for travelers.", summary:"Useful for everyday life after arrival.", value:74, volume:60, viewers:68, momentum:50, freshness:57, totalScore:68, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Delivery", title:"Food delivery", url:"https://www.ubereats.com", desc:"Quick meal delivery when time or energy is low.", category:"lifestyle", sourceCategory:"lifestyle", whyTrending:"Reduces decision fatigue for tired users.", summary:"Practical when routine is overloaded.", value:76, volume:65, viewers:72, momentum:54, freshness:60, totalScore:71, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Nightlife", title:"Nightlife & events", url:"https://www.timeout.com", desc:"Find bars, clubs, dancing, and events.", category:"lifestyle", sourceCategory:"lifestyle", whyTrending:"Strong social and after-work use case.", summary:"Best for users seeking local energy.", value:70, volume:58, viewers:66, momentum:51, freshness:56, totalScore:66, change:0, isViral:false, isRising:false, thumb:"" }
-];
-
-const financeCards = [
-{ platform:"Banking", title:"International banking", url:"https://wise.com", desc:"Move money internationally with less friction.", category:"finance", sourceCategory:"finance", whyTrending:"Cross-border life often starts with money movement.", summary:"Useful for payments, transfers, and setup.", value:85, volume:62, viewers:76, momentum:50, freshness:60, totalScore:76, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Cards", title:"Travel cards", url:"https://www.nerdwallet.com", desc:"Compare cards for travel, rewards, and fees.", category:"finance", sourceCategory:"finance", whyTrending:"Good card choice lowers travel friction.", summary:"Useful before or during international travel.", value:82, volume:58, viewers:74, momentum:48, freshness:57, totalScore:72, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Investing", title:"Markets & investing", url:"https://www.tradingview.com", desc:"Monitor markets, stocks, and crypto.", category:"finance", sourceCategory:"finance", whyTrending:"High-value decision category for many users.", summary:"Useful when financial awareness matters daily.", value:76, volume:56, viewers:70, momentum:52, freshness:54, totalScore:69, change:0, isViral:false, isRising:false, thumb:"" }
-];
-
-const tripPartnerCards = [
-{ platform:"Partner", title:"Flight booking partner", url:"#", desc:"Use this as the first handoff for comparing fares.", category:"travel", sourceCategory:"partner", whyTrending:"Fast monetizable clickout path.", summary:"Flight comparison partner.", value:74, volume:60, viewers:70, momentum:50, freshness:55, totalScore:68, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Partner", title:"Hotel booking partner", url:"#", desc:"Use this for stay comparison and booking.", category:"travel", sourceCategory:"partner", whyTrending:"High-intent hotel conversion path.", summary:"Accommodation booking partner.", value:78, volume:65, viewers:74, momentum:52, freshness:58, totalScore:71, change:0, isViral:false, isRising:false, thumb:"" },
-{ platform:"Partner", title:"Activities partner", url:"#", desc:"Use this to find things to do after booking the basics.", category:"travel", sourceCategory:"partner", whyTrending:"Useful after transport and stay are decided.", summary:"Activities and local discovery partner.", value:69, volume:56, viewers:66, momentum:48, freshness:54, totalScore:63, change:0, isViral:false, isRising:false, thumb:"" }
-];
-
-function showTab(name, btn){
-document.getElementById("homeTab").style.display = name === "home" ? "" : "none";
-document.getElementById("exploreTab").style.display = name === "explore" ? "" : "none";
-document.getElementById("travelTab").style.display = name === "travel" ? "" : "none";
-document.getElementById("realestateTab").style.display = name === "realestate" ? "" : "none";
-document.getElementById("lifestyleTab").style.display = name === "lifestyle" ? "" : "none";
-document.getElementById("financeTab").style.display = name === "finance" ? "" : "none";
-
-document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
-if (btn) btn.classList.add("active");
-
-render();
+function updateClock() {
+const now = new Date();
+clockEl.textContent = now.toLocaleTimeString();
 }
 
-function setIntentChip(value, btn){
-document.getElementById("intent").value = value;
-document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-btn.classList.add("active");
-render();
+updateClock();
+
+setInterval(updateClock, 1000);
+
+document.addEventListener("visibilitychange", function () {
+if (document.visibilityState === "visible") {
+updateClock();
 }
-
-function getIntent() {
-return document.getElementById("intent").value;
-}
-
-function getBaseListForIntent() {
-const intent = getIntent();
-if (intentViews && intentViews[intent] && intentViews[intent].length) {
-return [...intentViews[intent]];
-}
-return [...allSignals];
-}
-
-function getFilteredSignals() {
-const q = document.getElementById("search").value.toLowerCase().trim();
-const cat = document.getElementById("category").value;
-
-let list = getBaseListForIntent();
-list = list.sort((a,b) => ((b.intentScore ?? b.totalScore ?? 0) - (a.intentScore ?? a.totalScore ?? 0)));
-
-if (cat !== "all") {
-list = list.filter(x => x.category === cat || x.sourceCategory === cat);
-}
-
-if (q) {
-list = list.filter(x =>
-(x.title || "").toLowerCase().includes(q) ||
-(x.desc || "").toLowerCase().includes(q) ||
-(x.subreddit || "").toLowerCase().includes(q)
-);
-}
-
-return list;
-}
-
-function thumbMarkup(i) {
-return i.thumb
-? `<img src="${i.thumb}" alt="">`
-: `<div class="thumb-fallback">${i.platform}</div>`;
-}
-
-function safeExternalLink(url) {
-return `target="_blank" rel="noopener noreferrer" href="${url}"`;
-}
-
-function featuredMarkup(i) {
-if (!i) return `<div class="empty">No featured recommendation</div>`;
-
-return `
-<div class="featured-left">
-${i.thumb ? `<img src="${i.thumb}" alt="">` : `<div class="fallback">${i.platform}</div>`}
-<div class="featured-overlay">
-<div>
-<div class="badge-row">
-<span class="badge platform">${i.platform}</span>
-<span class="badge source">${i.sourceCategory || i.category}</span>
-<span class="badge score">Score ${i.intentScore ?? i.totalScore}</span>
-${i.isViral ? `<span class="badge viral">🔥 Viral</span>` : ``}
-${i.isRising ? `<span class="badge rising">↗ Rising</span>` : ``}
-<span class="badge intent">${getIntent()}</span>
-</div>
-<h3>${i.title}</h3>
-</div>
-</div>
-</div>
-<div class="featured-right">
-<div class="meta">${i.desc || ""}</div>
-<div class="why"><strong>Why this matters:</strong> ${i.whyTrending || "Strong overall ranking"}</div>
-<div class="why"><strong>AI summary:</strong> ${i.summary || i.title}</div>
-<div class="next-step"><strong>Best next step:</strong> ${i.nextStep || makeNextStep(i)}</div>
-<div class="actions">
-<a class="btn" ${safeExternalLink(i.url)}>Open in new tab</a>
-</div>
-</div>
-`;
-}
-
-function cardMarkup(i) {
-return `
-<div class="card">
-<div class="thumb">${thumbMarkup(i)}</div>
-<div class="card-body">
-<div class="badge-row">
-<span class="badge platform">${i.platform}</span>
-<span class="badge source">${i.sourceCategory || i.category}</span>
-${typeof (i.intentScore ?? i.totalScore) === "number" ? `<span class="badge score">Score ${i.intentScore ?? i.totalScore}</span>` : ``}
-${i.isViral ? `<span class="badge viral">🔥 Viral</span>` : ``}
-${i.isRising ? `<span class="badge rising">↗ Rising</span>` : ``}
-${i.sourceCategory === "partner" ? `<span class="badge money">Partner</span>` : ``}
-</div>
-<h3>${i.title}</h3>
-<div class="mini">${i.desc || ""}</div>
-${i.whyTrending ? `<div class="why"><strong>Why:</strong> ${i.whyTrending}</div>` : ``}
-<div class="next-step"><strong>Next step:</strong> ${i.nextStep || makeNextStep(i)}</div>
-<div class="actions">
-<a class="btn" ${safeExternalLink(i.url)}>Open in new tab</a>
-</div>
-</div>
-</div>
-`;
-}
-
-function makeNextStep(item) {
-if (item.sourceCategory === "travel") return "Use this first to reduce travel uncertainty.";
-if (item.sourceCategory === "realestate") return "Compare this with one nearby alternative.";
-if (item.sourceCategory === "finance") return "Check trust, fees, and international usability.";
-if (item.sourceCategory === "lifestyle") return "Use this to reduce daily friction quickly.";
-if (item.sourceCategory === "partner") return "Use this as a handoff point once you are ready to compare or book.";
-return "Open this first, then compare only one or two alternatives.";
-}
-
-function makeAssistantSummary(list) {
-const intent = getIntent();
-if (!list.length) return "No strong match yet. Broaden the search or switch intent.";
-
-const top = list[0];
-if (intent === "business") return `You appear focused on business utility. The current strongest recommendation is ${top.platform}, because it looks efficient and practical to act on now.`;
-if (intent === "family") return `You appear focused on lower-friction, more practical choices. The current strongest recommendation is ${top.platform}, with simpler decision value.`;
-if (intent === "relocation") return `You appear to be planning beyond a short trip. Prioritize stability, trust, and long-stay usefulness before convenience.`;
-if (intent === "nightlife") return `You appear to want more social and high-energy options. Focus on immediacy, local relevance, and easy comparison.`;
-if (intent === "finance") return `You appear focused on money decisions. Prioritize trust, fees, and usefulness across borders before popularity.`;
-
-return `The system is highlighting ${top.platform} first because it currently combines strong relevance, momentum, and practical value.`;
-}
-
-function makeAssistantNextStep(list) {
-const intent = getIntent();
-if (!list.length) return "Try changing the search or intent mode.";
-
-if (intent === "business") return "Open the top recommendation, keep the app open, and compare only one backup option.";
-if (intent === "family") return "Choose the safest and clearest option first, then compare only one alternative.";
-if (intent === "relocation") return "Start with entry, stay, and banking questions before lifestyle choices.";
-if (intent === "nightlife") return "Start with one strong nightlife option and one food option nearby.";
-if (intent === "finance") return "Begin with banking or card setup before looking at broader finance tools.";
-
-return "Open the top item in a new tab. Your SignalBoost page stays here.";
-}
-
-function renderHome(list) {
-const top = list.slice(0, 6);
-const quick = list.slice(0, 3);
-
-document.getElementById("visibleCount").textContent = top.length;
-document.getElementById("assistantSummary").textContent = makeAssistantSummary(list);
-document.getElementById("assistantNextStep").textContent = makeAssistantNextStep(list);
-document.getElementById("featured").innerHTML = featuredMarkup(top[0]);
-document.getElementById("feed").innerHTML =
-top.length ? top.map(cardMarkup).join("") : `<div class="empty">No matching signals.</div>`;
-document.getElementById("quickGrid").innerHTML =
-quick.length ? quick.map(cardMarkup).join("") : `<div class="empty">No quick recommendations.</div>`;
-document.getElementById("tripPartnerGrid").innerHTML = tripPartnerCards.map(cardMarkup).join("");
-}
-
-function renderStaticSections() {
-document.getElementById("exploreGrid").innerHTML = exploreCards.map(cardMarkup).join("");
-document.getElementById("travelGrid").innerHTML = travelCards.map(cardMarkup).join("");
-document.getElementById("realEstateGrid").innerHTML = realEstateCards.map(cardMarkup).join("");
-document.getElementById("lifestyleGrid").innerHTML = lifestyleCards.map(cardMarkup).join("");
-document.getElementById("financeGrid").innerHTML = financeCards.map(cardMarkup).join("");
-}
-
-function render() {
-const list = getFilteredSignals();
-renderHome(list);
-renderStaticSections();
-}
-
-function setPlannerBlock(id, text, linkText = "", linkUrl = "") {
-const el = document.getElementById(id);
-el.innerHTML = `
-<div>${text || ""}</div>
-${linkUrl ? `<a class="planner-link" ${safeExternalLink(linkUrl)}>${linkText || "Open official link"}</a>` : ""}
-`;
-}
-
-async function runTravelPlanner() {
-const payload = {
-destination: (document.getElementById("tripDestination").value || "").trim(),
-startDate: document.getElementById("tripStart").value,
-endDate: document.getElementById("tripEnd").value,
-travelers: parseInt(document.getElementById("tripPeople").value || "1", 10),
-purpose: document.getElementById("tripPurpose").value,
-budget: document.getElementById("tripBudget").value
-};
-
-if (!payload.destination) {
-setPlannerBlock("tripSummary", "Please enter a destination first.");
-return;
-}
-
-setPlannerBlock("tripSummary", "Building trip plan...");
-setPlannerBlock("tripPrice", "Calculating estimated ranges...");
-setPlannerBlock("tripVisa", "Checking entry guidance...");
-setPlannerBlock("tripStay", "Preparing stay advice...");
-setPlannerBlock("tripLocal", "Preparing local ideas...");
-setPlannerBlock("tripTransport", "Preparing transport guidance...");
-setPlannerBlock("tripNext", "Preparing next step...");
-
-try {
-const res = await fetch("http://localhost:3000/api/travel-plan", {
-method: "POST",
-headers: {
-"Content-Type": "application/json"
-},
-body: JSON.stringify(payload)
 });
 
-const data = await res.json();
-
-setPlannerBlock("tripSummary", data.summary || "No summary available.");
-setPlannerBlock("tripPrice", data.priceGuide || "No price guide available.");
-setPlannerBlock(
-"tripVisa",
-`${data.visaGuide || "No visa guide available."}${data.visaName ? ` Likely authorization: ${data.visaName}.` : ""}`,
-data.visaLinkText || "",
-data.visaLink || ""
-);
-setPlannerBlock("tripStay", data.stayGuide || "No stay guide available.");
-setPlannerBlock("tripLocal", data.localGuide || "No local guide available.");
-setPlannerBlock(
-"tripTransport",
-data.transportGuide || "No transport guide available.",
-data.transportLinkText || "",
-data.transportLink || ""
-);
-setPlannerBlock("tripNext", data.nextStep || "No next step available.");
-
-if (data.suggestedIntent) {
-document.getElementById("intent").value = data.suggestedIntent;
-const chips = document.querySelectorAll(".chip");
-chips.forEach(c => c.classList.remove("active"));
-const map = ["general","business","family","relocation","nightlife","finance"];
-const idx = map.indexOf(data.suggestedIntent);
-if (idx >= 0 && chips[idx]) chips[idx].classList.add("active");
-render();
-}
-
-if (data.partners) {
-if (data.partners.flights) tripPartnerCards[0].url = data.partners.flights;
-if (data.partners.stays) tripPartnerCards[1].url = data.partners.stays;
-if (data.partners.local) tripPartnerCards[2].url = data.partners.local;
-render();
-}
-} catch (err) {
-setPlannerBlock("tripSummary", "Planner backend not reachable.");
-setPlannerBlock("tripPrice", "Start server.js and try again.");
-setPlannerBlock("tripVisa", "No planner response.");
-setPlannerBlock("tripStay", "No planner response.");
-setPlannerBlock("tripLocal", "No planner response.");
-setPlannerBlock("tripTransport", "No planner response.");
-setPlannerBlock("tripNext", "No planner response.");
-}
-}
-
-function resetTravelPlanner() {
-document.getElementById("tripDestination").value = "";
-document.getElementById("tripStart").value = "";
-document.getElementById("tripEnd").value = "";
-document.getElementById("tripPeople").value = "1";
-document.getElementById("tripPurpose").value = "business";
-document.getElementById("tripBudget").value = "medium";
-
-setPlannerBlock("tripSummary", "Enter a destination and build a plan.");
-setPlannerBlock("tripPrice", "Estimated price guidance will appear here.");
-setPlannerBlock("tripVisa", "Visa and entry reminders will appear here.");
-setPlannerBlock("tripStay", "Stay guidance will appear here.");
-setPlannerBlock("tripLocal", "Local suggestions will appear here.");
-setPlannerBlock("tripTransport", "Local transport guidance will appear here.");
-setPlannerBlock("tripNext", "Best next step will appear here.");
-}
-
-async function loadSignals() {
-document.getElementById("status").textContent = "Loading";
-document.getElementById("message").textContent = "Loading guided feed...";
-
-try {
-const res = await fetch("http://localhost:3000/api/feed");
-const data = await res.json();
-allSignals = data.items || [];
-intentViews = data.intentViews || {};
-document.getElementById("status").textContent = data.status || "Live";
-document.getElementById("message").textContent = data.message || "Feed loaded.";
-document.getElementById("updatedAt").textContent = new Date().toLocaleTimeString();
-} catch (err) {
-allSignals = [];
-intentViews = {};
-document.getElementById("status").textContent = "Offline";
-document.getElementById("message").textContent = "Backend not reachable. Start server.js first.";
-document.getElementById("updatedAt").textContent = "-";
-}
-
-render();
-}
-
-document.getElementById("search").addEventListener("input", render);
-document.getElementById("category").addEventListener("change", render);
-document.getElementById("intent").addEventListener("change", render);
-
-loadSignals();
+window.addEventListener("focus", updateClock);
+})();
 </script>
+
 </body>
 </html>
