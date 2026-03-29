@@ -18,6 +18,10 @@
 --gold:#ca8a04;
 --soft:#dbeafe;
 --shadow:0 8px 28px rgba(15,23,42,.08);
+--official-bg-1:#fff3cd;
+--official-bg-2:#ffe08a;
+--official-border:#f59e0b;
+--official-text:#5c3b00;
 }
 
 *{box-sizing:border-box}
@@ -227,7 +231,9 @@ flex-wrap:wrap;
 gap:10px;
 }
 
-.actions{margin-bottom:14px}
+.actions{
+margin-bottom:14px;
+}
 
 .btn{
 border:none;
@@ -320,8 +326,22 @@ color:#7c5700;
 }
 
 .official-box{
-background:#eefbf1;
-color:#166534;
+background:linear-gradient(135deg, var(--official-bg-1), var(--official-bg-2));
+color:var(--official-text);
+border:2px solid var(--official-border);
+box-shadow:0 8px 18px rgba(245,158,11,.22);
+font-weight:700;
+}
+
+.official-buttons .btn-secondary{
+background:#fff7e6;
+border:2px solid var(--official-border);
+color:var(--official-text);
+font-weight:700;
+}
+
+.official-buttons .btn-secondary:hover{
+background:#ffefc2;
 }
 
 .feed-grid{
@@ -585,11 +605,11 @@ Explore Activities
 <h3>Official information</h3>
 
 <div class="info-box official-box" id="official-box">
-<strong>Important:</strong>
-For entry rules, visas, immigration, or work permissions, use official government sources.
+<strong>Important official guidance:</strong>
+Use the highlighted official government links below for entry rules, visas, immigration, or work permissions.
 </div>
 
-<div class="links-row">
+<div class="links-row official-buttons">
 <a
 id="official-info-link"
 class="btn btn-secondary"
@@ -760,14 +780,14 @@ After each planner search, the form clears itself so the next search starts fres
 <div class="card side-card">
 <h3>Official link policy</h3>
 <p>
-U.S. searches use U.S. official entry sources. France searches use France’s official visa portal. Official and commercial links remain separate.
+U.S. searches use U.S. official entry sources. France searches use France’s official visa portal. Spain, Italy, and the UK each use their own official path.
 </p>
 </div>
 </aside>
 </div>
 
 <div class="footer-note">
-This version fixes the U.S./France official-link mismatch, uses the page sides more effectively, tightens oversized boxes, and shifts the design toward a brighter, feed-oriented platform feel.
+This version uses a single full-width layout, a lighter design, a stronger official-information highlight area, and destination-specific official links instead of sending every search to U.S. pages.
 </div>
 </div>
 
@@ -781,50 +801,26 @@ activities: [
 "Louvre Museum visit"
 ],
 viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://travel.state.gov/en/international-travel/travel-advisories/france.html",
-officialApply: "https://france-visas.gouv.fr/en/",
+officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
+officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
 why: "Paris is strong for activities, museums, and high-interest visitor experiences.",
 tip: "Open the activity link in a new tab and keep SignalBoost open for the next decision."
 },
-rome: {
-title: "Top things to do in Rome",
+
+france: {
+title: "Top things to do in France",
 activities: [
-"Colosseum guided tour",
-"Vatican Museums visit",
-"Rome city highlights tour"
+"Paris city highlights",
+"Museum and culture passes",
+"Regional day trips"
 ],
-viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Italy.html",
-officialApply: "https://vistoperitalia.esteri.it/home/en",
-why: "Rome works well for historic attractions and guided city experiences.",
-tip: "Rome is a strong mix of culture, activities, and travel planning."
+viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
+officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
+why: "France requires country-specific official visa guidance depending on the traveler profile.",
+tip: "Check official entry requirements before booking activities."
 },
-madrid: {
-title: "Top things to do in Madrid",
-activities: [
-"Madrid city walking tour",
-"Prado Museum visit",
-"Day trip from Madrid"
-],
-viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Spain.html",
-officialApply: "https://www.exteriores.gob.es/Consulados/londres/en/ServiciosConsulares/Paginas/Consular/Visados.aspx",
-why: "Madrid fits your original work-travel and local-life use case very well.",
-tip: "Madrid can later combine food, nightlife, and longer-stay suggestions."
-},
-london: {
-title: "Top things to do in London",
-activities: [
-"London sightseeing tour",
-"Tower of London visit",
-"Thames River experience"
-],
-viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/UnitedKingdom.html",
-officialApply: "https://www.gov.uk/check-uk-visa",
-why: "London supports both tourism and business travel decisions.",
-tip: "This destination is useful for showing official and commercial links side by side."
-},
+
 unitedstates: {
 title: "Top things to do in the United States",
 activities: [
@@ -837,6 +833,90 @@ officialInfo: "https://www.cbp.gov/travel/international-visitors",
 officialApply: "https://esta.cbp.dhs.gov/",
 why: "For U.S. travel, official actions should point to U.S. government entry sources, not embassy pages from another country.",
 tip: "Use the official U.S. links first for entry rules, then move to activities and bookings."
+},
+
+spain: {
+title: "Top things to do in Spain",
+activities: [
+"Madrid city walking tour",
+"Museum passes",
+"Regional day trips"
+],
+viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
+officialApply: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
+why: "Spain combines work travel, lifestyle, food, and local discovery very well.",
+tip: "Check the official Spain government consular information first."
+},
+
+madrid: {
+title: "Top things to do in Madrid",
+activities: [
+"Madrid city walking tour",
+"Prado Museum visit",
+"Day trip from Madrid"
+],
+viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
+officialApply: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
+why: "Madrid fits your original work-travel and local-life use case very well.",
+tip: "Madrid can later combine food, nightlife, and longer-stay suggestions."
+},
+
+italy: {
+title: "Top things to do in Italy",
+activities: [
+"Historic city tours",
+"Museum visits",
+"Regional experiences"
+],
+viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://vistoperitalia.esteri.it/home/en",
+officialApply: "https://vistoperitalia.esteri.it/home/en",
+why: "Italy works well for culture, history, and city-based guided experiences.",
+tip: "Use Italy’s official visa portal first if entry approval is needed."
+},
+
+rome: {
+title: "Top things to do in Rome",
+activities: [
+"Colosseum guided tour",
+"Vatican Museums visit",
+"Rome city highlights tour"
+],
+viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://vistoperitalia.esteri.it/home/en",
+officialApply: "https://vistoperitalia.esteri.it/home/en",
+why: "Rome works well for historic attractions and guided city experiences.",
+tip: "Rome is a strong mix of culture, activities, and travel planning."
+},
+
+unitedkingdom: {
+title: "Top things to do in the United Kingdom",
+activities: [
+"London sightseeing",
+"Museum and landmark visits",
+"Cultural city experiences"
+],
+viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.gov.uk/check-uk-visa",
+officialApply: "https://www.gov.uk/check-uk-visa",
+why: "The UK is strong for both tourism and business travel decisions.",
+tip: "Use the UK government visa checker first for official entry guidance."
+},
+
+london: {
+title: "Top things to do in London",
+activities: [
+"London sightseeing tour",
+"Tower of London visit",
+"Thames River experience"
+],
+viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.gov.uk/check-uk-visa",
+officialApply: "https://www.gov.uk/check-uk-visa",
+why: "London supports both tourism and business travel decisions.",
+tip: "This destination is useful for showing official and commercial links side by side."
 }
 };
 
@@ -849,18 +929,20 @@ america: "unitedstates",
 "united states": "unitedstates",
 unitedstates: "unitedstates",
 
+france: "france",
 paris: "paris",
-france: "paris",
 
-rome: "rome",
-italy: "rome",
-
+spain: "spain",
 madrid: "madrid",
-spain: "madrid",
 
-london: "london",
-uk: "london",
-"united kingdom": "london"
+italy: "italy",
+rome: "rome",
+
+uk: "unitedkingdom",
+"united kingdom": "unitedkingdom",
+britain: "unitedkingdom",
+england: "unitedkingdom",
+london: "london"
 };
 
 function normalizeDestination(value) {
@@ -887,14 +969,21 @@ const travelersValue = travelersInput.value;
 const tripTypeValue = tripTypeInput.value;
 
 document.getElementById("result-title").textContent = selected.title;
-document.getElementById("activity-list").innerHTML = renderActivities(selected.activities);
+document.getElementById("activity-list").innerHTML =
+selected.activities.map(item => `<li>${item}</li>`).join("");
+
 document.getElementById("viator-link").href = selected.viator;
 document.getElementById("official-info-link").href = selected.officialInfo;
 document.getElementById("official-apply-link").href = selected.officialApply;
+
 document.getElementById("why-box").innerHTML =
 "<strong>Why this recommendation works:</strong> " + selected.why;
+
 document.getElementById("tip-box").innerHTML =
 "<strong>Tip:</strong> " + selected.tip;
+
+document.getElementById("official-box").innerHTML =
+"<strong>Important official guidance:</strong> Use the highlighted official government links below for " + shownDestination + ".";
 
 document.getElementById("badge-destination").textContent = shownDestination;
 document.getElementById("badge-type").textContent =
