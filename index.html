@@ -7,801 +7,180 @@
   <style>
     :root {
       --bg: #eef4ff;
-      --surface: rgba(255,255,255,0.78);
-      --surface-strong: #ffffff;
-      --border: rgba(148, 163, 184, 0.28);
+      --surface: rgba(255,255,255,0.85);
+      --border: rgba(148,163,184,.25);
       --text: #0f172a;
       --muted: #64748b;
       --primary: #2563eb;
-      --primary-soft: #dbeafe;
       --accent: #06b6d4;
-      --success: #16a34a;
-      --warning: #d97706;
-      --shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
-      --max: 1440px;
+      --shadow: 0 20px 60px rgba(15,23,42,.08);
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Inter, Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(37,99,235,0.16), transparent 28%),
-        radial-gradient(circle at top right, rgba(6,182,212,0.12), transparent 24%),
-        linear-gradient(180deg, #eaf2ff 0%, #f6f9ff 34%, #fbfdff 100%);
+    body.dark {
+      --bg:#0b1220;
+      --surface: rgba(20,30,50,.8);
+      --text:#e2e8f0;
+      --muted:#94a3b8;
+      --border: rgba(255,255,255,.1);
     }
 
-    a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; }
-
-    .app {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 16px;
+    body{
+      margin:0;
+      font-family: Inter, Arial;
+      background:var(--bg);
+      color:var(--text);
+      transition:.3s;
     }
 
-    .topbar {
-      position: sticky;
-      top: 10px;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: rgba(255,255,255,0.72);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
+    .app{max-width:1200px;margin:auto;padding:16px}
+
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:12px;border-radius:16px;
+      background:var(--surface);border:1px solid var(--border);
+      box-shadow:var(--shadow)
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+    .logo{font-weight:900}
+
+    .btn{padding:10px 14px;border-radius:999px;border:none;cursor:pointer;font-weight:700}
+    .primary{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+    .ghost{background:transparent;border:1px solid var(--border)}
+
+    .hero{margin-top:20px;background:var(--surface);padding:30px;border-radius:24px;border:1px solid var(--border)}
+
+    h1{font-size:42px;margin:0}
+
+    .prompt{
+      margin-top:20px;padding:12px;border-radius:20px;
+      background:#fff;border:1px solid var(--border);
+      display:flex;gap:10px
     }
 
-    .logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, #dbeafe, #ecfeff);
-      border: 1px solid rgba(37,99,235,0.18);
-      color: #1d4ed8;
-      font-weight: 900;
-    }
+    body.dark .prompt{background:#111827}
 
-    .nav, .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    input{flex:1;border:none;outline:none;font-size:18px;background:transparent;color:inherit}
 
-    .nav a, .ghost-btn, .chip-btn {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.78);
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-    }
+    .thinking{font-size:13px;color:var(--muted);margin-top:6px;opacity:0}
 
-    .primary-btn {
-      padding: 11px 16px;
-      border: 0;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-      font-weight: 800;
-      box-shadow: 0 12px 24px rgba(37,99,235,0.22);
-      cursor: pointer;
-    }
+    .suggestions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.45fr 0.85fr;
-      gap: 16px;
-      margin-top: 18px;
-    }
+    .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--border);cursor:pointer;font-size:12px}
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-    }
+    .mode-switch{margin-top:20px;display:flex;gap:10px}
 
-    .hero-main {
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-    }
+    .module{margin-top:20px;padding:20px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.78);
-      border: 1px solid var(--border);
-      color: #1e40af;
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 14px;
-    }
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
 
-    h1 {
-      margin: 0;
-      font-size: clamp(2.2rem, 4.4vw, 4.4rem);
-      line-height: 0.96;
-      letter-spacing: -0.05em;
-      max-width: 12ch;
-    }
+    .card{padding:14px;border-radius:16px;border:1px solid var(--border);background:rgba(255,255,255,.6)}
 
-    .hero-copy {
-      margin: 14px 0 0;
-      max-width: 60ch;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.7;
-    }
+    body.dark .card{background:rgba(30,40,60,.6)}
 
-    .prompt-shell {
-      margin-top: 22px;
-      background: rgba(255,255,255,0.90);
-      border: 1px solid rgba(37,99,235,0.14);
-      border-radius: 24px;
-      padding: 14px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
-    }
+    .label{font-size:11px;color:var(--muted)}
 
-    .prompt-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-    }
+    .strong{font-weight:800}
 
-    .prompt-input {
-      width: 100%;
-      border: 0;
-      outline: none;
-      background: transparent;
-      font-size: 18px;
-      color: var(--text);
-      padding: 10px 6px;
-    }
-
-    .suggestions {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .suggestion {
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #f8fbff;
-      color: #1e293b;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .hero-footer {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .micro-card {
-      padding: 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.72);
-      border: 1px solid var(--border);
-    }
-
-    .micro-label {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .micro-value {
-      margin-top: 8px;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
-
-    .hero-side {
-      display: grid;
-      gap: 16px;
-    }
-
-    .status-card, .assistant-card, .rail-card, .module, .timeline-card {
-      padding: 20px;
-    }
-
-    .status-card h2, .assistant-card h2, .module h2, .timeline-card h2 {
-      margin: 0 0 6px;
-      font-size: 20px;
-      letter-spacing: -0.03em;
-    }
-
-    .subcopy {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .signal-list, .task-list {
-      margin-top: 16px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .signal-item, .task-item {
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.82);
-      display: grid;
-      gap: 6px;
-    }
-
-    .row-between {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      background: var(--primary-soft);
-      color: #1d4ed8;
-    }
-
-    .score {
-      font-weight: 800;
-      color: var(--success);
-      font-size: 12px;
-    }
-
-    .layout {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: 1.6fr 0.85fr;
-      gap: 16px;
-      align-items: start;
-    }
-
-    .main {
-      display: grid;
-      gap: 16px;
-    }
-
-    .assistant-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 16px;
-    }
-
-    .workspace-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-
-    .workspace-card {
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px;
-      background: rgba(255,255,255,0.84);
-      display: grid;
-      gap: 10px;
-      min-height: 180px;
-    }
-
-    .workspace-card h3, .rail-card h3 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: -0.03em;
-    }
-
-    .workspace-card p, .rail-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .pill {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #f8fbff;
-      border: 1px solid var(--border);
-      color: #334155;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .assistant-preview {
-      margin-top: 16px;
-      padding: 14px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, rgba(219,234,254,0.9), rgba(236,254,255,0.82));
-      border: 1px solid rgba(37,99,235,0.12);
-    }
-
-    .assistant-reply {
-      margin-top: 8px;
-      color: #1e293b;
-      line-height: 1.7;
-      font-size: 14px;
-    }
-
-    .side {
-      display: grid;
-      gap: 16px;
-      position: sticky;
-      top: 84px;
-    }
-
-    .rail-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .rail-item {
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.84);
-      border: 1px solid var(--border);
-    }
-
-    .rail-item strong {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .kpi {
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.82);
-    }
-
-    .kpi .num {
-      margin-top: 6px;
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-    }
-
-    .timeline {
-      display: grid;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .timeline-step {
-      display: grid;
-      grid-template-columns: 32px 1fr;
-      gap: 12px;
-      align-items: start;
-    }
-
-    .dot {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--primary-soft), #ecfeff);
-      color: #1d4ed8;
-      font-weight: 800;
-      border: 1px solid rgba(37,99,235,0.18);
-    }
-
-    .step-card {
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.84);
-    }
-
-    .step-card strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 1180px) {
-      .hero,
-      .layout,
-      .assistant-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .side {
-        position: static;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .hero-footer,
-      .workspace-grid,
-      .kpi-grid,
-      .prompt-row {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      h1 {
-        max-width: none;
-      }
-
-      .hero-main,
-      .status-card,
-      .assistant-card,
-      .rail-card,
-      .module,
-      .timeline-card {
-        padding: 18px;
-      }
+    @media(max-width:800px){
+      .grid{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo">SB</div>
-        <span>SignalBoost AI</span>
-      </div>
+<div class="app">
 
-      <nav class="nav">
-        <a href="#assistant">Assistant</a>
-        <a href="#workspaces">Workspaces</a>
-        <a href="#signals">Signals</a>
-        <a href="#roadmap">Roadmap</a>
-      </nav>
+<div class="topbar">
+  <div class="logo">SignalBoost AI</div>
+  <div>
+    <button class="ghost" onclick="toggleDark()">Dark</button>
+    <button class="btn primary">Assistant</button>
+  </div>
+</div>
 
-      <div class="top-actions">
-        <button class="ghost-btn">Design mode</button>
-        <button class="primary-btn">Launch assistant</button>
-      </div>
-    </header>
+<section class="hero">
+  <h1>What do you want to do?</h1>
 
-    <section class="hero">
-      <div class="panel hero-main">
-        <div class="eyebrow">AI-first interface • HMI-focused design</div>
-        <h1>What do you want to accomplish today?</h1>
-        <p class="hero-copy">
-          SignalBoost is evolving into an AI-driven control center where the interface guides decisions,
-          adapts to intent, and makes complex actions feel simple.
-        </p>
+  <div class="prompt">
+    <input id="input" placeholder="Ask anything..." />
+    <button class="btn primary" onclick="runAI()">Go</button>
+  </div>
+  <div id="thinking" class="thinking">AI thinking...</div>
 
-        <div class="prompt-shell">
-          <div class="prompt-row">
-            <input id="promptInput" class="prompt-input" value="Plan a business trip and surface the best next actions" />
-            <button class="primary-btn" id="runPromptBtn">Ask AI</button>
-          </div>
-          <div class="suggestions">
-            <button class="suggestion">Discover trends</button>
-            <button class="suggestion">Plan travel</button>
-            <button class="suggestion">Compare platforms</button>
-            <button class="suggestion">Build a campaign</button>
-            <button class="suggestion">Find opportunities</button>
-          </div>
-        </div>
-
-        <div class="hero-footer">
-          <div class="micro-card">
-            <div class="micro-label">Interaction model</div>
-            <div class="micro-value">Conversational + visual</div>
-          </div>
-          <div class="micro-card">
-            <div class="micro-label">Primary focus</div>
-            <div class="micro-value">Guided decisions</div>
-          </div>
-          <div class="micro-card">
-            <div class="micro-label">Current phase</div>
-            <div class="micro-value">Design system</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-side">
-        <section class="panel status-card" id="signals">
-          <h2>Live priorities</h2>
-          <p class="subcopy">A preview of how the AI layer can surface ranked actions and explain why they matter.</p>
-          <div class="signal-list">
-            <div class="signal-item">
-              <div class="row-between">
-                <span class="tag">Travel</span>
-                <span class="score">92 confidence</span>
-              </div>
-              <strong>Flight and stay decision stack</strong>
-              <span class="muted">Suggested first because it affects timing, budget, and the rest of the plan.</span>
-            </div>
-            <div class="signal-item">
-              <div class="row-between">
-                <span class="tag">Finance</span>
-                <span class="score">88 confidence</span>
-              </div>
-              <strong>Cross-border payment setup</strong>
-              <span class="muted">Useful before departure so spending, cards, and transfers are ready.</span>
-            </div>
-            <div class="signal-item">
-              <div class="row-between">
-                <span class="tag">Lifestyle</span>
-                <span class="score">76 confidence</span>
-              </div>
-              <strong>Local arrival plan</strong>
-              <span class="muted">Food, transport, and neighborhood suggestions can reduce friction on day one.</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel assistant-card" id="assistant">
-          <h2>Assistant preview</h2>
-          <p class="subcopy">The AI should feel visible immediately, not hidden behind a separate tool.</p>
-          <div class="assistant-preview">
-            <div class="micro-label">Suggested response</div>
-            <div id="assistantReply" class="assistant-reply">
-              I would start with travel timing, then booking options, then payment setup. That order lowers uncertainty and helps every later decision fit the trip.
-            </div>
-          </div>
-        </section>
-      </div>
-    </section>
-
-    <section class="layout">
-      <div class="main">
-        <section class="panel module" id="workspaces">
-          <h2>AI workspaces</h2>
-          <p class="subcopy">Instead of one giant wall of links, the interface should organize the user into focused action zones.</p>
-          <div class="workspace-grid">
-            <article class="workspace-card">
-              <span class="tag">Travel workspace</span>
-              <h3>Plan, compare, and decide faster</h3>
-              <p>Show itinerary building, entry checks, stays, local transport, and recommended next steps in one guided flow.</p>
-              <div class="pill-row">
-                <span class="pill">Flights</span>
-                <span class="pill">Hotels</span>
-                <span class="pill">Entry rules</span>
-                <span class="pill">Arrival prep</span>
-              </div>
-            </article>
-            <article class="workspace-card">
-              <span class="tag">Signals workspace</span>
-              <h3>Rank what matters now</h3>
-              <p>Convert noisy feeds into prioritized signals with reasons, confidence, and recommended actions.</p>
-              <div class="pill-row">
-                <span class="pill">Trending</span>
-                <span class="pill">Momentum</span>
-                <span class="pill">Why it matters</span>
-              </div>
-            </article>
-            <article class="workspace-card">
-              <span class="tag">Campaign workspace</span>
-              <h3>Turn insights into actions</h3>
-              <p>Use the assistant to propose campaigns, compare channels, and surface the highest-value moves first.</p>
-              <div class="pill-row">
-                <span class="pill">Channels</span>
-                <span class="pill">Creative</span>
-                <span class="pill">Sequence</span>
-              </div>
-            </article>
-            <article class="workspace-card">
-              <span class="tag">Relocation workspace</span>
-              <h3>Support longer-term decisions</h3>
-              <p>Bring housing, finance, work, and local services into one interface that reduces overwhelm.</p>
-              <div class="pill-row">
-                <span class="pill">Housing</span>
-                <span class="pill">Banking</span>
-                <span class="pill">Local setup</span>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section class="assistant-grid">
-          <section class="panel module">
-            <h2>HMI design principles</h2>
-            <p class="subcopy">These are the interface rules shaping the product direction.</p>
-            <div class="task-list">
-              <div class="task-item">
-                <strong>One obvious next action</strong>
-                <span class="muted">Every screen should make the first move obvious and reduce hesitation.</span>
-              </div>
-              <div class="task-item">
-                <strong>Visible system feedback</strong>
-                <span class="muted">Recommendations, loading states, confidence, and rationale should always be shown clearly.</span>
-              </div>
-              <div class="task-item">
-                <strong>Adaptive interface</strong>
-                <span class="muted">The layout should respond to user intent such as travel, finance, research, or campaigns.</span>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel module">
-            <h2>Interface KPIs</h2>
-            <p class="subcopy">Early design targets to keep the experience human-centered.</p>
-            <div class="kpi-grid">
-              <div class="kpi">
-                <div class="micro-label">Decision clarity</div>
-                <div class="num">High</div>
-              </div>
-              <div class="kpi">
-                <div class="micro-label">Cognitive load</div>
-                <div class="num">Low</div>
-              </div>
-              <div class="kpi">
-                <div class="micro-label">AI visibility</div>
-                <div class="num">Always on</div>
-              </div>
-              <div class="kpi">
-                <div class="micro-label">Flow state</div>
-                <div class="num">Guided</div>
-              </div>
-            </div>
-          </section>
-        </section>
-
-        <section class="panel timeline-card" id="roadmap">
-          <h2>Design-first roadmap</h2>
-          <p class="subcopy">A simple sequence for moving from concept to AI functionality without losing the HMI focus.</p>
-          <div class="timeline">
-            <div class="timeline-step">
-              <div class="dot">1</div>
-              <div class="step-card">
-                <strong>Homepage redesign</strong>
-                <span class="muted">Finalize the AI-first layout, hierarchy, navigation, and module types.</span>
-              </div>
-            </div>
-            <div class="timeline-step">
-              <div class="dot">2</div>
-              <div class="step-card">
-                <strong>Interaction layer</strong>
-                <span class="muted">Add microinteractions, mode switching, prompt behavior, and stateful panels.</span>
-              </div>
-            </div>
-            <div class="timeline-step">
-              <div class="dot">3</div>
-              <div class="step-card">
-                <strong>AI integration</strong>
-                <span class="muted">Connect prompts, recommendations, memory, rankings, and workspace-specific intelligence.</span>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <aside class="side">
-        <section class="panel rail-card">
-          <h3>Session state</h3>
-          <p>Give the user a persistent sense of what the system is helping with right now.</p>
-          <div class="rail-list">
-            <div class="rail-item">
-              <strong>Current goal</strong>
-              <span class="muted">Create an AI-first homepage with better human guidance.</span>
-            </div>
-            <div class="rail-item">
-              <strong>Design mode</strong>
-              <span class="muted">Homepage concept, module layout, visual hierarchy.</span>
-            </div>
-            <div class="rail-item">
-              <strong>Next step</strong>
-              <span class="muted">Refine the style, colors, cards, and assistant behavior.</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel rail-card">
-          <h3>Quick actions</h3>
-          <div class="rail-list">
-            <div class="rail-item">
-              <strong>Switch to dark mode</strong>
-              <span class="muted">Future visual mode for focus-heavy sessions.</span>
-            </div>
-            <div class="rail-item">
-              <strong>Open workspace picker</strong>
-              <span class="muted">Travel, signals, relocation, finance, campaigns.</span>
-            </div>
-            <div class="rail-item">
-              <strong>Preview adaptive layout</strong>
-              <span class="muted">See how the interface changes by user intent.</span>
-            </div>
-          </div>
-        </section>
-      </aside>
-    </section>
+  <div class="suggestions">
+    <div class="chip" onclick="quick('Plan travel')">Plan travel</div>
+    <div class="chip" onclick="quick('Find trends')">Find trends</div>
+    <div class="chip" onclick="quick('Compare platforms')">Compare</div>
   </div>
 
-  <script>
-    const promptInput = document.getElementById('promptInput');
-    const assistantReply = document.getElementById('assistantReply');
-    const runPromptBtn = document.getElementById('runPromptBtn');
-    const suggestions = document.querySelectorAll('.suggestion');
+  <div class="mode-switch">
+    <button class="ghost" onclick="setMode('travel')">Travel</button>
+    <button class="ghost" onclick="setMode('finance')">Finance</button>
+    <button class="ghost" onclick="setMode('social')">Social</button>
+  </div>
+</section>
 
-    const replies = {
-      'Discover trends': 'I would surface the strongest live signals first, explain why they matter, and separate noise from actionable momentum.',
-      'Plan travel': 'I would guide the user through route timing, stay choices, payment readiness, and a clean arrival plan in that order.',
-      'Compare platforms': 'I would show side-by-side strengths, likely outcomes, and the best-fit recommendation based on the user\'s goal.',
-      'Build a campaign': 'I would turn signals into a recommended campaign structure with priorities, channels, and a suggested sequence.',
-      'Find opportunities': 'I would rank opportunities by relevance, urgency, and expected impact so the user sees where to act first.'
-    };
+<section class="module">
+  <h2>Next actions</h2>
+  <div class="grid" id="actions"></div>
+</section>
 
-    suggestions.forEach(button => {
-      button.addEventListener('click', () => {
-        promptInput.value = button.textContent;
-        assistantReply.textContent = replies[button.textContent] || 'The assistant will interpret this goal and guide the next best step.';
-      });
-    });
+<section class="module">
+  <h2>Recommended</h2>
+  <div class="grid" id="recommend"></div>
+</section>
 
-    runPromptBtn.addEventListener('click', () => {
-      const value = promptInput.value.trim();
-      if (!value) return;
-      assistantReply.textContent = `You want to: ${value}. The interface should now adapt the next panel, rank the best actions, and explain the reasoning in simple language.`;
-    });
-  </script>
+<section class="module">
+  <h2>Optional</h2>
+  <div class="grid" id="optional"></div>
+</section>
+
+</div>
+
+<script>
+function toggleDark(){document.body.classList.toggle('dark')}
+
+function quick(text){document.getElementById('input').value=text;runAI()}
+
+function runAI(){
+  const t=document.getElementById('thinking')
+  t.style.opacity=1
+
+  setTimeout(()=>{
+    t.style.opacity=0
+    render('general')
+  },1200)
+}
+
+function setMode(mode){render(mode)}
+
+function card(title,desc){
+  return `<div class='card'><div class='label'>Suggested</div><div class='strong'>${title}</div><div>${desc}</div></div>`
+}
+
+function render(mode){
+  const actions=document.getElementById('actions')
+  const rec=document.getElementById('recommend')
+  const opt=document.getElementById('optional')
+
+  if(mode==='travel'){
+    actions.innerHTML=card('Book flight','Start with timing')
+    rec.innerHTML=card('Choose hotel','Compare locations')
+    opt.innerHTML=card('Explore food','Optional planning')
+  }
+  else if(mode==='finance'){
+    actions.innerHTML=card('Setup account','Primary step')
+    rec.innerHTML=card('Compare cards','Best options')
+    opt.innerHTML=card('Track spending','Optional tool')
+  }
+  else{
+    actions.innerHTML=card('Review signals','Top trends now')
+    rec.innerHTML=card('Compare options','Best picks')
+    opt.innerHTML=card('Explore more','Optional discovery')
+  }
+}
+
+render('general')
+</script>
+
 </body>
 </html>
