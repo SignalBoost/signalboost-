@@ -1,3 +1,6 @@
+(No subject)
+Luis Claudio
+​You​
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -209,7 +212,7 @@ line-height:1.55;
 font-size:13px;
 }
 
-.video-toolbar{
+.platform-toolbar{
 display:flex;
 flex-wrap:wrap;
 gap:8px;
@@ -226,37 +229,42 @@ font-weight:700;
 color:#334155;
 }
 
-.video-grid{
+.platform-grid{
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(4,1fr);
 gap:12px;
 }
 
-.video-card{
+.platform-card{
 border:1px solid var(--border);
 background:#fff;
 border-radius:16px;
 overflow:hidden;
 box-shadow:var(--shadow);
 min-width:0;
-}
-
-.embed-wrap{
-position:relative;
-width:100%;
-aspect-ratio:16/9;
-background:#dbeafe;
-}
-
-.embed-wrap iframe{
-width:100%;
+display:flex;
+flex-direction:column;
 height:100%;
-border:0;
-display:block;
 }
 
-.video-body{
+.platform-thumb{
+height:110px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
 padding:12px;
+font-size:18px;
+font-weight:700;
+color:#1e3a8a;
+background:linear-gradient(135deg,#dbeafe,#bfdbfe,#e0f2fe);
+}
+
+.platform-body{
+padding:12px;
+display:flex;
+flex-direction:column;
+flex:1;
 }
 
 .platform-tag{
@@ -270,20 +278,21 @@ font-size:11px;
 font-weight:700;
 }
 
-.video-body h3{
+.platform-body h3{
 margin:0 0 6px 0;
 font-size:15px;
 line-height:1.35;
 }
 
-.video-body p{
+.platform-body p{
 margin:0 0 10px 0;
 color:var(--muted);
 line-height:1.45;
 font-size:12px;
+flex:1;
 }
 
-.video-meta{
+.platform-meta{
 display:flex;
 flex-wrap:wrap;
 gap:8px;
@@ -315,25 +324,6 @@ color:#1e293b;
 border:1px solid var(--border);
 }
 
-.preview-card{
-display:flex;
-flex-direction:column;
-height:100%;
-}
-
-.preview-thumb{
-aspect-ratio:16/9;
-background:linear-gradient(135deg,#dbeafe,#c7d2fe,#e9d5ff);
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:16px;
-font-size:18px;
-font-weight:700;
-color:#1e3a8a;
-}
-
 .side-card{
 padding:14px;
 }
@@ -358,19 +348,8 @@ line-height:1.65;
 font-size:13px;
 }
 
-.footer-note{
-margin:14px 0 4px;
-padding:12px 14px;
-border-radius:12px;
-border:1px solid var(--border);
-background:#fff;
-color:var(--muted);
-line-height:1.55;
-font-size:12px;
-}
-
 @media (max-width: 1300px){
-.video-grid{grid-template-columns:repeat(2,1fr)}
+.platform-grid{grid-template-columns:repeat(3,1fr)}
 }
 
 @media (max-width: 1100px){
@@ -379,12 +358,13 @@ font-size:12px;
 .side-stack{position:static}
 }
 
-@media (max-width: 700px){
-.video-grid{grid-template-columns:1fr}
+@media (max-width: 800px){
+.platform-grid{grid-template-columns:repeat(2,1fr)}
 .stats{grid-template-columns:1fr 1fr}
 }
 
 @media (max-width: 560px){
+.platform-grid{grid-template-columns:1fr}
 .stats{grid-template-columns:1fr}
 .topbar{
 flex-direction:column;
@@ -416,26 +396,25 @@ align-items:flex-start;
 </div>
 
 <div class="nav">
-<a href="#videos">Videos</a>
 <a href="#platforms">Platforms</a>
-<a href="#mall">Digital Mall</a>
+<a href="#social">Social</a>
+<a href="#services">Services</a>
 </div>
 </div>
 
 <section class="hero">
 <div class="card hero-card">
-<h1>Video wall restored across multiple platforms</h1>
+<h1>One place to reach more platforms</h1>
 <p>
-This version focuses only on design and brings back a stronger platform-video feel.
-It uses a denser layout, more horizontal space, and a mixed media wall with embeds and preview cards from multiple platforms.
+SignalBoost brings together major communication, social, professional, travel, and discovery platforms in a compact, cleaner layout that uses the page width more effectively.
 </p>
 <div class="pill-row">
+<span class="pill">Telegram</span>
+<span class="pill">Signal</span>
+<span class="pill">LinkedIn</span>
+<span class="pill">Facebook</span>
+<span class="pill">Reddit</span>
 <span class="pill">YouTube</span>
-<span class="pill">Vimeo</span>
-<span class="pill">Dailymotion</span>
-<span class="pill">TikTok previews</span>
-<span class="pill">Reddit previews</span>
-<span class="pill">Instagram previews</span>
 </div>
 </div>
 
@@ -445,12 +424,12 @@ It uses a denser layout, more horizontal space, and a mixed media wall with embe
 <div id="live-clock" class="value">--:--:--</div>
 </div>
 <div class="mini-stat">
-<div class="label">Current focus</div>
-<div class="value">Video design</div>
+<div class="label">Visible platforms</div>
+<div class="value">12</div>
 </div>
 <div class="mini-stat">
-<div class="label">Visible platforms</div>
-<div class="value">6</div>
+<div class="label">Current focus</div>
+<div class="value">Platform wall</div>
 </div>
 <div class="mini-stat">
 <div class="label">Layout style</div>
@@ -461,239 +440,276 @@ It uses a denser layout, more horizontal space, and a mixed media wall with embe
 
 <div class="layout">
 <div class="main-stack">
-<section id="videos" class="card section-card">
-<h2>Platform Video Feed</h2>
-<p>
-This is the restored video area. Some platforms allow direct embeds. Others work better as strong preview cards that open in a new tab.
-</p>
-
-<div class="video-toolbar">
-<div class="chip">Trending style</div>
-<div class="chip">Multi-platform</div>
-<div class="chip">Lighter layout</div>
-<div class="chip">Smaller cards</div>
-<div class="chip">More side usage</div>
-</div>
-
-<div class="video-grid">
-<div class="video-card">
-<div class="embed-wrap">
-<iframe
-src="https://www.youtube.com/embed/Scxs7L0vhZ4"
-title="YouTube travel video"
-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-allowfullscreen>
-</iframe>
-</div>
-<div class="video-body">
-<span class="platform-tag">YouTube</span>
-<h3>Travel guide video</h3>
-<div class="video-meta">
-<span>Video platform</span>
-<span>Embedded</span>
-</div>
-<p>Destination planning, city guide, and travel inspiration in a direct embedded player.</p>
-</div>
-</div>
-
-<div class="video-card">
-<div class="embed-wrap">
-<iframe
-src="https://player.vimeo.com/video/76979871"
-title="Vimeo travel video"
-allow="autoplay; fullscreen; picture-in-picture"
-allowfullscreen>
-</iframe>
-</div>
-<div class="video-body">
-<span class="platform-tag">Vimeo</span>
-<h3>Clean travel visual</h3>
-<div class="video-meta">
-<span>Video platform</span>
-<span>Embedded</span>
-</div>
-<p>Vimeo gives the page a more premium, cinematic media feel.</p>
-</div>
-</div>
-
-<div class="video-card">
-<div class="embed-wrap">
-<iframe
-src="https://www.dailymotion.com/embed/video/x84sh87"
-title="Dailymotion travel video"
-allowfullscreen>
-</iframe>
-</div>
-<div class="video-body">
-<span class="platform-tag">Dailymotion</span>
-<h3>Alternative video source</h3>
-<div class="video-meta">
-<span>Video platform</span>
-<span>Embedded</span>
-</div>
-<p>Adds variety so the page does not look tied to a single platform.</p>
-</div>
-</div>
-
-<div class="video-card preview-card">
-<div class="preview-thumb">TikTok Travel Clips</div>
-<div class="video-body">
-<span class="platform-tag">TikTok</span>
-<h3>Short-form travel clips</h3>
-<div class="video-meta">
-<span>Preview card</span>
-<span>Opens externally</span>
-</div>
-<p>Short-form destination clips, food videos, nightlife previews, and city highlights.</p>
-<a class="btn btn-secondary" href="https://www.tiktok.com/search?q=travel" target="_blank" rel="noopener noreferrer">Open TikTok</a>
-</div>
-</div>
-
-<div class="video-card preview-card">
-<div class="preview-thumb">Reddit Video & Discussion</div>
-<div class="video-body">
-<span class="platform-tag">Reddit</span>
-<h3>Community-driven travel content</h3>
-<div class="video-meta">
-<span>Preview card</span>
-<span>Opens externally</span>
-</div>
-<p>Travel communities, opinions, clips, tips, and destination conversations.</p>
-<a class="btn btn-secondary" href="https://www.reddit.com/search/?q=travel" target="_blank" rel="noopener noreferrer">Open Reddit</a>
-</div>
-</div>
-
-<div class="video-card preview-card">
-<div class="preview-thumb">Instagram Reels Travel</div>
-<div class="video-body">
-<span class="platform-tag">Instagram</span>
-<h3>Reels and destination visuals</h3>
-<div class="video-meta">
-<span>Preview card</span>
-<span>Opens externally</span>
-</div>
-<p>Travel reels, restaurant visuals, city clips, and local lifestyle content.</p>
-<a class="btn btn-secondary" href="https://www.instagram.com/explore/tags/travel/" target="_blank" rel="noopener noreferrer">Open Instagram</a>
-</div>
-</div>
-
-<div class="video-card">
-<div class="embed-wrap">
-<iframe
-src="https://www.youtube.com/embed/aqz-KE-bpKQ"
-title="YouTube additional video"
-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-allowfullscreen>
-</iframe>
-</div>
-<div class="video-body">
-<span class="platform-tag">YouTube</span>
-<h3>Second embedded video</h3>
-<div class="video-meta">
-<span>More visible media</span>
-<span>Embedded</span>
-</div>
-<p>Extra embedded media makes the page feel fuller and more active.</p>
-</div>
-</div>
-
-<div class="video-card preview-card">
-<div class="preview-thumb">LinkedIn Video & Business</div>
-<div class="video-body">
-<span class="platform-tag">LinkedIn</span>
-<h3>Business travel content</h3>
-<div class="video-meta">
-<span>Preview card</span>
-<span>Opens externally</span>
-</div>
-<p>Professional travel, relocation, international work, and business-related media.</p>
-<a class="btn btn-secondary" href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">Open LinkedIn</a>
-</div>
-</div>
-
-<div class="video-card preview-card">
-<div class="preview-thumb">Trip Videos & Reviews</div>
-<div class="video-body">
-<span class="platform-tag">TripAdvisor</span>
-<h3>Travel review media</h3>
-<div class="video-meta">
-<span>Preview card</span>
-<span>Opens externally</span>
-</div>
-<p>Travel review content, attractions, local photos, and planning support.</p>
-<a class="btn btn-secondary" href="https://www.tripadvisor.com" target="_blank" rel="noopener noreferrer">Open TripAdvisor</a>
-</div>
-</div>
-</div>
-</section>
-
 <section id="platforms" class="card section-card">
-<h2>Platform Rows</h2>
+<h2>Platform Wall</h2>
 <p>
-These cards keep the page visually busy and make it feel closer to a content platform homepage.
+Fast access to major platforms across messaging, social media, professional networks, travel, and discovery.
 </p>
 
-<div class="video-grid">
-<div class="video-card preview-card">
-<div class="preview-thumb">YouTube Row</div>
-<div class="video-body">
-<span class="platform-tag">YouTube</span>
-<h3>Longer travel videos</h3>
-<p>Guides, airport tours, hotel reviews, and full destination coverage.</p>
+<div class="platform-toolbar">
+<div class="chip">Messaging</div>
+<div class="chip">Social</div>
+<div class="chip">Professional</div>
+<div class="chip">Travel</div>
+<div class="chip">Discovery</div>
+</div>
+
+<div class="platform-grid">
+<div class="platform-card">
+<div class="platform-thumb">Telegram</div>
+<div class="platform-body">
+<span class="platform-tag">Messaging</span>
+<h3>Telegram channels and communities</h3>
+<div class="platform-meta">
+<span>Fast access</span>
+<span>External</span>
+</div>
+<p>Use Telegram for groups, channels, updates, and broader community discovery.</p>
+<a class="btn btn-secondary" href="https://telegram.org/" target="_blank" rel="noopener noreferrer">Open Telegram</a>
 </div>
 </div>
 
-<div class="video-card preview-card">
-<div class="preview-thumb">TikTok Row</div>
-<div class="video-body">
-<span class="platform-tag">TikTok</span>
-<h3>Fast-moving clips</h3>
-<p>Short destination clips and immediate visual discovery.</p>
+<div class="platform-card">
+<div class="platform-thumb">Signal</div>
+<div class="platform-body">
+<span class="platform-tag">Messaging</span>
+<h3>Signal private communication</h3>
+<div class="platform-meta">
+<span>Private messaging</span>
+<span>External</span>
+</div>
+<p>Direct access to Signal for private and secure communication.</p>
+<a class="btn btn-secondary" href="https://signal.org/" target="_blank" rel="noopener noreferrer">Open Signal</a>
 </div>
 </div>
 
-<div class="video-card preview-card">
-<div class="preview-thumb">Reddit Row</div>
-<div class="video-body">
-<span class="platform-tag">Reddit</span>
-<h3>Community discovery</h3>
-<p>Useful when users want people’s opinions, not only polished media.</p>
+<div class="platform-card">
+<div class="platform-thumb">LinkedIn</div>
+<div class="platform-body">
+<span class="platform-tag">Professional</span>
+<h3>LinkedIn network and business content</h3>
+<div class="platform-meta">
+<span>Professional</span>
+<span>External</span>
+</div>
+<p>Professional networking, business travel context, relocation, and work-related discovery.</p>
+<a class="btn btn-secondary" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">Open LinkedIn</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">Facebook</div>
+<div class="platform-body">
+<span class="platform-tag">Social</span>
+<h3>Facebook groups and community reach</h3>
+<div class="platform-meta">
+<span>Social</span>
+<span>External</span>
+</div>
+<p>Groups, events, pages, and broad community-based discovery.</p>
+<a class="btn btn-secondary" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Open Facebook</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">Reddit</div>
+<div class="platform-body">
+<span class="platform-tag">Community</span>
+<h3>Reddit discussions and niche communities</h3>
+<div class="platform-meta">
+<span>Community</span>
+<span>External</span>
+</div>
+<p>Travel tips, local opinions, trends, and community-driven recommendations.</p>
+<a class="btn btn-secondary" href="https://www.reddit.com/" target="_blank" rel="noopener noreferrer">Open Reddit</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">YouTube</div>
+<div class="platform-body">
+<span class="platform-tag">Video</span>
+<h3>YouTube travel and guide content</h3>
+<div class="platform-meta">
+<span>Video</span>
+<span>External</span>
+</div>
+<p>Longer-form guides, reviews, airport walkthroughs, and destination planning content.</p>
+<a class="btn btn-secondary" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">Open YouTube</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">Instagram</div>
+<div class="platform-body">
+<span class="platform-tag">Social</span>
+<h3>Instagram visuals and reels</h3>
+<div class="platform-meta">
+<span>Reels</span>
+<span>External</span>
+</div>
+<p>Travel visuals, restaurant highlights, nightlife, and local lifestyle clips.</p>
+<a class="btn btn-secondary" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Open Instagram</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">TikTok</div>
+<div class="platform-body">
+<span class="platform-tag">Video</span>
+<h3>TikTok short-form discovery</h3>
+<div class="platform-meta">
+<span>Short clips</span>
+<span>External</span>
+</div>
+<p>Fast-moving destination clips, city guides, and local discovery content.</p>
+<a class="btn btn-secondary" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">Open TikTok</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">WhatsApp</div>
+<div class="platform-body">
+<span class="platform-tag">Messaging</span>
+<h3>WhatsApp communication</h3>
+<div class="platform-meta">
+<span>Messaging</span>
+<span>External</span>
+</div>
+<p>Quick access to one of the most commonly used communication platforms.</p>
+<a class="btn btn-secondary" href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer">Open WhatsApp</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">X</div>
+<div class="platform-body">
+<span class="platform-tag">Social</span>
+<h3>X posts and live public conversation</h3>
+<div class="platform-meta">
+<span>Social</span>
+<span>External</span>
+</div>
+<p>Follow current public discussions, news reactions, and fast-moving topics.</p>
+<a class="btn btn-secondary" href="https://x.com/" target="_blank" rel="noopener noreferrer">Open X</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">Pinterest</div>
+<div class="platform-body">
+<span class="platform-tag">Discovery</span>
+<h3>Pinterest inspiration boards</h3>
+<div class="platform-meta">
+<span>Ideas</span>
+<span>External</span>
+</div>
+<p>Inspiration for destinations, style, events, and visual planning.</p>
+<a class="btn btn-secondary" href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer">Open Pinterest</a>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">TripAdvisor</div>
+<div class="platform-body">
+<span class="platform-tag">Travel</span>
+<h3>TripAdvisor reviews and places</h3>
+<div class="platform-meta">
+<span>Travel</span>
+<span>External</span>
+</div>
+<p>Destination reviews, activities, hotels, and local place comparisons.</p>
+<a class="btn btn-secondary" href="https://www.tripadvisor.com/" target="_blank" rel="noopener noreferrer">Open TripAdvisor</a>
 </div>
 </div>
 </div>
 </section>
 
-<section id="mall" class="card section-card">
-<h2>Digital Mall Direction</h2>
+<section id="social" class="card section-card">
+<h2>Social and Messaging</h2>
 <p>
-The platform can still combine travel, local life, finance, and content discovery. This version is only about restoring the video-heavy look first.
+Messaging and social platforms can sit side by side inside SignalBoost as part of the broader digital mall direction.
 </p>
 
-<div class="video-grid">
-<div class="video-card preview-card">
-<div class="preview-thumb">Travel</div>
-<div class="video-body">
-<span class="platform-tag">Category</span>
-<h3>Trips and relocation</h3>
-<p>Flights, stays, activities, airports, and official entry paths.</p>
+<div class="platform-grid">
+<div class="platform-card">
+<div class="platform-thumb">Telegram</div>
+<div class="platform-body">
+<span class="platform-tag">Messaging</span>
+<h3>Groups and channels</h3>
+<p>Useful for updates, communities, and wide broadcast-style communication.</p>
 </div>
 </div>
 
-<div class="video-card preview-card">
-<div class="preview-thumb">Local Life</div>
-<div class="video-body">
-<span class="platform-tag">Category</span>
-<h3>Food and nightlife</h3>
-<p>Restaurants, reels, city clips, and local entertainment content.</p>
+<div class="platform-card">
+<div class="platform-thumb">Signal</div>
+<div class="platform-body">
+<span class="platform-tag">Messaging</span>
+<h3>Private conversations</h3>
+<p>Stronger privacy-oriented communication option.</p>
 </div>
 </div>
 
-<div class="video-card preview-card">
-<div class="preview-thumb">Finance</div>
-<div class="video-body">
+<div class="platform-card">
+<div class="platform-thumb">Facebook</div>
+<div class="platform-body">
+<span class="platform-tag">Social</span>
+<h3>Groups and events</h3>
+<p>Strong for community discovery and local group participation.</p>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">LinkedIn</div>
+<div class="platform-body">
+<span class="platform-tag">Professional</span>
+<h3>Business and work networks</h3>
+<p>Important for the professional side of the platform.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="services" class="card section-card">
+<h2>Service Direction</h2>
+<p>
+The platform wall can grow into a larger navigation layer across communication, content, travel, finance, and business tools.
+</p>
+
+<div class="platform-grid">
+<div class="platform-card">
+<div class="platform-thumb">Travel</div>
+<div class="platform-body">
+<span class="platform-tag">Category</span>
+<h3>Trips and local life</h3>
+<p>Flights, stays, activities, food, and destination planning.</p>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">Finance</div>
+<div class="platform-body">
 <span class="platform-tag">Category</span>
 <h3>Payments and services</h3>
-<p>Future area for cards, money tools, merchant services, and partner flows.</p>
+<p>Payment tools, partner services, and future merchant options.</p>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">Content</div>
+<div class="platform-body">
+<span class="platform-tag">Category</span>
+<h3>Media and discovery</h3>
+<p>Video, discussion, visual inspiration, and community discovery.</p>
+</div>
+</div>
+
+<div class="platform-card">
+<div class="platform-thumb">Work</div>
+<div class="platform-body">
+<span class="platform-tag">Category</span>
+<h3>Professional network</h3>
+<p>Business travel, relocation, and work-related discovery.</p>
 </div>
 </div>
 </div>
@@ -702,29 +718,24 @@ The platform can still combine travel, local life, finance, and content discover
 
 <aside class="side-stack">
 <div class="card side-card">
-<h3>What changed</h3>
-<p>
-This version focuses only on bringing the videos back and making the page feel more alive.
-</p>
+<h3>Featured platforms</h3>
 <ul class="simple-list">
-<li>More visible video cards</li>
-<li>Multiple platforms again</li>
-<li>Better use of width</li>
-<li>Denser vertical design</li>
+<li>Telegram</li>
+<li>Signal</li>
+<li>LinkedIn</li>
+<li>Facebook</li>
+<li>Reddit</li>
+<li>YouTube</li>
 </ul>
 </div>
 
 <div class="card side-card">
-<h3>Important note</h3>
+<h3>Layout focus</h3>
 <p>
-Embedded video works best on platforms that allow iframes. Some platforms are shown as preview cards that open in a new tab.
+The page uses a denser card wall so more platforms can appear on screen at once without oversized empty areas.
 </p>
 </div>
 </aside>
-</div>
-
-<div class="footer-note">
-This version is focused only on design and brings the video-heavy look back. It restores a multi-platform media wall without changing the trip planner logic.
 </div>
 </div>
 
