@@ -6,23 +6,16 @@
 <title>SignalBoost</title>
 <style>
 :root{
---bg:#f4f7fb;
+--bg:#f6f8fc;
 --surface:#ffffff;
---surface-2:#f7faff;
---border:#d7e3f0;
+--surface-2:#f8fbff;
+--border:#d9e2ef;
 --text:#0f172a;
---muted:#617187;
+--muted:#64748b;
 --blue:#2563eb;
 --blue-soft:#dbeafe;
---green:#166534;
---green-soft:#dcfce7;
---gold:#92400e;
---gold-soft:#fef3c7;
---official-bg:#ffe8a3;
---official-border:#f59e0b;
---official-text:#6b3f00;
---danger:#b91c1c;
 --shadow:0 8px 24px rgba(15,23,42,.08);
+--radius:18px;
 }
 
 *{box-sizing:border-box}
@@ -31,14 +24,17 @@ html{scroll-behavior:smooth}
 body{
 margin:0;
 font-family:Arial, Helvetica, sans-serif;
-background:linear-gradient(180deg,#eef4ff 0%, #f8fbff 36%, #ffffff 100%);
+background:linear-gradient(180deg,#edf4ff 0%, #f8fbff 35%, #ffffff 100%);
 color:var(--text);
 }
 
-a{color:inherit;text-decoration:none}
+a{
+color:inherit;
+text-decoration:none;
+}
 
 .app{
-max-width:1550px;
+max-width:1580px;
 margin:0 auto;
 padding:14px;
 }
@@ -87,8 +83,8 @@ flex-shrink:0;
 
 .nav{
 display:flex;
-flex-wrap:wrap;
 gap:8px;
+flex-wrap:wrap;
 }
 
 .nav a{
@@ -103,14 +99,14 @@ font-weight:700;
 .hero{
 margin-top:14px;
 display:grid;
-grid-template-columns:1.3fr .7fr;
+grid-template-columns:1.35fr .65fr;
 gap:14px;
 }
 
 .card{
 background:var(--surface);
 border:1px solid var(--border);
-border-radius:18px;
+border-radius:var(--radius);
 box-shadow:var(--shadow);
 }
 
@@ -129,12 +125,13 @@ margin:0;
 color:var(--muted);
 line-height:1.6;
 font-size:14px;
+max-width:900px;
 }
 
 .pill-row{
 display:flex;
-gap:8px;
 flex-wrap:wrap;
+gap:8px;
 margin-top:12px;
 }
 
@@ -176,7 +173,7 @@ font-weight:700;
 .layout{
 margin-top:14px;
 display:grid;
-grid-template-columns:minmax(0,2.55fr) minmax(290px,.75fr);
+grid-template-columns:minmax(0,2.8fr) minmax(270px,.7fr);
 gap:14px;
 align-items:start;
 }
@@ -186,6 +183,14 @@ display:flex;
 flex-direction:column;
 gap:14px;
 min-width:0;
+}
+
+.side-stack{
+display:flex;
+flex-direction:column;
+gap:14px;
+position:sticky;
+top:78px;
 }
 
 .section-card{
@@ -204,63 +209,99 @@ line-height:1.55;
 font-size:13px;
 }
 
-.planner-grid{
-display:grid;
-grid-template-columns:1fr 1.15fr 1.15fr 1.15fr .9fr .9fr .85fr .85fr;
-gap:8px;
-margin-bottom:10px;
-}
-
-.field{
+.video-toolbar{
 display:flex;
-flex-direction:column;
-gap:4px;
+flex-wrap:wrap;
+gap:8px;
+margin-bottom:12px;
 }
 
-.field label{
-font-size:11px;
-color:var(--muted);
-font-weight:700;
-padding-left:2px;
-}
-
-input, select{
-width:100%;
-padding:10px 12px;
-border-radius:10px;
+.chip{
 border:1px solid var(--border);
 background:#fff;
-color:var(--text);
-font-size:13px;
-outline:none;
+padding:8px 10px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+color:#334155;
 }
 
-option{color:#000}
+.video-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+}
 
-.actions,.links-row{
+.video-card{
+border:1px solid var(--border);
+background:#fff;
+border-radius:16px;
+overflow:hidden;
+box-shadow:var(--shadow);
+min-width:0;
+}
+
+.embed-wrap{
+position:relative;
+width:100%;
+aspect-ratio:16/9;
+background:#dbeafe;
+}
+
+.embed-wrap iframe{
+width:100%;
+height:100%;
+border:0;
+display:block;
+}
+
+.video-body{
+padding:12px;
+}
+
+.platform-tag{
+display:inline-block;
+margin-bottom:8px;
+padding:5px 8px;
+border-radius:999px;
+background:#eef4ff;
+color:#1d4ed8;
+font-size:11px;
+font-weight:700;
+}
+
+.video-body h3{
+margin:0 0 6px 0;
+font-size:15px;
+line-height:1.35;
+}
+
+.video-body p{
+margin:0 0 10px 0;
+color:var(--muted);
+line-height:1.45;
+font-size:12px;
+}
+
+.video-meta{
 display:flex;
-gap:8px;
 flex-wrap:wrap;
+gap:8px;
+color:var(--muted);
+font-size:11px;
+margin-bottom:10px;
 }
-
-.actions{margin-bottom:10px}
 
 .btn{
 border:none;
 border-radius:10px;
-padding:10px 13px;
+padding:9px 12px;
 font-weight:700;
-font-size:13px;
+font-size:12px;
 cursor:pointer;
 display:inline-flex;
 align-items:center;
 justify-content:center;
-transition:transform .15s ease, opacity .15s ease;
-}
-
-.btn:hover{
-transform:translateY(-1px);
-opacity:.96;
 }
 
 .btn-primary{
@@ -274,199 +315,23 @@ color:#1e293b;
 border:1px solid var(--border);
 }
 
-.result-grid{
-display:grid;
-grid-template-columns:1.35fr .95fr;
-gap:10px;
-margin-top:6px;
-}
-
-.result-box{
-border:1px solid var(--border);
-border-radius:16px;
-padding:14px;
-background:#fff;
-min-width:0;
-}
-
-.badge-row{
+.preview-card{
 display:flex;
-gap:6px;
-flex-wrap:wrap;
-margin-bottom:8px;
+flex-direction:column;
+height:100%;
 }
 
-.badge{
-padding:5px 8px;
-border-radius:999px;
-font-size:11px;
-font-weight:700;
-background:#e2e8f0;
-color:#334155;
-}
-
-.badge-blue{background:#dbeafe;color:#1d4ed8}
-.badge-green{background:var(--green-soft);color:var(--green)}
-.badge-gold{background:var(--gold-soft);color:var(--gold)}
-
-.result-box h3{
-margin:0 0 8px 0;
-font-size:20px;
-line-height:1.3;
-}
-
-.meta-list{
-margin:0;
-padding-left:18px;
-color:var(--muted);
-line-height:1.65;
-font-size:13px;
-}
-
-.info-box{
-margin-top:10px;
-border:1px solid var(--border);
-border-radius:12px;
-padding:10px;
-background:#f8fbff;
-color:#1e3a5f;
-line-height:1.5;
-font-size:13px;
-}
-
-.tip-box{
-background:#fff8e6;
-color:#7c5700;
-}
-
-.official-box{
-background:linear-gradient(135deg,var(--official-bg),#ffd66b);
-color:var(--official-text);
-border:2px solid var(--official-border);
-box-shadow:0 8px 18px rgba(245,158,11,.18);
-font-weight:700;
-}
-
-.official-buttons .btn-secondary{
-background:#fff7e6;
-border:2px solid var(--official-border);
-color:var(--official-text);
-font-weight:700;
-}
-
-.official-buttons .btn-secondary:hover{
-background:#ffefc2;
-}
-
-.domestic-note{
-color:var(--danger);
-font-weight:700;
-}
-
-.price-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:8px;
-margin-top:10px;
-}
-
-.price-card{
-border:1px solid var(--border);
-border-radius:12px;
-padding:10px;
-background:#f8fbff;
-}
-
-.price-card h4{
-margin:0 0 4px 0;
-font-size:13px;
-line-height:1.3;
-}
-
-.price-card .small{
-color:var(--muted);
-font-size:11px;
-line-height:1.45;
-}
-
-.price-card .price{
-margin-top:6px;
-font-size:18px;
-font-weight:700;
-}
-
-.airport-box{
-margin-top:10px;
-border:1px solid var(--border);
-border-radius:12px;
-padding:10px;
-background:#f8fbff;
-}
-
-.airport-box h4{
-margin:0 0 8px 0;
-font-size:14px;
-}
-
-.feed-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
-}
-
-.feed-card{
-border:1px solid var(--border);
-background:#fff;
-border-radius:16px;
-overflow:hidden;
-box-shadow:var(--shadow);
-}
-
-.thumb{
-height:108px;
-background:linear-gradient(135deg,#dbeafe,#bfdbfe,#e0f2fe);
+.preview-thumb{
+aspect-ratio:16/9;
+background:linear-gradient(135deg,#dbeafe,#c7d2fe,#e9d5ff);
 display:flex;
 align-items:center;
 justify-content:center;
+text-align:center;
+padding:16px;
+font-size:18px;
 font-weight:700;
 color:#1e3a8a;
-font-size:15px;
-text-align:center;
-padding:10px;
-}
-
-.feed-body{
-padding:12px;
-}
-
-.feed-body h3{
-margin:0 0 5px 0;
-font-size:15px;
-line-height:1.3;
-}
-
-.feed-body p{
-margin:0 0 10px 0;
-color:var(--muted);
-line-height:1.45;
-font-size:12px;
-}
-
-.meta{
-font-size:11px;
-color:var(--muted);
-margin-bottom:10px;
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-}
-
-.side-stack{
-display:flex;
-flex-direction:column;
-gap:14px;
-position:sticky;
-top:78px;
 }
 
 .side-card{
@@ -504,34 +369,23 @@ line-height:1.55;
 font-size:12px;
 }
 
-@media (max-width: 1360px){
-.planner-grid{grid-template-columns:1fr 1fr 1fr 1fr}
-.feed-grid{grid-template-columns:repeat(3,1fr)}
+@media (max-width: 1300px){
+.video-grid{grid-template-columns:repeat(2,1fr)}
 }
 
-@media (max-width: 1150px){
+@media (max-width: 1100px){
 .hero{grid-template-columns:1fr}
 .layout{grid-template-columns:1fr}
 .side-stack{position:static}
 }
 
-@media (max-width: 900px){
-.result-grid{grid-template-columns:1fr}
-.feed-grid{grid-template-columns:repeat(2,1fr)}
-.price-grid{grid-template-columns:1fr}
-}
-
 @media (max-width: 700px){
-.planner-grid{grid-template-columns:1fr 1fr}
-.feed-grid{grid-template-columns:1fr}
+.video-grid{grid-template-columns:1fr}
 .stats{grid-template-columns:1fr 1fr}
 }
 
 @media (max-width: 560px){
-.planner-grid,
-.stats{
-grid-template-columns:1fr;
-}
+.stats{grid-template-columns:1fr}
 .topbar{
 flex-direction:column;
 align-items:flex-start;
@@ -562,26 +416,26 @@ align-items:flex-start;
 </div>
 
 <div class="nav">
-<a href="#planner">Planner</a>
-<a href="#feed">Feed</a>
+<a href="#videos">Videos</a>
+<a href="#platforms">Platforms</a>
 <a href="#mall">Digital Mall</a>
 </div>
 </div>
 
 <section class="hero">
 <div class="card hero-card">
-<h1>Plan better. Compare smarter. Keep your place.</h1>
+<h1>Video wall restored across multiple platforms</h1>
 <p>
-SignalBoost is your AI-powered digital mall. It supports round trips, one-way trips, and multi-city planning,
-suggests airports for major cities, shows official government links only when they apply, and keeps the layout compact enough for more content on screen.
+This version focuses only on design and brings back a stronger platform-video feel.
+It uses a denser layout, more horizontal space, and a mixed media wall with embeds and preview cards from multiple platforms.
 </p>
 <div class="pill-row">
-<span class="pill">Round trip</span>
-<span class="pill">One way</span>
-<span class="pill">Multi-city</span>
-<span class="pill">Airport choice</span>
-<span class="pill">Cabin class</span>
-<span class="pill">Official links</span>
+<span class="pill">YouTube</span>
+<span class="pill">Vimeo</span>
+<span class="pill">Dailymotion</span>
+<span class="pill">TikTok previews</span>
+<span class="pill">Reddit previews</span>
+<span class="pill">Instagram previews</span>
 </div>
 </div>
 
@@ -591,289 +445,255 @@ suggests airports for major cities, shows official government links only when th
 <div id="live-clock" class="value">--:--:--</div>
 </div>
 <div class="mini-stat">
-<div class="label">Current mode</div>
-<div class="value">Digital Mall</div>
+<div class="label">Current focus</div>
+<div class="value">Video design</div>
 </div>
 <div class="mini-stat">
-<div class="label">Planner status</div>
-<div id="planner-status" class="value">Ready</div>
+<div class="label">Visible platforms</div>
+<div class="value">6</div>
 </div>
 <div class="mini-stat">
-<div class="label">Main partner</div>
-<div class="value">Viator</div>
+<div class="label">Layout style</div>
+<div class="value">Dense feed</div>
 </div>
 </div>
 </section>
 
 <div class="layout">
 <div class="main-stack">
-<section id="planner" class="card section-card">
-<h2>Trip Planner</h2>
+<section id="videos" class="card section-card">
+<h2>Platform Video Feed</h2>
 <p>
-Choose your trip structure, set your route, and compare estimated OTA paths. City searches can show airport choices automatically.
+This is the restored video area. Some platforms allow direct embeds. Others work better as strong preview cards that open in a new tab.
 </p>
 
-<div class="planner-grid">
-<div class="field">
-<label for="tripStructure">Trip type</label>
-<select id="tripStructure" onchange="updateTripStructureUI()">
-<option value="roundtrip" selected>Round trip</option>
-<option value="oneway">One way</option>
-<option value="multicity">Multi-city</option>
-</select>
+<div class="video-toolbar">
+<div class="chip">Trending style</div>
+<div class="chip">Multi-platform</div>
+<div class="chip">Lighter layout</div>
+<div class="chip">Smaller cards</div>
+<div class="chip">More side usage</div>
 </div>
 
-<div class="field">
-<label for="departingFrom">Departing from</label>
-<input id="departingFrom" list="citySuggestions" placeholder="City or country" />
+<div class="video-grid">
+<div class="video-card">
+<div class="embed-wrap">
+<iframe
+src="https://www.youtube.com/embed/Scxs7L0vhZ4"
+title="YouTube travel video"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+allowfullscreen>
+</iframe>
 </div>
-
-<div class="field">
-<label for="goingTo">Going to</label>
-<input id="goingTo" list="citySuggestions" placeholder="City or country" />
+<div class="video-body">
+<span class="platform-tag">YouTube</span>
+<h3>Travel guide video</h3>
+<div class="video-meta">
+<span>Video platform</span>
+<span>Embedded</span>
 </div>
-
-<div class="field" id="returningField">
-<label for="returningFrom" id="returningLabel">Returning from</label>
-<input id="returningFrom" list="citySuggestions" placeholder="Return city or next destination" />
-</div>
-
-<div class="field">
-<label for="departureDate">Departure</label>
-<input id="departureDate" type="date" />
-</div>
-
-<div class="field" id="returnDateField">
-<label for="returnDate" id="returnDateLabel">Return</label>
-<input id="returnDate" type="date" />
-</div>
-
-<div class="field">
-<label for="travelers">Travelers</label>
-<select id="travelers">
-<option value="1">1 traveler</option>
-<option value="2" selected>2 travelers</option>
-<option value="3">3 travelers</option>
-<option value="4">4 travelers</option>
-<option value="5">5 travelers</option>
-</select>
-</div>
-
-<div class="field">
-<label for="cabinClass">Cabin class</label>
-<select id="cabinClass">
-<option value="economy" selected>Economy</option>
-<option value="premium economy">Premium economy</option>
-<option value="business">Business</option>
-<option value="first">First</option>
-</select>
+<p>Destination planning, city guide, and travel inspiration in a direct embedded player.</p>
 </div>
 </div>
 
-<datalist id="citySuggestions">
-<option value="Washington DC"></option>
-<option value="New York"></option>
-<option value="Paris"></option>
-<option value="Madrid"></option>
-<option value="Rome"></option>
-<option value="London"></option>
-<option value="United States"></option>
-<option value="France"></option>
-<option value="Spain"></option>
-<option value="Italy"></option>
-<option value="United Kingdom"></option>
-</datalist>
-
-<div class="actions">
-<button class="btn btn-primary" onclick="runPlanner()">Plan Trip</button>
-<button class="btn btn-secondary" onclick="clearPlannerInputs()">Clear Form</button>
+<div class="video-card">
+<div class="embed-wrap">
+<iframe
+src="https://player.vimeo.com/video/76979871"
+title="Vimeo travel video"
+allow="autoplay; fullscreen; picture-in-picture"
+allowfullscreen>
+</iframe>
 </div>
-
-<div class="result-grid">
-<div class="result-box">
-<div class="badge-row">
-<span class="badge badge-blue" id="badge-destination">No route yet</span>
-<span class="badge badge-green" id="badge-structure">Round trip</span>
-<span class="badge badge-gold" id="badge-cabin">Economy</span>
+<div class="video-body">
+<span class="platform-tag">Vimeo</span>
+<h3>Clean travel visual</h3>
+<div class="video-meta">
+<span>Video platform</span>
+<span>Embedded</span>
 </div>
-
-<h3 id="result-title">Trip results will appear here</h3>
-
-<ul class="meta-list" id="activity-list">
-<li>Choose a route and click Plan Trip.</li>
-</ul>
-
-<div class="airport-box" id="airport-box" style="display:none;">
-<h4>Airport options</h4>
-<select id="airportSelect"></select>
-</div>
-
-<div class="info-box" id="why-box">
-<strong>Why this helps:</strong>
-SignalBoost gives users a simpler first action instead of sending them to many separate sites first.
-</div>
-
-<div class="info-box tip-box" id="tip-box">
-<strong>Tip:</strong>
-External links open in a new tab so the user can return to SignalBoost easily.
-</div>
-
-<div class="price-grid" id="price-grid">
-<div class="price-card">
-<h4>Estimated OTA option</h4>
-<div class="small">Fill the planner to see estimated OTA paths.</div>
-<div class="price">—</div>
+<p>Vimeo gives the page a more premium, cinematic media feel.</p>
 </div>
 </div>
 
-<div class="links-row" style="margin-top:10px;">
-<a
-id="viator-link"
-class="btn btn-primary"
-href="https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link"
-target="_blank"
-rel="noopener noreferrer"
->
-Explore Activities
-</a>
-<button class="btn btn-secondary" onclick="copyCurrentLink()">Copy Activity Link</button>
+<div class="video-card">
+<div class="embed-wrap">
+<iframe
+src="https://www.dailymotion.com/embed/video/x84sh87"
+title="Dailymotion travel video"
+allowfullscreen>
+</iframe>
+</div>
+<div class="video-body">
+<span class="platform-tag">Dailymotion</span>
+<h3>Alternative video source</h3>
+<div class="video-meta">
+<span>Video platform</span>
+<span>Embedded</span>
+</div>
+<p>Adds variety so the page does not look tied to a single platform.</p>
 </div>
 </div>
 
-<div class="result-box" id="official-panel">
-<h3>Official information</h3>
-
-<div class="info-box official-box" id="official-box">
-<strong>Important official guidance:</strong>
-Use the highlighted official government links below for entry rules, visas, immigration, or work permissions.
+<div class="video-card preview-card">
+<div class="preview-thumb">TikTok Travel Clips</div>
+<div class="video-body">
+<span class="platform-tag">TikTok</span>
+<h3>Short-form travel clips</h3>
+<div class="video-meta">
+<span>Preview card</span>
+<span>Opens externally</span>
+</div>
+<p>Short-form destination clips, food videos, nightlife previews, and city highlights.</p>
+<a class="btn btn-secondary" href="https://www.tiktok.com/search?q=travel" target="_blank" rel="noopener noreferrer">Open TikTok</a>
+</div>
 </div>
 
-<div class="links-row official-buttons">
-<a
-id="official-info-link"
-class="btn btn-secondary"
-href="https://www.cbp.gov/travel/international-visitors"
-target="_blank"
-rel="noopener noreferrer"
->
-Official Info
-</a>
-
-<a
-id="official-apply-link"
-class="btn btn-secondary"
-href="https://esta.cbp.dhs.gov/"
-target="_blank"
-rel="noopener noreferrer"
->
-Official Application
-</a>
+<div class="video-card preview-card">
+<div class="preview-thumb">Reddit Video & Discussion</div>
+<div class="video-body">
+<span class="platform-tag">Reddit</span>
+<h3>Community-driven travel content</h3>
+<div class="video-meta">
+<span>Preview card</span>
+<span>Opens externally</span>
+</div>
+<p>Travel communities, opinions, clips, tips, and destination conversations.</p>
+<a class="btn btn-secondary" href="https://www.reddit.com/search/?q=travel" target="_blank" rel="noopener noreferrer">Open Reddit</a>
+</div>
 </div>
 
-<div class="info-box" id="official-note">
-Official information stays separate from commercial booking and affiliate links.
+<div class="video-card preview-card">
+<div class="preview-thumb">Instagram Reels Travel</div>
+<div class="video-body">
+<span class="platform-tag">Instagram</span>
+<h3>Reels and destination visuals</h3>
+<div class="video-meta">
+<span>Preview card</span>
+<span>Opens externally</span>
+</div>
+<p>Travel reels, restaurant visuals, city clips, and local lifestyle content.</p>
+<a class="btn btn-secondary" href="https://www.instagram.com/explore/tags/travel/" target="_blank" rel="noopener noreferrer">Open Instagram</a>
+</div>
+</div>
+
+<div class="video-card">
+<div class="embed-wrap">
+<iframe
+src="https://www.youtube.com/embed/aqz-KE-bpKQ"
+title="YouTube additional video"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+allowfullscreen>
+</iframe>
+</div>
+<div class="video-body">
+<span class="platform-tag">YouTube</span>
+<h3>Second embedded video</h3>
+<div class="video-meta">
+<span>More visible media</span>
+<span>Embedded</span>
+</div>
+<p>Extra embedded media makes the page feel fuller and more active.</p>
+</div>
+</div>
+
+<div class="video-card preview-card">
+<div class="preview-thumb">LinkedIn Video & Business</div>
+<div class="video-body">
+<span class="platform-tag">LinkedIn</span>
+<h3>Business travel content</h3>
+<div class="video-meta">
+<span>Preview card</span>
+<span>Opens externally</span>
+</div>
+<p>Professional travel, relocation, international work, and business-related media.</p>
+<a class="btn btn-secondary" href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">Open LinkedIn</a>
+</div>
+</div>
+
+<div class="video-card preview-card">
+<div class="preview-thumb">Trip Videos & Reviews</div>
+<div class="video-body">
+<span class="platform-tag">TripAdvisor</span>
+<h3>Travel review media</h3>
+<div class="video-meta">
+<span>Preview card</span>
+<span>Opens externally</span>
+</div>
+<p>Travel review content, attractions, local photos, and planning support.</p>
+<a class="btn btn-secondary" href="https://www.tripadvisor.com" target="_blank" rel="noopener noreferrer">Open TripAdvisor</a>
 </div>
 </div>
 </div>
 </section>
 
-<section id="feed" class="card section-card">
-<h2>Platform Feed</h2>
+<section id="platforms" class="card section-card">
+<h2>Platform Rows</h2>
 <p>
-These cards update by destination and route. They are destination-aware platform links, not live pulled videos from platform APIs.
+These cards keep the page visually busy and make it feel closer to a content platform homepage.
 </p>
 
-<div class="feed-grid" id="feed-grid">
-<div class="feed-card">
-<div class="thumb">Travel Discussions</div>
-<div class="feed-body">
-<h3>Reddit travel discussions</h3>
-<div class="meta">
-<span>Platform: Reddit</span>
-<span>Type: Community</span>
-</div>
-<p>Browse destination tips, traveler opinions, and discussion threads.</p>
-<a class="btn btn-secondary" href="https://www.reddit.com/search/?q=travel" target="_blank" rel="noopener noreferrer">Open Reddit</a>
+<div class="video-grid">
+<div class="video-card preview-card">
+<div class="preview-thumb">YouTube Row</div>
+<div class="video-body">
+<span class="platform-tag">YouTube</span>
+<h3>Longer travel videos</h3>
+<p>Guides, airport tours, hotel reviews, and full destination coverage.</p>
 </div>
 </div>
 
-<div class="feed-card">
-<div class="thumb">Travel Videos</div>
-<div class="feed-body">
-<h3>YouTube travel videos</h3>
-<div class="meta">
-<span>Platform: YouTube</span>
-<span>Type: Video</span>
-</div>
-<p>Watch travel guides, city walks, airport reviews, and planning videos.</p>
-<a class="btn btn-secondary" href="https://www.youtube.com/results?search_query=travel+guide" target="_blank" rel="noopener noreferrer">Open YouTube</a>
+<div class="video-card preview-card">
+<div class="preview-thumb">TikTok Row</div>
+<div class="video-body">
+<span class="platform-tag">TikTok</span>
+<h3>Fast-moving clips</h3>
+<p>Short destination clips and immediate visual discovery.</p>
 </div>
 </div>
 
-<div class="feed-card">
-<div class="thumb">Travel Activities</div>
-<div class="feed-body">
-<h3>Viator experiences</h3>
-<div class="meta">
-<span>Platform: Viator</span>
-<span>Type: Activities</span>
-</div>
-<p>Show tours, day trips, and experiences that fit the planner result.</p>
-<a class="btn btn-secondary" href="https://www.viator.com" target="_blank" rel="noopener noreferrer">Open Viator</a>
-</div>
-</div>
-
-<div class="feed-card">
-<div class="thumb">Stay Search</div>
-<div class="feed-body">
-<h3>Booking stays and hotels</h3>
-<div class="meta">
-<span>Platform: Booking</span>
-<span>Type: Accommodation</span>
-</div>
-<p>Search accommodation after the route is chosen.</p>
-<a class="btn btn-secondary" href="https://www.booking.com" target="_blank" rel="noopener noreferrer">Open Booking</a>
+<div class="video-card preview-card">
+<div class="preview-thumb">Reddit Row</div>
+<div class="video-body">
+<span class="platform-tag">Reddit</span>
+<h3>Community discovery</h3>
+<p>Useful when users want people’s opinions, not only polished media.</p>
 </div>
 </div>
 </div>
 </section>
 
 <section id="mall" class="card section-card">
-<h2>Digital Mall</h2>
+<h2>Digital Mall Direction</h2>
 <p>
-SignalBoost is bigger than travel alone. The platform connects categories that naturally belong together.
+The platform can still combine travel, local life, finance, and content discovery. This version is only about restoring the video-heavy look first.
 </p>
 
-<div class="feed-grid">
-<div class="feed-card">
-<div class="thumb">Travel</div>
-<div class="feed-body">
-<h3>Travel and relocation</h3>
-<p>Trips, long stays, work travel, official entry steps, and destination decisions.</p>
+<div class="video-grid">
+<div class="video-card preview-card">
+<div class="preview-thumb">Travel</div>
+<div class="video-body">
+<span class="platform-tag">Category</span>
+<h3>Trips and relocation</h3>
+<p>Flights, stays, activities, airports, and official entry paths.</p>
 </div>
 </div>
 
-<div class="feed-card">
-<div class="thumb">Local Life</div>
-<div class="feed-body">
-<h3>Food and things to do</h3>
-<p>Restaurants, nightlife, family options, local events, and after-work recommendations.</p>
+<div class="video-card preview-card">
+<div class="preview-thumb">Local Life</div>
+<div class="video-body">
+<span class="platform-tag">Category</span>
+<h3>Food and nightlife</h3>
+<p>Restaurants, reels, city clips, and local entertainment content.</p>
 </div>
 </div>
 
-<div class="feed-card">
-<div class="thumb">Finance</div>
-<div class="feed-body">
-<h3>Money and payments</h3>
-<p>Payments, travel finance, partner integrations, and future merchant services.</p>
-</div>
-</div>
-
-<div class="feed-card">
-<div class="thumb">Communities</div>
-<div class="feed-body">
-<h3>Conversations and discovery</h3>
-<p>Community-driven insight from social and discussion platforms.</p>
+<div class="video-card preview-card">
+<div class="preview-thumb">Finance</div>
+<div class="video-body">
+<span class="platform-tag">Category</span>
+<h3>Payments and services</h3>
+<p>Future area for cards, money tools, merchant services, and partner flows.</p>
 </div>
 </div>
 </div>
@@ -882,535 +702,50 @@ SignalBoost is bigger than travel alone. The platform connects categories that n
 
 <aside class="side-stack">
 <div class="card side-card">
-<h3>Planner logic</h3>
+<h3>What changed</h3>
 <p>
-The planner supports round trip, one way, and multi-city. It can suggest airports for selected cities and hide official visa steps for domestic trips.
+This version focuses only on bringing the videos back and making the page feel more alive.
 </p>
 <ul class="simple-list">
-<li>Departing from</li>
-<li>Going to</li>
-<li>Returning from / next stop</li>
-<li>Cabin class</li>
-<li>Airport selection</li>
+<li>More visible video cards</li>
+<li>Multiple platforms again</li>
+<li>Better use of width</li>
+<li>Denser vertical design</li>
 </ul>
 </div>
 
 <div class="card side-card">
-<h3>Price note</h3>
+<h3>Important note</h3>
 <p>
-The OTA prices below are estimated examples, not live fares. Real cheapest-fare research needs live travel APIs or OTA partnerships.
+Embedded video works best on platforms that allow iframes. Some platforms are shown as preview cards that open in a new tab.
 </p>
 </div>
 </aside>
 </div>
 
 <div class="footer-note">
-This version restores a fuller route planner, adds departing-from and returning-from logic, shows one-way and multi-city options, includes cabin class and airport choices, hides official boxes for domestic trips, and keeps a denser vertical layout. Live pulled platform videos still require platform APIs or backend integrations.
+This version is focused only on design and brings the video-heavy look back. It restores a multi-platform media wall without changing the trip planner logic.
 </div>
 </div>
 
 <script>
-const locationData = {
-paris: {
-label: "Paris",
-country: "France",
-viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
-officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
-activities: [
-"Eiffel Tower guided tour",
-"Seine River cruise",
-"Louvre Museum visit"
-],
-why: "Paris is strong for activities, museums, and high-interest visitor experiences.",
-tip: "Open the activity link in a new tab and keep SignalBoost open for the next decision."
-},
-france: {
-label: "France",
-country: "France",
-viator: "https://www.viator.com/paris/d479-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://france-visas.gouv.fr/en/web/france-visas/",
-officialApply: "https://france-visas.gouv.fr/en/web/france-visas/",
-activities: [
-"Paris city highlights",
-"Museum and culture passes",
-"Regional day trips"
-],
-why: "France requires country-specific official visa guidance depending on the traveler profile.",
-tip: "Check official entry requirements before booking activities."
-},
-unitedstates: {
-label: "United States",
-country: "United States",
-viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.cbp.gov/travel/international-visitors",
-officialApply: "https://esta.cbp.dhs.gov/",
-activities: [
-"New York city highlights",
-"National parks trip ideas",
-"Food and culture experiences"
-],
-why: "For U.S. travel, official actions should point to U.S. government entry sources.",
-tip: "Use the official U.S. links first for entry rules, then move to activities and bookings."
-},
-washingtondc: {
-label: "Washington DC",
-country: "United States",
-viator: "https://www.viator.com/Washington-DC/d657-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.cbp.gov/travel/international-visitors",
-officialApply: "https://esta.cbp.dhs.gov/",
-activities: [
-"National Mall and monuments",
-"Smithsonian museums",
-"Government and history tours"
-],
-why: "Washington DC is a strong example of city-specific planning with multiple airport choices.",
-tip: "Choose the airport that best matches your destination and transport needs."
-},
-newyork: {
-label: "New York",
-country: "United States",
-viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.cbp.gov/travel/international-visitors",
-officialApply: "https://esta.cbp.dhs.gov/",
-activities: [
-"Statue of Liberty tour",
-"Top of the Rock visit",
-"New York city highlights"
-],
-why: "New York supports tourism, business travel, and multiple-airport route planning.",
-tip: "Choose your airport carefully because the city is served by multiple airports."
-},
-spain: {
-label: "Spain",
-country: "Spain",
-viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
-officialApply: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
-activities: [
-"Madrid city walking tour",
-"Museum passes",
-"Regional day trips"
-],
-why: "Spain combines work travel, lifestyle, food, and local discovery very well.",
-tip: "Check the official Spain government information first."
-},
-madrid: {
-label: "Madrid",
-country: "Spain",
-viator: "https://www.viator.com/Madrid/d566-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
-officialApply: "https://www.exteriores.gob.es/en/ServiciosAlCiudadano/Paginas/Servicios-consulares.aspx",
-activities: [
-"Madrid city walking tour",
-"Prado Museum visit",
-"Day trip from Madrid"
-],
-why: "Madrid fits work travel, nightlife, and local-life discovery well.",
-tip: "Madrid can later combine food, nightlife, and longer-stay suggestions."
-},
-italy: {
-label: "Italy",
-country: "Italy",
-viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://vistoperitalia.esteri.it/home/en",
-officialApply: "https://vistoperitalia.esteri.it/home/en",
-activities: [
-"Historic city tours",
-"Museum visits",
-"Regional experiences"
-],
-why: "Italy works well for culture, history, and city-based guided experiences.",
-tip: "Use Italy’s official visa portal first if entry approval is needed."
-},
-rome: {
-label: "Rome",
-country: "Italy",
-viator: "https://www.viator.com/Rome/d511-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://vistoperitalia.esteri.it/home/en",
-officialApply: "https://vistoperitalia.esteri.it/home/en",
-activities: [
-"Colosseum guided tour",
-"Vatican Museums visit",
-"Rome city highlights tour"
-],
-why: "Rome works well for historic attractions and guided city experiences.",
-tip: "Rome is a strong mix of culture, activities, and travel planning."
-},
-unitedkingdom: {
-label: "United Kingdom",
-country: "United Kingdom",
-viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.gov.uk/check-uk-visa",
-officialApply: "https://www.gov.uk/check-uk-visa",
-activities: [
-"London sightseeing",
-"Museum and landmark visits",
-"Cultural city experiences"
-],
-why: "The UK is strong for both tourism and business travel decisions.",
-tip: "Use the UK government visa checker first for official entry guidance."
-},
-london: {
-label: "London",
-country: "United Kingdom",
-viator: "https://www.viator.com/London/d737-ttd?pid=P00294693&mcid=42383&medium=link",
-officialInfo: "https://www.gov.uk/check-uk-visa",
-officialApply: "https://www.gov.uk/check-uk-visa",
-activities: [
-"London sightseeing tour",
-"Tower of London visit",
-"Thames River experience"
-],
-why: "London supports both tourism and business travel decisions.",
-tip: "This destination is useful for showing official and commercial links side by side."
-}
-};
-
-const aliases = {
-us: "unitedstates",
-usa: "unitedstates",
-"u.s.": "unitedstates",
-"u.s.a.": "unitedstates",
-america: "unitedstates",
-"united states": "unitedstates",
-unitedstates: "unitedstates",
-
-"washington dc": "washingtondc",
-washington: "washingtondc",
-dc: "washingtondc",
-
-"new york": "newyork",
-"new york city": "newyork",
-nyc: "newyork",
-
-france: "france",
-paris: "paris",
-
-spain: "spain",
-madrid: "madrid",
-
-italy: "italy",
-rome: "rome",
-
-uk: "unitedkingdom",
-"united kingdom": "unitedkingdom",
-britain: "unitedkingdom",
-england: "unitedkingdom",
-london: "london"
-};
-
-const airportMap = {
-washingtondc: [
-{ code: "DCA", name: "Ronald Reagan Washington National" },
-{ code: "IAD", name: "Washington Dulles International" },
-{ code: "BWI", name: "Baltimore/Washington International" }
-],
-newyork: [
-{ code: "JFK", name: "John F. Kennedy International" },
-{ code: "LGA", name: "LaGuardia" },
-{ code: "EWR", name: "Newark Liberty International" }
-],
-london: [
-{ code: "LHR", name: "London Heathrow" },
-{ code: "LGW", name: "London Gatwick" },
-{ code: "STN", name: "London Stansted" },
-{ code: "LTN", name: "London Luton" }
-],
-paris: [
-{ code: "CDG", name: "Charles de Gaulle" },
-{ code: "ORY", name: "Paris Orly" }
-],
-madrid: [
-{ code: "MAD", name: "Adolfo Suárez Madrid-Barajas" }
-],
-rome: [
-{ code: "FCO", name: "Leonardo da Vinci–Fiumicino" },
-{ code: "CIA", name: "Ciampino" }
-]
-};
-
-function normalizePlace(value) {
-return (value || "").toLowerCase().trim();
-}
-
-function resolvePlace(value) {
-const normalized = normalizePlace(value);
-const key = aliases[normalized] || null;
-return key ? { key, data: locationData[key] } : null;
-}
-
-function updateTripStructureUI() {
-const structure = document.getElementById("tripStructure").value;
-const returningField = document.getElementById("returningField");
-const returningLabel = document.getElementById("returningLabel");
-const returnDateField = document.getElementById("returnDateField");
-const returnDateLabel = document.getElementById("returnDateLabel");
-
-if (structure === "oneway") {
-returningField.style.display = "none";
-returnDateField.style.display = "none";
-} else if (structure === "multicity") {
-returningField.style.display = "flex";
-returnDateField.style.display = "flex";
-returningLabel.textContent = "Next destination";
-returnDateLabel.textContent = "Next date";
-} else {
-returningField.style.display = "flex";
-returnDateField.style.display = "flex";
-returningLabel.textContent = "Returning from";
-returnDateLabel.textContent = "Return";
-}
-}
-
-function updateAirportOptions(key) {
-const airportBox = document.getElementById("airport-box");
-const airportSelect = document.getElementById("airportSelect");
-const airports = airportMap[key];
-
-if (!airports || airports.length === 0) {
-airportBox.style.display = "none";
-airportSelect.innerHTML = "";
-return;
-}
-
-airportSelect.innerHTML = airports
-.map(airport => `<option value="${airport.code}">${airport.code} — ${airport.name}</option>`)
-.join("");
-
-airportBox.style.display = "block";
-}
-
-function buildPriceCards(base, cabinClass, structure) {
-const cabinMultiplier = {
-"economy": 1,
-"premium economy": 1.35,
-"business": 2.15,
-"first": 3.05
-}[cabinClass] || 1;
-
-const structureMultiplier = {
-"oneway": 0.62,
-"roundtrip": 1,
-"multicity": 1.38
-}[structure] || 1;
-
-const adjusted = Math.round(base * cabinMultiplier * structureMultiplier);
-
-const offers = [
-{ agency: "Skyscanner", price: adjusted },
-{ agency: "Booking", price: adjusted + 28 },
-{ agency: "Trip.com", price: adjusted + 41 }
-];
-
-document.getElementById("price-grid").innerHTML = offers.map(offer => `
-<div class="price-card">
-<h4>${offer.agency}</h4>
-<div class="small">Estimated OTA path, not a live fare.</div>
-<div class="price">$${offer.price}</div>
-</div>
-`).join("");
-}
-
-function updateFeedForDestination(destinationText) {
-const encoded = encodeURIComponent(destinationText || "travel");
-
-document.getElementById("feed-grid").innerHTML = `
-<div class="feed-card">
-<div class="thumb">${destinationText || "Travel"} Discussions</div>
-<div class="feed-body">
-<h3>Reddit discussions for ${destinationText || "travel"}</h3>
-<div class="meta">
-<span>Platform: Reddit</span>
-<span>Type: Community</span>
-</div>
-<p>Browse destination tips, traveler opinions, and discussion threads.</p>
-<a class="btn btn-secondary" href="https://www.reddit.com/search/?q=${encoded}" target="_blank" rel="noopener noreferrer">Open Reddit</a>
-</div>
-</div>
-
-<div class="feed-card">
-<div class="thumb">${destinationText || "Travel"} Videos</div>
-<div class="feed-body">
-<h3>YouTube videos for ${destinationText || "travel"}</h3>
-<div class="meta">
-<span>Platform: YouTube</span>
-<span>Type: Video</span>
-</div>
-<p>Watch travel guides, city walks, airport reviews, and planning videos.</p>
-<a class="btn btn-secondary" href="https://www.youtube.com/results?search_query=${encoded}+travel+guide" target="_blank" rel="noopener noreferrer">Open YouTube</a>
-</div>
-</div>
-
-<div class="feed-card">
-<div class="thumb">${destinationText || "Travel"} Activities</div>
-<div class="feed-body">
-<h3>Viator experiences for ${destinationText || "travel"}</h3>
-<div class="meta">
-<span>Platform: Viator</span>
-<span>Type: Activities</span>
-</div>
-<p>Show tours, day trips, and experiences that fit the planner result.</p>
-<a class="btn btn-secondary" href="https://www.viator.com/searchResults/all?text=${encoded}" target="_blank" rel="noopener noreferrer">Open Viator</a>
-</div>
-</div>
-
-<div class="feed-card">
-<div class="thumb">${destinationText || "Travel"} Stays</div>
-<div class="feed-body">
-<h3>Booking stays for ${destinationText || "travel"}</h3>
-<div class="meta">
-<span>Platform: Booking</span>
-<span>Type: Accommodation</span>
-</div>
-<p>Search accommodation after the route is chosen.</p>
-<a class="btn btn-secondary" href="https://www.booking.com/searchresults.html?ss=${encoded}" target="_blank" rel="noopener noreferrer">Open Booking</a>
-</div>
-</div>
-`;
-}
-
-function runPlanner() {
-const structure = document.getElementById("tripStructure").value;
-const departingFrom = document.getElementById("departingFrom").value.trim();
-const goingTo = document.getElementById("goingTo").value.trim();
-const returningFrom = document.getElementById("returningFrom").value.trim();
-const travelers = document.getElementById("travelers").value;
-const cabinClass = document.getElementById("cabinClass").value;
-
-const fromResolved = resolvePlace(departingFrom);
-const toResolved = resolvePlace(goingTo) || resolvePlace("paris");
-const returnResolved = resolvePlace(returningFrom);
-
-let routeTitle = "";
-if (structure === "roundtrip") {
-routeTitle = `${departingFrom || "Origin"} → ${goingTo || "Destination"} → ${returningFrom || departingFrom || "Origin"}`;
-} else if (structure === "oneway") {
-routeTitle = `${departingFrom || "Origin"} → ${goingTo || "Destination"}`;
-} else {
-routeTitle = `${departingFrom || "Origin"} → ${goingTo || "Destination"} → ${returningFrom || "Next destination"}`;
-}
-
-document.getElementById("result-title").textContent = routeTitle;
-document.getElementById("activity-list").innerHTML =
-toResolved.data.activities.map(item => `<li>${item}</li>`).join("");
-
-document.getElementById("viator-link").href = toResolved.data.viator;
-document.getElementById("why-box").innerHTML =
-`<strong>Why this recommendation works:</strong> ${toResolved.data.why}`;
-document.getElementById("tip-box").innerHTML =
-`<strong>Tip:</strong> ${toResolved.data.tip}`;
-
-document.getElementById("badge-destination").textContent = goingTo || toResolved.data.label;
-document.getElementById("badge-structure").textContent =
-structure === "roundtrip" ? "Round trip" :
-structure === "oneway" ? "One way" : "Multi-city";
-document.getElementById("badge-cabin").textContent =
-cabinClass.charAt(0).toUpperCase() + cabinClass.slice(1);
-
-updateAirportOptions(toResolved.key);
-updateFeedForDestination(goingTo || toResolved.data.label);
-
-const officialPanel = document.getElementById("official-panel");
-const officialInfoLink = document.getElementById("official-info-link");
-const officialApplyLink = document.getElementById("official-apply-link");
-const officialBox = document.getElementById("official-box");
-const officialNote = document.getElementById("official-note");
-
-const domestic =
-fromResolved &&
-toResolved &&
-fromResolved.data.country === toResolved.data.country;
-
-if (domestic) {
-officialPanel.style.opacity = "0.97";
-officialInfoLink.style.display = "none";
-officialApplyLink.style.display = "none";
-officialBox.innerHTML =
-`<strong>Domestic trip:</strong> official immigration or visa steps do not apply for travel within ${toResolved.data.country}.`;
-officialNote.innerHTML =
-`<span class="domestic-note">No official visa/application links are needed for this domestic trip.</span>`;
-} else {
-officialPanel.style.opacity = "1";
-officialInfoLink.style.display = "inline-flex";
-officialApplyLink.style.display = "inline-flex";
-officialInfoLink.href = toResolved.data.officialInfo;
-officialApplyLink.href = toResolved.data.officialApply;
-officialBox.innerHTML =
-`<strong>Important official guidance:</strong> Use the highlighted official government links below for ${goingTo || toResolved.data.label}.`;
-officialNote.textContent =
-"Official information stays separate from commercial booking and affiliate links.";
-}
-
-let basePrice = 240;
-
-if (fromResolved && toResolved && fromResolved.data.country !== toResolved.data.country) {
-basePrice += 260;
-} else {
-basePrice += 80;
-}
-
-if (toResolved.key === "washingtondc" || toResolved.key === "newyork" || toResolved.key === "london") {
-basePrice += 90;
-}
-
-if (structure === "multicity") {
-basePrice += 180;
-}
-
-basePrice = basePrice * Number(travelers);
-buildPriceCards(basePrice, cabinClass, structure);
-
-document.getElementById("planner-status").textContent = "Updated";
-
-setTimeout(() => {
-document.getElementById("departingFrom").value = "";
-document.getElementById("goingTo").value = "";
-document.getElementById("returningFrom").value = "";
-document.getElementById("departureDate").value = "";
-document.getElementById("returnDate").value = "";
-document.getElementById("travelers").value = "2";
-document.getElementById("cabinClass").value = "economy";
-document.getElementById("tripStructure").value = "roundtrip";
-updateTripStructureUI();
-}, 300);
-}
-
-function clearPlannerInputs() {
-document.getElementById("departingFrom").value = "";
-document.getElementById("goingTo").value = "";
-document.getElementById("returningFrom").value = "";
-document.getElementById("departureDate").value = "";
-document.getElementById("returnDate").value = "";
-document.getElementById("travelers").value = "2";
-document.getElementById("cabinClass").value = "economy";
-document.getElementById("tripStructure").value = "roundtrip";
-document.getElementById("planner-status").textContent = "Ready";
-document.getElementById("airport-box").style.display = "none";
-updateTripStructureUI();
-}
-
-function copyCurrentLink() {
-const link = document.getElementById("viator-link").href;
-navigator.clipboard.writeText(link).then(() => {
-alert("Activity link copied.");
-}).catch(() => {
-alert("Could not copy link.");
-});
-}
-
 (function () {
 const clockEl = document.getElementById("live-clock");
+
 function updateClock() {
 clockEl.textContent = new Date().toLocaleTimeString();
 }
+
 updateClock();
 setInterval(updateClock, 1000);
+
 document.addEventListener("visibilitychange", function () {
-if (document.visibilityState === "visible") updateClock();
+if (document.visibilityState === "visible") {
+updateClock();
+}
 });
+
 window.addEventListener("focus", updateClock);
-updateTripStructureUI();
 })();
 </script>
 </body>
