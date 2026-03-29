@@ -27,15 +27,17 @@ CURRENT FEATURES
 - Automatic mode detection from prompt meaning
 - Prompt scoring with confidence feedback
 - Fallback to General mode when intent is unclear or tied
+- Low-confidence guidance panel
+- Suggested prompts for recovery when intent is weak
 
 NEXT STEPS
-- Add prompt suggestions when confidence is low
+- Add clickable mode override buttons inside low-confidence guidance
 - Real AI integration (API / LLM)
 - State memory (session awareness)
 - Workspaces (task-based UI environments)
 - Add saved session handoff patterns for new chats
 - Introduce multi-step AI workflows
-- Replace keyword scoring with real semantic intent detection later
+- Replace keyword scoring with real semantic inte
 
 NOTES
 - This file acts as BOTH UI and documentation
@@ -151,6 +153,35 @@ input{
   border:1px solid rgba(37,99,235,.2);
   font-size:14px;
   line-height:1.6;
+}
+
+.suggestion-panel{
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  border:1px dashed var(--border);
+  background:rgba(255,255,255,.45);
+  display:none;
+}
+
+body.dark .suggestion-panel{background:rgba(17,24,39,.45)}
+
+.suggestion-panel h4{
+  margin:0 0 8px 0;
+  font-size:14px;
+}
+
+.suggestion-panel p{
+  margin:0 0 10px 0;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.suggestion-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
 }
 
 .suggestions{
@@ -329,6 +360,11 @@ body.dark .card{background:rgba(30,40,60,.6)}
 
     <div id="thinking" class="thinking">AI thinking...</div>
     <div id="response" class="response" style="display:none"></div>
+    <div id="suggestionPanel" class="suggestion-panel">
+      <h4>Need a clearer prompt?</h4>
+      <p id="suggestionReason">The system could not confidently map your request to a workspace.</p>
+      <div class="suggestion-actions" id="suggestionActions"></div>
+    </div>
 
     <div class="suggestions">
       <div class="chip" onclick="quick('Plan travel')">Plan travel</div>
@@ -411,6 +447,66 @@ function quick(text){
   runAI();
 }
 
+function applySuggestedPrompt(text){
+  document.getElementById('input').value=text;
+  runAI();
+}
+
+function buildLowConfidenceSuggestions(inputValue, detection){
+  const suggestions = [];
+
+  const topScore = Math.max(detection.scores.travel, detection.scores.finance, detection.scores.social);
+
+  if(topScore === 0){
+    suggestions.push('Plan a business trip to Miami');
+    suggestions.push('Compare travel cards for spending abroad');
+    suggestions.push('Find trending content ideas for Instagram');
+    return suggestions;
+  }
+
+  if(detection.scores.travel >= detection.scores.finance && detection.scores.travel >= detection.scores.social){
+    suggestions.push('Plan a trip to New York and compare flights and hotels');
+  }
+  if(detection.scores.finance >= detection.scores.travel && detection.scores.finance >= detection.scores.social){
+    suggestions.push('Compare bank cards and create a spending plan');
+  }
+  if(detection.scores.social >= detection.scores.travel && detection.scores.social >= detection.scores.finance){
+    suggestions.push('Find social trends and choose the best platform to publish on');
+  }
+
+  suggestions.push('Plan travel with flights, hotels, and arrival steps');
+  suggestions.push('Compare cards, accounts, and transfer options');
+  suggestions.push('Find platform trends, audience fit, and posting sequence');
+
+  return [...new Set(suggestions)].slice(0,3);
+}
+
+function showLowConfidenceGuidance(inputValue, detection){
+  const panel = document.getElementById('suggestionPanel');
+  const reason = document.getElementById('suggestionReason');
+  const actions = document.getElementById('suggestionActions');
+
+  const isTie = (detection.scores.travel === detection.scores.finance) || (detection.scores.travel === detection.scores.social) || (detection.scores.finance === detection.scores.social);
+
+  if(detection.confidence === 'low'){
+    panel.style.display = 'block';
+
+    if(Math.max(detection.scores.travel, detection.scores.finance, detection.scores.social) === 0){
+      reason.textContent = 'Your request is too broad right now. Try mentioning the goal, domain, or next action more clearly.';
+    } else if(isTie){
+      reason.textContent = 'Your request overlaps multiple workspaces. Try making it more specific so the interface can adapt better.';
+    } else {
+      reason.textContent = 'The system found a weak signal, but not enough confidence to fully trust the workspace switch.';
+    }
+
+    const prompts = buildLowConfidenceSuggestions(inputValue, detection);
+    actions.innerHTML = prompts.map(prompt => `<button class="chip" onclick="applySuggestedPrompt(${JSON.stringify(prompt)})">${prompt}</button>`).join('');
+  } else {
+    panel.style.display = 'none';
+    actions.innerHTML = '';
+  }
+}
+
 function detectModeFromPrompt(text){
   const value = (text || '').toLowerCase().trim();
 
@@ -479,6 +575,7 @@ function runAI(){
     t.style.opacity=0;
     render(currentMode);
     r.style.display='block';
+    showLowConfidenceGuidance(inputValue, detection);
 
     const modeLabel = currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
     const scoreText = `Travel ${detection.scores.travel} • Finance ${detection.scores.finance} • Social ${detection.scores.social}`;
