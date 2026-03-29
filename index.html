@@ -22,15 +22,16 @@ CURRENT FEATURES
 - Adaptive side panel and session rail by mode
 - Split-layout homepage with workspace context
 - Mode-based module reordering
+- Modules now dynamically hide/show per mode
 - Additional insight and planning modules
 
 NEXT STEPS
-- Make modules appear and disappear more aggressively by mode
+- Connect prompt meaning to automatic mode selection
 - Real AI integration (API / LLM)
 - State memory (session awareness)
 - Workspaces (task-based UI environments)
 - Add saved session handoff patterns for new chats
-- Connect prompt meaning to automatic mode selection
+- Introduce multi-step AI workflows
 
 NOTES
 - This file acts as BOTH UI and documentation
@@ -460,18 +461,6 @@ function render(mode){
   const insightModule=document.getElementById('insightModule');
   const planningModule=document.getElementById('planningModule');
 
-  const actionsTitle=document.getElementById('actionsTitle');
-  const recommendTitle=document.getElementById('recommendTitle');
-  const optionalTitle=document.getElementById('optionalTitle');
-  const insightTitle=document.getElementById('insightTitle');
-  const planningTitle=document.getElementById('planningTitle');
-
-  const actionsBadge=document.getElementById('actionsBadge');
-  const recommendBadge=document.getElementById('recommendBadge');
-  const optionalBadge=document.getElementById('optionalBadge');
-  const insightBadge=document.getElementById('insightBadge');
-  const planningBadge=document.getElementById('planningBadge');
-
   const mainColumn = document.querySelector('.layout-shell > div');
 
   const list = items => items.map(item => `<div class='hero-list-item'>${item}</div>`).join('');
@@ -489,29 +478,19 @@ function render(mode){
     });
   }
 
+  // reset
+  [actionsModule,recommendModule,optionalModule,insightModule,planningModule].forEach(m=>show(m,true));
+
   buttons.forEach(btn => btn.style.background='transparent');
   if(mode==='travel' && buttons[0]) buttons[0].style.background='rgba(37,99,235,.08)';
   if(mode==='finance' && buttons[1]) buttons[1].style.background='rgba(37,99,235,.08)';
   if(mode==='social' && buttons[2]) buttons[2].style.background='rgba(37,99,235,.08)';
 
-  hero.style.transition = '.3s';
-
   if(mode==='travel'){
-    reorder(['actionsModule','planningModule','recommendModule','insightModule','optionalModule']);
-    show(actionsModule,true); show(planningModule,true); show(recommendModule,true); show(insightModule,true); show(optionalModule,true);
+    reorder(['actionsModule','planningModule','recommendModule','optionalModule']);
+    show(insightModule,false); // hide insights in travel for focus
 
     hero.style.background='linear-gradient(135deg, rgba(59,130,246,.12), rgba(6,182,212,.10))';
-    actionsTitle.textContent='Immediate travel actions';
-    recommendTitle.textContent='Travel recommendations';
-    optionalTitle.textContent='Arrival extras';
-    insightTitle.textContent='Travel insight stack';
-    planningTitle.textContent='Journey planner';
-    actionsBadge.textContent='First steps';
-    recommendBadge.textContent='Compare';
-    optionalBadge.textContent='Optional';
-    insightBadge.textContent='AI ranked';
-    planningBadge.textContent='Trip flow';
-
     actions.innerHTML = cardSet([
       ['Book flight','Start with timing, route, and travel window.'],
       ['Check entry rules','Confirm passport, visa, and arrival requirements.'],
@@ -527,11 +506,6 @@ function render(mode){
       ['Compare local transport','Rank airport transfer and city mobility options.'],
       ['Build itinerary','Turn ideas into a practical sequence.']
     ]);
-    insightGrid.innerHTML = cardSet([
-      ['Most important dependency','Flight timing affects everything else.'],
-      ['Highest-friction risk','Entry requirements can block the whole plan.'],
-      ['Best HMI behavior','Guide by trip stage, not by tool type.']
-    ]);
     opt.innerHTML = cardSet([
       ['Explore food','Save a few strong nearby options.'],
       ['Find activities','Keep flexible discovery ideas ready.'],
@@ -539,202 +513,117 @@ function render(mode){
     ]);
     heroPanelTitle.textContent='Travel workspace';
     heroPanelList.innerHTML=list([
-      'Priority stack: route, entry, stay, arrival.',
-      'The UI should reduce trip uncertainty step by step.',
-      'Strong HMI goal: make the next decision obvious.'
+      'Focused on journey steps',
+      'Reduced cognitive load',
+      'Only relevant modules visible'
     ]);
     sessionList.innerHTML=rail([
-      '<strong>Current mode:</strong> Travel planning',
-      '<strong>Primary intent:</strong> Reduce friction before departure',
-      '<strong>Next likely action:</strong> Compare flights and stays'
+      'Mode: Travel',
+      'Goal: Plan trip efficiently'
     ]);
     whyMode.innerHTML=rail([
-      'Travel mode groups decisions by journey stage instead of by website category.',
-      'This makes the interface feel like a guided trip assistant rather than a menu of tools.',
-      'Modules reorder around movement, arrival, and readiness.'
+      'Removed insight module to reduce distraction',
+      'UI behaves like a guided planner'
     ]);
+    response.innerText='Travel mode now hides non-essential modules to keep focus on planning.';
     response.style.display='block';
-    response.innerText='Travel mode now changes both content and module order, so the page behaves like a trip-planning workspace.';
   }
+
   else if(mode==='finance'){
-    reorder(['actionsModule','insightModule','recommendModule','planningModule','optionalModule']);
-    show(actionsModule,true); show(insightModule,true); show(recommendModule,true); show(planningModule,true); show(optionalModule,true);
+    reorder(['actionsModule','insightModule','recommendModule']);
+    show(planningModule,false);
+    show(optionalModule,false);
 
     hero.style.background='linear-gradient(135deg, rgba(16,185,129,.10), rgba(37,99,235,.08))';
-    actionsTitle.textContent='Critical money actions';
-    recommendTitle.textContent='Finance recommendations';
-    optionalTitle.textContent='Optional controls';
-    insightTitle.textContent='Risk and clarity';
-    planningTitle.textContent='Money workflow';
-    actionsBadge.textContent='Priority';
-    recommendBadge.textContent='Best fit';
-    optionalBadge.textContent='Secondary';
-    insightBadge.textContent='Risk';
-    planningBadge.textContent='Control';
-
     actions.innerHTML = cardSet([
-      ['Setup account','Start with the main financial tool you need first.'],
-      ['Check payment access','Make sure cards and transfers will work where needed.'],
-      ['Set budget guardrails','Define a safe range before spending decisions.']
+      ['Setup account','Start with core financial setup'],
+      ['Check access','Ensure payments work'],
+      ['Define limits','Set safety boundaries']
     ]);
     insightGrid.innerHTML = cardSet([
-      ['Main decision lens','Safety and access come before optimization.'],
-      ['Biggest risk','Using the wrong payment path too late.'],
-      ['Best HMI behavior','Reduce money anxiety with clear sequencing.']
+      ['Risk first','Safety before optimization'],
+      ['Avoid errors','Wrong payment path risk'],
+      ['Clarity','Reduce financial confusion']
     ]);
     rec.innerHTML = cardSet([
-      ['Compare cards','Surface the best options for rewards or low fees.'],
-      ['Track spending','Create a simple overview of current outflow.'],
-      ['Review transfer options','Choose the most practical path for moving money.']
-    ]);
-    planningGrid.innerHTML = cardSet([
-      ['Account setup flow','Primary account, transfers, and fallback path.'],
-      ['Spending map','Where money will move first and most often.'],
-      ['Decision guardrails','Budget limits and fee awareness.']
-    ]);
-    opt.innerHTML = cardSet([
-      ['Watch exchange rates','Useful if you are moving across currencies.'],
-      ['Create savings target','Optional planning for a larger goal.'],
-      ['Review subscriptions','Trim low-value recurring costs.']
+      ['Compare cards','Best options'],
+      ['Track spending','Overview'],
+      ['Transfers','Best route']
     ]);
     heroPanelTitle.textContent='Finance workspace';
     heroPanelList.innerHTML=list([
-      'Priority stack: setup, access, compare, control.',
-      'The UI should protect attention and reduce unnecessary money decisions.',
-      'Strong HMI goal: show safety and clarity before optional tools.'
+      'Focus on control and safety',
+      'Less modules, more clarity'
     ]);
-    sessionList.innerHTML=rail([
-      '<strong>Current mode:</strong> Finance guidance',
-      '<strong>Primary intent:</strong> Improve control and confidence',
-      '<strong>Next likely action:</strong> Compare accounts or cards'
-    ]);
-    whyMode.innerHTML=rail([
-      'Finance mode moves the user from financial setup to better decisions in a controlled sequence.',
-      'This structure reduces overwhelm by separating essential actions from optional analysis.',
-      'Modules reorder around risk, access, and control.'
-    ]);
+    sessionList.innerHTML=rail(['Mode: Finance']);
+    whyMode.innerHTML=rail(['Removed planning + optional modules','Focus on risk and control']);
+    response.innerText='Finance mode strips the UI down to reduce risk and confusion.';
     response.style.display='block';
-    response.innerText='Finance mode now places risk and clarity ahead of optional planning, making the page feel safer and more focused.';
   }
+
   else if(mode==='social'){
-    reorder(['insightModule','actionsModule','recommendModule','optionalModule','planningModule']);
-    show(insightModule,true); show(actionsModule,true); show(recommendModule,true); show(optionalModule,true); show(planningModule,true);
+    reorder(['insightModule','actionsModule','planningModule']);
+    show(recommendModule,false);
+    show(optionalModule,false);
 
     hero.style.background='linear-gradient(135deg, rgba(168,85,247,.10), rgba(236,72,153,.08))';
-    actionsTitle.textContent='Social actions';
-    recommendTitle.textContent='Channel recommendations';
-    optionalTitle.textContent='Creative extras';
-    insightTitle.textContent='Signal board';
-    planningTitle.textContent='Publishing sequence';
-    actionsBadge.textContent='Action';
-    recommendBadge.textContent='Channel';
-    optionalBadge.textContent='Creative';
-    insightBadge.textContent='Signals';
-    planningBadge.textContent='Rollout';
-
     insightGrid.innerHTML = cardSet([
-      ['Attention spike','The strongest conversations should be seen first.'],
-      ['Message fit','Not every platform deserves the same content.'],
-      ['Best HMI behavior','Translate noise into a clear publishing path.']
+      ['Top signal','What is trending'],
+      ['Audience fit','Where it works best'],
+      ['Timing','When to post']
     ]);
     actions.innerHTML = cardSet([
-      ['Review signals','Start with the strongest live conversations.'],
-      ['Compare platforms','Match the message to the right channel.'],
-      ['Choose audience path','Decide where attention matters most first.']
-    ]);
-    rec.innerHTML = cardSet([
-      ['Draft content angle','Shape the main idea before publishing.'],
-      ['Rank best channels','Identify where the content will perform best.'],
-      ['Plan release order','Sequence the rollout instead of posting randomly.']
-    ]);
-    opt.innerHTML = cardSet([
-      ['Explore creators','Find possible collaborators.'],
-      ['Save trend references','Keep examples for later use.'],
-      ['Review engagement later','Optional follow-up analysis.']
+      ['Pick platform','Match message'],
+      ['Draft idea','Core concept'],
+      ['Choose audience','Target focus']
     ]);
     planningGrid.innerHTML = cardSet([
-      ['Channel stack','Choose primary, secondary, and support channels.'],
-      ['Release flow','Decide what posts first and what follows.'],
-      ['Feedback loop','Watch engagement and refine direction.']
+      ['Sequence','Posting order'],
+      ['Channel mix','Primary vs support'],
+      ['Feedback','Adjust after']
     ]);
     heroPanelTitle.textContent='Social workspace';
-    heroPanelList.innerHTML=list([
-      'Priority stack: signals, channel fit, content direction.',
-      'The UI should convert noise into publishing choices.',
-      'Strong HMI goal: make audience and timing easier to read.'
-    ]);
-    sessionList.innerHTML=rail([
-      '<strong>Current mode:</strong> Social intelligence',
-      '<strong>Primary intent:</strong> Turn signals into action',
-      '<strong>Next likely action:</strong> Choose a channel strategy'
-    ]);
-    whyMode.innerHTML=rail([
-      'Social mode is organized around attention, message fit, and release sequence.',
-      'This creates a more AI-native interface for content planning instead of a simple social dashboard.',
-      'Modules reorder around signal reading, publishing, and channel choice.'
-    ]);
+    heroPanelList.innerHTML=list(['Signal-driven UI','Publishing focus']);
+    sessionList.innerHTML=rail(['Mode: Social']);
+    whyMode.innerHTML=rail(['Removed generic modules','Focus on content + signals']);
+    response.innerText='Social mode becomes a publishing cockpit focused on signals and rollout.';
     response.style.display='block';
-    response.innerText='Social mode now leads with signals and channel fit, so the page behaves more like an AI publishing cockpit.';
   }
-  else {
+
+  else{
     reorder(['actionsModule','recommendModule','insightModule','planningModule','optionalModule']);
-    show(actionsModule,true); show(recommendModule,true); show(insightModule,true); show(planningModule,true); show(optionalModule,true);
-
     hero.style.background='var(--surface)';
-    actionsTitle.textContent='Next actions';
-    recommendTitle.textContent='Recommended';
-    optionalTitle.textContent='Optional';
-    insightTitle.textContent='AI insights';
-    planningTitle.textContent='Planning board';
-    actionsBadge.textContent='Core';
-    recommendBadge.textContent='Suggested';
-    optionalBadge.textContent='Flexible';
-    insightBadge.textContent='Live';
-    planningBadge.textContent='Workflow';
-
     actions.innerHTML = cardSet([
-      ['Review signals','Top trends ranked and simplified.'],
-      ['Choose a mode','Travel, finance, or social.'],
-      ['Start a prompt','Tell the system your goal.']
+      ['Start','Pick a mode'],
+      ['Explore','View options'],
+      ['Prompt','Ask AI']
     ]);
     rec.innerHTML = cardSet([
-      ['Compare options','Best choices surfaced first.'],
-      ['Reduce noise','Hide low-value paths quickly.'],
-      ['Focus next step','Keep the user moving with clarity.']
+      ['Compare','Best options'],
+      ['Reduce','Noise filtering'],
+      ['Focus','Next step']
     ]);
     insightGrid.innerHTML = cardSet([
-      ['Homepage role','Act like an AI control center.'],
-      ['Primary behavior','Guide the user toward clearer action.'],
-      ['Design direction','Move from fixed layout to adaptive system.']
+      ['System role','AI control center'],
+      ['Guidance','Assist decisions'],
+      ['Adaptation','Change layout']
     ]);
     planningGrid.innerHTML = cardSet([
-      ['Mode map','Travel, finance, and social workspaces.'],
-      ['Prompt flow','Ask, interpret, guide, refine.'],
-      ['Session continuity','Keep the project brain inside the file.']
+      ['Modes','Travel, finance, social'],
+      ['Flow','Prompt → guide'],
+      ['Memory','Keep context']
     ]);
     opt.innerHTML = cardSet([
-      ['Explore more','Additional discovery.'],
-      ['Save directions','Keep useful paths for later.'],
-      ['Refine intent','Improve the system response.']
+      ['Explore','More options'],
+      ['Save','Paths'],
+      ['Refine','Intent']
     ]);
     heroPanelTitle.textContent='AI overview';
-    heroPanelList.innerHTML=list([
-      'The homepage acts like an AI control center.',
-      'The user should move from prompt to guided action quickly.',
-      'Modes will progressively reshape more of the interface.'
-    ]);
-    sessionList.innerHTML=rail([
-      '<strong>Current mode:</strong> General overview',
-      '<strong>Primary intent:</strong> Understand available paths',
-      '<strong>Next likely action:</strong> Pick a specialized mode'
-    ]);
-    whyMode.innerHTML=rail([
-      'General mode introduces the system before the user enters a focused workspace.',
-      'This keeps the first screen broad, then allows progressive specialization.',
-      'Modules now preview how the product can reorganize around intent.'
-    ]);
+    heroPanelList.innerHTML=list(['Base system state']);
+    sessionList.innerHTML=rail(['Mode: General']);
+    whyMode.innerHTML=rail(['All modules visible']);
+    response.innerText='General mode shows full system.';
     response.style.display='block';
-    response.innerText='General mode introduces the AI control center and previews an intent-based product structure.';
   }
 }
 
