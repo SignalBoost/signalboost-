@@ -6,22 +6,22 @@
 <title>SignalBoost</title>
 <style>
 :root{
---bg:#f6f8fc;
+--bg:#f5f7fb;
 --surface:#ffffff;
---surface-2:#f3f6fb;
---border:#dbe4f0;
+--surface-2:#f7f9fd;
+--border:#d9e2ef;
 --text:#0f172a;
---muted:#5b6b82;
+--muted:#607086;
 --blue:#2563eb;
---blue-2:#60a5fa;
---green:#16a34a;
---gold:#ca8a04;
---soft:#dbeafe;
---shadow:0 8px 28px rgba(15,23,42,.08);
---official-bg-1:#fff3cd;
---official-bg-2:#ffe08a;
+--blue-soft:#dbeafe;
+--green-soft:#dcfce7;
+--gold-soft:#fef3c7;
+--gold:#b45309;
+--shadow:0 8px 22px rgba(15,23,42,.07);
+--official-bg:#fff1bf;
 --official-border:#f59e0b;
---official-text:#5c3b00;
+--official-text:#6b3f00;
+--danger:#b91c1c;
 }
 
 *{box-sizing:border-box}
@@ -30,16 +30,19 @@ html{scroll-behavior:smooth}
 body{
 margin:0;
 font-family:Arial, Helvetica, sans-serif;
-background:linear-gradient(180deg,#eef4ff 0%, #f7f9fd 32%, #ffffff 100%);
+background:linear-gradient(180deg,#eef4ff 0%, #f7f9fd 35%, #ffffff 100%);
 color:var(--text);
 }
 
-a{color:inherit;text-decoration:none}
+a{
+color:inherit;
+text-decoration:none;
+}
 
 .app{
-max-width:1440px;
+max-width:1500px;
 margin:0 auto;
-padding:16px;
+padding:14px;
 }
 
 .topbar{
@@ -49,34 +52,34 @@ z-index:50;
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:16px;
-background:rgba(255,255,255,.92);
+gap:14px;
+background:rgba(255,255,255,.94);
 border:1px solid var(--border);
-border-radius:18px;
-padding:12px 16px;
+border-radius:16px;
+padding:10px 14px;
 box-shadow:var(--shadow);
-backdrop-filter:blur(10px);
+backdrop-filter:blur(8px);
 }
 
 .brand{
 display:flex;
 align-items:center;
-gap:12px;
-font-size:22px;
+gap:10px;
+font-size:20px;
 font-weight:700;
 }
 
 .logo{
-width:42px;
-height:42px;
+width:40px;
+height:40px;
 border-radius:12px;
+background:#fff;
+border:1px solid var(--border);
 display:flex;
 align-items:center;
 justify-content:center;
-background:#fff;
-border:1px solid var(--border);
-flex-shrink:0;
 padding:4px;
+flex-shrink:0;
 }
 
 .logo svg{width:100%;height:100%}
@@ -86,161 +89,157 @@ padding:4px;
 
 .nav{
 display:flex;
-flex-wrap:wrap;
 gap:8px;
+flex-wrap:wrap;
 }
 
 .nav a{
-padding:10px 14px;
+padding:9px 12px;
 border-radius:999px;
-background:#fff;
 border:1px solid var(--border);
-font-size:14px;
+background:#fff;
+font-size:13px;
 font-weight:700;
 }
 
 .hero{
-margin-top:16px;
+margin-top:14px;
 display:grid;
-grid-template-columns:1.35fr .65fr;
-gap:16px;
+grid-template-columns:1.3fr .7fr;
+gap:14px;
 }
 
 .card{
 background:var(--surface);
 border:1px solid var(--border);
-border-radius:22px;
+border-radius:18px;
 box-shadow:var(--shadow);
 }
 
 .hero-card{
-padding:24px;
+padding:18px;
 }
 
 .hero-card h1{
-margin:0 0 10px 0;
-font-size:clamp(2rem,5vw,3.4rem);
-line-height:1.02;
+margin:0 0 8px 0;
+font-size:clamp(1.8rem,4vw,3rem);
+line-height:1.05;
 }
 
 .hero-card p{
 margin:0;
 color:var(--muted);
-line-height:1.7;
-max-width:900px;
+line-height:1.6;
+font-size:14px;
 }
 
 .pill-row{
 display:flex;
-flex-wrap:wrap;
 gap:8px;
-margin-top:16px;
+flex-wrap:wrap;
+margin-top:14px;
 }
 
 .pill{
-padding:8px 12px;
+padding:7px 10px;
 border-radius:999px;
 background:#eef4ff;
-border:1px solid #d7e4ff;
-color:#234;
-font-size:12px;
+border:1px solid #d9e7ff;
+color:#26405f;
+font-size:11px;
 font-weight:700;
 }
 
-.sidebar-card{
-padding:20px;
+.stats{
+padding:16px;
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:12px;
-align-content:start;
+gap:10px;
 }
 
 .mini-stat{
 border:1px solid var(--border);
 background:var(--surface-2);
-border-radius:16px;
-padding:14px;
+border-radius:14px;
+padding:12px;
 }
 
 .mini-stat .label{
-font-size:12px;
+font-size:11px;
 color:var(--muted);
 margin-bottom:6px;
 }
 
 .mini-stat .value{
-font-size:22px;
+font-size:18px;
 font-weight:700;
 }
 
 .layout{
-margin-top:16px;
+margin-top:14px;
 display:grid;
-grid-template-columns:minmax(0,2.2fr) minmax(290px,.9fr);
-gap:16px;
+grid-template-columns:minmax(0,2.35fr) minmax(290px,.85fr);
+gap:14px;
 align-items:start;
 }
 
 .main-stack{
 display:flex;
 flex-direction:column;
-gap:16px;
+gap:14px;
 }
 
 .section-card{
-padding:18px;
+padding:14px;
 }
 
 .section-card h2{
-margin:0 0 8px 0;
-font-size:30px;
+margin:0 0 6px 0;
+font-size:24px;
 }
 
 .section-card p{
-margin:0 0 16px 0;
+margin:0 0 12px 0;
 color:var(--muted);
-line-height:1.65;
+line-height:1.55;
+font-size:13px;
 }
 
 .planner-grid{
 display:grid;
-grid-template-columns:2fr 1fr 1fr 1fr 1fr;
-gap:10px;
-margin-bottom:12px;
+grid-template-columns:1.55fr .95fr .95fr .9fr .9fr .95fr;
+gap:8px;
+margin-bottom:10px;
 }
 
 input, select{
 width:100%;
-padding:12px 14px;
-border-radius:12px;
+padding:10px 12px;
+border-radius:10px;
 border:1px solid var(--border);
 background:#fff;
 color:var(--text);
-font-size:14px;
+font-size:13px;
 outline:none;
 }
 
-option{
-color:#000;
-}
+option{color:#000}
 
 .actions,
 .links-row{
 display:flex;
+gap:8px;
 flex-wrap:wrap;
-gap:10px;
 }
 
-.actions{
-margin-bottom:14px;
-}
+.actions{margin-bottom:10px}
 
 .btn{
 border:none;
-border-radius:12px;
-padding:12px 16px;
+border-radius:10px;
+padding:10px 13px;
 font-weight:700;
-font-size:14px;
+font-size:13px;
 cursor:pointer;
 display:inline-flex;
 align-items:center;
@@ -254,7 +253,7 @@ opacity:.96;
 }
 
 .btn-primary{
-background:linear-gradient(135deg,var(--blue-2),#7dd3fc);
+background:linear-gradient(135deg,#7dd3fc,#60a5fa);
 color:#082032;
 }
 
@@ -267,57 +266,59 @@ border:1px solid var(--border);
 .result-grid{
 display:grid;
 grid-template-columns:1.15fr .85fr;
-gap:14px;
-margin-top:8px;
+gap:10px;
+margin-top:6px;
 }
 
 .result-box{
 border:1px solid var(--border);
-border-radius:18px;
-padding:16px;
+border-radius:16px;
+padding:14px;
 background:#fff;
 }
 
 .badge-row{
 display:flex;
+gap:6px;
 flex-wrap:wrap;
-gap:8px;
-margin-bottom:10px;
+margin-bottom:8px;
 }
 
 .badge{
-padding:6px 10px;
+padding:5px 8px;
 border-radius:999px;
-font-size:12px;
+font-size:11px;
 font-weight:700;
 background:#e2e8f0;
 color:#334155;
 }
 
 .badge-blue{background:#dbeafe;color:#1d4ed8}
-.badge-green{background:#dcfce7;color:#166534}
-.badge-gold{background:#fef3c7;color:#92400e}
+.badge-green{background:var(--green-soft);color:#166534}
+.badge-gold{background:var(--gold-soft);color:#92400e}
 
 .result-box h3{
-margin:0 0 10px 0;
-font-size:22px;
+margin:0 0 8px 0;
+font-size:20px;
 }
 
 .meta-list{
 margin:0;
 padding-left:18px;
 color:var(--muted);
-line-height:1.75;
+line-height:1.65;
+font-size:13px;
 }
 
 .info-box{
-margin-top:12px;
+margin-top:10px;
 border:1px solid var(--border);
-border-radius:14px;
-padding:12px;
+border-radius:12px;
+padding:10px;
 background:#f8fbff;
 color:#1e3a5f;
-line-height:1.6;
+line-height:1.5;
+font-size:13px;
 }
 
 .tip-box{
@@ -326,10 +327,10 @@ color:#7c5700;
 }
 
 .official-box{
-background:linear-gradient(135deg, var(--official-bg-1), var(--official-bg-2));
+background:linear-gradient(135deg,var(--official-bg),#ffd66b);
 color:var(--official-text);
 border:2px solid var(--official-border);
-box-shadow:0 8px 18px rgba(245,158,11,.22);
+box-shadow:0 8px 18px rgba(245,158,11,.20);
 font-weight:700;
 }
 
@@ -344,99 +345,122 @@ font-weight:700;
 background:#ffefc2;
 }
 
+.official-note-domestic{
+color:var(--danger);
+font-weight:700;
+}
+
 .feed-grid{
 display:grid;
-grid-template-columns:repeat(3, 1fr);
-gap:14px;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
 }
 
 .feed-card{
 border:1px solid var(--border);
 background:#fff;
-border-radius:18px;
+border-radius:16px;
 overflow:hidden;
 box-shadow:var(--shadow);
 }
 
 .thumb{
-height:150px;
+height:110px;
 background:linear-gradient(135deg,#dbeafe,#bfdbfe,#e0f2fe);
 display:flex;
 align-items:center;
 justify-content:center;
 font-weight:700;
 color:#1e3a8a;
-font-size:18px;
+font-size:16px;
 text-align:center;
-padding:12px;
+padding:10px;
 }
 
 .feed-body{
-padding:14px;
+padding:12px;
 }
 
 .feed-body h3{
-margin:0 0 6px 0;
-font-size:18px;
-line-height:1.35;
+margin:0 0 5px 0;
+font-size:15px;
+line-height:1.3;
 }
 
 .feed-body p{
-margin:0 0 12px 0;
+margin:0 0 10px 0;
 color:var(--muted);
-line-height:1.55;
-font-size:14px;
+line-height:1.45;
+font-size:12px;
 }
 
 .meta{
-font-size:12px;
+font-size:11px;
 color:var(--muted);
-margin-bottom:12px;
+margin-bottom:10px;
 display:flex;
-gap:10px;
+gap:8px;
 flex-wrap:wrap;
 }
 
 .side-stack{
 display:flex;
 flex-direction:column;
-gap:16px;
+gap:14px;
 position:sticky;
-top:90px;
+top:78px;
 }
 
 .side-card{
-padding:16px;
+padding:14px;
 }
 
 .side-card h3{
 margin:0 0 8px 0;
-font-size:20px;
+font-size:18px;
 }
 
 .side-card p{
-margin:0 0 12px 0;
+margin:0 0 10px 0;
 color:var(--muted);
-line-height:1.6;
-font-size:14px;
+line-height:1.5;
+font-size:13px;
 }
 
 .simple-list{
 margin:0;
 padding-left:18px;
 color:var(--muted);
-line-height:1.75;
+line-height:1.65;
+font-size:13px;
+}
+
+.airport-box{
+margin-top:10px;
+border:1px solid var(--border);
+border-radius:12px;
+padding:10px;
+background:#f8fbff;
+}
+
+.airport-box h4{
+margin:0 0 8px 0;
+font-size:14px;
 }
 
 .footer-note{
-margin:16px 0 4px;
-padding:14px 16px;
-border-radius:14px;
+margin:14px 0 4px;
+padding:12px 14px;
+border-radius:12px;
 border:1px solid var(--border);
 background:#fff;
 color:var(--muted);
-line-height:1.6;
-font-size:13px;
+line-height:1.55;
+font-size:12px;
+}
+
+@media (max-width: 1300px){
+.feed-grid{grid-template-columns:repeat(3,1fr)}
 }
 
 @media (max-width: 1150px){
@@ -446,16 +470,20 @@ font-size:13px;
 .feed-grid{grid-template-columns:repeat(2,1fr)}
 }
 
-@media (max-width: 850px){
-.planner-grid{grid-template-columns:1fr 1fr}
+@media (max-width: 900px){
+.planner-grid{grid-template-columns:1fr 1fr 1fr}
 .result-grid{grid-template-columns:1fr}
-.feed-grid{grid-template-columns:1fr}
-.sidebar-card{grid-template-columns:1fr 1fr}
 }
 
-@media (max-width: 620px){
+@media (max-width: 700px){
+.planner-grid{grid-template-columns:1fr 1fr}
+.feed-grid{grid-template-columns:1fr}
+.stats{grid-template-columns:1fr 1fr}
+}
+
+@media (max-width: 560px){
 .planner-grid,
-.sidebar-card{
+.stats{
 grid-template-columns:1fr;
 }
 .topbar{
@@ -500,18 +528,19 @@ align-items:flex-start;
 <p>
 SignalBoost is your AI-powered digital mall. It helps users move across travel,
 communities, payments, local life, and useful online services without losing their place.
-This layout uses the full width of the page, keeps the planner tighter, and makes the content area feel more like a platform feed.
+The layout is tighter, brighter, and uses the page width better for feed content.
 </p>
 <div class="pill-row">
 <span class="pill">AI travel</span>
 <span class="pill">Official links</span>
+<span class="pill">Airport choice</span>
 <span class="pill">Video-style feed</span>
 <span class="pill">Communities</span>
 <span class="pill">Payments</span>
 </div>
 </div>
 
-<div class="card sidebar-card">
+<div class="card stats">
 <div class="mini-stat">
 <div class="label">Live clock</div>
 <div id="live-clock" class="value">--:--:--</div>
@@ -536,11 +565,19 @@ This layout uses the full width of the page, keeps the planner tighter, and make
 <section id="planner" class="card section-card">
 <h2>Trip Planner</h2>
 <p>
-Search a destination, get a cleaner next step, open the activity page in a new tab, and keep SignalBoost open.
+Search a destination, choose your trip scope, and get a cleaner next step. Domestic trips hide the official-government section automatically.
 </p>
 
 <div class="planner-grid">
-<input id="destination" type="text" placeholder="Destination (e.g. Paris or United States)" />
+<input id="destination" type="text" placeholder="Destination (e.g. Washington DC, Paris, United States)" />
+<select id="originCountry">
+<option value="United States" selected>Origin: United States</option>
+<option value="France">Origin: France</option>
+<option value="Spain">Origin: Spain</option>
+<option value="Italy">Origin: Italy</option>
+<option value="United Kingdom">Origin: United Kingdom</option>
+<option value="Other">Origin: Other</option>
+</select>
 <input id="startDate" type="date" />
 <input id="endDate" type="date" />
 <select id="travelers">
@@ -577,6 +614,11 @@ Search a destination, get a cleaner next step, open the activity page in a new t
 <li>Enter a destination and click Plan Trip.</li>
 </ul>
 
+<div class="airport-box" id="airport-box" style="display:none;">
+<h4>Airport options</h4>
+<select id="airportSelect"></select>
+</div>
+
 <div class="info-box" id="why-box">
 <strong>Why this helps:</strong>
 SignalBoost gives users a simpler first action instead of sending them to many separate sites first.
@@ -601,7 +643,7 @@ Explore Activities
 </div>
 </div>
 
-<div class="result-box">
+<div class="result-box" id="official-panel">
 <h3>Official information</h3>
 
 <div class="info-box official-box" id="official-box">
@@ -640,10 +682,10 @@ Official information stays separate from commercial booking and affiliate links.
 <section id="feed" class="card section-card">
 <h2>Content Feed</h2>
 <p>
-This section uses a feed-like layout, closer to a video platform page, with cards ranked by interest and action value.
+This area updates by destination, but it uses platform search links for now. Live pulled videos/posts require APIs or backend integrations.
 </p>
 
-<div class="feed-grid">
+<div class="feed-grid" id="feed-grid">
 <div class="feed-card">
 <div class="thumb">Travel Conversations</div>
 <div class="feed-body">
@@ -651,9 +693,8 @@ This section uses a feed-like layout, closer to a video platform page, with card
 <div class="meta">
 <span>Platform: Reddit</span>
 <span>Type: Community</span>
-<span>High interest</span>
 </div>
-<p>Browse destination tips, traveler opinions, and real-world discussion threads.</p>
+<p>Browse destination tips, traveler opinions, and discussion threads.</p>
 <a class="btn btn-secondary" href="https://www.reddit.com/search/?q=travel" target="_blank" rel="noopener noreferrer">Open Reddit</a>
 </div>
 </div>
@@ -665,9 +706,8 @@ This section uses a feed-like layout, closer to a video platform page, with card
 <div class="meta">
 <span>Platform: YouTube</span>
 <span>Type: Video</span>
-<span>Viewer-led</span>
 </div>
-<p>Watch guides, city walks, hotel reviews, and destination planning videos.</p>
+<p>Watch travel guides, city walks, and planning videos.</p>
 <a class="btn btn-secondary" href="https://www.youtube.com/results?search_query=travel+guide" target="_blank" rel="noopener noreferrer">Open YouTube</a>
 </div>
 </div>
@@ -679,7 +719,6 @@ This section uses a feed-like layout, closer to a video platform page, with card
 <div class="meta">
 <span>Platform: Viator</span>
 <span>Type: Activities</span>
-<span>Affiliate ready</span>
 </div>
 <p>Show tours, day trips, and experiences that fit the planner result.</p>
 <a class="btn btn-secondary" href="https://www.viator.com" target="_blank" rel="noopener noreferrer">Open Viator</a>
@@ -693,38 +732,9 @@ This section uses a feed-like layout, closer to a video platform page, with card
 <div class="meta">
 <span>Platform: Booking</span>
 <span>Type: Accommodation</span>
-<span>Travel support</span>
 </div>
-<p>Use this when the next step after activities is accommodation or longer stays.</p>
+<p>Search accommodation after the destination is chosen.</p>
 <a class="btn btn-secondary" href="https://www.booking.com" target="_blank" rel="noopener noreferrer">Open Booking</a>
-</div>
-</div>
-
-<div class="feed-card">
-<div class="thumb">Flight Search</div>
-<div class="feed-body">
-<h3>Flight comparison</h3>
-<div class="meta">
-<span>Platform: Skyscanner</span>
-<span>Type: Flights</span>
-<span>Travel support</span>
-</div>
-<p>Compare routes and prices once a destination decision has been made.</p>
-<a class="btn btn-secondary" href="https://www.skyscanner.com" target="_blank" rel="noopener noreferrer">Open Skyscanner</a>
-</div>
-</div>
-
-<div class="feed-card">
-<div class="thumb">Payments</div>
-<div class="feed-body">
-<h3>PayPal and partner flow</h3>
-<div class="meta">
-<span>Platform: PayPal</span>
-<span>Type: Finance</span>
-<span>Platform growth</span>
-</div>
-<p>Useful for the broader digital mall direction, payments, and future merchant paths.</p>
-<a class="btn btn-secondary" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">Open PayPal</a>
 </div>
 </div>
 </div>
@@ -733,7 +743,7 @@ This section uses a feed-like layout, closer to a video platform page, with card
 <section id="mall" class="card section-card">
 <h2>Digital Mall</h2>
 <p>
-SignalBoost is bigger than travel alone. The platform is meant to connect categories that naturally belong together.
+SignalBoost is bigger than travel alone. The platform connects categories that naturally belong together.
 </p>
 
 <div class="feed-grid">
@@ -760,6 +770,14 @@ SignalBoost is bigger than travel alone. The platform is meant to connect catego
 <p>Payments, travel finance, partner integrations, and future merchant services.</p>
 </div>
 </div>
+
+<div class="feed-card">
+<div class="thumb">Communities</div>
+<div class="feed-body">
+<h3>Conversations and discovery</h3>
+<p>Community-driven insight from social and discussion platforms.</p>
+</div>
+</div>
 </div>
 </section>
 </div>
@@ -768,26 +786,26 @@ SignalBoost is bigger than travel alone. The platform is meant to connect catego
 <div class="card side-card">
 <h3>Search behavior</h3>
 <p>
-After each planner search, the form clears itself so the next search starts fresh, while the result remains visible.
+The planner keeps the result visible, resets the form after a search, and hides official-government links when the trip is domestic.
 </p>
 <ul class="simple-list">
-<li>Result stays visible</li>
-<li>Form resets automatically</li>
-<li>External links open in a new tab</li>
+<li>Destination drives official links</li>
+<li>City can drive airport options</li>
+<li>Domestic trips hide official box</li>
 </ul>
 </div>
 
 <div class="card side-card">
-<h3>Official link policy</h3>
+<h3>Airport logic</h3>
 <p>
-U.S. searches use U.S. official entry sources. France searches use France’s official visa portal. Spain, Italy, and the UK each use their own official path.
+Cities with multiple airports now show an airport selector. Example: Washington DC can show DCA, IAD, and BWI.
 </p>
 </div>
 </aside>
 </div>
 
 <div class="footer-note">
-This version uses a single full-width layout, a lighter design, a stronger official-information highlight area, and destination-specific official links instead of sending every search to U.S. pages.
+This version connects the destination to the official-info area, hides official-government actions for domestic trips, adds airport choices for selected cities, and uses a denser feed-style layout.
 </div>
 </div>
 
@@ -795,6 +813,7 @@ This version uses a single full-width layout, a lighter design, a stronger offic
 const travelData = {
 paris: {
 title: "Top things to do in Paris",
+country: "France",
 activities: [
 "Eiffel Tower guided tour",
 "Seine River cruise",
@@ -809,6 +828,7 @@ tip: "Open the activity link in a new tab and keep SignalBoost open for the next
 
 france: {
 title: "Top things to do in France",
+country: "France",
 activities: [
 "Paris city highlights",
 "Museum and culture passes",
@@ -823,6 +843,7 @@ tip: "Check official entry requirements before booking activities."
 
 unitedstates: {
 title: "Top things to do in the United States",
+country: "United States",
 activities: [
 "New York city highlights",
 "National parks trip ideas",
@@ -835,8 +856,39 @@ why: "For U.S. travel, official actions should point to U.S. government entry so
 tip: "Use the official U.S. links first for entry rules, then move to activities and bookings."
 },
 
+washingtondc: {
+title: "Top things to do in Washington DC",
+country: "United States",
+activities: [
+"National Mall and monuments",
+"Smithsonian museums",
+"Government and history tours"
+],
+viator: "https://www.viator.com/Washington-DC/d657-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.cbp.gov/travel/international-visitors",
+officialApply: "https://esta.cbp.dhs.gov/",
+why: "Washington DC has multiple airport choices and is a strong example of city-specific travel planning.",
+tip: "Choose the airport that best matches your destination and transport needs."
+},
+
+newyork: {
+title: "Top things to do in New York",
+country: "United States",
+activities: [
+"Statue of Liberty tour",
+"Top of the Rock visit",
+"New York city highlights"
+],
+viator: "https://www.viator.com/New-York-City/d687-ttd?pid=P00294693&mcid=42383&medium=link",
+officialInfo: "https://www.cbp.gov/travel/international-visitors",
+officialApply: "https://esta.cbp.dhs.gov/",
+why: "New York supports tourism, business travel, and a high number of activity options.",
+tip: "Choose your airport carefully because the city is served by multiple airports."
+},
+
 spain: {
 title: "Top things to do in Spain",
+country: "Spain",
 activities: [
 "Madrid city walking tour",
 "Museum passes",
@@ -851,6 +903,7 @@ tip: "Check the official Spain government consular information first."
 
 madrid: {
 title: "Top things to do in Madrid",
+country: "Spain",
 activities: [
 "Madrid city walking tour",
 "Prado Museum visit",
@@ -865,6 +918,7 @@ tip: "Madrid can later combine food, nightlife, and longer-stay suggestions."
 
 italy: {
 title: "Top things to do in Italy",
+country: "Italy",
 activities: [
 "Historic city tours",
 "Museum visits",
@@ -879,6 +933,7 @@ tip: "Use Italy’s official visa portal first if entry approval is needed."
 
 rome: {
 title: "Top things to do in Rome",
+country: "Italy",
 activities: [
 "Colosseum guided tour",
 "Vatican Museums visit",
@@ -893,6 +948,7 @@ tip: "Rome is a strong mix of culture, activities, and travel planning."
 
 unitedkingdom: {
 title: "Top things to do in the United Kingdom",
+country: "United Kingdom",
 activities: [
 "London sightseeing",
 "Museum and landmark visits",
@@ -907,6 +963,7 @@ tip: "Use the UK government visa checker first for official entry guidance."
 
 london: {
 title: "Top things to do in London",
+country: "United Kingdom",
 activities: [
 "London sightseeing tour",
 "Tower of London visit",
@@ -929,6 +986,14 @@ america: "unitedstates",
 "united states": "unitedstates",
 unitedstates: "unitedstates",
 
+"washington dc": "washingtondc",
+washington: "washingtondc",
+dc: "washingtondc",
+
+"new york": "newyork",
+nyc: "newyork",
+"new york city": "newyork",
+
 france: "france",
 paris: "paris",
 
@@ -945,6 +1010,36 @@ england: "unitedkingdom",
 london: "london"
 };
 
+const airportMap = {
+washingtondc: [
+{ code: "DCA", name: "Ronald Reagan Washington National" },
+{ code: "IAD", name: "Washington Dulles International" },
+{ code: "BWI", name: "Baltimore/Washington International" }
+],
+newyork: [
+{ code: "JFK", name: "John F. Kennedy International" },
+{ code: "LGA", name: "LaGuardia" },
+{ code: "EWR", name: "Newark Liberty International" }
+],
+london: [
+{ code: "LHR", name: "London Heathrow" },
+{ code: "LGW", name: "London Gatwick" },
+{ code: "STN", name: "London Stansted" },
+{ code: "LTN", name: "London Luton" }
+],
+paris: [
+{ code: "CDG", name: "Charles de Gaulle" },
+{ code: "ORY", name: "Paris Orly" }
+],
+madrid: [
+{ code: "MAD", name: "Adolfo Suárez Madrid-Barajas" }
+],
+rome: [
+{ code: "FCO", name: "Leonardo da Vinci–Fiumicino" },
+{ code: "CIA", name: "Ciampino" }
+]
+};
+
 function normalizeDestination(value) {
 return value.toLowerCase().trim();
 }
@@ -953,8 +1048,86 @@ function renderActivities(items) {
 return items.map(item => `<li>${item}</li>`).join("");
 }
 
+function updateAirportOptions(key) {
+const airportBox = document.getElementById("airport-box");
+const airportSelect = document.getElementById("airportSelect");
+const airports = airportMap[key];
+
+if (!airports || airports.length === 0) {
+airportBox.style.display = "none";
+airportSelect.innerHTML = "";
+return;
+}
+
+airportSelect.innerHTML = airports
+.map(airport => `<option value="${airport.code}">${airport.code} — ${airport.name}</option>`)
+.join("");
+
+airportBox.style.display = "block";
+}
+
+function updateFeedForDestination(destinationText) {
+const encoded = encodeURIComponent(destinationText || "travel");
+const feedGrid = document.getElementById("feed-grid");
+
+feedGrid.innerHTML = `
+<div class="feed-card">
+<div class="thumb">${destinationText || "Travel"} Discussions</div>
+<div class="feed-body">
+<h3>Reddit discussions for ${destinationText || "travel"}</h3>
+<div class="meta">
+<span>Platform: Reddit</span>
+<span>Type: Community</span>
+</div>
+<p>Browse destination tips, traveler opinions, and discussion threads.</p>
+<a class="btn btn-secondary" href="https://www.reddit.com/search/?q=${encoded}" target="_blank" rel="noopener noreferrer">Open Reddit</a>
+</div>
+</div>
+
+<div class="feed-card">
+<div class="thumb">${destinationText || "Travel"} Videos</div>
+<div class="feed-body">
+<h3>YouTube videos for ${destinationText || "travel"}</h3>
+<div class="meta">
+<span>Platform: YouTube</span>
+<span>Type: Video</span>
+</div>
+<p>Watch travel guides, city walks, airport reviews, and planning videos.</p>
+<a class="btn btn-secondary" href="https://www.youtube.com/results?search_query=${encoded}+travel+guide" target="_blank" rel="noopener noreferrer">Open YouTube</a>
+</div>
+</div>
+
+<div class="feed-card">
+<div class="thumb">${destinationText || "Travel"} Activities</div>
+<div class="feed-body">
+<h3>Viator experiences for ${destinationText || "travel"}</h3>
+<div class="meta">
+<span>Platform: Viator</span>
+<span>Type: Activities</span>
+</div>
+<p>Show tours, day trips, and experiences that fit the planner result.</p>
+<a class="btn btn-secondary" href="https://www.viator.com/searchResults/all?text=${encoded}" target="_blank" rel="noopener noreferrer">Open Viator</a>
+</div>
+</div>
+
+<div class="feed-card">
+<div class="thumb">${destinationText || "Travel"} Stays</div>
+<div class="feed-body">
+<h3>Booking stays for ${destinationText || "travel"}</h3>
+<div class="meta">
+<span>Platform: Booking</span>
+<span>Type: Accommodation</span>
+</div>
+<p>Search accommodation after the destination is chosen.</p>
+<a class="btn btn-secondary" href="https://www.booking.com/searchresults.html?ss=${encoded}" target="_blank" rel="noopener noreferrer">Open Booking</a>
+</div>
+</div>
+`;
+}
+
 function runPlanner() {
 const destinationInput = document.getElementById("destination");
+const originCountryInput = document.getElementById("originCountry");
 const travelersInput = document.getElementById("travelers");
 const tripTypeInput = document.getElementById("tripType");
 const startDateInput = document.getElementById("startDate");
@@ -967,14 +1140,14 @@ const selected = travelData[key];
 const shownDestination = destinationValue || "Paris";
 const travelersValue = travelersInput.value;
 const tripTypeValue = tripTypeInput.value;
+const originCountry = originCountryInput.value;
+
+const destinationCountry = selected.country || "";
+const isDomestic = originCountry !== "Other" && originCountry === destinationCountry;
 
 document.getElementById("result-title").textContent = selected.title;
-document.getElementById("activity-list").innerHTML =
-selected.activities.map(item => `<li>${item}</li>`).join("");
-
+document.getElementById("activity-list").innerHTML = renderActivities(selected.activities);
 document.getElementById("viator-link").href = selected.viator;
-document.getElementById("official-info-link").href = selected.officialInfo;
-document.getElementById("official-apply-link").href = selected.officialApply;
 
 document.getElementById("why-box").innerHTML =
 "<strong>Why this recommendation works:</strong> " + selected.why;
@@ -982,14 +1155,40 @@ document.getElementById("why-box").innerHTML =
 document.getElementById("tip-box").innerHTML =
 "<strong>Tip:</strong> " + selected.tip;
 
-document.getElementById("official-box").innerHTML =
-"<strong>Important official guidance:</strong> Use the highlighted official government links below for " + shownDestination + ".";
-
 document.getElementById("badge-destination").textContent = shownDestination;
 document.getElementById("badge-type").textContent =
 tripTypeValue.charAt(0).toUpperCase() + tripTypeValue.slice(1);
 document.getElementById("badge-travelers").textContent =
 travelersValue + (travelersValue === "1" ? " traveler" : " travelers");
+
+updateAirportOptions(key);
+updateFeedForDestination(shownDestination);
+
+const officialPanel = document.getElementById("official-panel");
+const officialInfoLink = document.getElementById("official-info-link");
+const officialApplyLink = document.getElementById("official-apply-link");
+const officialBox = document.getElementById("official-box");
+const officialNote = document.getElementById("official-note");
+
+if (isDomestic) {
+officialInfoLink.removeAttribute("href");
+officialApplyLink.removeAttribute("href");
+officialPanel.style.opacity = "0.95";
+officialBox.innerHTML = `<strong>Domestic trip:</strong> official immigration or visa steps do not apply for a trip within ${destinationCountry}.`;
+officialNote.innerHTML = `<span class="official-note-domestic">No official visa/application links are needed for this domestic trip.</span>`;
+officialInfoLink.style.display = "none";
+officialApplyLink.style.display = "none";
+} else {
+officialPanel.style.opacity = "1";
+officialInfoLink.href = selected.officialInfo;
+officialApplyLink.href = selected.officialApply;
+officialInfoLink.style.display = "inline-flex";
+officialApplyLink.style.display = "inline-flex";
+officialBox.innerHTML =
+"<strong>Important official guidance:</strong> Use the highlighted official government links below for " + shownDestination + ".";
+officialNote.textContent =
+"Official information stays separate from commercial booking and affiliate links.";
+}
 
 document.getElementById("planner-status").textContent = "Updated";
 
@@ -1009,6 +1208,7 @@ document.getElementById("endDate").value = "";
 document.getElementById("travelers").value = "2";
 document.getElementById("tripType").value = "leisure";
 document.getElementById("planner-status").textContent = "Ready";
+document.getElementById("airport-box").style.display = "none";
 }
 
 function copyCurrentLink() {
