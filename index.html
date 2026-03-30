@@ -25,12 +25,13 @@ CURRENT FEATURES
 - YouTube embedded section
 - TikTok preview section
 - Telegram preview section
+- VK preview section
 - Optional live YouTube API loading with fallback demo data
 - Low-confidence guidance with suggested prompts and manual overrides
 
 NEXT STEPS
 - Add a valid YouTube Data API key to enable live YouTube loading
-- Add TikTok, Telegram, VK, and more one at a time
+- Replace VK preview cards with supported public feed handling later
 - Replace more mock feed modules with live data ingestion
 - Build real travel integrations
 - Add Food / Lifestyle zone
@@ -160,6 +161,14 @@ body.dark .hero-list-item,body.dark .rail-list-item,body.dark .card{background:r
           <span class="mode-badge">Preview</span>
         </div>
         <div class="grid" id="telegramFeed"></div>
+      </section>
+
+      <section class="module" id="vkModule">
+        <div class="module-header">
+          <h2>VK Feed</h2>
+          <span class="mode-badge">Preview</span>
+        </div>
+        <div class="grid" id="vkFeed"></div>
       </section>
 
       <section class="module" id="combinedFeedModule">
@@ -334,6 +343,15 @@ function renderTelegramFeed(){
   container.innerHTML = posts.map(p => `<div class="card"><div class="label">Telegram • ${p.views} • ${p.time}</div><div class="strong">${p.title}</div><div style="margin-top:6px;color:var(--muted)">Public channel preview. Next step: replace with Telegram widget/embed.</div><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on Telegram →</a></div>`).join('');
 }
 
+function renderVKFeed(){
+  const container = document.getElementById('vkFeed');
+  const posts = [
+    { title:'VK public post example', views:'210K views', time:'6h ago', url:'https://vk.com' },
+    { title:'VK video or channel update', views:'340K views', time:'9h ago', url:'https://vk.com' }
+  ];
+  container.innerHTML = posts.map(p => `<div class="card"><div class="label">VK • ${p.views} • ${p.time}</div><div class="strong">${p.title}</div><div style="margin-top:6px;color:var(--muted)">Public VK preview card. Next step: replace with supported public feed or embed flow.</div><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on VK →</a></div>`).join('');
+}
+
 function renderTruthFeed(){
   const container = document.getElementById('truthFeed');
   const posts = [
@@ -408,6 +426,7 @@ render('general');
 renderYouTubeFeed();
 renderTikTokFeed();
 renderTelegramFeed();
+renderVKFeed();
 renderTruthFeed();
 renderCombinedFeed();
 renderTravelZone();
