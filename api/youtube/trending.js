@@ -1,4 +1,3 @@
-// api/youtube/trending.js
 export default async function handler(req, res) {
   const region = req.query.region || 'US';
   const key = process.env.YOUTUBE_API_KEY;
@@ -10,9 +9,9 @@ export default async function handler(req, res) {
   try {
     const url =
       `https://www.googleapis.com/youtube/v3/videos` +
-      `?part=snippet,statistics` +
+      `?part=snippet,statistics,status` +
       `&chart=mostPopular` +
-      `&maxResults=6` +
+      `&maxResults=9` +
       `&regionCode=${encodeURIComponent(region)}` +
       `&key=${encodeURIComponent(key)}`;
 
@@ -23,14 +22,30 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: data });
     }
 
-    const items = (data.items || []).map(video => ({
-      id: video.id,
-      title: video.snippet?.title || 'YouTube video',
-      channel: video.snippet?.channelTitle || 'YouTube',
-      publishedAt: video.snippet?.publishedAt || null,
-      views: video.statistics?.viewCount || 0,
-      embed: `https://www.youtube.com/embed/${video.id}`
-    }));
+    const items = (data.items || []).map(video => {
+      const id = video.id;
+      const snippet = video.snippet || {};
+      const thumbs = snippet.thumbnails || {};
+      const thumb =
+        thumbs.maxres?.url ||
+        thumbs.standard?.url ||
+        thumbs.high?.url ||
+        thumbs.medium?.url ||
+        thumbs.default?.url ||
+        '';
+
+      return {
+        id,
+        title: snippet.title || 'YouTube video',
+        channel: snippet.channelTitle || 'YouTube',
+        publishedAt: snippet.publishedAt || null,
+        views: Number(video.statistics?.viewCount || 0),
+        thumbnail: thumb,
+        watchUrl: `https://www.youtube.com/watch?v=${id}`,
+        embedPlayerUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`,
+        embeddable: video.status?.embeddable !== false
+      };
+    });
 
     return res.status(200).json({ items });
   } catch (error) {
