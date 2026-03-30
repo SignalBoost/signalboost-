@@ -24,6 +24,7 @@ CURRENT FEATURES
 - Truth Social public feed preview
 - YouTube embedded section
 - TikTok preview section
+- Telegram previ
 - Low-confidence guidance with suggested prompts and manual overrides
 
 NEXT STEPS
@@ -172,6 +173,14 @@ body.dark .hero-list-item,body.dark .rail-list-item,body.dark .card{background:r
           <span class="mode-badge">Preview</span>
         </div>
         <div class="grid" id="tiktokFeed"></div>
+      </section>
+
+      <section class="module" id="telegramModule">
+        <div class="module-header">
+          <h2>Telegram Feed</h2>
+          <span class="mode-badge">Preview</span>
+        </div>
+        <div class="grid" id="telegramFeed"></div>
       </section>
 
       <section class="module" id="truthModule">
@@ -336,6 +345,23 @@ function renderTikTokFeed(){
   container.innerHTML = items.map(v => `<div class="card"><div class="label">TikTok • ${v.views} • ${v.time}</div><div class="strong">${v.title}</div><div style="margin-top:6px;color:var(--muted)">Public preview card. Next step: replace with official/embed-backed content.</div><a href="${v.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on TikTok →</a></div>`).join('');
 }
 
+function renderTelegramFeed(){
+  const container = document.getElementById('telegramFeed');
+  const posts = [
+    { title:'Telegram channel update', views:'150K views', time:'3h ago', url:'https://t.me/telegram' },
+    { title:'Breaking news update', views:'90K views', time:'7h ago', url:'https://t.me/telegram' }
+  ];
+
+  container.innerHTML = posts.map(p => `
+    <div class="card">
+      <div class="label">Telegram • ${p.views} • ${p.time}</div>
+      <div class="strong">${p.title}</div>
+      <div style="margin-top:6px;color:var(--muted)">Public channel preview. Next step: replace with Telegram widget/embed.</div>
+      <a href="${p.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on Telegram →</a>
+    </div>
+  `).join('');
+}
+
 function renderTruthFeed(){
   const container = document.getElementById('truthFeed');
   const posts = [
@@ -451,6 +477,7 @@ function render(mode){
 render('general');
 renderYouTubeFeed();
 renderTikTokFeed();
+renderTelegramFeed();
 renderTruthFeed();
 renderCombinedFeed();
 renderTravelZone();
