@@ -427,6 +427,15 @@ body.dark .card{background:rgba(30,40,60,.6)}
   </div>
   <div class="grid" id="planningGrid"></div>
 </section>
+
+<section class="module" id="truthModule">
+  <div class="module-header">
+    <h2>Truth Social Feed</h2>
+    <span class="mode-badge">Public feed</span>
+  </div>
+  <div class="grid" id="truthFeed"></div>
+</section>
+
 </div>
 
 <aside class="side-rail">
@@ -821,7 +830,38 @@ function render(mode){
   }
 }
 
+function renderTruthFeed(){
+  const container = document.getElementById('truthFeed');
+
+  const posts = [
+    {
+      text: "Sample Truth Social post: Policy, politics, or announcement content goes here.",
+      time: "2h ago",
+      url: "https://truthsocial.com/@realDonaldTrump"
+    },
+    {
+      text: "Another post example showing how updates will appear inside your platform.",
+      time: "5h ago",
+      url: "https://truthsocial.com/@realDonaldTrump"
+    },
+    {
+      text: "Latest update preview. In production this comes from a backend feed.",
+      time: "1d ago",
+      url: "https://truthsocial.com/@realDonaldTrump"
+    }
+  ];
+
+  container.innerHTML = posts.map(p => `
+    <div class="card">
+      <div class="label">@realDonaldTrump • ${p.time}</div>
+      <div class="strong" style="margin-top:6px">${p.text}</div>
+      <a href="${p.url}" target="_blank" style="margin-top:8px;display:inline-block;color:#2563eb">Open on Truth Social →</a>
+    </div>
+  `).join('');
+}
+
 render('general');
+renderTruthFeed();
 </script>
 
 </body>
