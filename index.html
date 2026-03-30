@@ -23,11 +23,13 @@ CURRENT FEATURES
 - Travel Zone module
 - Truth Social public feed preview
 - YouTube embedded section
+- TikTok preview section
 - Low-confidence guidance with suggested prompts and manual overrides
 
 NEXT STEPS
-- Connect real APIs (YouTube first)
-- Add TikTok, Telegram, VK, and more one at a time
+- Connect real YouTube data first
+- Replace TikTok preview cards with official/embed-backed content
+- Add Telegram next, one platform at a time
 - Replace mock feed with live data ingestion
 - Build real travel integrations
 - Add Food / Lifestyle zone
@@ -162,6 +164,14 @@ body.dark .hero-list-item,body.dark .rail-list-item,body.dark .card{background:r
           <button class="ghost" onclick="prevPage()">Previous</button>
           <button class="ghost" onclick="nextPage()">Next</button>
         </div>
+      </section>
+
+      <section class="module" id="tiktokModule">
+        <div class="module-header">
+          <h2>TikTok Feed</h2>
+          <span class="mode-badge">Preview</span>
+        </div>
+        <div class="grid" id="tiktokFeed"></div>
       </section>
 
       <section class="module" id="truthModule">
@@ -317,6 +327,15 @@ function renderYouTubeFeed(){
   container.innerHTML = videos.map(v => `<div class="card"><iframe width="100%" height="190" src="${v.embed}" title="${v.title}" style="border:0;border-radius:12px" allowfullscreen></iframe><div class="strong" style="margin-top:10px">${v.title}</div><div class="label" style="margin-top:6px">YouTube • ${v.views} • ${v.time}</div></div>`).join('');
 }
 
+function renderTikTokFeed(){
+  const container = document.getElementById('tiktokFeed');
+  const items = [
+    { title:'TikTok viral example', views:'980K views', time:'1h ago', url:'https://www.tiktok.com' },
+    { title:'Short-form trend example', views:'2.1M views', time:'4h ago', url:'https://www.tiktok.com' }
+  ];
+  container.innerHTML = items.map(v => `<div class="card"><div class="label">TikTok • ${v.views} • ${v.time}</div><div class="strong">${v.title}</div><div style="margin-top:6px;color:var(--muted)">Public preview card. Next step: replace with official/embed-backed content.</div><a href="${v.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on TikTok →</a></div>`).join('');
+}
+
 function renderTruthFeed(){
   const container = document.getElementById('truthFeed');
   const posts = [
@@ -431,6 +450,7 @@ function render(mode){
 
 render('general');
 renderYouTubeFeed();
+renderTikTokFeed();
 renderTruthFeed();
 renderCombinedFeed();
 renderTravelZone();
