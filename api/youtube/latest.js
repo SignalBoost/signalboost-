@@ -10,32 +10,67 @@ export default async function handler(req, res) {
     const topics = ['news', 'technology', 'finance', 'travel', 'sports'];
     const q = topics[Math.floor(Math.random() * topics.length)];
 
-    const url =
+    const searchUrl =
       `https://www.googleapis.com/youtube/v3/search` +
       `?part=snippet` +
       `&type=video` +
       `&order=date` +
-      `&maxResults=6` +
+      `&maxResults=9` +
       `&q=${encodeURIComponent(q)}` +
       `&regionCode=${encodeURIComponent(region)}` +
       `&key=${encodeURIComponent(key)}`;
 
-    const response = await fetch(url);
-    const data = await response.json();
+    const searchResponse = await fetch(searchUrl);
+    const searchData = await searchResponse.json();
 
-    if (!response.ok) {
-      return res.status(response.status).json({ error: data });
+    if (!searchResponse.ok) {
+      return res.status(searchResponse.status).json({ error: searchData });
     }
 
-    const items = (data.items || [])
-      .map(video => ({
-        id: video.id?.videoId,
-        title: video.snippet?.title || 'YouTube video',
-        channel: video.snippet?.channelTitle || 'YouTube',
-        publishedAt: video.snippet?.publishedAt || null,
-        embed: `https://www.youtube.com/embed/${video.id?.videoId}`
-      }))
-      .filter(v => v.id);
+    const ids = (searchData.items || [])
+      .map(item => item.id?.videoId)
+      .filter(Boolean);
+
+    if (!ids.length) {
+      return res.status(200).json({ items: [] });
+    }
+
+    const videosUrl =
+      `https://www.googleapis.com/youtube/v3/videos` +
+      `?part=snippet,status` +
+      `&id=${encodeURIComponent(ids.join(','))}` +
+      `&key=${encodeURIComponent(key)}`;
+
+    const videosResponse = await fetch(videosUrl);
+    const videosData = await videosResponse.json();
+
+    if (!videosResponse.ok) {
+      return res.status(videosResponse.status).json({ error: videosData });
+    }
+
+    const items = (videosData.items || []).map(video => {
+      const id = video.id;
+      const snippet = video.snippet || {};
+      const thumbs = snippet.thumbnails || {};
+      const thumb =
+        thumbs.maxres?.url ||
+        thumbs.standard?.url ||
+        thumbs.high?.url ||
+        thumbs.medium?.url ||
+        thumbs.default?.url ||
+        '';
+
+      return {
+        id,
+        title: snippet.title || 'YouTube video',
+        channel: snippet.channelTitle || 'YouTube',
+        publishedAt: snippet.publishedAt || null,
+        thumbnail: thumb,
+        watchUrl: `https://www.youtube.com/watch?v=${id}`,
+        embedPlayerUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`,
+        embeddable: video.status?.embeddable !== false
+      };
+    });
 
     return res.status(200).json({ items });
   } catch (error) {
