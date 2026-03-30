@@ -467,18 +467,18 @@ function renderYouTubeCards(videos, isLive){ const container = document.getEleme
 async function renderYouTubeFeed(){
   if(!YOUTUBE_API_KEY){ renderYouTubeCards(youtubeFallbackVideos(), false); return; }
   try {
-    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&maxResults=6&regionCode=${encodeURIComponent(YOUTUBE_REGION)}&key=${encodeURIComponent(YOUTUBE_API_KEY)}`;
-    const res = await fetch(url);
-    if(!res.ok) throw new Error(`YouTube API HTTP ${res.status}`);
-    const data = await res.json();
-    const items = Array.isArray(data.items) ? data.items : [];
-    const videos = items.slice(0, 6).map(item => ({
-      title: item.snippet?.title || 'YouTube video',
-      channel: item.snippet?.channelTitle || 'YouTube',
-      views: `${formatCompactNumber(Number(item.statistics?.viewCount || 0))} views`,
-      time: hoursAgoFromPublishedAt(item.snippet?.publishedAt || new Date().toISOString()),
-      embed: `https://www.youtube.com/embed/${item.id}`
-    }));
+    const url = const res = await fetch('/api/youtube/trending?region=US');
+const data = await res.json();
+
+const items = data.items || [];
+
+const videos = items.map(item => ({
+  title: item.title,
+  channel: item.channel,
+  views: formatCompactNumber(Number(item.views || 0)),
+  time: hoursAgoFromPublishedAt(item.publishedAt),
+  embed: item.embed
+}));
     renderYouTubeCards(videos.length ? videos : youtubeFallbackVideos(), videos.length > 0);
   } catch (error) {
     console.error('YouTube feed failed:', error);
