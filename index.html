@@ -23,8 +23,8 @@ CURRENT FEATURES
 - Travel Zone module
 - Truth Social public feed preview
 - YouTube embedded section
-- TikTok preview section
-- Telegram preview section
+- TikTok embedded/demo section
+- Telegram embedded/demo section
 - VK preview section
 - Optional live YouTube API loading with fallback demo data
 - Low-confidence guidance with suggested prompts and manual overrides
@@ -328,22 +328,36 @@ async function renderYouTubeFeed(){
 function renderTikTokFeed(){
   const container = document.getElementById('tiktokFeed');
   const items = [
-    { title:'TikTok viral example', views:'980K views', time:'1h ago', url:'https://www.tiktok.com' },
-    { title:'Short-form trend example', views:'2.1M views', time:'4h ago', url:'https://www.tiktok.com' }
-  ];
-  container.innerHTML = items.map(v => `<div class="card"><div class="label">TikTok • ${v.views} • ${v.time}</div><div class="strong">${v.title}</div><div style="margin-top:6px;color:var(--muted)">Public preview card. Next step: replace with official/embed-backed content.</div><a href="${v.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on TikTok →</a></div>`).join('');
-}
-
-function renderTelegramFeed(){
+    {
+      title:'TikTok viral example',
+      views:'980K views',
+      time:'1h ago',
+      embedHtml:`<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@scout2015/video/6718335390845095173" data-video-id="6718335390845095173" style="max-width:100%;min-width:280px;"><section><a target="_blank" title="@scout2015" href="https://www.tiktok.com/@scout2015?refer=embed">@scout2015</a></section></blockquote>`
+    },
+    {
+      title:'Short-form trend example',
+      views:'2.1M views',
+      time:'4h ago',
+      embedHtml:`<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@scout2015/video/6718335390845095173" data-video-id="function renderTelegramFeed(){
   const container = document.getElementById('telegramFeed');
   const posts = [
-    { title:'Telegram channel update', views:'150K views', time:'3h ago', url:'https://t.me/telegram' },
-    { title:'Breaking news update', views:'90K views', time:'7h ago', url:'https://t.me/telegram' }
+    {
+      title:'Telegram channel update',
+      views:'150K views',
+      time:'3h ago',
+      embedHtml:`<iframe src="https://t.me/s/telegram" style="width:100%;height:260px;border:0;border-radius:12px;background:white"></iframe>`
+    },
+    {
+      title:'Breaking news update',
+      views:'90K views',
+      time:'7h ago',
+      embedHtml:`<iframe src="https://t.me/s/telegram" style="width:100%;height:260px;border:0;border-radius:12px;background:white"></iframe>`
+    }
   ];
-  container.innerHTML = posts.map(p => `<div class="card"><div class="label">Telegram • ${p.views} • ${p.time}</div><div class="strong">${p.title}</div><div style="margin-top:6px;color:var(--muted)">Public channel preview. Next step: replace with Telegram widget/embed.</div><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on Telegram →</a></div>`).join('');
+  container.innerHTML = posts.map(p => `<div class="card">${p.embedHtml}<div class="strong" style="margin-top:10px">${p.title}</div><div class="label" style="margin-top:6px">Telegram • ${p.views} • ${p.time}</div></div>`).join('');
 }
 
-function renderVKFeed(){
+function renderTruthFeed){
   const container = document.getElementById('vkFeed');
   const posts = [
     { title:'VK public post example', views:'210K views', time:'6h ago', url:'https://vk.com' },
@@ -355,10 +369,20 @@ function renderVKFeed(){
 function renderTruthFeed(){
   const container = document.getElementById('truthFeed');
   const posts = [
-    { text:'Policy update and announcement.', time:'2h ago', url:'https://truthsocial.com/@realDonaldTrump' },
-    { text:'Campaign-related message.', time:'5h ago', url:'https://truthsocial.com/@realDonaldTrump' }
+    {
+      text:'Policy update and announcement.',
+      time:'2h ago',
+      body:'Public Truth Social post preview rendered directly in the mall so users can judge whether it matters before opening the source.',
+      stats:'320K views • 14K interactions'
+    },
+    {
+      text:'Campaign-related message.',
+      time:'5h ago',
+      body:'Second public post preview with visible context and engagement summary.',
+      stats:'210K views • 9K interactions'
+    }
   ];
-  container.innerHTML = posts.map(p => `<div class="card"><div class="label">Truth Social • ${p.time}</div><div class="strong">${p.text}</div><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open →</a></div>`).join('');
+  container.innerHTML = posts.map(p => `<div class="card"><div class="label">Truth Social • ${p.time}</div><div class="strong">${p.text}</div><div style="margin-top:8px;line-height:1.6;color:var(--muted)">${p.body}</div><div class="label" style="margin-top:8px">${p.stats}</div></div>`).join('');
 }
 
 function renderTravelZone(){ const container = document.getElementById('travelGrid'); const items = [['Search flights','Find and compare flights quickly'],['Find hotels','Compare stays by price and location'],['Plan itinerary','Organize your trip step-by-step'],['Check requirements','Visa, passport, and entry rules'],['Transport options','Airport transfer and local travel'],['Travel budget','Estimate and control spending']]; container.innerHTML = items.map(i => `<div class="card"><div class="label">Travel tool</div><div class="strong">${i[0]}</div><div style="margin-top:6px">${i[1]}</div></div>`).join(''); }
