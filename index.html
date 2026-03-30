@@ -1,3 +1,41 @@
+<!--
+================ SIGNALBOOST AI PROJECT BRAIN ================
+
+PROJECT IDENTITY
+- Name: SignalBoost AI
+- Goal: AI-driven HMI interface for a digital mall experience
+- Core Idea: AI cockpit + adaptive UI + mall-style service hub where users can discover, decide, and complete tasks without leaving the platform
+
+DESIGN PRINCIPLES
+- AI is the main interface (not a feature)
+- One clear next action
+- Visible feedback for every interaction
+- Adaptive layout based on user intent
+- The site should feel like a digital mall with multiple service zones
+- Users should complete as many tasks as possible without leaving the platform
+- Code should stay documented so another person can continue the project later
+
+CURRENT FEATURES
+- Messaging layout with specialized assistants
+- Adaptive workspace switching
+- Live YouTube Popular Now feed through /api/youtube/trending
+- Live YouTube Latest Uploads feed through /api/youtube/latest
+- Fresh Picks section that mixes and rotates live YouTube results
+- Manual refresh button for live media sections
+- Automatic feed refresh timer
+- Travel starter module (UI only, live pricing next)
+- Preview modules for TikTok, Telegram, and VK
+- Smart Feed and session context panels
+- Visible SVG logo in the top bar
+
+NEXT STEPS
+- Full TikTok live API file and frontend wiring
+- Full smart-feed rebuild that mixes platforms more intelligently
+- Full travel engine starter package with live flight data
+- Booking/affiliate logic for monetization
+- Add LinkedIn, X, Instagram, Facebook, and Signal in the right product roles
+==============================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -237,7 +275,8 @@
     }
 
     .hero-actions,
-    .hero-modes {
+    .hero-modes,
+    .hero-tools {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -433,6 +472,10 @@
               <button class="chip" onclick="setMode('finance')">Finance</button>
               <button class="chip" onclick="setMode('social')">Social</button>
             </div>
+            <div class="hero-tools">
+              <!-- Manual feed refresh lets a user ask for a fresher homepage without reloading the whole site. -->
+              <button class="chip" onclick="refreshAllFeeds()">🔄 Refresh Feed</button>
+            </div>
           </div>
           <div class="hero-side">
             <h3 id="heroPanelTitle">AI overview</h3>
@@ -523,10 +566,21 @@
   </div>
 
   <script>
+    // ==========================================================
+    // SIGNALBOOST AI FRONTEND
+    // This file is intentionally documented so another developer
+    // can continue the project without needing old chat context.
+    // ==========================================================
+
     let currentMode = 'general';
     let currentPage = 1;
     const pageSize = 4;
     let activeChat = 'AI Assistant';
+
+    // Auto refresh interval for live feed sections.
+    // 300000 ms = 5 minutes.
+    const FEED_REFRESH_INTERVAL_MS = 300000;
+    let feedRefreshTimer = null;
 
     function formatCompactNumber(value) {
       if (value >= 1000000000) return (value / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
@@ -596,6 +650,12 @@
       response.textContent = `Workspace set to ${currentMode.charAt(0).toUpperCase() + currentMode.slice(1)} based on: "${value}"`;
     }
 
+    // ----------------------------------------------------------
+    // LIVE YOUTUBE SECTIONS
+    // Popular Now uses /api/youtube/trending
+    // Latest Uploads uses /api/youtube/latest
+    // Fresh Picks mixes both and shuffles them to reduce repetition.
+    // ----------------------------------------------------------
     async function renderYouTubeFeed() {
       const container = document.getElementById('youtubeFeed');
       if (!container) return [];
@@ -611,7 +671,6 @@
         }
 
         const items = Array.isArray(data.items) ? data.items : [];
-
         const videos = items.map(item => ({
           title: item.title || 'YouTube video',
           channel: item.channel || 'YouTube',
@@ -722,6 +781,28 @@
       `).join('');
     }
 
+    // Refreshes every live section together so the homepage can keep changing.
+    async function refreshAllFeeds() {
+      const popularVideos = await renderYouTubeFeed();
+      const latestVideos = await renderYouTubeLatestFeed();
+      renderYouTubeFreshFeed(popularVideos, latestVideos);
+      renderTikTokFeed();
+      renderTelegramFeed();
+      renderVKFeed();
+      renderCombinedFeed();
+    }
+
+    function startFeedAutoRefresh() {
+      if (feedRefreshTimer) clearInterval(feedRefreshTimer);
+      feedRefreshTimer = setInterval(() => {
+        refreshAllFeeds();
+      }, FEED_REFRESH_INTERVAL_MS);
+    }
+
+    // ----------------------------------------------------------
+    // PREVIEW MODULES
+    // These are placeholders until each platform gets its own live integration.
+    // ----------------------------------------------------------
     function renderTikTokFeed() {
       const container = document.getElementById('tiktokFeed');
       const items = [
@@ -767,6 +848,10 @@
       `).join('');
     }
 
+    // ----------------------------------------------------------
+    // TRAVEL STARTER
+    // This is still a starter UI. Live flight and booking APIs come later.
+    // ----------------------------------------------------------
     const travelPlanner = {
       getFormHtml() {
         return `
@@ -818,6 +903,10 @@
       container.innerHTML = travelPlanner.getFormHtml();
     }
 
+    // ----------------------------------------------------------
+    // SMART FEED
+    // Placeholder ranked feed until cross-platform live aggregation is built.
+    // ----------------------------------------------------------
     function generateMockFeed() {
       return [
         { platform: 'YouTube', text: 'Trending video example', views: 1200000, likes: 54000, time: 2 },
@@ -880,14 +969,9 @@
     async function initApp() {
       openChat('AI Assistant');
       render('general');
-      const popularVideos = await renderYouTubeFeed();
-      const latestVideos = await renderYouTubeLatestFeed();
-      renderYouTubeFreshFeed(popularVideos, latestVideos);
-      renderTikTokFeed();
-      renderTelegramFeed();
-      renderVKFeed();
-      renderCombinedFeed();
       renderTravelZone();
+      await refreshAllFeeds();
+      startFeedAutoRefresh();
     }
 
     initApp();
