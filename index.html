@@ -1,17 +1,33 @@
-<!--
+​<!--
 ================ SIGNALBOOST AI PROJECT BRAIN ================
 
 PROJECT IDENTITY
 - Name: SignalBoost AI
-- Purpose: help users discover useful travel actions quickly
-- Public homepage focus: hotels, stays, and travel lodging first
-- Business rule: only show what helps users and supports monetization
+- Public homepage purpose: help users find hotels, stays, and travel lodging options quickly
+- Business rule: if something is not working or not monetized, it should not be displayed publicly
 
-CURRENT PUBLIC STRATEGY
-- Public homepage should look clean and consumer-facing
-- Hotels and vacation stays are the main current monetized path
-- Users should immediately see actions they can take
-- Videos remain on the page only as a light engagement layer
+LOCKED PUBLIC HOMEPAGE RULE
+- This file is intentionally restricted to public-safe sections only
+- No internal/operator/prototype sections should appear here
+- If a future section is unfinished, keep it out of this file until ready
+
+EXPECTED VISIBLE RESULT
+- Header / logo
+- Hero section
+- Hotel action cards
+- Popular stay picks
+- Top Deals monetized section
+- Popular Now videos
+- Fresh Picks videos
+
+EXPECTED HIDDEN RESULT
+- Conversations panel
+- Chat assistant thread
+- Session state
+- Why this mode
+- Admin links
+- TikTok / Telegram / VK previews
+- Prototype-only panels
 
 CURRENT LIVE AFFILIATE LINKS
 - Expedia:
@@ -21,46 +37,28 @@ https://www.hotels.com/affiliate/5BoP8Nf
 - Vrbo:
 https://vrbo.com/affiliate/M2nsa7i
 
-CURRENT PUBLIC MODULES
-- Clean hero
-- Hotel / stay action cards
-- Popular stay picks
-- Top Deals monetized section
-- Popular Now YouTube section
-- Fresh Picks YouTube section
-
-REMOVED FROM PUBLIC VIEW
-- Internal operator panels
-- Conversations / assistant prototype areas
-- Session state boxes
-- Why this mode boxes
-- Admin links
-- TikTok / Telegram / VK preview sections
-- Unfinished prototype sections
-
-TRACKING
-- Browser-side localStorage starter tracking remains enabled
+TRACKING NOTE
+- Browser-side starter tracking remains enabled with localStorage
 - Tracks:
 - page visits
 - affiliate clicks
 - action clicks
 - video opens
-- This is a temporary starter layer until real analytics is installed
 
 YOUTUBE NOTE
 - This page expects:
 /api/youtube/trending
 /api/youtube/latest
-- If videos fail:
-1. verify both API files are deployed
-2. verify YOUTUBE_API_KEY exists in Vercel
-3. verify both API routes return items
+- If videos fail again, check:
+1. both API files are deployed
+2. YOUTUBE_API_KEY exists in Vercel
+3. both API routes return JSON items
 
 NEXT STEPS
-- Add Booking.com when ready
-- Add real analytics
-- Add secure admin later
-- Add destination-specific pages only when useful and monetized
+- Keep this page stable
+- Do not add non-working sections here
+- Add real analytics later
+- Add Booking.com later if approved
 ==============================================================
 -->
 <!DOCTYPE html>
@@ -217,11 +215,6 @@ letter-spacing: -0.03em;
 h2 {
 margin: 0;
 font-size: 24px;
-}
-
-h3 {
-margin: 0 0 10px;
-font-size: 18px;
 }
 
 .sub {
@@ -635,15 +628,15 @@ width: min(100vw - 16px, 1320px);
 <div class="hero-side">
 <div class="info-box">
 <div class="info-title">Current live hotel partners</div>
-<div class="status-note">Expedia, Hotels.com, and Vrbo are now wired into the homepage.</div>
+<div class="status-note">Expedia, Hotels.com, and Vrbo are all active on this homepage.</div>
 </div>
 <div class="info-box">
 <div class="info-title">Main public purpose</div>
 <div class="status-note">Help users discover a place to stay, then send them into monetized booking-ready paths.</div>
 </div>
 <div class="info-box">
-<div class="info-title">Current homepage rule</div>
-<div class="status-note">Only show useful, public, and monetized sections.</div>
+<div class="info-title">Locked homepage rule</div>
+<div class="status-note">If a section is not working or not ready, it should not be shown here.</div>
 </div>
 </div>
 </section>
@@ -676,7 +669,7 @@ width: min(100vw - 16px, 1320px);
 <div class="card action-card">
 <div class="action-icon">🏡</div>
 <div class="strong">Vacation Rentals</div>
-<div class="status-note">Alternative stay path for homes, rentals, and larger group stays via Vrbo.</div>
+<div class="status-note">Alternative stay path for homes and longer-stay lodging via Vrbo.</div>
 <div class="deal-actions">
 <a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer" onclick="trackAffiliateClick('vrbo_main')">Open Vrbo</a>
 </div>
@@ -685,7 +678,7 @@ width: min(100vw - 16px, 1320px);
 <div class="card action-card">
 <div class="action-icon">🔍</div>
 <div class="strong">Compare Stay Options</div>
-<div class="status-note">Give users multiple lodging paths instead of relying on only one provider.</div>
+<div class="status-note">Give users more than one lodging route and stay type.</div>
 <div class="deal-actions">
 <a class="tiny-btn success" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer" onclick="trackAffiliateClick('compare_stays_hotelscom')">Compare stays</a>
 </div>
@@ -790,16 +783,6 @@ width: min(100vw - 16px, 1320px);
 </div>
 
 <script>
-/*
-==========================================================
-SIGNALBOOST AI PUBLIC FRONTEND LOGIC
-- public-only homepage behavior
-- hotel / stay monetization emphasis
-- Expedia + Hotels.com + Vrbo wired in
-- simple localStorage tracking
-==========================================================
-*/
-
 const FEED_REFRESH_INTERVAL_MS = 300000;
 let feedRefreshTimer = null;
 
