@@ -1,1 +1,321 @@
 
+<!--
+================ SIGNALBOOST AI ADMIN STARTER ================
+
+PURPOSE
+- Private owner-facing starter dashboard
+- Displays simple stats collected by index.html in localStorage
+- Helps the owner see whether the public page is actually getting use
+
+CURRENT LIMITATION
+- This is NOT a real secure backend admin panel
+- It only reads browser-side localStorage stats from the same browser/device
+- It is useful now as a starter, but should later be replaced or extended with:
+  - real analytics
+  - backend event logging
+  - authentication / access control
+
+CURRENT METRICS SHOWN
+- total page visits
+- total video opens
+- affiliate click counts
+- general action click counts
+- last visit time
+- last stats update time
+
+NEXT STEPS
+- Add password or real auth
+- Connect Google Analytics
+- Add server-side click logging
+- Add revenue estimates by partner
+- Add export/reporting capability
+==============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalBoost Admin Starter</title>
+  <style>
+    :root {
+      --bg: #eef4ff;
+      --surface: #ffffff;
+      --border: rgba(148, 163, 184, 0.24);
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --accent: #06b6d4;
+      --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      width: min(1200px, calc(100vw - 24px));
+      margin: 0 auto;
+      padding: 16px 0 32px;
+    }
+
+    .topbar,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 18px;
+    }
+
+    .title {
+      font-weight: 900;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      color: inherit;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn.primary {
+      border: none;
+      color: white;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .metric-value {
+      font-size: 32px;
+      font-weight: 900;
+      margin-top: 8px;
+    }
+
+    .label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .item {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.72);
+    }
+
+    .note {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    @media (max-width: 1000px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <div class="title">SignalBoost Admin Starter</div>
+        <div class="subtitle">Owner-side starter dashboard using local browser stats</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a class="btn" href="index.html">Open homepage</a>
+        <button class="btn primary" onclick="refreshDashboard()">Refresh stats</button>
+        <button class="btn" onclick="resetStats()">Reset local stats</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="label">Total Visits</div>
+        <div class="metric-value" id="metricVisits">0</div>
+      </div>
+
+      <div class="panel">
+        <div class="label">Video Opens</div>
+        <div class="metric-value" id="metricVideoOpens">0</div>
+      </div>
+
+      <div class="panel">
+        <div class="label">Affiliate Click Types</div>
+        <div class="metric-value" id="metricAffiliateTypes">0</div>
+      </div>
+
+      <div class="panel">
+        <div class="label">Action Click Types</div>
+        <div class="metric-value" id="metricActionTypes">0</div>
+      </div>
+    </div>
+
+    <div class="section panel">
+      <div class="label">Status</div>
+      <div class="list">
+        <div class="item"><strong>Current monetized path:</strong> Expedia travel link on homepage</div>
+        <div class="item"><strong>Current tracking layer:</strong> localStorage only</div>
+        <div class="item"><strong>Needs next:</strong> real analytics + server-side reporting</div>
+      </div>
+    </div>
+
+    <div class="section grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="panel">
+        <div class="label">Affiliate Click Counts</div>
+        <div class="list" id="affiliateList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="label">Action Click Counts</div>
+        <div class="list" id="actionList"></div>
+      </div>
+    </div>
+
+    <div class="section panel">
+      <div class="label">Timestamps</div>
+      <div class="list">
+        <div class="item"><strong>Last Visit:</strong> <span id="lastVisit">—</span></div>
+        <div class="item"><strong>Last Stats Update:</strong> <span id="lastUpdate">—</span></div>
+      </div>
+    </div>
+
+    <div class="section panel">
+      <div class="label">Notes</div>
+      <p class="note">
+        This admin page is intentionally simple. It only reads local browser data created by the public homepage.
+        It is useful for early testing, but not yet reliable as a business reporting system. The next upgrade should
+        be real analytics and protected admin access.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /*
+      ==========================================================
+      ADMIN STARTER LOGIC
+      Reads local browser stats created by index.html.
+      ==========================================================
+    */
+
+    function getStats() {
+      const raw = localStorage.getItem('signalboost_stats');
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch (error) {
+          console.error('Failed to parse stats:', error);
+        }
+      }
+
+      return {
+        totalVisits: 0,
+        affiliateClicks: {},
+        actionClicks: {},
+        videoOpens: 0,
+        lastVisitAt: null,
+        updatedAt: null
+      };
+    }
+
+    function renderKeyValueList(containerId, dataObject) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const entries = Object.entries(dataObject || {});
+      if (!entries.length) {
+        container.innerHTML = `<div class="empty">No data yet</div>`;
+        return;
+      }
+
+      container.innerHTML = entries.map(([key, value]) => `
+        <div class="item">
+          <strong>${key}</strong><br />
+          <span>${value}</span>
+        </div>
+      `).join('');
+    }
+
+    function refreshDashboard() {
+      const stats = getStats();
+
+      document.getElementById('metricVisits').textContent = stats.totalVisits || 0;
+      document.getElementById('metricVideoOpens').textContent = stats.videoOpens || 0;
+      document.getElementById('metricAffiliateTypes').textContent = Object.keys(stats.affiliateClicks || {}).length;
+      document.getElementById('metricActionTypes').textContent = Object.keys(stats.actionClicks || {}).length;
+      document.getElementById('lastVisit').textContent = stats.lastVisitAt || '—';
+      document.getElementById('lastUpdate').textContent = stats.updatedAt || '—';
+
+      renderKeyValueList('affiliateList', stats.affiliateClicks || {});
+      renderKeyValueList('actionList', stats.actionClicks || {});
+    }
+
+    function resetStats() {
+      const confirmed = confirm('Reset local SignalBoost stats in this browser?');
+      if (!confirmed) return;
+      localStorage.removeItem('signalboost_stats');
+      refreshDashboard();
+    }
+
+    refreshDashboard();
+  </script>
+</body>
+</html>
