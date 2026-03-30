@@ -305,9 +305,20 @@ const pageSize = 4;
 const YOUTUBE_API_KEY = '';
 const YOUTUBE_REGION = 'US';
 
+let activeChat = 'AI Assistant';
+
 function openChat(name){
+  activeChat = name;
   document.getElementById('chatTitle').textContent = name;
-  document.getElementById('chatBody').innerHTML = `<div class="msg bot">Welcome to ${name}. How can I help?</div>`;
+
+  const welcomeMap = {
+    'AI Assistant': 'Welcome to AI Assistant. I can guide you across the whole mall.',
+    'Travel Planner': 'Welcome to Travel Planner. I can help with flights, hotels, itineraries, and arrival planning.',
+    'Social Trends': 'Welcome to Social Trends. I can help you spot trends, choose platforms, and shape content direction.',
+    'Finance Helper': 'Welcome to Finance Helper. I can help with cards, accounts, transfers, and budgeting decisions.'
+  };
+
+  document.getElementById('chatBody').innerHTML = `<div class="msg bot">${welcomeMap[name] || 'How can I help?'}</div>`;
 }
 
 function sendMessage(){
@@ -322,36 +333,45 @@ function sendMessage(){
   const lower = text.toLowerCase();
   let reply = `Processing: ${text}`;
 
-  if(lower.includes('trip') || lower.includes('travel') || lower.includes('flight') || lower.includes('hotel')){
+  if(activeChat === 'Travel Planner'){
     currentMode = 'travel';
     render('travel');
-    reply = 'I switched you to Travel mode and prioritized trip planning tools, booking flow, and arrival steps.';
-    document.getElementById('input').value = text;
-  } else if(lower.includes('money') || lower.includes('bank') || lower.includes('card') || lower.includes('budget') || lower.includes('finance')){
-    currentMode = 'finance';
-    render('finance');
-    reply = 'I switched you to Finance mode and surfaced the most important money and account decisions first.';
-    document.getElementById('input').value = text;
-  } else if(lower.includes('trend') || lower.includes('social') || lower.includes('post') || lower.includes('video') || lower.includes('audience') || lower.includes('content')){
+    reply = 'Travel Planner is active. I reorganized the page around booking, itinerary, stays, and arrival preparation.';
+    if(lower.includes('flight')) reply = 'I prioritized flights first because route timing usually affects every later travel decision.';
+    if(lower.includes('hotel')) reply = 'I highlighted stay and location decisions because accommodation often shapes transport and activity choices.';
+    if(lower.includes('visa') || lower.includes('passport')) reply = 'I moved travel requirements into focus because entry rules can block the entire trip.';
+  }
+  else if(activeChat === 'Social Trends'){
     currentMode = 'social';
     render('social');
-    reply = 'I switched you to Social mode and reorganized the interface around signals, publishing, and audience fit.';
-    document.getElementById('input').value = text;
-  } else {
-    currentMode = 'general';
-    render('general');
-    reply = 'I kept the interface in General mode. Tell me whether you want travel, finance, or social help and I will reconfigure the workspace.';
-    document.getElementById('input').value = text;
+    reply = 'Social Trends is active. I shifted the workspace toward signals, channel choice, and publishing sequence.';
+    if(lower.includes('instagram')) reply = 'I would bias the analysis toward visual and short-form content performance.';
+    if(lower.includes('youtube')) reply = 'I would bias the analysis toward longer-form attention and replay value.';
+    if(lower.includes('trend') || lower.includes('viral')) reply = 'I am prioritizing fast-moving signals and audience fit first.';
   }
-
-  setTimeout(()=>{
-    body.innerHTML += `<div class="msg bot">${reply}</div>`;
-    body.scrollTop = body.scrollHeight;
-    runAI();
-  },500);
-
-  input.value='';
-}
+  else if(activeChat === 'Finance Helper'){
+    currentMode = 'finance';
+    render('finance');
+    reply = 'Finance Helper is active. I reorganized the page around control, access, comparison, and spending decisions.';
+    if(lower.includes('card')) reply = 'I moved card comparison higher because payment tools affect convenience, fees, and flexibility.';
+    if(lower.includes('budget')) reply = 'I emphasized budgeting first because guardrails improve every later financial choice.';
+    if(lower.includes('bank') || lower.includes('account')) reply = 'I pushed account setup and access to the front because they are the base of the finance flow.';
+  }
+  else {
+    if(lower.includes('trip') || lower.includes('travel') || lower.includes('flight') || lower.includes('hotel')){
+      currentMode = 'travel';
+      render('travel');
+      reply = 'I switched you to Travel mode and prioritized trip planning tools, booking flow, and arrival steps.';
+    } else if(lower.includes('money') || lower.includes('bank') || lower.includes('card') || lower.includes('budget') || lower.includes('finance')){
+      currentMode = 'finance';
+      render('finance');
+      reply = 'I switched you to Finance mode and surfaced the most important money and account decisions first.';
+    } else if(lower.includes('trend') || lower.includes('social') || lower.includes('post') || lower.includes('video') || lower.includes('audience') || lower.includes('content')){
+      currentMode = 'social';
+      render('social');
+      reply = 'I switched you to Social mode and reorganized the interface around signals, publishing, and audience fit.';
+    } else {
+      currentMode = 'general';
 
 function toggleDark(){ document.body.classList.toggle('dark'); }
 function quick(text){ document.getElementById('input').value = text; runAI(); }
