@@ -338,7 +338,23 @@ function renderTikTokFeed(){
       title:'Short-form trend example',
       views:'2.1M views',
       time:'4h ago',
-      embedHtml:`<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@scout2015/video/6718335390845095173" data-video-id="function renderTelegramFeed(){
+      embedHtml:`<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@scout2015/video/6718335390845095173" data-video-id="6718335390845095173" style="max-width:100%;min-width:280px;"><section><a target="_blank" title="@scout2015" href="https://www.tiktok.com/@scout2015?refer=embed">@scout2015</a></section></blockquote>`
+    }
+  ];
+  container.innerHTML = items.map(v => `<div class="card">${v.embedHtml}<div class="strong" style="margin-top:10px">${v.title}</div><div class="label" style="margin-top:6px">TikTok • ${v.views} • ${v.time}</div></div>`).join('');
+  loadTikTokEmbedScript();
+}
+
+function loadTikTokEmbedScript(){
+  if(document.getElementById('tiktok-embed-script')) return;
+  const s = document.createElement('script');
+  s.id = 'tiktok-embed-script';
+  s.async = true;
+  s.src = 'https://www.tiktok.com/embed.js';
+  document.body.appendChild(s);
+}
+
+function renderTelegramFeed(){
   const container = document.getElementById('telegramFeed');
   const posts = [
     {
@@ -355,15 +371,6 @@ function renderTikTokFeed(){
     }
   ];
   container.innerHTML = posts.map(p => `<div class="card">${p.embedHtml}<div class="strong" style="margin-top:10px">${p.title}</div><div class="label" style="margin-top:6px">Telegram • ${p.views} • ${p.time}</div></div>`).join('');
-}
-
-function renderTruthFeed){
-  const container = document.getElementById('vkFeed');
-  const posts = [
-    { title:'VK public post example', views:'210K views', time:'6h ago', url:'https://vk.com' },
-    { title:'VK video or channel update', views:'340K views', time:'9h ago', url:'https://vk.com' }
-  ];
-  container.innerHTML = posts.map(p => `<div class="card"><div class="label">VK • ${p.views} • ${p.time}</div><div class="strong">${p.title}</div><div style="margin-top:6px;color:var(--muted)">Public VK preview card. Next step: replace with supported public feed or embed flow.</div><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open on VK →</a></div>`).join('');
 }
 
 function renderTruthFeed(){
