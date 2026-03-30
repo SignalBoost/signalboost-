@@ -18,137 +18,419 @@ CURRENT FEATURES
 - Prompt input (AI interaction entry point)
 - Mode switching (travel, finance, social)
 - AI response simulation
-- Card-based recommendation system
-- Adaptive section content by mode
-- Adaptive hero styling by mode
-- Adaptive side panel and session rail by mode
-- Split-layout homepage with workspace context
-- Mode-based module reordering
-- Modules dynamically hide/show per mode
-- Automatic mode detection from prompt meaning
-- Prompt scoring with confidence feedback
-- Fallback to General mode when intent is unclear or tied
-- Low-confidence guidance panel
-- Suggested prompts for recovery when intent is weak
-- Manual mode override buttons (Travel / Finance / Social)
-- Combined AI-ranked feed (Smart Feed)
-- Platform feed sections for YouTube, TikTok, Telegram, VK, and Truth Social
-- Travel zone module (booking and planning tools)
+- Adaptive homepage modules
+- Smart Feed with stats, score, pagination, and sponsored slot
+- Travel Zone module
+- Truth Social public feed preview
+- YouTube embedded section
+- Low-confidence guidance with suggested prompts and manual overrides
 
 NEXT STEPS
-- Connect real APIs (YouTube, TikTok, Telegram, VK, etc.)
+- Connect real APIs (YouTube first)
+- Add TikTok, Telegram, VK, and more one at a time
 - Replace mock feed with live data ingestion
-- Add user personalization to Smart Feed ranking
-- Build real travel integrations (flights, hotels, booking APIs)
-- Expand Travel Zone into full booking flow
+- Build real travel integrations
 - Add Food / Lifestyle zone
 - Add Finance / Banking zone
-- State memory (session awareness)
-- Workspaces (task-based UI environments)
-- Add saved session handoff patterns for new chats
-- Introduce multi-step AI workflows
-</script>and food backup.']
-    ]);
-    rec.innerHTML = cardSet([
-      ['Choose hotel','Compare location, safety, and access.'],
-      ['Compare local transport','Rank airport transfer and city mobility options.'],
-      ['Build itinerary','Turn ideas into a practical sequence.']
-    ]);
-    opt.innerHTML = cardSet([
-      ['Explore food','Save a few strong nearby options.'],
-      ['Find activities','Keep flexible discovery ideas ready.'],
-      ['Pack checklist','Reduce last-minute mistakes.']
-    ]);
-    heroPanelTitle.textContent='Travel workspace';
-    heroPanelList.innerHTML=list(['Focused on journey steps','Reduced cognitive load','Only relevant modules visible']);
-    sessionList.innerHTML=rail(['Mode: Travel','Goal: Plan trip efficiently']);
-    whyMode.innerHTML=rail(['Removed insight module to reduce distraction','UI behaves like a guided planner']);
+==============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SignalBoost AI</title>
+<style>
+:root {
+  --bg:#eef4ff;
+  --surface:rgba(255,255,255,.92);
+  --border:rgba(148,163,184,.25);
+  --text:#0f172a;
+  --muted:#64748b;
+  --primary:#2563eb;
+  --accent:#06b6d4;
+  --shadow:0 20px 60px rgba(15,23,42,.08);
+}
+body.dark {
+  --bg:#0b1220;
+  --surface:rgba(20,30,50,.92);
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --border:rgba(255,255,255,.1);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);transition:.25s ease}
+a{color:inherit}
+button,input{font:inherit}
+.app{max-width:1260px;margin:auto;padding:16px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-radius:16px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+.logo{font-weight:900;font-size:20px}
+.btn,.ghost,.chip{padding:10px 14px;border-radius:999px;border:1px solid var(--border);cursor:pointer;background:transparent;color:inherit}
+.btn.primary{border:none;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;font-weight:700}
+.layout-shell{display:grid;grid-template-columns:1.45fr .75fr;gap:20px;align-items:start}
+.hero{margin-top:20px;background:var(--surface);padding:28px;border-radius:24px;border:1px solid var(--border);display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+h1{font-size:42px;line-height:1.05;margin:0 0 10px}
+h2{margin:0;font-size:24px}
+h3{margin:0 0 10px;font-size:18px}.sub{color:var(--muted);line-height:1.6;margin:0}
+.prompt{margin-top:18px;padding:12px;border-radius:20px;background:#fff;border:1px solid var(--border);display:flex;gap:10px;align-items:center}
+body.dark .prompt{background:#111827}.prompt:focus-within{box-shadow:0 0 0 2px rgba(37,99,235,.14)}
+input{flex:1;border:none;outline:none;background:transparent;color:inherit;font-size:18px}
+.thinking{font-size:13px;color:var(--muted);margin-top:8px;opacity:0;transition:.25s}
+.response{margin-top:12px;padding:12px;border-radius:14px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);font-size:14px;line-height:1.6;display:none}
+.suggestion-panel{margin-top:12px;padding:12px;border-radius:14px;border:1px dashed var(--border);background:rgba(255,255,255,.45);display:none}
+body.dark .suggestion-panel{background:rgba(17,24,39,.45)}
+.suggestion-panel h4{margin:0 0 8px;font-size:14px}.suggestion-panel p{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5}.suggestion-actions{display:flex;flex-wrap:wrap;gap:8px}
+.suggestions,.mode-switch{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+.hero-side-panel,.rail-card,.module{margin-top:20px;padding:20px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
+.hero-side-panel{margin-top:0;background:rgba(255,255,255,.55)}
+body.dark .hero-side-panel{background:rgba(30,40,60,.55)}
+.hero-list,.rail-list{display:grid;gap:10px}
+.hero-list-item,.rail-list-item,.card{padding:12px;border-radius:16px;border:1px solid var(--border);background:rgba(255,255,255,.55)}
+body.dark .hero-list-item,body.dark .rail-list-item,body.dark .card{background:rgba(17,24,39,.55)}
+.side-rail{display:grid;gap:20px}
+.module.hidden{display:none}.module-header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.mode-badge,.label{font-size:11px;color:var(--muted)}.strong{font-weight:800;font-size:16px;line-height:1.4}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feed-nav{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+@media (max-width:1000px){.layout-shell,.hero{grid-template-columns:1fr}}
+@media (max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo">SignalBoost AI</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="ghost" onclick="toggleDark()">Dark</button>
+      <button class="btn primary">Assistant</button>
+    </div>
+  </div>
+
+  <div class="layout-shell">
+    <div>
+      <section class="hero">
+        <div>
+          <h1>What do you want to do?</h1>
+          <p class="sub">SignalBoost is a digital mall where users can discover what is happening, compare options, and complete more tasks without leaving the platform.</p>
+
+          <div class="prompt">
+            <input id="input" placeholder="Ask anything..." />
+            <button class="btn primary" onclick="runAI()">Go</button>
+          </div>
+
+          <div id="thinking" class="thinking">AI thinking...</div>
+          <div id="response" class="response"></div>
+          <div id="suggestionPanel" class="suggestion-panel">
+            <h4>Need a clearer prompt?</h4>
+            <p id="suggestionReason">The system could not confidently map your request to a workspace.</p>
+            <div class="suggestion-actions" id="suggestionActions"></div>
+            <div class="suggestion-actions" id="modeOverrides" style="margin-top:8px"></div>
+          </div>
+
+          <div class="suggestions">
+            <button class="chip" onclick="quick('Plan travel to Miami')">Plan travel</button>
+            <button class="chip" onclick="quick('Find trending social videos')">Find trends</button>
+            <button class="chip" onclick="quick('Compare cards and transfer options')">Compare finances</button>
+          </div>
+
+          <div class="mode-switch">
+            <button class="ghost" onclick="setMode('travel')">Travel</button>
+            <button class="ghost" onclick="setMode('finance')">Finance</button>
+            <button class="ghost" onclick="setMode('social')">Social</button>
+          </div>
+        </div>
+
+        <div class="hero-side-panel">
+          <h3 id="heroPanelTitle">AI overview</h3>
+          <div id="heroPanelList" class="hero-list"></div>
+        </div>
+      </section>
+
+      <section class="module" id="youtubeModule">
+        <div class="module-header">
+          <h2>YouTube Feed</h2>
+          <span class="mode-badge">Embedded</span>
+        </div>
+        <div class="grid" id="youtubeFeed"></div>
+      </section>
+
+      <section class="module" id="combinedFeedModule">
+        <div class="module-header">
+          <h2>Smart Feed</h2>
+          <span class="mode-badge">AI ranked</span>
+        </div>
+        <div class="grid" id="combinedFeed"></div>
+        <div class="feed-nav">
+          <button class="ghost" onclick="prevPage()">Previous</button>
+          <button class="ghost" onclick="nextPage()">Next</button>
+        </div>
+      </section>
+
+      <section class="module" id="truthModule">
+        <div class="module-header">
+          <h2>Truth Social Feed</h2>
+          <span class="mode-badge">Public feed</span>
+        </div>
+        <div class="grid" id="truthFeed"></div>
+      </section>
+
+      <section class="module" id="travelZone">
+        <div class="module-header">
+          <h2>Travel Zone</h2>
+          <span class="mode-badge">Book & Plan</span>
+        </div>
+        <div class="grid" id="travelGrid"></div>
+      </section>
+
+      <section class="module" id="actionsModule">
+        <div class="module-header">
+          <h2>Next actions</h2>
+          <span class="mode-badge">Core</span>
+        </div>
+        <div class="grid" id="actions"></div>
+      </section>
+
+      <section class="module" id="recommendModule">
+        <div class="module-header">
+          <h2>Recommended</h2>
+          <span class="mode-badge">Suggested</span>
+        </div>
+        <div class="grid" id="recommend"></div>
+      </section>
+
+      <section class="module" id="optionalModule">
+        <div class="module-header">
+          <h2>Optional</h2>
+          <span class="mode-badge">Flexible</span>
+        </div>
+        <div class="grid" id="optional"></div>
+      </section>
+
+      <section class="module" id="insightModule">
+        <div class="module-header">
+          <h2>AI insights</h2>
+          <span class="mode-badge">Live</span>
+        </div>
+        <div class="grid" id="insightGrid"></div>
+      </section>
+
+      <section class="module" id="planningModule">
+        <div class="module-header">
+          <h2>Planning board</h2>
+          <span class="mode-badge">Workflow</span>
+        </div>
+        <div class="grid" id="planningGrid"></div>
+      </section>
+    </div>
+
+    <aside class="side-rail">
+      <section class="rail-card">
+        <h2>Session state</h2>
+        <div id="sessionList" class="rail-list"></div>
+      </section>
+      <section class="rail-card">
+        <h2>Why this mode</h2>
+        <div id="whyMode" class="rail-list"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+let currentMode = 'general';
+let currentPage = 1;
+const pageSize = 4;
+
+function toggleDark(){ document.body.classList.toggle('dark'); }
+function quick(text){ document.getElementById('input').value = text; runAI(); }
+function setMode(mode){ currentMode = mode; render(mode); }
+function applySuggestedPrompt(text){ document.getElementById('input').value = text; runAI(); }
+function forceMode(mode){ currentMode = mode; render(mode); const r = document.getElementById('response'); r.style.display = 'block'; r.textContent = `Mode manually set to ${mode.charAt(0).toUpperCase() + mode.slice(1)}.`; }
+function card(title, desc){ return `<div class="card"><div class="label">Suggested</div><div class="strong">${title}</div><div style="margin-top:6px">${desc}</div></div>`; }
+
+function detectModeFromPrompt(text){
+  const value = (text || '').toLowerCase().trim();
+  const travelWords = ['travel','trip','flight','hotel','visa','airport','stay','itinerary','arrival','vacation','destination','booking'];
+  const financeWords = ['finance','money','bank','budget','card','cards','payment','payments','transfer','spending','account','accounts','wallet','expense'];
+  const socialWords = ['social','trend','trends','platform','platforms','post','posts','content','audience','creator','creators','campaign','publish','engagement','viral','channel','video','videos'];
+  const countMatches = words => words.reduce((total, word) => total + (value.includes(word) ? 1 : 0), 0);
+  const scores = { travel: countMatches(travelWords), finance: countMatches(financeWords), social: countMatches(socialWords) };
+  const ranked = Object.entries(scores).sort((a,b) => b[1] - a[1]);
+  const topMode = ranked[0][0], topScore = ranked[0][1], secondScore = ranked[1][1];
+  let confidence = 'low';
+  if (topScore >= 3 && topScore - secondScore >= 2) confidence = 'high';
+  else if (topScore >= 2 && topScore - secondScore >= 1) confidence = 'medium';
+  if (topScore === 0 || topScore === secondScore) return { mode: 'general', confidence: 'low', scores };
+  return { mode: topMode, confidence, scores };
+}
+
+function buildLowConfidenceSuggestions(_, detection){
+  const maxScore = Math.max(detection.scores.travel, detection.scores.finance, detection.scores.social);
+  if(maxScore === 0) return ['Plan a business trip to Miami','Compare travel cards for spending abroad','Find trending content ideas for Instagram'];
+  return ['Plan travel with flights, hotels, and arrival steps','Compare cards, accounts, and transfer options','Find platform trends, audience fit, and posting sequence'];
+}
+
+function showLowConfidenceGuidance(inputValue, detection){
+  const panel = document.getElementById('suggestionPanel');
+  const reason = document.getElementById('suggestionReason');
+  const actions = document.getElementById('suggestionActions');
+  const overrides = document.getElementById('modeOverrides');
+  const maxScore = Math.max(detection.scores.travel, detection.scores.finance, detection.scores.social);
+  const isTie = detection.scores.travel === detection.scores.finance || detection.scores.travel === detection.scores.social || detection.scores.finance === detection.scores.social;
+  if(detection.confidence === 'low'){
+    panel.style.display = 'block';
+    if(maxScore === 0) reason.textContent = 'Your request is too broad. Mention a goal and domain.';
+    else if(isTie) reason.textContent = 'Your request overlaps multiple workspaces. Make it more specific or choose a mode.';
+    else reason.textContent = 'The signal is weak. You can refine the prompt or pick a mode.';
+    const prompts = buildLowConfidenceSuggestions(inputValue, detection);
+    actions.innerHTML = prompts.map(p => `<button class="chip" onclick='applySuggestedPrompt(${JSON.stringify(p)})'>${p}</button>`).join('');
+    overrides.innerHTML = `<button class="chip" onclick="forceMode('travel')">Use Travel mode</button><button class="chip" onclick="forceMode('finance')">Use Finance mode</button><button class="chip" onclick="forceMode('social')">Use Social mode</button>`;
+  } else {
+    panel.style.display = 'none'; actions.innerHTML = ''; overrides.innerHTML = '';
+  }
+}
+
+function runAI(){
+  const t = document.getElementById('thinking');
+  const r = document.getElementById('response');
+  const inputValue = document.getElementById('input').value;
+  t.style.opacity = 1; r.style.display = 'none';
+  setTimeout(() => {
+    const detection = detectModeFromPrompt(inputValue);
+    currentMode = detection.mode;
+    t.style.opacity = 0;
+    render(currentMode);
+    showLowConfidenceGuidance(inputValue, detection);
+    r.style.display = 'block';
+    const modeLabel = currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
+    const scoreText = `Travel ${detection.scores.travel} • Finance ${detection.scores.finance} • Social ${detection.scores.social}`;
+    r.textContent = currentMode === 'general'
+      ? `AI could not strongly detect a specialized workspace from: "${inputValue}". Confidence is ${detection.confidence}. Score view: ${scoreText}.`
+      : `AI detected ${modeLabel} mode from: "${inputValue}" with ${detection.confidence} confidence. Score view: ${scoreText}.`;
+  }, 800);
+}
+
+function renderYouTubeFeed(){
+  const container = document.getElementById('youtubeFeed');
+  const videos = [
+    { title:'YouTube trending example', views:'1.2M views', time:'2h ago', embed:'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+    { title:'Latest high-view video', views:'860K views', time:'5h ago', embed:'https://www.youtube.com/embed/9bZkp7q19f0' }
+  ];
+  container.innerHTML = videos.map(v => `<div class="card"><iframe width="100%" height="190" src="${v.embed}" title="${v.title}" style="border:0;border-radius:12px" allowfullscreen></iframe><div class="strong" style="margin-top:10px">${v.title}</div><div class="label" style="margin-top:6px">YouTube • ${v.views} • ${v.time}</div></div>`).join('');
+}
+
+function renderTruthFeed(){
+  const container = document.getElementById('truthFeed');
+  const posts = [
+    { text:'Policy update and announcement.', time:'2h ago', url:'https://truthsocial.com/@realDonaldTrump' },
+    { text:'Campaign-related message.', time:'5h ago', url:'https://truthsocial.com/@realDonaldTrump' }
+  ];
+  container.innerHTML = posts.map(p => `<div class="card"><div class="label">Truth Social • ${p.time}</div><div class="strong">${p.text}</div><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;color:#2563eb">Open →</a></div>`).join('');
+}
+
+function renderTravelZone(){
+  const container = document.getElementById('travelGrid');
+  const items = [
+    ['Search flights','Find and compare flights quickly'],
+    ['Find hotels','Compare stays by price and location'],
+    ['Plan itinerary','Organize your trip step-by-step'],
+    ['Check requirements','Visa, passport, and entry rules'],
+    ['Transport options','Airport transfer and local travel'],
+    ['Travel budget','Estimate and control spending']
+  ];
+  container.innerHTML = items.map(i => `<div class="card"><div class="label">Travel tool</div><div class="strong">${i[0]}</div><div style="margin-top:6px">${i[1]}</div></div>`).join('');
+}
+
+function generateMockFeed(){
+  return [
+    { platform:'YouTube', text:'Trending video example', views:1200000, likes:54000, time:2 },
+    { platform:'YouTube', text:'Another hot video', views:800000, likes:25000, time:6 },
+    { platform:'Truth Social', text:'Latest political post', views:300000, likes:12000, time:3 },
+    { platform:'Telegram', text:'Channel update example', views:150000, likes:8000, time:5 },
+    { platform:'TikTok', text:'Viral clip example', views:980000, likes:72000, time:1 },
+    { platform:'Telegram', text:'Breaking update', views:500000, likes:15000, time:2 },
+    { platform:'Truth Social', text:'Recent announcement', views:250000, likes:9000, time:7 },
+    { platform:'VK', text:'VK public post example', views:210000, likes:12000, time:6 }
+  ];
+}
+function calculateScore(item){ const engagement = (item.views * 0.5) + (item.likes * 0.5); return Math.floor(engagement / Math.max(item.time || 1, 1)); }
+function renderCombinedFeed(){
+  const container = document.getElementById('combinedFeed');
+  let items = generateMockFeed().map(i => ({ ...i, score: calculateScore(i) }));
+  items.sort((a,b) => b.score - a.score);
+  const start = (currentPage - 1) * pageSize;
+  const paginated = items.slice(start, start + pageSize);
+  if(currentPage === 1) paginated.splice(2, 0, { platform:'Sponsored', text:'🔥 Travel deals — Book flights & hotels now', sponsored:true });
+  container.innerHTML = paginated.map(i => `<div class="card"><div class="label">${i.platform}${i.sponsored ? ' • Ad' : ''}</div><div class="strong">${i.text}</div>${!i.sponsored ? `<div style="font-size:12px;margin-top:6px;color:var(--muted)">👁 ${i.views.toLocaleString()} • ❤️ ${i.likes.toLocaleString()} • ${i.time}h ago</div><div style="font-size:11px;color:var(--muted);margin-top:4px">AI score: ${i.score}</div>` : `<div style="font-size:12px;margin-top:6px;color:var(--muted)">Sponsored placement</div>`}</div>`).join('');
+}
+function nextPage(){ currentPage++; renderCombinedFeed(); }
+function prevPage(){ if(currentPage > 1) currentPage--; renderCombinedFeed(); }
+
+function render(mode){
+  const actions=document.getElementById('actions');
+  const rec=document.getElementById('recommend');
+  const opt=document.getElementById('optional');
+  const hero=document.querySelector('.hero');
+  const heroPanelTitle=document.getElementById('heroPanelTitle');
+  const heroPanelList=document.getElementById('heroPanelList');
+  const sessionList=document.getElementById('sessionList');
+  const whyMode=document.getElementById('whyMode');
+  const insightGrid=document.getElementById('insightGrid');
+  const planningGrid=document.getElementById('planningGrid');
+  const actionsModule=document.getElementById('actionsModule');
+  const recommendModule=document.getElementById('recommendModule');
+  const optionalModule=document.getElementById('optionalModule');
+  const insightModule=document.getElementById('insightModule');
+  const planningModule=document.getElementById('planningModule');
+  const mainColumn = document.querySelector('.layout-shell > div');
+  const buttons=document.querySelectorAll('.mode-switch .ghost');
+  const list = items => items.map(item => `<div class="hero-list-item">${item}</div>`).join('');
+  const rail = items => items.map(item => `<div class="rail-list-item">${item}</div>`).join('');
+  const cardSet = items => items.map(item => card(item[0], item[1])).join('');
+  const show = (module, yes=true) => module.classList.toggle('hidden', !yes);
+  const reorder = ids => ids.forEach(id => { const el = document.getElementById(id); if(el) mainColumn.appendChild(el); });
+  [actionsModule,recommendModule,optionalModule,insightModule,planningModule].forEach(m => show(m,true));
+  buttons.forEach(btn => btn.style.background='transparent');
+  if(mode === 'travel' && buttons[0]) buttons[0].style.background='rgba(37,99,235,.08)';
+  if(mode === 'finance' && buttons[1]) buttons[1].style.background='rgba(37,99,235,.08)';
+  if(mode === 'social' && buttons[2]) buttons[2].style.background='rgba(37,99,235,.08)';
+  if(mode === 'travel'){
+    reorder(['actionsModule','planningModule','recommendModule','optionalModule']);
+    show(insightModule,false);
+    hero.style.background='linear-gradient(135deg, rgba(59,130,246,.12), rgba(6,182,212,.10))';
+    actions.innerHTML = cardSet([['Book flight','Start with timing, route, and travel window.'],['Check entry rules','Confirm passport, visa, and arrival requirements.'],['Set arrival plan','Prepare transport and first-day essentials.']]);
+    planningGrid.innerHTML = cardSet([['Travel timeline','Lock departure, arrival, and check-in sequence.'],['Stay decision map','Compare access, safety, and neighborhood fit.'],['Arrival checklist','Transport, payments, internet, and food backup.']]);
+    rec.innerHTML = cardSet([['Choose hotel','Compare location, safety, and access.'],['Compare local transport','Rank airport transfer and city mobility options.'],['Build itinerary','Turn ideas into a practical sequence.']]);
+    opt.innerHTML = cardSet([['Explore food','Save a few strong nearby options.'],['Find activities','Keep flexible discovery ideas ready.'],['Pack checklist','Reduce last-minute mistakes.']]);
+    heroPanelTitle.textContent='Travel workspace'; heroPanelList.innerHTML=list(['Focused on journey steps','Reduced cognitive load','Only relevant modules visible']); sessionList.innerHTML=rail(['Mode: Travel','Goal: Plan trip efficiently']); whyMode.innerHTML=rail(['Removed insight module to reduce distraction','UI behaves like a guided planner']);
   } else if(mode === 'finance'){
     reorder(['actionsModule','insightModule','recommendModule']);
     show(planningModule,false); show(optionalModule,false);
     hero.style.background='linear-gradient(135deg, rgba(16,185,129,.10), rgba(37,99,235,.08))';
-    actions.innerHTML = cardSet([
-      ['Setup account','Start with core financial setup'],
-      ['Check access','Ensure payments work'],
-      ['Define limits','Set safety boundaries']
-    ]);
-    insightGrid.innerHTML = cardSet([
-      ['Risk first','Safety before optimization'],
-      ['Avoid errors','Wrong payment path risk'],
-      ['Clarity','Reduce financial confusion']
-    ]);
-    rec.innerHTML = cardSet([
-      ['Compare cards','Best options'],
-      ['Track spending','Overview'],
-      ['Transfers','Best route']
-    ]);
-    heroPanelTitle.textContent='Finance workspace';
-    heroPanelList.innerHTML=list(['Focus on control and safety','Less modules, more clarity']);
-    sessionList.innerHTML=rail(['Mode: Finance']);
-    whyMode.innerHTML=rail(['Removed planning + optional modules','Focus on risk and control']);
+    actions.innerHTML = cardSet([['Setup account','Start with core financial setup'],['Check access','Ensure payments work'],['Define limits','Set safety boundaries']]);
+    insightGrid.innerHTML = cardSet([['Risk first','Safety before optimization'],['Avoid errors','Wrong payment path risk'],['Clarity','Reduce financial confusion']]);
+    rec.innerHTML = cardSet([['Compare cards','Best options'],['Track spending','Overview'],['Transfers','Best route']]);
+    heroPanelTitle.textContent='Finance workspace'; heroPanelList.innerHTML=list(['Focus on control and safety','Less modules, more clarity']); sessionList.innerHTML=rail(['Mode: Finance']); whyMode.innerHTML=rail(['Removed planning + optional modules','Focus on risk and control']);
   } else if(mode === 'social'){
     reorder(['insightModule','actionsModule','planningModule']);
     show(recommendModule,false); show(optionalModule,false);
     hero.style.background='linear-gradient(135deg, rgba(168,85,247,.10), rgba(236,72,153,.08))';
-    insightGrid.innerHTML = cardSet([
-      ['Top signal','What is trending'],
-      ['Audience fit','Where it works best'],
-      ['Timing','When to post']
-    ]);
-    actions.innerHTML = cardSet([
-      ['Pick platform','Match message'],
-      ['Draft idea','Core concept'],
-      ['Choose audience','Target focus']
-    ]);
-    planningGrid.innerHTML = cardSet([
-      ['Sequence','Posting order'],
-      ['Channel mix','Primary vs support'],
-      ['Feedback','Adjust after']
-    ]);
-    heroPanelTitle.textContent='Social workspace';
-    heroPanelList.innerHTML=list(['Signal-driven UI','Publishing focus']);
-    sessionList.innerHTML=rail(['Mode: Social']);
-    whyMode.innerHTML=rail(['Removed generic modules','Focus on content + signals']);
+    insightGrid.innerHTML = cardSet([['Top signal','What is trending'],['Audience fit','Where it works best'],['Timing','When to post']]);
+    actions.innerHTML = cardSet([['Pick platform','Match message'],['Draft idea','Core concept'],['Choose audience','Target focus']]);
+    planningGrid.innerHTML = cardSet([['Sequence','Posting order'],['Channel mix','Primary vs support'],['Feedback','Adjust after']]);
+    heroPanelTitle.textContent='Social workspace'; heroPanelList.innerHTML=list(['Signal-driven UI','Publishing focus']); sessionList.innerHTML=rail(['Mode: Social']); whyMode.innerHTML=rail(['Removed generic modules','Focus on content + signals']);
   } else {
     reorder(['actionsModule','recommendModule','insightModule','planningModule','optionalModule']);
     hero.style.background='var(--surface)';
-    actions.innerHTML = cardSet([
-      ['Start','Pick a mode'],
-      ['Explore','View options'],
-      ['Prompt','Ask AI']
-    ]);
-    rec.innerHTML = cardSet([
-      ['Compare','Best options'],
-      ['Reduce','Noise filtering'],
-      ['Focus','Next step']
-    ]);
-    insightGrid.innerHTML = cardSet([
-      ['System role','AI control center'],
-      ['Guidance','Assist decisions'],
-      ['Adaptation','Change layout']
-    ]);
-    planningGrid.innerHTML = cardSet([
-      ['Modes','Travel, finance, social'],
-      ['Flow','Prompt → guide'],
-      ['Memory','Keep context']
-    ]);
-    opt.innerHTML = cardSet([
-      ['Explore','More options'],
-      ['Save','Paths'],
-      ['Refine','Intent']
-    ]);
-    heroPanelTitle.textContent='AI overview';
-    heroPanelList.innerHTML=list(['Base system state']);
-    sessionList.innerHTML=rail(['Mode: General']);
-    whyMode.innerHTML=rail(['All modules visible']);
+    actions.innerHTML = cardSet([['Start','Pick a mode'],['Explore','View options'],['Prompt','Ask AI']]);
+    rec.innerHTML = cardSet([['Compare','Best options'],['Reduce','Noise filtering'],['Focus','Next step']]);
+    insightGrid.innerHTML = cardSet([['System role','AI control center'],['Guidance','Assist decisions'],['Adaptation','Change layout']]);
+    planningGrid.innerHTML = cardSet([['Modes','Travel, finance, social'],['Flow','Prompt → guide'],['Memory','Keep context']]);
+    opt.innerHTML = cardSet([['Explore','More options'],['Save','Paths'],['Refine','Intent']]);
+    heroPanelTitle.textContent='AI overview'; heroPanelList.innerHTML=list(['Base system state']); sessionList.innerHTML=rail(['Mode: General']); whyMode.innerHTML=rail(['All modules visible']);
   }
 }
 
 render('general');
 renderYouTubeFeed();
-renderTikTokFeed();
-renderTelegramFeed();
-renderVKFeed();
 renderTruthFeed();
 renderCombinedFeed();
 renderTravelZone();
