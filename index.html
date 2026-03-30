@@ -30,14 +30,16 @@ CURRENT FEATURES
 - Low-confidence guidance panel
 - Suggested prompts for recovery when intent is weak
 - Manual mode override buttons (Travel / Finance / Social)
+- Cross-platform feed modules (Truth Social initial)
+- Combined AI-ranked feed (Smart Feed)
 
 NEXT STEPS
-- Add clickable mode override buttons inside low-confidence guidance
-- Real AI integration (API / LLM)
+- Connect real APIs (YouTube, TikTok, Telegram, etc.)
+- Replace mock feed with live data ingestion
+- Add user personalization to Smart Feed ranking
 - State memory (session awareness)
 - Workspaces (task-based UI environments)
-- Add saved session handoff patterns for new chats
-- Introduce multi-step AI workflows
+- Add saved session handoff p
 - Replace keyword scoring with real semantic intent detection later
 
 NOTES
@@ -426,6 +428,14 @@ body.dark .card{background:rgba(30,40,60,.6)}
     <span class="mode-badge" id="planningBadge">Workflow</span>
   </div>
   <div class="grid" id="planningGrid"></div>
+</section>
+
+<section class="module" id="combinedFeedModule">
+  <div class="module-header">
+    <h2>Smart Feed</h2>
+    <span class="mode-badge">AI ranked</span>
+  </div>
+  <div class="grid" id="combinedFeed"></div>
 </section>
 
 <section class="module" id="truthModule">
@@ -834,34 +844,42 @@ function renderTruthFeed(){
   const container = document.getElementById('truthFeed');
 
   const posts = [
-    {
-      text: "Sample Truth Social post: Policy, politics, or announcement content goes here.",
-      time: "2h ago",
-      url: "https://truthsocial.com/@realDonaldTrump"
-    },
-    {
-      text: "Another post example showing how updates will appear inside your platform.",
-      time: "5h ago",
-      url: "https://truthsocial.com/@realDonaldTrump"
-    },
-    {
-      text: "Latest update preview. In production this comes from a backend feed.",
-      time: "1d ago",
-      url: "https://truthsocial.com/@realDonaldTrump"
-    }
+    { text:"Policy update and announcement.", time:"2h ago", url:"https://truthsocial.com/@realDonaldTrump" },
+    { text:"Campaign-related message.", time:"5h ago", url:"https://truthsocial.com/@realDonaldTrump" }
   ];
 
   container.innerHTML = posts.map(p => `
     <div class="card">
-      <div class="label">@realDonaldTrump • ${p.time}</div>
-      <div class="strong" style="margin-top:6px">${p.text}</div>
-      <a href="${p.url}" target="_blank" style="margin-top:8px;display:inline-block;color:#2563eb">Open on Truth Social →</a>
+      <div class="label">Truth Social • ${p.time}</div>
+      <div class="strong">${p.text}</div>
+      <a href="${p.url}" target="_blank">Open →</a>
+    </div>
+  `).join('');
+}
+
+function renderCombinedFeed(){
+  const container = document.getElementById('combinedFeed');
+
+  const items = [
+    { platform:'YouTube', text:'Trending video example', rank:95 },
+    { platform:'TikTok', text:'Viral clip example', rank:92 },
+    { platform:'Truth Social', text:'Latest political post', rank:90 },
+    { platform:'Telegram', text:'Channel update example', rank:85 }
+  ];
+
+  const sorted = items.sort((a,b)=>b.rank-a.rank);
+
+  container.innerHTML = sorted.map(i => `
+    <div class="card">
+      <div class="label">${i.platform} • AI score ${i.rank}</div>
+      <div class="strong">${i.text}</div>
     </div>
   `).join('');
 }
 
 render('general');
 renderTruthFeed();
+renderCombinedFeed();
 </script>
 
 </body>
