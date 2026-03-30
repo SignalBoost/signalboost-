@@ -135,6 +135,38 @@ body.dark .hero-list-item,body.dark .rail-list-item,body.dark .card{background:r
   </div>
 
   <div class="layout-shell">
+  <style>
+    .chat-shell{display:grid;grid-template-columns:280px 1fr;gap:16px;margin-top:16px}
+    .chat-list{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    .chat-list h3{margin:0;padding:12px 14px;border-bottom:1px solid var(--border)}
+    .chat-item{padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer}
+    .chat-item:hover{background:rgba(37,99,235,.06)}
+    .chat-main{background:var(--surface);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;min-height:420px}
+    .chat-header{padding:12px 14px;border-bottom:1px solid var(--border);font-weight:700}
+    .chat-body{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+    .msg{max-width:70%;padding:10px 12px;border-radius:14px}
+    .msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+    .msg.bot{align-self:flex-start;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2)}
+    .chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
+    .chat-input input{flex:1}
+  </style>
+  <section class="chat-shell">
+    <div class="chat-list">
+      <h3>Conversations</h3>
+      <div class="chat-item" onclick="openChat('AI Assistant')">AI Assistant</div>
+      <div class="chat-item" onclick="openChat('Travel Planner')">Travel Planner</div>
+      <div class="chat-item" onclick="openChat('Social Trends')">Social Trends</div>
+      <div class="chat-item" onclick="openChat('Finance Helper')">Finance Helper</div>
+    </div>
+    <div class="chat-main">
+      <div class="chat-header" id="chatTitle">AI Assistant</div>
+      <div class="chat-body" id="chatBody"></div>
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Type a message..." />
+        <button class="btn primary" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </section>
     <div>
       <section class="hero">
         <div>
@@ -273,6 +305,23 @@ const pageSize = 4;
 const YOUTUBE_API_KEY = '';
 const YOUTUBE_REGION = 'US';
 
+function openChat(name){
+  document.getElementById('chatTitle').textContent = name;
+  document.getElementById('chatBody').innerHTML = `<div class="msg bot">Welcome to ${name}. How can I help?</div>`;
+}
+
+function sendMessage(){
+  const input = document.getElementById('chatInput');
+  const body = document.getElementById('chatBody');
+  if(!input.value.trim()) return;
+  body.innerHTML += `<div class="msg me">${input.value}</div>`;
+  setTimeout(()=>{
+    body.innerHTML += `<div class="msg bot">Processing: ${input.value}</div>`;
+    body.scrollTop = body.scrollHeight;
+  },500);
+  input.value='';
+}
+
 function toggleDark(){ document.body.classList.toggle('dark'); }
 function quick(text){ document.getElementById('input').value = text; runAI(); }
 function setMode(mode){ currentMode = mode; render(mode); }
@@ -399,7 +448,7 @@ function renderTelegramFeed(){
       title:'Telegram channel update',
       views:'150K views',
       time:'3h ago',
-      body:'Telegram often blocks or limits direct iframe rendering depending on the page and hosting context. This section now uses a stable in-site preview instead of a fragile iframe.'
+      body:'This section uses a stable in-site preview while a fully supported Telegram integration is being implemented.'
     },
     {
       title:'Breaking news update',
@@ -417,7 +466,7 @@ function renderVKFeed(){
     {
       title:'VK public post example',
       time:'6h ago',
-      body:'VK is not failing because it is Russian. The issue is that this section is using a safe rendered preview instead of a live widget. Direct embedding depends on the platform\'s supported public embed methods.',
+      body:'This section uses a stable in-site preview while a fully supported public content integration is being implemented.',
       stats:'210K views • 12K interactions'
     },
     {
