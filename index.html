@@ -313,12 +313,43 @@ function openChat(name){
 function sendMessage(){
   const input = document.getElementById('chatInput');
   const body = document.getElementById('chatBody');
-  if(!input.value.trim()) return;
-  body.innerHTML += `<div class="msg me">${input.value}</div>`;
+  const text = input.value.trim();
+  if(!text) return;
+
+  body.innerHTML += `<div class="msg me">${text}</div>`;
+  body.scrollTop = body.scrollHeight;
+
+  const lower = text.toLowerCase();
+  let reply = `Processing: ${text}`;
+
+  if(lower.includes('trip') || lower.includes('travel') || lower.includes('flight') || lower.includes('hotel')){
+    currentMode = 'travel';
+    render('travel');
+    reply = 'I switched you to Travel mode and prioritized trip planning tools, booking flow, and arrival steps.';
+    document.getElementById('input').value = text;
+  } else if(lower.includes('money') || lower.includes('bank') || lower.includes('card') || lower.includes('budget') || lower.includes('finance')){
+    currentMode = 'finance';
+    render('finance');
+    reply = 'I switched you to Finance mode and surfaced the most important money and account decisions first.';
+    document.getElementById('input').value = text;
+  } else if(lower.includes('trend') || lower.includes('social') || lower.includes('post') || lower.includes('video') || lower.includes('audience') || lower.includes('content')){
+    currentMode = 'social';
+    render('social');
+    reply = 'I switched you to Social mode and reorganized the interface around signals, publishing, and audience fit.';
+    document.getElementById('input').value = text;
+  } else {
+    currentMode = 'general';
+    render('general');
+    reply = 'I kept the interface in General mode. Tell me whether you want travel, finance, or social help and I will reconfigure the workspace.';
+    document.getElementById('input').value = text;
+  }
+
   setTimeout(()=>{
-    body.innerHTML += `<div class="msg bot">Processing: ${input.value}</div>`;
+    body.innerHTML += `<div class="msg bot">${reply}</div>`;
     body.scrollTop = body.scrollHeight;
+    runAI();
   },500);
+
   input.value='';
 }
 
