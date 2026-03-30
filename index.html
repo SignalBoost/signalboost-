@@ -693,7 +693,6 @@ NEXT STEPS
           </div>
         </section>
 
-        <!-- ONE MONETIZED SECTION VISIBLE -->
         <section class="module" id="topDealsSection">
           <div class="module-header">
             <h2>Top Deals</h2>
@@ -803,14 +802,6 @@ NEXT STEPS
   </div>
 
   <script>
-    // ==========================================================
-    // SIGNALBOOST AI FRONTEND
-    // Public strategy:
-    // - videos visible for engagement
-    // - only one monetized section visible
-    // - unfinished/unmonetized features hidden
-    // ==========================================================
-
     let currentMode = 'general';
     let currentPage = 1;
     const pageSize = 4;
@@ -818,8 +809,6 @@ NEXT STEPS
     const FEED_REFRESH_INTERVAL_MS = 300000;
     let feedRefreshTimer = null;
 
-    // Feature flags.
-    // Keep only revenue-ready sections visible.
     const FEATURES = {
       videos: true,
       monetizedDeals: true,
@@ -827,8 +816,6 @@ NEXT STEPS
       smartFeed: false
     };
 
-    // Replace these placeholders with real affiliate links later.
-    // This is the first visible monetized section.
     const AFFILIATE_LINKS = {
       flights: 'https://example.com/affiliate-flights',
       hotels: 'https://example.com/affiliate-hotels',
@@ -1206,19 +1193,6 @@ NEXT STEPS
       `).join('');
     }
 
-    function renderTravelZone() {
-      const container = document.getElementById('travelGrid');
-      if (!container) return;
-
-      container.innerHTML = `
-        <div class="card">
-          <div class="label">Travel setup</div>
-          <div class="strong">Travel is hidden until monetized</div>
-          <div class="status-note">Only release travel when booking and hotel links are wired to affiliate or partner revenue.</div>
-        </div>
-      `;
-    }
-
     function generateMockFeed() {
       return [
         { platform: 'YouTube', text: 'Trending video example', views: 1200000, likes: 54000, time: 2 },
@@ -1283,7 +1257,6 @@ NEXT STEPS
       openChat('AI Assistant');
       render('general');
       renderTopDeals();
-      renderTravelZone();
       await refreshAllFeeds();
       startFeedAutoRefresh();
     }
