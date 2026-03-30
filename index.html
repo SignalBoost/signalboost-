@@ -442,10 +442,26 @@
 
         <section class="module">
           <div class="module-header">
-            <h2>YouTube Feed</h2>
+            <h2>Popular Now</h2>
             <span class="mode-badge">Live</span>
           </div>
           <div class="grid" id="youtubeFeed"></div>
+        </section>
+
+        <section class="module">
+          <div class="module-header">
+            <h2>Latest Uploads</h2>
+            <span class="mode-badge">Newest</span>
+          </div>
+          <div class="grid" id="youtubeLatestFeed"></div>
+        </section>
+
+        <section class="module">
+          <div class="module-header">
+            <h2>Fresh Picks</h2>
+            <span class="mode-badge">Rotating</span>
+          </div>
+          <div class="grid" id="youtubeFreshFeed"></div>
         </section>
 
         <section class="module">
@@ -582,9 +598,9 @@
 
     async function renderYouTubeFeed() {
       const container = document.getElementById('youtubeFeed');
-      if (!container) return;
+      if (!container) return [];
 
-      container.innerHTML = `<div class="card"><div class="strong">Loading live YouTube...</div><div class="status-note">Pulling current videos now.</div></div>`;
+      container.innerHTML = `<div class="card"><div class="strong">Loading popular videos...</div><div class="status-note">Pulling current videos now.</div></div>`;
 
       try {
         const res = await fetch('/api/youtube/trending?region=US');
@@ -601,7 +617,8 @@
           channel: item.channel || 'YouTube',
           views: `${formatCompactNumber(Number(item.views || 0))} views`,
           time: hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString()),
-          embed: item.embed
+          embed: item.embed,
+          publishedAt: item.publishedAt || null
         }));
 
         if (!videos.length) {
@@ -616,10 +633,93 @@
             <div class="label" style="margin-top:6px">YouTube • ${v.views} • ${v.time}</div>
           </div>
         `).join('');
+
+        return videos;
       } catch (error) {
         console.error('YouTube feed failed:', error);
         container.innerHTML = `<div class="card"><div class="strong">Live feed unavailable</div><div class="status-note">Please try again shortly.</div></div>`;
+        return [];
       }
+    }
+
+    async function renderYouTubeLatestFeed() {
+      const container = document.getElementById('youtubeLatestFeed');
+      if (!container) return [];
+
+      container.innerHTML = `<div class="card"><div class="strong">Loading latest uploads...</div><div class="status-note">Pulling newest videos now.</div></div>`;
+
+      try {
+        const res = await fetch('/api/youtube/latest?region=US');
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(`YouTube latest API HTTP ${res.status}`);
+        }
+
+        const items = Array.isArray(data.items) ? data.items : [];
+        const videos = items.map(item => ({
+          title: item.title || 'YouTube video',
+          channel: item.channel || 'YouTube',
+          embed: item.embed,
+          publishedAt: item.publishedAt || null,
+          time: hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString())
+        }));
+
+        if (!videos.length) {
+          throw new Error('No latest videos returned');
+        }
+
+        container.innerHTML = videos.map(v => `
+          <div class="card">
+            <iframe class="video-frame" src="${v.embed}" title="${v.title}" allowfullscreen></iframe>
+            <div class="strong" style="margin-top:10px">${v.title}</div>
+            <div style="margin-top:6px;font-size:13px;color:var(--muted)">${v.channel}</div>
+            <div class="label" style="margin-top:6px">YouTube • ${v.time}</div>
+          </div>
+        `).join('');
+
+        return videos;
+      } catch (error) {
+        console.error('YouTube latest feed failed:', error);
+        container.innerHTML = `<div class="card"><div class="strong">Latest uploads unavailable</div><div class="status-note">Please try again shortly.</div></div>`;
+        return [];
+      }
+    }
+
+    function renderYouTubeFreshFeed(popularVideos, latestVideos) {
+      const container = document.getElementById('youtubeFreshFeed');
+      if (!container) return;
+
+      const merged = [...popularVideos, ...latestVideos].filter(v => v && v.embed);
+      const unique = [];
+      const seen = new Set();
+
+      merged.forEach(v => {
+        if (!seen.has(v.embed)) {
+          seen.add(v.embed);
+          unique.push(v);
+        }
+      });
+
+      const shuffled = unique
+        .map(v => ({ sort: Math.random(), value: v }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(x => x.value)
+        .slice(0, 6);
+
+      if (!shuffled.length) {
+        container.innerHTML = `<div class="card"><div class="strong">Fresh picks unavailable</div><div class="status-note">More rotation will appear when live feeds are available.</div></div>`;
+        return;
+      }
+
+      container.innerHTML = shuffled.map(v => `
+        <div class="card">
+          <iframe class="video-frame" src="${v.embed}" title="${v.title}" allowfullscreen></iframe>
+          <div class="strong" style="margin-top:10px">${v.title}</div>
+          <div style="margin-top:6px;font-size:13px;color:var(--muted)">${v.channel || 'YouTube'}</div>
+          <div class="label" style="margin-top:6px">Fresh pick • ${v.time || hoursAgoFromPublishedAt(v.publishedAt || new Date().toISOString())}</div>
+        </div>
+      `).join('');
     }
 
     function renderTikTokFeed() {
@@ -777,10 +877,12 @@
       `;
     }
 
-    function initApp() {
+    async function initApp() {
       openChat('AI Assistant');
       render('general');
-      renderYouTubeFeed();
+      const popularVideos = await renderYouTubeFeed();
+      const latestVideos = await renderYouTubeLatestFeed();
+      renderYouTubeFreshFeed(popularVideos, latestVideos);
       renderTikTokFeed();
       renderTelegramFeed();
       renderVKFeed();
