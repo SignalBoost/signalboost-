@@ -7,46 +7,55 @@ PROJECT IDENTITY
 - Core Idea: AI cockpit + adaptive UI + mall-style service hub where users can discover, decide, and complete tasks without leaving the platform
 
 CURRENT PUBLIC STRATEGY
-- Help users first, monetize the next action second
-- Keep videos visible as a light engagement layer
-- Keep unfinished tools hidden until they are useful and monetized
-- Homepage should act like a digital mall entrance with a clear travel action center
+- Help users first
+- Monetize the next action second
+- Keep the homepage focused and uncluttered
+- Hide unfinished or internal-only sections from public users
 
-CURRENT LIVE MONEY PATH
-- Expedia affiliate link is currently the active travel monetization link
-- Current affiliate link:
-  https://expedia.com/affiliate/6N7hRHZ
-
-CURRENT PUBLIC MODULES
+CURRENT PUBLIC SECTIONS
+- AI chat shell
 - Hero / command center
 - Travel action cards
 - Top Deals monetized section
-- YouTube Popular Now
-- YouTube Fresh Picks
-- TikTok / Telegram / VK preview blocks
-- In-site video modal player
+- Popular Now (YouTube)
+- Fresh Picks (YouTube)
 
-CURRENT PRIVATE / FUTURE MODULES
-- Real travel planner form with live pricing
-- Smart feed ranking with monetization logic
-- Full analytics backend
-- Admin reporting backend
-- Booking.com integration once fully approved and linked
+CURRENT HIDDEN / INTERNAL SECTIONS
+- Admin link is removed from public homepage
+- TikTok preview hidden
+- Telegram preview hidden
+- VK preview hidden
+- Finance remains non-public as a core business feature
+- Any future internal tools should stay off the public homepage unless monetized or required
+
+CURRENT MONETIZATION
+- Expedia affiliate link is the active live travel link
+- Current affiliate link:
+  https://expedia.com/affiliate/6N7hRHZ
 
 TRACKING NOTE
-- This version stores simple stats in localStorage:
+- This version keeps simple browser-side localStorage metrics:
   - page visits
-  - Expedia clicks
-  - hero action clicks
+  - affiliate clicks
+  - action clicks
   - video opens
-- This is only a starter layer until real analytics is connected
+- This is starter tracking only until real analytics is added
+
+YOUTUBE INTEGRATION NOTE
+- This homepage expects:
+  /api/youtube/trending
+  /api/youtube/latest
+- Those API files must match the response format used here
+- If videos disappear again, first verify:
+  1. both API files are updated
+  2. YOUTUBE_API_KEY exists in Vercel environment variables
+  3. Vercel deployment completed successfully
 
 NEXT STEPS
-- Add Google Analytics or equivalent
-- Add Booking.com monetized path
-- Add real admin reporting backend
-- Add protected admin access
-- Expand homepage directory only when new sections are ready and monetized
+- Add real analytics
+- Add Booking.com when ready
+- Add secure admin access later
+- Only release new sections when useful and monetized
 ==============================================================
 -->
 <!DOCTYPE html>
@@ -530,31 +539,6 @@ NEXT STEPS
       flex-wrap: wrap;
     }
 
-    .media-preview {
-      width: 100%;
-      min-height: 220px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      text-align: center;
-      padding: 18px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(6,182,212,0.08));
-    }
-
-    .media-preview strong {
-      font-size: 18px;
-    }
-
-    .media-preview span {
-      max-width: 28ch;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
     .rail {
       display: grid;
       gap: 20px;
@@ -573,13 +557,6 @@ NEXT STEPS
 
     .empty-card {
       grid-column: 1 / -1;
-    }
-
-    .admin-link {
-      margin-top: 12px;
-      display: inline-block;
-      font-size: 13px;
-      color: var(--muted);
     }
 
     .modal {
@@ -782,7 +759,7 @@ NEXT STEPS
               <div class="action-card">
                 <div class="action-icon">🎥</div>
                 <div class="strong">Trending Content</div>
-                <div class="status-note">Keep the homepage alive with a light entertainment layer.</div>
+                <div class="status-note">Keep the homepage alive with a light engagement layer.</div>
                 <div>
                   <button class="tiny-btn" onclick="trackAction('hero_scroll_videos'); scrollToSection('youtubeFeedSection')">Browse videos</button>
                 </div>
@@ -797,7 +774,6 @@ NEXT STEPS
           <div class="hero-side">
             <h3 id="heroPanelTitle">AI overview</h3>
             <div id="heroPanelList"></div>
-            <a class="admin-link" href="admin.html">Open admin starter</a>
           </div>
         </section>
 
@@ -823,30 +799,6 @@ NEXT STEPS
             <span class="mode-badge">Rotating</span>
           </div>
           <div class="grid" id="youtubeFreshFeed"></div>
-        </section>
-
-        <section class="module">
-          <div class="module-header">
-            <h2>TikTok Feed</h2>
-            <span class="mode-badge">Preview</span>
-          </div>
-          <div class="grid" id="tiktokFeed"></div>
-        </section>
-
-        <section class="module">
-          <div class="module-header">
-            <h2>Telegram Feed</h2>
-            <span class="mode-badge">Preview</span>
-          </div>
-          <div class="grid" id="telegramFeed"></div>
-        </section>
-
-        <section class="module">
-          <div class="module-header">
-            <h2>VK Feed</h2>
-            <span class="mode-badge">Preview</span>
-          </div>
-          <div class="grid" id="vkFeed"></div>
         </section>
       </div>
 
@@ -885,13 +837,8 @@ NEXT STEPS
     /*
       ==========================================================
       SIGNALBOOST AI FRONTEND LOGIC
-      ==========================================================
-      This script intentionally includes:
-      - simple local visit/click tracking
-      - hero / homepage behavior
-      - robust YouTube feed handling
-      - in-site modal player
-      - starter business metrics storage
+      Public-only homepage logic.
+      Hidden/internal sections are intentionally removed here.
       ==========================================================
     */
 
@@ -907,11 +854,6 @@ NEXT STEPS
       shopping: 'https://expedia.com/affiliate/6N7hRHZ'
     };
 
-    // ==========================================================
-    // SIMPLE CLIENT-SIDE TRACKING
-    // This is a starter system using localStorage only.
-    // Later replace or complement with real analytics / backend.
-    // ==========================================================
     function getStats() {
       const raw = localStorage.getItem('signalboost_stats');
       if (raw) {
@@ -997,7 +939,7 @@ NEXT STEPS
         'AI Assistant': 'Welcome to AI Assistant. I can help users discover deals, content, and next steps.',
         'Travel Planner': 'Travel is the first money path. Push users toward real booking links.',
         'Social Trends': 'Use content to engage users, but keep the action path clear.',
-        'Finance Helper': 'Finance remains secondary until a revenue path is active.'
+        'Finance Helper': 'Finance remains secondary and not public.'
       };
       document.getElementById('chatBody').innerHTML = `<div class="msg bot">${welcome[name] || 'How can I help?'}</div>`;
     }
@@ -1048,16 +990,12 @@ NEXT STEPS
         response.innerHTML = `Social discovery intent detected. We are showing trending content first, with action paths kept secondary.`;
         scrollToSection('youtubeFeedSection');
       } else if (currentMode === 'finance') {
-        response.innerHTML = `Finance intent detected. Finance remains secondary until monetized tools are added.`;
+        response.innerHTML = `Finance intent detected. Finance tools are not public yet.`;
       } else {
         response.innerHTML = `General intent detected. The homepage is designed to help users discover travel deals and trending content.`;
       }
     }
 
-    // ==========================================================
-    // MONETIZED DEALS SECTION
-    // This is the primary public money path on the homepage.
-    // ==========================================================
     function renderTopDeals() {
       const container = document.getElementById('topDealsGrid');
       if (!container) return;
@@ -1090,7 +1028,7 @@ NEXT STEPS
         {
           badge: 'Shopping',
           title: 'Future Offer Slot',
-          description: 'Keep this ready for your next approved affiliate or sponsor program.',
+          description: 'Reserved for the next approved affiliate or sponsor program.',
           link: AFFILIATE_LINKS.shopping,
           action: 'Open offer',
           trackingKey: 'top_deals_future'
@@ -1117,10 +1055,6 @@ NEXT STEPS
       `).join('');
     }
 
-    // ==========================================================
-    // VIDEO HANDLING
-    // Designed to support either the current API format or older ones.
-    // ==========================================================
     function buildVideoObject(item) {
       const id = item.id || item.videoId || '';
       const thumbnail =
@@ -1302,9 +1236,6 @@ NEXT STEPS
       const popularVideos = await renderYouTubeFeed();
       const latestVideos = await renderYouTubeLatestFeed();
       renderYouTubeFreshFeed(popularVideos, latestVideos);
-      renderTikTokFeed();
-      renderTelegramFeed();
-      renderVKFeed();
     }
 
     function startFeedAutoRefresh() {
@@ -1312,54 +1243,6 @@ NEXT STEPS
       feedRefreshTimer = setInterval(() => {
         refreshAllFeeds();
       }, FEED_REFRESH_INTERVAL_MS);
-    }
-
-    function renderTikTokFeed() {
-      const container = document.getElementById('tiktokFeed');
-      const items = [
-        { title: 'TikTok viral example', views: '980K views', time: '1h ago', body: 'Short-form trend preview shown directly inside SignalBoost.' },
-        { title: 'Short-form trend example', views: '2.1M views', time: '4h ago', body: 'Users can judge interest here before opening the original source.' }
-      ];
-
-      container.innerHTML = items.map(v => `
-        <div class="card">
-          <div class="media-preview"><strong>▶ TikTok preview</strong><span>${escapeHtml(v.body)}</span></div>
-          <div class="strong" style="margin-top:10px">${escapeHtml(v.title)}</div>
-          <div class="label" style="margin-top:6px">TikTok • ${escapeHtml(v.views)} • ${escapeHtml(v.time)}</div>
-        </div>
-      `).join('');
-    }
-
-    function renderTelegramFeed() {
-      const container = document.getElementById('telegramFeed');
-      const items = [
-        { title: 'Telegram channel update', views: '150K views', time: '3h ago', body: 'Stable in-site preview while the live integration is being implemented.' },
-        { title: 'Breaking news update', views: '90K views', time: '7h ago', body: 'This keeps the page reliable and lets users browse inside the mall first.' }
-      ];
-
-      container.innerHTML = items.map(v => `
-        <div class="card">
-          <div class="media-preview"><strong>Telegram preview</strong><span>${escapeHtml(v.body)}</span></div>
-          <div class="strong" style="margin-top:10px">${escapeHtml(v.title)}</div>
-          <div class="label" style="margin-top:6px">Telegram • ${escapeHtml(v.views)} • ${escapeHtml(v.time)}</div>
-        </div>
-      `).join('');
-    }
-
-    function renderVKFeed() {
-      const container = document.getElementById('vkFeed');
-      const items = [
-        { title: 'VK public post example', stats: '210K views • 12K interactions', body: 'Rendered preview shown inside the mall.' },
-        { title: 'VK video or channel update', stats: '340K views • 18K interactions', body: 'Keeps users browsing inside SignalBoost first.' }
-      ];
-
-      container.innerHTML = items.map(v => `
-        <div class="card">
-          <div class="media-preview"><strong>VK preview</strong><span>${escapeHtml(v.body)}</span></div>
-          <div class="strong" style="margin-top:10px">${escapeHtml(v.title)}</div>
-          <div class="label" style="margin-top:6px">${escapeHtml(v.stats)}</div>
-        </div>
-      `).join('');
     }
 
     function render(mode) {
@@ -1378,7 +1261,7 @@ NEXT STEPS
         ],
         finance: [
           'Finance intent detected',
-          'Finance remains secondary for now',
+          'Finance remains non-public',
           'Protect homepage focus'
         ],
         general: [
@@ -1397,12 +1280,12 @@ NEXT STEPS
       document.getElementById('sessionList').innerHTML = `
         <div class="rail-item">Mode: ${escapeHtml(mode)}</div>
         <div class="rail-item">Travel monetization active</div>
-        <div class="rail-item">Videos active as engagement layer</div>
+        <div class="rail-item">Public homepage cleaned</div>
       `;
 
       document.getElementById('whyMode').innerHTML = `
         <div class="rail-item">Help users first, monetize next actions</div>
-        <div class="rail-item">Homepage prioritizes useful and revenue-ready paths</div>
+        <div class="rail-item">Only public, useful, revenue-ready sections remain visible</div>
       `;
     }
 
