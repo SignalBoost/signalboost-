@@ -1,3 +1,4 @@
+// api/youtube/trending.js
 export default async function handler(req, res) {
   const region = req.query.region || 'US';
   const key = process.env.YOUTUBE_API_KEY;
@@ -24,15 +25,14 @@ export default async function handler(req, res) {
 
     const items = (data.items || []).map(video => ({
       id: video.id,
-      title: video.snippet.title,
-      channel: video.snippet.channelTitle,
-      publishedAt: video.snippet.publishedAt,
-      views: video.statistics.viewCount,
+      title: video.snippet?.title || 'YouTube video',
+      channel: video.snippet?.channelTitle || 'YouTube',
+      publishedAt: video.snippet?.publishedAt || null,
+      views: video.statistics?.viewCount || 0,
       embed: `https://www.youtube.com/embed/${video.id}`
     }));
 
     return res.status(200).json({ items });
-
   } catch (error) {
     return res.status(500).json({
       error: error.message || 'Server error'
