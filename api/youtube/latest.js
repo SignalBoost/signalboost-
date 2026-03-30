@@ -1,3 +1,30 @@
+/*
+==============================================================
+SIGNALBOOST AI - YOUTUBE LATEST API
+--------------------------------------------------------------
+PURPOSE
+- Returns a rotating set of newer YouTube uploads
+- Used to build the Fresh Picks section on the homepage
+
+REQUIREMENTS
+- Vercel environment variable:
+  YOUTUBE_API_KEY
+
+RETURNED FIELDS
+- id
+- title
+- channel
+- publishedAt
+- thumbnail
+- watchUrl
+- embedPlayerUrl
+- embeddable
+
+NOTE
+- If this route returns empty items, Fresh Picks will shrink or disappear
+- Verify deployment and environment variables first
+==============================================================
+*/
 export default async function handler(req, res) {
   const region = req.query.region || 'US';
   const key = process.env.YOUTUBE_API_KEY;
@@ -28,7 +55,7 @@ export default async function handler(req, res) {
     }
 
     const ids = (searchData.items || [])
-      .map(item => item.id?.videoId)
+      .map((item) => item.id?.videoId)
       .filter(Boolean);
 
     if (!ids.length) {
@@ -48,7 +75,7 @@ export default async function handler(req, res) {
       return res.status(videosResponse.status).json({ error: videosData });
     }
 
-    const items = (videosData.items || []).map(video => {
+    const items = (videosData.items || []).map((video) => {
       const id = video.id;
       const snippet = video.snippet || {};
       const thumbs = snippet.thumbnails || {};
