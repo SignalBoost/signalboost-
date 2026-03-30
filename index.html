@@ -44,38 +44,7 @@ NEXT STEPS
 - Expand Travel Zone into full booking flow
 - Add Food / Lifestyle zone
 - Add Finance / Banking zone
-- State memory (session awar="label">${i.platform} • AI score ${i.rank}</div>
-      <div class="strong">${i.text}</div>
-    </div>
-  `).join('');
-}
-
-render('general');
-renderTruthFeed();
-function renderTravelZone(){
-  const container = document.getElementById('travelGrid');
-
-  const items = [
-    ['Search flights','Find and compare flights quickly'],
-    ['Find hotels','Compare stays by price and location'],
-    ['Plan itinerary','Organize your trip step-by-step'],
-    ['Check requirements','Visa, passport, and entry rules'],
-    ['Transport options','Airport transfer and local travel'],
-    ['Travel budget','Estimate and control spending']
-  ];
-
-  container.innerHTML = items.map(i => `
-    <div class="card">
-      <div class="label">Travel tool</div>
-      <div class="strong">${i[0]}</div>
-      <div>${i[1]}</div>
-    </div>
-  `).join('');
-}
-
-renderCombinedFeed();
-renderTravelZone();
-</script>
-
-</body>
-</html>
+- State memory (session awareness)
+- Workspaces (task-based UI environments)
+- Add saved session handoff patterns for new chats
+- Introduce multi-step AI workflows
