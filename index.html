@@ -1,34 +1,29 @@
 <!--
-================ SIGNALBOOST AI PROJECT BRAIN ================
+================ SIGNALBOOST AI SAFE PUBLIC HOMEPAGE ================
 
-PUBLIC OBJECTIVE
-- Help users discover hotels, stays, and travel options quickly
-- Keep homepage visually alive
-- Never let broken media feeds make the site look dead
-- Keep revenue paths visible at all times
-
-MEDIA STRATEGY
-- Primary media layer: YouTube API feeds
-- Fallback media layer: built-in animated travel cards
-- If live video fails, fallback media appears automatically
-- No empty or broken media sections should remain visible
+PURPOSE
+- Stable public homepage for affiliate approval and public use
+- Only show sections that are truly working
+- Remove broken or unfinished features that can trigger "Dead URL" reviews
 
 VISIBLE PUBLIC SECTIONS
 - Header
-- Hero
-- Search
+- Headline
+- Subtitle
 - Stay Actions
 - Popular Stay Picks
 - Top Deals
 - Featured Travel Moments
-- Fresh Picks (only if live feed works)
+- Fresh Picks only if live feed works
 
-HIDDEN / NOT FOR PUBLIC
-- Operator explanations
-- Internal system panels
-- Admin links
-- Prototype conversation areas
-- Broken / empty media areas
+REMOVED ON PURPOSE
+- Search input
+- Go button
+- Quick destination chips
+- Refresh media button
+- AI response bar
+- Smart routing panel
+- Any unfinished or fake travel tool
 
 LIVE AFFILIATE LINKS
 - Expedia:
@@ -38,13 +33,14 @@ https://www.hotels.com/affiliate/5BoP8Nf
 - Vrbo:
 https://vrbo.com/affiliate/M2nsa7i
 
-YOUTUBE NOTE
-- Expected endpoints:
-/api/youtube/trending
-/api/youtube/latest
-- If those fail, fallback media is shown instead
+MEDIA STRATEGY
+- Try YouTube live feed first
+- If live feed fails, show built-in animated fallback cards
+- Never leave empty or broken media sections visible
 
-==============================================================
+IMPORTANT
+- If a feature is not fully working, do not put it on the public homepage
+====================================================================
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +62,6 @@ YOUTUBE NOTE
 --dark: #0f172a;
 --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
 --card-bg: rgba(255,255,255,0.80);
---soft-blue: rgba(37, 99, 235, 0.08);
 }
 
 * { box-sizing: border-box; }
@@ -84,8 +79,9 @@ color: inherit;
 text-decoration: none;
 }
 
-button, input {
+button {
 font: inherit;
+cursor: pointer;
 }
 
 .app {
@@ -137,8 +133,7 @@ flex-shrink: 0;
 }
 
 .chip,
-.tiny-btn,
-.btn {
+.tiny-btn {
 padding: 10px 14px;
 border-radius: 999px;
 border: 1px solid var(--border);
@@ -149,12 +144,10 @@ transition: 0.15s ease;
 }
 
 .chip:hover,
-.tiny-btn:hover,
-.btn:hover {
+.tiny-btn:hover {
 transform: translateY(-1px);
 }
 
-.btn.primary,
 .tiny-btn.primary {
 border: none;
 color: white;
@@ -220,46 +213,6 @@ color: var(--muted);
 line-height: 1.65;
 font-size: 18px;
 max-width: 850px;
-}
-
-.prompt {
-margin-top: 20px;
-display: flex;
-gap: 10px;
-align-items: center;
-padding: 12px;
-border-radius: 18px;
-border: 1px solid var(--border);
-background: white;
-max-width: 860px;
-}
-
-.prompt input {
-width: 100%;
-outline: none;
-border: none;
-background: transparent;
-color: inherit;
-}
-
-.response {
-display: none;
-margin-top: 12px;
-padding: 12px;
-border-radius: 14px;
-background: rgba(37, 99, 235, 0.08);
-border: 1px solid rgba(37, 99, 235, 0.18);
-line-height: 1.6;
-font-size: 14px;
-max-width: 860px;
-}
-
-.hero-actions,
-.hero-tools {
-display: flex;
-flex-wrap: wrap;
-gap: 8px;
-margin-top: 12px;
 }
 
 .layout {
@@ -471,13 +424,6 @@ background:
 radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 18%),
 linear-gradient(135deg, #0f172a, #1d4ed8, #06b6d4);
 animation: gradientShift 10s ease-in-out infinite alternate;
-}
-
-.fallback-thumb-wrap.green {
-background:
-radial-gradient(circle at 20% 25%, rgba(255,255,255,0.22), transparent 18%),
-linear-gradient(135deg, #15803d, #22c55e, #06b6d4);
-animation: gradientShift 8s ease-in-out infinite alternate;
 }
 
 .floating-shape {
@@ -700,24 +646,6 @@ width: min(100vw - 16px, 1320px);
 <section class="hero">
 <h1>Find hotels and stays faster</h1>
 <p class="sub">Explore hotel deals, compare stay options, and move directly into booking-ready travel partners.</p>
-
-<div class="prompt">
-<input id="input" placeholder="Try: hotels in Miami, family stays in Orlando, or Las Vegas hotels" />
-<button class="btn primary" onclick="runAI()">Go</button>
-</div>
-
-<div class="response" id="response"></div>
-
-<div class="hero-actions">
-<button class="chip" onclick="trackAction('hero_quick_miami'); quick('hotels in Miami')">Hotels in Miami</button>
-<button class="chip" onclick="trackAction('hero_quick_orlando'); quick('family stays in Orlando')">Family stays in Orlando</button>
-<button class="chip" onclick="trackAction('hero_quick_vegas'); quick('hotels in Las Vegas')">Hotels in Las Vegas</button>
-<button class="chip" onclick="trackAction('hero_quick_trending'); scrollToSection('mediaSection')">Travel inspiration</button>
-</div>
-
-<div class="hero-tools">
-<button class="chip" onclick="trackAction('refresh_feed'); refreshAllFeeds()">🔄 Refresh Media</button>
-</div>
 </section>
 
 <div class="layout">
@@ -741,7 +669,7 @@ width: min(100vw - 16px, 1320px);
 <div class="strong">Hotel Deals</div>
 <div class="status-note">Secondary hotel path through Hotels.com.</div>
 <div class="deal-actions">
-<a class="tiny-btn warn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer" onclick="trackAffiliateClick('hotelscom_main')">Open Hotels.com</a>
+<a class="tiny-btn.warn tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer" onclick="trackAffiliateClick('hotelscom_main')">Open Hotels.com</a>
 </div>
 </div>
 
@@ -825,11 +753,6 @@ width: min(100vw - 16px, 1320px);
 <div class="deal-grid" id="topDealsGrid"></div>
 </section>
 
-<!--
-HYBRID MEDIA SECTION
-- If YouTube works: show live videos
-- If YouTube fails: show animated fallback cards
--->
 <section class="module" id="mediaSection">
 <div class="module-header">
 <h2>Featured Travel Moments</h2>
@@ -898,7 +821,6 @@ console.error('Failed to parse stats:', error);
 return {
 totalVisits: 0,
 affiliateClicks: {},
-actionClicks: {},
 videoOpens: 0,
 mediaFallbackViews: 0,
 lastVisitAt: null,
@@ -921,12 +843,6 @@ saveStats(stats);
 function trackAffiliateClick(key) {
 const stats = getStats();
 stats.affiliateClicks[key] = (stats.affiliateClicks[key] || 0) + 1;
-saveStats(stats);
-}
-
-function trackAction(key) {
-const stats = getStats();
-stats.actionClicks[key] = (stats.actionClicks[key] || 0) + 1;
 saveStats(stats);
 }
 
@@ -963,99 +879,6 @@ return String(value ?? '')
 .replaceAll('>', '&gt;')
 .replaceAll('"', '&quot;')
 .replaceAll("'", '&#39;');
-}
-
-function scrollToSection(id) {
-const element = document.getElementById(id);
-if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function quick(text) {
-document.getElementById('input').value = text;
-runAI();
-}
-
-function detectModeFromPrompt(text) {
-const value = (text || '').toLowerCase();
-if (/hotel|stay|rental|vacation|travel|trip|book|destination|deal/.test(value)) return 'travel';
-if (/video|trend|content|feed/.test(value)) return 'social';
-return 'general';
-}
-
-function runAI() {
-const value = document.getElementById('input').value || '';
-const mode = detectModeFromPrompt(value);
-const response = document.getElementById('response');
-response.style.display = 'block';
-
-if (mode === 'travel') {
-response.innerHTML = `Travel intent detected. We are prioritizing hotel and stay actions across Expedia, Hotels.com, and Vrbo.`;
-scrollToSection('topDealsGrid');
-} else if (mode === 'social') {
-response.innerHTML = `Travel inspiration mode detected. We are showing media and destination discovery.`;
-scrollToSection('mediaSection');
-} else {
-response.innerHTML = `General discovery mode detected. Hotels and stays are the current live public action path.`;
-}
-}
-
-function renderTopDeals() {
-const container = document.getElementById('topDealsGrid');
-if (!container) return;
-
-const deals = [
-{
-badge: 'Expedia',
-title: 'Search Hotel Deals',
-description: 'Primary hotel booking path using Expedia.',
-link: AFFILIATE_LINKS.expedia,
-action: 'Search on Expedia',
-trackingKey: 'top_deals_expedia'
-},
-{
-badge: 'Hotels.com',
-title: 'Hotel Deals',
-description: 'Secondary hotel booking path using Hotels.com.',
-link: AFFILIATE_LINKS.hotelscom,
-action: 'Search on Hotels.com',
-trackingKey: 'top_deals_hotelscom'
-},
-{
-badge: 'Vrbo',
-title: 'Vacation Rentals',
-description: 'Alternative lodging path for homes and vacation rentals.',
-link: AFFILIATE_LINKS.vrbo,
-action: 'Search on Vrbo',
-trackingKey: 'top_deals_vrbo'
-},
-{
-badge: 'Compare',
-title: 'Compare Stay Options',
-description: 'Give users more than one booking route and stay type.',
-link: AFFILIATE_LINKS.hotelscom,
-action: 'Compare stays',
-trackingKey: 'top_deals_compare'
-}
-];
-
-container.innerHTML = deals.map(deal => `
-<div class="card deal-card">
-<div class="deal-badge">${escapeHtml(deal.badge)}</div>
-<div class="strong">${escapeHtml(deal.title)}</div>
-<div class="status-note">${escapeHtml(deal.description)}</div>
-<div class="deal-actions">
-<a
-class="tiny-btn primary"
-href="${escapeHtml(deal.link)}"
-target="_blank"
-rel="noopener noreferrer"
-onclick="trackAffiliateClick('${escapeHtml(deal.trackingKey)}')"
->
-${escapeHtml(deal.action)}
-</a>
-</div>
-</div>
-`).join('');
 }
 
 function buildVideoObject(item) {
@@ -1259,18 +1082,12 @@ data = null;
 }
 
 if (!res.ok) {
-const message =
-data?.error?.message ||
-data?.message ||
-`Request failed with HTTP ${res.status}`;
+const message = data?.error?.message || data?.message || `Request failed with HTTP ${res.status}`;
 throw new Error(message);
 }
 
 if (data?.error) {
-const message =
-data.error.message ||
-'API returned an error object';
-throw new Error(message);
+throw new Error(data.error.message || 'API returned an error object');
 }
 
 return data;
@@ -1410,15 +1227,7 @@ container.innerHTML = deals.map(deal => `
 <div class="strong">${escapeHtml(deal.title)}</div>
 <div class="status-note">${escapeHtml(deal.description)}</div>
 <div class="deal-actions">
-<a
-class="tiny-btn primary"
-href="${escapeHtml(deal.link)}"
-target="_blank"
-rel="noopener noreferrer"
-onclick="trackAffiliateClick('${escapeHtml(deal.trackingKey)}')"
->
-${escapeHtml(deal.action)}
-</a>
+<a class="tiny-btn primary" href="${escapeHtml(deal.link)}" target="_blank" rel="noopener noreferrer" onclick="trackAffiliateClick('${escapeHtml(deal.trackingKey)}')">${escapeHtml(deal.action)}</a>
 </div>
 </div>
 `).join('');
