@@ -1,96 +1,54 @@
-<!--
-FILE: index.html
-VERSION: v3.1
-STATUS: Public-safe working build
-
-CHANGE LOG
-- Added monetization registry
-- Added click tracking system for affiliate buttons
-- Added live link status panel
-- Added click counter UI
-- Kept only working public features visible
-- Preserved smart hotel/stay search
-- Preserved travel essentials affiliate blocks
-- Preserved adaptive media system
-
-PUBLIC FEATURES ENABLED
-- Smart destination search
-- Expedia / Hotels.com / Vrbo actions
-- Travel Essentials affiliate cards
-- Travel Toolkit affiliate cards
-- Monetization registry panel
-- Click tracking counters
-- Adaptive media with fallback
-
-PUBLIC FEATURES DISABLED / HIDDEN
-- Visa tools
-- Unfinished comparison engine
-- Flights comparison engine
-- Any non-working public action
-
-DOCUMENTATION RULE
-- Every public affiliate button must exist in MONETIZATION_REGISTRY
-- Every public affiliate button must call trackAffiliateClick(...)
-- If a feature is not functional, do not display it publicly
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SignalBoost AI</title>
-
 <style>
 :root {
+--bg: #f4f8fc;
 --surface: rgba(255,255,255,0.96);
---border: rgba(148,163,184,0.22);
+--surface-soft: rgba(255,255,255,0.82);
 --text: #0f172a;
 --muted: #64748b;
+--border: rgba(148,163,184,0.22);
 --primary: #2563eb;
---accent: #06b6d4;
---success: #15803d;
---warning: #ea580c;
+--primary-2: #06b6d4;
 --dark: #0f172a;
 --purple: #7c3aed;
---shadow: 0 18px 48px rgba(15,23,42,0.07);
---card-bg: rgba(255,255,255,0.82);
---bg-1: #eef4ff;
---bg-2: #f8fbff;
+--success: #15803d;
+--warning: #ea580c;
+--shadow: 0 18px 48px rgba(15,23,42,0.08);
+--radius-xl: 24px;
+--radius-lg: 18px;
+--radius-md: 14px;
+--max: 1160px;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-
 body {
 margin: 0;
 font-family: Arial, sans-serif;
-background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
 color: var(--text);
 }
 
-a {
-color: inherit;
-text-decoration: none;
-}
-
-button, input {
-font: inherit;
-}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
 
 .app {
-width: min(1200px, calc(100vw - 20px));
+width: min(var(--max), calc(100vw - 20px));
 margin: 0 auto;
-padding: 10px 0 24px;
+padding: 12px 0 32px;
 }
 
 .topbar,
 .hero,
-.module,
-.search-results-panel {
+.section,
+.results-panel {
 background: var(--surface);
 border: 1px solid var(--border);
-border-radius: 20px;
 box-shadow: var(--shadow);
 }
 
@@ -98,124 +56,119 @@ box-shadow: var(--shadow);
 display: flex;
 justify-content: space-between;
 align-items: center;
-gap: 10px;
+gap: 12px;
+padding: 12px 16px;
+border-radius: 18px;
 flex-wrap: wrap;
-padding: 10px 14px;
-border-radius: 16px;
 }
 
 .logo {
 display: flex;
 align-items: center;
-gap: 10px;
+gap: 12px;
+font-size: 20px;
 font-weight: 900;
-font-size: 18px;
-letter-spacing: -0.02em;
+letter-spacing: -0.03em;
 }
 
 .logo-mark {
 width: 52px;
 height: 52px;
-border-radius: 12px;
-display: flex;
-align-items: center;
-justify-content: center;
-background: #fff;
+border-radius: 14px;
+background: white;
 border: 1px solid var(--border);
-overflow: hidden;
+display: grid;
+place-items: center;
 flex-shrink: 0;
 }
 
-.chip, .tiny-btn, .btn {
-padding: 9px 13px;
+.nav-chips {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+}
+
+.chip,
+.btn,
+.mini-btn {
 border-radius: 999px;
+padding: 10px 14px;
 border: 1px solid var(--border);
 background: white;
 cursor: pointer;
-color: inherit;
-transition: 0.15s ease;
+transition: transform .15s ease;
 }
 
-.chip:hover, .tiny-btn:hover, .btn:hover {
-transform: translateY(-1px);
-}
+.chip:hover,
+.btn:hover,
+.mini-btn:hover { transform: translateY(-1px); }
 
-.tiny-btn.primary, .btn.primary {
-border: none;
+.btn.primary,
+.mini-btn.primary {
 color: white;
+border: none;
 font-weight: 700;
-background: linear-gradient(135deg, var(--primary), var(--accent));
+background: linear-gradient(135deg, var(--primary), var(--primary-2));
 }
 
-.tiny-btn.warn {
-border: none;
+.mini-btn.dark {
 color: white;
-font-weight: 700;
-background: linear-gradient(135deg, var(--warning), #fb923c);
-}
-
-.tiny-btn.dark {
 border: none;
-color: white;
 font-weight: 700;
 background: linear-gradient(135deg, var(--dark), #334155);
 }
 
-.tiny-btn.success {
-border: none;
+.mini-btn.purple {
 color: white;
-font-weight: 700;
-background: linear-gradient(135deg, var(--success), #22c55e);
-}
-
-.tiny-btn.purple {
 border: none;
-color: white;
 font-weight: 700;
 background: linear-gradient(135deg, var(--purple), #a855f7);
 }
 
+.mini-btn.warn {
+color: white;
+border: none;
+font-weight: 700;
+background: linear-gradient(135deg, var(--warning), #fb923c);
+}
+
 .hero {
-margin-top: 14px;
-padding: 24px 22px;
+margin-top: 16px;
+border-radius: var(--radius-xl);
+padding: 34px 28px 24px;
 position: relative;
 overflow: hidden;
 }
 
-.hero::before {
+.hero::after {
 content: "";
 position: absolute;
-inset: auto -70px -70px auto;
-width: 220px;
-height: 220px;
-border-radius: 50%;
-background: radial-gradient(circle, rgba(6,182,212,0.11), transparent 70%);
+right: -80px;
+bottom: -80px;
+width: 260px;
+height: 260px;
+background: radial-gradient(circle, rgba(37,99,235,0.12), transparent 70%);
 pointer-events: none;
 }
 
 h1 {
-margin: 0 0 8px;
-font-size: 40px;
+margin: 0 0 10px;
+font-size: 42px;
 line-height: 1.02;
-letter-spacing: -0.03em;
-max-width: 720px;
+letter-spacing: -0.04em;
+max-width: 700px;
 }
 
-h2 {
+.hero-sub {
 margin: 0;
-font-size: 22px;
-}
-
-.sub {
-margin: 0;
+max-width: 760px;
 color: var(--muted);
-line-height: 1.58;
 font-size: 17px;
-max-width: 860px;
+line-height: 1.6;
 }
 
-.search-wrap {
-margin-top: 16px;
+.search-shell {
+margin-top: 20px;
 max-width: 980px;
 }
 
@@ -223,210 +176,150 @@ max-width: 980px;
 display: grid;
 grid-template-columns: 1fr auto auto;
 gap: 8px;
-align-items: center;
 padding: 10px;
-border-radius: 16px;
 border: 1px solid var(--border);
+border-radius: 18px;
 background: white;
 }
 
 .search-box input {
 width: 100%;
+min-width: 0;
 border: none;
 outline: none;
 background: transparent;
-color: inherit;
 font-size: 15px;
-min-width: 0;
+color: var(--text);
 }
 
 .search-help {
-margin-top: 8px;
+margin-top: 9px;
 color: var(--muted);
 font-size: 13px;
 line-height: 1.5;
 }
 
-.search-results-panel {
-margin-top: 12px;
-padding: 14px;
+.results-panel {
 display: none;
+margin-top: 14px;
+padding: 16px;
+border-radius: 18px;
 }
 
-.search-results-panel.active {
-display: block;
-}
+.results-panel.active { display: block; }
 
-.search-results-title {
-font-size: 17px;
+.results-title {
+font-size: 18px;
 font-weight: 800;
 margin-bottom: 6px;
 }
 
-.search-results-sub {
+.results-sub {
 color: var(--muted);
 font-size: 13px;
 line-height: 1.5;
 margin-bottom: 12px;
 }
 
-.search-results-grid {
+.results-grid,
+.essentials-grid,
+.stays-grid,
+.media-grid {
 display: grid;
-grid-template-columns: repeat(3, minmax(0, 1fr));
-gap: 10px;
+gap: 12px;
 }
 
-.search-result-card {
-padding: 12px;
-border-radius: 14px;
-border: 1px solid var(--border);
-background: var(--card-bg);
-display: flex;
-flex-direction: column;
-gap: 8px;
-min-height: 210px;
-}
+.results-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.essentials-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.stays-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.media-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-.result-rank,
-.hotel-badge,
-.deal-badge,
-.media-badge,
-.essential-badge,
-.registry-badge {
-align-self: flex-start;
-font-size: 10px;
-padding: 5px 9px;
-border-radius: 999px;
-background: rgba(21,128,61,0.10);
-color: var(--success);
-border: 1px solid rgba(21,128,61,0.18);
-}
-
-.essential-badge {
-background: rgba(124,58,237,0.10);
-color: var(--purple);
-border: 1px solid rgba(124,58,237,0.18);
-}
-
-.registry-badge {
-background: rgba(37,99,235,0.10);
-color: var(--primary);
-border: 1px solid rgba(37,99,235,0.18);
-}
-
-.layout {
+.section {
 margin-top: 16px;
-display: grid;
-gap: 16px;
+padding: 18px;
+border-radius: var(--radius-xl);
 }
 
-.module {
-padding: 16px;
-}
-
-.module-header {
+.section-head {
 display: flex;
 justify-content: space-between;
 align-items: center;
-gap: 8px;
+gap: 10px;
 flex-wrap: wrap;
-margin-bottom: 12px;
+margin-bottom: 14px;
 }
 
-.mode-badge,
-.label {
-font-size: 10px;
+h2 {
+margin: 0;
+font-size: 24px;
+letter-spacing: -0.02em;
+}
+
+.section-tag {
+font-size: 11px;
 color: var(--muted);
-}
-
-.strong {
-font-weight: 800;
-font-size: 15px;
-line-height: 1.3;
-}
-
-.status-note {
-margin-top: 6px;
-color: var(--muted);
-line-height: 1.5;
-font-size: 12px;
-}
-
-.action-grid,
-.hotel-grid,
-.deal-grid,
-.essentials-grid,
-.registry-grid {
-display: grid;
-grid-template-columns: repeat(4, minmax(0, 1fr));
-gap: 10px;
-}
-
-.video-grid,
-.fallback-grid {
-display: grid;
-grid-template-columns: repeat(3, minmax(0, 1fr));
-gap: 10px;
 }
 
 .card {
-padding: 12px;
-border-radius: 14px;
 border: 1px solid var(--border);
-background: var(--card-bg);
-min-width: 0;
-}
-
-.action-card,
-.hotel-card,
-.deal-card,
-.essential-card,
-.registry-card {
+background: var(--surface-soft);
+border-radius: var(--radius-lg);
+padding: 14px;
 display: flex;
 flex-direction: column;
 gap: 8px;
-min-height: 190px;
+min-width: 0;
+min-height: 210px;
 }
 
-.registry-card {
-min-height: 220px;
-}
-
-.action-icon,
-.essential-icon {
-font-size: 22px;
-}
-
-.deal-actions,
-.hotel-actions,
-.media-actions,
-.essential-actions,
-.registry-actions {
-display: flex;
-gap: 7px;
-flex-wrap: wrap;
-margin-top: auto;
-}
-
-.click-count {
-font-size: 26px;
-font-weight: 900;
-line-height: 1;
+.badge {
+align-self: flex-start;
+padding: 5px 9px;
+font-size: 10px;
+border-radius: 999px;
+border: 1px solid rgba(37,99,235,0.18);
+background: rgba(37,99,235,0.10);
 color: var(--primary);
-margin-top: 4px;
 }
 
-.registry-meta {
-display: grid;
-gap: 4px;
-font-size: 12px;
+.badge.success {
+border-color: rgba(21,128,61,0.18);
+background: rgba(21,128,61,0.10);
+color: var(--success);
+}
+
+.badge.purple {
+border-color: rgba(124,58,237,0.18);
+background: rgba(124,58,237,0.10);
+color: var(--purple);
+}
+
+.icon {
+font-size: 24px;
+}
+
+.card-title {
+font-weight: 800;
+font-size: 16px;
+line-height: 1.3;
+}
+
+.card-text {
 color: var(--muted);
-line-height: 1.45;
+font-size: 13px;
+line-height: 1.55;
+}
+
+.card-actions {
+margin-top: auto;
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
 }
 
 .video-card {
 cursor: pointer;
-transition: transform 0.15s ease, box-shadow 0.15s ease;
+transition: transform .15s ease, box-shadow .15s ease;
 }
 
 .video-card:hover {
@@ -434,14 +327,13 @@ transform: translateY(-2px);
 box-shadow: 0 10px 24px rgba(15,23,42,0.08);
 }
 
-.video-thumb-wrap,
-.fallback-thumb-wrap {
-position: relative;
+.video-thumb-wrap {
 width: 100%;
 aspect-ratio: 16 / 9;
-border-radius: 10px;
+border-radius: 12px;
 overflow: hidden;
 background: #e2e8f0;
+position: relative;
 border: 1px solid var(--border);
 }
 
@@ -453,23 +345,21 @@ display: block;
 background: #e2e8f0;
 }
 
-.play-badge {
+.play-overlay {
 position: absolute;
 inset: 0;
-display: flex;
-align-items: center;
-justify-content: center;
+display: grid;
+place-items: center;
 pointer-events: none;
 }
 
-.play-badge-circle {
+.play-pill {
 width: 58px;
 height: 40px;
 border-radius: 12px;
 background: rgba(220,38,38,0.92);
-display: flex;
-align-items: center;
-justify-content: center;
+display: grid;
+place-items: center;
 box-shadow: 0 10px 24px rgba(0,0,0,0.18);
 }
 
@@ -486,119 +376,27 @@ margin-left: 3px;
 margin-top: 8px;
 font-weight: 800;
 font-size: 14px;
-line-height: 1.3;
+line-height: 1.35;
+min-height: 56px;
 display: -webkit-box;
 -webkit-line-clamp: 3;
 -webkit-box-orient: vertical;
 overflow: hidden;
-min-height: 54px;
 }
 
-.video-channel {
-margin-top: 4px;
-font-size: 12px;
-color: var(--muted);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.video-actions {
-display: flex;
-gap: 7px;
-margin-top: 8px;
-flex-wrap: wrap;
-}
-
-.fallback-card {
-display: flex;
-flex-direction: column;
-gap: 8px;
-min-height: 228px;
-}
-
-.fallback-thumb-wrap {
-background:
-radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3), transparent 25%),
-linear-gradient(135deg, rgba(37,99,235,0.95), rgba(6,182,212,0.9), rgba(99,102,241,0.9));
-animation: gradientShift 8s ease-in-out infinite alternate;
-}
-
-.fallback-thumb-wrap.sunset {
-background:
-radial-gradient(circle at 25% 25%, rgba(255,255,255,0.25), transparent 20%),
-linear-gradient(135deg, #f97316, #fb7185, #8b5cf6);
-animation: gradientShift 9s ease-in-out infinite alternate;
-}
-
-.fallback-thumb-wrap.night {
-background:
-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 18%),
-linear-gradient(135deg, #0f172a, #1d4ed8, #06b6d4);
-animation: gradientShift 10s ease-in-out infinite alternate;
-}
-
-.floating-shape {
-position: absolute;
-border-radius: 999px;
-opacity: 0.8;
-filter: blur(1px);
-animation: floatY 5s ease-in-out infinite;
-}
-
-.shape-1 { width:110px;height:110px;background:rgba(255,255,255,0.18);top:12%;right:10%; }
-.shape-2 { width:72px;height:72px;background:rgba(255,255,255,0.14);bottom:16%;left:10%;animation-delay:1.2s; }
-.shape-3 { width:38px;height:38px;background:rgba(255,255,255,0.25);bottom:24%;right:24%;animation-delay:0.6s; }
-
-.route-line {
-position: absolute;
-left: 8%;
-right: 8%;
-bottom: 18%;
-height: 3px;
-border-radius: 999px;
-background: linear-gradient(90deg, rgba(255,255,255,0.0), rgba(255,255,255,0.8), rgba(255,255,255,0.0));
-animation: pulseLine 2.8s ease-in-out infinite;
-}
-
-.fallback-icon {
-position: absolute;
-top: 14px;
-left: 14px;
-font-size: 24px;
-color: white;
-text-shadow: 0 6px 18px rgba(0,0,0,0.18);
-}
-
-.fallback-caption {
-position: absolute;
-left: 14px;
-bottom: 14px;
-right: 14px;
-color: white;
-font-weight: 800;
-line-height: 1.22;
-text-shadow: 0 8px 24px rgba(0,0,0,0.22);
-font-size: 14px;
-}
-
-.hidden { display: none !important; }
-
-.empty-card { grid-column: 1 / -1; }
-
-.module-note {
-margin-top: 5px;
+.video-meta {
 color: var(--muted);
 font-size: 12px;
+line-height: 1.45;
 }
 
 .modal {
 position: fixed;
 inset: 0;
+background: rgba(15,23,42,0.72);
 display: none;
 align-items: center;
 justify-content: center;
-background: rgba(15,23,42,0.7);
 padding: 20px;
 z-index: 9999;
 }
@@ -610,16 +408,16 @@ width: min(920px, 100%);
 background: white;
 border-radius: 18px;
 border: 1px solid var(--border);
-box-shadow: 0 30px 80px rgba(0,0,0,0.25);
 overflow: hidden;
+box-shadow: 0 30px 80px rgba(0,0,0,0.25);
 }
 
 .modal-head {
+padding: 12px 14px;
 display: flex;
 justify-content: space-between;
 align-items: center;
-gap: 10px;
-padding: 12px 14px;
+gap: 12px;
 border-bottom: 1px solid var(--border);
 }
 
@@ -644,54 +442,32 @@ border-radius: 14px;
 background: #0f172a;
 }
 
-.modal-actions {
-display: flex;
-gap: 8px;
-flex-wrap: wrap;
-margin-top: 10px;
-}
+.hidden { display: none !important; }
 
-@keyframes gradientShift {
-0% { transform: scale(1) translate3d(0,0,0); }
-100% { transform: scale(1.04) translate3d(-4px,3px,0); }
-}
-
-@keyframes floatY {
-0%, 100% { transform: translateY(0px); }
-50% { transform: translateY(-10px); }
-}
-
-@keyframes pulseLine {
-0%, 100% { opacity: 0.45; transform: scaleX(0.96); }
-50% { opacity: 1; transform: scaleX(1); }
-}
-
-@media (max-width: 1180px) {
-.action-grid, .hotel-grid, .deal-grid, .essentials-grid, .registry-grid, .search-results-grid {
-grid-template-columns: repeat(2, minmax(0, 1fr));
-}
+@media (max-width: 1100px) {
+.stays-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 900px) {
-.video-grid, .fallback-grid {
-grid-template-columns: 1fr;
-}
+.media-grid { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 820px) {
-.action-grid, .hotel-grid, .deal-grid, .essentials-grid, .registry-grid, .video-grid, .fallback-grid, .search-results-grid {
-grid-template-columns: 1fr;
-}
-
-h1 { font-size: 33px; }
-.app { width: min(100vw - 14px, 1200px); }
+@media (max-width: 780px) {
+.app { width: min(100vw - 14px, var(--max)); }
 .search-box { grid-template-columns: 1fr; }
+.results-grid,
+.essentials-grid,
+.stays-grid,
+.media-grid {
+grid-template-columns: 1fr;
+}
+h1 { font-size: 34px; }
 }
 </style>
 </head>
 <body>
 <div class="app">
-<!-- TOPBAR -->
 <div class="topbar">
 <div class="logo">
 <div class="logo-mark" aria-hidden="true">
@@ -711,19 +487,20 @@ h1 { font-size: 33px; }
 </div>
 <div>SignalBoost AI</div>
 </div>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="chip">Hotels & Stays</button>
-<button class="chip">Travel Essentials</button>
-<button class="chip">Live Links</button>
+
+<div class="nav-chips">
+<button class="chip" onclick="scrollToSection('searchSection')">Search</button>
+<button class="chip" onclick="scrollToSection('essentialsSection')">Essentials</button>
+<button class="chip" onclick="scrollToSection('staysSection')">Stays</button>
+<button class="chip" onclick="scrollToSection('mediaSection')">Media</button>
 </div>
 </div>
 
-<!-- HERO -->
-<section class="hero">
+<section class="hero" id="searchSection">
 <h1>Find hotels and stays faster</h1>
-<p class="sub">Search real travel paths, useful booking options, and essential tools before the trip starts.</p>
+<p class="hero-sub">Search a destination and get a clean travel path: hotels first, rental alternatives second, and useful essentials before the trip starts.</p>
 
-<div class="search-wrap">
+<div class="search-shell">
 <div class="search-box">
 <input
 id="searchInput"
@@ -734,570 +511,156 @@ onkeydown="handleSearchKey(event)"
 <button class="btn primary" onclick="runSmartRouting()">Search</button>
 <button class="btn" onclick="clearSearchRouting()">Clear</button>
 </div>
-<div class="search-help">
-Search shows destination-aware hotel and stay choices for the place you type.
-</div>
+<div class="search-help">Search chooses the best booking path based on what the traveler types.</div>
 
-<div class="search-results-panel" id="searchResultsPanel">
-<div class="search-results-title" id="searchResultsTitle">Best booking choices</div>
-<div class="search-results-sub" id="searchResultsSub"></div>
-<div class="search-results-grid" id="searchResultsGrid"></div>
+<div class="results-panel" id="searchResultsPanel">
+<div class="results-title" id="searchResultsTitle">Best booking choices</div>
+<div class="results-sub" id="searchResultsSub"></div>
+<div class="results-grid" id="searchResultsGrid"></div>
 </div>
 </div>
 </section>
 
-<div class="layout">
-<!-- MONETIZATION REGISTRY -->
-<section class="module">
-<div class="module-header">
-<h2>Live Monetization Registry</h2>
-<span class="mode-badge">Documented public links</span>
-</div>
-<div class="registry-grid" id="registryGrid"></div>
-</section>
-
-<!-- STAY ACTIONS -->
-<section class="module">
-<div class="module-header">
-<h2>Stay Actions</h2>
-<span class="mode-badge">Main user path</span>
-</div>
-<div class="action-grid">
-<div class="card action-card">
-<div class="action-icon">🏨</div>
-<div class="strong">Search Hotels</div>
-<div class="status-note">Primary hotel path through Expedia.</div>
-<div class="deal-actions">
-<a class="tiny-btn primary"
-href="#"
-onclick="trackAffiliateClick(event, 'expedia_hotels_primary')">
-Open Expedia
-</a>
-</div>
-</div>
-
-<div class="card action-card">
-<div class="action-icon">🛏️</div>
-<div class="strong">Hotel Deals</div>
-<div class="status-note">Secondary hotel path through Hotels.com.</div>
-<div class="deal-actions">
-<a class="tiny-btn warn"
-href="#"
-onclick="trackAffiliateClick(event, 'hotels_secondary_primary')">
-Open Hotels.com
-</a>
-</div>
-</div>
-
-<div class="card action-card">
-<div class="action-icon">🏡</div>
-<div class="strong">Vacation Rentals</div>
-<div class="status-note">Alternative stay path for homes and longer-stay lodging via Vrbo.</div>
-<div class="deal-actions">
-<a class="tiny-btn dark"
-href="#"
-onclick="trackAffiliateClick(event, 'vrbo_rentals_primary')">
-Open Vrbo
-</a>
-</div>
-</div>
-
-<div class="card action-card">
-<div class="action-icon">🔎</div>
-<div class="strong">More Hotel Options</div>
-<div class="status-note">Additional hotel browsing path through Hotels.com.</div>
-<div class="deal-actions">
-<a class="tiny-btn success"
-href="#"
-onclick="trackAffiliateClick(event, 'hotels_more_options')">
-Open Hotels.com
-</a>
-</div>
-</div>
-</div>
-</section>
-
-<!-- TRAVEL ESSENTIALS -->
-<section class="module">
-<div class="module-header">
+<section class="section" id="essentialsSection">
+<div class="section-head">
 <h2>Travel Essentials</h2>
-<span class="mode-badge">Affiliate-ready</span>
+<div class="section-tag">Live monetized tools</div>
 </div>
+
 <div class="essentials-grid">
-<div class="card essential-card">
-<div class="essential-badge">Connectivity</div>
-<div class="essential-icon">📱</div>
-<div class="strong">Travel eSIM</div>
-<div class="status-note">Get mobile data ready before landing. Useful for maps, rides, messaging, and instant connection abroad.</div>
-<div class="essential-actions">
-<a class="tiny-btn purple"
-href="#"
-onclick="trackAffiliateClick(event, 'esim_birjoy_primary')">
-Check eSIM Plans
-</a>
+<div class="card">
+<div class="badge purple">Connectivity</div>
+<div class="icon">📱</div>
+<div class="card-title">Travel eSIM</div>
+<div class="card-text">Get mobile data before landing so maps, rides, and messaging work immediately when the trip begins.</div>
+<div class="card-actions">
+<a class="mini-btn purple" href="#" onclick="trackAffiliateClick(event, 'esim_primary')">Check eSIM Plans</a>
 </div>
 </div>
 
-<div class="card essential-card">
-<div class="essential-badge">Ground Transport</div>
-<div class="essential-icon">🚗</div>
-<div class="strong">Car Rental</div>
-<div class="status-note">Reserve a rental before arrival and reduce airport friction for road trips, local transport, and family travel.</div>
-<div class="essential-actions">
-<a class="tiny-btn dark"
-href="#"
-onclick="trackAffiliateClick(event, 'allycar_primary')">
-Compare Car Rental
-</a>
-</div>
-</div>
-
-<div class="card essential-card">
-<div class="essential-badge">Bundle</div>
-<div class="essential-icon">🧳</div>
-<div class="strong">Travel Setup Checklist</div>
-<div class="status-note">Best quick setup before the trip: confirm stay, mobile data, and transportation before departure.</div>
-<div class="essential-actions">
-<a class="tiny-btn primary" href="#travel-toolkit">Open Toolkit</a>
-</div>
-</div>
-
-<div class="card essential-card">
-<div class="essential-badge">Conversion Path</div>
-<div class="essential-icon">⚡</div>
-<div class="strong">Traveler Quick Actions</div>
-<div class="status-note">Use the fastest actions for users with clear travel intent and immediate purchase behavior.</div>
-<div class="essential-actions">
-<a class="tiny-btn success" href="#travel-toolkit">See Essentials</a>
+<div class="card">
+<div class="badge success">Ground Transport</div>
+<div class="icon">🚗</div>
+<div class="card-title">Car Rental</div>
+<div class="card-text">Reserve transport in advance for airport pickup, road trips, and easier movement once you arrive.</div>
+<div class="card-actions">
+<a class="mini-btn dark" href="#" onclick="trackAffiliateClick(event, 'car_primary')">Compare Car Rental</a>
 </div>
 </div>
 </div>
 </section>
 
-<!-- TOOLKIT -->
-<section class="module" id="travel-toolkit">
-<div class="module-header">
-<h2>USA Travel Toolkit</h2>
-<span class="mode-badge">Useful + monetized</span>
-</div>
-<div class="deal-grid">
-<div class="card deal-card">
-<div class="deal-badge">Before You Land</div>
-<div class="strong">Set up your eSIM first</div>
-<div class="status-note">Travelers often need data immediately after landing. This is the fastest way to stay connected without buying a physical SIM card.</div>
-<div class="deal-actions">
-<a class="tiny-btn purple"
-href="#"
-onclick="trackAffiliateClick(event, 'esim_birjoy_toolkit')">
-See eSIM Options
-</a>
-</div>
-</div>
-
-<div class="card deal-card">
-<div class="deal-badge">On Arrival</div>
-<div class="strong">Reserve your rental in advance</div>
-<div class="status-note">A pre-booked car reduces friction at the airport and helps travelers move quickly after arrival.</div>
-<div class="deal-actions">
-<a class="tiny-btn dark"
-href="#"
-onclick="trackAffiliateClick(event, 'allycar_toolkit')">
-Book a Car
-</a>
-</div>
-</div>
-
-<div class="card deal-card">
-<div class="deal-badge">Hotels</div>
-<div class="strong">Find your stay first</div>
-<div class="status-note">Use hotel and rental actions when the traveler has clear destination intent and lodging is the primary need.</div>
-<div class="deal-actions">
-<a class="tiny-btn primary"
-href="#"
-onclick="trackAffiliateClick(event, 'expedia_toolkit_hotels')">
-Search Hotels
-</a>
-</div>
-</div>
-
-<div class="card deal-card">
-<div class="deal-badge">User Flow</div>
-<div class="strong">Simple order for travelers</div>
-<div class="status-note">Stay, connectivity, and transport are the strongest immediate user needs and should remain the cleanest public conversion path.</div>
-<div class="deal-actions">
-<button class="tiny-btn" onclick="scrollToTopSmooth()">Back to Search</button>
-</div>
-</div>
-</div>
-</section>
-
-<!-- POPULAR STAY PICKS -->
-<section class="module">
-<div class="module-header">
+<section class="section" id="staysSection">
+<div class="section-head">
 <h2>Popular Stay Picks</h2>
-<span class="mode-badge">Hotels & Rentals</span>
+<div class="section-tag">Quick hotel and rental paths</div>
 </div>
-<div class="hotel-grid">
-<div class="card hotel-card">
-<div class="hotel-badge">Miami</div>
-<div class="strong">Beach hotels and short stays</div>
-<div class="status-note">Useful for resort-style booking intent.</div>
-<div class="hotel-actions">
-<a class="tiny-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_miami')">Expedia</a>
-<a class="tiny-btn" href="#" onclick="trackAffiliateClick(event, 'hotels_miami')">Hotels.com</a>
-<a class="tiny-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_miami')">Vrbo</a>
+
+<div class="stays-grid">
+<div class="card">
+<div class="badge">Miami</div>
+<div class="card-title">Beach hotels and short stays</div>
+<div class="card-text">Useful for resort-style trips and quick hotel browsing.</div>
+<div class="card-actions">
+<a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_primary')">Expedia</a>
+<a class="mini-btn warn" href="#" onclick="trackAffiliateClick(event, 'hotels_primary')">Hotels.com</a>
+<a class="mini-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_primary')">Vrbo</a>
 </div>
 </div>
 
-<div class="card hotel-card">
-<div class="hotel-badge">Orlando</div>
-<div class="strong">Family stays and larger properties</div>
-<div class="status-note">Useful for family travel and longer stays.</div>
-<div class="hotel-actions">
-<a class="tiny-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_orlando')">Expedia</a>
-<a class="tiny-btn" href="#" onclick="trackAffiliateClick(event, 'hotels_orlando')">Hotels.com</a>
-<a class="tiny-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_orlando')">Vrbo</a>
+<div class="card">
+<div class="badge">Orlando</div>
+<div class="card-title">Family stays and larger properties</div>
+<div class="card-text">Good for family travel, multi-room lodging, and vacation rentals.</div>
+<div class="card-actions">
+<a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_primary')">Expedia</a>
+<a class="mini-btn warn" href="#" onclick="trackAffiliateClick(event, 'hotels_primary')">Hotels.com</a>
+<a class="mini-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_primary')">Vrbo</a>
 </div>
 </div>
 
-<div class="card hotel-card">
-<div class="hotel-badge">Las Vegas</div>
-<div class="strong">Quick-book hotels and short city stays</div>
-<div class="status-note">Useful for short booking windows.</div>
-<div class="hotel-actions">
-<a class="tiny-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_vegas')">Expedia</a>
-<a class="tiny-btn" href="#" onclick="trackAffiliateClick(event, 'hotels_vegas')">Hotels.com</a>
-<a class="tiny-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_vegas')">Vrbo</a>
+<div class="card">
+<div class="badge">Las Vegas</div>
+<div class="card-title">Quick-book hotels and city stays</div>
+<div class="card-text">Useful when travelers want speed, convenience, and central stay options.</div>
+<div class="card-actions">
+<a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_primary')">Expedia</a>
+<a class="mini-btn warn" href="#" onclick="trackAffiliateClick(event, 'hotels_primary')">Hotels.com</a>
+<a class="mini-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_primary')">Vrbo</a>
 </div>
 </div>
 
-<div class="card hotel-card">
-<div class="hotel-badge">New York</div>
-<div class="strong">City hotels and urban stays</div>
-<div class="status-note">Useful for short stays and city-center demand.</div>
-<div class="hotel-actions">
-<a class="tiny-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_newyork')">Expedia</a>
-<a class="tiny-btn" href="#" onclick="trackAffiliateClick(event, 'hotels_newyork')">Hotels.com</a>
-<a class="tiny-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_newyork')">Vrbo</a>
+<div class="card">
+<div class="badge">New York</div>
+<div class="card-title">City hotels and urban stays</div>
+<div class="card-text">Useful for dense city-center demand and short hotel-focused trips.</div>
+<div class="card-actions">
+<a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_primary')">Expedia</a>
+<a class="mini-btn warn" href="#" onclick="trackAffiliateClick(event, 'hotels_primary')">Hotels.com</a>
+<a class="mini-btn dark" href="#" onclick="trackAffiliateClick(event, 'vrbo_primary')">Vrbo</a>
 </div>
 </div>
 </div>
 </section>
 
-<!-- MEDIA SECTION -->
-<section class="module" id="mediaSection">
-<div class="module-header">
+<section class="section" id="mediaSection">
+<div class="section-head">
 <h2>Featured Travel Moments</h2>
-<span class="mode-badge" id="mediaModeBadge">Adaptive media</span>
+<div class="section-tag" id="mediaStatusLabel">Adaptive media</div>
 </div>
 
-<div id="youtubeFeedWrap">
-<div class="module-note" id="youtubeStatusNote">Trying live travel video feed.</div>
-<div class="video-grid" id="youtubeFeed"></div>
-</div>
-
-<div id="fallbackMediaWrap" class="hidden">
-<div class="module-note">Live video is unavailable right now, so SignalBoost is showing built-in travel media instead.</div>
-<div class="fallback-grid" id="fallbackMediaGrid"></div>
-</div>
+<div class="media-grid" id="youtubeFeed"></div>
+<div id="mediaFallbackNote" class="search-help hidden">Live travel videos are unavailable right now, so built-in fallback media is shown instead.</div>
 </section>
 </div>
-</div>
 
-<!-- VIDEO MODAL -->
 <div class="modal" id="videoModal" onclick="closeVideoModal(event)">
 <div class="modal-panel" onclick="event.stopPropagation()">
 <div class="modal-head">
 <div>
-<div class="strong" id="modalTitle">Video</div>
-<div class="label" id="modalMeta">YouTube</div>
+<div class="card-title" id="modalTitle">Video</div>
+<div class="video-meta" id="modalMeta">YouTube</div>
 </div>
 <button class="modal-close" onclick="closeVideoModal()">&times;</button>
 </div>
 <div class="modal-body">
 <iframe id="modalPlayer" class="modal-player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-<div class="modal-actions">
-<a id="modalOpenYoutube" class="tiny-btn primary" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
-</div>
 </div>
 </div>
 </div>
 
 <script>
 /*
-JAVASCRIPT DOCUMENTATION
-
-CORE MODULES
-1. MONETIZATION_REGISTRY
-- single source of truth for live affiliate links
-- every public affiliate button uses a registry key
-
-2. CLICK TRACKING
-- stores click counts in localStorage
-- updates visible registry cards
-- logs each click in console for debugging
-
-3. SEARCH ROUTING
-- hotel/rental destination routing
-- public-safe paths only
-
-4. MEDIA
-- live YouTube if available
-- fallback media if not
+CLEAN BUILD NOTES
+- Simplified layout
+- Removed redundant public buttons
+- Search restored with isolated logic
+- Affiliate links centralized here
+- Public page only shows working sections
 */
 
-const MONETIZATION_REGISTRY = {
-expedia_hotels_primary: {
-feature: 'Search Hotels',
-partner: 'Expedia',
-type: 'Hotels',
-url: 'https://expedia.com/affiliate/6N7hRHZ',
-status: 'Live',
-tested: '2026-03-31'
-},
-hotels_secondary_primary: {
-feature: 'Hotel Deals',
-partner: 'Hotels.com',
-type: 'Hotels',
-url: 'https://www.hotels.com/affiliate/5BoP8Nf',
-status: 'Live',
-tested: '2026-03-31'
-},
-vrbo_rentals_primary: {
-feature: 'Vacation Rentals',
-partner: 'Vrbo',
-type: 'Rentals',
-url: 'https://vrbo.com/affiliate/M2nsa7i',
-status: 'Live',
-tested: '2026-03-31'
-},
-hotels_more_options: {
-feature: 'More Hotel Options',
-partner: 'Hotels.com',
-type: 'Hotels',
-url: 'https://www.hotels.com/affiliate/5BoP8Nf',
-status: 'Live',
-tested: '2026-03-31'
-},
-
-esim_birjoy_primary: {
-feature: 'Travel eSIM',
-partner: 'The BitJoy eSIM (US)',
-type: 'Connectivity',
-url: 'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806&ued=https%3A%2F%2Fwww.birday.com',
-status: 'Live',
-tested: '2026-03-31'
-},
-allycar_primary: {
-feature: 'Car Rental',
-partner: 'Allycar',
-type: 'Ground Transport',
-url: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806&ued=https%3A%2F%2Fallycar.com',
-status: 'Live',
-tested: '2026-03-31'
-},
-esim_birjoy_toolkit: {
-feature: 'Toolkit eSIM',
-partner: 'The BitJoy eSIM (US)',
-type: 'Connectivity',
-url: 'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806&ued=https%3A%2F%2Fwww.birday.com',
-status: 'Live',
-tested: '2026-03-31'
-},
-allycar_toolkit: {
-feature: 'Toolkit Car Rental',
-partner: 'Allycar',
-type: 'Ground Transport',
-url: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806&ued=https%3A%2F%2Fallycar.com',
-status: 'Live',
-tested: '2026-03-31'
-},
-expedia_toolkit_hotels: {
-feature: 'Toolkit Hotels',
-partner: 'Expedia',
-type: 'Hotels',
-url: 'https://expedia.com/affiliate/6N7hRHZ',
-status: 'Live',
-tested: '2026-03-31'
-},
-
-expedia_miami: {
-feature: 'Miami Expedia',
-partner: 'Expedia',
-type: 'Hotels',
-url: 'https://expedia.com/affiliate/6N7hRHZ',
-status: 'Live',
-tested: '2026-03-31'
-},
-hotels_miami: {
-feature: 'Miami Hotels.com',
-partner: 'Hotels.com',
-type: 'Hotels',
-url: 'https://www.hotels.com/affiliate/5BoP8Nf',
-status: 'Live',
-tested: '2026-03-31'
-},
-vrbo_miami: {
-feature: 'Miami Vrbo',
-partner: 'Vrbo',
-type: 'Rentals',
-url: 'https://vrbo.com/affiliate/M2nsa7i',
-status: 'Live',
-tested: '2026-03-31'
-},
-expedia_orlando: {
-feature: 'Orlando Expedia',
-partner: 'Expedia',
-type: 'Hotels',
-url: 'https://expedia.com/affiliate/6N7hRHZ',
-status: 'Live',
-tested: '2026-03-31'
-},
-hotels_orlando: {
-feature: 'Orlando Hotels.com',
-partner: 'Hotels.com',
-type: 'Hotels',
-url: 'https://www.hotels.com/affiliate/5BoP8Nf',
-status: 'Live',
-tested: '2026-03-31'
-},
-vrbo_orlando: {
-feature: 'Orlando Vrbo',
-partner: 'Vrbo',
-type: 'Rentals',
-url: 'https://vrbo.com/affiliate/M2nsa7i',
-status: 'Live',
-tested: '2026-03-31'
-},
-expedia_vegas: {
-feature: 'Vegas Expedia',
-partner: 'Expedia',
-type: 'Hotels',
-url: 'https://expedia.com/affiliate/6N7hRHZ',
-status: 'Live',
-tested: '2026-03-31'
-},
-hotels_vegas: {
-feature: 'Vegas Hotels.com',
-partner: 'Hotels.com',
-type: 'Hotels',
-url: 'https://www.hotels.com/affiliate/5BoP8Nf',
-status: 'Live',
-tested: '2026-03-31'
-},
-vrbo_vegas: {
-feature: 'Vegas Vrbo',
-partner: 'Vrbo',
-type: 'Rentals',
-url: 'https://vrbo.com/affiliate/M2nsa7i',
-status: 'Live',
-tested: '2026-03-31'
-},
-expedia_newyork: {
-feature: 'New York Expedia',
-partner: 'Expedia',
-type: 'Hotels',
-url: 'https://expedia.com/affiliate/6N7hRHZ',
-status: 'Live',
-tested: '2026-03-31'
-},
-hotels_newyork: {
-feature: 'New York Hotels.com',
-partner: 'Hotels.com',
-type: 'Hotels',
-url: 'https://www.hotels.com/affiliate/5BoP8Nf',
-status: 'Live',
-tested: '2026-03-31'
-},
-vrbo_newyork: {
-feature: 'New York Vrbo',
-partner: 'Vrbo',
-type: 'Rentals',
-url: 'https://vrbo.com/affiliate/M2nsa7i',
-status: 'Live',
-tested: '2026-03-31'
-}
+const AFFILIATE_LINKS = {
+expedia_primary: 'https://expedia.com/affiliate/6N7hRHZ',
+hotels_primary: 'https://www.hotels.com/affiliate/5BoP8Nf',
+vrbo_primary: 'https://vrbo.com/affiliate/M2nsa7i',
+esim_primary: 'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806&ued=https%3A%2F%2Fwww.birday.com',
+car_primary: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806&ued=https%3A%2F%2Fallycar.com'
 };
-
-const CLICK_STORAGE_KEY = 'signalboost_click_counts_v1';
-
-function getClickCounts() {
-try {
-return JSON.parse(localStorage.getItem(CLICK_STORAGE_KEY) || '{}');
-} catch {
-return {};
-}
-}
-
-function saveClickCounts(counts) {
-localStorage.setItem(CLICK_STORAGE_KEY, JSON.stringify(counts));
-}
-
-function incrementClickCount(key) {
-const counts = getClickCounts();
-counts[key] = (counts[key] || 0) + 1;
-saveClickCounts(counts);
-return counts[key];
-}
-
-function getClickCount(key) {
-const counts = getClickCounts();
-return counts[key] || 0;
-}
 
 function trackAffiliateClick(event, key) {
 event.preventDefault();
-
-const item = MONETIZATION_REGISTRY[key];
-if (!item || !item.url) {
-console.error('Missing monetization registry entry for key:', key);
-alert('This link is not configured correctly yet.');
+const url = AFFILIATE_LINKS[key];
+if (!url) {
+console.error('Missing affiliate link:', key);
+alert('This link is not configured yet.');
 return;
 }
-
-const newCount = incrementClickCount(key);
-console.log('[Affiliate Click]', {
-key,
-feature: item.feature,
-partner: item.partner,
-clicks: newCount,
-url: item.url,
-clickedAt: new Date().toISOString()
-});
-
-updateRegistryCounts();
-window.open(item.url, '_blank', 'noopener,noreferrer');
+window.open(url, '_blank', 'noopener,noreferrer');
 }
 
-function renderRegistry() {
-const grid = document.getElementById('registryGrid');
-if (!grid) return;
-
-const entries = Object.entries(MONETIZATION_REGISTRY).slice(0, 8);
-
-grid.innerHTML = entries.map(([key, item]) => `
-<div class="card registry-card">
-<div class="registry-badge">${escapeHtml(item.status)}</div>
-<div class="strong">${escapeHtml(item.feature)}</div>
-<div class="click-count" id="clickCount_${escapeHtml(key)}">0</div>
-<div class="label">tracked clicks</div>
-<div class="registry-meta">
-<div><strong>Partner:</strong> ${escapeHtml(item.partner)}</div>
-<div><strong>Type:</strong> ${escapeHtml(item.type)}</div>
-<div><strong>Tested:</strong> ${escapeHtml(item.tested)}</div>
-</div>
-<div class="registry-actions">
-<button class="tiny-btn primary" onclick="trackAffiliateClick(event, '${escapeHtml(key)}')">Open Link</button>
-</div>
-</div>
-`).join('');
-}
-
-function updateRegistryCounts() {
-Object.keys(MONETIZATION_REGISTRY).forEach(key => {
-const el = document.getElementById(`clickCount_${key}`);
-if (el) el.textContent = String(getClickCount(key));
-});
+function scrollToSection(id) {
+const el = document.getElementById(id);
+if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function escapeHtml(value) {
@@ -1323,9 +686,14 @@ return `https://www.vrbo.com/search?destination=${encodeURIComponent(query)}`;
 
 function detectSearchIntent(query) {
 const q = query.toLowerCase();
-
-const rentalSignals = ['rental','rentals','home','house','villa','cabin','apartment','condo','family','group','vacation rental'];
-const hotelSignals = ['hotel','hotels','stay','stays','room','rooms','motel','resort','lodging'];
+const rentalSignals = [
+'rental', 'rentals', 'home', 'house', 'villa', 'cabin',
+'apartment', 'condo', 'family', 'group', 'vacation rental'
+];
+const hotelSignals = [
+'hotel', 'hotels', 'stay', 'stays', 'room', 'rooms',
+'motel', 'resort', 'lodging'
+];
 
 const hasRental = rentalSignals.some(word => q.includes(word));
 const hasHotel = hotelSignals.some(word => q.includes(word));
@@ -1372,7 +740,7 @@ buttonText: 'Search Hotels.com'
 }
 
 return {
-subtitle: `For “${query}”, this looks more like a hotel or standard stay search, so Expedia is shown first.`,
+subtitle: `For “${query}”, this looks more like a hotel or stay search, so Expedia is shown first.`,
 cards: [
 {
 rank: 'Best match',
@@ -1403,18 +771,22 @@ buttonText: 'Search Vrbo'
 }
 
 function runSmartRouting() {
-const input = document.getElementById("searchInput");
-const query = input.value.trim();
+const input = document.getElementById('searchInput');
+const panel = document.getElementById('searchResultsPanel');
+const title = document.getElementById('searchResultsTitle');
+const sub = document.getElementById('searchResultsSub');
+const grid = document.getElementById('searchResultsGrid');
 
-if (!query) {
-alert("Please enter a destination.");
+if (!input || !panel || !title || !sub || !grid) {
+console.error('Search UI elements not found.');
 return;
 }
 
-const panel = document.getElementById("searchResultsPanel");
-const title = document.getElementById("searchResultsTitle");
-const sub = document.getElementById("searchResultsSub");
-const grid = document.getElementById("searchResultsGrid");
+const query = input.value.trim();
+if (!query) {
+alert('Please enter a destination.');
+return;
+}
 
 const result = getSearchChoices(query);
 
@@ -1422,34 +794,38 @@ title.textContent = `Best booking choices for ${query}`;
 sub.textContent = result.subtitle;
 
 grid.innerHTML = result.cards.map(card => `
-<div class="search-result-card">
-<div class="result-rank">${escapeHtml(card.rank)}</div>
-<div class="strong">${escapeHtml(card.title)}</div>
-<div class="status-note">${escapeHtml(card.note)}</div>
-<div class="deal-actions">
-<a class="tiny-btn ${escapeHtml(card.buttonClass)}" href="${escapeHtml(card.url)}" target="_blank" rel="noopener noreferrer">
+<div class="card">
+<div class="badge success">${escapeHtml(card.rank)}</div>
+<div class="card-title">${escapeHtml(card.title)}</div>
+<div class="card-text">${escapeHtml(card.note)}</div>
+<div class="card-actions">
+<a class="mini-btn ${escapeHtml(card.buttonClass)}"
+href="${escapeHtml(card.url)}"
+target="_blank"
+rel="noopener noreferrer">
 ${escapeHtml(card.buttonText)}
 </a>
 </div>
 </div>
-`).join("");
+`).join('');
 
-panel.classList.add("active");
+panel.classList.add('active');
 }
 
 function handleSearchKey(event) {
-if (event.key === "Enter") runSmartRouting();
+if (event.key === 'Enter') runSmartRouting();
 }
 
 function clearSearchRouting() {
-document.getElementById("searchInput").value = "";
-document.getElementById("searchResultsGrid").innerHTML = "";
-document.getElementById("searchResultsSub").textContent = "";
-document.getElementById("searchResultsPanel").classList.remove("active");
-}
+const input = document.getElementById('searchInput');
+const panel = document.getElementById('searchResultsPanel');
+const sub = document.getElementById('searchResultsSub');
+const grid = document.getElementById('searchResultsGrid');
 
-function scrollToTopSmooth() {
-window.scrollTo({ top: 0, behavior: 'smooth' });
+if (input) input.value = '';
+if (sub) sub.textContent = '';
+if (grid) grid.innerHTML = '';
+if (panel) panel.classList.remove('active');
 }
 
 function formatCompactNumber(value) {
@@ -1479,9 +855,9 @@ channel: item.channel || 'YouTube',
 views: item.views ? (typeof item.views === 'string' ? item.views : `${formatCompactNumber(Number(item.views || 0))} views`) : '',
 time: item.time || hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString()),
 thumbnail,
-embeddable: item.embeddable !== false,
+watchUrl,
 embedPlayerUrl,
-watchUrl
+embeddable: item.embeddable !== false
 };
 }
 
@@ -1490,11 +866,9 @@ const modal = document.getElementById('videoModal');
 const player = document.getElementById('modalPlayer');
 const title = document.getElementById('modalTitle');
 const meta = document.getElementById('modalMeta');
-const openYoutube = document.getElementById('modalOpenYoutube');
 
 title.textContent = video.title || 'Video';
 meta.textContent = `${video.channel || 'YouTube'}${video.time ? ` • ${video.time}` : ''}`;
-openYoutube.href = video.watchUrl || '#';
 
 if (video.embeddable !== false && video.embedPlayerUrl) {
 player.src = video.embedPlayerUrl;
@@ -1507,21 +881,21 @@ player.style.display = 'none';
 modal.classList.add('active');
 }
 
-function closeVideoModal(evt) {
-if (evt && evt.target && evt.target.id !== 'videoModal') return;
+function closeVideoModal(event) {
+if (event && event.target && event.target.id !== 'videoModal') return;
 const modal = document.getElementById('videoModal');
 const player = document.getElementById('modalPlayer');
 player.removeAttribute('src');
 modal.classList.remove('active');
 }
 
-function openVideoFromDataset(element) {
+function openVideoFromDataset(el) {
 try {
-const raw = element.getAttribute('data-video') || '';
+const raw = el.getAttribute('data-video') || '';
 const video = JSON.parse(decodeURIComponent(raw));
 openVideoModal(video);
 } catch (error) {
-console.error('openVideoFromDataset failed:', error);
+console.error('Failed to open video:', error);
 }
 }
 
@@ -1531,18 +905,18 @@ if (!container) return;
 
 if (!videos.length) {
 container.innerHTML = `
-<div class="card empty-card">
-<div class="strong">${emptyMessage}</div>
-<div class="status-note">Please try again shortly.</div>
+<div class="card">
+<div class="card-title">${emptyMessage}</div>
+<div class="card-text">Please try again shortly.</div>
 </div>
 `;
 return;
 }
 
 container.innerHTML = videos.map(video => {
-const safeData = encodeURIComponent(JSON.stringify(video));
+const data = encodeURIComponent(JSON.stringify(video));
 return `
-<div class="card video-card" onclick="openVideoFromDataset(this)" data-video="${safeData}">
+<div class="card video-card" onclick="openVideoFromDataset(this)" data-video="${data}">
 <div class="video-thumb-wrap">
 <img
 class="video-thumb"
@@ -1552,103 +926,73 @@ loading="lazy"
 referrerpolicy="no-referrer"
 onerror="this.src='https://placehold.co/640x360/e2e8f0/64748b?text=Video';"
 />
-<div class="play-badge">
-<div class="play-badge-circle"><div class="play-triangle"></div></div>
+<div class="play-overlay">
+<div class="play-pill"><div class="play-triangle"></div></div>
 </div>
 </div>
 <div class="video-title">${escapeHtml(video.title || 'YouTube video')}</div>
-<div class="video-channel">${escapeHtml(video.channel || 'YouTube')}</div>
-<div class="label" style="margin-top:5px">
-YouTube${video.views ? ` • ${escapeHtml(video.views)}` : ''}${video.time ? ` • ${escapeHtml(video.time)}` : ''}
-</div>
-<div class="video-actions">
-<button class="tiny-btn primary" onclick="event.stopPropagation(); openVideoFromDataset(this.closest('.video-card'))">Play here</button>
-<a class="tiny-btn" href="${escapeHtml(video.watchUrl || '#')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">YouTube</a>
-</div>
+<div class="video-meta">${escapeHtml(video.channel || 'YouTube')}${video.views ? ` • ${escapeHtml(video.views)}` : ''}${video.time ? ` • ${escapeHtml(video.time)}` : ''}</div>
 </div>
 `;
 }).join('');
 }
 
 function renderFallbackMedia() {
-const wrap = document.getElementById('fallbackMediaWrap');
-const grid = document.getElementById('fallbackMediaGrid');
-const youtubeWrap = document.getElementById('youtubeFeedWrap');
-const mediaBadge = document.getElementById('mediaModeBadge');
+const container = document.getElementById('youtubeFeed');
+const note = document.getElementById('mediaFallbackNote');
+const status = document.getElementById('mediaStatusLabel');
+if (!container) return;
+
+note.classList.remove('hidden');
+status.textContent = 'Fallback media';
 
 const cards = [
 {
-badge: 'Built-in motion',
 title: 'Beach getaway inspiration',
-text: 'Keep the page lively even when live video is unavailable.',
-icon: '🌴',
-className: '',
-cta1: { label: 'Browse Expedia', key: 'expedia_hotels_primary' },
-cta2: { label: 'Hotels.com', key: 'hotels_secondary_primary' },
-caption: 'Sunny stays and beach energy'
+text: 'Sunny stays, fast booking paths, and strong travel intent.',
+cta1: 'expedia_primary',
+cta2: 'hotels_primary'
 },
 {
-badge: 'Built-in motion',
 title: 'Family vacation ideas',
-text: 'Show movement and travel discovery without depending on a live API.',
-icon: '🎡',
-className: 'sunset',
-cta1: { label: 'View Hotels', key: 'hotels_secondary_primary' },
-cta2: { label: 'Try Vrbo', key: 'vrbo_rentals_primary' },
-caption: 'Family-ready stays and larger lodging'
+text: 'Useful for larger stays, vacation rentals, and flexible lodging.',
+cta1: 'hotels_primary',
+cta2: 'vrbo_primary'
 },
 {
-badge: 'Built-in motion',
-title: 'City trips and fast stays',
-text: 'Designed to keep users browsing and moving toward monetized actions.',
-icon: '🌃',
-className: 'night',
-cta1: { label: 'Open Expedia', key: 'expedia_hotels_primary' },
-cta2: { label: 'Open Vrbo', key: 'vrbo_rentals_primary' },
-caption: 'Fast city breaks and short-stay travel'
+title: 'City trips and short stays',
+text: 'Designed for quick hotel selection and fast travel planning.',
+cta1: 'expedia_primary',
+cta2: 'vrbo_primary'
 }
 ];
 
-grid.innerHTML = cards.map((card, index) => `
-<div class="card fallback-card">
-<div class="media-badge">${escapeHtml(card.badge)}</div>
-<div class="fallback-thumb-wrap ${escapeHtml(card.className)}">
-<div class="fallback-icon">${escapeHtml(card.icon)}</div>
-<div class="floating-shape shape-1"></div>
-<div class="floating-shape shape-2"></div>
-<div class="floating-shape shape-3"></div>
-<div class="route-line"></div>
-<div class="fallback-caption">${escapeHtml(card.caption)}</div>
-</div>
-<div class="strong">${escapeHtml(card.title)}</div>
-<div class="status-note">${escapeHtml(card.text)}</div>
-<div class="media-actions">
-<a class="tiny-btn primary" href="#" onclick="trackAffiliateClick(event, '${card.cta1.key}')">${escapeHtml(card.cta1.label)}</a>
-<a class="tiny-btn dark" href="#" onclick="trackAffiliateClick(event, '${card.cta2.key}')">${escapeHtml(card.cta2.label)}</a>
+container.innerHTML = cards.map(card => `
+<div class="card">
+<div class="badge">Travel</div>
+<div class="card-title">${escapeHtml(card.title)}</div>
+<div class="card-text">${escapeHtml(card.text)}</div>
+<div class="card-actions">
+<a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, '${card.cta1}')">Open option</a>
+<a class="mini-btn dark" href="#" onclick="trackAffiliateClick(event, '${card.cta2}')">Alternative</a>
 </div>
 </div>
 `).join('');
-
-youtubeWrap.classList.add('hidden');
-wrap.classList.remove('hidden');
-mediaBadge.textContent = 'Fallback media';
-}
-
-function showLiveMediaMode() {
-document.getElementById('youtubeFeedWrap').classList.remove('hidden');
-document.getElementById('fallbackMediaWrap').classList.add('hidden');
-document.getElementById('mediaModeBadge').textContent = 'Live travel media';
 }
 
 async function fetchJson(url) {
-const res = await fetch(url);
-const text = await res.text();
-
+const response = await fetch(url);
+const text = await response.text();
 let data;
-try { data = JSON.parse(text); } catch { data = null; }
 
-if (!res.ok) {
-const message = data?.error?.message || data?.message || `Request failed with HTTP ${res.status}`;
+try {
+data = JSON.parse(text);
+} catch {
+data = null;
+}
+
+if (!response.ok) {
+const message = data?.error?.message || data?.message || `Request failed with HTTP ${response.status}`;
 throw new Error(message);
 }
 
@@ -1659,43 +1003,25 @@ throw new Error(data.error.message || 'API returned an error object');
 return data;
 }
 
-async function renderYouTubeFeed() {
-const container = document.getElementById('youtubeFeed');
-const statusNote = document.getElementById('youtubeStatusNote');
-if (!container) return [];
-
-container.innerHTML = `<div class="card empty-card"><div class="strong">Loading live travel videos...</div><div class="status-note">Trying the current media feed now.</div></div>`;
-
+async function initMedia() {
 try {
 const data = await fetchJson('/api/youtube/trending?region=US');
 const items = Array.isArray(data.items) ? data.items : [];
 const videos = items.slice(0, 6).map(buildVideoObject).filter(v => v && v.watchUrl);
 
-if (!videos.length) throw new Error('No live videos returned.');
-
-statusNote.textContent = 'Live travel video feed is active.';
-renderVideoCards('youtubeFeed', videos, 'Popular videos unavailable');
-return videos;
-} catch (error) {
-console.error('renderYouTubeFeed failed:', error);
-statusNote.textContent = 'Live video is unavailable right now.';
-return [];
-}
-}
-
-async function initApp() {
-renderRegistry();
-updateRegistryCounts();
-
-const videos = await renderYouTubeFeed();
 if (!videos.length) {
 renderFallbackMedia();
-} else {
-showLiveMediaMode();
+return;
+}
+
+renderVideoCards('youtubeFeed', videos, 'Popular videos unavailable');
+} catch (error) {
+console.error('Live media unavailable:', error);
+renderFallbackMedia();
 }
 }
 
-initApp();
+initMedia();
 </script>
 </body>
 </html>
