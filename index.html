@@ -49,7 +49,8 @@
 
     .topbar,
     .hero,
-    .module {
+    .module,
+    .search-results-panel {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -176,7 +177,7 @@
 
     .search-wrap {
       margin-top: 16px;
-      max-width: 920px;
+      max-width: 980px;
     }
 
     .search-box {
@@ -205,6 +206,56 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .search-results-panel {
+      margin-top: 12px;
+      padding: 14px;
+      display: none;
+    }
+
+    .search-results-panel.active {
+      display: block;
+    }
+
+    .search-results-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .search-results-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .search-results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .search-result-card {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 185px;
+    }
+
+    .result-rank {
+      align-self: flex-start;
+      font-size: 10px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(21, 128, 61, 0.10);
+      color: var(--success);
+      border: 1px solid rgba(21, 128, 61, 0.18);
     }
 
     .layout {
@@ -577,7 +628,8 @@
     @media (max-width: 1180px) {
       .action-grid,
       .hotel-grid,
-      .deal-grid {
+      .deal-grid,
+      .search-results-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
@@ -594,7 +646,8 @@
       .hotel-grid,
       .deal-grid,
       .video-grid,
-      .fallback-grid {
+      .fallback-grid,
+      .search-results-grid {
         grid-template-columns: 1fr;
       }
 
@@ -640,29 +693,35 @@
 
     <section class="hero">
       <h1>Find hotels and stays faster</h1>
-      <p class="sub">Search real hotel deals and go directly to trusted booking partners.</p>
+      <p class="sub">Search real hotel deals and choose the booking path that fits the trip best.</p>
 
       <!--
         CHANGE LOG
-        - Restored homepage sections that disappeared in the minimal debug build
-        - Kept the working search fix
-        - Search now routes to Expedia using the typed destination
-        - Clear button resets the search box
-        - Enter key also triggers search
+        1. Search no longer sends users directly to Expedia only.
+        2. Search now opens a real choice panel with Expedia, Hotels.com, and Vrbo.
+        3. Clear button now clears the input and hides the search results panel.
+        4. Enter key still works.
+        5. Rest of homepage preserved.
       -->
       <div class="search-wrap">
         <div class="search-box">
           <input
             id="searchInput"
             type="text"
-            placeholder="Try: Paris, New York, Tokyo"
+            placeholder="Try: Paris, New York, Tokyo, family rental in Orlando"
             onkeydown="handleSearchKey(event)"
           />
           <button class="btn primary" onclick="runSmartRouting()">Search</button>
           <button class="btn" onclick="clearSearchRouting()">Clear</button>
         </div>
         <div class="search-help">
-          Search currently opens Expedia hotel results for the destination you type.
+          Search shows booking choices for the destination you type.
+        </div>
+
+        <div class="search-results-panel" id="searchResultsPanel">
+          <div class="search-results-title" id="searchResultsTitle">Best booking choices</div>
+          <div class="search-results-sub" id="searchResultsSub"></div>
+          <div class="search-results-grid" id="searchResultsGrid"></div>
         </div>
       </div>
     </section>
@@ -848,45 +907,20 @@
   <script>
     /*
       CHANGE LOG
-      1. Restored the fuller homepage layout after the minimal debug version removed it.
-      2. Kept the working search fix:
-         - Search button works
-         - Enter key works
-         - Clear button works
-      3. Search now redirects the typed destination to Expedia hotel search.
-      4. Kept media section with YouTube attempt + fallback media.
-      5. Did not reintroduce unfinished public features.
+      vNext
+      - Search now shows a real partner choice panel instead of forcing one redirect.
+      - Preserved the restored homepage.
+      - Clear button resets both input and search results.
+      - Added simple search intent handling:
+        * hotel/general -> Expedia first, Hotels.com second, Vrbo third
+        * rental/family/home -> Vrbo first, Expedia second, Hotels.com third
     */
 
     const AFFILIATE_LINKS = {
-      expedia: 'https://expedia.com/affiliate/6N7hRHZ',
-      hotelscom: 'https://www.hotels.com/affiliate/5BoP8Nf',
-      vrbo: 'https://vrbo.com/affiliate/M2nsa7i'
+      expediaAffiliate: 'https://expedia.com/affiliate/6N7hRHZ',
+      hotelsAffiliate: 'https://www.hotels.com/affiliate/5BoP8Nf',
+      vrboAffiliate: 'https://vrbo.com/affiliate/M2nsa7i'
     };
-
-    function runSmartRouting() {
-      const input = document.getElementById("searchInput");
-      const query = input.value.trim();
-
-      if (!query) {
-        alert("Please enter a destination.");
-        return;
-      }
-
-      const encoded = encodeURIComponent(query);
-      const url = `https://www.expedia.com/Hotel-Search?destination=${encoded}`;
-      window.open(url, "_blank");
-    }
-
-    function handleSearchKey(event) {
-      if (event.key === "Enter") {
-        runSmartRouting();
-      }
-    }
-
-    function clearSearchRouting() {
-      document.getElementById("searchInput").value = "";
-    }
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -930,6 +964,154 @@
         embedPlayerUrl,
         watchUrl
       };
+    }
+
+    function buildExpediaSearchUrl(query) {
+      return `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(query)}`;
+    }
+
+    function buildHotelsSearchUrl(query) {
+      return `https://www.hotels.com/Hotel-Search?destination=${encodeURIComponent(query)}`;
+    }
+
+    function buildVrboSearchUrl(query) {
+      return `https://www.vrbo.com/search?destination=${encodeURIComponent(query)}`;
+    }
+
+    function detectSearchIntent(query) {
+      const q = query.toLowerCase();
+
+      const rentalSignals = [
+        'rental', 'rentals', 'home', 'house', 'villa', 'cabin',
+        'apartment', 'condo', 'family', 'group', 'vacation rental'
+      ];
+
+      const hotelSignals = [
+        'hotel', 'hotels', 'stay', 'stays', 'room', 'rooms',
+        'motel', 'resort', 'lodging'
+      ];
+
+      const hasRental = rentalSignals.some(word => q.includes(word));
+      const hasHotel = hotelSignals.some(word => q.includes(word));
+
+      if (hasRental && !hasHotel) return 'rental';
+      if (hasHotel && !hasRental) return 'hotel';
+      if (hasRental && hasHotel) return 'mixed';
+      return 'general';
+    }
+
+    function getSearchChoices(query) {
+      const intent = detectSearchIntent(query);
+
+      if (intent === 'rental') {
+        return {
+          subtitle: `For “${query}”, this looks more like a rental or larger-stay request, so Vrbo is shown first.`,
+          cards: [
+            {
+              rank: 'Best match',
+              title: 'Vrbo',
+              note: 'Best for homes, family trips, and larger-stay options.',
+              url: buildVrboSearchUrl(query),
+              buttonClass: 'dark',
+              buttonText: 'Open Vrbo'
+            },
+            {
+              rank: 'Also useful',
+              title: 'Expedia',
+              note: 'Good secondary option for standard hotel results.',
+              url: buildExpediaSearchUrl(query),
+              buttonClass: 'primary',
+              buttonText: 'Open Expedia'
+            },
+            {
+              rank: 'Also useful',
+              title: 'Hotels.com',
+              note: 'Useful as a hotel-focused backup option.',
+              url: buildHotelsSearchUrl(query),
+              buttonClass: 'warn',
+              buttonText: 'Open Hotels.com'
+            }
+          ]
+        };
+      }
+
+      return {
+        subtitle: `For “${query}”, this looks more like a hotel or standard stay search, so Expedia is shown first.`,
+        cards: [
+          {
+            rank: 'Best match',
+            title: 'Expedia',
+            note: 'Strong first option for hotel and city-stay searches.',
+            url: buildExpediaSearchUrl(query),
+            buttonClass: 'primary',
+            buttonText: 'Open Expedia'
+          },
+          {
+            rank: 'Also useful',
+            title: 'Hotels.com',
+            note: 'Good second option for hotel browsing and additional choices.',
+            url: buildHotelsSearchUrl(query),
+            buttonClass: 'warn',
+            buttonText: 'Open Hotels.com'
+          },
+          {
+            rank: 'Alternative stay type',
+            title: 'Vrbo',
+            note: 'Useful if the traveler prefers rentals or larger properties.',
+            url: buildVrboSearchUrl(query),
+            buttonClass: 'dark',
+            buttonText: 'Open Vrbo'
+          }
+        ]
+      };
+    }
+
+    function runSmartRouting() {
+      const input = document.getElementById("searchInput");
+      const query = input.value.trim();
+
+      if (!query) {
+        alert("Please enter a destination.");
+        return;
+      }
+
+      const panel = document.getElementById("searchResultsPanel");
+      const title = document.getElementById("searchResultsTitle");
+      const sub = document.getElementById("searchResultsSub");
+      const grid = document.getElementById("searchResultsGrid");
+
+      const result = getSearchChoices(query);
+
+      title.textContent = `Best booking choices for ${query}`;
+      sub.textContent = result.subtitle;
+
+      grid.innerHTML = result.cards.map(card => `
+        <div class="search-result-card">
+          <div class="result-rank">${escapeHtml(card.rank)}</div>
+          <div class="strong">${escapeHtml(card.title)}</div>
+          <div class="status-note">${escapeHtml(card.note)}</div>
+          <div class="deal-actions">
+            <a class="tiny-btn ${escapeHtml(card.buttonClass)}" href="${escapeHtml(card.url)}" target="_blank" rel="noopener noreferrer">
+              ${escapeHtml(card.buttonText)}
+            </a>
+          </div>
+        </div>
+      `).join("");
+
+      panel.classList.add("active");
+    }
+
+    function handleSearchKey(event) {
+      if (event.key === "Enter") {
+        runSmartRouting();
+      }
+    }
+
+    function clearSearchRouting() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("searchResultsGrid").innerHTML = "";
+      document.getElementById("searchResultsSub").textContent = "";
+      document.getElementById("searchResultsPanel").classList.remove("active");
     }
 
     function openVideoModal(video) {
@@ -1032,8 +1214,8 @@
           text: 'Keep the page lively even when live video is unavailable.',
           icon: '🌴',
           className: '',
-          cta1: { label: 'Browse Expedia', link: AFFILIATE_LINKS.expedia },
-          cta2: { label: 'Hotels.com', link: AFFILIATE_LINKS.hotelscom },
+          cta1: { label: 'Browse Expedia', link: AFFILIATE_LINKS.expediaAffiliate },
+          cta2: { label: 'Hotels.com', link: AFFILIATE_LINKS.hotelsAffiliate },
           caption: 'Sunny stays and beach energy'
         },
         {
@@ -1042,8 +1224,8 @@
           text: 'Show movement and travel discovery without depending on a live API.',
           icon: '🎡',
           className: 'sunset',
-          cta1: { label: 'View Hotels', link: AFFILIATE_LINKS.hotelscom },
-          cta2: { label: 'Try Vrbo', link: AFFILIATE_LINKS.vrbo },
+          cta1: { label: 'View Hotels', link: AFFILIATE_LINKS.hotelsAffiliate },
+          cta2: { label: 'Try Vrbo', link: AFFILIATE_LINKS.vrboAffiliate },
           caption: 'Family-ready stays and larger lodging'
         },
         {
@@ -1052,8 +1234,8 @@
           text: 'Designed to keep users browsing and moving toward monetized actions.',
           icon: '🌃',
           className: 'night',
-          cta1: { label: 'Open Expedia', link: AFFILIATE_LINKS.expedia },
-          cta2: { label: 'Open Vrbo', link: AFFILIATE_LINKS.vrbo },
+          cta1: { label: 'Open Expedia', link: AFFILIATE_LINKS.expediaAffiliate },
+          cta2: { label: 'Open Vrbo', link: AFFILIATE_LINKS.vrboAffiliate },
           caption: 'Fast city breaks and short-stay travel'
         }
       ];
