@@ -1,45 +1,3 @@
-<!--
-================ SIGNALBOOST AI POLISHED PUBLIC HOMEPAGE ================
-
-PURPOSE
-- Stable public homepage for affiliate approval and public use
-- Only show sections that are truly working
-- Use tighter, more professional layout sizing
-- Keep working hotel search routing with:
-1. Search button
-2. Clear button
-3. Auto-reset after partner click
-
-VISIBLE PUBLIC SECTIONS
-- Header
-- Headline
-- Subtitle
-- Search routing box
-- Stay Actions
-- Popular Stay Picks
-- Top Deals
-- Featured Travel Moments
-- Fresh Picks only if live feed works
-
-REMOVED ON PURPOSE
-- Fake AI response bars
-- Fake quick chips
-- Refresh media button
-- Any unfinished public feature
-- Misleading labels
-
-LIVE AFFILIATE LINKS
-- Expedia:
-https://expedia.com/affiliate/6N7hRHZ
-- Hotels.com:
-https://www.hotels.com/affiliate/5BoP8Nf
-- Vrbo:
-https://vrbo.com/affiliate/M2nsa7i
-
-IMPORTANT RULE
-- If a feature is not fully working, do not put it on the public homepage
-========================================================================
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -743,10 +701,9 @@ grid-template-columns: 1fr;
 id="smartSearchInput"
 type="text"
 placeholder="Try: Paris hotel, Miami hotels, family stay in Orlando, vacation rental in Maui"
-onkeydown="handleSearchKey(event)"
 />
-<button class="btn primary" onclick="runSmartRouting()">Search</button>
-<button class="btn" onclick="clearSearchRouting()">Clear</button>
+<button class="btn primary" id="searchBtn" type="button">Search</button>
+<button class="btn" id="clearBtn" type="button">Clear</button>
 </div>
 <div class="search-help">
 Search routes users to the best available booking partners for hotels and vacation rentals.
@@ -978,10 +935,15 @@ saveStats(stats);
 }
 
 function clearSearchRouting() {
-document.getElementById('smartSearchInput').value = '';
-document.getElementById('routingGrid').innerHTML = '';
-document.getElementById('routingSub').textContent = '';
-document.getElementById('routingPanel').classList.remove('active');
+const input = document.getElementById('smartSearchInput');
+const grid = document.getElementById('routingGrid');
+const sub = document.getElementById('routingSub');
+const panel = document.getElementById('routingPanel');
+
+if (input) input.value = '';
+if (grid) grid.innerHTML = '';
+if (sub) sub.textContent = '';
+if (panel) panel.classList.remove('active');
 }
 
 function resetSearchAfterAffiliateClick() {
@@ -1041,7 +1003,7 @@ const intent = detectSearchIntent(query);
 if (intent === 'rental') {
 return {
 intent,
-title: `Best stay paths for “${query}”`,
+title: `Best stay paths for "${query}"`,
 subtitle: 'This looks more like a vacation rental or larger-stay request, so Vrbo is prioritized first.',
 cards: [
 {
@@ -1077,7 +1039,7 @@ trackingKey: 'smartsearch_hotelscom_secondary'
 
 return {
 intent,
-title: `Best stay paths for “${query}”`,
+title: `Best stay paths for "${query}"`,
 subtitle: 'This looks more like a hotel or standard stay request, so Expedia and Hotels.com are prioritized first.',
 cards: [
 {
@@ -1117,6 +1079,11 @@ const title = document.getElementById('routingTitle');
 const sub = document.getElementById('routingSub');
 const grid = document.getElementById('routingGrid');
 
+if (!panel || !title || !sub || !grid) {
+console.error('Search UI elements not found.');
+return;
+}
+
 const route = getRoutingChoices(query);
 title.textContent = route.title;
 sub.textContent = route.subtitle;
@@ -1135,7 +1102,7 @@ class="tiny-btn ${escapeHtml(card.className)}"
 href="${escapeHtml(card.link)}"
 target="_blank"
 rel="noopener noreferrer"
-onclick="trackAffiliateClick('${escapeHtml(card.trackingKey)}'); resetSearchAfterAffiliateClick();"
+data-track="${escapeHtml(card.trackingKey)}"
 >
 ${escapeHtml(card.button)}
 </a>
@@ -1143,24 +1110,52 @@ ${escapeHtml(card.button)}
 </div>
 `).join('');
 
+grid.querySelectorAll('a[data-track]').forEach(link => {
+link.addEventListener('click', function () {
+const key = this.getAttribute('data-track');
+trackAffiliateClick(key);
+resetSearchAfterAffiliateClick();
+});
+});
+
 panel.classList.add('active');
 }
 
 function runSmartRouting() {
 const input = document.getElementById('smartSearchInput');
+if (!input) {
+console.error('smartSearchInput not found.');
+return;
+}
+
 const query = (input.value || '').trim();
+
 if (!query) {
 input.focus();
 return;
 }
+
 renderRoutingPanel(query);
 }
 
-function handleSearchKey(event) {
+function bindSearchHandlers() {
+const input = document.getElementById('smartSearchInput');
+const searchBtn = document.getElementById('searchBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+if (!input || !searchBtn || !clearBtn) {
+console.error('Search controls not found.');
+return;
+}
+
+searchBtn.addEventListener('click', runSmartRouting);
+clearBtn.addEventListener('click', clearSearchRouting);
+input.addEventListener('keydown', function (event) {
 if (event.key === 'Enter') {
 event.preventDefault();
 runSmartRouting();
 }
+});
 }
 
 function buildVideoObject(item) {
@@ -1515,13 +1510,14 @@ container.innerHTML = deals.map(deal => `
 }
 
 async function initApp() {
+bindSearchHandlers();
 registerVisit();
 renderTopDeals();
 await refreshAllFeeds();
 startFeedAutoRefresh();
 }
 
-initApp();
+document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
