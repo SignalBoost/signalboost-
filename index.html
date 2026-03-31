@@ -1,1333 +1,1348 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost AI</title>
-
-  <style>
-    :root {
-      --surface: rgba(255, 255, 255, 0.96);
-      --border: rgba(148, 163, 184, 0.22);
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --accent: #06b6d4;
-      --success: #15803d;
-      --warning: #ea580c;
-      --dark: #0f172a;
-      --shadow: 0 18px 48px rgba(15, 23, 42, 0.07);
-      --card-bg: rgba(255,255,255,0.82);
-      --bg-1: #eef4ff;
-      --bg-2: #f8fbff;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
-      color: var(--text);
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    .app {
-      width: min(1200px, calc(100vw - 20px));
-      margin: 0 auto;
-      padding: 10px 0 24px;
-    }
-
-    .topbar,
-    .hero,
-    .module,
-    .search-results-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      padding: 10px 14px;
-      border-radius: 16px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 900;
-      font-size: 18px;
-      letter-spacing: -0.02em;
-    }
-
-    .logo-mark {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .chip,
-    .tiny-btn,
-    .btn {
-      padding: 9px 13px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: white;
-      cursor: pointer;
-      color: inherit;
-      transition: 0.15s ease;
-    }
-
-    .chip:hover,
-    .tiny-btn:hover,
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .tiny-btn.primary,
-    .btn.primary {
-      border: none;
-      color: white;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-    }
-
-    .tiny-btn.warn {
-      border: none;
-      color: white;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--warning), #fb923c);
-    }
-
-    .tiny-btn.dark {
-      border: none;
-      color: white;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--dark), #334155);
-    }
-
-    .tiny-btn.success {
-      border: none;
-      color: white;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--success), #22c55e);
-    }
-
-    .hero {
-      margin-top: 14px;
-      padding: 24px 22px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: auto -70px -70px auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(6,182,212,0.11), transparent 70%);
-      pointer-events: none;
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 40px;
-      line-height: 1.02;
-      letter-spacing: -0.03em;
-      max-width: 720px;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    .sub {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.58;
-      font-size: 17px;
-      max-width: 860px;
-    }
-
-    .search-wrap {
-      margin-top: 16px;
-      max-width: 980px;
-    }
-
-    .search-box {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 8px;
-      align-items: center;
-      padding: 10px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: white;
-    }
-
-    .search-box input {
-      width: 100%;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: inherit;
-      font-size: 15px;
-      min-width: 0;
-    }
-
-    .search-help {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .search-results-panel {
-      margin-top: 12px;
-      padding: 14px;
-      display: none;
-    }
-
-    .search-results-panel.active {
-      display: block;
-    }
-
-    .search-results-title {
-      font-size: 17px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .search-results-sub {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-
-    .search-results-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .search-result-card {
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 185px;
-    }
-
-    .result-rank {
-      align-self: flex-start;
-      font-size: 10px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: rgba(21, 128, 61, 0.10);
-      color: var(--success);
-      border: 1px solid rgba(21, 128, 61, 0.18);
-    }
-
-    .layout {
-      margin-top: 16px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .module {
-      padding: 16px;
-    }
-
-    .module-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-
-    .mode-badge,
-    .label {
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .strong {
-      font-weight: 800;
-      font-size: 15px;
-      line-height: 1.3;
-    }
-
-    .status-note {
-      margin-top: 6px;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 12px;
-    }
-
-    .action-grid,
-    .hotel-grid,
-    .deal-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .video-grid,
-    .fallback-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .card {
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      min-width: 0;
-    }
-
-    .action-card,
-    .hotel-card,
-    .deal-card {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 185px;
-    }
-
-    .action-icon {
-      font-size: 22px;
-    }
-
-    .hotel-badge,
-    .deal-badge,
-    .media-badge {
-      align-self: flex-start;
-      font-size: 10px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: rgba(21, 128, 61, 0.10);
-      color: var(--success);
-      border: 1px solid rgba(21, 128, 61, 0.18);
-    }
-
-    .deal-actions,
-    .hotel-actions,
-    .media-actions {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin-top: auto;
-    }
-
-    .video-card {
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .video-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-    }
-
-    .video-thumb-wrap,
-    .fallback-thumb-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 10px;
-      overflow: hidden;
-      background: #e2e8f0;
-      border: 1px solid var(--border);
-    }
-
-    .video-thumb {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      background: #e2e8f0;
-    }
-
-    .play-badge {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    .play-badge-circle {
-      width: 58px;
-      height: 40px;
-      border-radius: 12px;
-      background: rgba(220, 38, 38, 0.92);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
-    }
-
-    .play-triangle {
-      width: 0;
-      height: 0;
-      border-left: 12px solid white;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      margin-left: 3px;
-    }
-
-    .video-title {
-      margin-top: 8px;
-      font-weight: 800;
-      font-size: 14px;
-      line-height: 1.3;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      min-height: 54px;
-    }
-
-    .video-channel {
-      margin-top: 4px;
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .video-actions {
-      display: flex;
-      gap: 7px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .fallback-card {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 228px;
-    }
-
-    .fallback-thumb-wrap {
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3), transparent 25%),
-        linear-gradient(135deg, rgba(37,99,235,0.95), rgba(6,182,212,0.9), rgba(99,102,241,0.9));
-      animation: gradientShift 8s ease-in-out infinite alternate;
-    }
-
-    .fallback-thumb-wrap.sunset {
-      background:
-        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.25), transparent 20%),
-        linear-gradient(135deg, #f97316, #fb7185, #8b5cf6);
-      animation: gradientShift 9s ease-in-out infinite alternate;
-    }
-
-    .fallback-thumb-wrap.night {
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 18%),
-        linear-gradient(135deg, #0f172a, #1d4ed8, #06b6d4);
-      animation: gradientShift 10s ease-in-out infinite alternate;
-    }
-
-    .floating-shape {
-      position: absolute;
-      border-radius: 999px;
-      opacity: 0.8;
-      filter: blur(1px);
-      animation: floatY 5s ease-in-out infinite;
-    }
-
-    .shape-1 {
-      width: 110px;
-      height: 110px;
-      background: rgba(255,255,255,0.18);
-      top: 12%;
-      right: 10%;
-    }
-
-    .shape-2 {
-      width: 72px;
-      height: 72px;
-      background: rgba(255,255,255,0.14);
-      bottom: 16%;
-      left: 10%;
-      animation-delay: 1.2s;
-    }
-
-    .shape-3 {
-      width: 38px;
-      height: 38px;
-      background: rgba(255,255,255,0.25);
-      bottom: 24%;
-      right: 24%;
-      animation-delay: 0.6s;
-    }
-
-    .route-line {
-      position: absolute;
-      left: 8%;
-      right: 8%;
-      bottom: 18%;
-      height: 3px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.0), rgba(255,255,255,0.8), rgba(255,255,255,0.0));
-      animation: pulseLine 2.8s ease-in-out infinite;
-    }
-
-    .fallback-icon {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      font-size: 24px;
-      color: white;
-      text-shadow: 0 6px 18px rgba(0,0,0,0.18);
-    }
-
-    .fallback-caption {
-      position: absolute;
-      left: 14px;
-      bottom: 14px;
-      right: 14px;
-      color: white;
-      font-weight: 800;
-      line-height: 1.22;
-      text-shadow: 0 8px 24px rgba(0,0,0,0.22);
-      font-size: 14px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .empty-card {
-      grid-column: 1 / -1;
-    }
-
-    .module-note {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(15, 23, 42, 0.7);
-      padding: 20px;
-      z-index: 9999;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-panel {
-      width: min(920px, 100%);
-      background: white;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.25);
-      overflow: hidden;
-    }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modal-close {
-      width: 38px;
-      height: 38px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: white;
-      cursor: pointer;
-      font-size: 20px;
-      line-height: 1;
-    }
-
-    .modal-body {
-      padding: 14px;
-    }
-
-    .modal-player {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border: 0;
-      border-radius: 14px;
-      background: #0f172a;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    @keyframes gradientShift {
-      0% { transform: scale(1) translate3d(0,0,0); }
-      100% { transform: scale(1.04) translate3d(-4px, 3px, 0); }
-    }
-
-    @keyframes floatY {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes pulseLine {
-      0%, 100% { opacity: 0.45; transform: scaleX(0.96); }
-      50% { opacity: 1; transform: scaleX(1); }
-    }
-
-    @media (max-width: 1180px) {
-      .action-grid,
-      .hotel-grid,
-      .deal-grid,
-      .search-results-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 900px) {
-      .video-grid,
-      .fallback-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 820px) {
-      .action-grid,
-      .hotel-grid,
-      .deal-grid,
-      .video-grid,
-      .fallback-grid,
-      .search-results-grid {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 33px;
-      }
-
-      .app {
-        width: min(100vw - 14px, 1200px);
-      }
-
-      .search-box {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SignalBoost AI</title>
+
+<style>
+:root {
+--surface: rgba(255, 255, 255, 0.96);
+--border: rgba(148, 163, 184, 0.22);
+--text: #0f172a;
+--muted: #64748b;
+--primary: #2563eb;
+--accent: #06b6d4;
+--success: #15803d;
+--warning: #ea580c;
+--dark: #0f172a;
+--shadow: 0 18px 48px rgba(15, 23, 42, 0.07);
+--card-bg: rgba(255,255,255,0.82);
+--bg-1: #eef4ff;
+--bg-2: #f8fbff;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+color: var(--text);
+}
+
+a {
+color: inherit;
+text-decoration: none;
+}
+
+button, input {
+font: inherit;
+}
+
+.app {
+width: min(1200px, calc(100vw - 20px));
+margin: 0 auto;
+padding: 10px 0 24px;
+}
+
+.topbar,
+.hero,
+.module,
+.search-results-panel {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 20px;
+box-shadow: var(--shadow);
+}
+
+.topbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 10px;
+flex-wrap: wrap;
+padding: 10px 14px;
+border-radius: 16px;
+}
+
+.logo {
+display: flex;
+align-items: center;
+gap: 10px;
+font-weight: 900;
+font-size: 18px;
+letter-spacing: -0.02em;
+}
+
+.logo-mark {
+width: 52px;
+height: 52px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: #fff;
+border: 1px solid var(--border);
+overflow: hidden;
+flex-shrink: 0;
+}
+
+.chip,
+.tiny-btn,
+.btn {
+padding: 9px 13px;
+border-radius: 999px;
+border: 1px solid var(--border);
+background: white;
+cursor: pointer;
+color: inherit;
+transition: 0.15s ease;
+}
+
+.chip:hover,
+.tiny-btn:hover,
+.btn:hover {
+transform: translateY(-1px);
+}
+
+.tiny-btn.primary,
+.btn.primary {
+border: none;
+color: white;
+font-weight: 700;
+background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.tiny-btn.warn {
+border: none;
+color: white;
+font-weight: 700;
+background: linear-gradient(135deg, var(--warning), #fb923c);
+}
+
+.tiny-btn.dark {
+border: none;
+color: white;
+font-weight: 700;
+background: linear-gradient(135deg, var(--dark), #334155);
+}
+
+.tiny-btn.success {
+border: none;
+color: white;
+font-weight: 700;
+background: linear-gradient(135deg, var(--success), #22c55e);
+}
+
+.hero {
+margin-top: 14px;
+padding: 24px 22px;
+position: relative;
+overflow: hidden;
+}
+
+.hero::before {
+content: "";
+position: absolute;
+inset: auto -70px -70px auto;
+width: 220px;
+height: 220px;
+border-radius: 50%;
+background: radial-gradient(circle, rgba(6,182,212,0.11), transparent 70%);
+pointer-events: none;
+}
+
+h1 {
+margin: 0 0 8px;
+font-size: 40px;
+line-height: 1.02;
+letter-spacing: -0.03em;
+max-width: 720px;
+}
+
+h2 {
+margin: 0;
+font-size: 22px;
+}
+
+.sub {
+margin: 0;
+color: var(--muted);
+line-height: 1.58;
+font-size: 17px;
+max-width: 860px;
+}
+
+.search-wrap {
+margin-top: 16px;
+max-width: 980px;
+}
+
+.search-box {
+display: grid;
+grid-template-columns: 1fr auto auto;
+gap: 8px;
+align-items: center;
+padding: 10px;
+border-radius: 16px;
+border: 1px solid var(--border);
+background: white;
+}
+
+.search-box input {
+width: 100%;
+border: none;
+outline: none;
+background: transparent;
+color: inherit;
+font-size: 15px;
+min-width: 0;
+}
+
+.search-help {
+margin-top: 8px;
+color: var(--muted);
+font-size: 13px;
+line-height: 1.5;
+}
+
+.search-results-panel {
+margin-top: 12px;
+padding: 14px;
+display: none;
+}
+
+.search-results-panel.active {
+display: block;
+}
+
+.search-results-title {
+font-size: 17px;
+font-weight: 800;
+margin-bottom: 6px;
+}
+
+.search-results-sub {
+color: var(--muted);
+font-size: 13px;
+line-height: 1.5;
+margin-bottom: 12px;
+}
+
+.search-results-grid {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 10px;
+}
+
+.search-result-card {
+padding: 12px;
+border-radius: 14px;
+border: 1px solid var(--border);
+background: var(--card-bg);
+display: flex;
+flex-direction: column;
+gap: 8px;
+min-height: 200px;
+}
+
+.result-rank {
+align-self: flex-start;
+font-size: 10px;
+padding: 5px 9px;
+border-radius: 999px;
+background: rgba(21, 128, 61, 0.10);
+color: var(--success);
+border: 1px solid rgba(21, 128, 61, 0.18);
+}
+
+.layout {
+margin-top: 16px;
+display: grid;
+gap: 16px;
+}
+
+.module {
+padding: 16px;
+}
+
+.module-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+margin-bottom: 12px;
+}
+
+.mode-badge,
+.label {
+font-size: 10px;
+color: var(--muted);
+}
+
+.strong {
+font-weight: 800;
+font-size: 15px;
+line-height: 1.3;
+}
+
+.status-note {
+margin-top: 6px;
+color: var(--muted);
+line-height: 1.5;
+font-size: 12px;
+}
+
+.action-grid,
+.hotel-grid,
+.deal-grid {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 10px;
+}
+
+.video-grid,
+.fallback-grid {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 10px;
+}
+
+.card {
+padding: 12px;
+border-radius: 14px;
+border: 1px solid var(--border);
+background: var(--card-bg);
+min-width: 0;
+}
+
+.action-card,
+.hotel-card,
+.deal-card {
+display: flex;
+flex-direction: column;
+gap: 8px;
+min-height: 185px;
+}
+
+.action-icon {
+font-size: 22px;
+}
+
+.hotel-badge,
+.deal-badge,
+.media-badge {
+align-self: flex-start;
+font-size: 10px;
+padding: 5px 9px;
+border-radius: 999px;
+background: rgba(21, 128, 61, 0.10);
+color: var(--success);
+border: 1px solid rgba(21, 128, 61, 0.18);
+}
+
+.deal-actions,
+.hotel-actions,
+.media-actions {
+display: flex;
+gap: 7px;
+flex-wrap: wrap;
+margin-top: auto;
+}
+
+.video-card {
+cursor: pointer;
+transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.video-card:hover {
+transform: translateY(-2px);
+box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.video-thumb-wrap,
+.fallback-thumb-wrap {
+position: relative;
+width: 100%;
+aspect-ratio: 16 / 9;
+border-radius: 10px;
+overflow: hidden;
+background: #e2e8f0;
+border: 1px solid var(--border);
+}
+
+.video-thumb {
+width: 100%;
+height: 100%;
+object-fit: cover;
+display: block;
+background: #e2e8f0;
+}
+
+.play-badge {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+pointer-events: none;
+}
+
+.play-badge-circle {
+width: 58px;
+height: 40px;
+border-radius: 12px;
+background: rgba(220, 38, 38, 0.92);
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+.play-triangle {
+width: 0;
+height: 0;
+border-left: 12px solid white;
+border-top: 8px solid transparent;
+border-bottom: 8px solid transparent;
+margin-left: 3px;
+}
+
+.video-title {
+margin-top: 8px;
+font-weight: 800;
+font-size: 14px;
+line-height: 1.3;
+display: -webkit-box;
+-webkit-line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+min-height: 54px;
+}
+
+.video-channel {
+margin-top: 4px;
+font-size: 12px;
+color: var(--muted);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.video-actions {
+display: flex;
+gap: 7px;
+margin-top: 8px;
+flex-wrap: wrap;
+}
+
+.fallback-card {
+display: flex;
+flex-direction: column;
+gap: 8px;
+min-height: 228px;
+}
+
+.fallback-thumb-wrap {
+background:
+radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3), transparent 25%),
+linear-gradient(135deg, rgba(37,99,235,0.95), rgba(6,182,212,0.9), rgba(99,102,241,0.9));
+animation: gradientShift 8s ease-in-out infinite alternate;
+}
+
+.fallback-thumb-wrap.sunset {
+background:
+radial-gradient(circle at 25% 25%, rgba(255,255,255,0.25), transparent 20%),
+linear-gradient(135deg, #f97316, #fb7185, #8b5cf6);
+animation: gradientShift 9s ease-in-out infinite alternate;
+}
+
+.fallback-thumb-wrap.night {
+background:
+radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 18%),
+linear-gradient(135deg, #0f172a, #1d4ed8, #06b6d4);
+animation: gradientShift 10s ease-in-out infinite alternate;
+}
+
+.floating-shape {
+position: absolute;
+border-radius: 999px;
+opacity: 0.8;
+filter: blur(1px);
+animation: floatY 5s ease-in-out infinite;
+}
+
+.shape-1 {
+width: 110px;
+height: 110px;
+background: rgba(255,255,255,0.18);
+top: 12%;
+right: 10%;
+}
+
+.shape-2 {
+width: 72px;
+height: 72px;
+background: rgba(255,255,255,0.14);
+bottom: 16%;
+left: 10%;
+animation-delay: 1.2s;
+}
+
+.shape-3 {
+width: 38px;
+height: 38px;
+background: rgba(255,255,255,0.25);
+bottom: 24%;
+right: 24%;
+animation-delay: 0.6s;
+}
+
+.route-line {
+position: absolute;
+left: 8%;
+right: 8%;
+bottom: 18%;
+height: 3px;
+border-radius: 999px;
+background: linear-gradient(90deg, rgba(255,255,255,0.0), rgba(255,255,255,0.8), rgba(255,255,255,0.0));
+animation: pulseLine 2.8s ease-in-out infinite;
+}
+
+.fallback-icon {
+position: absolute;
+top: 14px;
+left: 14px;
+font-size: 24px;
+color: white;
+text-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.fallback-caption {
+position: absolute;
+left: 14px;
+bottom: 14px;
+right: 14px;
+color: white;
+font-weight: 800;
+line-height: 1.22;
+text-shadow: 0 8px 24px rgba(0,0,0,0.22);
+font-size: 14px;
+}
+
+.hidden {
+display: none !important;
+}
+
+.empty-card {
+grid-column: 1 / -1;
+}
+
+.module-note {
+margin-top: 5px;
+color: var(--muted);
+font-size: 12px;
+}
+
+.modal {
+position: fixed;
+inset: 0;
+display: none;
+align-items: center;
+justify-content: center;
+background: rgba(15, 23, 42, 0.7);
+padding: 20px;
+z-index: 9999;
+}
+
+.modal.active {
+display: flex;
+}
+
+.modal-panel {
+width: min(920px, 100%);
+background: white;
+border-radius: 18px;
+border: 1px solid var(--border);
+box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+overflow: hidden;
+}
+
+.modal-head {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 10px;
+padding: 12px 14px;
+border-bottom: 1px solid var(--border);
+}
+
+.modal-close {
+width: 38px;
+height: 38px;
+border-radius: 999px;
+border: 1px solid var(--border);
+background: white;
+cursor: pointer;
+font-size: 20px;
+line-height: 1;
+}
+
+.modal-body {
+padding: 14px;
+}
+
+.modal-player {
+width: 100%;
+aspect-ratio: 16 / 9;
+border: 0;
+border-radius: 14px;
+background: #0f172a;
+}
+
+.modal-actions {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+margin-top: 10px;
+}
+
+@keyframes gradientShift {
+0% { transform: scale(1) translate3d(0,0,0); }
+100% { transform: scale(1.04) translate3d(-4px, 3px, 0); }
+}
+
+@keyframes floatY {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseLine {
+0%, 100% { opacity: 0.45; transform: scaleX(0.96); }
+50% { opacity: 1; transform: scaleX(1); }
+}
+
+@media (max-width: 1180px) {
+.action-grid,
+.hotel-grid,
+.deal-grid,
+.search-results-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+
+@media (max-width: 900px) {
+.video-grid,
+.fallback-grid {
+grid-template-columns: 1fr;
+}
+}
+
+@media (max-width: 820px) {
+.action-grid,
+.hotel-grid,
+.deal-grid,
+.video-grid,
+.fallback-grid,
+.search-results-grid {
+grid-template-columns: 1fr;
+}
+
+h1 {
+font-size: 33px;
+}
+
+.app {
+width: min(100vw - 14px, 1200px);
+}
+
+.search-box {
+grid-template-columns: 1fr;
+}
+}
+</style>
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div class="logo">
-        <div class="logo-mark" aria-hidden="true">
-          <svg viewBox="0 0 120 120" width="38" height="38" role="img">
-            <defs>
-              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#2563eb"/>
-                <stop offset="100%" stop-color="#06b6d4"/>
-              </linearGradient>
-            </defs>
-            <circle cx="60" cy="60" r="6" fill="url(#g)"/>
-            <circle cx="60" cy="60" r="16" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.9"/>
-            <circle cx="60" cy="60" r="26" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.7"/>
-            <circle cx="60" cy="60" r="36" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.5"/>
-            <path d="M60 78 L60 42 M60 42 L50 52 M60 42 L70 52" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div>SignalBoost AI</div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="chip">Hotels & Stays</button>
-      </div>
-    </div>
-
-    <section class="hero">
-      <h1>Find hotels and stays faster</h1>
-      <p class="sub">Search real hotel deals and choose the booking path that fits the trip best.</p>
-
-      <!--
-        CHANGE LOG
-        1. Search no longer sends users directly to Expedia only.
-        2. Search now opens a real choice panel with Expedia, Hotels.com, and Vrbo.
-        3. Clear button now clears the input and hides the search results panel.
-        4. Enter key still works.
-        5. Rest of homepage preserved.
-      -->
-      <div class="search-wrap">
-        <div class="search-box">
-          <input
-            id="searchInput"
-            type="text"
-            placeholder="Try: Paris, New York, Tokyo, family rental in Orlando"
-            onkeydown="handleSearchKey(event)"
-          />
-          <button class="btn primary" onclick="runSmartRouting()">Search</button>
-          <button class="btn" onclick="clearSearchRouting()">Clear</button>
-        </div>
-        <div class="search-help">
-          Search shows booking choices for the destination you type.
-        </div>
-
-        <div class="search-results-panel" id="searchResultsPanel">
-          <div class="search-results-title" id="searchResultsTitle">Best booking choices</div>
-          <div class="search-results-sub" id="searchResultsSub"></div>
-          <div class="search-results-grid" id="searchResultsGrid"></div>
-        </div>
-      </div>
-    </section>
-
-    <div class="layout">
-      <section class="module">
-        <div class="module-header">
-          <h2>Stay Actions</h2>
-          <span class="mode-badge">Main user path</span>
-        </div>
-        <div class="action-grid">
-          <div class="card action-card">
-            <div class="action-icon">🏨</div>
-            <div class="strong">Search Hotels</div>
-            <div class="status-note">Primary hotel path through Expedia.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Open Expedia</a>
-            </div>
-          </div>
-
-          <div class="card action-card">
-            <div class="action-icon">🛏️</div>
-            <div class="strong">Hotel Deals</div>
-            <div class="status-note">Secondary hotel path through Hotels.com.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn warn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
-            </div>
-          </div>
-
-          <div class="card action-card">
-            <div class="action-icon">🏡</div>
-            <div class="strong">Vacation Rentals</div>
-            <div class="status-note">Alternative stay path for homes and longer-stay lodging via Vrbo.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Open Vrbo</a>
-            </div>
-          </div>
-
-          <div class="card action-card">
-            <div class="action-icon">🔎</div>
-            <div class="strong">More Hotel Options</div>
-            <div class="status-note">Send users to Hotels.com for additional hotel browsing options.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn success" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="module">
-        <div class="module-header">
-          <h2>Popular Stay Picks</h2>
-          <span class="mode-badge">Hotels & Rentals</span>
-        </div>
-        <div class="hotel-grid">
-          <div class="card hotel-card">
-            <div class="hotel-badge">Miami</div>
-            <div class="strong">Beach hotels and short stays</div>
-            <div class="status-note">Useful for resort-style booking intent.</div>
-            <div class="hotel-actions">
-              <a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
-              <a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
-              <a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
-            </div>
-          </div>
-
-          <div class="card hotel-card">
-            <div class="hotel-badge">Orlando</div>
-            <div class="strong">Family stays and larger properties</div>
-            <div class="status-note">Useful for family travel and longer stays.</div>
-            <div class="hotel-actions">
-              <a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
-              <a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
-              <a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
-            </div>
-          </div>
-
-          <div class="card hotel-card">
-            <div class="hotel-badge">Las Vegas</div>
-            <div class="strong">Quick-book hotels and short city stays</div>
-            <div class="status-note">Useful for short booking windows.</div>
-            <div class="hotel-actions">
-              <a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
-              <a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
-              <a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
-            </div>
-          </div>
-
-          <div class="card hotel-card">
-            <div class="hotel-badge">New York</div>
-            <div class="strong">City hotels and urban stays</div>
-            <div class="status-note">Useful for short stays and city-center demand.</div>
-            <div class="hotel-actions">
-              <a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
-              <a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
-              <a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="module">
-        <div class="module-header">
-          <h2>Top Deals</h2>
-          <span class="mode-badge">Monetized</span>
-        </div>
-        <div class="deal-grid">
-          <div class="card deal-card">
-            <div class="deal-badge">Expedia</div>
-            <div class="strong">Search Hotel Deals</div>
-            <div class="status-note">Primary hotel booking path using Expedia.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Search on Expedia</a>
-            </div>
-          </div>
-
-          <div class="card deal-card">
-            <div class="deal-badge">Hotels.com</div>
-            <div class="strong">Hotel Deals</div>
-            <div class="status-note">Secondary hotel booking path using Hotels.com.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn primary" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Search on Hotels.com</a>
-            </div>
-          </div>
-
-          <div class="card deal-card">
-            <div class="deal-badge">Vrbo</div>
-            <div class="strong">Vacation Rentals</div>
-            <div class="status-note">Alternative lodging path for homes and vacation rentals.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn primary" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Search on Vrbo</a>
-            </div>
-          </div>
-
-          <div class="card deal-card">
-            <div class="deal-badge">Hotels.com</div>
-            <div class="strong">More Hotel Options</div>
-            <div class="status-note">Additional hotel browsing path using Hotels.com.</div>
-            <div class="deal-actions">
-              <a class="tiny-btn primary" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="module" id="mediaSection">
-        <div class="module-header">
-          <h2>Featured Travel Moments</h2>
-          <span class="mode-badge" id="mediaModeBadge">Adaptive media</span>
-        </div>
-
-        <div id="youtubeFeedWrap">
-          <div class="module-note" id="youtubeStatusNote">Trying live travel video feed.</div>
-          <div class="video-grid" id="youtubeFeed"></div>
-        </div>
-
-        <div id="fallbackMediaWrap" class="hidden">
-          <div class="module-note">Live video is unavailable right now, so SignalBoost is showing built-in travel media instead.</div>
-          <div class="fallback-grid" id="fallbackMediaGrid"></div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal" id="videoModal" onclick="closeVideoModal(event)">
-    <div class="modal-panel" onclick="event.stopPropagation()">
-      <div class="modal-head">
-        <div>
-          <div class="strong" id="modalTitle">Video</div>
-          <div class="label" id="modalMeta">YouTube</div>
-        </div>
-        <button class="modal-close" onclick="closeVideoModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <iframe id="modalPlayer" class="modal-player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        <div class="modal-actions">
-          <a id="modalOpenYoutube" class="tiny-btn primary" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    /*
-      CHANGE LOG
-      vNext
-      - Search now shows a real partner choice panel instead of forcing one redirect.
-      - Preserved the restored homepage.
-      - Clear button resets both input and search results.
-      - Added simple search intent handling:
-        * hotel/general -> Expedia first, Hotels.com second, Vrbo third
-        * rental/family/home -> Vrbo first, Expedia second, Hotels.com third
-    */
-
-    const AFFILIATE_LINKS = {
-      expediaAffiliate: 'https://expedia.com/affiliate/6N7hRHZ',
-      hotelsAffiliate: 'https://www.hotels.com/affiliate/5BoP8Nf',
-      vrboAffiliate: 'https://vrbo.com/affiliate/M2nsa7i'
-    };
-
-    function escapeHtml(value) {
-      return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-    }
-
-    function formatCompactNumber(value) {
-      if (value >= 1000000000) return (value / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
-      if (value >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-      if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-      return String(value || 0);
-    }
-
-    function hoursAgoFromPublishedAt(publishedAt) {
-      if (!publishedAt) return 'recent';
-      const then = new Date(publishedAt).getTime();
-      const hours = Math.max(1, Math.round((Date.now() - then) / 3600000));
-      return `${hours}h ago`;
-    }
-
-    function buildVideoObject(item) {
-      const id = item.id || item.videoId || '';
-      const thumbnail = item.thumbnail || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
-      const watchUrl = item.watchUrl || (id ? `https://www.youtube.com/watch?v=${id}` : '#');
-      const embedPlayerUrl = item.embedPlayerUrl || (id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` : '');
-
-      return {
-        id,
-        title: item.title || 'YouTube video',
-        channel: item.channel || 'YouTube',
-        views: item.views
-          ? (typeof item.views === 'string' ? item.views : `${formatCompactNumber(Number(item.views || 0))} views`)
-          : '',
-        time: item.time || hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString()),
-        thumbnail,
-        embeddable: item.embeddable !== false,
-        embedPlayerUrl,
-        watchUrl
-      };
-    }
-
-    function buildExpediaSearchUrl(query) {
-      return `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(query)}`;
-    }
-
-    function buildHotelsSearchUrl(query) {
-      return `https://www.hotels.com/Hotel-Search?destination=${encodeURIComponent(query)}`;
-    }
-
-    function buildVrboSearchUrl(query) {
-      return `https://www.vrbo.com/search?destination=${encodeURIComponent(query)}`;
-    }
-
-    function detectSearchIntent(query) {
-      const q = query.toLowerCase();
-
-      const rentalSignals = [
-        'rental', 'rentals', 'home', 'house', 'villa', 'cabin',
-        'apartment', 'condo', 'family', 'group', 'vacation rental'
-      ];
-
-      const hotelSignals = [
-        'hotel', 'hotels', 'stay', 'stays', 'room', 'rooms',
-        'motel', 'resort', 'lodging'
-      ];
-
-      const hasRental = rentalSignals.some(word => q.includes(word));
-      const hasHotel = hotelSignals.some(word => q.includes(word));
-
-      if (hasRental && !hasHotel) return 'rental';
-      if (hasHotel && !hasRental) return 'hotel';
-      if (hasRental && hasHotel) return 'mixed';
-      return 'general';
-    }
-
-    function getSearchChoices(query) {
-      const intent = detectSearchIntent(query);
-
-      if (intent === 'rental') {
-        return {
-          subtitle: `For “${query}”, this looks more like a rental or larger-stay request, so Vrbo is shown first.`,
-          cards: [
-            {
-              rank: 'Best match',
-              title: 'Vrbo',
-              note: 'Best for homes, family trips, and larger-stay options.',
-              url: buildVrboSearchUrl(query),
-              buttonClass: 'dark',
-              buttonText: 'Open Vrbo'
-            },
-            {
-              rank: 'Also useful',
-              title: 'Expedia',
-              note: 'Good secondary option for standard hotel results.',
-              url: buildExpediaSearchUrl(query),
-              buttonClass: 'primary',
-              buttonText: 'Open Expedia'
-            },
-            {
-              rank: 'Also useful',
-              title: 'Hotels.com',
-              note: 'Useful as a hotel-focused backup option.',
-              url: buildHotelsSearchUrl(query),
-              buttonClass: 'warn',
-              buttonText: 'Open Hotels.com'
-            }
-          ]
-        };
-      }
-
-      return {
-        subtitle: `For “${query}”, this looks more like a hotel or standard stay search, so Expedia is shown first.`,
-        cards: [
-          {
-            rank: 'Best match',
-            title: 'Expedia',
-            note: 'Strong first option for hotel and city-stay searches.',
-            url: buildExpediaSearchUrl(query),
-            buttonClass: 'primary',
-            buttonText: 'Open Expedia'
-          },
-          {
-            rank: 'Also useful',
-            title: 'Hotels.com',
-            note: 'Good second option for hotel browsing and additional choices.',
-            url: buildHotelsSearchUrl(query),
-            buttonClass: 'warn',
-            buttonText: 'Open Hotels.com'
-          },
-          {
-            rank: 'Alternative stay type',
-            title: 'Vrbo',
-            note: 'Useful if the traveler prefers rentals or larger properties.',
-            url: buildVrboSearchUrl(query),
-            buttonClass: 'dark',
-            buttonText: 'Open Vrbo'
-          }
-        ]
-      };
-    }
-
-    function runSmartRouting() {
-      const input = document.getElementById("searchInput");
-      const query = input.value.trim();
-
-      if (!query) {
-        alert("Please enter a destination.");
-        return;
-      }
-
-      const panel = document.getElementById("searchResultsPanel");
-      const title = document.getElementById("searchResultsTitle");
-      const sub = document.getElementById("searchResultsSub");
-      const grid = document.getElementById("searchResultsGrid");
-
-      const result = getSearchChoices(query);
-
-      title.textContent = `Best booking choices for ${query}`;
-      sub.textContent = result.subtitle;
-
-      grid.innerHTML = result.cards.map(card => `
-        <div class="search-result-card">
-          <div class="result-rank">${escapeHtml(card.rank)}</div>
-          <div class="strong">${escapeHtml(card.title)}</div>
-          <div class="status-note">${escapeHtml(card.note)}</div>
-          <div class="deal-actions">
-            <a class="tiny-btn ${escapeHtml(card.buttonClass)}" href="${escapeHtml(card.url)}" target="_blank" rel="noopener noreferrer">
-              ${escapeHtml(card.buttonText)}
-            </a>
-          </div>
-        </div>
-      `).join("");
-
-      panel.classList.add("active");
-    }
-
-    function handleSearchKey(event) {
-      if (event.key === "Enter") {
-        runSmartRouting();
-      }
-    }
-
-    function clearSearchRouting() {
-      document.getElementById("searchInput").value = "";
-      document.getElementById("searchResultsGrid").innerHTML = "";
-      document.getElementById("searchResultsSub").textContent = "";
-      document.getElementById("searchResultsPanel").classList.remove("active");
-    }
-
-    function openVideoModal(video) {
-      const modal = document.getElementById('videoModal');
-      const player = document.getElementById('modalPlayer');
-      const title = document.getElementById('modalTitle');
-      const meta = document.getElementById('modalMeta');
-      const openYoutube = document.getElementById('modalOpenYoutube');
-
-      title.textContent = video.title || 'Video';
-      meta.textContent = `${video.channel || 'YouTube'}${video.time ? ` • ${video.time}` : ''}`;
-      openYoutube.href = video.watchUrl || '#';
-
-      if (video.embeddable !== false && video.embedPlayerUrl) {
-        player.src = video.embedPlayerUrl;
-        player.style.display = 'block';
-      } else {
-        player.removeAttribute('src');
-        player.style.display = 'none';
-      }
-
-      modal.classList.add('active');
-    }
-
-    function closeVideoModal(evt) {
-      if (evt && evt.target && evt.target.id !== 'videoModal') return;
-      const modal = document.getElementById('videoModal');
-      const player = document.getElementById('modalPlayer');
-      player.removeAttribute('src');
-      modal.classList.remove('active');
-    }
-
-    function openVideoFromDataset(element) {
-      try {
-        const raw = element.getAttribute('data-video') || '';
-        const video = JSON.parse(decodeURIComponent(raw));
-        openVideoModal(video);
-      } catch (error) {
-        console.error('openVideoFromDataset failed:', error);
-      }
-    }
-
-    function renderVideoCards(containerId, videos, emptyMessage) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-
-      if (!videos.length) {
-        container.innerHTML = `
-          <div class="card empty-card">
-            <div class="strong">${emptyMessage}</div>
-            <div class="status-note">Please try again shortly.</div>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = videos.map(video => {
-        const safeData = encodeURIComponent(JSON.stringify(video));
-        return `
-          <div class="card video-card" onclick="openVideoFromDataset(this)" data-video="${safeData}">
-            <div class="video-thumb-wrap">
-              <img
-                class="video-thumb"
-                src="${escapeHtml(video.thumbnail || '')}"
-                alt="${escapeHtml(video.title || 'YouTube video')}"
-                loading="lazy"
-                referrerpolicy="no-referrer"
-                onerror="this.src='https://placehold.co/640x360/e2e8f0/64748b?text=Video';"
-              />
-              <div class="play-badge">
-                <div class="play-badge-circle">
-                  <div class="play-triangle"></div>
-                </div>
-              </div>
-            </div>
-            <div class="video-title">${escapeHtml(video.title || 'YouTube video')}</div>
-            <div class="video-channel">${escapeHtml(video.channel || 'YouTube')}</div>
-            <div class="label" style="margin-top:5px">
-              YouTube${video.views ? ` • ${escapeHtml(video.views)}` : ''}${video.time ? ` • ${escapeHtml(video.time)}` : ''}
-            </div>
-            <div class="video-actions">
-              <button class="tiny-btn primary" onclick="event.stopPropagation(); openVideoFromDataset(this.closest('.video-card'))">Play here</button>
-              <a class="tiny-btn" href="${escapeHtml(video.watchUrl || '#')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">YouTube</a>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderFallbackMedia() {
-      const wrap = document.getElementById('fallbackMediaWrap');
-      const grid = document.getElementById('fallbackMediaGrid');
-      const youtubeWrap = document.getElementById('youtubeFeedWrap');
-      const mediaBadge = document.getElementById('mediaModeBadge');
-
-      const cards = [
-        {
-          badge: 'Built-in motion',
-          title: 'Beach getaway inspiration',
-          text: 'Keep the page lively even when live video is unavailable.',
-          icon: '🌴',
-          className: '',
-          cta1: { label: 'Browse Expedia', link: AFFILIATE_LINKS.expediaAffiliate },
-          cta2: { label: 'Hotels.com', link: AFFILIATE_LINKS.hotelsAffiliate },
-          caption: 'Sunny stays and beach energy'
-        },
-        {
-          badge: 'Built-in motion',
-          title: 'Family vacation ideas',
-          text: 'Show movement and travel discovery without depending on a live API.',
-          icon: '🎡',
-          className: 'sunset',
-          cta1: { label: 'View Hotels', link: AFFILIATE_LINKS.hotelsAffiliate },
-          cta2: { label: 'Try Vrbo', link: AFFILIATE_LINKS.vrboAffiliate },
-          caption: 'Family-ready stays and larger lodging'
-        },
-        {
-          badge: 'Built-in motion',
-          title: 'City trips and fast stays',
-          text: 'Designed to keep users browsing and moving toward monetized actions.',
-          icon: '🌃',
-          className: 'night',
-          cta1: { label: 'Open Expedia', link: AFFILIATE_LINKS.expediaAffiliate },
-          cta2: { label: 'Open Vrbo', link: AFFILIATE_LINKS.vrboAffiliate },
-          caption: 'Fast city breaks and short-stay travel'
-        }
-      ];
-
-      grid.innerHTML = cards.map(card => `
-        <div class="card fallback-card">
-          <div class="media-badge">${escapeHtml(card.badge)}</div>
-          <div class="fallback-thumb-wrap ${escapeHtml(card.className)}">
-            <div class="fallback-icon">${escapeHtml(card.icon)}</div>
-            <div class="floating-shape shape-1"></div>
-            <div class="floating-shape shape-2"></div>
-            <div class="floating-shape shape-3"></div>
-            <div class="route-line"></div>
-            <div class="fallback-caption">${escapeHtml(card.caption)}</div>
-          </div>
-          <div class="strong">${escapeHtml(card.title)}</div>
-          <div class="status-note">${escapeHtml(card.text)}</div>
-          <div class="media-actions">
-            <a class="tiny-btn primary" href="${escapeHtml(card.cta1.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(card.cta1.label)}</a>
-            <a class="tiny-btn dark" href="${escapeHtml(card.cta2.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(card.cta2.label)}</a>
-          </div>
-        </div>
-      `).join('');
-
-      youtubeWrap.classList.add('hidden');
-      wrap.classList.remove('hidden');
-      mediaBadge.textContent = 'Fallback media';
-    }
-
-    function showLiveMediaMode() {
-      document.getElementById('youtubeFeedWrap').classList.remove('hidden');
-      document.getElementById('fallbackMediaWrap').classList.add('hidden');
-      document.getElementById('mediaModeBadge').textContent = 'Live travel media';
-    }
-
-    async function fetchJson(url) {
-      const res = await fetch(url);
-      const text = await res.text();
-
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = null;
-      }
-
-      if (!res.ok) {
-        const message = data?.error?.message || data?.message || `Request failed with HTTP ${res.status}`;
-        throw new Error(message);
-      }
-
-      if (data?.error) {
-        throw new Error(data.error.message || 'API returned an error object');
-      }
-
-      return data;
-    }
-
-    async function renderYouTubeFeed() {
-      const container = document.getElementById('youtubeFeed');
-      const statusNote = document.getElementById('youtubeStatusNote');
-      if (!container) return [];
-
-      container.innerHTML = `<div class="card empty-card"><div class="strong">Loading live travel videos...</div><div class="status-note">Trying the current media feed now.</div></div>`;
-
-      try {
-        const data = await fetchJson('/api/youtube/trending?region=US');
-        const items = Array.isArray(data.items) ? data.items : [];
-        const videos = items.slice(0, 6).map(buildVideoObject).filter(v => v && v.watchUrl);
-
-        if (!videos.length) throw new Error('No live videos returned.');
-
-        statusNote.textContent = 'Live travel video feed is active.';
-        renderVideoCards('youtubeFeed', videos, 'Popular videos unavailable');
-        return videos;
-      } catch (error) {
-        console.error('renderYouTubeFeed failed:', error);
-        statusNote.textContent = 'Live video is unavailable right now.';
-        return [];
-      }
-    }
-
-    async function initApp() {
-      const videos = await renderYouTubeFeed();
-      if (!videos.length) {
-        renderFallbackMedia();
-      } else {
-        showLiveMediaMode();
-      }
-    }
-
-    initApp();
-  </script>
+<div class="app">
+<div class="topbar">
+<div class="logo">
+<div class="logo-mark" aria-hidden="true">
+<svg viewBox="0 0 120 120" width="38" height="38" role="img">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#2563eb"/>
+<stop offset="100%" stop-color="#06b6d4"/>
+</linearGradient>
+</defs>
+<circle cx="60" cy="60" r="6" fill="url(#g)"/>
+<circle cx="60" cy="60" r="16" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.9"/>
+<circle cx="60" cy="60" r="26" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.7"/>
+<circle cx="60" cy="60" r="36" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.5"/>
+<path d="M60 78 L60 42 M60 42 L50 52 M60 42 L70 52" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<div>SignalBoost AI</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="chip">Hotels & Stays</button>
+</div>
+</div>
+
+<section class="hero">
+<h1>Find hotels and stays faster</h1>
+<p class="sub">Search real hotel deals and choose the booking path that fits the trip best.</p>
+
+<!--
+CHANGE LOG
+1. Search result buttons are now destination-aware.
+2. Known generic affiliate links remain on the homepage cards.
+3. Search result URLs use destination-aware search pages when possible.
+4. If later you receive partner-supported affiliate deep links, replace only:
+- buildExpediaDestinationUrl()
+- buildHotelsDestinationUrl()
+- buildVrboDestinationUrl()
+-->
+<div class="search-wrap">
+<div class="search-box">
+<input
+id="searchInput"
+type="text"
+placeholder="Try: Paris, New York, Tokyo, family rental in Orlando"
+onkeydown="handleSearchKey(event)"
+/>
+<button class="btn primary" onclick="runSmartRouting()">Search</button>
+<button class="btn" onclick="clearSearchRouting()">Clear</button>
+</div>
+<div class="search-help">
+Search shows destination-aware booking choices for the place you type.
+</div>
+
+<div class="search-results-panel" id="searchResultsPanel">
+<div class="search-results-title" id="searchResultsTitle">Best booking choices</div>
+<div class="search-results-sub" id="searchResultsSub"></div>
+<div class="search-results-grid" id="searchResultsGrid"></div>
+</div>
+</div>
+</section>
+
+<div class="layout">
+<section class="module">
+<div class="module-header">
+<h2>Stay Actions</h2>
+<span class="mode-badge">Main user path</span>
+</div>
+<div class="action-grid">
+<div class="card action-card">
+<div class="action-icon">🏨</div>
+<div class="strong">Search Hotels</div>
+<div class="status-note">Primary hotel path through Expedia.</div>
+<div class="deal-actions">
+<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Open Expedia</a>
+</div>
+</div>
+
+<div class="card action-card">
+<div class="action-icon">🛏️</div>
+<div class="strong">Hotel Deals</div>
+<div class="status-note">Secondary hotel path through Hotels.com.</div>
+<div class="deal-actions">
+<a class="tiny-btn warn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
+</div>
+</div>
+
+<div class="card action-card">
+<div class="action-icon">🏡</div>
+<div class="strong">Vacation Rentals</div>
+<div class="status-note">Alternative stay path for homes and longer-stay lodging via Vrbo.</div>
+<div class="deal-actions">
+<a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Open Vrbo</a>
+</div>
+</div>
+
+<div class="card action-card">
+<div class="action-icon">🔎</div>
+<div class="strong">More Hotel Options</div>
+<div class="status-note">Send users to Hotels.com for additional hotel browsing options.</div>
+<div class="deal-actions">
+<a class="tiny-btn success" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
+</div>
+</div>
+</div>
+</section>
+
+<section class="module">
+<div class="module-header">
+<h2>Popular Stay Picks</h2>
+<span class="mode-badge">Hotels & Rentals</span>
+</div>
+<div class="hotel-grid">
+<div class="card hotel-card">
+<div class="hotel-badge">Miami</div>
+<div class="strong">Beach hotels and short stays</div>
+<div class="status-note">Useful for resort-style booking intent.</div>
+<div class="hotel-actions">
+<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
+<a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
+<a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
+</div>
+</div>
+
+<div class="card hotel-card">
+<div class="hotel-badge">Orlando</div>
+<div class="strong">Family stays and larger properties</div>
+<div class="status-note">Useful for family travel and longer stays.</div>
+<div class="hotel-actions">
+<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
+<a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
+<a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
+</div>
+</div>
+
+<div class="card hotel-card">
+<div class="hotel-badge">Las Vegas</div>
+<div class="strong">Quick-book hotels and short city stays</div>
+<div class="status-note">Useful for short booking windows.</div>
+<div class="hotel-actions">
+<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
+<a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
+<a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
+</div>
+</div>
+
+<div class="card hotel-card">
+<div class="hotel-badge">New York</div>
+<div class="strong">City hotels and urban stays</div>
+<div class="status-note">Useful for short stays and city-center demand.</div>
+<div class="hotel-actions">
+<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Expedia</a>
+<a class="tiny-btn" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Hotels.com</a>
+<a class="tiny-btn dark" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Vrbo</a>
+</div>
+</div>
+</div>
+</section>
+
+<section class="module">
+<div class="module-header">
+<h2>Top Deals</h2>
+<span class="mode-badge">Monetized</span>
+</div>
+<div class="deal-grid">
+<div class="card deal-card">
+<div class="deal-badge">Expedia</div>
+<div class="strong">Search Hotel Deals</div>
+<div class="status-note">Primary hotel booking path using Expedia.</div>
+<div class="deal-actions">
+<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Search on Expedia</a>
+</div>
+</div>
+
+<div class="card deal-card">
+<div class="deal-badge">Hotels.com</div>
+<div class="strong">Hotel Deals</div>
+<div class="status-note">Secondary hotel booking path using Hotels.com.</div>
+<div class="deal-actions">
+<a class="tiny-btn primary" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Search on Hotels.com</a>
+</div>
+</div>
+
+<div class="card deal-card">
+<div class="deal-badge">Vrbo</div>
+<div class="strong">Vacation Rentals</div>
+<div class="status-note">Alternative lodging path for homes and vacation rentals.</div>
+<div class="deal-actions">
+<a class="tiny-btn primary" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Search on Vrbo</a>
+</div>
+</div>
+
+<div class="card deal-card">
+<div class="deal-badge">Hotels.com</div>
+<div class="strong">More Hotel Options</div>
+<div class="status-note">Additional hotel browsing path using Hotels.com.</div>
+<div class="deal-actions">
+<a class="tiny-btn primary" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
+</div>
+</div>
+</div>
+</section>
+
+<section class="module" id="mediaSection">
+<div class="module-header">
+<h2>Featured Travel Moments</h2>
+<span class="mode-badge" id="mediaModeBadge">Adaptive media</span>
+</div>
+
+<div id="youtubeFeedWrap">
+<div class="module-note" id="youtubeStatusNote">Trying live travel video feed.</div>
+<div class="video-grid" id="youtubeFeed"></div>
+</div>
+
+<div id="fallbackMediaWrap" class="hidden">
+<div class="module-note">Live video is unavailable right now, so SignalBoost is showing built-in travel media instead.</div>
+<div class="fallback-grid" id="fallbackMediaGrid"></div>
+</div>
+</section>
+</div>
+</div>
+
+<div class="modal" id="videoModal" onclick="closeVideoModal(event)">
+<div class="modal-panel" onclick="event.stopPropagation()">
+<div class="modal-head">
+<div>
+<div class="strong" id="modalTitle">Video</div>
+<div class="label" id="modalMeta">YouTube</div>
+</div>
+<button class="modal-close" onclick="closeVideoModal()">&times;</button>
+</div>
+<div class="modal-body">
+<iframe id="modalPlayer" class="modal-player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<div class="modal-actions">
+<a id="modalOpenYoutube" class="tiny-btn primary" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+/*
+CHANGE LOG
+vNext destination-aware routing
+- Homepage static cards still use your confirmed affiliate links.
+- Search results now use destination-aware URLs when possible.
+- This is the safest current setup because only the generic affiliate links
+are confirmed in this chat.
+- When you get true affiliate deep-link templates from each partner,
+replace only the 3 build...DestinationUrl() functions below.
+*/
+
+const AFFILIATE_LINKS = {
+expediaAffiliate: 'https://expedia.com/affiliate/6N7hRHZ',
+hotelsAffiliate: 'https://www.hotels.com/affiliate/5BoP8Nf',
+vrboAffiliate: 'https://vrbo.com/affiliate/M2nsa7i'
+};
+
+function escapeHtml(value) {
+return String(value ?? '')
+.replaceAll('&', '&amp;')
+.replaceAll('<', '&lt;')
+.replaceAll('>', '&gt;')
+.replaceAll('"', '&quot;')
+.replaceAll("'", '&#39;');
+}
+
+function formatCompactNumber(value) {
+if (value >= 1000000000) return (value / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+if (value >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+return String(value || 0);
+}
+
+function hoursAgoFromPublishedAt(publishedAt) {
+if (!publishedAt) return 'recent';
+const then = new Date(publishedAt).getTime();
+const hours = Math.max(1, Math.round((Date.now() - then) / 3600000));
+return `${hours}h ago`;
+}
+
+function buildVideoObject(item) {
+const id = item.id || item.videoId || '';
+const thumbnail = item.thumbnail || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
+const watchUrl = item.watchUrl || (id ? `https://www.youtube.com/watch?v=${id}` : '#');
+const embedPlayerUrl = item.embedPlayerUrl || (id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` : '');
+
+return {
+id,
+title: item.title || 'YouTube video',
+channel: item.channel || 'YouTube',
+views: item.views
+? (typeof item.views === 'string' ? item.views : `${formatCompactNumber(Number(item.views || 0))} views`)
+: '',
+time: item.time || hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString()),
+thumbnail,
+embeddable: item.embeddable !== false,
+embedPlayerUrl,
+watchUrl
+};
+}
+
+/*
+DESTINATION-AWARE URL BUILDERS
+
+CURRENT BEHAVIOR
+- These create destination-aware partner search URLs.
+- They do not use the generic affiliate links because generic affiliate
+links and destination deep links are not the same thing unless the
+partner explicitly provides a deep-link format.
+
+LATER UPGRADE
+- Replace these URLs with official affiliate deep-link templates when you
+have them from Expedia / Hotels.com / Vrbo.
+*/
+function buildExpediaDestinationUrl(query) {
+return `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(query)}`;
+}
+
+function buildHotelsDestinationUrl(query) {
+return `https://www.hotels.com/Hotel-Search?destination=${encodeURIComponent(query)}`;
+}
+
+function buildVrboDestinationUrl(query) {
+return `https://www.vrbo.com/search?destination=${encodeURIComponent(query)}`;
+}
+
+function detectSearchIntent(query) {
+const q = query.toLowerCase();
+
+const rentalSignals = [
+'rental', 'rentals', 'home', 'house', 'villa', 'cabin',
+'apartment', 'condo', 'family', 'group', 'vacation rental'
+];
+
+const hotelSignals = [
+'hotel', 'hotels', 'stay', 'stays', 'room', 'rooms',
+'motel', 'resort', 'lodging'
+];
+
+const hasRental = rentalSignals.some(word => q.includes(word));
+const hasHotel = hotelSignals.some(word => q.includes(word));
+
+if (hasRental && !hasHotel) return 'rental';
+if (hasHotel && !hasRental) return 'hotel';
+if (hasRental && hasHotel) return 'mixed';
+return 'general';
+}
+
+function getSearchChoices(query) {
+const intent = detectSearchIntent(query);
+
+if (intent === 'rental') {
+return {
+subtitle: `For “${query}”, this looks more like a rental or larger-stay request, so Vrbo is shown first.`,
+cards: [
+{
+rank: 'Best match',
+title: 'Vrbo',
+note: 'Best for homes, family trips, and larger-stay options.',
+url: buildVrboDestinationUrl(query),
+buttonClass: 'dark',
+buttonText: 'Search Vrbo'
+},
+{
+rank: 'Also useful',
+title: 'Expedia',
+note: 'Good secondary option for standard hotel results.',
+url: buildExpediaDestinationUrl(query),
+buttonClass: 'primary',
+buttonText: 'Search Expedia'
+},
+{
+rank: 'Also useful',
+title: 'Hotels.com',
+note: 'Useful as a hotel-focused backup option.',
+url: buildHotelsDestinationUrl(query),
+buttonClass: 'warn',
+buttonText: 'Search Hotels.com'
+}
+]
+};
+}
+
+return {
+subtitle: `For “${query}”, this looks more like a hotel or standard stay search, so Expedia is shown first.`,
+cards: [
+{
+rank: 'Best match',
+title: 'Expedia',
+note: 'Strong first option for hotel and city-stay searches.',
+url: buildExpediaDestinationUrl(query),
+buttonClass: 'primary',
+buttonText: 'Search Expedia'
+},
+{
+rank: 'Also useful',
+title: 'Hotels.com',
+note: 'Good second option for hotel browsing and additional choices.',
+url: buildHotelsDestinationUrl(query),
+buttonClass: 'warn',
+buttonText: 'Search Hotels.com'
+},
+{
+rank: 'Alternative stay type',
+title: 'Vrbo',
+note: 'Useful if the traveler prefers rentals or larger properties.',
+url: buildVrboDestinationUrl(query),
+buttonClass: 'dark',
+buttonText: 'Search Vrbo'
+}
+]
+};
+}
+
+function runSmartRouting() {
+const input = document.getElementById("searchInput");
+const query = input.value.trim();
+
+if (!query) {
+alert("Please enter a destination.");
+return;
+}
+
+const panel = document.getElementById("searchResultsPanel");
+const title = document.getElementById("searchResultsTitle");
+const sub = document.getElementById("searchResultsSub");
+const grid = document.getElementById("searchResultsGrid");
+
+const result = getSearchChoices(query);
+
+title.textContent = `Best booking choices for ${query}`;
+sub.textContent = result.subtitle;
+
+grid.innerHTML = result.cards.map(card => `
+<div class="search-result-card">
+<div class="result-rank">${escapeHtml(card.rank)}</div>
+<div class="strong">${escapeHtml(card.title)}</div>
+<div class="status-note">${escapeHtml(card.note)}</div>
+<div class="deal-actions">
+<a class="tiny-btn ${escapeHtml(card.buttonClass)}" href="${escapeHtml(card.url)}" target="_blank" rel="noopener noreferrer">
+${escapeHtml(card.buttonText)}
+</a>
+</div>
+</div>
+`).join("");
+
+panel.classList.add("active");
+}
+
+function handleSearchKey(event) {
+if (event.key === "Enter") {
+runSmartRouting();
+}
+}
+
+function clearSearchRouting() {
+document.getElementById("searchInput").value = "";
+document.getElementById("searchResultsGrid").innerHTML = "";
+document.getElementById("searchResultsSub").textContent = "";
+document.getElementById("searchResultsPanel").classList.remove("active");
+}
+
+function openVideoModal(video) {
+const modal = document.getElementById('videoModal');
+const player = document.getElementById('modalPlayer');
+const title = document.getElementById('modalTitle');
+const meta = document.getElementById('modalMeta');
+const openYoutube = document.getElementById('modalOpenYoutube');
+
+title.textContent = video.title || 'Video';
+meta.textContent = `${video.channel || 'YouTube'}${video.time ? ` • ${video.time}` : ''}`;
+openYoutube.href = video.watchUrl || '#';
+
+if (video.embeddable !== false && video.embedPlayerUrl) {
+player.src = video.embedPlayerUrl;
+player.style.display = 'block';
+} else {
+player.removeAttribute('src');
+player.style.display = 'none';
+}
+
+modal.classList.add('active');
+}
+
+function closeVideoModal(evt) {
+if (evt && evt.target && evt.target.id !== 'videoModal') return;
+const modal = document.getElementById('videoModal');
+const player = document.getElementById('modalPlayer');
+player.removeAttribute('src');
+modal.classList.remove('active');
+}
+
+function openVideoFromDataset(element) {
+try {
+const raw = element.getAttribute('data-video') || '';
+const video = JSON.parse(decodeURIComponent(raw));
+openVideoModal(video);
+} catch (error) {
+console.error('openVideoFromDataset failed:', error);
+}
+}
+
+function renderVideoCards(containerId, videos, emptyMessage) {
+const container = document.getElementById(containerId);
+if (!container) return;
+
+if (!videos.length) {
+container.innerHTML = `
+<div class="card empty-card">
+<div class="strong">${emptyMessage}</div>
+<div class="status-note">Please try again shortly.</div>
+</div>
+`;
+return;
+}
+
+container.innerHTML = videos.map(video => {
+const safeData = encodeURIComponent(JSON.stringify(video));
+return `
+<div class="card video-card" onclick="openVideoFromDataset(this)" data-video="${safeData}">
+<div class="video-thumb-wrap">
+<img
+class="video-thumb"
+src="${escapeHtml(video.thumbnail || '')}"
+alt="${escapeHtml(video.title || 'YouTube video')}"
+loading="lazy"
+referrerpolicy="no-referrer"
+onerror="this.src='https://placehold.co/640x360/e2e8f0/64748b?text=Video';"
+/>
+<div class="play-badge">
+<div class="play-badge-circle">
+<div class="play-triangle"></div>
+</div>
+</div>
+</div>
+<div class="video-title">${escapeHtml(video.title || 'YouTube video')}</div>
+<div class="video-channel">${escapeHtml(video.channel || 'YouTube')}</div>
+<div class="label" style="margin-top:5px">
+YouTube${video.views ? ` • ${escapeHtml(video.views)}` : ''}${video.time ? ` • ${escapeHtml(video.time)}` : ''}
+</div>
+<div class="video-actions">
+<button class="tiny-btn primary" onclick="event.stopPropagation(); openVideoFromDataset(this.closest('.video-card'))">Play here</button>
+<a class="tiny-btn" href="${escapeHtml(video.watchUrl || '#')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">YouTube</a>
+</div>
+</div>
+`;
+}).join('');
+}
+
+function renderFallbackMedia() {
+const wrap = document.getElementById('fallbackMediaWrap');
+const grid = document.getElementById('fallbackMediaGrid');
+const youtubeWrap = document.getElementById('youtubeFeedWrap');
+const mediaBadge = document.getElementById('mediaModeBadge');
+
+const cards = [
+{
+badge: 'Built-in motion',
+title: 'Beach getaway inspiration',
+text: 'Keep the page lively even when live video is unavailable.',
+icon: '🌴',
+className: '',
+cta1: { label: 'Browse Expedia', link: AFFILIATE_LINKS.expediaAffiliate },
+cta2: { label: 'Hotels.com', link: AFFILIATE_LINKS.hotelsAffiliate },
+caption: 'Sunny stays and beach energy'
+},
+{
+badge: 'Built-in motion',
+title: 'Family vacation ideas',
+text: 'Show movement and travel discovery without depending on a live API.',
+icon: '🎡',
+className: 'sunset',
+cta1: { label: 'View Hotels', link: AFFILIATE_LINKS.hotelsAffiliate },
+cta2: { label: 'Try Vrbo', link: AFFILIATE_LINKS.vrboAffiliate },
+caption: 'Family-ready stays and larger lodging'
+},
+{
+badge: 'Built-in motion',
+title: 'City trips and fast stays',
+text: 'Designed to keep users browsing and moving toward monetized actions.',
+icon: '🌃',
+className: 'night',
+cta1: { label: 'Open Expedia', link: AFFILIATE_LINKS.expediaAffiliate },
+cta2: { label: 'Open Vrbo', link: AFFILIATE_LINKS.vrboAffiliate },
+caption: 'Fast city breaks and short-stay travel'
+}
+];
+
+grid.innerHTML = cards.map(card => `
+<div class="card fallback-card">
+<div class="media-badge">${escapeHtml(card.badge)}</div>
+<div class="fallback-thumb-wrap ${escapeHtml(card.className)}">
+<div class="fallback-icon">${escapeHtml(card.icon)}</div>
+<div class="floating-shape shape-1"></div>
+<div class="floating-shape shape-2"></div>
+<div class="floating-shape shape-3"></div>
+<div class="route-line"></div>
+<div class="fallback-caption">${escapeHtml(card.caption)}</div>
+</div>
+<div class="strong">${escapeHtml(card.title)}</div>
+<div class="status-note">${escapeHtml(card.text)}</div>
+<div class="media-actions">
+<a class="tiny-btn primary" href="${escapeHtml(card.cta1.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(card.cta1.label)}</a>
+<a class="tiny-btn dark" href="${escapeHtml(card.cta2.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(card.cta2.label)}</a>
+</div>
+</div>
+`).join('');
+
+youtubeWrap.classList.add('hidden');
+wrap.classList.remove('hidden');
+mediaBadge.textContent = 'Fallback media';
+}
+
+function showLiveMediaMode() {
+document.getElementById('youtubeFeedWrap').classList.remove('hidden');
+document.getElementById('fallbackMediaWrap').classList.add('hidden');
+document.getElementById('mediaModeBadge').textContent = 'Live travel media';
+}
+
+async function fetchJson(url) {
+const res = await fetch(url);
+const text = await res.text();
+
+let data;
+try {
+data = JSON.parse(text);
+} catch {
+data = null;
+}
+
+if (!res.ok) {
+const message = data?.error?.message || data?.message || `Request failed with HTTP ${res.status}`;
+throw new Error(message);
+}
+
+if (data?.error) {
+throw new Error(data.error.message || 'API returned an error object');
+}
+
+return data;
+}
+
+async function renderYouTubeFeed() {
+const container = document.getElementById('youtubeFeed');
+const statusNote = document.getElementById('youtubeStatusNote');
+if (!container) return [];
+
+container.innerHTML = `<div class="card empty-card"><div class="strong">Loading live travel videos...</div><div class="status-note">Trying the current media feed now.</div></div>`;
+
+try {
+const data = await fetchJson('/api/youtube/trending?region=US');
+const items = Array.isArray(data.items) ? data.items : [];
+const videos = items.slice(0, 6).map(buildVideoObject).filter(v => v && v.watchUrl);
+
+if (!videos.length) throw new Error('No live videos returned.');
+
+statusNote.textContent = 'Live travel video feed is active.';
+renderVideoCards('youtubeFeed', videos, 'Popular videos unavailable');
+return videos;
+} catch (error) {
+console.error('renderYouTubeFeed failed:', error);
+statusNote.textContent = 'Live video is unavailable right now.';
+return [];
+}
+}
+
+async function initApp() {
+const videos = await renderYouTubeFeed();
+if (!videos.length) {
+renderFallbackMedia();
+} else {
+showLiveMediaMode();
+}
+}
+
+initApp();
+</script>
 </body>
 </html>
