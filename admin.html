@@ -1,320 +1,712 @@
 <!--
-================ SIGNALBOOST AI ADMIN STARTER ================
+================ SIGNALBOOST ADMIN DASHBOARD BRAIN ================
 
 PURPOSE
-- Private owner-facing starter dashboard
-- Displays simple stats collected by index.html in localStorage
-- Helps the owner see whether the public page is actually getting use
+- Private owner-side dashboard for early SignalBoost testing
+- Reads local browser stats created by the public homepage
+- Helps owner see clicks, visits, and engagement signals
 
-CURRENT LIMITATION
-- This is NOT a real secure backend admin panel
-- It only reads browser-side localStorage stats from the same browser/device
-- It is useful now as a starter, but should later be replaced or extended with:
-  - real analytics
-  - backend event logging
-  - authentication / access control
+IMPORTANT LIMITATION
+- This is NOT real server analytics
+- This reads from localStorage on the current browser/device only
+- Good for testing and early structure
+- Later upgrade should use:
+- server-side event logging
+- protected admin login
+- persistent database
+- real reporting
 
-CURRENT METRICS SHOWN
-- total page visits
-- total video opens
-- affiliate click counts
-- general action click counts
-- last visit time
-- last stats update time
+CURRENT DATA SOURCE
+- localStorage key:
+signalboost_stats
 
-NEXT STEPS
-- Add password or real auth
-- Connect Google Analytics
-- Add server-side click logging
-- Add revenue estimates by partner
-- Add export/reporting capability
-==============================================================
+EXPECTED METRICS
+- total visits
+- affiliate clicks total
+- Expedia clicks
+- Hotels.com clicks
+- Vrbo clicks
+- compare clicks
+- video opens
+- fallback media views
+- last visit
+- last update
+- detailed click table by key
+
+HOW TO USE
+- Open:
+/admin.html
+- Use:
+refresh stats
+reset local stats
+open homepage
+
+SECURITY NOTE
+- This page is not secure by itself
+- Do not link it publicly
+- Later we should protect it properly
+
+===================================================================
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost Admin Starter</title>
-  <style>
-    :root {
-      --bg: #eef4ff;
-      --surface: #ffffff;
-      --border: rgba(148, 163, 184, 0.24);
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --accent: #06b6d4;
-      --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SignalBoost Admin</title>
+<style>
+:root {
+--bg: #eef4ff;
+--surface: rgba(255,255,255,0.96);
+--border: rgba(148,163,184,0.24);
+--text: #0f172a;
+--muted: #64748b;
+--primary: #2563eb;
+--accent: #06b6d4;
+--success: #15803d;
+--warning: #ea580c;
+--danger: #dc2626;
+--dark: #0f172a;
+--shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+--soft: rgba(37,99,235,0.06);
+}
 
-    * { box-sizing: border-box; }
+* { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
+body {
+margin: 0;
+font-family: Inter, Arial, sans-serif;
+background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
+color: var(--text);
+}
 
-    .app {
-      width: min(1200px, calc(100vw - 24px));
-      margin: 0 auto;
-      padding: 16px 0 32px;
-    }
+a {
+color: inherit;
+text-decoration: none;
+}
 
-    .topbar,
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-    }
+button {
+font: inherit;
+cursor: pointer;
+}
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      padding: 14px 18px;
-    }
+.app {
+width: min(1320px, calc(100vw - 24px));
+margin: 0 auto;
+padding: 12px 0 28px;
+}
 
-    .title {
-      font-weight: 900;
-      font-size: 24px;
-    }
+.topbar,
+.module,
+.stat-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 22px;
+box-shadow: var(--shadow);
+}
 
-    .subtitle {
-      color: var(--muted);
-      margin-top: 4px;
-    }
+.topbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+padding: 14px 16px;
+border-radius: 18px;
+}
 
-    .btn {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: transparent;
-      cursor: pointer;
-      color: inherit;
-      text-decoration: none;
-      display: inline-block;
-    }
+.logo {
+display: flex;
+align-items: center;
+gap: 12px;
+font-size: 22px;
+font-weight: 900;
+letter-spacing: -0.02em;
+}
 
-    .btn.primary {
-      border: none;
-      color: white;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-    }
+.logo-mark {
+width: 58px;
+height: 58px;
+border-radius: 14px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: #fff;
+border: 1px solid var(--border);
+overflow: hidden;
+flex-shrink: 0;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
+.toolbar {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+}
 
-    .panel {
-      padding: 18px;
-    }
+.btn {
+padding: 10px 14px;
+border-radius: 999px;
+border: 1px solid var(--border);
+background: white;
+transition: 0.15s ease;
+}
 
-    .metric-value {
-      font-size: 32px;
-      font-weight: 900;
-      margin-top: 8px;
-    }
+.btn:hover {
+transform: translateY(-1px);
+}
 
-    .label {
-      font-size: 12px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
+.btn.primary {
+color: white;
+border: none;
+font-weight: 700;
+background: linear-gradient(135deg, var(--primary), var(--accent));
+}
 
-    .section {
-      margin-top: 20px;
-    }
+.btn.dark {
+color: white;
+border: none;
+font-weight: 700;
+background: linear-gradient(135deg, var(--dark), #334155);
+}
 
-    .list {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
+.btn.warn {
+color: white;
+border: none;
+font-weight: 700;
+background: linear-gradient(135deg, var(--warning), #fb923c);
+}
 
-    .item {
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.72);
-    }
+.btn.danger {
+color: white;
+border: none;
+font-weight: 700;
+background: linear-gradient(135deg, var(--danger), #ef4444);
+}
 
-    .note {
-      color: var(--muted);
-      line-height: 1.6;
-    }
+.intro {
+margin-top: 18px;
+padding: 24px;
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 22px;
+box-shadow: var(--shadow);
+}
 
-    .empty {
-      color: var(--muted);
-      font-style: italic;
-    }
+h1 {
+margin: 0 0 10px;
+font-size: 40px;
+line-height: 1.04;
+letter-spacing: -0.03em;
+}
 
-    @media (max-width: 1000px) {
-      .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
+h2 {
+margin: 0;
+font-size: 24px;
+}
 
-    @media (max-width: 640px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+.sub {
+margin: 0;
+color: var(--muted);
+line-height: 1.65;
+font-size: 17px;
+max-width: 900px;
+}
+
+.layout {
+margin-top: 20px;
+display: grid;
+gap: 20px;
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 14px;
+}
+
+.stat-card {
+padding: 18px;
+}
+
+.stat-label {
+font-size: 12px;
+color: var(--muted);
+text-transform: uppercase;
+letter-spacing: 0.06em;
+}
+
+.stat-value {
+margin-top: 8px;
+font-size: 34px;
+font-weight: 900;
+letter-spacing: -0.03em;
+}
+
+.stat-note {
+margin-top: 8px;
+color: var(--muted);
+font-size: 13px;
+line-height: 1.5;
+}
+
+.module {
+padding: 20px;
+}
+
+.module-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 10px;
+flex-wrap: wrap;
+margin-bottom: 14px;
+}
+
+.mode-badge {
+font-size: 11px;
+color: var(--muted);
+}
+
+.status-box {
+padding: 14px;
+border: 1px solid var(--border);
+border-radius: 16px;
+background: var(--soft);
+line-height: 1.65;
+color: var(--text);
+}
+
+.two-col {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px;
+}
+
+.mini-card {
+padding: 14px;
+border: 1px solid var(--border);
+border-radius: 16px;
+background: rgba(255,255,255,0.82);
+}
+
+.mini-title {
+font-size: 13px;
+color: var(--muted);
+margin-bottom: 6px;
+}
+
+.mini-value {
+font-size: 24px;
+font-weight: 800;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+overflow: hidden;
+border-radius: 16px;
+border: 1px solid var(--border);
+background: rgba(255,255,255,0.82);
+}
+
+th, td {
+padding: 12px 14px;
+text-align: left;
+border-bottom: 1px solid var(--border);
+vertical-align: top;
+}
+
+th {
+font-size: 12px;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+color: var(--muted);
+background: rgba(248,250,252,0.9);
+}
+
+tr:last-child td {
+border-bottom: none;
+}
+
+.empty {
+color: var(--muted);
+font-style: italic;
+}
+
+.foot-note {
+color: var(--muted);
+font-size: 13px;
+line-height: 1.6;
+}
+
+@media (max-width: 1100px) {
+.stats-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.two-col {
+grid-template-columns: 1fr;
+}
+}
+
+@media (max-width: 700px) {
+.stats-grid {
+grid-template-columns: 1fr;
+}
+
+h1 {
+font-size: 32px;
+}
+
+.app {
+width: min(100vw - 16px, 1320px);
+}
+}
+</style>
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div>
-        <div class="title">SignalBoost Admin Starter</div>
-        <div class="subtitle">Owner-side starter dashboard using local browser stats</div>
-      </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <a class="btn" href="index.html">Open homepage</a>
-        <button class="btn primary" onclick="refreshDashboard()">Refresh stats</button>
-        <button class="btn" onclick="resetStats()">Reset local stats</button>
-      </div>
-    </div>
+<div class="app">
+<div class="topbar">
+<div class="logo">
+<div class="logo-mark" aria-hidden="true">
+<svg viewBox="0 0 120 120" width="42" height="42" role="img">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#2563eb"/>
+<stop offset="100%" stop-color="#06b6d4"/>
+</linearGradient>
+</defs>
+<circle cx="60" cy="60" r="6" fill="url(#g)"/>
+<circle cx="60" cy="60" r="16" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.9"/>
+<circle cx="60" cy="60" r="26" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.7"/>
+<circle cx="60" cy="60" r="36" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.5"/>
+<path d="M60 78 L60 42 M60 42 L50 52 M60 42 L70 52" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<div>SignalBoost Admin</div>
+</div>
 
-    <div class="grid">
-      <div class="panel">
-        <div class="label">Total Visits</div>
-        <div class="metric-value" id="metricVisits">0</div>
-      </div>
+<div class="toolbar">
+<button class="btn primary" onclick="refreshDashboard()">Refresh stats</button>
+<button class="btn dark" onclick="openHomepage()">Open homepage</button>
+<button class="btn warn" onclick="exportStats()">Export JSON</button>
+<button class="btn danger" onclick="resetStats()">Reset local stats</button>
+</div>
+</div>
 
-      <div class="panel">
-        <div class="label">Video Opens</div>
-        <div class="metric-value" id="metricVideoOpens">0</div>
-      </div>
+<section class="intro">
+<h1>Private owner dashboard</h1>
+<p class="sub">
+This is your starter business view for SignalBoost. It reads local browser stats created by the public homepage and helps you see which monetized paths and engagement elements are getting attention.
+</p>
+</section>
 
-      <div class="panel">
-        <div class="label">Affiliate Click Types</div>
-        <div class="metric-value" id="metricAffiliateTypes">0</div>
-      </div>
+<div class="layout">
+<section class="stats-grid">
+<div class="stat-card">
+<div class="stat-label">Total visits</div>
+<div class="stat-value" id="totalVisits">0</div>
+<div class="stat-note">Visits recorded on this browser.</div>
+</div>
 
-      <div class="panel">
-        <div class="label">Action Click Types</div>
-        <div class="metric-value" id="metricActionTypes">0</div>
-      </div>
-    </div>
+<div class="stat-card">
+<div class="stat-label">Affiliate clicks</div>
+<div class="stat-value" id="totalAffiliateClicks">0</div>
+<div class="stat-note">Total monetized outbound clicks tracked locally.</div>
+</div>
 
-    <div class="section panel">
-      <div class="label">Status</div>
-      <div class="list">
-        <div class="item"><strong>Current monetized path:</strong> Expedia travel link on homepage</div>
-        <div class="item"><strong>Current tracking layer:</strong> localStorage only</div>
-        <div class="item"><strong>Needs next:</strong> real analytics + server-side reporting</div>
-      </div>
-    </div>
+<div class="stat-card">
+<div class="stat-label">Video opens</div>
+<div class="stat-value" id="videoOpens">0</div>
+<div class="stat-note">How often users opened a video player.</div>
+</div>
 
-    <div class="section grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="panel">
-        <div class="label">Affiliate Click Counts</div>
-        <div class="list" id="affiliateList"></div>
-      </div>
+<div class="stat-card">
+<div class="stat-label">Fallback media views</div>
+<div class="stat-value" id="fallbackViews">0</div>
+<div class="stat-note">Shown when live media is unavailable.</div>
+</div>
+</section>
 
-      <div class="panel">
-        <div class="label">Action Click Counts</div>
-        <div class="list" id="actionList"></div>
-      </div>
-    </div>
+<section class="module">
+<div class="module-header">
+<h2>Revenue path summary</h2>
+<span class="mode-badge">Monetization focus</span>
+</div>
 
-    <div class="section panel">
-      <div class="label">Timestamps</div>
-      <div class="list">
-        <div class="item"><strong>Last Visit:</strong> <span id="lastVisit">—</span></div>
-        <div class="item"><strong>Last Stats Update:</strong> <span id="lastUpdate">—</span></div>
-      </div>
-    </div>
+<div class="two-col">
+<div class="mini-card">
+<div class="mini-title">Expedia clicks</div>
+<div class="mini-value" id="expediaClicks">0</div>
+</div>
 
-    <div class="section panel">
-      <div class="label">Notes</div>
-      <p class="note">
-        This admin page is intentionally simple. It only reads local browser data created by the public homepage.
-        It is useful for early testing, but not yet reliable as a business reporting system. The next upgrade should
-        be real analytics and protected admin access.
-      </p>
-    </div>
-  </div>
+<div class="mini-card">
+<div class="mini-title">Hotels.com clicks</div>
+<div class="mini-value" id="hotelsComClicks">0</div>
+</div>
 
-  <script>
-    /*
-      ==========================================================
-      ADMIN STARTER LOGIC
-      Reads local browser stats created by index.html.
-      ==========================================================
-    */
+<div class="mini-card">
+<div class="mini-title">Vrbo clicks</div>
+<div class="mini-value" id="vrboClicks">0</div>
+</div>
 
-    function getStats() {
-      const raw = localStorage.getItem('signalboost_stats');
-      if (raw) {
-        try {
-          return JSON.parse(raw);
-        } catch (error) {
-          console.error('Failed to parse stats:', error);
-        }
-      }
+<div class="mini-card">
+<div class="mini-title">Compare-stays clicks</div>
+<div class="mini-value" id="compareClicks">0</div>
+</div>
+</div>
+</section>
 
-      return {
-        totalVisits: 0,
-        affiliateClicks: {},
-        actionClicks: {},
-        videoOpens: 0,
-        lastVisitAt: null,
-        updatedAt: null
-      };
-    }
+<section class="module">
+<div class="module-header">
+<h2>Status</h2>
+<span class="mode-badge">Local testing layer</span>
+</div>
 
-    function renderKeyValueList(containerId, dataObject) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
+<div class="status-box" id="statusBox">
+Loading dashboard state...
+</div>
+</section>
 
-      const entries = Object.entries(dataObject || {});
-      if (!entries.length) {
-        container.innerHTML = `<div class="empty">No data yet</div>`;
-        return;
-      }
+<section class="module">
+<div class="module-header">
+<h2>Timestamps</h2>
+<span class="mode-badge">Local browser data</span>
+</div>
 
-      container.innerHTML = entries.map(([key, value]) => `
-        <div class="item">
-          <strong>${key}</strong><br />
-          <span>${value}</span>
-        </div>
-      `).join('');
-    }
+<div class="two-col">
+<div class="mini-card">
+<div class="mini-title">Last visit</div>
+<div class="mini-value" id="lastVisitAt" style="font-size:18px">—</div>
+</div>
 
-    function refreshDashboard() {
-      const stats = getStats();
+<div class="mini-card">
+<div class="mini-title">Last stats update</div>
+<div class="mini-value" id="updatedAt" style="font-size:18px">—</div>
+</div>
+</div>
+</section>
 
-      document.getElementById('metricVisits').textContent = stats.totalVisits || 0;
-      document.getElementById('metricVideoOpens').textContent = stats.videoOpens || 0;
-      document.getElementById('metricAffiliateTypes').textContent = Object.keys(stats.affiliateClicks || {}).length;
-      document.getElementById('metricActionTypes').textContent = Object.keys(stats.actionClicks || {}).length;
-      document.getElementById('lastVisit').textContent = stats.lastVisitAt || '—';
-      document.getElementById('lastUpdate').textContent = stats.updatedAt || '—';
+<section class="module">
+<div class="module-header">
+<h2>Detailed affiliate click counts</h2>
+<span class="mode-badge">By tracking key</span>
+</div>
 
-      renderKeyValueList('affiliateList', stats.affiliateClicks || {});
-      renderKeyValueList('actionList', stats.actionClicks || {});
-    }
+<table>
+<thead>
+<tr>
+<th>Tracking key</th>
+<th>Clicks</th>
+</tr>
+</thead>
+<tbody id="affiliateTableBody">
+<tr><td colspan="2" class="empty">No affiliate clicks yet.</td></tr>
+</tbody>
+</table>
+</section>
 
-    function resetStats() {
-      const confirmed = confirm('Reset local SignalBoost stats in this browser?');
-      if (!confirmed) return;
-      localStorage.removeItem('signalboost_stats');
-      refreshDashboard();
-    }
+<section class="module">
+<div class="module-header">
+<h2>Raw stats snapshot</h2>
+<span class="mode-badge">Debug / verify</span>
+</div>
 
-    refreshDashboard();
-  </script>
+<div class="status-box">
+<pre id="rawStats" style="margin:0; white-space:pre-wrap; word-break:break-word;"></pre>
+</div>
+</section>
+
+<section class="module">
+<div class="module-header">
+<h2>Notes</h2>
+<span class="mode-badge">Next upgrade</span>
+</div>
+
+<div class="foot-note">
+This dashboard is intentionally simple. It is useful for early testing, but it is not a full analytics system yet.
+The next upgrade should be real server-side event logging, protected admin access, and persistent business reporting across all users and devices.
+</div>
+</section>
+</div>
+</div>
+
+<script>
+/*
+=========================================================
+SIGNALBOOST ADMIN LOGIC
+- Reads stats from localStorage
+- Shows starter owner dashboard
+- Helps validate early monetization clicks
+=========================================================
+*/
+
+const STORAGE_KEY = 'signalboost_stats';
+
+function getEmptyStats() {
+return {
+totalVisits: 0,
+affiliateClicks: {},
+videoOpens: 0,
+mediaFallbackViews: 0,
+lastVisitAt: null,
+updatedAt: null
+};
+}
+
+function getStats() {
+const raw = localStorage.getItem(STORAGE_KEY);
+
+if (!raw) return getEmptyStats();
+
+try {
+const parsed = JSON.parse(raw);
+return {
+totalVisits: Number(parsed.totalVisits || 0),
+affiliateClicks: parsed.affiliateClicks || {},
+videoOpens: Number(parsed.videoOpens || 0),
+mediaFallbackViews: Number(parsed.mediaFallbackViews || 0),
+lastVisitAt: parsed.lastVisitAt || null,
+updatedAt: parsed.updatedAt || null
+};
+} catch (error) {
+console.error('Failed to parse stats:', error);
+return getEmptyStats();
+}
+}
+
+function formatDate(value) {
+if (!value) return '—';
+const date = new Date(value);
+if (Number.isNaN(date.getTime())) return String(value);
+return date.toLocaleString();
+}
+
+function sumObjectValues(obj) {
+return Object.values(obj || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+}
+
+function sumKeysByIncludes(obj, fragments) {
+const keys = Object.keys(obj || {});
+return keys.reduce((sum, key) => {
+const lower = key.toLowerCase();
+const match = fragments.some(fragment => lower.includes(fragment));
+return sum + (match ? Number(obj[key] || 0) : 0);
+}, 0);
+}
+
+function setText(id, value) {
+const el = document.getElementById(id);
+if (el) el.textContent = value;
+}
+
+function renderAffiliateTable(clicks) {
+const body = document.getElementById('affiliateTableBody');
+const entries = Object.entries(clicks || {}).sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0));
+
+if (!entries.length) {
+body.innerHTML = `<tr><td colspan="2" class="empty">No affiliate clicks yet.</td></tr>`;
+return;
+}
+
+body.innerHTML = entries.map(([key, value]) => `
+<tr>
+<td>${escapeHtml(key)}</td>
+<td>${Number(value || 0)}</td>
+</tr>
+`).join('');
+}
+
+function escapeHtml(value) {
+return String(value ?? '')
+.replaceAll('&', '&amp;')
+.replaceAll('<', '&lt;')
+.replaceAll('>', '&gt;')
+.replaceAll('"', '&quot;')
+.replaceAll("'", '&#39;');
+}
+
+function buildStatus(stats, totals) {
+const messages = [];
+
+messages.push(`Current data source: local browser storage only.`);
+messages.push(`Total visits recorded here: ${stats.totalVisits}.`);
+messages.push(`Total affiliate clicks recorded here: ${totals.totalAffiliateClicks}.`);
+messages.push(`Primary revenue signals so far: Expedia ${totals.expediaClicks}, Hotels.com ${totals.hotelsComClicks}, Vrbo ${totals.vrboClicks}.`);
+
+if (stats.videoOpens > 0) {
+messages.push(`Video engagement is active on this browser: ${stats.videoOpens} opens.`);
+} else {
+messages.push(`No video opens recorded yet on this browser.`);
+}
+
+if (stats.mediaFallbackViews > 0) {
+messages.push(`Fallback media was shown ${stats.mediaFallbackViews} time(s), which means live media was unavailable at least once.`);
+}
+
+messages.push(`Next upgrade needed: real server-side analytics + protected admin access.`);
+
+return messages.join(' ');
+}
+
+function refreshDashboard() {
+const stats = getStats();
+const clicks = stats.affiliateClicks || {};
+
+const totals = {
+totalAffiliateClicks: sumObjectValues(clicks),
+expediaClicks: sumKeysByIncludes(clicks, ['expedia']),
+hotelsComClicks: sumKeysByIncludes(clicks, ['hotelscom', 'hotel']),
+vrboClicks: sumKeysByIncludes(clicks, ['vrbo']),
+compareClicks: sumKeysByIncludes(clicks, ['compare'])
+};
+
+setText('totalVisits', stats.totalVisits);
+setText('totalAffiliateClicks', totals.totalAffiliateClicks);
+setText('videoOpens', stats.videoOpens);
+setText('fallbackViews', stats.mediaFallbackViews);
+
+setText('expediaClicks', totals.expediaClicks);
+setText('hotelsComClicks', totals.hotelsComClicks);
+setText('vrboClicks', totals.vrboClicks);
+setText('compareClicks', totals.compareClicks);
+
+setText('lastVisitAt', formatDate(stats.lastVisitAt));
+setText('updatedAt', formatDate(stats.updatedAt));
+
+document.getElementById('statusBox').textContent = buildStatus(stats, totals);
+document.getElementById('rawStats').textContent = JSON.stringify(stats, null, 2);
+
+renderAffiliateTable(clicks);
+}
+
+function openHomepage() {
+window.location.href = '/';
+}
+
+function exportStats() {
+const stats = getStats();
+const blob = new Blob([JSON.stringify(stats, null, 2)], { type: 'application/json' });
+const url = URL.createObjectURL(blob);
+
+const link = document.createElement('a');
+link.href = url;
+link.download = 'signalboost-stats.json';
+link.click();
+
+URL.revokeObjectURL(url);
+}
+
+function resetStats() {
+const confirmed = confirm('Reset local SignalBoost stats on this browser?');
+if (!confirmed) return;
+
+localStorage.removeItem(STORAGE_KEY);
+refreshDashboard();
+alert('Local stats reset on this browser.');
+}
+
+refreshDashboard();
+</script>
 </body>
 </html>
