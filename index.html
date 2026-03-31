@@ -1,3 +1,37 @@
+<!--
+FILE: index.html
+VERSION: v3.0
+STATUS: Public-safe working build
+
+CHANGE LOG
+- Added affiliate-ready Travel Essentials section
+- Added eSIM monetization card
+- Added car rental monetization card
+- Kept only working public features visible
+- Added documentation comments throughout code
+- Preserved working hotel/stay search system
+- Added clear separation between search, monetization, and media
+
+PUBLIC FEATURES ENABLED
+- Smart destination search
+- Expedia / Hotels.com / Vrbo static booking cards
+- Travel Essentials affiliate cards
+- Media section with live/fallback mode
+
+PUBLIC FEATURES DISABLED / HIDDEN
+- Visa tools
+- Unfinished comparison engine
+- Any non-working public action
+
+AFFILIATE NOTES
+- Replace AFFILIATE_LINKS.esim and AFFILIATE_LINKS.carRental with your exact Awin links
+- The current values below use the structure seen in your screenshots
+- If your copied Awin link differs, use your copied version as source of truth
+
+WORKING RULE
+- If a feature is not functional, do not show it publicly
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +50,7 @@
 --success: #15803d;
 --warning: #ea580c;
 --dark: #0f172a;
+--purple: #7c3aed;
 --shadow: 0 18px 48px rgba(15, 23, 42, 0.07);
 --card-bg: rgba(255,255,255,0.82);
 --bg-1: #eef4ff;
@@ -134,6 +169,13 @@ border: none;
 color: white;
 font-weight: 700;
 background: linear-gradient(135deg, var(--success), #22c55e);
+}
+
+.tiny-btn.purple {
+border: none;
+color: white;
+font-weight: 700;
+background: linear-gradient(135deg, var(--purple), #a855f7);
 }
 
 .hero {
@@ -298,7 +340,8 @@ font-size: 12px;
 
 .action-grid,
 .hotel-grid,
-.deal-grid {
+.deal-grid,
+.essentials-grid {
 display: grid;
 grid-template-columns: repeat(4, minmax(0, 1fr));
 gap: 10px;
@@ -321,20 +364,23 @@ min-width: 0;
 
 .action-card,
 .hotel-card,
-.deal-card {
+.deal-card,
+.essential-card {
 display: flex;
 flex-direction: column;
 gap: 8px;
-min-height: 185px;
+min-height: 190px;
 }
 
-.action-icon {
+.action-icon,
+.essential-icon {
 font-size: 22px;
 }
 
 .hotel-badge,
 .deal-badge,
-.media-badge {
+.media-badge,
+.essential-badge {
 align-self: flex-start;
 font-size: 10px;
 padding: 5px 9px;
@@ -344,9 +390,16 @@ color: var(--success);
 border: 1px solid rgba(21, 128, 61, 0.18);
 }
 
+.essential-badge {
+background: rgba(124, 58, 237, 0.10);
+color: var(--purple);
+border: 1px solid rgba(124, 58, 237, 0.18);
+}
+
 .deal-actions,
 .hotel-actions,
-.media-actions {
+.media-actions,
+.essential-actions {
 display: flex;
 gap: 7px;
 flex-wrap: wrap;
@@ -629,6 +682,7 @@ margin-top: 10px;
 .action-grid,
 .hotel-grid,
 .deal-grid,
+.essentials-grid,
 .search-results-grid {
 grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -645,6 +699,7 @@ grid-template-columns: 1fr;
 .action-grid,
 .hotel-grid,
 .deal-grid,
+.essentials-grid,
 .video-grid,
 .fallback-grid,
 .search-results-grid {
@@ -667,6 +722,7 @@ grid-template-columns: 1fr;
 </head>
 <body>
 <div class="app">
+<!-- TOPBAR: PUBLIC SAFE -->
 <div class="topbar">
 <div class="logo">
 <div class="logo-mark" aria-hidden="true">
@@ -688,23 +744,15 @@ grid-template-columns: 1fr;
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
 <button class="chip">Hotels & Stays</button>
+<button class="chip">Travel Essentials</button>
 </div>
 </div>
 
+<!-- HERO / SEARCH: PUBLIC + WORKING -->
 <section class="hero">
 <h1>Find hotels and stays faster</h1>
-<p class="sub">Search real hotel deals and choose the booking path that fits the trip best.</p>
+<p class="sub">Search real travel paths, useful booking options, and essential tools before the trip starts.</p>
 
-<!--
-CHANGE LOG
-1. Search result buttons are now destination-aware.
-2. Known generic affiliate links remain on the homepage cards.
-3. Search result URLs use destination-aware search pages when possible.
-4. If later you receive partner-supported affiliate deep links, replace only:
-- buildExpediaDestinationUrl()
-- buildHotelsDestinationUrl()
-- buildVrboDestinationUrl()
--->
 <div class="search-wrap">
 <div class="search-box">
 <input
@@ -717,7 +765,7 @@ onkeydown="handleSearchKey(event)"
 <button class="btn" onclick="clearSearchRouting()">Clear</button>
 </div>
 <div class="search-help">
-Search shows destination-aware booking choices for the place you type.
+Search shows destination-aware hotel and stay choices for the place you type.
 </div>
 
 <div class="search-results-panel" id="searchResultsPanel">
@@ -729,6 +777,7 @@ Search shows destination-aware booking choices for the place you type.
 </section>
 
 <div class="layout">
+<!-- MAIN STAY ACTIONS -->
 <section class="module">
 <div class="module-header">
 <h2>Stay Actions</h2>
@@ -765,7 +814,7 @@ Search shows destination-aware booking choices for the place you type.
 <div class="card action-card">
 <div class="action-icon">🔎</div>
 <div class="strong">More Hotel Options</div>
-<div class="status-note">Send users to Hotels.com for additional hotel browsing options.</div>
+<div class="status-note">Additional hotel browsing path through Hotels.com.</div>
 <div class="deal-actions">
 <a class="tiny-btn success" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
 </div>
@@ -773,6 +822,101 @@ Search shows destination-aware booking choices for the place you type.
 </div>
 </section>
 
+<!-- NEW MONETIZATION SECTION: ONLY WORKING AFFILIATE PROGRAMS -->
+<section class="module">
+<div class="module-header">
+<h2>Travel Essentials</h2>
+<span class="mode-badge">Affiliate-ready</span>
+</div>
+<div class="essentials-grid">
+<div class="card essential-card">
+<div class="essential-badge">Connectivity</div>
+<div class="essential-icon">📱</div>
+<div class="strong">Travel eSIM</div>
+<div class="status-note">Get mobile data ready before landing. Useful for maps, rides, messaging, and instant connection abroad.</div>
+<div class="essential-actions">
+<a class="tiny-btn purple" id="esimLink" href="#" target="_blank" rel="noopener noreferrer">Check eSIM Plans</a>
+</div>
+</div>
+
+<div class="card essential-card">
+<div class="essential-badge">Ground Transport</div>
+<div class="essential-icon">🚗</div>
+<div class="strong">Car Rental</div>
+<div class="status-note">Reserve a rental before arrival and reduce airport friction for road trips, local transport, and family travel.</div>
+<div class="essential-actions">
+<a class="tiny-btn dark" id="carRentalLink" href="#" target="_blank" rel="noopener noreferrer">Compare Car Rental</a>
+</div>
+</div>
+
+<div class="card essential-card">
+<div class="essential-badge">Bundle</div>
+<div class="essential-icon">🧳</div>
+<div class="strong">Travel Setup Checklist</div>
+<div class="status-note">Best quick setup before the trip: confirm stay, mobile data, and transportation before departure.</div>
+<div class="essential-actions">
+<a class="tiny-btn primary" href="#travel-toolkit">Open Toolkit</a>
+</div>
+</div>
+
+<div class="card essential-card">
+<div class="essential-badge">Conversion Path</div>
+<div class="essential-icon">⚡</div>
+<div class="strong">Traveler Quick Actions</div>
+<div class="status-note">Use the fastest actions for users with clear travel intent and immediate purchase behavior.</div>
+<div class="essential-actions">
+<a class="tiny-btn success" href="#travel-toolkit">See Essentials</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- TOOLKIT SECTION: NEW AFFILIATE CONTENT BLOCK -->
+<section class="module" id="travel-toolkit">
+<div class="module-header">
+<h2>USA Travel Toolkit</h2>
+<span class="mode-badge">Useful + monetized</span>
+</div>
+<div class="deal-grid">
+<div class="card deal-card">
+<div class="deal-badge">Before You Land</div>
+<div class="strong">Set up your eSIM first</div>
+<div class="status-note">Travelers often need data immediately after landing. This is the fastest way to stay connected without buying a physical SIM card.</div>
+<div class="deal-actions">
+<a class="tiny-btn purple" id="esimLinkSecondary" href="#" target="_blank" rel="noopener noreferrer">See eSIM Options</a>
+</div>
+</div>
+
+<div class="card deal-card">
+<div class="deal-badge">On Arrival</div>
+<div class="strong">Reserve your rental in advance</div>
+<div class="status-note">A pre-booked car reduces friction at the airport and helps travelers move quickly after arrival.</div>
+<div class="deal-actions">
+<a class="tiny-btn dark" id="carRentalLinkSecondary" href="#" target="_blank" rel="noopener noreferrer">Book a Car</a>
+</div>
+</div>
+
+<div class="card deal-card">
+<div class="deal-badge">Hotels</div>
+<div class="strong">Find your stay first</div>
+<div class="status-note">Use hotel and rental actions when the traveler has clear destination intent and lodging is the primary need.</div>
+<div class="deal-actions">
+<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Search Hotels</a>
+</div>
+</div>
+
+<div class="card deal-card">
+<div class="deal-badge">User Flow</div>
+<div class="strong">Simple order for travelers</div>
+<div class="status-note">Stay, connectivity, and transport are the strongest immediate user needs and should remain the cleanest public conversion path.</div>
+<div class="deal-actions">
+<button class="tiny-btn" onclick="scrollToTopSmooth()">Back to Search</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- POPULAR STAY PICKS -->
 <section class="module">
 <div class="module-header">
 <h2>Popular Stay Picks</h2>
@@ -825,50 +969,7 @@ Search shows destination-aware booking choices for the place you type.
 </div>
 </section>
 
-<section class="module">
-<div class="module-header">
-<h2>Top Deals</h2>
-<span class="mode-badge">Monetized</span>
-</div>
-<div class="deal-grid">
-<div class="card deal-card">
-<div class="deal-badge">Expedia</div>
-<div class="strong">Search Hotel Deals</div>
-<div class="status-note">Primary hotel booking path using Expedia.</div>
-<div class="deal-actions">
-<a class="tiny-btn primary" href="https://expedia.com/affiliate/6N7hRHZ" target="_blank" rel="noopener noreferrer">Search on Expedia</a>
-</div>
-</div>
-
-<div class="card deal-card">
-<div class="deal-badge">Hotels.com</div>
-<div class="strong">Hotel Deals</div>
-<div class="status-note">Secondary hotel booking path using Hotels.com.</div>
-<div class="deal-actions">
-<a class="tiny-btn primary" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Search on Hotels.com</a>
-</div>
-</div>
-
-<div class="card deal-card">
-<div class="deal-badge">Vrbo</div>
-<div class="strong">Vacation Rentals</div>
-<div class="status-note">Alternative lodging path for homes and vacation rentals.</div>
-<div class="deal-actions">
-<a class="tiny-btn primary" href="https://vrbo.com/affiliate/M2nsa7i" target="_blank" rel="noopener noreferrer">Search on Vrbo</a>
-</div>
-</div>
-
-<div class="card deal-card">
-<div class="deal-badge">Hotels.com</div>
-<div class="strong">More Hotel Options</div>
-<div class="status-note">Additional hotel browsing path using Hotels.com.</div>
-<div class="deal-actions">
-<a class="tiny-btn primary" href="https://www.hotels.com/affiliate/5BoP8Nf" target="_blank" rel="noopener noreferrer">Open Hotels.com</a>
-</div>
-</div>
-</div>
-</section>
-
+<!-- MEDIA SECTION -->
 <section class="module" id="mediaSection">
 <div class="module-header">
 <h2>Featured Travel Moments</h2>
@@ -888,6 +989,7 @@ Search shows destination-aware booking choices for the place you type.
 </div>
 </div>
 
+<!-- VIDEO MODAL -->
 <div class="modal" id="videoModal" onclick="closeVideoModal(event)">
 <div class="modal-panel" onclick="event.stopPropagation()">
 <div class="modal-head">
@@ -908,21 +1010,47 @@ Search shows destination-aware booking choices for the place you type.
 
 <script>
 /*
-CHANGE LOG
-vNext destination-aware routing
-- Homepage static cards still use your confirmed affiliate links.
-- Search results now use destination-aware URLs when possible.
-- This is the safest current setup because only the generic affiliate links
-are confirmed in this chat.
-- When you get true affiliate deep-link templates from each partner,
-replace only the 3 build...DestinationUrl() functions below.
+JAVASCRIPT DOCUMENTATION
+
+MAIN PUBLIC LOGIC
+- Search routing
+- Affiliate-link injection for working programs
+- Media rendering
+- Modal playback
+
+IMPORTANT
+- Only inject links for programs already confirmed working
+- If a link is wrong, replace only inside AFFILIATE_LINKS
+- Do not expose unfinished public features
 */
 
 const AFFILIATE_LINKS = {
 expediaAffiliate: 'https://expedia.com/affiliate/6N7hRHZ',
 hotelsAffiliate: 'https://www.hotels.com/affiliate/5BoP8Nf',
-vrboAffiliate: 'https://vrbo.com/affiliate/M2nsa7i'
+vrboAffiliate: 'https://vrbo.com/affiliate/M2nsa7i',
+
+/*
+Replace these with your exact copied Awin URLs if needed.
+These values are based on the structure visible in your screenshots.
+*/
+esim: 'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806&ued=https%3A%2F%2Fwww.birday.com',
+carRental: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806&ued=https%3A%2F%2Fallycar.com'
 };
+
+function injectAffiliateLinks() {
+const esimTargets = ['esimLink', 'esimLinkSecondary'];
+const carTargets = ['carRentalLink', 'carRentalLinkSecondary'];
+
+esimTargets.forEach(id => {
+const el = document.getElementById(id);
+if (el) el.href = AFFILIATE_LINKS.esim;
+});
+
+carTargets.forEach(id => {
+const el = document.getElementById(id);
+if (el) el.href = AFFILIATE_LINKS.carRental;
+});
+}
 
 function escapeHtml(value) {
 return String(value ?? '')
@@ -933,54 +1061,6 @@ return String(value ?? '')
 .replaceAll("'", '&#39;');
 }
 
-function formatCompactNumber(value) {
-if (value >= 1000000000) return (value / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
-if (value >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-return String(value || 0);
-}
-
-function hoursAgoFromPublishedAt(publishedAt) {
-if (!publishedAt) return 'recent';
-const then = new Date(publishedAt).getTime();
-const hours = Math.max(1, Math.round((Date.now() - then) / 3600000));
-return `${hours}h ago`;
-}
-
-function buildVideoObject(item) {
-const id = item.id || item.videoId || '';
-const thumbnail = item.thumbnail || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
-const watchUrl = item.watchUrl || (id ? `https://www.youtube.com/watch?v=${id}` : '#');
-const embedPlayerUrl = item.embedPlayerUrl || (id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` : '');
-
-return {
-id,
-title: item.title || 'YouTube video',
-channel: item.channel || 'YouTube',
-views: item.views
-? (typeof item.views === 'string' ? item.views : `${formatCompactNumber(Number(item.views || 0))} views`)
-: '',
-time: item.time || hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString()),
-thumbnail,
-embeddable: item.embeddable !== false,
-embedPlayerUrl,
-watchUrl
-};
-}
-
-/*
-DESTINATION-AWARE URL BUILDERS
-
-CURRENT BEHAVIOR
-- These create destination-aware partner search URLs.
-- They do not use the generic affiliate links because generic affiliate
-links and destination deep links are not the same thing unless the
-partner explicitly provides a deep-link format.
-
-LATER UPGRADE
-- Replace these URLs with official affiliate deep-link templates when you
-have them from Expedia / Hotels.com / Vrbo.
-*/
 function buildExpediaDestinationUrl(query) {
 return `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(query)}`;
 }
@@ -1127,6 +1207,45 @@ document.getElementById("searchInput").value = "";
 document.getElementById("searchResultsGrid").innerHTML = "";
 document.getElementById("searchResultsSub").textContent = "";
 document.getElementById("searchResultsPanel").classList.remove("active");
+}
+
+function scrollToTopSmooth() {
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function formatCompactNumber(value) {
+if (value >= 1000000000) return (value / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+if (value >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+return String(value || 0);
+}
+
+function hoursAgoFromPublishedAt(publishedAt) {
+if (!publishedAt) return 'recent';
+const then = new Date(publishedAt).getTime();
+const hours = Math.max(1, Math.round((Date.now() - then) / 3600000));
+return `${hours}h ago`;
+}
+
+function buildVideoObject(item) {
+const id = item.id || item.videoId || '';
+const thumbnail = item.thumbnail || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
+const watchUrl = item.watchUrl || (id ? `https://www.youtube.com/watch?v=${id}` : '#');
+const embedPlayerUrl = item.embedPlayerUrl || (id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` : '');
+
+return {
+id,
+title: item.title || 'YouTube video',
+channel: item.channel || 'YouTube',
+views: item.views
+? (typeof item.views === 'string' ? item.views : `${formatCompactNumber(Number(item.views || 0))} views`)
+: '',
+time: item.time || hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString()),
+thumbnail,
+embeddable: item.embeddable !== false,
+embedPlayerUrl,
+watchUrl
+};
 }
 
 function openVideoModal(video) {
@@ -1334,6 +1453,8 @@ return [];
 }
 
 async function initApp() {
+injectAffiliateLinks();
+
 const videos = await renderYouTubeFeed();
 if (!videos.length) {
 renderFallbackMedia();
