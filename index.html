@@ -4,7 +4,7 @@
 <head>
   <!--
     FILE: index.html
-    VERSION: v4.0 AI-HMI + LOCAL ANALYTICS
+    VERSION: v5.0 AI-HMI + SAME-TAB PROVIDER FLOW
     STATUS: Live-ready full replacement for the homepage
 
     SIGNALBOOST PRODUCT DIRECTION
@@ -20,6 +20,9 @@
     - AI-like search routing using documented keyword logic
     - Travel / Tech / Business category detection
     - Search result cards that explain why a path is recommended
+    - Same-tab provider navigation so the user can use browser Back to return
+    - Expedia split into separate hotel and package paths
+    - Return-to-SignalBoost banner after the user comes back from a provider
     - Safe placeholders for future partner departments
     - Inline documentation so the codebase stays understandable
 
@@ -38,7 +41,7 @@
   -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost AI — Digital Mall + Analytics</title>
+  <title>SignalBoost AI — AI-HMI Mall + Same-Tab Flow</title>
   <style>
     :root {
       --bg: #f4f8fc;
@@ -597,6 +600,26 @@
       background: #0f172a;
     }
 
+
+    .return-banner {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(37,99,235,0.18);
+      background: linear-gradient(180deg, rgba(37,99,235,0.08), rgba(255,255,255,0.96));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .return-banner-text {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
     .hidden { display: none !important; }
 
     @media (max-width: 1260px) {
@@ -668,7 +691,7 @@
           <button class="btn primary" onclick="runSmartRouting()">Search</button>
           <button class="btn" onclick="clearSearchRouting()">Clear</button>
         </div>
-        <div class="search-help">Try: hotel in miami, esim for europe, cheap laptop for students, email marketing software, car rental in orlando. SignalBoost routes users by intent across travel, tech, and business tools.</div>
+        <div class="search-help">Try: hotel in miami, expedia package to jamaica, esim for europe, cheap laptop for students, email marketing software, car rental in orlando. SignalBoost routes users by intent across travel, tech, and business tools. Provider links now open in the same tab so users can return with the browser Back button.</div>
 
         <div class="quick-tags">
           <button onclick="setQuickSearch('hotel in miami')">hotel in miami</button>
@@ -738,7 +761,7 @@
           <div class="card-title">Flight + Hotel Packages</div>
           <div class="card-text">A clean bundle path for travelers who want airfare and lodging in one booking flow.</div>
           <div class="card-actions">
-            <a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'flights_expedia')">Open Expedia Packages</a>
+            <a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_packages_primary')">Open Expedia Packages</a>
           </div>
         </div>
 
@@ -775,7 +798,7 @@
           <div class="card-title">Search Packages</div>
           <div class="card-text">Use Expedia when the traveler wants to bundle airfare with lodging in one package-style flow.</div>
           <div class="card-actions">
-            <a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'flights_expedia')">Open Expedia Packages</a>
+            <a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_packages_primary')">Open Expedia Packages</a>
           </div>
         </div>
 
@@ -786,7 +809,7 @@
           <div class="card-text">Best for city stays, hotel deals, and fast lodging decisions when the destination is already known.</div>
           <div class="card-actions">
             <a class="mini-btn warn" href="#" onclick="trackAffiliateClick(event, 'hotels_primary')">Hotels.com</a>
-            <a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_primary')">Expedia</a>
+            <a class="mini-btn primary" href="#" onclick="trackAffiliateClick(event, 'expedia_hotels_primary')">Expedia Hotels</a>
           </div>
         </div>
 
@@ -1069,10 +1092,23 @@
        This keeps the rest of the interface stable.
     ============================================ */
     const AFFILIATE_LINKS = {
-      expedia_primary: 'https://expedia.com/affiliate/6N7hRHZ',
-      flights_expedia: 'https://expedia.com/affiliate/6N7hRHZ',
+      /* ==========================================================
+         TRAVEL FULFILLMENT LINKS
+         ----------------------------------------------------------
+         IMPORTANT:
+         Expedia supports more than one travel type. In SignalBoost,
+         we model the product paths separately so the AI-HMI layer
+         can explain whether the user is being routed to hotels or
+         to a package-style flow.
+      ========================================================== */
+      expedia_hotels_primary: 'https://expedia.com/affiliate/6N7hRHZ',
+      expedia_packages_primary: 'https://expedia.com/affiliate/6N7hRHZ',
       hotels_primary: 'https://www.hotels.com/affiliate/5BoP8Nf',
       vrbo_primary: 'https://vrbo.com/affiliate/M2nsa7i',
+
+      /* ==========================================================
+         NON-TRAVEL / ANCILLARY LINKS
+      ========================================================== */
       esim_primary: 'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806&ued=https%3A%2F%2Fwww.birday.com',
       car_primary: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806&ued=https%3A%2F%2Fallycar.com'
     };
@@ -1096,12 +1132,19 @@
         buttonClass: 'warn',
         build: (q) => `https://www.hotels.com/Hotel-Search?destination=${encodeURIComponent(q)}`
       },
-      travel_expedia: {
+      travel_expedia_hotels: {
         category: 'Travel',
-        name: 'Expedia',
-        note: 'Strong overall option for hotels, city stays, and packages.',
+        name: 'Expedia Hotels',
+        note: 'Strong overall option for hotels and city stays when the user is hotel-focused.',
         buttonClass: 'primary',
         build: (q) => `https://www.expedia.com/Hotel-Search?destination=${encodeURIComponent(q)}`
+      },
+      travel_expedia_packages: {
+        category: 'Travel',
+        name: 'Expedia Packages',
+        note: 'Best when the user wants a flight + hotel bundle path instead of a hotel-only route.',
+        buttonClass: 'primary',
+        build: () => AFFILIATE_LINKS.expedia_packages_primary
       },
       travel_vrbo: {
         category: 'Travel',
@@ -1280,6 +1323,39 @@
       recordAnalyticsEvent(meta.type || 'ui_action', name, url, meta);
     }
 
+    /* ============================================
+       SAME-TAB PROVIDER NAVIGATION
+       --------------------------------------------
+       WHY THIS EXISTS:
+       Users should not have to manage extra tabs just to return
+       to SignalBoost. We intentionally open monetized providers
+       in the same tab so the browser Back button returns the user
+       to the SignalBoost mall.
+
+       IMPORTANT LIMITATION:
+       SignalBoost cannot place a custom "back" button on third-
+       party provider pages like Expedia unless a white-label or
+       API-based integration exists. Same-tab navigation is the
+       cleanest affiliate-safe UX at this stage.
+    ============================================ */
+    function rememberOutboundNavigation(label, url, meta = {}) {
+      try {
+        sessionStorage.setItem('signalboost_last_outbound', JSON.stringify({
+          label,
+          url,
+          meta,
+          timestamp: new Date().toISOString()
+        }));
+      } catch (error) {
+        console.error('Failed to store outbound navigation state:', error);
+      }
+    }
+
+    function navigateToProviderSameTab(label, url, meta = {}) {
+      rememberOutboundNavigation(label, url, meta);
+      window.location.href = url;
+    }
+
     function trackAffiliateClick(event, key) {
       event.preventDefault();
       const url = AFFILIATE_LINKS[key];
@@ -1287,8 +1363,9 @@
         alert('This link is not configured yet.');
         return;
       }
-      trackClick(key, url, { type: 'affiliate_click', affiliate_key: key });
-      window.open(url, '_blank', 'noopener,noreferrer');
+      const label = key.replaceAll('_', ' ');
+      trackClick(label, url, { type: 'affiliate_click', affiliate_key: key, navigation_mode: 'same_tab' });
+      navigateToProviderSameTab(label, url, { source: 'affiliate_button', affiliate_key: key });
     }
 
     function scrollToSection(id) {
@@ -1372,15 +1449,20 @@
       if (category === 'travel') {
         const familyRental = ['family', 'group', 'villa', 'apartment', 'rental', 'house'].some(word => q.includes(word));
         const budget = ['cheap', 'budget', 'deal'].some(word => q.includes(word));
+        const packageIntent = ['package', 'packages', 'flight + hotel', 'flight and hotel', 'bundle', 'bundled', 'airfare + hotel'].some(word => q.includes(word));
+        const flightIntent = ['flight', 'flights', 'airfare'].some(word => q.includes(word));
 
-        let order = ['travel_expedia', 'travel_hotels', 'travel_vrbo'];
+        let order = ['travel_expedia_hotels', 'travel_hotels', 'travel_vrbo'];
         let subtitle = `SignalBoost detected travel intent for “${query}”. These are the strongest booking paths to continue with right now.`;
 
-        if (familyRental) {
-          order = ['travel_vrbo', 'travel_expedia', 'travel_hotels'];
+        if (packageIntent || flightIntent) {
+          order = ['travel_expedia_packages', 'travel_expedia_hotels', 'travel_hotels'];
+          subtitle = `SignalBoost detected a flight-related or package-oriented travel intent for “${query}”, so Expedia Packages is shown first and hotel-only paths are kept as alternatives.`;
+        } else if (familyRental) {
+          order = ['travel_vrbo', 'travel_expedia_hotels', 'travel_hotels'];
           subtitle = `SignalBoost detected a rental or family-travel intent for “${query}”, so Vrbo is shown first.`;
         } else if (budget) {
-          order = ['travel_hotels', 'travel_expedia', 'travel_vrbo'];
+          order = ['travel_hotels', 'travel_expedia_hotels', 'travel_vrbo'];
           subtitle = `SignalBoost detected a budget-hotel angle for “${query}”, so hotel-first options are shown first.`;
         }
 
@@ -1390,7 +1472,8 @@
           cards: order.map((key, index) => ({
             rank: index === 0 ? 'Best match' : 'Also useful',
             ...PROVIDERS[key],
-            url: PROVIDERS[key].build(query)
+            url: PROVIDERS[key].build(query),
+            navigationHint: 'Opens in the same tab. Use your browser Back button to return to SignalBoost.'
           }))
         };
       }
@@ -1536,8 +1619,9 @@
           <div class="card-title">${escapeHtml(card.name)}</div>
           <div class="card-text">${escapeHtml(card.note)}</div>
           <div class="result-callout">${escapeHtml(card.category)} path recommended by SignalBoost.</div>
+          ${card.navigationHint ? `<div class="card-text">${escapeHtml(card.navigationHint)}</div>` : ''}
           <div class="card-actions">
-            <a class="mini-btn ${escapeHtml(card.buttonClass)}" href="${escapeHtml(card.url)}" ${card.url.startsWith('#') ? '' : 'target="_blank" rel="noopener noreferrer"'} onclick="trackSearchResultClick(event, '${escapeHtml(card.name)}', '${escapeHtml(card.url)}')">
+            <a class="mini-btn ${escapeHtml(card.buttonClass)}" href="${escapeHtml(card.url)}" onclick="trackSearchResultClick(event, '${escapeHtml(card.name)}', '${escapeHtml(card.url)}')">
               ${escapeHtml(card.buttonText || `Open ${card.name}`)}
             </a>
           </div>
@@ -1550,9 +1634,58 @@
 
     function trackSearchResultClick(event, name, url) {
       trackClick(name, url, { type: 'search_result_click' });
+
       if (url.startsWith('#')) {
         event.preventDefault();
         scrollToSection(url.replace('#', ''));
+        return;
+      }
+
+      event.preventDefault();
+      navigateToProviderSameTab(name, url, { source: 'search_results' });
+    }
+
+    /* ============================================
+       RETURN-TO-MALL BANNER
+       --------------------------------------------
+       PURPOSE:
+       When a user returns from Expedia, Hotels.com, Vrbo, or any
+       other provider using the browser Back button, SignalBoost
+       can acknowledge the return and invite the user to continue
+       shopping without losing the mall context.
+    ============================================ */
+    function dismissReturnBanner() {
+      const banner = document.getElementById('returnBanner');
+      if (banner) banner.classList.add('hidden');
+      try {
+        sessionStorage.removeItem('signalboost_last_outbound');
+      } catch (error) {
+        console.error('Failed to clear outbound navigation state:', error);
+      }
+    }
+
+    function maybeShowReturnBanner() {
+      const banner = document.getElementById('returnBanner');
+      const title = document.getElementById('returnBannerTitle');
+      const text = document.getElementById('returnBannerText');
+      if (!banner || !title || !text) return;
+
+      try {
+        const raw = sessionStorage.getItem('signalboost_last_outbound');
+        if (!raw) return;
+        const payload = JSON.parse(raw);
+        const minutesAgo = Math.max(0, Math.round((Date.now() - new Date(payload.timestamp).getTime()) / 60000));
+
+        title.textContent = `Welcome back from ${payload.label || 'your provider'}`;
+        text.textContent = `You returned to SignalBoost after visiting ${payload.label || 'a provider'}. Continue shopping here, or use the search again. ${minutesAgo <= 1 ? 'You came back just now.' : `You came back about ${minutesAgo} minutes ago.`}`;
+        banner.classList.remove('hidden');
+
+        recordAnalyticsEvent('ui_action', 'return_from_provider_banner_shown', '', {
+          source: payload.meta?.source || '',
+          provider: payload.label || ''
+        });
+      } catch (error) {
+        console.error('Failed to restore return banner state:', error);
       }
     }
 
@@ -1741,6 +1874,7 @@
     }
 
     refreshAnalyticsDashboard();
+    maybeShowReturnBanner();
     initMedia();
   </script>
 </body>
