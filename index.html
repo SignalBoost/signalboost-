@@ -1,6 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!--
+    FILE: index.html
+    VERSION: v3.0 AI-HMI FOUNDATION
+    STATUS: Live-ready full replacement for the homepage
+
+    SIGNALBOOST PRODUCT DIRECTION
+    - SignalBoost is being built as a digital shopping mall
+    - Travel is the first anchor department because it is already monetizable
+    - Tech & Connectivity and Business Tools are the next departments
+    - The search bar acts as the HMI entry point:
+      the human types intent, and the machine routes that intent
+
+    WHAT THIS VERSION ADDS
+    - Mall-style homepage structure
+    - AI-like search routing using documented keyword logic
+    - Travel / Tech / Business category detection
+    - Search result cards that explain why a path is recommended
+    - Safe placeholders for future partner departments
+    - Inline documentation so the codebase stays understandable
+
+    IMPORTANT MAINTENANCE RULES
+    - Replace live affiliate URLs only inside AFFILIATE_LINKS
+    - Replace or expand search decision logic only inside the AI ROUTING blocks
+    - Do not expose public buttons that lead nowhere useful
+    - When a section is not monetized yet, keep it honest and clearly documented
+
+    FUTURE AI ROADMAP
+    - Replace keyword routing with API or model-based intent classification
+    - Add user/session memory
+    - Add personalized recommendations
+    - Add analytics persistence
+    - Add conversational shopping assistant / HMI layer
+  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost AI — Digital Shopping Mall</title>
@@ -901,6 +935,16 @@
   </div>
 
   <script>
+    /* ============================================
+       AFFILIATE LINK REGISTRY
+       --------------------------------------------
+       PURPOSE:
+       Centralize monetized outbound links.
+
+       RULE:
+       Update affiliate / partner URLs here only.
+       This keeps the rest of the interface stable.
+    ============================================ */
     const AFFILIATE_LINKS = {
       expedia_primary: 'https://expedia.com/affiliate/6N7hRHZ',
       flights_expedia: 'https://expedia.com/affiliate/6N7hRHZ',
@@ -910,6 +954,17 @@
       car_primary: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806&ued=https%3A%2F%2Fallycar.com'
     };
 
+    /* ============================================
+       PROVIDER REGISTRY
+       --------------------------------------------
+       PURPOSE:
+       Define the core offer paths the AI/HMI layer can recommend.
+
+       CURRENT STATE:
+       - Travel is fully active
+       - Tech has one live offer (eSIM)
+       - Business is structured for expansion
+    ============================================ */
     const PROVIDERS = {
       travel_hotels: {
         category: 'Travel',
@@ -948,6 +1003,19 @@
       }
     };
 
+    /* ============================================
+       ANALYTICS STUB
+       --------------------------------------------
+       PURPOSE:
+       Capture outbound click events in a structured way.
+
+       CURRENT STATE:
+       Console-only logging for safe front-end testing.
+
+       FUTURE:
+       Send payloads to Vercel serverless functions, a database,
+       PostHog, GA4, Mixpanel, or another analytics stack.
+    ============================================ */
     function trackClick(name, url, meta = {}) {
       const payload = {
         name,
@@ -989,6 +1057,26 @@
       runSmartRouting();
     }
 
+    /* ============================================
+       AI ROUTING ENGINE: CATEGORY DETECTION
+       --------------------------------------------
+       HMI ROLE:
+       The user types a natural-language need into the search bar.
+
+       AI ROLE:
+       This function estimates which department the user belongs in:
+       - travel
+       - tech
+       - business
+       - general
+
+       CURRENT METHOD:
+       Simple keyword scoring for reliability and easy editing.
+
+       FUTURE METHOD:
+       Replace with model/API-based classification, session memory,
+       user profile weighting, and behavior-informed ranking.
+    ============================================ */
     function detectCategory(query) {
       const q = query.toLowerCase();
 
@@ -1007,6 +1095,22 @@
       return 'general';
     }
 
+    /* ============================================
+       AI ROUTING ENGINE: RESULT BUILDER
+       --------------------------------------------
+       PURPOSE:
+       Convert detected intent into a set of actionable recommendations.
+
+       OUTPUT:
+       - category label
+       - explanation subtitle
+       - ranked cards
+       - button labels and routes
+
+       DESIGN GOAL:
+       Do not merely dump links.
+       Explain why SignalBoost is recommending a path.
+    ============================================ */
     function buildSearchResults(query) {
       const category = detectCategory(query);
       const q = query.toLowerCase();
@@ -1144,6 +1248,16 @@
       };
     }
 
+    /* ============================================
+       HMI ACTION HANDLER: MAIN SEARCH EXECUTION
+       --------------------------------------------
+       PURPOSE:
+       Read user input, call the AI routing engine, and render
+       a visible decision panel directly under the search bar.
+
+       USER EXPERIENCE GOAL:
+       Make the interface feel guided, not passive.
+    ============================================ */
     function runSmartRouting() {
       const input = document.getElementById('searchInput');
       const panel = document.getElementById('searchResultsPanel');
@@ -1202,6 +1316,18 @@
       alert(`${label} is a future department slot. Add real affiliate or partner links before exposing it publicly.`);
     }
 
+    /* ============================================
+       LEAD CAPTURE STUB
+       --------------------------------------------
+       PURPOSE:
+       Simulate a mall email capture workflow.
+
+       CURRENT STATE:
+       Front-end confirmation only.
+
+       FUTURE:
+       Connect to Mailchimp, ConvertKit, Brevo, HubSpot, etc.
+    ============================================ */
     function handleSignup(event) {
       event.preventDefault();
       const email = document.getElementById('signupEmail').value.trim();
