@@ -4,7 +4,7 @@
 <head>
   <!--
     FILE: index.html
-    VERSION: v3.0 AI-HMI FOUNDATION
+    VERSION: v4.0 AI-HMI + LOCAL ANALYTICS
     STATUS: Live-ready full replacement for the homepage
 
     SIGNALBOOST PRODUCT DIRECTION
@@ -16,6 +16,7 @@
 
     WHAT THIS VERSION ADDS
     - Mall-style homepage structure
+    - Local analytics console for searches, clicks, and signups
     - AI-like search routing using documented keyword logic
     - Travel / Tech / Business category detection
     - Search result cards that explain why a path is recommended
@@ -32,12 +33,12 @@
     - Replace keyword routing with API or model-based intent classification
     - Add user/session memory
     - Add personalized recommendations
-    - Add analytics persistence
+    - Add server-side analytics persistence
     - Add conversational shopping assistant / HMI layer
   -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost AI — Digital Shopping Mall</title>
+  <title>SignalBoost AI — Digital Mall + Analytics</title>
   <style>
     :root {
       --bg: #f4f8fc;
@@ -420,6 +421,71 @@
       line-height: 1.6;
     }
 
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .stats-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.86);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .mini-table th {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .analytics-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mono-note {
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-word;
+    }
+
     .video-card {
       cursor: pointer;
       transition: transform .15s ease, box-shadow .15s ease;
@@ -541,6 +607,7 @@
     @media (max-width: 900px) {
       .media-grid { grid-template-columns: 1fr; }
       .signup-form { grid-template-columns: 1fr; }
+      .analytics-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 780px) {
@@ -581,6 +648,7 @@
         <button class="chip" onclick="scrollToSection('techSection')">Tech</button>
         <button class="chip" onclick="scrollToSection('businessSection')">Business</button>
         <button class="chip" onclick="scrollToSection('signupSection')">Deals</button>
+        <button class="chip" onclick="scrollToSection('analyticsSection')">Analytics</button>
       </div>
     </div>
 
@@ -909,6 +977,61 @@
       </div>
     </section>
 
+
+    <section class="section" id="analyticsSection">
+      <div class="section-head">
+        <h2>SignalBoost Analytics Console</h2>
+        <div class="section-tag">Local HMI telemetry</div>
+      </div>
+
+      <div class="helper-row">
+        This version documents and stores search, click, and signup events in the browser with <span class="mono-note">localStorage</span>.
+        It is a safe front-end analytics layer until you connect a serverless API or external analytics platform.
+      </div>
+
+      <div class="analytics-grid">
+        <div class="card">
+          <div class="badge success">Volume</div>
+          <div class="card-title">Event Summary</div>
+          <div class="stats-list" id="analyticsStats"></div>
+          <div class="analytics-actions">
+            <button class="mini-btn" onclick="refreshAnalyticsDashboard()">Refresh</button>
+            <button class="mini-btn warn" onclick="clearAnalyticsData()">Clear Data</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="badge purple">Searches</div>
+          <div class="card-title">Top Search Queries</div>
+          <div id="topSearchesWrap"></div>
+        </div>
+
+        <div class="card">
+          <div class="badge">Clicks</div>
+          <div class="card-title">Top Click Targets</div>
+          <div id="topClicksWrap"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="card">
+          <div class="badge">Recent activity</div>
+          <div class="card-title">Latest Events</div>
+          <div id="recentEventsWrap"></div>
+        </div>
+
+        <div class="card">
+          <div class="badge success">AI/HMI note</div>
+          <div class="card-title">How this supports the roadmap</div>
+          <div class="card-text">
+            This telemetry layer is the first operational memory for the interface. It shows what humans ask for, what the machine recommends,
+            and which monetized paths get clicked. Later, this exact event structure can be forwarded to Vercel functions, a database, or an LLM-driven ranking service.
+          </div>
+          <div class="helper-row mono-note">Tracked event types: search, affiliate_click, search_result_click, signup, ui_action</div>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="mediaSection">
       <div class="section-head">
         <h2>Featured Moments</h2>
@@ -1004,26 +1127,157 @@
     };
 
     /* ============================================
-       ANALYTICS STUB
+       ANALYTICS ENGINE (LOCAL HMI TELEMETRY)
        --------------------------------------------
        PURPOSE:
-       Capture outbound click events in a structured way.
+       Create a documented event trail directly in the browser.
 
-       CURRENT STATE:
-       Console-only logging for safe front-end testing.
+       WHY THIS EXISTS:
+       Before adding a backend, SignalBoost still needs memory.
+       This block stores search, click, signup, and UI events
+       in localStorage so the mall can learn from usage.
 
-       FUTURE:
-       Send payloads to Vercel serverless functions, a database,
-       PostHog, GA4, Mixpanel, or another analytics stack.
+       CURRENT STORAGE:
+       Browser localStorage only.
+
+       FUTURE STORAGE:
+       Vercel functions, edge logging, PostHog, GA4, Mixpanel,
+       Supabase, Firebase, or any custom analytics pipeline.
     ============================================ */
-    function trackClick(name, url, meta = {}) {
+    const ANALYTICS_STORAGE_KEY = 'signalboost_analytics_v1';
+
+    function getAnalyticsStore() {
+      try {
+        const raw = localStorage.getItem(ANALYTICS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.error('Failed to read analytics store:', error);
+        return [];
+      }
+    }
+
+    function saveAnalyticsStore(events) {
+      try {
+        localStorage.setItem(ANALYTICS_STORAGE_KEY, JSON.stringify(events.slice(-300)));
+      } catch (error) {
+        console.error('Failed to save analytics store:', error);
+      }
+    }
+
+    function recordAnalyticsEvent(type, name, url = '', meta = {}) {
       const payload = {
+        type,
         name,
         url,
         meta,
         timestamp: new Date().toISOString()
       };
-      console.log('SignalBoost outbound click', payload);
+
+      const events = getAnalyticsStore();
+      events.push(payload);
+      saveAnalyticsStore(events);
+
+      console.log('SignalBoost analytics event', payload);
+      refreshAnalyticsDashboard();
+    }
+
+    function summarizeByField(events, selector, limit = 5) {
+      const counts = new Map();
+      events.forEach(event => {
+        const value = selector(event);
+        if (!value) return;
+        counts.set(value, (counts.get(value) || 0) + 1);
+      });
+
+      return [...counts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+        .map(([label, count]) => ({ label, count }));
+    }
+
+    function renderMiniTable(items, headers, emptyMessage) {
+      if (!items.length) {
+        return `<div class="card-text">${escapeHtml(emptyMessage)}</div>`;
+      }
+
+      const head = headers.map(header => `<th>${escapeHtml(header)}</th>`).join('');
+      const rows = items.map(item => `
+        <tr>
+          <td>${escapeHtml(item.label)}</td>
+          <td>${escapeHtml(String(item.count))}</td>
+        </tr>
+      `).join('');
+
+      return `<table class="mini-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function renderRecentEvents(events) {
+      if (!events.length) {
+        return `<div class="card-text">No events recorded yet.</div>`;
+      }
+
+      const rows = events.slice(-8).reverse().map(event => `
+        <tr>
+          <td>${escapeHtml(event.type)}</td>
+          <td>${escapeHtml(event.name)}</td>
+          <td>${escapeHtml(new Date(event.timestamp).toLocaleTimeString())}</td>
+        </tr>
+      `).join('');
+
+      return `<table class="mini-table"><thead><tr><th>Type</th><th>Name</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function refreshAnalyticsDashboard() {
+      const statsEl = document.getElementById('analyticsStats');
+      const searchesEl = document.getElementById('topSearchesWrap');
+      const clicksEl = document.getElementById('topClicksWrap');
+      const recentEl = document.getElementById('recentEventsWrap');
+
+      if (!statsEl || !searchesEl || !clicksEl || !recentEl) return;
+
+      const events = getAnalyticsStore();
+      const searchEvents = events.filter(event => event.type === 'search');
+      const clickEvents = events.filter(event => event.type === 'affiliate_click' || event.type === 'search_result_click');
+      const signupEvents = events.filter(event => event.type === 'signup');
+
+      statsEl.innerHTML = `
+        <div class="stat">
+          <div class="stat-label">Total events</div>
+          <div class="stat-value">${events.length}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Searches</div>
+          <div class="stat-value">${searchEvents.length}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Clicks</div>
+          <div class="stat-value">${clickEvents.length}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Signups</div>
+          <div class="stat-value">${signupEvents.length}</div>
+        </div>
+      `;
+
+      const topSearches = summarizeByField(searchEvents, event => event.meta?.query || event.name, 6);
+      const topClicks = summarizeByField(clickEvents, event => event.name, 6);
+
+      searchesEl.innerHTML = renderMiniTable(topSearches, ['Query', 'Count'], 'No searches recorded yet.');
+      clicksEl.innerHTML = renderMiniTable(topClicks, ['Target', 'Count'], 'No click targets recorded yet.');
+      recentEl.innerHTML = renderRecentEvents(events);
+    }
+
+    function clearAnalyticsData() {
+      const confirmed = window.confirm('Clear the local SignalBoost analytics data stored in this browser?');
+      if (!confirmed) return;
+      localStorage.removeItem(ANALYTICS_STORAGE_KEY);
+      refreshAnalyticsDashboard();
+      alert('Local analytics data cleared for this browser.');
+    }
+
+    function trackClick(name, url, meta = {}) {
+      recordAnalyticsEvent(meta.type || 'ui_action', name, url, meta);
     }
 
     function trackAffiliateClick(event, key) {
@@ -1033,7 +1287,7 @@
         alert('This link is not configured yet.');
         return;
       }
-      trackClick(key, url, { type: 'affiliate' });
+      trackClick(key, url, { type: 'affiliate_click', affiliate_key: key });
       window.open(url, '_blank', 'noopener,noreferrer');
     }
 
@@ -1271,6 +1525,7 @@
         return;
       }
 
+      trackClick('search', 'search-bar', { type: 'search', query, category: detectCategory(query) });
       const result = buildSearchResults(query);
       title.textContent = `${result.categoryLabel} results for ${query}`;
       sub.textContent = result.subtitle;
@@ -1294,7 +1549,7 @@
     }
 
     function trackSearchResultClick(event, name, url) {
-      trackClick(name, url, { type: 'search_result' });
+      trackClick(name, url, { type: 'search_result_click' });
       if (url.startsWith('#')) {
         event.preventDefault();
         scrollToSection(url.replace('#', ''));
@@ -1313,6 +1568,7 @@
     }
 
     function showComingSoon(label) {
+      trackClick(label, 'coming-soon', { type: 'ui_action', action: 'coming_soon_notice' });
       alert(`${label} is a future department slot. Add real affiliate or partner links before exposing it publicly.`);
     }
 
@@ -1323,7 +1579,7 @@
        Simulate a mall email capture workflow.
 
        CURRENT STATE:
-       Front-end confirmation only.
+ Front-end confirmation plus local analytics logging only.
 
        FUTURE:
        Connect to Mailchimp, ConvertKit, Brevo, HubSpot, etc.
@@ -1332,12 +1588,13 @@
       event.preventDefault();
       const email = document.getElementById('signupEmail').value.trim();
       const interest = document.getElementById('signupInterest').value;
-      trackClick('signup', 'local-form', { email, interest, type: 'lead_capture' });
+      trackClick('signup', 'local-form', { email, interest, type: 'signup' });
       document.getElementById('signupMessage').textContent = `Thanks. ${email} was captured for ${interest} updates. Connect this form to your email platform next.`;
       event.target.reset();
     }
 
     function showPartnerPrompt() {
+      trackClick('partner_prompt', 'partnerSection', { type: 'ui_action', action: 'partner_prompt' });
       alert('Add your merchant inquiry form, WhatsApp link, or partner email here so businesses can request listings or sponsorships.');
     }
 
@@ -1483,6 +1740,7 @@
       }
     }
 
+    refreshAnalyticsDashboard();
     initMedia();
   </script>
 </body>
