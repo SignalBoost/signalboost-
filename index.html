@@ -9,8 +9,7 @@
 :root{--bg:#eef4ff;--bg2:#f8fbff;--surface:rgba(255,255,255,.97);--soft:rgba(255,255,255,.88);--text:#0f172a;--muted:#64748b;--border:rgba(15,23,42,.10);--primary:#2563eb;--primary2:#06b6d4;--success:#15803d;--warning:#ea580c;--purple:#7c3aed;--shadow:0 18px 48px rgba(15,23,42,.08);--rx:24px;--rl:18px;--max:1380px}
 body.dark{--bg:#0b1220;--bg2:#0f172a;--surface:rgba(15,23,42,.96);--soft:rgba(30,41,59,.92);--text:#e2e8f0;--muted:#94a3b8;--border:rgba(226,232,240,.10);--primary:#3b82f6;--primary2:#22d3ee;--success:#22c55e;--warning:#fb923c;--purple:#a855f7}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
-button,input{font:inherit}a{text-decoration:none;color:inherit}
-.app{width:min(var(--max),calc(100vw - 24px));margin:0 auto;padding:14px 0 36px}
+button,input{font:inherit}a{text-decoration:none;color:inherit}.app{width:min(var(--max),calc(100vw - 24px));margin:0 auto;padding:14px 0 36px}
 .topbar,.hero,.section,.results-panel{background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;flex-wrap:wrap}
 .brand-wrap,.topbar-actions,.nav-chips,.quick-chips,.card-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -32,7 +31,7 @@ body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),
 .results-kicker{display:inline-flex;gap:8px;margin-bottom:10px;padding:6px 10px;border-radius:999px;background:rgba(37,99,235,.10);border:1px solid rgba(37,99,235,.14);color:var(--primary);font-size:12px;font-weight:700}
 .results-title{font-size:22px;font-weight:900;margin-bottom:6px}.results-sub{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:14px}.clarify-box{display:none;margin-bottom:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(234,88,12,.18);background:rgba(234,88,12,.08)}.clarify-box.active{display:block}
 .section{margin-top:16px;padding:18px;border-radius:var(--rx)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.section-note{font-size:13px;color:var(--muted)}h2{margin:0;font-size:24px}
-.results-grid,.providers-grid,.department-grid,.business-grid,.media-grid{display:grid;gap:12px}.results-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.providers-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.department-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.business-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.results-grid,.providers-grid,.department-grid,.business-grid,.media-grid{display:grid;gap:12px}.results-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.providers-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.department-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.business-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .card{border:1px solid var(--border);background:var(--soft);border-radius:var(--rl);padding:16px;display:flex;flex-direction:column;gap:8px;min-height:200px}
 .badge{align-self:flex-start;padding:5px 9px;font-size:10px;border-radius:999px;border:1px solid rgba(37,99,235,.18);background:rgba(37,99,235,.10);color:var(--primary)}.badge.success{border-color:rgba(21,128,61,.18);background:rgba(21,128,61,.10);color:var(--success)}.badge.warn{border-color:rgba(234,88,12,.18);background:rgba(234,88,12,.10);color:var(--warning)}.badge.purple{border-color:rgba(124,58,237,.18);background:rgba(124,58,237,.10);color:var(--purple)}
 .icon{font-size:24px}.card-title{font-weight:800;font-size:18px;line-height:1.3}.card-text{color:var(--muted);font-size:14px;line-height:1.55}.result-callout{margin-top:4px;color:var(--primary);font-size:12px;font-weight:700}.result-hook{font-size:13px;font-weight:700;color:var(--primary)}.urgency{font-size:12px;font-weight:700;color:var(--warning)}
@@ -63,16 +62,16 @@ body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),
     <p class="hero-sub">Search travel, tech, or business tools. SignalBoost interprets the request, explains the path, and helps the user move with less friction.</p>
     <div class="search-shell">
       <div class="search-box">
-        <input id="query" type="text" placeholder="Try: hotel in miami, last minute city break, presentation software, website builder" onkeydown="handleSearchKey(event)">
+        <input id="query" type="text" placeholder="Try: hotel in miami, rent a car in costa rica, presentation software, website builder" onkeydown="handleSearchKey(event)">
         <button class="btn primary" onclick="runSearch()">Search</button>
         <button class="btn" onclick="clearSearchUI()">Clear</button>
       </div>
-      <div class="search-help">Search for travel, presentations, websites, marketing tools, or digital services and SignalBoost will guide you to the most useful next step.</div>
+      <div class="search-help">Search for hotels, packages, car rentals, presentations, websites, marketing tools, or digital services and SignalBoost will guide you to the most useful next step.</div>
       <div class="quick-chips">
         <button class="chip" onclick="applyQuickQuery('hotel in miami')">Hotel in Miami</button>
         <button class="chip" onclick="applyQuickQuery('cheap flight and hotel')">Flight + Hotel</button>
+        <button class="chip" onclick="applyQuickQuery('rent a car in costa rica')">Car Rental</button>
         <button class="chip" onclick="applyQuickQuery('presentation software for business')">Presentation Tool</button>
-        <button class="chip" onclick="applyQuickQuery('website builder for small business')">Website Builder</button>
       </div>
       <div class="results-panel" id="resultsPanel">
         <div class="results-kicker">Recommended next step</div>
@@ -92,6 +91,7 @@ body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),
       <div class="card"><div class="badge warn">Deals</div><div class="icon">🔥</div><div class="card-title">Lastminute</div><div class="card-text">Useful for deals, short-notice trips, and package-style travel searches.</div><div class="result-callout">Shown mainly for deal-oriented package traffic.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.lastminute.buildUrl(''),'Lastminute','travel','manual provider click')">Open Lastminute</button></div></div>
       <div class="card"><div class="badge warn">Deals</div><div class="icon">🛏️</div><div class="card-title">Hotels.com</div><div class="card-text">Useful for hotel-focused browsing and deal-oriented stay searches.</div><div class="result-callout">Monetized Hotels.com affiliate path.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.hotels_com.buildUrl(''),'Hotels.com','travel','manual provider click')">Open Hotels.com</button></div></div>
       <div class="card"><div class="badge purple">Rentals</div><div class="icon">🏡</div><div class="card-title">Vrbo</div><div class="card-text">Useful for rentals, family travel, larger stays, and vacation-home style lodging.</div><div class="result-callout">Monetized Vrbo affiliate path.</div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.vrbo.buildUrl(''),'Vrbo','travel','manual provider click')">Open Vrbo</button></div></div>
+      <div class="card"><div class="badge success">Transport</div><div class="icon">🚗</div><div class="card-title">Jumbo Car</div><div class="card-text">Useful for car rental searches, airport pickups, flexible travel, and exploring by road.</div><div class="result-callout">Monetized Jumbo Car Costa Rica affiliate path.</div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.jumbo_car.buildUrl(''),'Jumbo Car','travel','manual provider click')">Open Jumbo Car</button></div></div>
     </div>
   </section>
 
@@ -107,7 +107,7 @@ body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),
   <section class="section" id="departmentsSection">
     <div class="section-head"><h2>Departments</h2></div>
     <div class="department-grid">
-      <div class="card"><div class="badge">Travel</div><div class="card-title">Hotels, packages, rentals, and travel support</div><div class="card-text">Travel is the strongest active department and currently has the clearest fulfillment paths.</div></div>
+      <div class="card"><div class="badge">Travel</div><div class="card-title">Hotels, packages, rentals, cars, and travel support</div><div class="card-text">Travel is the strongest active department and currently has the clearest fulfillment paths.</div></div>
       <div class="card"><div class="badge">Tech</div><div class="card-title">Connectivity and digital essentials</div><div class="card-text">This department supports eSIM, gadgets, and practical tech recommendations.</div></div>
       <div class="card"><div class="badge">Business</div><div class="card-title">Presentation tools, websites, and marketing</div><div class="card-text">This visible section helps position SignalBoost as a broader discovery platform, not just travel.</div></div>
     </div>
@@ -137,6 +137,7 @@ const AFFILIATE_LINKS = {
   vrbo: 'https://vrbo.com/affiliate/M2nsa7i',
   lastminute: 'https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806',
   visa: 'https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806',
+  jumbo_car: 'https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806',
   prezi_primary: '#',
   website_builder_primary: '#',
   marketing_tools_primary: '#'
@@ -148,6 +149,7 @@ const PROVIDER_DEFS = {
   lastminute:{title:'Lastminute',desc:'Useful for deals, short-notice trips, and package-style travel.',callout:'Best used for bargain-oriented package traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.lastminute,hook:'Best for last-minute deals'},
   hotels_com:{title:'Hotels.com',desc:'Useful for hotel deals and straightforward stay browsing.',callout:'Good backup for price-sensitive hotel traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.hotels_com,hook:'Good for deal hunters'},
   vrbo:{title:'Vrbo',desc:'Worth considering for larger stays or rental-style lodging.',callout:'Best fit for family, group, and rental-style travel.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.vrbo,hook:'Best for rentals and families'},
+  jumbo_car:{title:'Jumbo Car',desc:'Useful for renting a car at your destination, especially for flexible travel and exploring.',callout:'Strong option for destination mobility.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.jumbo_car,hook:'Best for getting around your destination'},
   presentation_tools:{title:'Presentation Tools',desc:'Useful for pitch decks, class presentations, and business visuals.',callout:'Business-tool visibility helps with affiliate approvals.',buttonClass:'purple',buildUrl:()=>AFFILIATE_LINKS.prezi_primary,hook:'Useful for slides and decks'},
   website_builder:{title:'Website Builder',desc:'Useful for getting a business online quickly.',callout:'Strong fit for small business and creator searches.',buttonClass:'primary',buildUrl:()=>AFFILIATE_LINKS.website_builder_primary,hook:'Useful for launching a site'},
   marketing_tools:{title:'Marketing Tools',desc:'Useful for customer outreach and digital growth.',callout:'Good for business growth and email campaign searches.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.marketing_tools_primary,hook:'Useful for outreach and growth'},
@@ -176,6 +178,7 @@ function handleSearchKey(e){if(e.key==='Enter')runSearch()}
 function clearSearchUI(){document.getElementById('query').value='';document.getElementById('resultsPanel').classList.remove('active');document.getElementById('resultsTitle').textContent='Recommended path';document.getElementById('resultsSub').textContent='We are preparing your results.';document.getElementById('resultsGrid').innerHTML='';const c=document.getElementById('clarifyBox');c.classList.remove('active');c.textContent=''}
 function shouldSuggestVisa(query){const q=query.toLowerCase();return q.includes('travel')||q.includes('trip')||q.includes('flight')||q.includes('visa')||q.includes('usa')||q.includes('india')||q.includes('australia')||q.includes('uk')||q.includes('canada')}
 function isBusinessQuery(query){const q=query.toLowerCase();return q.includes('presentation')||q.includes('pitch deck')||q.includes('slides')||q.includes('prezi')||q.includes('website')||q.includes('builder')||q.includes('marketing')||q.includes('email campaign')||q.includes('business tool')}
+function isCarQuery(query){const q=query.toLowerCase();return q.includes('car rental')||q.includes('rent a car')||q.includes('rental car')||q.includes('car hire')||q.includes('drive')||q.includes('airport pickup')||q.includes('costa rica car')}
 
 async function runSearch(){
   const query=document.getElementById('query').value.trim();
@@ -218,6 +221,7 @@ function getCardLabel(providerKey,index){
   if(providerKey==='vrbo') return 'Best for rentals';
   if(providerKey==='expedia_packages') return 'Package option';
   if(providerKey==='hotels_com') return 'Deal backup';
+  if(providerKey==='jumbo_car') return 'Transport option';
   if(providerKey==='presentation_tools') return 'Presentation option';
   if(providerKey==='website_builder') return 'Website option';
   if(providerKey==='marketing_tools') return 'Growth option';
@@ -231,9 +235,10 @@ function getFallbackProviderOrder(department,subdepartment,query){
     if(q.includes('website')||q.includes('builder')||q.includes('domain')) return ['website_builder','marketing_tools','presentation_tools'];
     return ['marketing_tools','website_builder','presentation_tools'];
   }
+  if(isCarQuery(query)) return ['jumbo_car','expedia_hotels','hotels_com'];
   if(department==='travel'&&(subdepartment==='packages'||q.includes('cheap')||q.includes('deal')||q.includes('last minute')||q.includes('city break'))) return ['lastminute','expedia_packages','hotels_com','expedia_hotels'];
-  if(department==='travel'&&subdepartment==='rentals') return ['vrbo','expedia_hotels','hotels_com'];
-  if(department==='travel') return ['expedia_hotels','hotels_com','expedia_packages','vrbo'];
+  if(department==='travel'&&subdepartment==='rentals') return ['vrbo','expedia_hotels','jumbo_car','hotels_com'];
+  if(department==='travel') return ['expedia_hotels','hotels_com','vrbo','jumbo_car'];
   return ['expedia_hotels'];
 }
 
@@ -244,10 +249,11 @@ function getLocalIntentFallback(query){
     if(q.includes('website')||q.includes('builder')||q.includes('domain')) return {department:'business',subdepartment:'tools',confidence:'high',reasoning:'This looks like a website setup request.',providerOrder:['website_builder','marketing_tools','presentation_tools'],needsClarification:false,clarificationQuestion:''};
     return {department:'business',subdepartment:'marketing',confidence:'medium',reasoning:'This looks like a business growth tool request.',providerOrder:['marketing_tools','website_builder','presentation_tools'],needsClarification:false,clarificationQuestion:''};
   }
+  if(isCarQuery(query)) return {department:'travel',subdepartment:'transport',confidence:'high',reasoning:'This looks like a car rental request.',providerOrder:['jumbo_car','expedia_hotels','hotels_com'],needsClarification:false,clarificationQuestion:''};
   if(q.includes('flight')||q.includes('package')||q.includes('hotel')||q.includes('stay')||q.includes('trip')||q.includes('travel')||q.includes('vacation')||q.includes('rental')||q.includes('villa')||q.includes('resort')||q.includes('last minute')||q.includes('city break')){
     if(q.includes('flight')||q.includes('package')||q.includes('last minute')||q.includes('city break')||q.includes('deal')) return {department:'travel',subdepartment:'packages',confidence:'high',reasoning:'This looks like a package or deal-focused trip request, so bundle-oriented options are prioritized.',providerOrder:['lastminute','expedia_packages','hotels_com','expedia_hotels'],needsClarification:false,clarificationQuestion:''};
-    if(q.includes('rental')||q.includes('villa')||q.includes('family')||q.includes('home')) return {department:'travel',subdepartment:'rentals',confidence:'high',reasoning:'This looks like a rental-focused trip, so larger-stay options are shown first.',providerOrder:['vrbo','expedia_hotels','hotels_com'],needsClarification:false,clarificationQuestion:''};
-    return {department:'travel',subdepartment:'hotels',confidence:'high',reasoning:'This looks like a hotel or stay search, so hotel-focused paths are shown first.',providerOrder:['expedia_hotels','hotels_com','expedia_packages','vrbo'],needsClarification:false,clarificationQuestion:''};
+    if(q.includes('rental')||q.includes('villa')||q.includes('family')||q.includes('home')) return {department:'travel',subdepartment:'rentals',confidence:'high',reasoning:'This looks like a rental-focused trip, so larger-stay options are shown first.',providerOrder:['vrbo','expedia_hotels','jumbo_car','hotels_com'],needsClarification:false,clarificationQuestion:''};
+    return {department:'travel',subdepartment:'hotels',confidence:'high',reasoning:'This looks like a hotel or stay search, so hotel-focused paths are shown first.',providerOrder:['expedia_hotels','hotels_com','vrbo','jumbo_car'],needsClarification:false,clarificationQuestion:''};
   }
   return {department:'general',subdepartment:'general',confidence:'low',reasoning:'The request is broad, so SignalBoost needs one more detail.',providerOrder:['expedia_hotels'],needsClarification:true,clarificationQuestion:'Are you looking for travel or business tools?'};
 }
