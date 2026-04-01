@@ -49,7 +49,7 @@ body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),
     <div class="topbar-actions">
       <div class="nav-chips">
         <button class="chip" onclick="scrollToSection('heroSection')">Search</button>
-        <button class="chip" onclick="scrollToSection('providersSection')">Travel</button>
+        <button class="chip" onclick="scrollToSection('providersSection')">Travel Booking Options</button>
         <button class="chip" onclick="scrollToSection('businessSection')">Business Tools</button>
         <button class="chip" onclick="scrollToSection('mediaSection')">Media</button>
       </div>
@@ -84,28 +84,28 @@ body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),
   </section>
 
   <section class="section" id="providersSection">
-    <div class="section-head"><h2>Travel Paths</h2><div class="section-note">Monetized travel partners</div></div>
+    <div class="section-head"><h2>Travel Booking Options</h2><div class="section-note"></div></div>
     <div class="providers-grid">
-      <div class="card"><div class="badge">Hotels</div><div class="icon">🏨</div><div class="card-title">Expedia Hotels</div><div class="card-text">Useful for hotel searches, city stays, and standard accommodation planning.</div><div class="result-callout">Monetized Expedia affiliate path.</div><div class="card-actions"><button class="mini-btn primary" onclick="handleProviderClick(PROVIDER_DEFS.expedia_hotels.buildUrl(''),'Expedia Hotels','travel','manual provider click')">Open Expedia Hotels</button></div></div>
-      <div class="card"><div class="badge success">Packages</div><div class="icon">✈️</div><div class="card-title">Expedia Packages</div><div class="card-text">Useful for bundled flight + hotel browsing and package-style travel intent.</div><div class="result-callout">Safe default for broad package traffic.</div><div class="card-actions"><button class="mini-btn success" onclick="handleProviderClick(PROVIDER_DEFS.expedia_packages.buildUrl(''),'Expedia Packages','travel','manual provider click')">Open Expedia Packages</button></div></div>
-      <div class="card"><div class="badge warn">Deals</div><div class="icon">🔥</div><div class="card-title">Lastminute</div><div class="card-text">Useful for deals, short-notice trips, and package-style travel searches.</div><div class="result-callout">Shown mainly for deal-oriented package traffic.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.lastminute.buildUrl(''),'Lastminute','travel','manual provider click')">Open Lastminute</button></div></div>
-      <div class="card"><div class="badge warn">Deals</div><div class="icon">🛏️</div><div class="card-title">Hotels.com</div><div class="card-text">Useful for hotel-focused browsing and deal-oriented stay searches.</div><div class="result-callout">Monetized Hotels.com affiliate path.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.hotels_com.buildUrl(''),'Hotels.com','travel','manual provider click')">Open Hotels.com</button></div></div>
-      <div class="card"><div class="badge purple">Rentals</div><div class="icon">🏡</div><div class="card-title">Vrbo</div><div class="card-text">Useful for rentals, family travel, larger stays, and vacation-home style lodging.</div><div class="result-callout">Monetized Vrbo affiliate path.</div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.vrbo.buildUrl(''),'Vrbo','travel','manual provider click')">Open Vrbo</button></div></div>
-      <div class="card"><div class="badge success">Transport</div><div class="icon">🚗</div><div class="card-title">Jumbo Car</div><div class="card-text">Useful for car rental searches, airport pickups, flexible travel, and exploring by road.</div><div class="result-callout">Monetized Jumbo Car Costa Rica affiliate path.</div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.jumbo_car.buildUrl(''),'Jumbo Car','travel','manual provider click')">Open Jumbo Car</button></div></div>
+      <div class="card"><div class="badge">Hotels</div><div class="icon">🏨</div><div class="card-title">Find Hotels</div><div class="card-text">Useful for hotel searches, city stays, and standard accommodation planning.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn primary" onclick="handleProviderClick(PROVIDER_DEFS.expedia_hotels.buildUrl(''),'Expedia Hotels','travel','manual click')">See prices</button></div></div>
+      <div class="card"><div class="badge success">Packages</div><div class="icon">✈️</div><div class="card-title">Flight + Hotel Deals</div><div class="card-text">Useful for bundled flight + hotel browsing and package-style travel intent.</div><div class="result-callout">Safe default for broad package traffic.</div><div class="card-actions"><button class="mini-btn success" onclick="handleProviderClick(PROVIDER_DEFS.expedia_packages.buildUrl(''),'Expedia Packages','travel','manual click')">Explore deals</button></div></div>
+      <div class="card"><div class="badge warn">Deals</div><div class="icon">🔥</div><div class="card-title">Last-Minute Trips</div><div class="card-text">Useful for deals, short-notice trips, and package-style travel searches.</div><div class="result-callout">Shown mainly for deal-oriented package traffic.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.lastminute.buildUrl(''),'Lastminute','travel','manual click')">View deals</button></div></div>
+      <div class="card"><div class="badge warn">Deals</div><div class="icon">🛏️</div><div class="card-title">Hotel Deals</div><div class="card-text">Useful for hotel-focused browsing and deal-oriented stay searches.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.hotels_com.buildUrl(''),'Hotels.com','travel','manual click')">Check availability</button></div></div>
+      <div class="card"><div class="badge purple">Rentals</div><div class="icon">🏡</div><div class="card-title">Vacation Rentals</div><div class="card-text">Useful for rentals, family travel, larger stays, and vacation-home style lodging.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.vrbo.buildUrl(''),'Vrbo','travel','manual click')">Browse rentals</button></div></div>
+      <div class="card"><div class="badge success">Transport</div><div class="icon">🚗</div><div class="card-title">Car Rental</div><div class="card-text">Useful for car rental searches, airport pickups, flexible travel, and exploring by road.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.jumbo_car.buildUrl(''),'Jumbo Car','travel','manual click')">Find cars</button></div></div>
     </div>
   </section>
 
   <section class="section" id="businessSection">
-    <div class="section-head"><h2>Business & Tools</h2><div class="section-note">Visible business section for partner approvals</div></div>
+    <div class="section-head"><h2>Business Tools</h2><div class="section-note"></div></div>
     <div class="business-grid">
-      <div class="card"><div class="badge purple">Presentations</div><div class="icon">🧠</div><div class="card-title">Presentation Tools</div><div class="card-text">Create professional presentations, pitch decks, teaching slides, and business visuals.</div><div class="result-callout">Add your Prezi or Canva link here when approved.</div><div class="card-actions"><button class="mini-btn purple" onclick="handleProviderClick(PROVIDER_DEFS.presentation_tools.buildUrl(''),'Presentation Tools','business','manual provider click')">Explore Presentation Tools</button></div></div>
-      <div class="card"><div class="badge">Websites</div><div class="icon">🌐</div><div class="card-title">Website Builders</div><div class="card-text">Launch a business site, portfolio, landing page, or small-company website faster.</div><div class="card-actions"><button class="mini-btn primary" onclick="handleProviderClick(PROVIDER_DEFS.website_builder.buildUrl(''),'Website Builder','business','manual provider click')">Explore Website Builders</button></div></div>
-      <div class="card"><div class="badge warn">Growth</div><div class="icon">📣</div><div class="card-title">Marketing Tools</div><div class="card-text">Support email campaigns, outreach, customer acquisition, and business growth workflows.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.marketing_tools.buildUrl(''),'Marketing Tools','business','manual provider click')">Explore Marketing Tools</button></div></div>
+      <div class="card"><div class="badge purple">Presentations</div><div class="icon">🧠</div><div class="card-title">Create Presentations</div><div class="card-text">Create professional presentations, pitch decks, teaching slides, and business visuals.</div><div class="result-callout">Add your Prezi or Canva link here when approved.</div><div class="card-actions"><button class="mini-btn purple" onclick="handleProviderClick(PROVIDER_DEFS.presentation_tools.buildUrl(''),'Presentation Tools','business','manual click')">Get started</button></div></div>
+      <div class="card"><div class="badge">Websites</div><div class="icon">🌐</div><div class="card-title">Website Builders</div><div class="card-text">Launch a business site, portfolio, landing page, or small-company website faster.</div><div class="card-actions"><button class="mini-btn primary" onclick="handleProviderClick(PROVIDER_DEFS.website_builder.buildUrl(''),'Website Builder','business','manual click')">Start building</button></div></div>
+      <div class="card"><div class="badge warn">Growth</div><div class="icon">📣</div><div class="card-title">Grow Your Business</div><div class="card-text">Support email campaigns, outreach, customer acquisition, and business growth workflows.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.marketing_tools.buildUrl(''),'Marketing Tools','business','manual click')">Explore tools</button></div></div>
     </div>
   </section>
 
   <section class="section" id="departmentsSection">
-    <div class="section-head"><h2>Departments</h2></div>
+    <div class="section-head"><h2>Explore Categories</h2></div>
     <div class="department-grid">
       <div class="card"><div class="badge">Travel</div><div class="card-title">Hotels, packages, rentals, cars, and travel support</div><div class="card-text">Travel is the strongest active department and currently has the clearest fulfillment paths.</div></div>
       <div class="card"><div class="badge">Tech</div><div class="card-title">Connectivity and digital essentials</div><div class="card-text">This department supports eSIM, gadgets, and practical tech recommendations.</div></div>
@@ -114,12 +114,12 @@ body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),
   </section>
 
   <section class="section" id="mediaSection">
-    <div class="section-head"><h2>Featured Travel Moments</h2></div>
+    <div class="section-head"><h2>Featured Travel Ideas</h2></div>
     <div class="media-grid" id="youtubeFeed"></div>
     <div id="mediaFallbackNote" class="search-help hidden">Live travel videos are unavailable right now, so SignalBoost is showing built-in fallback media instead.</div>
   </section>
 
-  <div class="footer">SignalBoost • Smart discovery layer</div>
+  <div class="footer">SignalBoost</div>
 </div>
 
 <div class="modal" id="videoModal" onclick="closeVideoModal(event)">
@@ -144,16 +144,16 @@ const AFFILIATE_LINKS = {
 };
 
 const PROVIDER_DEFS = {
-  expedia_hotels:{title:'Expedia Hotels',desc:'Strong overall option for hotel searches and standard stay planning.',callout:'Reliable default for most hotel-focused searches.',buttonClass:'primary',buildUrl:()=>AFFILIATE_LINKS.expedia_hotels,hook:'Strong all-around hotel option'},
-  expedia_packages:{title:'Expedia Packages',desc:'Useful for bundled flight + hotel exploration.',callout:'Good default package path for broad travel traffic.',buttonClass:'success',buildUrl:()=>AFFILIATE_LINKS.expedia_packages,hook:'Good for bundled travel plans'},
-  lastminute:{title:'Lastminute',desc:'Useful for deals, short-notice trips, and package-style travel.',callout:'Best used for bargain-oriented package traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.lastminute,hook:'Best for last-minute deals'},
-  hotels_com:{title:'Hotels.com',desc:'Useful for hotel deals and straightforward stay browsing.',callout:'Good backup for price-sensitive hotel traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.hotels_com,hook:'Good for deal hunters'},
-  vrbo:{title:'Vrbo',desc:'Worth considering for larger stays or rental-style lodging.',callout:'Best fit for family, group, and rental-style travel.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.vrbo,hook:'Best for rentals and families'},
-  jumbo_car:{title:'Jumbo Car',desc:'Useful for renting a car at your destination, especially for flexible travel and exploring.',callout:'Strong option for destination mobility.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.jumbo_car,hook:'Best for getting around your destination'},
-  presentation_tools:{title:'Presentation Tools',desc:'Useful for pitch decks, class presentations, and business visuals.',callout:'Business-tool visibility helps with affiliate approvals.',buttonClass:'purple',buildUrl:()=>AFFILIATE_LINKS.prezi_primary,hook:'Useful for slides and decks'},
-  website_builder:{title:'Website Builder',desc:'Useful for getting a business online quickly.',callout:'Strong fit for small business and creator searches.',buttonClass:'primary',buildUrl:()=>AFFILIATE_LINKS.website_builder_primary,hook:'Useful for launching a site'},
-  marketing_tools:{title:'Marketing Tools',desc:'Useful for customer outreach and digital growth.',callout:'Good for business growth and email campaign searches.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.marketing_tools_primary,hook:'Useful for outreach and growth'},
-  visa:{title:'Evisa Express',desc:'Useful for checking visa-related travel requirements before the trip.',callout:'Helpful travel requirement step for some destinations.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.visa,hook:'Helpful travel requirement check'}
+  expedia_hotels:{title:'Expedia Hotels',desc:'Strong overall option for hotel searches and standard stay planning.',callout:'Reliable default for most hotel-focused searches.',buttonClass:'primary',buildUrl:()=>AFFILIATE_LINKS.expedia_hotels,hook:'Strong all-around hotel option',cta:'See prices'},
+  expedia_packages:{title:'Expedia Packages',desc:'Useful for bundled flight + hotel exploration.',callout:'Good default package path for broad travel traffic.',buttonClass:'success',buildUrl:()=>AFFILIATE_LINKS.expedia_packages,hook:'Good for bundled travel plans',cta:'Explore deals'},
+  lastminute:{title:'Lastminute',desc:'Useful for deals, short-notice trips, and package-style travel.',callout:'Best used for bargain-oriented package traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.lastminute,hook:'Best for last-minute deals',cta:'View deals'},
+  hotels_com:{title:'Hotels.com',desc:'Useful for hotel deals and straightforward stay browsing.',callout:'Good backup for price-sensitive hotel traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.hotels_com,hook:'Good for deal hunters',cta:'Check availability'},
+  vrbo:{title:'Vrbo',desc:'Worth considering for larger stays or rental-style lodging.',callout:'Best fit for family, group, and rental-style travel.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.vrbo,hook:'Best for rentals and families',cta:'Browse rentals'},
+  jumbo_car:{title:'Jumbo Car',desc:'Useful for renting a car at your destination, especially for flexible travel and exploring.',callout:'Strong option for destination mobility.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.jumbo_car,hook:'Best for getting around your destination',cta:'Find cars'},
+  presentation_tools:{title:'Presentation Tools',desc:'Useful for pitch decks, class presentations, and business visuals.',callout:'Business-tool visibility helps with affiliate approvals.',buttonClass:'purple',buildUrl:()=>AFFILIATE_LINKS.prezi_primary,hook:'Useful for slides and decks',cta:'Get started'},
+  website_builder:{title:'Website Builder',desc:'Useful for getting a business online quickly.',callout:'Strong fit for small business and creator searches.',buttonClass:'primary',buildUrl:()=>AFFILIATE_LINKS.website_builder_primary,hook:'Useful for launching a site',cta:'Start building'},
+  marketing_tools:{title:'Marketing Tools',desc:'Useful for customer outreach and digital growth.',callout:'Good for business growth and email campaign searches.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.marketing_tools_primary,hook:'Useful for outreach and growth',cta:'Explore tools'},
+  visa:{title:'Evisa Express',desc:'Useful for checking visa-related travel requirements before the trip.',callout:'Helpful travel requirement step for some destinations.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.visa,hook:'Helpful travel requirement check',cta:'Check requirements'}
 };
 
 const STORAGE_KEYS = {theme:'signalboost_theme',sessionId:'signalboost_session_id',searchHistory:'signalboost_search_history',clickHistory:'signalboost_click_history',lastDepartment:'signalboost_last_department',searchCount:'signalboost_search_count',clickCount:'signalboost_click_count'};
@@ -200,19 +200,29 @@ async function renderIntentResults(query,data){
   const department=safeString(data.department,'general'),subdepartment=safeString(data.subdepartment,'general'),confidence=safeString(data.confidence,'medium'),reasoning=safeString(data.reasoning,'SignalBoost selected these options based on your request.'),providerOrder=Array.isArray(data.providerOrder)?data.providerOrder:[],needsClarification=Boolean(data.needsClarification),clarificationQuestion=safeString(data.clarificationQuestion,'');
   setLastDepartment(department);
   const cards=buildRankedCards({query,department,subdepartment,providerOrder});
-  if(shouldSuggestVisa(query)){cards.push({label:'Travel requirement',title:PROVIDER_DEFS.visa.title,desc:'Some destinations require a visa. Checking now can prevent delays or denied boarding.',callout:'Many travelers forget this step.',buttonClass:'warn',url:PROVIDER_DEFS.visa.buildUrl(query),hook:PROVIDER_DEFS.visa.hook})}
+  if(shouldSuggestVisa(query)){cards.push({label:'Travel requirement',title:PROVIDER_DEFS.visa.title,desc:'Some destinations may require a visa. Checking now can prevent delays or denied boarding.',callout:'Easy to check before booking.',buttonClass:'warn',url:PROVIDER_DEFS.visa.buildUrl(query),hook:PROVIDER_DEFS.visa.hook,cta:PROVIDER_DEFS.visa.cta})}
   rt.textContent=`Best path for "${query}"`;
   rs.innerHTML=`<strong>Best match:</strong> ${capitalize(department)}${subdepartment&&subdepartment!=='general'?` → ${capitalize(subdepartment)}`:''}<br><strong>Confidence:</strong> ${capitalize(confidence)}<br><span style="color: var(--muted);">${escapeHtml(reasoning)}</span>`;
   if(needsClarification&&clarificationQuestion){cb.classList.add('active');cb.textContent=clarificationQuestion}else{cb.classList.remove('active');cb.textContent=''}
-  rg.innerHTML=cards.map((card,index)=>`<div class="card"><div class="badge ${index===0?'success':index===cards.length-1&&card.title==='Evisa Express'?'warn':'purple'}">${escapeHtml(card.label)}</div><div class="card-title">${escapeHtml(card.title)}</div><div class="result-hook">${escapeHtml(card.hook||'Recommended option based on your search')}</div><div class="card-text">${escapeHtml(card.desc)}</div><div class="urgency">⚡ Deals and availability may change quickly</div><div class="result-callout">${escapeHtml(card.callout)}</div><div class="card-actions"><button class="mini-btn ${escapeHtml(card.buttonClass)}" onclick="handleProviderClick('${escapeJs(card.url)}','${escapeJs(card.title)}','${escapeJs(department)}','${escapeJs(query)}')">View options</button></div></div>`).join('');
+  rg.innerHTML=cards.map((card,index)=>`<div class="card"><div class="badge ${index===0?'success':index===cards.length-1&&card.title==='Evisa Express'?'warn':'purple'}">${escapeHtml(card.label)}</div><div class="card-title">${escapeHtml(card.title)}</div><div class="result-hook">${escapeHtml(card.hook||'Recommended option based on your search')}</div><div class="card-text">${escapeHtml(card.desc)}</div><div class="urgency">${escapeHtml(getUrgencyText(card.title, query, index))}</div><div class="result-callout">${escapeHtml(card.callout)}</div><div class="card-actions"><button class="mini-btn ${escapeHtml(card.buttonClass)}" onclick="handleProviderClick('${escapeJs(card.url)}','${escapeJs(card.title)}','${escapeJs(department)}','${escapeJs(query)}')">${escapeHtml(card.cta || 'View options')}</button></div></div>`).join('');
   await sendEvent('results_rendered',{query,department,subdepartment,confidence,providerOrder,cardsShown:cards.map(c=>c.title),needsClarification})
 }
 
 function buildRankedCards({query,department,subdepartment,providerOrder}){
   let chosenOrder=providerOrder.filter(key=>PROVIDER_DEFS[key]);
   if(!chosenOrder.length) chosenOrder=getFallbackProviderOrder(department,subdepartment,query);
-  const cards=chosenOrder.map((providerKey,index)=>{const def=PROVIDER_DEFS[providerKey];if(!def)return null;return{label:getCardLabel(providerKey,index),title:def.title,desc:def.desc,callout:def.callout,buttonClass:def.buttonClass,url:def.buildUrl(query),hook:def.hook}}).filter(Boolean);
+  const cards=chosenOrder.map((providerKey,index)=>{const def=PROVIDER_DEFS[providerKey];if(!def)return null;return{label:getCardLabel(providerKey,index),title:def.title,desc:def.desc,callout:def.callout,buttonClass:def.buttonClass,url:def.buildUrl(query),hook:def.hook,cta:def.cta}}).filter(Boolean);
   return cards.length?cards:[{label:'Best match',title:PROVIDER_DEFS.expedia_hotels.title,desc:PROVIDER_DEFS.expedia_hotels.desc,callout:PROVIDER_DEFS.expedia_hotels.callout,buttonClass:PROVIDER_DEFS.expedia_hotels.buttonClass,url:PROVIDER_DEFS.expedia_hotels.buildUrl(query),hook:PROVIDER_DEFS.expedia_hotels.hook}]
+}
+
+function getUrgencyText(title, query, index){
+  const q = query.toLowerCase();
+  if(title === 'Lastminute') return '⚡ Deal prices may change quickly';
+  if(title === 'Jumbo Car') return '⚡ Cars can sell out fast in busy periods';
+  if(title === 'Hotels.com' && (q.includes('cheap') || q.includes('deal') || q.includes('budget'))) return '🔥 Popular for budget-minded stays';
+  if(title === 'Vrbo') return '🔥 Larger places often book early';
+  if(index === 0) return '💡 Often a strong fit for this search';
+  return '⚡ Availability can change quickly';
 }
 
 function getCardLabel(providerKey,index){
@@ -237,8 +247,8 @@ function getFallbackProviderOrder(department,subdepartment,query){
   }
   if(isCarQuery(query)) return ['jumbo_car','expedia_hotels','hotels_com'];
   if(department==='travel'&&(subdepartment==='packages'||q.includes('cheap')||q.includes('deal')||q.includes('last minute')||q.includes('city break'))) return ['lastminute','expedia_packages','hotels_com','expedia_hotels'];
-  if(department==='travel'&&subdepartment==='rentals') return ['vrbo','expedia_hotels','jumbo_car','hotels_com'];
-  if(department==='travel') return ['expedia_hotels','hotels_com','vrbo','jumbo_car'];
+  if(department==='travel'&&subdepartment==='rentals') return ['vrbo','jumbo_car','expedia_hotels','hotels_com'];
+  if(department==='travel') return ['expedia_hotels','hotels_com','expedia_packages','vrbo'];
   return ['expedia_hotels'];
 }
 
@@ -252,8 +262,8 @@ function getLocalIntentFallback(query){
   if(isCarQuery(query)) return {department:'travel',subdepartment:'transport',confidence:'high',reasoning:'This looks like a car rental request.',providerOrder:['jumbo_car','expedia_hotels','hotels_com'],needsClarification:false,clarificationQuestion:''};
   if(q.includes('flight')||q.includes('package')||q.includes('hotel')||q.includes('stay')||q.includes('trip')||q.includes('travel')||q.includes('vacation')||q.includes('rental')||q.includes('villa')||q.includes('resort')||q.includes('last minute')||q.includes('city break')){
     if(q.includes('flight')||q.includes('package')||q.includes('last minute')||q.includes('city break')||q.includes('deal')) return {department:'travel',subdepartment:'packages',confidence:'high',reasoning:'This looks like a package or deal-focused trip request, so bundle-oriented options are prioritized.',providerOrder:['lastminute','expedia_packages','hotels_com','expedia_hotels'],needsClarification:false,clarificationQuestion:''};
-    if(q.includes('rental')||q.includes('villa')||q.includes('family')||q.includes('home')) return {department:'travel',subdepartment:'rentals',confidence:'high',reasoning:'This looks like a rental-focused trip, so larger-stay options are shown first.',providerOrder:['vrbo','expedia_hotels','jumbo_car','hotels_com'],needsClarification:false,clarificationQuestion:''};
-    return {department:'travel',subdepartment:'hotels',confidence:'high',reasoning:'This looks like a hotel or stay search, so hotel-focused paths are shown first.',providerOrder:['expedia_hotels','hotels_com','vrbo','jumbo_car'],needsClarification:false,clarificationQuestion:''};
+    if(q.includes('rental')||q.includes('villa')||q.includes('family')||q.includes('home')) return {department:'travel',subdepartment:'rentals',confidence:'high',reasoning:'This looks like a rental-focused trip, so larger-stay options are shown first.',providerOrder:['vrbo','jumbo_car','expedia_hotels','hotels_com'],needsClarification:false,clarificationQuestion:''};
+    return {department:'travel',subdepartment:'hotels',confidence:'high',reasoning:'This looks like a hotel or stay search, so hotel-focused paths are shown first.',providerOrder:['expedia_hotels','hotels_com','expedia_packages','vrbo'],needsClarification:false,clarificationQuestion:''};
   }
   return {department:'general',subdepartment:'general',confidence:'low',reasoning:'The request is broad, so SignalBoost needs one more detail.',providerOrder:['expedia_hotels'],needsClarification:true,clarificationQuestion:'Are you looking for travel or business tools?'};
 }
@@ -269,7 +279,8 @@ function buildVideoObject(item){const id=item.id||item.videoId||'';const thumbna
 function renderVideoCards(containerId,videos,emptyMessage){const container=document.getElementById(containerId);if(!container)return;if(!videos.length){container.innerHTML=`<div class="card"><div class="card-title">${emptyMessage}</div><div class="card-text">Please try again shortly.</div></div>`;return}container.innerHTML=videos.map(video=>{const data=encodeURIComponent(JSON.stringify(video));return `<div class="card" onclick="openVideoFromDataset(this)" data-video="${data}"><div class="video-thumb-wrap"><img class="video-thumb" src="${escapeHtml(video.thumbnail||'')}" alt="${escapeHtml(video.title||'YouTube video')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/640x360/e2e8f0/64748b?text=Video';"><div class="play-overlay"><div class="play-pill"><div class="play-triangle"></div></div></div></div><div class="video-title">${escapeHtml(video.title||'YouTube video')}</div><div class="video-meta">${escapeHtml(video.channel||'YouTube')}${video.views?` • ${escapeHtml(video.views)}`:''}${video.time?` • ${escapeHtml(video.time)}`:''}</div></div>`}).join('')}
 function renderFallbackMedia(){const container=document.getElementById('youtubeFeed');const note=document.getElementById('mediaFallbackNote');if(!container)return;note.classList.remove('hidden');const cards=[{title:'Beach getaway inspiration',text:'Sunny stays, fast booking paths, and strong travel intent.'},{title:'Family vacation ideas',text:'Useful for larger stays, vacation rentals, and flexible lodging.'},{title:'City trips and short stays',text:'Designed for quick hotel selection and fast travel planning.'}];container.innerHTML=cards.map(card=>`<div class="card"><div class="badge">Travel</div><div class="card-title">${escapeHtml(card.title)}</div><div class="card-text">${escapeHtml(card.text)}</div><div class="card-actions"><button class="mini-btn primary" onclick="scrollToSection('providersSection')">Explore providers</button></div></div>`).join('')}
 async function fetchJson(url){const response=await fetch(url);const text=await response.text();let data;try{data=JSON.parse(text)}catch{data=null}if(!response.ok){const message=(data&&data.error&&data.error.message)||(data&&data.message)||`Request failed with HTTP ${response.status}`;throw new Error(message)}if(data&&data.error)throw new Error(data.error.message||'API returned an error object');return data}
-async function initMedia(){try{const data=await fetchJson('/api/youtube/trending?region=US');const items=Array.isArray(data.items)?data.items:[];const videos=items.slice(0,6).map(buildVideoObject).filter(v=>v&&v.watchUrl);if(!videos.length){renderFallbackMedia();return}document.getElementById('mediaFallbackNote').classList.add('hidden');renderVideoCards('youtubeFeed',videos,'Popular videos unavailable')}catch{renderFallbackMedia()}}
+function shuffleArray(items){const arr=[...items];for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+async function initMedia(){try{const cacheBust=Date.now();const data=await fetchJson(`/api/youtube/trending?region=US&cb=${cacheBust}`);const items=Array.isArray(data.items)?data.items:[];const built=items.map(buildVideoObject).filter(v=>v&&v.watchUrl);const videos=shuffleArray(built).slice(0,6);if(!videos.length){renderFallbackMedia();return}document.getElementById('mediaFallbackNote').classList.add('hidden');renderVideoCards('youtubeFeed',videos,'Popular videos unavailable')}catch{renderFallbackMedia()}}
 function openVideoModal(video){const modal=document.getElementById('videoModal');const player=document.getElementById('modalPlayer');const title=document.getElementById('modalTitle');const meta=document.getElementById('modalMeta');title.textContent=video.title||'Video';meta.textContent=`${video.channel||'YouTube'}${video.time?` • ${video.time}`:''}`;if(video.embeddable!==false&&video.embedPlayerUrl){player.src=video.embedPlayerUrl;player.style.display='block'}else{player.removeAttribute('src');player.style.display='none'}modal.classList.add('active')}
 function closeVideoModal(event){if(event&&event.target&&event.target.id!=='videoModal')return;const modal=document.getElementById('videoModal');const player=document.getElementById('modalPlayer');player.removeAttribute('src');modal.classList.remove('active')}
 function openVideoFromDataset(el){try{const raw=el.getAttribute('data-video')||'';const video=JSON.parse(decodeURIComponent(raw));openVideoModal(video)}catch(error){}}
