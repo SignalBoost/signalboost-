@@ -1,74 +1,91 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <!--
-    SIGNALBOOST V8
-    AI-HMI FRONTEND + DARK MODE + SESSION MEMORY + CLICK TRACKING
-
+    SIGNALBOOST V9
+    FULL DOCUMENTED HOMEPAGE
+    ------------------------------------------------------------
     PURPOSE
-    - Human-facing interface for SignalBoost
-    - AI remains invisible to the user
-    - System remembers recent behavior in browser storage
-    - System tracks searches and clicks for future optimization
+    - Restore a fuller public homepage experience
+    - Keep the AI/HMI intent-driven search layer
+    - Restore visible provider cards (Expedia, Hotels.com, Vrbo)
+    - Restore travel media / video section
+    - Keep dark mode, session memory, click tracking hooks
+    - Keep same-tab outbound navigation
+    - Keep code heavily documented inline for maintainability
 
-    WHAT THIS VERSION ADDS
-    1. Theme toggle persistence
-    2. Search history persistence
-    3. Last department memory
-    4. Click tracking
-    5. Event logging hook (/api/events)
-    6. Lightweight adaptive behavior based on session data
+    IMPORTANT PRODUCT PRINCIPLE
+    - The site may BE AI-driven, but it does not need to LOOK AI-driven.
+    - Intelligence is expressed through routing, explanation, memory, and
+      adaptive recommendations, not loud "AI" branding.
 
-    IMPORTANT DESIGN PRINCIPLE
-    - The site should feel helpful, not "AI-looking"
-    - Intelligence is expressed through routing, memory, and guidance
+    IMPORTANT UX NOTE
+    - Outbound partner clicks use same-tab navigation intentionally so the
+      user can return with the browser Back button.
   -->
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
 
   <style>
     :root {
       --bg: #eef4ff;
-      --surface: #ffffff;
-      --surface-soft: #f8fbff;
+      --bg-2: #f8fbff;
+      --surface: rgba(255,255,255,0.97);
+      --surface-soft: rgba(255,255,255,0.88);
       --text: #0f172a;
       --muted: #64748b;
       --border: rgba(15, 23, 42, 0.10);
       --primary: #2563eb;
-      --primary-soft: rgba(37, 99, 235, 0.10);
-      --shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+      --primary-2: #06b6d4;
+      --purple: #7c3aed;
+      --success: #15803d;
+      --warning: #ea580c;
+      --dark-btn: #0f172a;
+      --shadow: 0 18px 48px rgba(15,23,42,0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --max: 1380px;
     }
 
     body.dark {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface-soft: #172334;
+      --bg: #0b1220;
+      --bg-2: #0f172a;
+      --surface: rgba(15, 23, 42, 0.96);
+      --surface-soft: rgba(30, 41, 59, 0.92);
       --text: #e2e8f0;
       --muted: #94a3b8;
       --border: rgba(226, 232, 240, 0.10);
       --primary: #3b82f6;
-      --primary-soft: rgba(59, 130, 246, 0.16);
-      --shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+      --primary-2: #22d3ee;
+      --purple: #a855f7;
+      --success: #22c55e;
+      --warning: #fb923c;
+      --dark-btn: #e2e8f0;
+      --shadow: 0 20px 50px rgba(0,0,0,0.32);
     }
 
     * { box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, var(--bg), var(--surface-soft));
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
       color: var(--text);
       transition: background 0.25s ease, color 0.25s ease;
     }
 
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+
     .app {
-      max-width: 1180px;
+      width: min(var(--max), calc(100vw - 24px));
       margin: 0 auto;
-      padding: 18px;
+      padding: 14px 0 36px;
     }
 
     .topbar,
@@ -79,7 +96,6 @@
       background: var(--surface);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      border-radius: 20px;
     }
 
     .topbar {
@@ -87,77 +103,128 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
+      padding: 12px 16px;
+      border-radius: 18px;
       flex-wrap: wrap;
     }
 
-    .brand {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .topbar-actions {
+    .brand-wrap {
       display: flex;
-      gap: 10px;
       align-items: center;
-      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .toggle-btn,
+    .logo-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .topbar-actions,
+    .nav-chips,
+    .card-actions,
+    .quick-chips,
+    .status-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .chip,
+    .btn,
     .mini-btn,
-    .btn {
+    .toggle-btn {
+      border-radius: 999px;
+      padding: 10px 14px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text);
       cursor: pointer;
-      border-radius: 999px;
-      padding: 10px 14px;
-      transition: transform 0.15s ease, background 0.2s ease;
+      transition: transform .15s ease, box-shadow .15s ease, background .25s ease;
     }
 
-    .toggle-btn:hover,
+    .chip:hover,
+    .btn:hover,
     .mini-btn:hover,
-    .btn:hover {
+    .toggle-btn:hover {
       transform: translateY(-1px);
     }
 
     .btn.primary,
     .mini-btn.primary {
-      background: var(--primary);
       color: white;
       border: none;
       font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
     }
 
+    .mini-btn.warn { color: white; border: none; font-weight: 700; background: linear-gradient(135deg, var(--warning), #fb923c); }
+    .mini-btn.dark { color: white; border: none; font-weight: 700; background: linear-gradient(135deg, #111827, #334155); }
+    .mini-btn.purple { color: white; border: none; font-weight: 700; background: linear-gradient(135deg, var(--purple), #c084fc); }
+    .mini-btn.success { color: white; border: none; font-weight: 700; background: linear-gradient(135deg, var(--success), #16a34a); }
+
     .hero {
-      padding: 28px 22px;
-      margin-bottom: 16px;
+      margin-top: 16px;
+      border-radius: var(--radius-xl);
+      padding: 34px 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      bottom: -80px;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(37,99,235,0.12), transparent 70%);
+      pointer-events: none;
     }
 
     h1 {
       margin: 0 0 10px;
-      font-size: 42px;
-      line-height: 1.05;
+      font-size: 46px;
+      line-height: 1.02;
       letter-spacing: -0.04em;
+      max-width: 900px;
     }
 
-    .sub {
-      margin: 0 0 18px;
+    .hero-sub {
+      margin: 0;
+      max-width: 980px;
       color: var(--muted);
-      font-size: 17px;
+      font-size: 18px;
       line-height: 1.6;
-      max-width: 860px;
     }
+
+    .search-shell { margin-top: 22px; width: 100%; max-width: 1240px; }
 
     .search-box {
       display: grid;
       grid-template-columns: 1fr auto auto;
-      gap: 10px;
+      gap: 8px;
+      padding: 10px;
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 10px;
       background: var(--surface-soft);
     }
 
@@ -166,73 +233,53 @@
       min-width: 0;
       border: none;
       outline: none;
-      font-size: 16px;
       background: transparent;
+      font-size: 16px;
       color: var(--text);
-      padding: 6px 4px;
+      padding: 4px 2px;
     }
 
-    .helper {
+    .search-help {
       margin-top: 10px;
       color: var(--muted);
       font-size: 13px;
       line-height: 1.55;
     }
 
-    .quick-chips {
-      margin-top: 14px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.65fr 1fr;
-      gap: 16px;
-      align-items: start;
-    }
-
-    .results-panel,
-    .memory-panel,
-    .section {
-      padding: 18px;
-    }
+    .quick-chips { margin-top: 14px; }
 
     .results-panel {
       display: none;
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 2px solid rgba(37,99,235,0.18);
+      background: linear-gradient(180deg, rgba(37,99,235,0.04), rgba(255,255,255,0.98));
     }
 
-    .results-panel.active {
-      display: block;
+    body.dark .results-panel {
+      background: linear-gradient(180deg, rgba(59,130,246,0.10), rgba(15,23,42,0.96));
     }
 
-    .kicker {
+    .results-panel.active { display: block; }
+
+    .results-kicker {
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 10px;
       padding: 6px 10px;
       border-radius: 999px;
-      background: var(--primary-soft);
+      background: rgba(37,99,235,0.10);
+      border: 1px solid rgba(37,99,235,0.14);
       color: var(--primary);
       font-size: 12px;
       font-weight: 700;
-      margin-bottom: 12px;
     }
 
     .results-title {
-      font-size: 24px;
-      font-weight: 800;
+      font-size: 22px;
+      font-weight: 900;
       margin-bottom: 6px;
       letter-spacing: -0.02em;
     }
@@ -242,71 +289,121 @@
       font-size: 14px;
       line-height: 1.6;
       margin-bottom: 14px;
+      max-width: 1000px;
+    }
+
+    .layout {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .section {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+    }
+
+    .memory-panel {
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      position: sticky;
+      top: 14px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-tag {
+      font-size: 11px;
+      color: var(--muted);
     }
 
     .results-grid,
+    .paths-grid,
+    .providers-grid,
+    .department-grid,
     .memory-grid,
-    .section-grid {
+    .media-grid {
       display: grid;
       gap: 12px;
     }
 
-    .results-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .memory-grid,
-    .section-grid {
-      grid-template-columns: 1fr;
-    }
+    .results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .paths-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .providers-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .department-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .media-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
     .card {
-      background: var(--surface-soft);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      background: var(--surface-soft);
+      border-radius: var(--radius-lg);
       padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      min-height: 200px;
     }
 
-    .label {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--primary);
-      background: var(--primary-soft);
+    .badge {
+      align-self: flex-start;
       padding: 5px 9px;
+      font-size: 10px;
       border-radius: 999px;
-      margin-bottom: 8px;
+      border: 1px solid rgba(37,99,235,0.18);
+      background: rgba(37,99,235,0.10);
+      color: var(--primary);
     }
+
+    .badge.success { border-color: rgba(21,128,61,0.18); background: rgba(21,128,61,0.10); color: var(--success); }
+    .badge.purple { border-color: rgba(124,58,237,0.18); background: rgba(124,58,237,0.10); color: var(--purple); }
+    .badge.warn { border-color: rgba(234,88,12,0.18); background: rgba(234,88,12,0.10); color: var(--warning); }
+
+    .icon { font-size: 24px; }
 
     .card-title {
-      font-size: 18px;
       font-weight: 800;
-      margin-bottom: 6px;
+      font-size: 18px;
+      line-height: 1.3;
     }
 
     .card-text {
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 12px;
+      line-height: 1.55;
     }
 
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    .result-callout {
+      margin-top: 4px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
     }
 
-    .memory-title,
-    .section-title {
+    .memory-title {
       font-size: 20px;
       font-weight: 800;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       letter-spacing: -0.02em;
     }
 
-    .memory-sub,
-    .section-sub {
+    .memory-sub {
       color: var(--muted);
       font-size: 14px;
       line-height: 1.55;
@@ -316,8 +413,8 @@
     .history-list,
     .stats-list {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .history-pill,
@@ -328,6 +425,132 @@
       background: var(--surface);
       font-size: 12px;
       color: var(--text);
+      cursor: pointer;
+    }
+
+    .video-card {
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .video-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+    }
+
+    .video-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e2e8f0;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    .video-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #e2e8f0;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .play-pill {
+      width: 58px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(220,38,38,0.92);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    }
+
+    .play-triangle {
+      width: 0;
+      height: 0;
+      border-left: 12px solid white;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      margin-left: 3px;
+    }
+
+    .video-title {
+      margin-top: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      line-height: 1.35;
+      min-height: 56px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .video-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .modal.active { display: flex; }
+    .modal-panel {
+      width: min(920px, 100%);
+      background: var(--surface);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    }
+
+    .modal-head {
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .modal-body { padding: 14px; }
+
+    .modal-player {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      border-radius: 14px;
+      background: #0f172a;
     }
 
     .footer {
@@ -338,150 +561,233 @@
       padding: 8px;
     }
 
-    @media (max-width: 900px) {
-      .layout {
+    .hidden { display: none !important; }
+
+    @media (max-width: 1260px) {
+      .paths-grid,
+      .providers-grid,
+      .department-grid,
+      .media-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .memory-panel { position: static; }
+    }
+
+    @media (max-width: 780px) {
+      .app { width: min(100vw - 14px, var(--max)); }
+      .search-box { grid-template-columns: 1fr; }
+      .paths-grid,
+      .providers-grid,
+      .department-grid,
+      .media-grid {
         grid-template-columns: 1fr;
       }
-
-      .results-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .search-box {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 34px;
-      }
+      h1 { font-size: 34px; }
     }
   </style>
 </head>
 <body>
   <div class="app">
-
-    <!--
-      TOP BAR
-      - Brand identity
-      - Theme toggle
-      - Clear memory control
-    -->
+    <!-- TOPBAR -->
     <div class="topbar">
-      <div class="brand">SignalBoost</div>
+      <div class="brand-wrap">
+        <div class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 120 120" width="34" height="34" role="img">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#2563eb"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r="6" fill="url(#g)"/>
+            <circle cx="60" cy="60" r="16" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.9"/>
+            <circle cx="60" cy="60" r="26" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.7"/>
+            <circle cx="60" cy="60" r="36" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.5"/>
+            <path d="M60 78 L60 42 M60 42 L50 52 M60 42 L70 52" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">SignalBoost</div>
+          <div class="brand-sub">Smart discovery layer</div>
+        </div>
+      </div>
 
       <div class="topbar-actions">
+        <div class="nav-chips">
+          <button class="chip" onclick="scrollToSection('heroSection')">Search</button>
+          <button class="chip" onclick="scrollToSection('providersSection')">Providers</button>
+          <button class="chip" onclick="scrollToSection('departmentsSection')">Departments</button>
+          <button class="chip" onclick="scrollToSection('mediaSection')">Media</button>
+        </div>
         <button class="toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark mode</button>
         <button class="toggle-btn" onclick="clearSessionData()">Clear session</button>
       </div>
     </div>
 
-    <!--
-      HERO
-      - Clean public-facing experience
-      - AI remains invisible
-      - Search is the primary HMI input layer
-    -->
-    <section class="hero">
+    <!-- HERO + SEARCH -->
+    <section class="hero" id="heroSection">
       <h1>Find better options faster</h1>
-      <p class="sub">
-        Search travel, tech, or business tools. SignalBoost helps you take the best path with less friction.
+      <p class="hero-sub">
+        Search travel, tech, or business tools. SignalBoost helps you choose the clearest path without needing to look “AI”.
       </p>
 
-      <div class="search-box">
-        <input
-          id="query"
-          type="text"
-          placeholder="Try: hotel in miami, esim for europe, website builder"
-          onkeydown="handleSearchKey(event)"
-        />
-        <button class="btn primary" onclick="runSearch()">Search</button>
-        <button class="btn" onclick="clearSearchUI()">Clear</button>
-      </div>
+      <div class="search-shell">
+        <div class="search-box">
+          <input
+            id="query"
+            type="text"
+            placeholder="Try: hotel in miami, esim for europe, cheap flight and hotel, website builder"
+            onkeydown="handleSearchKey(event)"
+          />
+          <button class="btn primary" onclick="runSearch()">Search</button>
+          <button class="btn" onclick="clearSearchUI()">Clear</button>
+        </div>
 
-      <div class="helper">
-        Try: hotel in miami · esim for europe · cheap flight and hotel · website for my business
-      </div>
+        <div class="search-help">
+          This search uses SignalBoost’s decision layer to interpret what the visitor wants, then recommends the most useful next step. The AI remains invisible; the guidance is what the user feels.
+        </div>
 
-      <div class="quick-chips">
-        <button class="chip" onclick="applyQuickQuery('hotel in miami')">Hotel in Miami</button>
-        <button class="chip" onclick="applyQuickQuery('esim for europe')">eSIM for Europe</button>
-        <button class="chip" onclick="applyQuickQuery('cheap flight and hotel')">Flight + Hotel</button>
-        <button class="chip" onclick="applyQuickQuery('website builder for small business')">Website Builder</button>
+        <div class="quick-chips">
+          <button class="chip" onclick="applyQuickQuery('hotel in miami')">Hotel in Miami</button>
+          <button class="chip" onclick="applyQuickQuery('cheap flight and hotel')">Flight + Hotel</button>
+          <button class="chip" onclick="applyQuickQuery('esim for europe')">eSIM for Europe</button>
+          <button class="chip" onclick="applyQuickQuery('website builder for small business')">Website Builder</button>
+        </div>
+
+        <!-- SEARCH RESULTS -->
+        <div class="results-panel" id="resultsPanel">
+          <div class="results-kicker">Smart match</div>
+          <div class="results-title" id="resultsTitle">Recommended path</div>
+          <div class="results-sub" id="resultsSub">We are preparing your results.</div>
+          <div class="results-grid" id="resultsGrid"></div>
+        </div>
       </div>
     </section>
 
     <div class="layout">
-
-      <!--
-        LEFT COLUMN
-        - Live results
-        - AI/HMI explanation
-        - Action cards
-      -->
       <div>
-        <section id="resultsPanel" class="results-panel">
-          <div class="kicker">Smart match</div>
-          <div class="results-title" id="resultsTitle">Recommended path</div>
-          <div class="results-sub" id="resultsSub">We are preparing your results.</div>
-          <div class="results-grid" id="resultsGrid"></div>
+        <!-- RESTORED PROVIDERS SECTION -->
+        <section class="section" id="providersSection">
+          <div class="section-head">
+            <h2>Booking & Provider Paths</h2>
+            <div class="section-tag">Restored public options</div>
+          </div>
+
+          <div class="providers-grid">
+            <div class="card">
+              <div class="badge">Hotels</div>
+              <div class="icon">🏨</div>
+              <div class="card-title">Expedia Hotels</div>
+              <div class="card-text">Useful for hotel searches, city stays, and standard accommodation planning.</div>
+              <div class="result-callout">Opens in the same tab so the user can return with the browser Back button.</div>
+              <div class="card-actions">
+                <button class="mini-btn primary" onclick="handleProviderClick(DESTINATION_LINKS.travel.hotels_expedia, 'Expedia Hotels', 'travel', 'manual provider click')">Open Expedia Hotels</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="badge success">Packages</div>
+              <div class="icon">✈️</div>
+              <div class="card-title">Expedia Packages</div>
+              <div class="card-text">Useful for bundled flight + hotel browsing and package-style travel intent.</div>
+              <div class="result-callout">Separated from Hotels so the site explains the intent more clearly.</div>
+              <div class="card-actions">
+                <button class="mini-btn success" onclick="handleProviderClick(DESTINATION_LINKS.travel.packages_expedia, 'Expedia Packages', 'travel', 'manual provider click')">Open Expedia Packages</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="badge warn">Deals</div>
+              <div class="icon">🛏️</div>
+              <div class="card-title">Hotels.com</div>
+              <div class="card-text">Useful for hotel-focused browsing and deal-oriented stay searches.</div>
+              <div class="card-actions">
+                <button class="mini-btn warn" onclick="handleProviderClick(DESTINATION_LINKS.travel.hotels_hotelsdotcom, 'Hotels.com', 'travel', 'manual provider click')">Open Hotels.com</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="badge purple">Rentals</div>
+              <div class="icon">🏡</div>
+              <div class="card-title">Vrbo</div>
+              <div class="card-text">Useful for rentals, family travel, larger stays, and vacation-home style lodging.</div>
+              <div class="card-actions">
+                <button class="mini-btn dark" onclick="handleProviderClick(DESTINATION_LINKS.travel.rentals_vrbo, 'Vrbo', 'travel', 'manual provider click')">Open Vrbo</button>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <section class="section" style="margin-top:16px;">
-          <div class="section-title">How SignalBoost helps</div>
-          <div class="section-sub">
-            SignalBoost is designed as a smart decision layer. It interprets what the user is trying to do, then presents the clearest next step.
+        <!-- DEPARTMENTS -->
+        <section class="section" id="departmentsSection">
+          <div class="section-head">
+            <h2>Departments</h2>
+            <div class="section-tag">Mall-style structure</div>
           </div>
 
-          <div class="section-grid">
+          <div class="department-grid">
             <div class="card">
-              <div class="label">Travel</div>
-              <div class="card-title">Hotels, packages, rentals, and travel add-ons</div>
-              <div class="card-text">Good for stay searches, bundled trips, and travel support paths like connectivity and car rental.</div>
+              <div class="badge">Travel</div>
+              <div class="card-title">Hotels, packages, rentals, and travel support</div>
+              <div class="card-text">Travel is the strongest active department and currently has the clearest fulfillment paths.</div>
             </div>
 
             <div class="card">
-              <div class="label">Tech</div>
+              <div class="badge">Tech</div>
               <div class="card-title">Connectivity and digital essentials</div>
-              <div class="card-text">Useful for eSIM, devices, and travel-friendly tools.</div>
+              <div class="card-text">This department supports eSIM, gadgets, and practical tech recommendations.</div>
             </div>
 
             <div class="card">
-              <div class="label">Business</div>
+              <div class="badge">Business</div>
               <div class="card-title">Tools to start and grow online</div>
-              <div class="card-text">Useful for websites, marketing tools, and digital business setup.</div>
+              <div class="card-text">This department is designed for websites, marketing, and digital-business setup over time.</div>
             </div>
           </div>
+        </section>
+
+        <!-- MEDIA / VIDEO SECTION RESTORED -->
+        <section class="section" id="mediaSection">
+          <div class="section-head">
+            <h2>Featured Travel Moments</h2>
+            <div class="section-tag" id="mediaStatusLabel">Adaptive media</div>
+          </div>
+
+          <div class="media-grid" id="youtubeFeed"></div>
+          <div id="mediaFallbackNote" class="search-help hidden">Live travel videos are unavailable right now, so SignalBoost is showing built-in fallback media instead.</div>
         </section>
       </div>
 
-      <!--
-        RIGHT COLUMN
-        - Lightweight user memory
-        - Search history
-        - Session stats
-        - Soft personalization layer
-      -->
+      <!-- MEMORY / SESSION PANEL -->
       <aside class="memory-panel">
         <div class="memory-title">Session memory</div>
         <div class="memory-sub">
-          This panel tracks recent activity inside the browser so SignalBoost can become more adaptive over time.
+          This panel keeps lightweight browser-based memory so the interface becomes more adaptive over time without exposing technical AI language to the user.
         </div>
 
-        <div class="memory-grid">
-          <div class="card">
-            <div class="label">Recent searches</div>
-            <div id="historyList" class="history-list"></div>
-          </div>
+        <div class="card" style="min-height:auto;">
+          <div class="badge">Recent searches</div>
+          <div id="historyList" class="history-list"></div>
+        </div>
 
-          <div class="card">
-            <div class="label">Session signals</div>
-            <div id="statsList" class="stats-list"></div>
-          </div>
+        <div class="card" style="min-height:auto; margin-top:12px;">
+          <div class="badge">Session signals</div>
+          <div id="statsList" class="stats-list"></div>
+        </div>
 
-          <div class="card">
-            <div class="label">Last detected department</div>
-            <div class="card-title" id="lastDepartmentText">None yet</div>
-            <div class="card-text">This helps SignalBoost keep context during a user session.</div>
+        <div class="card" style="min-height:auto; margin-top:12px;">
+          <div class="badge">Last detected department</div>
+          <div class="card-title" id="lastDepartmentText">None yet</div>
+          <div class="card-text">This helps SignalBoost maintain short-term context during the session.</div>
+        </div>
+
+        <div class="card" style="min-height:auto; margin-top:12px;">
+          <div class="badge">Live event logger</div>
+          <div class="card-text">
+            Frontend events are already structured to send to <code>/api/events</code>. Once the backend endpoint is added, searches and clicks become measurable business intelligence.
           </div>
         </div>
       </aside>
@@ -492,13 +798,28 @@
     </div>
   </div>
 
+  <!-- VIDEO MODAL -->
+  <div class="modal" id="videoModal" onclick="closeVideoModal(event)">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <div>
+          <div class="card-title" id="modalTitle">Video</div>
+          <div class="video-meta" id="modalMeta">YouTube</div>
+        </div>
+        <button class="modal-close" onclick="closeVideoModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <iframe id="modalPlayer" class="modal-player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
   <script>
     /*
       ==========================================================
-      CONFIGURATION
+      CENTRAL CONFIGURATION
       ==========================================================
-      Central place for links and local memory limits.
-      Keep these values easy to update.
+      Keep app behavior, storage limits, and link registry in one place.
     */
     const APP_CONFIG = {
       searchHistoryLimit: 6,
@@ -507,10 +828,12 @@
 
     /*
       ==========================================================
-      AFFILIATE / DESTINATION LINKS
+      DESTINATION / PROVIDER LINKS
       ==========================================================
-      These are fulfillment-layer links.
-      SignalBoost itself is the decision layer.
+      These are the public fulfillment-layer links.
+      IMPORTANT:
+      - Same-tab navigation is intentional.
+      - Query-specific search URLs are generated in buildActionCards().
     */
     const DESTINATION_LINKS = {
       travel: {
@@ -533,7 +856,6 @@
       ==========================================================
       STORAGE KEYS
       ==========================================================
-      Browser storage keys are grouped here for maintainability.
     */
     const STORAGE_KEYS = {
       theme: 'signalboost_theme',
@@ -549,8 +871,8 @@
       ==========================================================
       THEME SYSTEM
       ==========================================================
-      User preference layer.
-      This supports comfort without making the interface "look AI."
+      Users can choose light or dark mode.
+      The interface stays clean and premium without looking "AI".
     */
     function toggleTheme() {
       document.body.classList.toggle('dark');
@@ -570,25 +892,21 @@
     function updateThemeToggleLabel() {
       const btn = document.getElementById('themeToggleBtn');
       if (!btn) return;
-      const isDark = document.body.classList.contains('dark');
-      btn.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+      btn.textContent = document.body.classList.contains('dark') ? '☀️ Light mode' : '🌙 Dark mode';
     }
 
     /*
       ==========================================================
       SESSION ID
       ==========================================================
-      Basic anonymous session identity for user behavior tracking.
-      This is browser-local, not account-based.
+      Browser-local anonymous identity for event grouping.
     */
     function getSessionId() {
       let sessionId = localStorage.getItem(STORAGE_KEYS.sessionId);
-
       if (!sessionId) {
         sessionId = 'sb_' + Math.random().toString(36).slice(2) + '_' + Date.now();
         localStorage.setItem(STORAGE_KEYS.sessionId, sessionId);
       }
-
       return sessionId;
     }
 
@@ -596,7 +914,6 @@
       ==========================================================
       LOCAL STORAGE HELPERS
       ==========================================================
-      Small utility layer to keep storage code consistent.
     */
     function readJsonStorage(key, fallback) {
       try {
@@ -620,46 +937,31 @@
 
     /*
       ==========================================================
-      SEARCH HISTORY
+      LIGHTWEIGHT SESSION MEMORY
       ==========================================================
-      Recent searches are stored to help the HMI feel adaptive.
+      Recent search and click memory make the interface feel adaptive.
     */
     function addSearchToHistory(query) {
       const history = readJsonStorage(STORAGE_KEYS.searchHistory, []);
       const filtered = history.filter(item => item.toLowerCase() !== query.toLowerCase());
       filtered.unshift(query);
-      const trimmed = filtered.slice(0, APP_CONFIG.searchHistoryLimit);
-      writeJsonStorage(STORAGE_KEYS.searchHistory, trimmed);
+      writeJsonStorage(STORAGE_KEYS.searchHistory, filtered.slice(0, APP_CONFIG.searchHistoryLimit));
     }
 
     function getSearchHistory() {
       return readJsonStorage(STORAGE_KEYS.searchHistory, []);
     }
 
-    /*
-      ==========================================================
-      CLICK HISTORY
-      ==========================================================
-      Stores which cards were clicked.
-      Useful for later personalization and monetization optimization.
-    */
     function addClickToHistory(clickRecord) {
       const history = readJsonStorage(STORAGE_KEYS.clickHistory, []);
       history.unshift(clickRecord);
-      const trimmed = history.slice(0, APP_CONFIG.clickHistoryLimit);
-      writeJsonStorage(STORAGE_KEYS.clickHistory, trimmed);
+      writeJsonStorage(STORAGE_KEYS.clickHistory, history.slice(0, APP_CONFIG.clickHistoryLimit));
     }
 
     function getClickHistory() {
       return readJsonStorage(STORAGE_KEYS.clickHistory, []);
     }
 
-    /*
-      ==========================================================
-      SESSION CONTEXT
-      ==========================================================
-      Last detected department helps preserve short-term context.
-    */
     function setLastDepartment(department) {
       localStorage.setItem(STORAGE_KEYS.lastDepartment, department || '');
     }
@@ -670,10 +972,14 @@
 
     /*
       ==========================================================
-      UI HELPERS
+      BASIC UI HELPERS
       ==========================================================
-      Small UI control functions for search workflow.
     */
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function applyQuickQuery(value) {
       const input = document.getElementById('query');
       input.value = value;
@@ -681,9 +987,7 @@
     }
 
     function handleSearchKey(event) {
-      if (event.key === 'Enter') {
-        runSearch();
-      }
+      if (event.key === 'Enter') runSearch();
     }
 
     function clearSearchUI() {
@@ -701,10 +1005,10 @@
 
     /*
       ==========================================================
-      EVENT LOGGING
+      BACKEND EVENT LOGGING HOOK
       ==========================================================
-      Sends events to a backend endpoint if available.
-      The frontend still works even if /api/events does not exist yet.
+      The frontend can start sending analytics now.
+      The page still works even if /api/events is not deployed yet.
     */
     async function logEvent(eventType, payload = {}) {
       const body = {
@@ -721,10 +1025,7 @@
           body: JSON.stringify(body)
         });
       } catch {
-        /*
-          Silent fail by design.
-          We do not want event logging failure to break the user experience.
-        */
+        /* silent fail by design */
       }
     }
 
@@ -732,8 +1033,9 @@
       ==========================================================
       AI-HMI SEARCH LAYER
       ==========================================================
-      This is the main interface between the user and the AI intent endpoint.
-      It gathers session context and passes that into /api/intent.
+      The search bar is the HMI entry point.
+      The system uses /api/intent if available.
+      If not, it falls back to local heuristic logic.
     */
     async function runSearch() {
       const input = document.getElementById('query');
@@ -777,66 +1079,149 @@
           })
         });
 
+        if (!response.ok) {
+          throw new Error('Intent endpoint returned a non-OK response');
+        }
+
         const data = await response.json();
-
-        const department = data.department || 'general';
-        const subdepartment = data.subdepartment || 'general';
-        const reasoning = data.reasoning || 'SignalBoost selected these options based on your search.';
-        const confidence = data.confidence || 'medium';
-
-        setLastDepartment(department);
-
-        const cards = buildActionCards({
-          query,
-          department,
-          subdepartment,
-          confidence,
-          reasoning
-        });
-
-        resultsSub.innerHTML = `
-          <strong>Detected path:</strong> ${capitalize(department)} → ${capitalize(subdepartment)}<br>
-          <strong>Confidence:</strong> ${capitalize(confidence)}<br>
-          <span style="color: var(--muted);">${reasoning}</span>
-        `;
-
-        resultsGrid.innerHTML = cards.map(card => `
-          <div class="card">
-            <div class="label">${escapeHtml(card.label)}</div>
-            <div class="card-title">${escapeHtml(card.title)}</div>
-            <div class="card-text">${escapeHtml(card.desc)}</div>
-            <div class="card-actions">
-              <button class="mini-btn primary" onclick="handleProviderClick('${escapeJs(card.url)}', '${escapeJs(card.title)}', '${escapeJs(department)}', '${escapeJs(query)}')">
-                Open
-              </button>
-            </div>
-          </div>
-        `).join('');
-
-        renderMemoryPanel();
-
-        await logEvent('results_rendered', {
-          query,
-          department,
-          subdepartment,
-          confidence,
-          cardsShown: cards.map(card => card.title)
-        });
-
-      } catch (error) {
-        resultsSub.textContent = 'Something went wrong while preparing your results. Please try again.';
-        resultsGrid.innerHTML = '';
+        renderIntentResults(query, data);
+      } catch {
+        /*
+          Local fallback keeps the product useful even if the backend is unavailable.
+        */
+        const fallback = getLocalIntentFallback(query);
+        renderIntentResults(query, fallback);
       }
     }
 
     /*
       ==========================================================
-      ACTION CARD BUILDER
+      INTENT RESULT RENDERER
       ==========================================================
-      This is where SignalBoost turns detected intent into user-facing actions.
-      Keep this layer easy to expand as the mall grows.
+      Renders explanation + action cards regardless of where the intent
+      came from (AI endpoint or local fallback).
     */
-    function buildActionCards({ query, department, subdepartment, confidence, reasoning }) {
+    async function renderIntentResults(query, data) {
+      const resultsTitle = document.getElementById('resultsTitle');
+      const resultsSub = document.getElementById('resultsSub');
+      const resultsGrid = document.getElementById('resultsGrid');
+
+      const department = data.department || 'general';
+      const subdepartment = data.subdepartment || 'general';
+      const reasoning = data.reasoning || 'SignalBoost selected these options based on your search.';
+      const confidence = data.confidence || 'medium';
+
+      setLastDepartment(department);
+
+      const cards = buildActionCards({
+        query,
+        department,
+        subdepartment,
+        confidence,
+        reasoning
+      });
+
+      resultsTitle.textContent = `Best path for "${query}"`;
+      resultsSub.innerHTML = `
+        <strong>Detected path:</strong> ${capitalize(department)} → ${capitalize(subdepartment)}<br>
+        <strong>Confidence:</strong> ${capitalize(confidence)}<br>
+        <span style="color: var(--muted);">${escapeHtml(reasoning)}</span>
+      `;
+
+      resultsGrid.innerHTML = cards.map(card => `
+        <div class="card">
+          <div class="badge success">${escapeHtml(card.label)}</div>
+          <div class="card-title">${escapeHtml(card.title)}</div>
+          <div class="card-text">${escapeHtml(card.desc)}</div>
+          <div class="result-callout">${escapeHtml(card.callout || 'SignalBoost selected this path based on your request.')}</div>
+          <div class="card-actions">
+            <button class="mini-btn primary" onclick="handleProviderClick('${escapeJs(card.url)}', '${escapeJs(card.title)}', '${escapeJs(department)}', '${escapeJs(query)}')">Open</button>
+          </div>
+        </div>
+      `).join('');
+
+      renderMemoryPanel();
+
+      await logEvent('results_rendered', {
+        query,
+        department,
+        subdepartment,
+        confidence,
+        cardsShown: cards.map(card => card.title)
+      });
+    }
+
+    /*
+      ==========================================================
+      LOCAL INTENT FALLBACK
+      ==========================================================
+      This keeps the site useful before /api/intent is fully live.
+    */
+    function getLocalIntentFallback(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes('flight') || q.includes('hotel') || q.includes('package') || q.includes('miami') || q.includes('travel') || q.includes('rental') || q.includes('vrbo')) {
+        if (q.includes('flight') || q.includes('package')) {
+          return {
+            department: 'travel',
+            subdepartment: 'packages',
+            confidence: 'high',
+            reasoning: 'This looks like a bundled trip request, so package-style travel options are shown first.'
+          };
+        }
+
+        if (q.includes('rental') || q.includes('villa') || q.includes('family')) {
+          return {
+            department: 'travel',
+            subdepartment: 'rentals',
+            confidence: 'high',
+            reasoning: 'This looks like a rental or larger-stay request, so Vrbo-style options are prioritized.'
+          };
+        }
+
+        return {
+          department: 'travel',
+          subdepartment: 'hotels',
+          confidence: 'high',
+          reasoning: 'This looks like a hotel or stay search, so hotel-first travel options are shown.'
+        };
+      }
+
+      if (q.includes('esim') || q.includes('phone') || q.includes('charger') || q.includes('laptop') || q.includes('tech')) {
+        return {
+          department: 'tech',
+          subdepartment: 'connectivity',
+          confidence: 'medium',
+          reasoning: 'This looks like a connectivity or tech need, so the tech department is selected.'
+        };
+      }
+
+      if (q.includes('website') || q.includes('marketing') || q.includes('business') || q.includes('builder')) {
+        return {
+          department: 'business',
+          subdepartment: 'tools',
+          confidence: 'medium',
+          reasoning: 'This looks like a business tool request, so digital-business options are shown.'
+        };
+      }
+
+      return {
+        department: 'travel',
+        subdepartment: 'hotels',
+        confidence: 'low',
+        reasoning: 'Travel is currently the strongest active department, so SignalBoost starts there when the request is broad.'
+      };
+    }
+
+    /*
+      ==========================================================
+      QUERY-SPECIFIC ACTION CARD BUILDER
+      ==========================================================
+      This is where the system turns intent into useful next actions.
+    */
+    function buildActionCards({ query, department, subdepartment }) {
+      const encoded = encodeURIComponent(query);
+
       if (department === 'travel') {
         const lower = query.toLowerCase();
 
@@ -845,20 +1230,23 @@
             {
               label: 'Best match',
               title: 'Expedia Packages',
-              desc: 'Useful for travelers looking for bundled flight and hotel options.',
-              url: DESTINATION_LINKS.travel.packages_expedia
+              desc: 'Useful for bundled flight + hotel exploration.',
+              callout: 'This path matches package-style travel intent.',
+              url: `${DESTINATION_LINKS.travel.packages_expedia}`
             },
             {
               label: 'Alternative',
               title: 'Expedia Hotels',
-              desc: 'Good if you want to focus on accommodations first.',
-              url: DESTINATION_LINKS.travel.hotels_expedia
+              desc: 'Good if you want to compare accommodation options first.',
+              callout: 'A hotel-first path can still help narrow the destination.',
+              url: `${DESTINATION_LINKS.travel.hotels_expedia}?destination=${encoded}`
             },
             {
               label: 'Rental option',
               title: 'Vrbo',
-              desc: 'Useful for larger stays, family trips, and vacation rentals.',
-              url: DESTINATION_LINKS.travel.rentals_vrbo
+              desc: 'Worth considering for larger stays or rental-style lodging.',
+              callout: 'A rental option is shown in case the package search shifts toward space and flexibility.',
+              url: `${DESTINATION_LINKS.travel.rentals_vrbo}?destination=${encoded}`
             }
           ];
         }
@@ -868,20 +1256,23 @@
             {
               label: 'Best match',
               title: 'Vrbo',
-              desc: 'Useful for larger stays, family travel, and rental-first trips.',
-              url: DESTINATION_LINKS.travel.rentals_vrbo
+              desc: 'Useful for larger stays, family travel, and rental-first plans.',
+              callout: 'This path matches rental-oriented travel language.',
+              url: `${DESTINATION_LINKS.travel.rentals_vrbo}?destination=${encoded}`
             },
             {
               label: 'Alternative',
               title: 'Expedia Hotels',
-              desc: 'Good for mixed travel plans that still need hotel options.',
-              url: DESTINATION_LINKS.travel.hotels_expedia
+              desc: 'Useful if a hotel fallback is still worth comparing.',
+              callout: 'A hotel alternative is shown for flexibility.',
+              url: `${DESTINATION_LINKS.travel.hotels_expedia}?destination=${encoded}`
             },
             {
               label: 'Also useful',
               title: 'Hotels.com',
-              desc: 'Useful for simpler hotel comparisons and city stays.',
-              url: DESTINATION_LINKS.travel.hotels_hotelsdotcom
+              desc: 'Useful for simpler hotel deal comparison.',
+              callout: 'This adds a hotel-deals path without forcing the user away from rental intent.',
+              url: `${DESTINATION_LINKS.travel.hotels_hotelsdotcom}`
             }
           ];
         }
@@ -891,19 +1282,22 @@
             label: 'Best match',
             title: 'Expedia Hotels',
             desc: 'Strong overall option for hotel searches and standard stay planning.',
-            url: DESTINATION_LINKS.travel.hotels_expedia
+            callout: 'This path matches hotel/stay intent most directly.',
+            url: `${DESTINATION_LINKS.travel.hotels_expedia}?destination=${encoded}`
           },
           {
             label: 'Alternative',
             title: 'Hotels.com',
             desc: 'Useful for hotel deals and straightforward stay browsing.',
-            url: DESTINATION_LINKS.travel.hotels_hotelsdotcom
+            callout: 'A deals-oriented hotel alternative is shown as well.',
+            url: `${DESTINATION_LINKS.travel.hotels_hotelsdotcom}`
           },
           {
             label: 'Rental option',
             title: 'Vrbo',
             desc: 'Worth considering if you want more space or a rental-style stay.',
-            url: DESTINATION_LINKS.travel.rentals_vrbo
+            callout: 'A rental path is included in case the user wants flexibility.',
+            url: `${DESTINATION_LINKS.travel.rentals_vrbo}?destination=${encoded}`
           }
         ];
       }
@@ -914,12 +1308,14 @@
             label: 'Best match',
             title: 'eSIM Plans',
             desc: 'Useful for travelers and remote users who need data connectivity.',
+            callout: 'This is a placeholder until your real tech offers are wired.',
             url: DESTINATION_LINKS.tech.esim
           },
           {
             label: 'Alternative',
             title: 'Travel Gadgets',
             desc: 'Useful for chargers, accessories, and mobility-focused tech.',
+            callout: 'This is a placeholder until your real tech offers are wired.',
             url: DESTINATION_LINKS.tech.gadgets
           }
         ];
@@ -931,12 +1327,14 @@
             label: 'Best match',
             title: 'Website Builder',
             desc: 'Useful for getting a business online quickly.',
+            callout: 'This is a placeholder until your real business offers are wired.',
             url: DESTINATION_LINKS.business.website_builder
           },
           {
             label: 'Alternative',
             title: 'Marketing Tools',
             desc: 'Useful for customer outreach and digital growth.',
+            callout: 'This is a placeholder until your real business offers are wired.',
             url: DESTINATION_LINKS.business.marketing_tools
           }
         ];
@@ -945,19 +1343,19 @@
       return [
         {
           label: 'Suggested path',
-          title: 'Start with Travel',
+          title: 'Start with Expedia Hotels',
           desc: 'Travel is currently the strongest active SignalBoost department.',
-          url: DESTINATION_LINKS.travel.hotels_expedia
+          callout: 'SignalBoost starts from the strongest live department when the request is broad.',
+          url: `${DESTINATION_LINKS.travel.hotels_expedia}?destination=${encoded}`
         }
       ];
     }
 
     /*
       ==========================================================
-      CLICK HANDLER
+      PROVIDER CLICK HANDLER
       ==========================================================
-      This is where the site learns from user choices.
-      Navigation remains same-tab by design.
+      Same-tab navigation is deliberate to avoid extra tabs.
     */
     async function handleProviderClick(url, title, department, query) {
       const clickRecord = {
@@ -974,10 +1372,6 @@
 
       await logEvent('provider_clicked', clickRecord);
 
-      /*
-        Same-tab navigation is intentional.
-        This avoids forcing users into extra tabs.
-      */
       window.location.href = url;
     }
 
@@ -985,7 +1379,6 @@
       ==========================================================
       MEMORY PANEL RENDERER
       ==========================================================
-      Makes the adaptive layer visible without exposing "AI" language.
     */
     function renderMemoryPanel() {
       const historyList = document.getElementById('historyList');
@@ -1015,7 +1408,6 @@
       ==========================================================
       SESSION RESET
       ==========================================================
-      Useful during development and testing.
     */
     function clearSessionData() {
       localStorage.removeItem(STORAGE_KEYS.searchHistory);
@@ -1029,9 +1421,202 @@
 
     /*
       ==========================================================
-      SAFETY / OUTPUT HELPERS
+      MEDIA / VIDEO SECTION
       ==========================================================
-      Basic escaping for safe HTML and JS insertion.
+      Restores the richer homepage experience.
+      If live media endpoint is unavailable, fallback cards are shown.
+    */
+    function formatCompactNumber(value) {
+      if (value >= 1000000000) return (value / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+      if (value >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+      return String(value || 0);
+    }
+
+    function hoursAgoFromPublishedAt(publishedAt) {
+      if (!publishedAt) return 'recent';
+      const then = new Date(publishedAt).getTime();
+      const hours = Math.max(1, Math.round((Date.now() - then) / 3600000));
+      return `${hours}h ago`;
+    }
+
+    function buildVideoObject(item) {
+      const id = item.id || item.videoId || '';
+      const thumbnail = item.thumbnail || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
+      const watchUrl = item.watchUrl || (id ? `https://www.youtube.com/watch?v=${id}` : '#');
+      const embedPlayerUrl = item.embedPlayerUrl || (id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` : '');
+
+      return {
+        id,
+        title: item.title || 'YouTube video',
+        channel: item.channel || 'YouTube',
+        views: item.views ? (typeof item.views === 'string' ? item.views : `${formatCompactNumber(Number(item.views || 0))} views`) : '',
+        time: item.time || hoursAgoFromPublishedAt(item.publishedAt || new Date().toISOString()),
+        thumbnail,
+        watchUrl,
+        embedPlayerUrl,
+        embeddable: item.embeddable !== false
+      };
+    }
+
+    function renderVideoCards(containerId, videos, emptyMessage) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      if (!videos.length) {
+        container.innerHTML = `
+          <div class="card">
+            <div class="card-title">${emptyMessage}</div>
+            <div class="card-text">Please try again shortly.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = videos.map(video => {
+        const data = encodeURIComponent(JSON.stringify(video));
+        return `
+          <div class="card video-card" onclick="openVideoFromDataset(this)" data-video="${data}">
+            <div class="video-thumb-wrap">
+              <img
+                class="video-thumb"
+                src="${escapeHtml(video.thumbnail || '')}"
+                alt="${escapeHtml(video.title || 'YouTube video')}"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+                onerror="this.src='https://placehold.co/640x360/e2e8f0/64748b?text=Video';"
+              />
+              <div class="play-overlay">
+                <div class="play-pill"><div class="play-triangle"></div></div>
+              </div>
+            </div>
+            <div class="video-title">${escapeHtml(video.title || 'YouTube video')}</div>
+            <div class="video-meta">${escapeHtml(video.channel || 'YouTube')}${video.views ? ` • ${escapeHtml(video.views)}` : ''}${video.time ? ` • ${escapeHtml(video.time)}` : ''}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderFallbackMedia() {
+      const container = document.getElementById('youtubeFeed');
+      const note = document.getElementById('mediaFallbackNote');
+      const status = document.getElementById('mediaStatusLabel');
+      if (!container) return;
+
+      note.classList.remove('hidden');
+      status.textContent = 'Fallback media';
+
+      const cards = [
+        {
+          title: 'Beach getaway inspiration',
+          text: 'Sunny stays, fast booking paths, and strong travel intent.'
+        },
+        {
+          title: 'Family vacation ideas',
+          text: 'Useful for larger stays, vacation rentals, and flexible lodging.'
+        },
+        {
+          title: 'City trips and short stays',
+          text: 'Designed for quick hotel selection and fast travel planning.'
+        }
+      ];
+
+      container.innerHTML = cards.map(card => `
+        <div class="card">
+          <div class="badge">Travel</div>
+          <div class="card-title">${escapeHtml(card.title)}</div>
+          <div class="card-text">${escapeHtml(card.text)}</div>
+          <div class="card-actions">
+            <button class="mini-btn primary" onclick="scrollToSection('providersSection')">Explore providers</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchJson(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = null;
+      }
+
+      if (!response.ok) {
+        const message = data?.error?.message || data?.message || `Request failed with HTTP ${response.status}`;
+        throw new Error(message);
+      }
+
+      if (data?.error) {
+        throw new Error(data.error.message || 'API returned an error object');
+      }
+
+      return data;
+    }
+
+    async function initMedia() {
+      try {
+        const data = await fetchJson('/api/youtube/trending?region=US');
+        const items = Array.isArray(data.items) ? data.items : [];
+        const videos = items.slice(0, 6).map(buildVideoObject).filter(v => v && v.watchUrl);
+
+        if (!videos.length) {
+          renderFallbackMedia();
+          return;
+        }
+
+        document.getElementById('mediaFallbackNote').classList.add('hidden');
+        document.getElementById('mediaStatusLabel').textContent = 'Live travel media';
+        renderVideoCards('youtubeFeed', videos, 'Popular videos unavailable');
+      } catch {
+        renderFallbackMedia();
+      }
+    }
+
+    function openVideoModal(video) {
+      const modal = document.getElementById('videoModal');
+      const player = document.getElementById('modalPlayer');
+      const title = document.getElementById('modalTitle');
+      const meta = document.getElementById('modalMeta');
+
+      title.textContent = video.title || 'Video';
+      meta.textContent = `${video.channel || 'YouTube'}${video.time ? ` • ${video.time}` : ''}`;
+
+      if (video.embeddable !== false && video.embedPlayerUrl) {
+        player.src = video.embedPlayerUrl;
+        player.style.display = 'block';
+      } else {
+        player.removeAttribute('src');
+        player.style.display = 'none';
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeVideoModal(event) {
+      if (event && event.target && event.target.id !== 'videoModal') return;
+      const modal = document.getElementById('videoModal');
+      const player = document.getElementById('modalPlayer');
+      player.removeAttribute('src');
+      modal.classList.remove('active');
+    }
+
+    function openVideoFromDataset(el) {
+      try {
+        const raw = el.getAttribute('data-video') || '';
+        const video = JSON.parse(decodeURIComponent(raw));
+        openVideoModal(video);
+      } catch (error) {
+        console.error('Failed to open video:', error);
+      }
+    }
+
+    /*
+      ==========================================================
+      SAFETY HELPERS
+      ==========================================================
     */
     function escapeHtml(value) {
       return String(value ?? '')
@@ -1058,12 +1643,12 @@
       ==========================================================
       APP INIT
       ==========================================================
-      Runs startup tasks once the page loads.
     */
     function initApp() {
       initTheme();
       getSessionId();
       renderMemoryPanel();
+      initMedia();
     }
 
     initApp();
