@@ -3,24 +3,42 @@
 <html lang="en">
 <head>
   <!--
-    SIGNALBOOST V16
-    BUSINESS-LIKE / HMI-ORIENTED PUBLIC PLATFORM
+    SIGNALBOOST V17
+    PARTNER-READY / CLEAN BUSINESS FACE
 
     PURPOSE
-    - Executive, clean, partner-friendly public interface
-    - Business-like positioning instead of "travel site" feel
-    - Preserves travel monetization while opening room for SaaS / fintech
-    - Keeps Lastminute SE selective, not default for all package traffic
-    - Keeps Evisa contextual only
-    - Rotates videos instead of always showing the same 6
-    - Keeps same-tab navigation
-    - Works even if /api/intent or /api/events is unavailable
+    ------------------------------------------------------------
+    - Present SignalBoost as a structured decision platform
+    - Improve trust for business, fintech, SaaS, and travel partners
+    - Keep public UI clean and professional
+    - Preserve monetization logic without looking like an affiliate directory
+    - Add public-facing credibility sections:
+      * About
+      * How it works
+      * Partners
+      * Suggested next steps
+    - Preserve /api/intent support when available
+    - Preserve /api/events support when available
+    - Preserve same-tab routing
+    - Keep Lastminute SE selective
+    - Keep Evisa contextual, not homepage clutter
 
     IMPORTANT PLACEHOLDERS
-    - Replace esim_primary
-    - Replace website_builder_primary
-    - Replace marketing_tools_primary
-    - Replace finance_tools_primary
+    ------------------------------------------------------------
+    Replace these when you secure partners:
+    - esim_primary
+    - website_builder_primary
+    - marketing_tools_primary
+    - finance_tools_primary
+
+    CURRENT LIVE LINKS
+    ------------------------------------------------------------
+    - Lastminute SE
+    - Evisa Express
+    - Expedia Hotels
+    - Expedia Packages
+    - Hotels.com
+    - Vrbo
   -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -72,6 +90,7 @@
       background:linear-gradient(180deg,var(--bg),var(--bg2));
       color:var(--text);
     }
+
     a{color:inherit;text-decoration:none}
     button,input{font:inherit}
 
@@ -81,7 +100,7 @@
       padding:14px 0 36px;
     }
 
-    .topbar,.hero,.section,.results-panel{
+    .topbar,.hero,.section,.results-panel,.partners-band{
       background:var(--surface);
       border:1px solid var(--border);
       box-shadow:var(--shadow);
@@ -97,7 +116,7 @@
       flex-wrap:wrap;
     }
 
-    .brand-wrap,.topbar-actions,.nav-chips,.quick-chips,.card-actions,.hero-stats{
+    .brand-wrap,.topbar-actions,.nav-chips,.quick-chips,.card-actions,.hero-stats,.partner-logos{
       display:flex;
       align-items:center;
       gap:8px;
@@ -122,7 +141,6 @@
       cursor:pointer;
       transition:transform .15s ease;
     }
-
     .chip:hover,.btn:hover,.mini-btn:hover,.toggle-btn:hover{transform:translateY(-1px)}
 
     .btn.primary,.mini-btn.primary{
@@ -145,11 +163,10 @@
     .hero{
       margin-top:16px;
       border-radius:var(--rx);
-      padding:34px 28px 24px;
+      padding:36px 30px 28px;
       position:relative;
       overflow:hidden;
     }
-
     .hero::after{
       content:"";
       position:absolute;
@@ -163,10 +180,10 @@
 
     h1{
       margin:0 0 10px;
-      font-size:48px;
+      font-size:50px;
       line-height:1.02;
-      letter-spacing:-.04em;
-      max-width:950px;
+      letter-spacing:-.045em;
+      max-width:980px;
     }
 
     .hero-sub{
@@ -199,11 +216,27 @@
       font-size:16px;color:var(--text);padding:4px 2px;
     }
 
-    .search-help{
-      margin-top:10px;color:var(--muted);font-size:13px;line-height:1.55;
-    }
-
+    .search-help{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.55}
     .quick-chips{margin-top:14px}
+
+    .partners-band{
+      margin-top:16px;
+      border-radius:18px;
+      padding:14px 16px;
+    }
+    .partners-band-title{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    .partner-pill{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--soft);
+      font-size:13px;
+      color:var(--text);
+    }
 
     .results-panel{
       display:none;
@@ -244,12 +277,12 @@
     h2{margin:0;font-size:24px;letter-spacing:-.02em}
     .section-note{font-size:12px;color:var(--muted)}
 
-    .results-grid,.providers-grid,.sector-grid,.media-grid{
+    .results-grid,.grid-4,.grid-3,.media-grid{
       display:grid;gap:12px;
     }
     .results-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .providers-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-    .sector-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
     .media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 
     .card{
@@ -289,12 +322,8 @@
     }
     .video-thumb{width:100%;height:100%;object-fit:cover;display:block}
     .play-overlay{position:absolute;inset:0;display:grid;place-items:center}
-    .play-pill{
-      width:58px;height:40px;border-radius:12px;background:rgba(220,38,38,.92);display:grid;place-items:center;
-    }
-    .play-triangle{
-      width:0;height:0;border-left:12px solid white;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px;
-    }
+    .play-pill{width:58px;height:40px;border-radius:12px;background:rgba(220,38,38,.92);display:grid;place-items:center}
+    .play-triangle{width:0;height:0;border-left:12px solid white;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}
     .video-title{
       margin-top:8px;font-weight:800;font-size:14px;line-height:1.35;min-height:56px;
       display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
@@ -325,14 +354,14 @@
     .hidden{display:none!important}
 
     @media (max-width:1260px){
-      .providers-grid,.sector-grid,.media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid-4,.media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid-3{grid-template-columns:1fr}
       .results-grid{grid-template-columns:1fr}
     }
-
     @media (max-width:780px){
       .app{width:min(100vw - 14px,var(--max))}
       .search-box{grid-template-columns:1fr}
-      .providers-grid,.sector-grid,.media-grid{grid-template-columns:1fr}
+      .grid-4,.grid-3,.media-grid{grid-template-columns:1fr}
       h1{font-size:36px}
     }
   </style>
@@ -350,23 +379,23 @@
 
     <div class="topbar-actions">
       <div class="nav-chips">
-        <button class="chip" onclick="scrollToSection('heroSection')">Search</button>
-        <button class="chip" onclick="scrollToSection('providersSection')">Travel</button>
-        <button class="chip" onclick="scrollToSection('sectorsSection')">Sectors</button>
-        <button class="chip" onclick="scrollToSection('mediaSection')">Media</button>
+        <button class="chip" onclick="scrollToSection('heroSection')">Home</button>
+        <button class="chip" onclick="scrollToSection('aboutSection')">About</button>
+        <button class="chip" onclick="scrollToSection('howSection')">How it works</button>
+        <button class="chip" onclick="scrollToSection('partnersSection')">Partners</button>
       </div>
       <button class="toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark mode</button>
     </div>
   </div>
 
   <section class="hero" id="heroSection">
-    <h1>Guide users from intent to action.</h1>
-    <p class="hero-sub">SignalBoost is designed as a clean decision layer: users arrive with intent, the platform interprets that need, and then routes them toward the most relevant booking, service, or software path.</p>
+    <h1>Route high-intent users to the right next step.</h1>
+    <p class="hero-sub">SignalBoost is built as a structured decision platform. Users arrive with intent, the system interprets that need, and the interface presents a smaller set of stronger paths across travel, digital services, business tools, and support layers.</p>
 
     <div class="hero-stats">
-      <div class="hero-stat">Structured recommendations</div>
       <div class="hero-stat">High-intent routing</div>
-      <div class="hero-stat">Travel, business, and digital services</div>
+      <div class="hero-stat">Structured recommendations</div>
+      <div class="hero-stat">Travel, digital services, and business tools</div>
     </div>
 
     <div class="search-shell">
@@ -376,7 +405,7 @@
         <button class="btn" onclick="clearSearchUI()">Clear</button>
       </div>
 
-      <div class="search-help">Search across travel, business tools, and digital services. SignalBoost will recommend the strongest next step instead of sending users through a noisy marketplace experience.</div>
+      <div class="search-help">SignalBoost is designed to reduce decision friction. Instead of showing a marketplace of noise, it surfaces a smaller set of relevant next steps based on intent.</div>
 
       <div class="quick-chips">
         <button class="chip" onclick="applyQuickQuery('hotel in miami')">Hotel in Miami</button>
@@ -395,13 +424,117 @@
     </div>
   </section>
 
-  <section class="section" id="providersSection">
+  <section class="partners-band">
+    <div class="partners-band-title">Current and target platform categories</div>
+    <div class="partner-logos">
+      <div class="partner-pill">Travel providers</div>
+      <div class="partner-pill">Business software</div>
+      <div class="partner-pill">Digital services</div>
+      <div class="partner-pill">Finance tools</div>
+      <div class="partner-pill">Travel support layers</div>
+    </div>
+  </section>
+
+  <section class="section" id="aboutSection">
     <div class="section-head">
-      <h2>Travel decision paths</h2>
-      <div class="section-note">Clean public options with same-tab navigation</div>
+      <h2>About SignalBoost</h2>
+      <div class="section-note">Public company-facing overview</div>
     </div>
 
-    <div class="providers-grid">
+    <div class="grid-3">
+      <div class="card">
+        <div class="badge">Positioning</div>
+        <div class="card-title">Decision-routing platform</div>
+        <div class="card-text">SignalBoost is positioned as a decision layer, not a content blog or generic directory. The platform focuses on helping users move from intent to action with less friction.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge success">Traffic quality</div>
+        <div class="card-title">High-intent user journeys</div>
+        <div class="card-text">The platform is built for users already looking to book, compare, subscribe, or take a next step across travel, digital services, and business categories.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge purple">Design principle</div>
+        <div class="card-title">Clean interface, fewer stronger options</div>
+        <div class="card-text">Instead of overwhelming users with clutter, SignalBoost presents a smaller set of stronger routes. That makes the experience clearer for users and more credible for partners.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="howSection">
+    <div class="section-head">
+      <h2>How it works</h2>
+      <div class="section-note">Simple public explanation</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <div class="badge">1</div>
+        <div class="card-title">User arrives with intent</div>
+        <div class="card-text">The user searches for a stay, a deal, a digital service, or a business tool.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge">2</div>
+        <div class="card-title">SignalBoost interprets the request</div>
+        <div class="card-text">The interface evaluates the likely category and narrows the next actions.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge">3</div>
+        <div class="card-title">Relevant paths are shown</div>
+        <div class="card-text">The platform presents a cleaner set of recommendations rather than a noisy comparison experience.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge">4</div>
+        <div class="card-title">User moves forward</div>
+        <div class="card-text">The user clicks into the provider or service that best fits the decision context.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="partnersSection">
+    <div class="section-head">
+      <h2>Partner fit</h2>
+      <div class="section-note">Why companies may want to be associated</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <div class="badge">Travel</div>
+        <div class="card-title">Booking and stay providers</div>
+        <div class="card-text">Accommodation, package, rental, and travel support partners can fit naturally into a high-intent travel flow.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge success">SaaS</div>
+        <div class="card-title">Business software</div>
+        <div class="card-text">Website builders, marketing platforms, CRM tools, and operational software align well with decision-led business intent.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge purple">Digital services</div>
+        <div class="card-title">Connectivity and subscriptions</div>
+        <div class="card-text">eSIM, VPN, and subscription-based digital products benefit from cleaner routing and simpler next-step positioning.</div>
+      </div>
+
+      <div class="card">
+        <div class="badge warn">Finance</div>
+        <div class="card-title">Financial and money tools</div>
+        <div class="card-text">Future partner fit may include payments, transfers, or finance tools, provided the interface stays clean and trust-oriented.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pathsSection">
+    <div class="section-head">
+      <h2>Live platform paths</h2>
+      <div class="section-note">Current public routes</div>
+    </div>
+
+    <div class="grid-4">
       <div class="card">
         <div class="badge">Hotels</div>
         <div class="icon">🏨</div>
@@ -429,7 +562,7 @@
         <div class="icon">🔥</div>
         <div class="card-title">Lastminute</div>
         <div class="card-text">Useful for deal-focused, short-notice, and last-minute package traffic.</div>
-        <div class="result-callout">Positioned more selectively because your current affiliate link is the SE program.</div>
+        <div class="result-callout">Positioned more selectively because the current affiliate link is the SE program.</div>
         <div class="card-actions">
           <button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.lastminute.buildUrl(''),'Lastminute','travel','manual provider click')">Open Lastminute</button>
         </div>
@@ -448,43 +581,35 @@
     </div>
   </section>
 
-  <section class="section" id="sectorsSection">
+  <section class="section" id="nextStepsSection">
     <div class="section-head">
-      <h2>Growth sectors</h2>
-      <div class="section-note">Designed to support higher-value partnerships over time</div>
+      <h2>Suggested next steps</h2>
+      <div class="section-note">Monetization layers without clutter</div>
     </div>
 
-    <div class="sector-grid">
+    <div class="grid-4">
       <div class="card">
-        <div class="badge">Business tools</div>
-        <div class="icon">💼</div>
-        <div class="card-title">Website & business setup</div>
-        <div class="card-text">Ideal for website builders, business software, and startup infrastructure offers.</div>
-        <div class="result-callout">High-value category with strong recurring revenue potential.</div>
+        <div class="badge">Business</div>
+        <div class="card-title">Website setup</div>
+        <div class="card-text">For users launching projects, a website-builder route becomes a strong next step after intent is identified.</div>
       </div>
 
       <div class="card">
-        <div class="badge">Digital services</div>
-        <div class="icon">📶</div>
-        <div class="card-title">Connectivity & subscriptions</div>
-        <div class="card-text">eSIM, VPN, and software subscriptions fit naturally into a decision-led platform model.</div>
-        <div class="result-callout">Good conversion layer on top of travel and business demand.</div>
+        <div class="badge success">Marketing</div>
+        <div class="card-title">Growth tools</div>
+        <div class="card-text">Marketing platforms work as a high-value layer when the user intent shifts toward business and customer acquisition.</div>
       </div>
 
       <div class="card">
-        <div class="badge">Finance</div>
-        <div class="icon">📈</div>
-        <div class="card-title">Financial products</div>
-        <div class="card-text">Future category for finance tools, international money services, and investing-related partnerships.</div>
-        <div class="result-callout">Needs strong brand safety and a clean interface to win approvals.</div>
+        <div class="badge purple">Connectivity</div>
+        <div class="card-title">Digital services</div>
+        <div class="card-text">eSIM or similar digital services can sit naturally after travel or remote-work related intent.</div>
       </div>
 
       <div class="card">
-        <div class="badge warn">Travel add-ons</div>
-        <div class="icon">🛂</div>
-        <div class="card-title">Requirements & support</div>
-        <div class="card-text">Visa services, insurance, and related steps work well as contextual upsells after travel intent is clear.</div>
-        <div class="result-callout">Best used as a secondary layer, not homepage clutter.</div>
+        <div class="badge warn">Support</div>
+        <div class="card-title">Travel requirements</div>
+        <div class="card-text">Visa or related support should appear contextually only when relevant to the route the user is taking.</div>
       </div>
     </div>
   </section>
@@ -880,9 +1005,7 @@ function getFallbackProviderOrder(department,subdepartment,query){
 function getLocalIntentFallback(query){
   const q=query.toLowerCase();
 
-  if(
-    q.includes('flight')||q.includes('package')||q.includes('hotel')||q.includes('stay')||q.includes('trip')||q.includes('travel')||q.includes('vacation')||q.includes('rental')||q.includes('villa')||q.includes('resort')||q.includes('last minute')||q.includes('city break')
-  ){
+  if(q.includes('flight')||q.includes('package')||q.includes('hotel')||q.includes('stay')||q.includes('trip')||q.includes('travel')||q.includes('vacation')||q.includes('rental')||q.includes('villa')||q.includes('resort')||q.includes('last minute')||q.includes('city break')){
     if(q.includes('flight')||q.includes('package')||q.includes('last minute')||q.includes('city break')||q.includes('deal')){
       return {
         department:'travel',
@@ -894,7 +1017,6 @@ function getLocalIntentFallback(query){
         clarificationQuestion:''
       };
     }
-
     if(q.includes('rental')||q.includes('villa')||q.includes('family')||q.includes('home')){
       return {
         department:'travel',
@@ -906,7 +1028,6 @@ function getLocalIntentFallback(query){
         clarificationQuestion:''
       };
     }
-
     return {
       department:'travel',
       subdepartment:'hotels',
