@@ -2,16 +2,26 @@
 <html lang="en">
 <head>
   <!--
-    SIGNALBOOST V7 - AI-HMI + DARK MODE
+    SIGNALBOOST V8
+    AI-HMI FRONTEND + DARK MODE + SESSION MEMORY + CLICK TRACKING
 
-    NEW IN THIS VERSION:
-    - Dark mode toggle (user-controlled)
-    - Theme persistence via localStorage
-    - Smooth visual transitions
+    PURPOSE
+    - Human-facing interface for SignalBoost
+    - AI remains invisible to the user
+    - System remembers recent behavior in browser storage
+    - System tracks searches and clicks for future optimization
 
-    DESIGN PRINCIPLE:
-    - AI stays invisible
-    - UX feels adaptive and intelligent
+    WHAT THIS VERSION ADDS
+    1. Theme toggle persistence
+    2. Search history persistence
+    3. Last department memory
+    4. Click tracking
+    5. Event logging hook (/api/events)
+    6. Lightweight adaptive behavior based on session data
+
+    IMPORTANT DESIGN PRINCIPLE
+    - The site should feel helpful, not "AI-looking"
+    - Intelligence is expressed through routing, memory, and guidance
   -->
 
   <meta charset="UTF-8" />
@@ -21,291 +31,1042 @@
   <style>
     :root {
       --bg: #eef4ff;
-      --card: #ffffff;
+      --surface: #ffffff;
+      --surface-soft: #f8fbff;
       --text: #0f172a;
       --muted: #64748b;
+      --border: rgba(15, 23, 42, 0.10);
       --primary: #2563eb;
+      --primary-soft: rgba(37, 99, 235, 0.10);
+      --shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
     }
 
     body.dark {
       --bg: #0f172a;
-      --card: #1e293b;
+      --surface: #1e293b;
+      --surface-soft: #172334;
       --text: #e2e8f0;
       --muted: #94a3b8;
+      --border: rgba(226, 232, 240, 0.10);
       --primary: #3b82f6;
+      --primary-soft: rgba(59, 130, 246, 0.16);
+      --shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
     }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: var(--bg);
+      background: linear-gradient(180deg, var(--bg), var(--surface-soft));
       color: var(--text);
-      transition: all 0.3s ease;
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
     .app {
-      max-width: 1100px;
-      margin: auto;
-      padding: 20px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .topbar,
+    .hero,
+    .section,
+    .results-panel,
+    .memory-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 20px;
     }
 
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
 
-    .toggle {
+    .brand {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .toggle-btn,
+    .mini-btn,
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
       cursor: pointer;
-      font-size: 14px;
-      padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid #ccc;
-      background: var(--card);
+      padding: 10px 14px;
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+
+    .toggle-btn:hover,
+    .mini-btn:hover,
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.primary,
+    .mini-btn.primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 28px 22px;
+      margin-bottom: 16px;
     }
 
     h1 {
-      font-size: 36px;
-      margin-bottom: 8px;
+      margin: 0 0 10px;
+      font-size: 42px;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
     }
 
     .sub {
+      margin: 0 0 18px;
       color: var(--muted);
-      margin-bottom: 20px;
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 860px;
     }
 
     .search-box {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
       gap: 10px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
       padding: 10px;
-      background: var(--card);
+      background: var(--surface-soft);
     }
 
-    input {
-      flex: 1;
+    .search-box input {
+      width: 100%;
+      min-width: 0;
       border: none;
       outline: none;
       font-size: 16px;
       background: transparent;
       color: var(--text);
+      padding: 6px 4px;
     }
 
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .suggestions {
+    .helper {
       margin-top: 10px;
-      font-size: 13px;
       color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
     }
 
-    .results {
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 12px;
-      background: var(--card);
+    .quick-chips {
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.65fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .results-panel,
+    .memory-panel,
+    .section {
+      padding: 18px;
+    }
+
+    .results-panel {
       display: none;
     }
 
+    .results-panel.active {
+      display: block;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .results-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .results-sub {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .results-grid,
+    .memory-grid,
+    .section-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .memory-grid,
+    .section-grid {
+      grid-template-columns: 1fr;
+    }
+
     .card {
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 10px;
-      background: var(--bg);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
     }
 
     .label {
-      font-size: 12px;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--primary);
-      font-weight: bold;
+      background: var(--primary-soft);
+      padding: 5px 9px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .card-text {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .memory-title,
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .memory-sub,
+    .section-sub {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .history-list,
+    .stats-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .history-pill,
+    .stat-pill {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--text);
     }
 
     .footer {
-      margin-top: 40px;
+      margin-top: 18px;
       text-align: center;
       color: var(--muted);
       font-size: 13px;
+      padding: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-box {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
     }
   </style>
 </head>
-
 <body>
+  <div class="app">
 
-<div class="app">
+    <!--
+      TOP BAR
+      - Brand identity
+      - Theme toggle
+      - Clear memory control
+    -->
+    <div class="topbar">
+      <div class="brand">SignalBoost</div>
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div><strong>SignalBoost</strong></div>
-    <div class="toggle" onclick="toggleTheme()">🌙 Toggle</div>
-  </div>
-
-  <!-- HERO -->
-  <h1>Find better options faster</h1>
-  <div class="sub">
-    Search travel, tech, or business tools. SignalBoost helps you choose the best path.
-  </div>
-
-  <!-- SEARCH -->
-  <div class="search-box">
-    <input id="query" placeholder="Try: hotel in miami, esim for europe, website builder"/>
-    <button onclick="runSearch()">Search</button>
-  </div>
-
-  <div class="suggestions">
-    Try: hotel in miami · esim for europe · start a business · laptop for work
-  </div>
-
-  <!-- RESULTS -->
-  <div id="results" class="results">
-    <div id="explanation"></div>
-    <div id="cards"></div>
-  </div>
-
-  <div class="footer">
-    SignalBoost • Smart discovery layer
-  </div>
-
-</div>
-
-<script>
-/*
-  ==========================================
-  DARK MODE SYSTEM
-  ==========================================
-*/
-
-function toggleTheme() {
-  document.body.classList.toggle('dark');
-
-  const isDark = document.body.classList.contains('dark');
-  localStorage.setItem('signalboost_theme', isDark ? 'dark' : 'light');
-}
-
-/*
-  Load saved theme on page load
-*/
-(function initTheme() {
-  const saved = localStorage.getItem('signalboost_theme');
-  if (saved === 'dark') {
-    document.body.classList.add('dark');
-  }
-})();
-
-/*
-  ==========================================
-  AI-HMI SEARCH
-  ==========================================
-*/
-
-async function runSearch() {
-  const query = document.getElementById('query').value.trim();
-  if (!query) return alert("Enter something");
-
-  const resultsBox = document.getElementById('results');
-  const explanation = document.getElementById('explanation');
-  const cards = document.getElementById('cards');
-
-  resultsBox.style.display = "block";
-  explanation.innerHTML = "Analyzing your request...";
-  cards.innerHTML = "";
-
-  try {
-    const res = await fetch('/api/intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query })
-    });
-
-    const data = await res.json();
-
-    explanation.innerHTML = `
-      <strong>Best match:</strong> ${data.department} → ${data.subdepartment}<br/>
-      <span style="color:var(--muted)">${data.reasoning}</span>
-    `;
-
-    const links = getLinks(data);
-
-    cards.innerHTML = links.map(l => `
-      <div class="card">
-        <div class="label">${l.label}</div>
-        <div><strong>${l.title}</strong></div>
-        <div style="color:var(--muted)">${l.desc}</div>
-        <button onclick="go('${l.url}')">Open</button>
+      <div class="topbar-actions">
+        <button class="toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark mode</button>
+        <button class="toggle-btn" onclick="clearSessionData()">Clear session</button>
       </div>
-    `).join("");
+    </div>
 
-  } catch (e) {
-    explanation.innerHTML = "Something went wrong.";
-  }
-}
+    <!--
+      HERO
+      - Clean public-facing experience
+      - AI remains invisible
+      - Search is the primary HMI input layer
+    -->
+    <section class="hero">
+      <h1>Find better options faster</h1>
+      <p class="sub">
+        Search travel, tech, or business tools. SignalBoost helps you take the best path with less friction.
+      </p>
 
-/*
-  ==========================================
-  PROVIDERS
-  ==========================================
-*/
+      <div class="search-box">
+        <input
+          id="query"
+          type="text"
+          placeholder="Try: hotel in miami, esim for europe, website builder"
+          onkeydown="handleSearchKey(event)"
+        />
+        <button class="btn primary" onclick="runSearch()">Search</button>
+        <button class="btn" onclick="clearSearchUI()">Clear</button>
+      </div>
 
-function getLinks(data) {
-  if (data.department === "travel") {
-    return [
-      {
-        label: "Best match",
-        title: "Expedia Hotels",
-        desc: "Good for hotel bookings",
-        url: "https://expedia.com"
+      <div class="helper">
+        Try: hotel in miami · esim for europe · cheap flight and hotel · website for my business
+      </div>
+
+      <div class="quick-chips">
+        <button class="chip" onclick="applyQuickQuery('hotel in miami')">Hotel in Miami</button>
+        <button class="chip" onclick="applyQuickQuery('esim for europe')">eSIM for Europe</button>
+        <button class="chip" onclick="applyQuickQuery('cheap flight and hotel')">Flight + Hotel</button>
+        <button class="chip" onclick="applyQuickQuery('website builder for small business')">Website Builder</button>
+      </div>
+    </section>
+
+    <div class="layout">
+
+      <!--
+        LEFT COLUMN
+        - Live results
+        - AI/HMI explanation
+        - Action cards
+      -->
+      <div>
+        <section id="resultsPanel" class="results-panel">
+          <div class="kicker">Smart match</div>
+          <div class="results-title" id="resultsTitle">Recommended path</div>
+          <div class="results-sub" id="resultsSub">We are preparing your results.</div>
+          <div class="results-grid" id="resultsGrid"></div>
+        </section>
+
+        <section class="section" style="margin-top:16px;">
+          <div class="section-title">How SignalBoost helps</div>
+          <div class="section-sub">
+            SignalBoost is designed as a smart decision layer. It interprets what the user is trying to do, then presents the clearest next step.
+          </div>
+
+          <div class="section-grid">
+            <div class="card">
+              <div class="label">Travel</div>
+              <div class="card-title">Hotels, packages, rentals, and travel add-ons</div>
+              <div class="card-text">Good for stay searches, bundled trips, and travel support paths like connectivity and car rental.</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Tech</div>
+              <div class="card-title">Connectivity and digital essentials</div>
+              <div class="card-text">Useful for eSIM, devices, and travel-friendly tools.</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Business</div>
+              <div class="card-title">Tools to start and grow online</div>
+              <div class="card-text">Useful for websites, marketing tools, and digital business setup.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!--
+        RIGHT COLUMN
+        - Lightweight user memory
+        - Search history
+        - Session stats
+        - Soft personalization layer
+      -->
+      <aside class="memory-panel">
+        <div class="memory-title">Session memory</div>
+        <div class="memory-sub">
+          This panel tracks recent activity inside the browser so SignalBoost can become more adaptive over time.
+        </div>
+
+        <div class="memory-grid">
+          <div class="card">
+            <div class="label">Recent searches</div>
+            <div id="historyList" class="history-list"></div>
+          </div>
+
+          <div class="card">
+            <div class="label">Session signals</div>
+            <div id="statsList" class="stats-list"></div>
+          </div>
+
+          <div class="card">
+            <div class="label">Last detected department</div>
+            <div class="card-title" id="lastDepartmentText">None yet</div>
+            <div class="card-text">This helps SignalBoost keep context during a user session.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer">
+      SignalBoost • Smart discovery layer
+    </div>
+  </div>
+
+  <script>
+    /*
+      ==========================================================
+      CONFIGURATION
+      ==========================================================
+      Central place for links and local memory limits.
+      Keep these values easy to update.
+    */
+    const APP_CONFIG = {
+      searchHistoryLimit: 6,
+      clickHistoryLimit: 12
+    };
+
+    /*
+      ==========================================================
+      AFFILIATE / DESTINATION LINKS
+      ==========================================================
+      These are fulfillment-layer links.
+      SignalBoost itself is the decision layer.
+    */
+    const DESTINATION_LINKS = {
+      travel: {
+        hotels_expedia: 'https://www.expedia.com/Hotel-Search',
+        packages_expedia: 'https://www.expedia.com/Packages',
+        hotels_hotelsdotcom: 'https://www.hotels.com/',
+        rentals_vrbo: 'https://www.vrbo.com/'
       },
-      {
-        label: "Alternative",
-        title: "Hotels.com",
-        desc: "Useful for deals",
-        url: "https://hotels.com"
+      tech: {
+        esim: '#',
+        gadgets: '#'
+      },
+      business: {
+        website_builder: '#',
+        marketing_tools: '#'
       }
-    ];
-  }
+    };
 
-  if (data.department === "tech") {
-    return [
-      {
-        label: "Best match",
-        title: "eSIM Plans",
-        desc: "Stay connected abroad",
-        url: "#"
+    /*
+      ==========================================================
+      STORAGE KEYS
+      ==========================================================
+      Browser storage keys are grouped here for maintainability.
+    */
+    const STORAGE_KEYS = {
+      theme: 'signalboost_theme',
+      sessionId: 'signalboost_session_id',
+      searchHistory: 'signalboost_search_history',
+      clickHistory: 'signalboost_click_history',
+      lastDepartment: 'signalboost_last_department',
+      searchCount: 'signalboost_search_count',
+      clickCount: 'signalboost_click_count'
+    };
+
+    /*
+      ==========================================================
+      THEME SYSTEM
+      ==========================================================
+      User preference layer.
+      This supports comfort without making the interface "look AI."
+    */
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem(STORAGE_KEYS.theme, isDark ? 'dark' : 'light');
+      updateThemeToggleLabel();
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem(STORAGE_KEYS.theme);
+      if (saved === 'dark') {
+        document.body.classList.add('dark');
       }
-    ];
-  }
+      updateThemeToggleLabel();
+    }
 
-  if (data.department === "business") {
-    return [
-      {
-        label: "Best match",
-        title: "Website Builder",
-        desc: "Start your business online",
-        url: "#"
+    function updateThemeToggleLabel() {
+      const btn = document.getElementById('themeToggleBtn');
+      if (!btn) return;
+      const isDark = document.body.classList.contains('dark');
+      btn.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+    }
+
+    /*
+      ==========================================================
+      SESSION ID
+      ==========================================================
+      Basic anonymous session identity for user behavior tracking.
+      This is browser-local, not account-based.
+    */
+    function getSessionId() {
+      let sessionId = localStorage.getItem(STORAGE_KEYS.sessionId);
+
+      if (!sessionId) {
+        sessionId = 'sb_' + Math.random().toString(36).slice(2) + '_' + Date.now();
+        localStorage.setItem(STORAGE_KEYS.sessionId, sessionId);
       }
-    ];
-  }
 
-  return [];
-}
+      return sessionId;
+    }
 
-/*
-  ==========================================
-  NAVIGATION
-  ==========================================
-*/
+    /*
+      ==========================================================
+      LOCAL STORAGE HELPERS
+      ==========================================================
+      Small utility layer to keep storage code consistent.
+    */
+    function readJsonStorage(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
 
-function go(url) {
-  window.location.href = url;
-}
-</script>
+    function writeJsonStorage(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
 
+    function incrementCounter(key) {
+      const current = Number(localStorage.getItem(key) || '0');
+      const next = current + 1;
+      localStorage.setItem(key, String(next));
+      return next;
+    }
+
+    /*
+      ==========================================================
+      SEARCH HISTORY
+      ==========================================================
+      Recent searches are stored to help the HMI feel adaptive.
+    */
+    function addSearchToHistory(query) {
+      const history = readJsonStorage(STORAGE_KEYS.searchHistory, []);
+      const filtered = history.filter(item => item.toLowerCase() !== query.toLowerCase());
+      filtered.unshift(query);
+      const trimmed = filtered.slice(0, APP_CONFIG.searchHistoryLimit);
+      writeJsonStorage(STORAGE_KEYS.searchHistory, trimmed);
+    }
+
+    function getSearchHistory() {
+      return readJsonStorage(STORAGE_KEYS.searchHistory, []);
+    }
+
+    /*
+      ==========================================================
+      CLICK HISTORY
+      ==========================================================
+      Stores which cards were clicked.
+      Useful for later personalization and monetization optimization.
+    */
+    function addClickToHistory(clickRecord) {
+      const history = readJsonStorage(STORAGE_KEYS.clickHistory, []);
+      history.unshift(clickRecord);
+      const trimmed = history.slice(0, APP_CONFIG.clickHistoryLimit);
+      writeJsonStorage(STORAGE_KEYS.clickHistory, trimmed);
+    }
+
+    function getClickHistory() {
+      return readJsonStorage(STORAGE_KEYS.clickHistory, []);
+    }
+
+    /*
+      ==========================================================
+      SESSION CONTEXT
+      ==========================================================
+      Last detected department helps preserve short-term context.
+    */
+    function setLastDepartment(department) {
+      localStorage.setItem(STORAGE_KEYS.lastDepartment, department || '');
+    }
+
+    function getLastDepartment() {
+      return localStorage.getItem(STORAGE_KEYS.lastDepartment) || '';
+    }
+
+    /*
+      ==========================================================
+      UI HELPERS
+      ==========================================================
+      Small UI control functions for search workflow.
+    */
+    function applyQuickQuery(value) {
+      const input = document.getElementById('query');
+      input.value = value;
+      runSearch();
+    }
+
+    function handleSearchKey(event) {
+      if (event.key === 'Enter') {
+        runSearch();
+      }
+    }
+
+    function clearSearchUI() {
+      document.getElementById('query').value = '';
+      const panel = document.getElementById('resultsPanel');
+      const title = document.getElementById('resultsTitle');
+      const sub = document.getElementById('resultsSub');
+      const grid = document.getElementById('resultsGrid');
+
+      panel.classList.remove('active');
+      title.textContent = 'Recommended path';
+      sub.textContent = 'We are preparing your results.';
+      grid.innerHTML = '';
+    }
+
+    /*
+      ==========================================================
+      EVENT LOGGING
+      ==========================================================
+      Sends events to a backend endpoint if available.
+      The frontend still works even if /api/events does not exist yet.
+    */
+    async function logEvent(eventType, payload = {}) {
+      const body = {
+        eventType,
+        sessionId: getSessionId(),
+        timestamp: new Date().toISOString(),
+        payload
+      };
+
+      try {
+        await fetch('/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+      } catch {
+        /*
+          Silent fail by design.
+          We do not want event logging failure to break the user experience.
+        */
+      }
+    }
+
+    /*
+      ==========================================================
+      AI-HMI SEARCH LAYER
+      ==========================================================
+      This is the main interface between the user and the AI intent endpoint.
+      It gathers session context and passes that into /api/intent.
+    */
+    async function runSearch() {
+      const input = document.getElementById('query');
+      const query = input.value.trim();
+
+      if (!query) {
+        alert('Please enter something to search.');
+        return;
+      }
+
+      const resultsPanel = document.getElementById('resultsPanel');
+      const resultsTitle = document.getElementById('resultsTitle');
+      const resultsSub = document.getElementById('resultsSub');
+      const resultsGrid = document.getElementById('resultsGrid');
+
+      resultsPanel.classList.add('active');
+      resultsTitle.textContent = `Best path for "${query}"`;
+      resultsSub.textContent = 'Analyzing your request and preparing recommendations...';
+      resultsGrid.innerHTML = '';
+
+      addSearchToHistory(query);
+      incrementCounter(STORAGE_KEYS.searchCount);
+      renderMemoryPanel();
+
+      await logEvent('search_submitted', {
+        query,
+        lastDepartment: getLastDepartment(),
+        clickHistory: getClickHistory().slice(0, 5)
+      });
+
+      try {
+        const response = await fetch('/api/intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query,
+            sessionId: getSessionId(),
+            lastDepartment: getLastDepartment(),
+            lastClicks: getClickHistory().slice(0, 5),
+            searchHistory: getSearchHistory().slice(0, 5)
+          })
+        });
+
+        const data = await response.json();
+
+        const department = data.department || 'general';
+        const subdepartment = data.subdepartment || 'general';
+        const reasoning = data.reasoning || 'SignalBoost selected these options based on your search.';
+        const confidence = data.confidence || 'medium';
+
+        setLastDepartment(department);
+
+        const cards = buildActionCards({
+          query,
+          department,
+          subdepartment,
+          confidence,
+          reasoning
+        });
+
+        resultsSub.innerHTML = `
+          <strong>Detected path:</strong> ${capitalize(department)} → ${capitalize(subdepartment)}<br>
+          <strong>Confidence:</strong> ${capitalize(confidence)}<br>
+          <span style="color: var(--muted);">${reasoning}</span>
+        `;
+
+        resultsGrid.innerHTML = cards.map(card => `
+          <div class="card">
+            <div class="label">${escapeHtml(card.label)}</div>
+            <div class="card-title">${escapeHtml(card.title)}</div>
+            <div class="card-text">${escapeHtml(card.desc)}</div>
+            <div class="card-actions">
+              <button class="mini-btn primary" onclick="handleProviderClick('${escapeJs(card.url)}', '${escapeJs(card.title)}', '${escapeJs(department)}', '${escapeJs(query)}')">
+                Open
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        renderMemoryPanel();
+
+        await logEvent('results_rendered', {
+          query,
+          department,
+          subdepartment,
+          confidence,
+          cardsShown: cards.map(card => card.title)
+        });
+
+      } catch (error) {
+        resultsSub.textContent = 'Something went wrong while preparing your results. Please try again.';
+        resultsGrid.innerHTML = '';
+      }
+    }
+
+    /*
+      ==========================================================
+      ACTION CARD BUILDER
+      ==========================================================
+      This is where SignalBoost turns detected intent into user-facing actions.
+      Keep this layer easy to expand as the mall grows.
+    */
+    function buildActionCards({ query, department, subdepartment, confidence, reasoning }) {
+      if (department === 'travel') {
+        const lower = query.toLowerCase();
+
+        if (lower.includes('flight') || lower.includes('package')) {
+          return [
+            {
+              label: 'Best match',
+              title: 'Expedia Packages',
+              desc: 'Useful for travelers looking for bundled flight and hotel options.',
+              url: DESTINATION_LINKS.travel.packages_expedia
+            },
+            {
+              label: 'Alternative',
+              title: 'Expedia Hotels',
+              desc: 'Good if you want to focus on accommodations first.',
+              url: DESTINATION_LINKS.travel.hotels_expedia
+            },
+            {
+              label: 'Rental option',
+              title: 'Vrbo',
+              desc: 'Useful for larger stays, family trips, and vacation rentals.',
+              url: DESTINATION_LINKS.travel.rentals_vrbo
+            }
+          ];
+        }
+
+        if (lower.includes('rental') || lower.includes('villa') || lower.includes('family')) {
+          return [
+            {
+              label: 'Best match',
+              title: 'Vrbo',
+              desc: 'Useful for larger stays, family travel, and rental-first trips.',
+              url: DESTINATION_LINKS.travel.rentals_vrbo
+            },
+            {
+              label: 'Alternative',
+              title: 'Expedia Hotels',
+              desc: 'Good for mixed travel plans that still need hotel options.',
+              url: DESTINATION_LINKS.travel.hotels_expedia
+            },
+            {
+              label: 'Also useful',
+              title: 'Hotels.com',
+              desc: 'Useful for simpler hotel comparisons and city stays.',
+              url: DESTINATION_LINKS.travel.hotels_hotelsdotcom
+            }
+          ];
+        }
+
+        return [
+          {
+            label: 'Best match',
+            title: 'Expedia Hotels',
+            desc: 'Strong overall option for hotel searches and standard stay planning.',
+            url: DESTINATION_LINKS.travel.hotels_expedia
+          },
+          {
+            label: 'Alternative',
+            title: 'Hotels.com',
+            desc: 'Useful for hotel deals and straightforward stay browsing.',
+            url: DESTINATION_LINKS.travel.hotels_hotelsdotcom
+          },
+          {
+            label: 'Rental option',
+            title: 'Vrbo',
+            desc: 'Worth considering if you want more space or a rental-style stay.',
+            url: DESTINATION_LINKS.travel.rentals_vrbo
+          }
+        ];
+      }
+
+      if (department === 'tech') {
+        return [
+          {
+            label: 'Best match',
+            title: 'eSIM Plans',
+            desc: 'Useful for travelers and remote users who need data connectivity.',
+            url: DESTINATION_LINKS.tech.esim
+          },
+          {
+            label: 'Alternative',
+            title: 'Travel Gadgets',
+            desc: 'Useful for chargers, accessories, and mobility-focused tech.',
+            url: DESTINATION_LINKS.tech.gadgets
+          }
+        ];
+      }
+
+      if (department === 'business') {
+        return [
+          {
+            label: 'Best match',
+            title: 'Website Builder',
+            desc: 'Useful for getting a business online quickly.',
+            url: DESTINATION_LINKS.business.website_builder
+          },
+          {
+            label: 'Alternative',
+            title: 'Marketing Tools',
+            desc: 'Useful for customer outreach and digital growth.',
+            url: DESTINATION_LINKS.business.marketing_tools
+          }
+        ];
+      }
+
+      return [
+        {
+          label: 'Suggested path',
+          title: 'Start with Travel',
+          desc: 'Travel is currently the strongest active SignalBoost department.',
+          url: DESTINATION_LINKS.travel.hotels_expedia
+        }
+      ];
+    }
+
+    /*
+      ==========================================================
+      CLICK HANDLER
+      ==========================================================
+      This is where the site learns from user choices.
+      Navigation remains same-tab by design.
+    */
+    async function handleProviderClick(url, title, department, query) {
+      const clickRecord = {
+        title,
+        url,
+        department,
+        query,
+        timestamp: new Date().toISOString()
+      };
+
+      addClickToHistory(clickRecord);
+      incrementCounter(STORAGE_KEYS.clickCount);
+      renderMemoryPanel();
+
+      await logEvent('provider_clicked', clickRecord);
+
+      /*
+        Same-tab navigation is intentional.
+        This avoids forcing users into extra tabs.
+      */
+      window.location.href = url;
+    }
+
+    /*
+      ==========================================================
+      MEMORY PANEL RENDERER
+      ==========================================================
+      Makes the adaptive layer visible without exposing "AI" language.
+    */
+    function renderMemoryPanel() {
+      const historyList = document.getElementById('historyList');
+      const statsList = document.getElementById('statsList');
+      const lastDepartmentText = document.getElementById('lastDepartmentText');
+
+      const searchHistory = getSearchHistory();
+      const lastDepartment = getLastDepartment();
+      const searchCount = Number(localStorage.getItem(STORAGE_KEYS.searchCount) || '0');
+      const clickCount = Number(localStorage.getItem(STORAGE_KEYS.clickCount) || '0');
+      const clickHistory = getClickHistory();
+
+      historyList.innerHTML = searchHistory.length
+        ? searchHistory.map(item => `<button class="history-pill" onclick="applyQuickQuery('${escapeJs(item)}')">${escapeHtml(item)}</button>`).join('')
+        : `<span class="stat-pill">No searches yet</span>`;
+
+      statsList.innerHTML = `
+        <span class="stat-pill">Searches: ${searchCount}</span>
+        <span class="stat-pill">Clicks: ${clickCount}</span>
+        <span class="stat-pill">Recent provider clicks: ${clickHistory.length}</span>
+      `;
+
+      lastDepartmentText.textContent = lastDepartment ? capitalize(lastDepartment) : 'None yet';
+    }
+
+    /*
+      ==========================================================
+      SESSION RESET
+      ==========================================================
+      Useful during development and testing.
+    */
+    function clearSessionData() {
+      localStorage.removeItem(STORAGE_KEYS.searchHistory);
+      localStorage.removeItem(STORAGE_KEYS.clickHistory);
+      localStorage.removeItem(STORAGE_KEYS.lastDepartment);
+      localStorage.removeItem(STORAGE_KEYS.searchCount);
+      localStorage.removeItem(STORAGE_KEYS.clickCount);
+      renderMemoryPanel();
+      clearSearchUI();
+    }
+
+    /*
+      ==========================================================
+      SAFETY / OUTPUT HELPERS
+      ==========================================================
+      Basic escaping for safe HTML and JS insertion.
+    */
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function escapeJs(value) {
+      return String(value ?? '')
+        .replaceAll('\\', '\\\\')
+        .replaceAll("'", "\\'")
+        .replaceAll('"', '\\"');
+    }
+
+    function capitalize(value) {
+      const str = String(value || '');
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+    }
+
+    /*
+      ==========================================================
+      APP INIT
+      ==========================================================
+      Runs startup tasks once the page loads.
+    */
+    function initApp() {
+      initTheme();
+      getSessionId();
+      renderMemoryPanel();
+    }
+
+    initApp();
+  </script>
 </body>
 </html>
