@@ -3,26 +3,41 @@
 <html lang="en">
 <head>
   <!--
-    SIGNALBOOST V9
-    FULL DOCUMENTED HOMEPAGE
-    ------------------------------------------------------------
-    PURPOSE
-    - Restore a fuller public homepage experience
-    - Keep the AI/HMI intent-driven search layer
-    - Restore visible provider cards (Expedia, Hotels.com, Vrbo)
-    - Restore travel media / video section
-    - Keep dark mode, session memory, click tracking hooks
-    - Keep same-tab outbound navigation
-    - Keep code heavily documented inline for maintainability
+    SIGNALBOOST V10
+    FULL HOMEPAGE + EVENT TRACKING CONNECTED
 
-    IMPORTANT PRODUCT PRINCIPLE
-    - The site may BE AI-driven, but it does not need to LOOK AI-driven.
-    - Intelligence is expressed through routing, explanation, memory, and
-      adaptive recommendations, not loud "AI" branding.
+    WHAT THIS VERSION DOES
+    ------------------------------------------------------------
+    1. Keeps the richer public homepage experience
+    2. Keeps the AI-HMI search layer
+    3. Restores visible provider cards:
+       - Expedia Hotels
+       - Expedia Packages
+       - Hotels.com
+       - Vrbo
+    4. Restores travel media / video section
+    5. Adds dark mode
+    6. Adds session memory
+    7. CONNECTS THE FRONTEND TO /api/events
+       - search_submitted
+       - results_rendered
+       - provider_clicked
+    8. Uses same-tab navigation intentionally
+
+    PRODUCT PRINCIPLE
+    ------------------------------------------------------------
+    SignalBoost can BE AI-driven without LOOKING AI-driven.
+    Intelligence is expressed through:
+    - routing
+    - explanation
+    - memory
+    - analytics
+    - adaptive behavior
 
     IMPORTANT UX NOTE
-    - Outbound partner clicks use same-tab navigation intentionally so the
-      user can return with the browser Back button.
+    ------------------------------------------------------------
+    Provider clicks use same-tab navigation on purpose so users
+    can return with the browser Back button.
   -->
 
   <meta charset="UTF-8" />
@@ -43,7 +58,6 @@
       --purple: #7c3aed;
       --success: #15803d;
       --warning: #ea580c;
-      --dark-btn: #0f172a;
       --shadow: 0 18px 48px rgba(15,23,42,0.08);
       --radius-xl: 24px;
       --radius-lg: 18px;
@@ -64,7 +78,6 @@
       --purple: #a855f7;
       --success: #22c55e;
       --warning: #fb923c;
-      --dark-btn: #e2e8f0;
       --shadow: 0 20px 50px rgba(0,0,0,0.32);
     }
 
@@ -140,8 +153,7 @@
     .topbar-actions,
     .nav-chips,
     .card-actions,
-    .quick-chips,
-    .status-row {
+    .quick-chips {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -334,17 +346,14 @@
     }
 
     .results-grid,
-    .paths-grid,
     .providers-grid,
     .department-grid,
-    .memory-grid,
     .media-grid {
       display: grid;
       gap: 12px;
     }
 
     .results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .paths-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .providers-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .department-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .media-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -513,6 +522,7 @@
     }
 
     .modal.active { display: flex; }
+
     .modal-panel {
       width: min(920px, 100%);
       background: var(--surface);
@@ -564,7 +574,6 @@
     .hidden { display: none !important; }
 
     @media (max-width: 1260px) {
-      .paths-grid,
       .providers-grid,
       .department-grid,
       .media-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -579,7 +588,6 @@
     @media (max-width: 780px) {
       .app { width: min(100vw - 14px, var(--max)); }
       .search-box { grid-template-columns: 1fr; }
-      .paths-grid,
       .providers-grid,
       .department-grid,
       .media-grid {
@@ -591,7 +599,7 @@
 </head>
 <body>
   <div class="app">
-    <!-- TOPBAR -->
+    <!-- TOP BAR -->
     <div class="topbar">
       <div class="brand-wrap">
         <div class="logo-mark" aria-hidden="true">
@@ -627,11 +635,11 @@
       </div>
     </div>
 
-    <!-- HERO + SEARCH -->
+    <!-- HERO / SEARCH -->
     <section class="hero" id="heroSection">
       <h1>Find better options faster</h1>
       <p class="hero-sub">
-        Search travel, tech, or business tools. SignalBoost helps you choose the clearest path without needing to look “AI”.
+        Search travel, tech, or business tools. SignalBoost interprets the request, explains the path, and helps the user move with less friction.
       </p>
 
       <div class="search-shell">
@@ -647,7 +655,7 @@
         </div>
 
         <div class="search-help">
-          This search uses SignalBoost’s decision layer to interpret what the visitor wants, then recommends the most useful next step. The AI remains invisible; the guidance is what the user feels.
+          The decision layer may be AI-driven, but the interface stays clean and user-friendly. The user feels guidance without needing to see technical AI language.
         </div>
 
         <div class="quick-chips">
@@ -657,7 +665,6 @@
           <button class="chip" onclick="applyQuickQuery('website builder for small business')">Website Builder</button>
         </div>
 
-        <!-- SEARCH RESULTS -->
         <div class="results-panel" id="resultsPanel">
           <div class="results-kicker">Smart match</div>
           <div class="results-title" id="resultsTitle">Recommended path</div>
@@ -669,11 +676,11 @@
 
     <div class="layout">
       <div>
-        <!-- RESTORED PROVIDERS SECTION -->
+        <!-- PROVIDERS -->
         <section class="section" id="providersSection">
           <div class="section-head">
             <h2>Booking & Provider Paths</h2>
-            <div class="section-tag">Restored public options</div>
+            <div class="section-tag">Visible public options</div>
           </div>
 
           <div class="providers-grid">
@@ -693,7 +700,7 @@
               <div class="icon">✈️</div>
               <div class="card-title">Expedia Packages</div>
               <div class="card-text">Useful for bundled flight + hotel browsing and package-style travel intent.</div>
-              <div class="result-callout">Separated from Hotels so the site explains the intent more clearly.</div>
+              <div class="result-callout">Separated from Hotels so the path explanation stays clearer.</div>
               <div class="card-actions">
                 <button class="mini-btn success" onclick="handleProviderClick(DESTINATION_LINKS.travel.packages_expedia, 'Expedia Packages', 'travel', 'manual provider click')">Open Expedia Packages</button>
               </div>
@@ -749,7 +756,7 @@
           </div>
         </section>
 
-        <!-- MEDIA / VIDEO SECTION RESTORED -->
+        <!-- MEDIA -->
         <section class="section" id="mediaSection">
           <div class="section-head">
             <h2>Featured Travel Moments</h2>
@@ -761,11 +768,11 @@
         </section>
       </div>
 
-      <!-- MEMORY / SESSION PANEL -->
+      <!-- MEMORY PANEL -->
       <aside class="memory-panel">
         <div class="memory-title">Session memory</div>
         <div class="memory-sub">
-          This panel keeps lightweight browser-based memory so the interface becomes more adaptive over time without exposing technical AI language to the user.
+          This panel uses lightweight browser memory so SignalBoost becomes more adaptive over time while keeping the interface clean.
         </div>
 
         <div class="card" style="min-height:auto;">
@@ -785,9 +792,9 @@
         </div>
 
         <div class="card" style="min-height:auto; margin-top:12px;">
-          <div class="badge">Live event logger</div>
+          <div class="badge">Backend status</div>
           <div class="card-text">
-            Frontend events are already structured to send to <code>/api/events</code>. Once the backend endpoint is added, searches and clicks become measurable business intelligence.
+            Frontend events now send to <code>/api/events</code>. Searches, rendered results, and provider clicks can now be logged by the backend.
           </div>
         </div>
       </aside>
@@ -817,9 +824,8 @@
   <script>
     /*
       ==========================================================
-      CENTRAL CONFIGURATION
+      APP CONFIG
       ==========================================================
-      Keep app behavior, storage limits, and link registry in one place.
     */
     const APP_CONFIG = {
       searchHistoryLimit: 6,
@@ -828,12 +834,9 @@
 
     /*
       ==========================================================
-      DESTINATION / PROVIDER LINKS
+      DESTINATION LINKS
       ==========================================================
-      These are the public fulfillment-layer links.
-      IMPORTANT:
-      - Same-tab navigation is intentional.
-      - Query-specific search URLs are generated in buildActionCards().
+      Public provider / fulfillment links.
     */
     const DESTINATION_LINKS = {
       travel: {
@@ -871,8 +874,6 @@
       ==========================================================
       THEME SYSTEM
       ==========================================================
-      Users can choose light or dark mode.
-      The interface stays clean and premium without looking "AI".
     */
     function toggleTheme() {
       document.body.classList.toggle('dark');
@@ -897,17 +898,45 @@
 
     /*
       ==========================================================
-      SESSION ID
+      SESSION MANAGEMENT
       ==========================================================
-      Browser-local anonymous identity for event grouping.
+      Creates a persistent browser-level session id.
     */
     function getSessionId() {
       let sessionId = localStorage.getItem(STORAGE_KEYS.sessionId);
+
       if (!sessionId) {
-        sessionId = 'sb_' + Math.random().toString(36).slice(2) + '_' + Date.now();
+        sessionId = 'sb_' + Math.random().toString(36).slice(2, 12);
         localStorage.setItem(STORAGE_KEYS.sessionId, sessionId);
       }
+
       return sessionId;
+    }
+
+    /*
+      ==========================================================
+      EVENT SENDER
+      ==========================================================
+      Frontend -> /api/events
+      This is the connection that makes tracking real.
+    */
+    async function sendEvent(eventType, payload = {}) {
+      try {
+        await fetch('/api/events', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            eventType,
+            sessionId: getSessionId(),
+            timestamp: new Date().toISOString(),
+            payload
+          })
+        });
+      } catch (error) {
+        console.warn('Event tracking failed:', error);
+      }
     }
 
     /*
@@ -937,9 +966,8 @@
 
     /*
       ==========================================================
-      LIGHTWEIGHT SESSION MEMORY
+      LIGHTWEIGHT MEMORY
       ==========================================================
-      Recent search and click memory make the interface feel adaptive.
     */
     function addSearchToHistory(query) {
       const history = readJsonStorage(STORAGE_KEYS.searchHistory, []);
@@ -1005,37 +1033,11 @@
 
     /*
       ==========================================================
-      BACKEND EVENT LOGGING HOOK
+      SEARCH / INTENT LAYER
       ==========================================================
-      The frontend can start sending analytics now.
-      The page still works even if /api/events is not deployed yet.
-    */
-    async function logEvent(eventType, payload = {}) {
-      const body = {
-        eventType,
-        sessionId: getSessionId(),
-        timestamp: new Date().toISOString(),
-        payload
-      };
-
-      try {
-        await fetch('/api/events', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-      } catch {
-        /* silent fail by design */
-      }
-    }
-
-    /*
-      ==========================================================
-      AI-HMI SEARCH LAYER
-      ==========================================================
-      The search bar is the HMI entry point.
-      The system uses /api/intent if available.
-      If not, it falls back to local heuristic logic.
+      1. Track the search
+      2. Try /api/intent
+      3. Fall back locally if needed
     */
     async function runSearch() {
       const input = document.getElementById('query');
@@ -1060,7 +1062,7 @@
       incrementCounter(STORAGE_KEYS.searchCount);
       renderMemoryPanel();
 
-      await logEvent('search_submitted', {
+      await sendEvent('search_submitted', {
         query,
         lastDepartment: getLastDepartment(),
         clickHistory: getClickHistory().slice(0, 5)
@@ -1080,15 +1082,12 @@
         });
 
         if (!response.ok) {
-          throw new Error('Intent endpoint returned a non-OK response');
+          throw new Error('Intent endpoint returned non-OK');
         }
 
         const data = await response.json();
         renderIntentResults(query, data);
       } catch {
-        /*
-          Local fallback keeps the product useful even if the backend is unavailable.
-        */
         const fallback = getLocalIntentFallback(query);
         renderIntentResults(query, fallback);
       }
@@ -1096,10 +1095,8 @@
 
     /*
       ==========================================================
-      INTENT RESULT RENDERER
+      RENDER SEARCH RESULT STATE
       ==========================================================
-      Renders explanation + action cards regardless of where the intent
-      came from (AI endpoint or local fallback).
     */
     async function renderIntentResults(query, data) {
       const resultsTitle = document.getElementById('resultsTitle');
@@ -1116,9 +1113,7 @@
       const cards = buildActionCards({
         query,
         department,
-        subdepartment,
-        confidence,
-        reasoning
+        subdepartment
       });
 
       resultsTitle.textContent = `Best path for "${query}"`;
@@ -1142,7 +1137,7 @@
 
       renderMemoryPanel();
 
-      await logEvent('results_rendered', {
+      await sendEvent('results_rendered', {
         query,
         department,
         subdepartment,
@@ -1153,9 +1148,8 @@
 
     /*
       ==========================================================
-      LOCAL INTENT FALLBACK
+      LOCAL FALLBACK INTENT
       ==========================================================
-      This keeps the site useful before /api/intent is fully live.
     */
     function getLocalIntentFallback(query) {
       const q = query.toLowerCase();
@@ -1183,7 +1177,7 @@
           department: 'travel',
           subdepartment: 'hotels',
           confidence: 'high',
-          reasoning: 'This looks like a hotel or stay search, so hotel-first travel options are shown.'
+          reasoning: 'This looks like a hotel or stay search, so hotel-first options are shown.'
         };
       }
 
@@ -1215,11 +1209,10 @@
 
     /*
       ==========================================================
-      QUERY-SPECIFIC ACTION CARD BUILDER
+      ACTION CARD BUILDER
       ==========================================================
-      This is where the system turns intent into useful next actions.
     */
-    function buildActionCards({ query, department, subdepartment }) {
+    function buildActionCards({ query, department }) {
       const encoded = encodeURIComponent(query);
 
       if (department === 'travel') {
@@ -1308,14 +1301,14 @@
             label: 'Best match',
             title: 'eSIM Plans',
             desc: 'Useful for travelers and remote users who need data connectivity.',
-            callout: 'This is a placeholder until your real tech offers are wired.',
+            callout: 'Placeholder until your real tech offers are wired.',
             url: DESTINATION_LINKS.tech.esim
           },
           {
             label: 'Alternative',
             title: 'Travel Gadgets',
             desc: 'Useful for chargers, accessories, and mobility-focused tech.',
-            callout: 'This is a placeholder until your real tech offers are wired.',
+            callout: 'Placeholder until your real tech offers are wired.',
             url: DESTINATION_LINKS.tech.gadgets
           }
         ];
@@ -1327,14 +1320,14 @@
             label: 'Best match',
             title: 'Website Builder',
             desc: 'Useful for getting a business online quickly.',
-            callout: 'This is a placeholder until your real business offers are wired.',
+            callout: 'Placeholder until your real business offers are wired.',
             url: DESTINATION_LINKS.business.website_builder
           },
           {
             label: 'Alternative',
             title: 'Marketing Tools',
             desc: 'Useful for customer outreach and digital growth.',
-            callout: 'This is a placeholder until your real business offers are wired.',
+            callout: 'Placeholder until your real business offers are wired.',
             url: DESTINATION_LINKS.business.marketing_tools
           }
         ];
@@ -1353,9 +1346,9 @@
 
     /*
       ==========================================================
-      PROVIDER CLICK HANDLER
+      CLICK HANDLER
       ==========================================================
-      Same-tab navigation is deliberate to avoid extra tabs.
+      Tracks provider clicks and then navigates same-tab.
     */
     async function handleProviderClick(url, title, department, query) {
       const clickRecord = {
@@ -1370,14 +1363,14 @@
       incrementCounter(STORAGE_KEYS.clickCount);
       renderMemoryPanel();
 
-      await logEvent('provider_clicked', clickRecord);
+      await sendEvent('provider_clicked', clickRecord);
 
       window.location.href = url;
     }
 
     /*
       ==========================================================
-      MEMORY PANEL RENDERER
+      MEMORY PANEL RENDER
       ==========================================================
     */
     function renderMemoryPanel() {
@@ -1406,7 +1399,7 @@
 
     /*
       ==========================================================
-      SESSION RESET
+      CLEAR SESSION
       ==========================================================
     */
     function clearSessionData() {
@@ -1423,8 +1416,6 @@
       ==========================================================
       MEDIA / VIDEO SECTION
       ==========================================================
-      Restores the richer homepage experience.
-      If live media endpoint is unavailable, fallback cards are shown.
     */
     function formatCompactNumber(value) {
       if (value >= 1000000000) return (value / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
@@ -1507,18 +1498,9 @@
       status.textContent = 'Fallback media';
 
       const cards = [
-        {
-          title: 'Beach getaway inspiration',
-          text: 'Sunny stays, fast booking paths, and strong travel intent.'
-        },
-        {
-          title: 'Family vacation ideas',
-          text: 'Useful for larger stays, vacation rentals, and flexible lodging.'
-        },
-        {
-          title: 'City trips and short stays',
-          text: 'Designed for quick hotel selection and fast travel planning.'
-        }
+        { title: 'Beach getaway inspiration', text: 'Sunny stays, fast booking paths, and strong travel intent.' },
+        { title: 'Family vacation ideas', text: 'Useful for larger stays, vacation rentals, and flexible lodging.' },
+        { title: 'City trips and short stays', text: 'Designed for quick hotel selection and fast travel planning.' }
       ];
 
       container.innerHTML = cards.map(card => `
