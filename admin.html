@@ -1,712 +1,813 @@
-<!--
-================ SIGNALBOOST ADMIN DASHBOARD BRAIN ================
 
-PURPOSE
-- Private owner-side dashboard for early SignalBoost testing
-- Reads local browser stats created by the public homepage
-- Helps owner see clicks, visits, and engagement signals
-
-IMPORTANT LIMITATION
-- This is NOT real server analytics
-- This reads from localStorage on the current browser/device only
-- Good for testing and early structure
-- Later upgrade should use:
-- server-side event logging
-- protected admin login
-- persistent database
-- real reporting
-
-CURRENT DATA SOURCE
-- localStorage key:
-signalboost_stats
-
-EXPECTED METRICS
-- total visits
-- affiliate clicks total
-- Expedia clicks
-- Hotels.com clicks
-- Vrbo clicks
-- compare clicks
-- video opens
-- fallback media views
-- last visit
-- last update
-- detailed click table by key
-
-HOW TO USE
-- Open:
-/admin.html
-- Use:
-refresh stats
-reset local stats
-open homepage
-
-SECURITY NOTE
-- This page is not secure by itself
-- Do not link it publicly
-- Later we should protect it properly
-
-===================================================================
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SignalBoost Admin</title>
-<style>
-:root {
---bg: #eef4ff;
---surface: rgba(255,255,255,0.96);
---border: rgba(148,163,184,0.24);
---text: #0f172a;
---muted: #64748b;
---primary: #2563eb;
---accent: #06b6d4;
---success: #15803d;
---warning: #ea580c;
---danger: #dc2626;
---dark: #0f172a;
---shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
---soft: rgba(37,99,235,0.06);
-}
+  <!--
+    SIGNALBOOST ADMIN PANEL
+    ------------------------------------------------------------
+    PURPOSE
+    - Move internal / operational information off the public homepage
+    - Give the site owner a private control surface
+    - Read lightweight browser-side memory and basic backend health
+    - Keep the public homepage clean and consumer-friendly
 
-* { box-sizing: border-box; }
+    IMPORTANT
+    - This page is intended for the site owner, not general visitors.
+    - It is a simple operational dashboard, not a secure auth system.
+    - If you want true private access later, add authentication.
 
-body {
-margin: 0;
-font-family: Inter, Arial, sans-serif;
-background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
-color: var(--text);
-}
+    CURRENT DATA SOURCES
+    - Browser localStorage
+    - /api/events health check
+    - /api/intent health check
+    - /api/youtube/trending health check
 
-a {
-color: inherit;
-text-decoration: none;
-}
+    FUTURE UPGRADE PATH
+    - Replace browser-side summaries with real database-backed analytics
+    - Add authenticated admin access
+    - Add provider click rankings and revenue summaries
+  -->
 
-button {
-font: inherit;
-cursor: pointer;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalBoost Admin</title>
 
-.app {
-width: min(1320px, calc(100vw - 24px));
-margin: 0 auto;
-padding: 12px 0 28px;
-}
+  <style>
+    :root {
+      --bg: #eef4ff;
+      --bg-2: #f8fbff;
+      --surface: rgba(255,255,255,0.97);
+      --surface-soft: rgba(255,255,255,0.88);
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: rgba(15, 23, 42, 0.10);
+      --primary: #2563eb;
+      --primary-2: #06b6d4;
+      --success: #15803d;
+      --warning: #ea580c;
+      --danger: #dc2626;
+      --shadow: 0 18px 48px rgba(15,23,42,0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --max: 1380px;
+    }
 
-.topbar,
-.module,
-.stat-card {
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: 22px;
-box-shadow: var(--shadow);
-}
+    body.dark {
+      --bg: #0b1220;
+      --bg-2: #0f172a;
+      --surface: rgba(15, 23, 42, 0.96);
+      --surface-soft: rgba(30, 41, 59, 0.92);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: rgba(226, 232, 240, 0.10);
+      --primary: #3b82f6;
+      --primary-2: #22d3ee;
+      --success: #22c55e;
+      --warning: #fb923c;
+      --danger: #f87171;
+      --shadow: 0 20px 50px rgba(0,0,0,0.32);
+    }
 
-.topbar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-gap: 12px;
-flex-wrap: wrap;
-padding: 14px 16px;
-border-radius: 18px;
-}
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-.logo {
-display: flex;
-align-items: center;
-gap: 12px;
-font-size: 22px;
-font-weight: 900;
-letter-spacing: -0.02em;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
+    }
 
-.logo-mark {
-width: 58px;
-height: 58px;
-border-radius: 14px;
-display: flex;
-align-items: center;
-justify-content: center;
-background: #fff;
-border: 1px solid var(--border);
-overflow: hidden;
-flex-shrink: 0;
-}
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
 
-.toolbar {
-display: flex;
-flex-wrap: wrap;
-gap: 8px;
-}
+    .app {
+      width: min(var(--max), calc(100vw - 24px));
+      margin: 0 auto;
+      padding: 14px 0 36px;
+    }
 
-.btn {
-padding: 10px 14px;
-border-radius: 999px;
-border: 1px solid var(--border);
-background: white;
-transition: 0.15s ease;
-}
+    .topbar,
+    .hero,
+    .panel,
+    .table-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+    }
 
-.btn:hover {
-transform: translateY(-1px);
-}
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      flex-wrap: wrap;
+    }
 
-.btn.primary {
-color: white;
-border: none;
-font-weight: 700;
-background: linear-gradient(135deg, var(--primary), var(--accent));
-}
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-.btn.dark {
-color: white;
-border: none;
-font-weight: 700;
-background: linear-gradient(135deg, var(--dark), #334155);
-}
+    .logo-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
 
-.btn.warn {
-color: white;
-border: none;
-font-weight: 700;
-background: linear-gradient(135deg, var(--warning), #fb923c);
-}
+    .brand-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
 
-.btn.danger {
-color: white;
-border: none;
-font-weight: 700;
-background: linear-gradient(135deg, var(--danger), #ef4444);
-}
+    .brand-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
 
-.intro {
-margin-top: 18px;
-padding: 24px;
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: 22px;
-box-shadow: var(--shadow);
-}
+    .topbar-actions,
+    .hero-actions,
+    .panel-actions,
+    .stat-grid,
+    .status-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-h1 {
-margin: 0 0 10px;
-font-size: 40px;
-line-height: 1.04;
-letter-spacing: -0.03em;
-}
+    .btn {
+      border-radius: 999px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .15s ease, background .25s ease;
+    }
 
-h2 {
-margin: 0;
-font-size: 24px;
-}
+    .btn:hover { transform: translateY(-1px); }
 
-.sub {
-margin: 0;
-color: var(--muted);
-line-height: 1.65;
-font-size: 17px;
-max-width: 900px;
-}
+    .btn.primary {
+      color: white;
+      border: none;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    }
 
-.layout {
-margin-top: 20px;
-display: grid;
-gap: 20px;
-}
+    .btn.warn {
+      color: white;
+      border: none;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--warning), #fb923c);
+    }
 
-.stats-grid {
-display: grid;
-grid-template-columns: repeat(4, minmax(0, 1fr));
-gap: 14px;
-}
+    .btn.danger {
+      color: white;
+      border: none;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--danger), #ef4444);
+    }
 
-.stat-card {
-padding: 18px;
-}
+    .hero {
+      margin-top: 16px;
+      padding: 26px 24px;
+    }
 
-.stat-label {
-font-size: 12px;
-color: var(--muted);
-text-transform: uppercase;
-letter-spacing: 0.06em;
-}
+    h1 {
+      margin: 0 0 10px;
+      font-size: 38px;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
 
-.stat-value {
-margin-top: 8px;
-font-size: 34px;
-font-weight: 900;
-letter-spacing: -0.03em;
-}
+    .hero-sub {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 0 16px;
+    }
 
-.stat-note {
-margin-top: 8px;
-color: var(--muted);
-font-size: 13px;
-line-height: 1.5;
-}
+    .grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1.1fr 1.1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
 
-.module {
-padding: 20px;
-}
+    .panel,
+    .table-panel {
+      padding: 18px;
+    }
 
-.module-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-gap: 10px;
-flex-wrap: wrap;
-margin-bottom: 14px;
-}
+    .panel-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
 
-.mode-badge {
-font-size: 11px;
-color: var(--muted);
-}
+    .panel-sub {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
 
-.status-box {
-padding: 14px;
-border: 1px solid var(--border);
-border-radius: 16px;
-background: var(--soft);
-line-height: 1.65;
-color: var(--text);
-}
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
 
-.two-col {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 14px;
-}
+    .stat-card {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
 
-.mini-card {
-padding: 14px;
-border: 1px solid var(--border);
-border-radius: 16px;
-background: rgba(255,255,255,0.82);
-}
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
 
-.mini-title {
-font-size: 13px;
-color: var(--muted);
-margin-bottom: 6px;
-}
+    .stat-value {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
 
-.mini-value {
-font-size: 24px;
-font-weight: 800;
-}
+    .status-grid {
+      display: grid;
+      gap: 10px;
+    }
 
-table {
-width: 100%;
-border-collapse: collapse;
-overflow: hidden;
-border-radius: 16px;
-border: 1px solid var(--border);
-background: rgba(255,255,255,0.82);
-}
+    .status-card,
+    .list-card {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+    }
 
-th, td {
-padding: 12px 14px;
-text-align: left;
-border-bottom: 1px solid var(--border);
-vertical-align: top;
-}
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-th {
-font-size: 12px;
-text-transform: uppercase;
-letter-spacing: 0.05em;
-color: var(--muted);
-background: rgba(248,250,252,0.9);
-}
+    .status-name {
+      font-weight: 700;
+    }
 
-tr:last-child td {
-border-bottom: none;
-}
+    .status-meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
 
-.empty {
-color: var(--muted);
-font-style: italic;
-}
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
 
-.foot-note {
-color: var(--muted);
-font-size: 13px;
-line-height: 1.6;
-}
+    .pill.ok {
+      color: var(--success);
+      border-color: rgba(21,128,61,0.18);
+      background: rgba(21,128,61,0.08);
+    }
 
-@media (max-width: 1100px) {
-.stats-grid {
-grid-template-columns: repeat(2, minmax(0, 1fr));
-}
+    .pill.warn {
+      color: var(--warning);
+      border-color: rgba(234,88,12,0.18);
+      background: rgba(234,88,12,0.08);
+    }
 
-.two-col {
-grid-template-columns: 1fr;
-}
-}
+    .pill.bad {
+      color: var(--danger);
+      border-color: rgba(220,38,38,0.18);
+      background: rgba(220,38,38,0.08);
+    }
 
-@media (max-width: 700px) {
-.stats-grid {
-grid-template-columns: 1fr;
-}
+    .pill.neutral {
+      color: var(--primary);
+      border-color: rgba(37,99,235,0.18);
+      background: rgba(37,99,235,0.08);
+    }
 
-h1 {
-font-size: 32px;
-}
+    .list-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
 
-.app {
-width: min(100vw - 16px, 1320px);
-}
-}
-</style>
+    .token-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .token {
+      border-radius: 999px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .table-panel {
+      margin-top: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+      padding: 8px 0;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 8px;
+    }
+
+    @media (max-width: 1120px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app { width: min(100vw - 14px, var(--max)); }
+      h1 { font-size: 30px; }
+      .stat-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-<div class="topbar">
-<div class="logo">
-<div class="logo-mark" aria-hidden="true">
-<svg viewBox="0 0 120 120" width="42" height="42" role="img">
-<defs>
-<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#2563eb"/>
-<stop offset="100%" stop-color="#06b6d4"/>
-</linearGradient>
-</defs>
-<circle cx="60" cy="60" r="6" fill="url(#g)"/>
-<circle cx="60" cy="60" r="16" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.9"/>
-<circle cx="60" cy="60" r="26" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.7"/>
-<circle cx="60" cy="60" r="36" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.5"/>
-<path d="M60 78 L60 42 M60 42 L50 52 M60 42 L70 52" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</div>
-<div>SignalBoost Admin</div>
-</div>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand-wrap">
+        <div class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 120 120" width="34" height="34" role="img">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#2563eb"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r="6" fill="url(#g)"/>
+            <circle cx="60" cy="60" r="16" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.9"/>
+            <circle cx="60" cy="60" r="26" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.7"/>
+            <circle cx="60" cy="60" r="36" stroke="url(#g)" stroke-width="3" fill="none" opacity="0.5"/>
+            <path d="M60 78 L60 42 M60 42 L50 52 M60 42 L70 52" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">SignalBoost Admin</div>
+          <div class="brand-sub">Owner control surface</div>
+        </div>
+      </div>
 
-<div class="toolbar">
-<button class="btn primary" onclick="refreshDashboard()">Refresh stats</button>
-<button class="btn dark" onclick="openHomepage()">Open homepage</button>
-<button class="btn warn" onclick="exportStats()">Export JSON</button>
-<button class="btn danger" onclick="resetStats()">Reset local stats</button>
-</div>
-</div>
+      <div class="topbar-actions">
+        <a class="btn" href="/">Open public site</a>
+        <button class="btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark mode</button>
+        <button class="btn warn" onclick="refreshDashboard()">Refresh</button>
+        <button class="btn danger" onclick="clearAdminMemory()">Clear local memory</button>
+      </div>
+    </div>
 
-<section class="intro">
-<h1>Private owner dashboard</h1>
-<p class="sub">
-This is your starter business view for SignalBoost. It reads local browser stats created by the public homepage and helps you see which monetized paths and engagement elements are getting attention.
-</p>
-</section>
+    <section class="hero">
+      <h1>SignalBoost control center</h1>
+      <p class="hero-sub">
+        This page is for internal monitoring only. It keeps operational information away from the public homepage while giving you a simple place to inspect local session data, health checks, and recent interaction memory.
+      </p>
 
-<div class="layout">
-<section class="stats-grid">
-<div class="stat-card">
-<div class="stat-label">Total visits</div>
-<div class="stat-value" id="totalVisits">0</div>
-<div class="stat-note">Visits recorded on this browser.</div>
-</div>
+      <div class="hero-actions">
+        <a class="btn primary" href="/">Back to homepage</a>
+        <button class="btn" onclick="runHealthChecks()">Run health checks</button>
+      </div>
+    </section>
 
-<div class="stat-card">
-<div class="stat-label">Affiliate clicks</div>
-<div class="stat-value" id="totalAffiliateClicks">0</div>
-<div class="stat-note">Total monetized outbound clicks tracked locally.</div>
-</div>
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-title">Local browser metrics</div>
+        <div class="panel-sub">
+          These values come from the browser's local storage and reflect what this device has seen while testing or using the site.
+        </div>
 
-<div class="stat-card">
-<div class="stat-label">Video opens</div>
-<div class="stat-value" id="videoOpens">0</div>
-<div class="stat-note">How often users opened a video player.</div>
-</div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">Session ID</div>
+            <div class="stat-value" id="sessionIdValue" style="font-size:18px;word-break:break-all;">—</div>
+          </div>
 
-<div class="stat-card">
-<div class="stat-label">Fallback media views</div>
-<div class="stat-value" id="fallbackViews">0</div>
-<div class="stat-note">Shown when live media is unavailable.</div>
-</div>
-</section>
+          <div class="stat-card">
+            <div class="stat-label">Last department</div>
+            <div class="stat-value" id="lastDepartmentValue">—</div>
+          </div>
 
-<section class="module">
-<div class="module-header">
-<h2>Revenue path summary</h2>
-<span class="mode-badge">Monetization focus</span>
-</div>
+          <div class="stat-card">
+            <div class="stat-label">Search count</div>
+            <div class="stat-value" id="searchCountValue">0</div>
+          </div>
 
-<div class="two-col">
-<div class="mini-card">
-<div class="mini-title">Expedia clicks</div>
-<div class="mini-value" id="expediaClicks">0</div>
-</div>
+          <div class="stat-card">
+            <div class="stat-label">Click count</div>
+            <div class="stat-value" id="clickCountValue">0</div>
+          </div>
+        </div>
+      </section>
 
-<div class="mini-card">
-<div class="mini-title">Hotels.com clicks</div>
-<div class="mini-value" id="hotelsComClicks">0</div>
-</div>
+      <section class="panel">
+        <div class="panel-title">System health</div>
+        <div class="panel-sub">
+          These checks confirm whether your backend endpoints are reachable. They do not reveal anything on the public homepage.
+        </div>
 
-<div class="mini-card">
-<div class="mini-title">Vrbo clicks</div>
-<div class="mini-value" id="vrboClicks">0</div>
-</div>
+        <div class="status-grid" id="healthGrid">
+          <div class="status-card">
+            <div class="status-row">
+              <div class="status-name">/api/events</div>
+              <div class="pill neutral">Waiting</div>
+            </div>
+            <div class="status-meta">Not checked yet.</div>
+          </div>
 
-<div class="mini-card">
-<div class="mini-title">Compare-stays clicks</div>
-<div class="mini-value" id="compareClicks">0</div>
-</div>
-</div>
-</section>
+          <div class="status-card">
+            <div class="status-row">
+              <div class="status-name">/api/intent</div>
+              <div class="pill neutral">Waiting</div>
+            </div>
+            <div class="status-meta">Not checked yet.</div>
+          </div>
 
-<section class="module">
-<div class="module-header">
-<h2>Status</h2>
-<span class="mode-badge">Local testing layer</span>
-</div>
+          <div class="status-card">
+            <div class="status-row">
+              <div class="status-name">/api/youtube/trending</div>
+              <div class="pill neutral">Waiting</div>
+            </div>
+            <div class="status-meta">Not checked yet.</div>
+          </div>
+        </div>
+      </section>
 
-<div class="status-box" id="statusBox">
-Loading dashboard state...
-</div>
-</section>
+      <section class="panel">
+        <div class="panel-title">Quick access</div>
+        <div class="panel-sub">
+          These shortcuts help you inspect what the browser currently knows about searches and clicks on this device.
+        </div>
 
-<section class="module">
-<div class="module-header">
-<h2>Timestamps</h2>
-<span class="mode-badge">Local browser data</span>
-</div>
+        <div class="list-card">
+          <div class="list-title">Recent searches</div>
+          <div class="token-list" id="searchHistoryList">
+            <div class="empty">No searches yet.</div>
+          </div>
+        </div>
 
-<div class="two-col">
-<div class="mini-card">
-<div class="mini-title">Last visit</div>
-<div class="mini-value" id="lastVisitAt" style="font-size:18px">—</div>
-</div>
+        <div class="list-card" style="margin-top:12px;">
+          <div class="list-title">Recent provider clicks</div>
+          <div class="token-list" id="clickHistoryList">
+            <div class="empty">No clicks yet.</div>
+          </div>
+        </div>
+      </section>
+    </div>
 
-<div class="mini-card">
-<div class="mini-title">Last stats update</div>
-<div class="mini-value" id="updatedAt" style="font-size:18px">—</div>
-</div>
-</div>
-</section>
+    <section class="table-panel">
+      <div class="panel-title">Recent provider click details</div>
+      <div class="panel-sub">
+        This table shows the browser-local click records from this device. It is useful for testing same-tab navigation and provider routing logic.
+      </div>
 
-<section class="module">
-<div class="module-header">
-<h2>Detailed affiliate click counts</h2>
-<span class="mode-badge">By tracking key</span>
-</div>
+      <div id="clickTableWrap">
+        <div class="empty">No provider clicks yet.</div>
+      </div>
+    </section>
 
-<table>
-<thead>
-<tr>
-<th>Tracking key</th>
-<th>Clicks</th>
-</tr>
-</thead>
-<tbody id="affiliateTableBody">
-<tr><td colspan="2" class="empty">No affiliate clicks yet.</td></tr>
-</tbody>
-</table>
-</section>
+    <div class="footer">
+      SignalBoost Admin • Internal use
+    </div>
+  </div>
 
-<section class="module">
-<div class="module-header">
-<h2>Raw stats snapshot</h2>
-<span class="mode-badge">Debug / verify</span>
-</div>
+  <script>
+    /*
+      ==========================================================
+      STORAGE KEYS
+      ==========================================================
+      These keys match the public homepage implementation so the
+      admin page can inspect the same local browser memory.
+    */
+    const STORAGE_KEYS = {
+      theme: 'signalboost_theme',
+      sessionId: 'signalboost_session_id',
+      searchHistory: 'signalboost_search_history',
+      clickHistory: 'signalboost_click_history',
+      lastDepartment: 'signalboost_last_department',
+      searchCount: 'signalboost_search_count',
+      clickCount: 'signalboost_click_count'
+    };
 
-<div class="status-box">
-<pre id="rawStats" style="margin:0; white-space:pre-wrap; word-break:break-word;"></pre>
-</div>
-</section>
+    /*
+      ==========================================================
+      THEME SYSTEM
+      ==========================================================
+    */
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem(STORAGE_KEYS.theme, isDark ? 'dark' : 'light');
+      updateThemeToggleLabel();
+    }
 
-<section class="module">
-<div class="module-header">
-<h2>Notes</h2>
-<span class="mode-badge">Next upgrade</span>
-</div>
+    function initTheme() {
+      const saved = localStorage.getItem(STORAGE_KEYS.theme);
+      if (saved === 'dark') {
+        document.body.classList.add('dark');
+      }
+      updateThemeToggleLabel();
+    }
 
-<div class="foot-note">
-This dashboard is intentionally simple. It is useful for early testing, but it is not a full analytics system yet.
-The next upgrade should be real server-side event logging, protected admin access, and persistent business reporting across all users and devices.
-</div>
-</section>
-</div>
-</div>
+    function updateThemeToggleLabel() {
+      const btn = document.getElementById('themeToggleBtn');
+      if (!btn) return;
+      btn.textContent = document.body.classList.contains('dark') ? '☀️ Light mode' : '🌙 Dark mode';
+    }
 
-<script>
-/*
-=========================================================
-SIGNALBOOST ADMIN LOGIC
-- Reads stats from localStorage
-- Shows starter owner dashboard
-- Helps validate early monetization clicks
-=========================================================
-*/
+    /*
+      ==========================================================
+      STORAGE HELPERS
+      ==========================================================
+    */
+    function readJsonStorage(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
 
-const STORAGE_KEY = 'signalboost_stats';
+    function getLocalValue(key, fallback = '') {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : value;
+    }
 
-function getEmptyStats() {
-return {
-totalVisits: 0,
-affiliateClicks: {},
-videoOpens: 0,
-mediaFallbackViews: 0,
-lastVisitAt: null,
-updatedAt: null
-};
-}
+    function capitalize(value) {
+      const str = String(value || '');
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '—';
+    }
 
-function getStats() {
-const raw = localStorage.getItem(STORAGE_KEY);
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
 
-if (!raw) return getEmptyStats();
+    /*
+      ==========================================================
+      LOCAL DATA RENDERING
+      ==========================================================
+    */
+    function renderLocalMetrics() {
+      const sessionId = getLocalValue(STORAGE_KEYS.sessionId, '—');
+      const lastDepartment = getLocalValue(STORAGE_KEYS.lastDepartment, '');
+      const searchCount = Number(getLocalValue(STORAGE_KEYS.searchCount, '0'));
+      const clickCount = Number(getLocalValue(STORAGE_KEYS.clickCount, '0'));
+      const searchHistory = readJsonStorage(STORAGE_KEYS.searchHistory, []);
+      const clickHistory = readJsonStorage(STORAGE_KEYS.clickHistory, []);
 
-try {
-const parsed = JSON.parse(raw);
-return {
-totalVisits: Number(parsed.totalVisits || 0),
-affiliateClicks: parsed.affiliateClicks || {},
-videoOpens: Number(parsed.videoOpens || 0),
-mediaFallbackViews: Number(parsed.mediaFallbackViews || 0),
-lastVisitAt: parsed.lastVisitAt || null,
-updatedAt: parsed.updatedAt || null
-};
-} catch (error) {
-console.error('Failed to parse stats:', error);
-return getEmptyStats();
-}
-}
+      document.getElementById('sessionIdValue').textContent = sessionId || '—';
+      document.getElementById('lastDepartmentValue').textContent = capitalize(lastDepartment);
+      document.getElementById('searchCountValue').textContent = String(searchCount);
+      document.getElementById('clickCountValue').textContent = String(clickCount);
 
-function formatDate(value) {
-if (!value) return '—';
-const date = new Date(value);
-if (Number.isNaN(date.getTime())) return String(value);
-return date.toLocaleString();
-}
+      const searchHistoryList = document.getElementById('searchHistoryList');
+      searchHistoryList.innerHTML = searchHistory.length
+        ? searchHistory.map(item => `<span class="token">${escapeHtml(item)}</span>`).join('')
+        : `<div class="empty">No searches yet.</div>`;
 
-function sumObjectValues(obj) {
-return Object.values(obj || {}).reduce((sum, value) => sum + Number(value || 0), 0);
-}
+      const clickHistoryList = document.getElementById('clickHistoryList');
+      clickHistoryList.innerHTML = clickHistory.length
+        ? clickHistory.slice(0, 8).map(item => `<span class="token">${escapeHtml(item.title || 'Provider click')}</span>`).join('')
+        : `<div class="empty">No clicks yet.</div>`;
 
-function sumKeysByIncludes(obj, fragments) {
-const keys = Object.keys(obj || {});
-return keys.reduce((sum, key) => {
-const lower = key.toLowerCase();
-const match = fragments.some(fragment => lower.includes(fragment));
-return sum + (match ? Number(obj[key] || 0) : 0);
-}, 0);
-}
+      renderClickTable(clickHistory);
+    }
 
-function setText(id, value) {
-const el = document.getElementById(id);
-if (el) el.textContent = value;
-}
+    function renderClickTable(clickHistory) {
+      const wrap = document.getElementById('clickTableWrap');
 
-function renderAffiliateTable(clicks) {
-const body = document.getElementById('affiliateTableBody');
-const entries = Object.entries(clicks || {}).sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0));
+      if (!clickHistory.length) {
+        wrap.innerHTML = `<div class="empty">No provider clicks yet.</div>`;
+        return;
+      }
 
-if (!entries.length) {
-body.innerHTML = `<tr><td colspan="2" class="empty">No affiliate clicks yet.</td></tr>`;
-return;
-}
+      wrap.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Department</th>
+              <th>Query</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${clickHistory.map(item => `
+              <tr>
+                <td>${escapeHtml(item.title || '—')}</td>
+                <td>${escapeHtml(item.department || '—')}</td>
+                <td>${escapeHtml(item.query || '—')}</td>
+                <td>${escapeHtml(item.timestamp || '—')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
 
-body.innerHTML = entries.map(([key, value]) => `
-<tr>
-<td>${escapeHtml(key)}</td>
-<td>${Number(value || 0)}</td>
-</tr>
-`).join('');
-}
+    /*
+      ==========================================================
+      HEALTH CHECKS
+      ==========================================================
+      GET-friendly checks only.
+      - /api/events should support GET health
+      - /api/intent may not support GET; if so, this will show warning
+      - /api/youtube/trending is checked with region query
+    */
+    async function safeCheck(url) {
+      try {
+        const response = await fetch(url, { method: 'GET' });
+        const text = await response.text();
+        let data = null;
 
-function escapeHtml(value) {
-return String(value ?? '')
-.replaceAll('&', '&amp;')
-.replaceAll('<', '&lt;')
-.replaceAll('>', '&gt;')
-.replaceAll('"', '&quot;')
-.replaceAll("'", '&#39;');
-}
+        try {
+          data = JSON.parse(text);
+        } catch {}
 
-function buildStatus(stats, totals) {
-const messages = [];
+        return {
+          ok: response.ok,
+          status: response.status,
+          data,
+          raw: text
+        };
+      } catch (error) {
+        return {
+          ok: false,
+          status: 0,
+          error: error.message || 'Request failed'
+        };
+      }
+    }
 
-messages.push(`Current data source: local browser storage only.`);
-messages.push(`Total visits recorded here: ${stats.totalVisits}.`);
-messages.push(`Total affiliate clicks recorded here: ${totals.totalAffiliateClicks}.`);
-messages.push(`Primary revenue signals so far: Expedia ${totals.expediaClicks}, Hotels.com ${totals.hotelsComClicks}, Vrbo ${totals.vrboClicks}.`);
+    async function runHealthChecks() {
+      const healthGrid = document.getElementById('healthGrid');
+      healthGrid.innerHTML = `
+        <div class="status-card"><div class="status-row"><div class="status-name">/api/events</div><div class="pill neutral">Checking</div></div><div class="status-meta">Running request…</div></div>
+        <div class="status-card"><div class="status-row"><div class="status-name">/api/intent</div><div class="pill neutral">Checking</div></div><div class="status-meta">Running request…</div></div>
+        <div class="status-card"><div class="status-row"><div class="status-name">/api/youtube/trending</div><div class="pill neutral">Checking</div></div><div class="status-meta">Running request…</div></div>
+      `;
 
-if (stats.videoOpens > 0) {
-messages.push(`Video engagement is active on this browser: ${stats.videoOpens} opens.`);
-} else {
-messages.push(`No video opens recorded yet on this browser.`);
-}
+      const [eventsResult, intentResult, youtubeResult] = await Promise.all([
+        safeCheck('/api/events'),
+        safeCheck('/api/intent'),
+        safeCheck('/api/youtube/trending?region=US')
+      ]);
 
-if (stats.mediaFallbackViews > 0) {
-messages.push(`Fallback media was shown ${stats.mediaFallbackViews} time(s), which means live media was unavailable at least once.`);
-}
+      healthGrid.innerHTML = `
+        ${buildHealthCard('/api/events', eventsResult)}
+        ${buildHealthCard('/api/intent', intentResult)}
+        ${buildHealthCard('/api/youtube/trending', youtubeResult)}
+      `;
+    }
 
-messages.push(`Next upgrade needed: real server-side analytics + protected admin access.`);
+    function buildHealthCard(name, result) {
+      let pillClass = 'bad';
+      let label = 'Offline';
+      let meta = '';
 
-return messages.join(' ');
-}
+      if (result.ok) {
+        pillClass = 'ok';
+        label = 'Online';
+        meta = `HTTP ${result.status}`;
+      } else if (result.status === 405 || result.status === 400 || result.status === 401 || result.status === 403) {
+        pillClass = 'warn';
+        label = 'Responding';
+        meta = `HTTP ${result.status}`;
+      } else if (result.status > 0) {
+        pillClass = 'warn';
+        label = 'Partial';
+        meta = `HTTP ${result.status}`;
+      } else {
+        pillClass = 'bad';
+        label = 'Offline';
+        meta = result.error || 'Request failed';
+      }
 
-function refreshDashboard() {
-const stats = getStats();
-const clicks = stats.affiliateClicks || {};
+      return `
+        <div class="status-card">
+          <div class="status-row">
+            <div class="status-name">${escapeHtml(name)}</div>
+            <div class="pill ${pillClass}">${escapeHtml(label)}</div>
+          </div>
+          <div class="status-meta">${escapeHtml(meta)}</div>
+        </div>
+      `;
+    }
 
-const totals = {
-totalAffiliateClicks: sumObjectValues(clicks),
-expediaClicks: sumKeysByIncludes(clicks, ['expedia']),
-hotelsComClicks: sumKeysByIncludes(clicks, ['hotelscom', 'hotel']),
-vrboClicks: sumKeysByIncludes(clicks, ['vrbo']),
-compareClicks: sumKeysByIncludes(clicks, ['compare'])
-};
+    /*
+      ==========================================================
+      CLEAR LOCAL MEMORY
+      ==========================================================
+      This only clears browser-side data on this device.
+    */
+    function clearAdminMemory() {
+      const confirmed = confirm('Clear local browser memory for SignalBoost on this device?');
+      if (!confirmed) return;
 
-setText('totalVisits', stats.totalVisits);
-setText('totalAffiliateClicks', totals.totalAffiliateClicks);
-setText('videoOpens', stats.videoOpens);
-setText('fallbackViews', stats.mediaFallbackViews);
+      Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+      renderLocalMetrics();
+      runHealthChecks();
+    }
 
-setText('expediaClicks', totals.expediaClicks);
-setText('hotelsComClicks', totals.hotelsComClicks);
-setText('vrboClicks', totals.vrboClicks);
-setText('compareClicks', totals.compareClicks);
+    /*
+      ==========================================================
+      REFRESH
+      ==========================================================
+    */
+    function refreshDashboard() {
+      renderLocalMetrics();
+      runHealthChecks();
+    }
 
-setText('lastVisitAt', formatDate(stats.lastVisitAt));
-setText('updatedAt', formatDate(stats.updatedAt));
+    /*
+      ==========================================================
+      APP INIT
+      ==========================================================
+    */
+    function initApp() {
+      initTheme();
+      renderLocalMetrics();
+      runHealthChecks();
+    }
 
-document.getElementById('statusBox').textContent = buildStatus(stats, totals);
-document.getElementById('rawStats').textContent = JSON.stringify(stats, null, 2);
-
-renderAffiliateTable(clicks);
-}
-
-function openHomepage() {
-window.location.href = '/';
-}
-
-function exportStats() {
-const stats = getStats();
-const blob = new Blob([JSON.stringify(stats, null, 2)], { type: 'application/json' });
-const url = URL.createObjectURL(blob);
-
-const link = document.createElement('a');
-link.href = url;
-link.download = 'signalboost-stats.json';
-link.click();
-
-URL.revokeObjectURL(url);
-}
-
-function resetStats() {
-const confirmed = confirm('Reset local SignalBoost stats on this browser?');
-if (!confirmed) return;
-
-localStorage.removeItem(STORAGE_KEY);
-refreshDashboard();
-alert('Local stats reset on this browser.');
-}
-
-refreshDashboard();
-</script>
+    initApp();
+  </script>
 </body>
 </html>
