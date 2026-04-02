@@ -1,434 +1,1116 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--
-========================================================
-SIGNALBOOST HOMEPAGE
-VERSION: documented recovery build
+  <meta charset="UTF-8" />
+  <title>SignalBoost Travel Discovery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --danger: #f97373;
+      --radius-lg: 14px;
+      --radius-md: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --shadow-chip: 0 10px 30px rgba(15, 23, 42, 0.7);
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.22s ease-out;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
 
-PURPOSE
-- Restore the richer homepage experience
-- Keep the site public-safe and user-friendly
-- Preserve monetized travel paths
-- Preserve the hidden decision-routing layer
-- Keep code heavily documented for future scaling
+    * {
+      box-sizing: border-box;
+    }
 
-IMPORTANT PRODUCT PRINCIPLE
-- Visitors should see clean language like:
-  Travel Booking Options, Business Tools, Explore Categories
-- Visitors should NOT see internal/business language like:
-  monetized, affiliate, backend, intent, provider, tracking
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
 
-MAINTENANCE NOTES
-- Replace partner links only inside AFFILIATE_LINKS
-- Update ranking only inside getFallbackProviderOrder()
-- Update search intent only inside getLocalIntentFallback()
-- Keep public wording simple and non-technical
-========================================================
--->
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SignalBoost</title>
-<style>
-/*
-========================================================
-VISUAL SYSTEM
---------------------------------------------------------
-Goal:
-- neutral premium look
-- not obviously AI-branded
-- clean enough for travel + business
-========================================================
-*/
-:root{--bg:#eef4ff;--bg2:#f8fbff;--surface:rgba(255,255,255,.97);--soft:rgba(255,255,255,.88);--text:#0f172a;--muted:#64748b;--border:rgba(15,23,42,.10);--primary:#2563eb;--primary2:#06b6d4;--success:#15803d;--warning:#ea580c;--purple:#7c3aed;--shadow:0 18px 48px rgba(15,23,42,.08);--rx:24px;--rl:18px;--max:1380px}
-body.dark{--bg:#0b1220;--bg2:#0f172a;--surface:rgba(15,23,42,.96);--soft:rgba(30,41,59,.92);--text:#e2e8f0;--muted:#94a3b8;--border:rgba(226,232,240,.10);--primary:#3b82f6;--primary2:#22d3ee;--success:#22c55e;--warning:#fb923c;--purple:#a855f7}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
-button,input{font:inherit}a{text-decoration:none;color:inherit}.app{width:min(var(--max),calc(100vw - 24px));margin:0 auto;padding:14px 0 36px}
-.topbar,.hero,.section,.results-panel{background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;flex-wrap:wrap}
-.brand-wrap,.topbar-actions,.nav-chips,.quick-chips,.card-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.logo-mark{width:48px;height:48px;border-radius:14px;background:var(--soft);border:1px solid var(--border);display:grid;place-items:center}
-.brand-title{font-size:22px;font-weight:900}.brand-sub{font-size:12px;color:var(--muted)}
-.chip,.btn,.mini-btn,.toggle-btn{border-radius:999px;padding:10px 14px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
-.btn.primary,.mini-btn.primary{color:#fff;border:none;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--primary2))}
-.mini-btn.warn{color:#fff;border:none;font-weight:700;background:linear-gradient(135deg,var(--warning),#fb923c)}
-.mini-btn.dark{color:#fff;border:none;font-weight:700;background:linear-gradient(135deg,#111827,#334155)}
-.mini-btn.success{color:#fff;border:none;font-weight:700;background:linear-gradient(135deg,var(--success),#16a34a)}
-.mini-btn.purple{color:#fff;border:none;font-weight:700;background:linear-gradient(135deg,var(--purple),#a855f7)}
-.hero{margin-top:16px;border-radius:var(--rx);padding:34px 28px 24px;position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;right:-80px;bottom:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(37,99,235,.12),transparent 70%)}
-h1{margin:0 0 10px;font-size:46px;line-height:1.02;letter-spacing:-.04em;max-width:900px}.hero-sub{margin:0;max-width:980px;color:var(--muted);font-size:18px;line-height:1.6}
-.search-shell{margin-top:22px;max-width:1240px}.search-box{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:10px;border:1px solid var(--border);border-radius:18px;background:var(--soft)}
-.search-box input{width:100%;min-width:0;border:none;outline:none;background:transparent;font-size:16px;color:var(--text);padding:4px 2px}.search-help{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.55}.quick-chips{margin-top:14px}
-.results-panel{display:none;margin-top:16px;padding:18px;border-radius:18px;border:2px solid rgba(37,99,235,.18);background:linear-gradient(180deg,rgba(37,99,235,.04),rgba(255,255,255,.98))}
-body.dark .results-panel{background:linear-gradient(180deg,rgba(59,130,246,.10),rgba(15,23,42,.96))}.results-panel.active{display:block}
-.results-kicker{display:inline-flex;gap:8px;margin-bottom:10px;padding:6px 10px;border-radius:999px;background:rgba(37,99,235,.10);border:1px solid rgba(37,99,235,.14);color:var(--primary);font-size:12px;font-weight:700}
-.results-title{font-size:22px;font-weight:900;margin-bottom:6px}.results-sub{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:14px}.clarify-box{display:none;margin-bottom:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(234,88,12,.18);background:rgba(234,88,12,.08)}.clarify-box.active{display:block}
-.section{margin-top:16px;padding:18px;border-radius:var(--rx)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.section-note{font-size:13px;color:var(--muted)}h2{margin:0;font-size:24px}
-.results-grid,.providers-grid,.department-grid,.business-grid,.media-grid{display:grid;gap:12px}.results-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.providers-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.department-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.business-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-.card{border:1px solid var(--border);background:var(--soft);border-radius:var(--rl);padding:16px;display:flex;flex-direction:column;gap:8px;min-height:200px}
-.badge{align-self:flex-start;padding:5px 9px;font-size:10px;border-radius:999px;border:1px solid rgba(37,99,235,.18);background:rgba(37,99,235,.10);color:var(--primary)}.badge.success{border-color:rgba(21,128,61,.18);background:rgba(21,128,61,.10);color:var(--success)}.badge.warn{border-color:rgba(234,88,12,.18);background:rgba(234,88,12,.10);color:var(--warning)}.badge.purple{border-color:rgba(124,58,237,.18);background:rgba(124,58,237,.10);color:var(--purple)}
-.icon{font-size:24px}.card-title{font-weight:800;font-size:18px;line-height:1.3}.card-text{color:var(--muted);font-size:14px;line-height:1.55}.result-callout{margin-top:4px;color:var(--primary);font-size:12px;font-weight:700}.result-hook{font-size:13px;font-weight:700;color:var(--primary)}.urgency{font-size:12px;font-weight:700;color:var(--warning)}
-.video-thumb-wrap{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#e2e8f0;position:relative;border:1px solid var(--border)}.video-thumb{width:100%;height:100%;object-fit:cover;display:block}.play-overlay{position:absolute;inset:0;display:grid;place-items:center}.play-pill{width:58px;height:40px;border-radius:12px;background:rgba(220,38,38,.92);display:grid;place-items:center}.play-triangle{width:0;height:0;border-left:12px solid white;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}.video-title{margin-top:8px;font-weight:800;font-size:14px;line-height:1.35;min-height:56px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.video-meta{color:var(--muted);font-size:12px}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}.modal.active{display:flex}.modal-panel{width:min(920px,100%);background:var(--surface);border-radius:18px;border:1px solid var(--border);overflow:hidden}.modal-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}.modal-close{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:20px}.modal-body{padding:14px}.modal-player{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#0f172a}
-.footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px;padding:8px}.hidden{display:none!important}
-@media (max-width:1260px){.providers-grid,.department-grid,.business-grid,.media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.results-grid{grid-template-columns:1fr}}
-@media (max-width:780px){.app{width:min(100vw - 14px,var(--max))}.search-box{grid-template-columns:1fr}.providers-grid,.department-grid,.business-grid,.media-grid{grid-template-columns:1fr}h1{font-size:34px}}
-</style>
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to bottom,
+        rgba(2, 6, 23, 0.96),
+        rgba(2, 6, 23, 0.9),
+        rgba(2, 6, 23, 0.75)
+      );
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .nav {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 18px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 20% 0%, #38bdf8, #0ea5e9 40%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.45);
+      font-size: 18px;
+      font-weight: 700;
+      color: #0b1120;
+    }
+
+    .brand-text-main {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      font-size: 17px;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+    }
+
+    .nav-cta {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.9));
+      color: var(--text);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: default;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .layout {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 18px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
+      border-radius: 22px;
+      border: 1px solid rgba(15, 23, 42, 0.95);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.12), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .panel-badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .panel-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+    }
+
+    .search-shell {
+      margin-bottom: 12px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px 10px 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .search-input::placeholder {
+      color: #6b7280;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      padding: 6px 11px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      color: #e5e7eb;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-chip);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .chip span {
+      font-size: 13px;
+    }
+
+    .chip-label-muted {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, 0.7);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+    }
+
+    .chip-primary {
+      border-color: rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.98));
+    }
+
+    .chip-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin: 14px 0 6px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      border-radius: 16px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 10px 11px 11px;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform var(--transition-med), box-shadow var(--transition-med),
+        border-color var(--transition-med), background var(--transition-med);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.95);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+    }
+
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .card-body {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #38bdf8;
+      font-size: 11px;
+    }
+
+    .card-pill {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .video-shell {
+      margin-top: 10px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: #020617;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-shell iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .video-meta {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .video-title {
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    .video-badge {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .right-panel-section {
+      margin-bottom: 16px;
+    }
+
+    .right-panel-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .small-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .small-item {
+      padding: 7px 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background var(--transition-fast),
+        transform var(--transition-fast), box-shadow var(--transition-fast);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .small-item:hover {
+      border-color: rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+    }
+
+    .small-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .small-item-title {
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .small-item-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .small-item-pill {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid rgba(15, 23, 42, 0.95);
+      padding: 10px 18px 16px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #020617 100%);
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-  <!-- ===================================================== -->
-<!-- TOP NAVIGATION -->
-<!-- ===================================================== -->
-<div class="topbar">
-    <div class="brand-wrap"><div class="logo-mark" aria-hidden="true">✦</div><div><div class="brand-title">SignalBoost</div><div class="brand-sub">Smart discovery layer</div></div></div>
-    <div class="topbar-actions">
-      <div class="nav-chips">
-        <button class="chip" onclick="scrollToSection('heroSection')">Search</button>
-        <button class="chip" onclick="scrollToSection('providersSection')">Travel Booking Options</button>
-        <button class="chip" onclick="scrollToSection('businessSection')">Business Tools</button>
-        <button class="chip" onclick="scrollToSection('mediaSection')">Media</button>
+  <div class="app-shell">
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="brand-mark">S</div>
+          <div>
+            <div class="brand-text-main">SignalBoost Travel</div>
+            <div class="brand-text-sub">Video‑first discovery · Neutral · Global</div>
+          </div>
+        </div>
+        <div class="nav-right">
+          <div class="pill">
+            <div class="pill-dot"></div>
+            Live build · Luis
+          </div>
+          <div class="nav-cta">
+            <span>Front‑end only · Ready to deploy</span>
+          </div>
+        </div>
       </div>
-      <button class="toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark mode</button>
-    </div>
+    </header>
+
+    <main>
+      <div class="layout">
+        <!-- LEFT: Video + Search + Chips -->
+        <section class="panel">
+          <div class="panel-inner">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Travel video discovery</div>
+                <div class="panel-subtitle">Search any destination or topic · We route intent to the right partner</div>
+              </div>
+              <div class="panel-badge">
+                <div class="panel-badge-dot"></div>
+                AI‑assisted routing
+              </div>
+            </div>
+
+            <div class="search-shell">
+              <div class="search-input-wrap">
+                <span class="search-icon">🔍</span>
+                <input
+                  id="searchInput"
+                  class="search-input"
+                  type="text"
+                  placeholder="Try: Rome attractions, Germany trip, safari in Kenya, car rental in Miami, hotels in Paris..."
+                />
+              </div>
+              <div class="chips-row" id="chipsRow">
+                <!-- Core intent chips -->
+                <button class="chip chip-primary" data-intent="attractions">
+                  <div class="chip-pill-dot"></div>
+                  <span>Attractions</span>
+                </button>
+                <button class="chip" data-intent="cars">
+                  <span>Car rentals</span>
+                </button>
+                <button class="chip" data-intent="safaris">
+                  <span>Safaris</span>
+                </button>
+                <button class="chip" data-intent="hotels">
+                  <span>Hotels</span>
+                </button>
+                <button class="chip" data-intent="flights">
+                  <span>Flights</span>
+                </button>
+
+                <!-- Destination chips -->
+                <button class="chip" data-intent="italy">
+                  <span>Italy</span>
+                  <span class="chip-label-muted">Tiqets IT</span>
+                </button>
+                <button class="chip" data-intent="france">
+                  <span>France</span>
+                  <span class="chip-label-muted">Tiqets FR</span>
+                </button>
+                <button class="chip" data-intent="germany">
+                  <span>Germany</span>
+                  <span class="chip-label-muted">Tiqets DE</span>
+                </button>
+                <button class="chip" data-intent="uk">
+                  <span>United Kingdom</span>
+                  <span class="chip-label-muted">Tiqets UK</span>
+                </button>
+                <button class="chip" data-intent="us">
+                  <span>United States</span>
+                  <span class="chip-label-muted">Tiqets US</span>
+                </button>
+                <button class="chip" data-intent="safari">
+                  <span>Safari trips</span>
+                  <span class="chip-label-muted">Go2Africa</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="section-label">Now playing</div>
+            <div class="video-shell">
+              <iframe
+                id="videoFrame"
+                src="https://www.youtube.com/embed/2zKp7P0QF0w"
+                title="Travel inspiration"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="video-meta">
+              <div>
+                <div class="video-title" id="videoTitle">Global travel inspiration · Neutral, creator‑driven</div>
+                <div>SignalBoost surfaces content · You choose where to book</div>
+              </div>
+              <div class="video-badge">Discovery feed</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: Monetization + Routing -->
+        <section class="panel">
+          <div class="panel-inner">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Travel commerce engine</div>
+                <div class="panel-subtitle">We route intent to the right partner · You stay in control</div>
+              </div>
+              <div class="panel-badge">
+                <div class="panel-badge-dot"></div>
+                Affiliate‑ready
+              </div>
+            </div>
+
+            <!-- Core monetization cards -->
+            <div class="right-panel-section">
+              <div class="section-label">Core partners</div>
+              <div class="cards-grid">
+                <!-- Tiqets global -->
+                <article class="card" data-link-type="tiqets-global">
+                  <div class="card-header-row">
+                    <div class="card-title">Attractions worldwide · Tiqets</div>
+                    <div class="card-tag">Attractions</div>
+                  </div>
+                  <div class="card-body">
+                    Skip‑the‑line tickets, museums, landmarks, and experiences across the world. High‑volume, everyday conversions.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open Tiqets US →</div>
+                    <div class="card-pill">Global · Main link</div>
+                  </div>
+                </article>
+
+                <!-- VIP Cars -->
+                <article class="card" data-link-type="vipcars">
+                  <div class="card-header-row">
+                    <div class="card-title">Car rentals · VIP Cars</div>
+                    <div class="card-tag">Cars</div>
+                  </div>
+                  <div class="card-body">
+                    Global car rentals with strong coverage and mid‑ticket value. Perfect for trip add‑ons and airport pickups.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open VIP Cars →</div>
+                    <div class="card-pill">Global · Medium‑ticket</div>
+                  </div>
+                </article>
+
+                <!-- Go2Africa -->
+                <article class="card" data-link-type="go2africa">
+                  <div class="card-header-row">
+                    <div class="card-title">African safaris · Go2Africa</div>
+                    <div class="card-tag">Safaris</div>
+                  </div>
+                  <div class="card-body">
+                    Tailor‑made safaris and luxury Africa trips. Low‑volume, high‑ticket bookings with strong commission potential.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open Go2Africa →</div>
+                    <div class="card-pill">Premium · High‑ticket</div>
+                  </div>
+                </article>
+
+                <!-- Hotels -->
+                <article class="card" data-link-type="hotels">
+                  <div class="card-header-row">
+                    <div class="card-title">Hotels worldwide</div>
+                    <div class="card-tag">Hotels</div>
+                  </div>
+                  <div class="card-body">
+                    Route users to a trusted global hotel search (e.g., Booking.com). Simple, universal, and familiar.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open hotels search →</div>
+                    <div class="card-pill">Universal · Intent routing</div>
+                  </div>
+                </article>
+
+                <!-- Flights -->
+                <article class="card" data-link-type="flights">
+                  <div class="card-header-row">
+                    <div class="card-title">Flights · Global search</div>
+                    <div class="card-tag">Flights</div>
+                  </div>
+                  <div class="card-body">
+                    Use Google Flights or similar to route flight intent. High trust, no friction, works for any destination.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open flights search →</div>
+                    <div class="card-pill">Universal · Non‑affiliate</div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- Destination‑specific Tiqets -->
+            <div class="right-panel-section">
+              <div class="section-label">Destination‑specific attractions</div>
+              <div class="small-list">
+                <div class="small-item" data-link-type="tiqets-it">
+                  <div class="small-item-main">
+                    <div class="small-item-title">Italy · Tiqets IT</div>
+                    <div class="small-item-sub">Rome, Vatican, Florence, Venice, and more.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · IT</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-fr">
+                  <div class="small-item-main">
+                    <div class="small-item-title">France · Tiqets FR</div>
+                    <div class="small-item-sub">Paris, Louvre, Eiffel Tower, Versailles.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · FR</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-de">
+                  <div class="small-item-main">
+                    <div class="small-item-title">Germany · Tiqets DE</div>
+                    <div class="small-item-sub">Berlin, Munich, castles, museums.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · DE</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-uk">
+                  <div class="small-item-main">
+                    <div class="small-item-title">United Kingdom · Tiqets UK</div>
+                    <div class="small-item-sub">London attractions, museums, experiences.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · UK</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-us">
+                  <div class="small-item-main">
+                    <div class="small-item-title">United States · Tiqets US</div>
+                    <div class="small-item-sub">US‑focused attractions via your main link.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · US</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Intent log / explanation -->
+            <div class="right-panel-section">
+              <div class="section-label">Routing explanation</div>
+              <div class="small-list">
+                <div class="small-item">
+                  <div class="small-item-main">
+                    <div class="small-item-title">How this works</div>
+                    <div class="small-item-sub" id="routingExplanation">
+                      Type a query or click a chip. We infer intent (attractions, cars, safaris, hotels, flights, or destination)
+                      and open the most relevant partner in a new tab.
+                    </div>
+                  </div>
+                  <div class="small-item-pill">Transparent · Neutral</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        SignalBoost Travel · Video‑first discovery layer. You stay in control of where to book. Neutral, global, and
+        affiliate‑powered.
+      </div>
+    </footer>
   </div>
 
-  <!-- ===================================================== -->
-<!-- HERO + SEARCH -->
-<!-- ===================================================== -->
-<section class="hero" id="heroSection">
-    <h1>Find better options faster</h1>
-    <p class="hero-sub">Search travel, tech, or business tools. SignalBoost interprets the request, explains the path, and helps the user move with less friction.</p>
-    <div class="search-shell">
-      <div class="search-box">
-        <input id="query" type="text" placeholder="Try: hotel in miami, rent a car in costa rica, presentation software, website builder" onkeydown="handleSearchKey(event)">
-        <button class="btn primary" onclick="runSearch()">Search</button>
-        <button class="btn" onclick="clearSearchUI()">Clear</button>
-      </div>
-      <div class="search-help">Search for hotels, packages, car rentals, presentations, websites, marketing tools, or digital services and SignalBoost will guide you to the most useful next step.</div>
-      <div class="quick-chips">
-        <button class="chip" onclick="applyQuickQuery('hotel in miami')">Hotel in Miami</button>
-        <button class="chip" onclick="applyQuickQuery('cheap flight and hotel')">Flight + Hotel</button>
-        <button class="chip" onclick="applyQuickQuery('rent a car in costa rica')">Car Rental</button>
-        <button class="chip" onclick="applyQuickQuery('presentation software for business')">Presentation Tool</button>
-      </div>
-      <div class="results-panel" id="resultsPanel">
-        <div class="results-kicker">Recommended next step</div>
-        <div class="results-title" id="resultsTitle">Recommended path</div>
-        <div class="results-sub" id="resultsSub">We are preparing your results.</div>
-        <div class="clarify-box" id="clarifyBox"></div>
-        <div class="results-grid" id="resultsGrid"></div>
-      </div>
-    </div>
-  </section>
+  <script>
+    // --- Affiliate links (AWIN) ---
+    const LINKS = {
+      // Tiqets
+      tiqetsUS: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+      tiqetsUK: "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
+      tiqetsFR: "https://www.awin1.com/cread.php?awinmid=7437&awinaffid=2834806",
+      tiqetsIT: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
+      tiqetsDE: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
 
-  <section class="section" id="providersSection">
-    <div class="section-head"><h2>Travel Booking Options</h2><div class="section-note">Find the best way to plan your trip</div></div>
-    <div class="providers-grid">
-      <div class="card"><div class="badge">Hotels</div><div class="icon">🏨</div><div class="card-title">Find Hotels</div><div class="card-text">Useful for hotel searches, city stays, and standard accommodation planning.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn primary" onclick="handleProviderClick(PROVIDER_DEFS.expedia_hotels.buildUrl(''),'Expedia Hotels','travel','manual click')">See prices</button></div></div>
-      <div class="card"><div class="badge success">Packages</div><div class="icon">✈️</div><div class="card-title">Flight + Hotel Deals</div><div class="card-text">Useful for bundled flight + hotel browsing and package-style travel intent.</div><div class="result-callout">Safe default for broad package traffic.</div><div class="card-actions"><button class="mini-btn success" onclick="handleProviderClick(PROVIDER_DEFS.expedia_packages.buildUrl(''),'Expedia Packages','travel','manual click')">Explore deals</button></div></div>
-      <div class="card"><div class="badge warn">Deals</div><div class="icon">🔥</div><div class="card-title">Last-Minute Trips</div><div class="card-text">Useful for deals, short-notice trips, and package-style travel searches.</div><div class="result-callout">Shown mainly for deal-oriented package traffic.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.lastminute.buildUrl(''),'Lastminute','travel','manual click')">View deals</button></div></div>
-      <div class="card"><div class="badge warn">Deals</div><div class="icon">🛏️</div><div class="card-title">Hotel Deals</div><div class="card-text">Useful for hotel-focused browsing and deal-oriented stay searches.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.hotels_com.buildUrl(''),'Hotels.com','travel','manual click')">Check availability</button></div></div>
-      <div class="card"><div class="badge purple">Rentals</div><div class="icon">🏡</div><div class="card-title">Vacation Rentals</div><div class="card-text">Useful for rentals, family travel, larger stays, and vacation-home style lodging.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.vrbo.buildUrl(''),'Vrbo','travel','manual click')">Browse rentals</button></div></div>
-      <div class="card"><div class="badge success">Transport</div><div class="icon">🚗</div><div class="card-title">Car Rental</div><div class="card-text">Useful for car rental searches, airport pickups, flexible travel, and exploring by road.</div><div class="result-callout"></div><div class="card-actions"><button class="mini-btn dark" onclick="handleProviderClick(PROVIDER_DEFS.jumbo_car.buildUrl(''),'Jumbo Car','travel','manual click')">Find cars</button></div></div>
-    </div>
-  </section>
+      // VIP Cars
+      vipCars: "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
 
-  <!-- ===================================================== -->
-<!-- BUSINESS TOOLS -->
-<!-- Visible for users and future monetization approvals -->
-<!-- ===================================================== -->
-<section class="section" id="businessSection">
-    <div class="section-head"><h2>Business Tools</h2><div class="section-note">Tools to build, grow, and present your ideas</div></div>
-    <div class="business-grid">
-      <div class="card"><div class="badge purple">Presentations</div><div class="icon">🧠</div><div class="card-title">Create Presentations</div><div class="card-text">Create professional presentations, pitch decks, teaching slides, and business visuals.</div><div class="result-callout">Add your Prezi or Canva link here when approved.</div><div class="card-actions"><button class="mini-btn purple" onclick="handleProviderClick(PROVIDER_DEFS.presentation_tools.buildUrl(''),'Presentation Tools','business','manual click')">Get started</button></div></div>
-      <div class="card"><div class="badge">Websites</div><div class="icon">🌐</div><div class="card-title">Website Builders</div><div class="card-text">Launch a business site, portfolio, landing page, or small-company website faster.</div><div class="card-actions"><button class="mini-btn primary" onclick="handleProviderClick(PROVIDER_DEFS.website_builder.buildUrl(''),'Website Builder','business','manual click')">Start building</button></div></div>
-      <div class="card"><div class="badge warn">Growth</div><div class="icon">📣</div><div class="card-title">Grow Your Business</div><div class="card-text">Support email campaigns, outreach, customer acquisition, and business growth workflows.</div><div class="card-actions"><button class="mini-btn warn" onclick="handleProviderClick(PROVIDER_DEFS.marketing_tools.buildUrl(''),'Marketing Tools','business','manual click')">Explore tools</button></div></div>
-    </div>
-  </section>
+      // Go2Africa
+      go2Africa: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
 
-  <section class="section" id="departmentsSection">
-    <div class="section-head"><h2>Explore Categories</h2></div>
-    <div class="department-grid">
-      <div class="card"><div class="badge">Travel</div><div class="card-title">Hotels, packages, rentals, cars, and travel support</div><div class="card-text">Travel is the strongest active department and currently has the clearest fulfillment paths.</div></div>
-      <div class="card"><div class="badge">Tech</div><div class="card-title">Connectivity and digital essentials</div><div class="card-text">This department supports eSIM, gadgets, and practical tech recommendations.</div></div>
-      <div class="card"><div class="badge">Business</div><div class="card-title">Presentation tools, websites, and marketing</div><div class="card-text">This visible section helps position SignalBoost as a broader discovery platform, not just travel.</div></div>
-    </div>
-  </section>
+      // Non‑affiliate routing
+      hotels: "https://www.booking.com/",
+      flights: "https://www.google.com/travel/flights"
+    };
 
-  <!-- ===================================================== -->
-<!-- MEDIA / INSPIRATION -->
-<!-- Keeps homepage visually alive even when search is unused -->
-<!-- ===================================================== -->
-<section class="section" id="mediaSection">
-    <div class="section-head"><h2>Featured Travel Ideas</h2></div>
-    <div class="media-grid" id="youtubeFeed"></div>
-    <div id="mediaFallbackNote" class="search-help hidden">Live travel videos are unavailable right now, so SignalBoost is showing built-in fallback media instead.</div>
-  </section>
+    const searchInput = document.getElementById("searchInput");
+    const routingExplanation = document.getElementById("routingExplanation");
+    const videoFrame = document.getElementById("videoFrame");
+    const videoTitle = document.getElementById("videoTitle");
 
-  <!-- ===================================================== -->
-<!-- TRUST FOOTER -->
-<!-- Add supporting pages to improve professionalism/trust -->
-<!-- ===================================================== -->
-<div class="footer"><a href="/privacy.html">Privacy</a> • <a href="/terms.html">Terms</a> • <a href="/contact.html">Contact</a></div>
-</div>
+    function openLink(url) {
+      if (!url) return;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
 
-<div class="modal" id="videoModal" onclick="closeVideoModal(event)">
-  <div class="modal-panel" onclick="event.stopPropagation()">
-    <div class="modal-head"><div><div class="card-title" id="modalTitle">Video</div><div class="video-meta" id="modalMeta">YouTube</div></div><button class="modal-close" onclick="closeVideoModal()">&times;</button></div>
-    <div class="modal-body"><iframe id="modalPlayer" class="modal-player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
-  </div>
-</div>
+    function setRoutingExplanation(text) {
+      routingExplanation.textContent = text;
+    }
 
-<script>
-/*
-========================================================
-AFFILIATE / PARTNER LINKS
---------------------------------------------------------
-All revenue links are centralized here so you can swap them
-without touching UI logic.
-========================================================
-*/
-const AFFILIATE_LINKS = {
-  expedia_hotels: 'https://expedia.com/affiliate/6N7hRHZ',
-  expedia_packages: 'https://expedia.com/affiliate/6N7hRHZ',
-  hotels_com: 'https://www.hotels.com/affiliate/5BoP8Nf',
-  vrbo: 'https://vrbo.com/affiliate/M2nsa7i',
-  lastminute: 'https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806',
-  visa: 'https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806',
-  jumbo_car: 'https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806',
-  prezi_primary: '#',
-  website_builder_primary: '#',
-  marketing_tools_primary: '#'
-};
+    function routeIntentFromText(text) {
+      const q = (text || "").toLowerCase();
 
-/*
-========================================================
-PUBLIC OPTION DEFINITIONS
---------------------------------------------------------
-Each option contains:
-- title shown in results/cards
-- explanation for user trust
-- CTA copy for click-through
-- destination URL
-========================================================
-*/
-const PROVIDER_DEFS = {
-  expedia_hotels:{title:'Expedia Hotels',desc:'Strong overall option for hotel searches and standard stay planning.',callout:'Reliable default for most hotel-focused searches.',buttonClass:'primary',buildUrl:()=>AFFILIATE_LINKS.expedia_hotels,hook:'Strong all-around hotel option',cta:'See prices'},
-  expedia_packages:{title:'Expedia Packages',desc:'Useful for bundled flight + hotel exploration.',callout:'Good default package path for broad travel traffic.',buttonClass:'success',buildUrl:()=>AFFILIATE_LINKS.expedia_packages,hook:'Good for bundled travel plans',cta:'Explore deals'},
-  lastminute:{title:'Lastminute',desc:'Useful for deals, short-notice trips, and package-style travel.',callout:'Best used for bargain-oriented package traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.lastminute,hook:'Best for last-minute deals',cta:'View deals'},
-  hotels_com:{title:'Hotels.com',desc:'Useful for hotel deals and straightforward stay browsing.',callout:'Good backup for price-sensitive hotel traffic.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.hotels_com,hook:'Good for deal hunters',cta:'Check availability'},
-  vrbo:{title:'Vrbo',desc:'Worth considering for larger stays or rental-style lodging.',callout:'Best fit for family, group, and rental-style travel.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.vrbo,hook:'Best for rentals and families',cta:'Browse rentals'},
-  jumbo_car:{title:'Jumbo Car',desc:'Useful for renting a car at your destination, especially for flexible travel and exploring.',callout:'Strong option for destination mobility.',buttonClass:'dark',buildUrl:()=>AFFILIATE_LINKS.jumbo_car,hook:'Best for getting around your destination',cta:'Find cars'},
-  presentation_tools:{title:'Presentation Tools',desc:'Useful for pitch decks, class presentations, and business visuals.',callout:'Business-tool visibility helps with affiliate approvals.',buttonClass:'purple',buildUrl:()=>AFFILIATE_LINKS.prezi_primary,hook:'Useful for slides and decks',cta:'Get started'},
-  website_builder:{title:'Website Builder',desc:'Useful for getting a business online quickly.',callout:'Strong fit for small business and creator searches.',buttonClass:'primary',buildUrl:()=>AFFILIATE_LINKS.website_builder_primary,hook:'Useful for launching a site',cta:'Start building'},
-  marketing_tools:{title:'Marketing Tools',desc:'Useful for customer outreach and digital growth.',callout:'Good for business growth and email campaign searches.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.marketing_tools_primary,hook:'Useful for outreach and growth',cta:'Explore tools'},
-  visa:{title:'Evisa Express',desc:'Useful for checking visa-related travel requirements before the trip.',callout:'Helpful travel requirement step for some destinations.',buttonClass:'warn',buildUrl:()=>AFFILIATE_LINKS.visa,hook:'Helpful travel requirement check',cta:'Check requirements'}
-};
+      // Destination keywords
+      const isItaly =
+        q.includes("italy") || q.includes("rome") || q.includes("vatican") || q.includes("florence") || q.includes("venice");
+      const isFrance =
+        q.includes("france") || q.includes("paris") || q.includes("louvre") || q.includes("eiffel");
+      const isGermany =
+        q.includes("germany") || q.includes("berlin") || q.includes("munich") || q.includes("hamburg");
+      const isUK =
+        q.includes("uk") || q.includes("london") || q.includes("britain") || q.includes("england");
+      const isUS =
+        q.includes("usa") || q.includes("united states") || q.includes("new york") || q.includes("miami") || q.includes("orlando");
 
-const STORAGE_KEYS = {theme:'signalboost_theme',sessionId:'signalboost_session_id',searchHistory:'signalboost_search_history',clickHistory:'signalboost_click_history',lastDepartment:'signalboost_last_department',searchCount:'signalboost_search_count',clickCount:'signalboost_click_count'};
+      const wantsAttractions =
+        q.includes("attraction") ||
+        q.includes("ticket") ||
+        q.includes("museum") ||
+        q.includes("things to do") ||
+        q.includes("what to do") ||
+        q.includes("tour") ||
+        q.includes("skip the line");
 
-function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem(STORAGE_KEYS.theme,document.body.classList.contains('dark')?'dark':'light');updateThemeToggleLabel()}
-function initTheme(){if(localStorage.getItem(STORAGE_KEYS.theme)==='dark')document.body.classList.add('dark');updateThemeToggleLabel()}
-function updateThemeToggleLabel(){const btn=document.getElementById('themeToggleBtn');if(btn)btn.textContent=document.body.classList.contains('dark')?'☀️ Light mode':'🌙 Dark mode'}
-function getSessionId(){let s=localStorage.getItem(STORAGE_KEYS.sessionId);if(!s){s='sb_'+Math.random().toString(36).slice(2,12);localStorage.setItem(STORAGE_KEYS.sessionId,s)}return s}
-async function sendEvent(eventType,payload={}){try{await fetch('/api/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({eventType,sessionId:getSessionId(),timestamp:new Date().toISOString(),payload})})}catch(e){}}
-function readJsonStorage(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch{return fallback}}
-function writeJsonStorage(key,value){localStorage.setItem(key,JSON.stringify(value))}
-function incrementCounter(key){const current=Number(localStorage.getItem(key)||'0');const next=current+1;localStorage.setItem(key,String(next));return next}
-function addSearchToHistory(query){const history=readJsonStorage(STORAGE_KEYS.searchHistory,[]);const filtered=history.filter(i=>i.toLowerCase()!==query.toLowerCase());filtered.unshift(query);writeJsonStorage(STORAGE_KEYS.searchHistory,filtered.slice(0,6))}
-function getSearchHistory(){return readJsonStorage(STORAGE_KEYS.searchHistory,[])}
-function addClickToHistory(rec){const history=readJsonStorage(STORAGE_KEYS.clickHistory,[]);history.unshift(rec);writeJsonStorage(STORAGE_KEYS.clickHistory,history.slice(0,12))}
-function getClickHistory(){return readJsonStorage(STORAGE_KEYS.clickHistory,[])}
-function setLastDepartment(d){localStorage.setItem(STORAGE_KEYS.lastDepartment,d||'')}
-function getLastDepartment(){return localStorage.getItem(STORAGE_KEYS.lastDepartment)||''}
-function scrollToSection(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
-function applyQuickQuery(v){document.getElementById('query').value=v;runSearch()}
-function handleSearchKey(e){if(e.key==='Enter')runSearch()}
-function clearSearchUI(){document.getElementById('query').value='';document.getElementById('resultsPanel').classList.remove('active');document.getElementById('resultsTitle').textContent='Recommended path';document.getElementById('resultsSub').textContent='We are preparing your results.';document.getElementById('resultsGrid').innerHTML='';const c=document.getElementById('clarifyBox');c.classList.remove('active');c.textContent=''}
-/*
-========================================================
-SUPPORTING TRAVEL CHECKS
---------------------------------------------------------
-Used to decide when visa support should appear as an extra
-travel step.
-========================================================
-*/
-function shouldSuggestVisa(query){const q=query.toLowerCase();return q.includes('travel')||q.includes('trip')||q.includes('flight')||q.includes('visa')||q.includes('usa')||q.includes('india')||q.includes('australia')||q.includes('uk')||q.includes('canada')}
-/*
-========================================================
-BUSINESS INTENT DETECTION
---------------------------------------------------------
-Detects presentation / website / marketing searches.
-========================================================
-*/
-function isBusinessQuery(query){const q=query.toLowerCase();return q.includes('presentation')||q.includes('pitch deck')||q.includes('slides')||q.includes('prezi')||q.includes('website')||q.includes('builder')||q.includes('marketing')||q.includes('email campaign')||q.includes('business tool')}
-/*
-========================================================
-CAR RENTAL INTENT DETECTION
---------------------------------------------------------
-High-value travel intent. If detected, Jumbo Car can be
-ranked first.
-========================================================
-*/
-function isCarQuery(query){const q=query.toLowerCase();return q.includes('car rental')||q.includes('rent a car')||q.includes('rental car')||q.includes('car hire')||q.includes('drive')||q.includes('airport pickup')||q.includes('costa rica car')}
+      const wantsCars =
+        q.includes("car rental") ||
+        q.includes("rent a car") ||
+        q.includes("rental car") ||
+        q.includes("hire a car");
 
-/*
-========================================================
-MAIN SEARCH HANDLER
---------------------------------------------------------
-Takes the user query, sends it to /api/intent if available,
-and falls back to local logic if needed.
-========================================================
-*/
-async function runSearch(){
-  const query=document.getElementById('query').value.trim();
-  if(!query){alert('Please enter something to search.');return}
-  const rp=document.getElementById('resultsPanel'),rt=document.getElementById('resultsTitle'),rs=document.getElementById('resultsSub'),rg=document.getElementById('resultsGrid'),cb=document.getElementById('clarifyBox');
-  rp.classList.add('active');rt.textContent=`Best path for "${query}"`;rs.textContent='Analyzing your request and preparing recommendations...';rg.innerHTML='';cb.classList.remove('active');cb.textContent='';
-  addSearchToHistory(query);incrementCounter(STORAGE_KEYS.searchCount);
-  await sendEvent('search_submitted',{query,lastDepartment:getLastDepartment(),clickHistory:getClickHistory().slice(0,5)});
-  try{
-    const response=await fetch('/api/intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,sessionId:getSessionId(),lastDepartment:getLastDepartment(),lastClicks:getClickHistory().slice(0,5),searchHistory:getSearchHistory().slice(0,5)})});
-    if(!response.ok) throw new Error('Intent endpoint returned non-OK');
-    const data=await response.json();
-    renderIntentResults(query,data);
-  }catch{renderIntentResults(query,getLocalIntentFallback(query))}
-}
+      const wantsHotels =
+        q.includes("hotel") ||
+        q.includes("stay") ||
+        q.includes("accommodation") ||
+        q.includes("where to sleep");
 
-/*
-========================================================
-RESULT RENDERER
---------------------------------------------------------
-Turns intent output into public-facing cards with:
-- ranking
-- urgency copy
-- CTA text
-========================================================
-*/
-async function renderIntentResults(query,data){
-  const rt=document.getElementById('resultsTitle'),rs=document.getElementById('resultsSub'),rg=document.getElementById('resultsGrid'),cb=document.getElementById('clarifyBox');
-  const department=safeString(data.department,'general'),subdepartment=safeString(data.subdepartment,'general'),confidence=safeString(data.confidence,'medium'),reasoning=safeString(data.reasoning,'SignalBoost selected these options based on your request.'),providerOrder=Array.isArray(data.providerOrder)?data.providerOrder:[],needsClarification=Boolean(data.needsClarification),clarificationQuestion=safeString(data.clarificationQuestion,'');
-  setLastDepartment(department);
-  const cards=buildRankedCards({query,department,subdepartment,providerOrder});
-  if(shouldSuggestVisa(query)){cards.push({label:'Travel requirement',title:PROVIDER_DEFS.visa.title,desc:'Some destinations may require a visa. Checking now can prevent delays or denied boarding.',callout:'Easy to check before booking.',buttonClass:'warn',url:PROVIDER_DEFS.visa.buildUrl(query),hook:PROVIDER_DEFS.visa.hook,cta:PROVIDER_DEFS.visa.cta})}
-  rt.textContent=`Best path for "${query}"`;
-  rs.innerHTML=`<strong>Best match:</strong> ${capitalize(department)}${subdepartment&&subdepartment!=='general'?` → ${capitalize(subdepartment)}`:''}<br><strong>Confidence:</strong> ${capitalize(confidence)}<br><span style="color: var(--muted);">${escapeHtml(reasoning)}</span>`;
-  if(needsClarification&&clarificationQuestion){cb.classList.add('active');cb.textContent=clarificationQuestion}else{cb.classList.remove('active');cb.textContent=''}
-  rg.innerHTML=cards.map((card,index)=>`<div class="card"><div class="badge ${index===0?'success':index===cards.length-1&&card.title==='Evisa Express'?'warn':'purple'}">${escapeHtml(card.label)}</div><div class="card-title">${escapeHtml(card.title)}</div><div class="result-hook">${escapeHtml(card.hook||'Recommended option based on your search')}</div><div class="card-text">${escapeHtml(card.desc)}</div><div class="urgency">${escapeHtml(getUrgencyText(card.title, query, index))}</div><div class="result-callout">${escapeHtml(card.callout)}</div><div class="card-actions"><button class="mini-btn ${escapeHtml(card.buttonClass)}" onclick="handleProviderClick('${escapeJs(card.url)}','${escapeJs(card.title)}','${escapeJs(department)}','${escapeJs(query)}')">${escapeHtml(card.cta || 'View options')}</button></div></div>`).join('');
-  await sendEvent('results_rendered',{query,department,subdepartment,confidence,providerOrder,cardsShown:cards.map(c=>c.title),needsClarification})
-}
+      const wantsFlights =
+        q.includes("flight") ||
+        q.includes("fly to") ||
+        q.includes("plane ticket") ||
+        q.includes("airline");
 
-function buildRankedCards({query,department,subdepartment,providerOrder}){
-  let chosenOrder=providerOrder.filter(key=>PROVIDER_DEFS[key]);
-  if(!chosenOrder.length) chosenOrder=getFallbackProviderOrder(department,subdepartment,query);
-  const cards=chosenOrder.map((providerKey,index)=>{const def=PROVIDER_DEFS[providerKey];if(!def)return null;return{label:getCardLabel(providerKey,index),title:def.title,desc:def.desc,callout:def.callout,buttonClass:def.buttonClass,url:def.buildUrl(query),hook:def.hook,cta:def.cta}}).filter(Boolean);
-  return cards.length?cards:[{label:'Best match',title:PROVIDER_DEFS.expedia_hotels.title,desc:PROVIDER_DEFS.expedia_hotels.desc,callout:PROVIDER_DEFS.expedia_hotels.callout,buttonClass:PROVIDER_DEFS.expedia_hotels.buttonClass,url:PROVIDER_DEFS.expedia_hotels.buildUrl(query),hook:PROVIDER_DEFS.expedia_hotels.hook}]
-}
+      const wantsSafari =
+        q.includes("safari") ||
+        q.includes("masai mara") ||
+        q.includes("serengeti") ||
+        q.includes("kruger") ||
+        q.includes("africa trip");
 
-function getUrgencyText(title, query, index){
-  const q = query.toLowerCase();
-  if(title === 'Lastminute') return '⚡ Deal prices may change quickly';
-  if(title === 'Jumbo Car') return '⚡ Cars can sell out fast in busy periods';
-  if(title === 'Hotels.com' && (q.includes('cheap') || q.includes('deal') || q.includes('budget'))) return '🔥 Popular for budget-minded stays';
-  if(title === 'Vrbo') return '🔥 Larger places often book early';
-  if(index === 0) return '💡 Often a strong fit for this search';
-  return '⚡ Availability can change quickly';
-}
+      // Safari first (high‑intent)
+      if (wantsSafari) {
+        openLink(LINKS.go2Africa);
+        setRoutingExplanation("We detected safari / Africa trip intent and routed to Go2Africa for premium tailor‑made safaris.");
+        videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
+        videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
+        return;
+      }
 
-function getCardLabel(providerKey,index){
-  if(index===0) return 'Best match';
-  if(providerKey==='lastminute') return 'Best for deals';
-  if(providerKey==='vrbo') return 'Best for rentals';
-  if(providerKey==='expedia_packages') return 'Package option';
-  if(providerKey==='hotels_com') return 'Deal backup';
-  if(providerKey==='jumbo_car') return 'Transport option';
-  if(providerKey==='presentation_tools') return 'Presentation option';
-  if(providerKey==='website_builder') return 'Website option';
-  if(providerKey==='marketing_tools') return 'Growth option';
-  return 'Also worth considering';
-}
+      // Cars
+      if (wantsCars) {
+        openLink(LINKS.vipCars);
+        setRoutingExplanation("We detected car rental intent and routed to VIP Cars for global rentals.");
+        return;
+      }
 
-/*
-========================================================
-FALLBACK RANKING ENGINE
---------------------------------------------------------
-When backend intent is unavailable, this decides ranking.
-This is one of the main revenue levers in the site.
-========================================================
-*/
-function getFallbackProviderOrder(department,subdepartment,query){
-  const q=query.toLowerCase();
-  if(isBusinessQuery(query)){
-    if(q.includes('presentation')||q.includes('pitch deck')||q.includes('slides')||q.includes('prezi')) return ['presentation_tools','website_builder','marketing_tools'];
-    if(q.includes('website')||q.includes('builder')||q.includes('domain')) return ['website_builder','marketing_tools','presentation_tools'];
-    return ['marketing_tools','website_builder','presentation_tools'];
-  }
-  if(isCarQuery(query)) return ['jumbo_car','expedia_hotels','hotels_com'];
-  if(department==='travel'&&(subdepartment==='packages'||q.includes('cheap')||q.includes('deal')||q.includes('last minute')||q.includes('city break'))) return ['lastminute','expedia_packages','hotels_com','expedia_hotels'];
-  if(department==='travel'&&subdepartment==='rentals') return ['vrbo','jumbo_car','expedia_hotels','hotels_com'];
-  if(department==='travel') return ['expedia_hotels','hotels_com','expedia_packages','vrbo'];
-  return ['expedia_hotels'];
-}
+      // Hotels
+      if (wantsHotels) {
+        openLink(LINKS.hotels);
+        setRoutingExplanation("We detected hotel intent and routed to a global hotel search (e.g., Booking.com).");
+        return;
+      }
 
-/*
-========================================================
-LOCAL INTENT CLASSIFIER
---------------------------------------------------------
-Safety net when backend intent API is unavailable.
-Keeps site functional instead of going blank.
-========================================================
-*/
-function getLocalIntentFallback(query){
-  const q=query.toLowerCase();
-  if(isBusinessQuery(query)){
-    if(q.includes('presentation')||q.includes('pitch deck')||q.includes('slides')||q.includes('prezi')) return {department:'business',subdepartment:'tools',confidence:'high',reasoning:'This looks like a presentation or business-tool search.',providerOrder:['presentation_tools','website_builder','marketing_tools'],needsClarification:false,clarificationQuestion:''};
-    if(q.includes('website')||q.includes('builder')||q.includes('domain')) return {department:'business',subdepartment:'tools',confidence:'high',reasoning:'This looks like a website setup request.',providerOrder:['website_builder','marketing_tools','presentation_tools'],needsClarification:false,clarificationQuestion:''};
-    return {department:'business',subdepartment:'marketing',confidence:'medium',reasoning:'This looks like a business growth tool request.',providerOrder:['marketing_tools','website_builder','presentation_tools'],needsClarification:false,clarificationQuestion:''};
-  }
-  if(isCarQuery(query)) return {department:'travel',subdepartment:'transport',confidence:'high',reasoning:'This looks like a car rental request.',providerOrder:['jumbo_car','expedia_hotels','hotels_com'],needsClarification:false,clarificationQuestion:''};
-  if(q.includes('flight')||q.includes('package')||q.includes('hotel')||q.includes('stay')||q.includes('trip')||q.includes('travel')||q.includes('vacation')||q.includes('rental')||q.includes('villa')||q.includes('resort')||q.includes('last minute')||q.includes('city break')){
-    if(q.includes('flight')||q.includes('package')||q.includes('last minute')||q.includes('city break')||q.includes('deal')) return {department:'travel',subdepartment:'packages',confidence:'high',reasoning:'This looks like a package or deal-focused trip request, so bundle-oriented options are prioritized.',providerOrder:['lastminute','expedia_packages','hotels_com','expedia_hotels'],needsClarification:false,clarificationQuestion:''};
-    if(q.includes('rental')||q.includes('villa')||q.includes('family')||q.includes('home')) return {department:'travel',subdepartment:'rentals',confidence:'high',reasoning:'This looks like a rental-focused trip, so larger-stay options are shown first.',providerOrder:['vrbo','jumbo_car','expedia_hotels','hotels_com'],needsClarification:false,clarificationQuestion:''};
-    return {department:'travel',subdepartment:'hotels',confidence:'high',reasoning:'This looks like a hotel or stay search, so hotel-focused paths are shown first.',providerOrder:['expedia_hotels','hotels_com','expedia_packages','vrbo'],needsClarification:false,clarificationQuestion:''};
-  }
-  return {department:'general',subdepartment:'general',confidence:'low',reasoning:'The request is broad, so SignalBoost needs one more detail.',providerOrder:['expedia_hotels'],needsClarification:true,clarificationQuestion:'Are you looking for travel or business tools?'};
-}
+      // Flights
+      if (wantsFlights) {
+        openLink(LINKS.flights);
+        setRoutingExplanation("We detected flight intent and routed to a global flights search (e.g., Google Flights).");
+        return;
+      }
 
-/*
-========================================================
-CLICK HANDLER
---------------------------------------------------------
-This is the money moment:
-- save click history
-- send event
-- redirect user
-========================================================
-*/
-async function handleProviderClick(url,title,department,query){
-  const clickRecord={title,url,department,query,timestamp:new Date().toISOString()};
-  addClickToHistory(clickRecord);incrementCounter(STORAGE_KEYS.clickCount);await sendEvent('provider_clicked',clickRecord);window.location.href=url;
-}
+      // Attractions + destination
+      if (wantsAttractions || isItaly || isFrance || isGermany || isUK || isUS) {
+        if (isItaly) {
+          openLink(LINKS.tiqetsIT);
+          setRoutingExplanation("We detected Italy / Rome intent and routed to your Tiqets Italy link.");
+          videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
+          videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
+          return;
+        }
+        if (isFrance) {
+          openLink(LINKS.tiqetsFR);
+          setRoutingExplanation("We detected France / Paris intent and routed to your Tiqets France link.");
+          videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
+          videoTitle.textContent = "France · Paris and beyond";
+          return;
+        }
+        if (isGermany) {
+          openLink(LINKS.tiqetsDE);
+          setRoutingExplanation("We detected Germany intent and routed to your Tiqets Germany link.");
+          videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
+          videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
+          return;
+        }
+        if (isUK) {
+          openLink(LINKS.tiqetsUK);
+          setRoutingExplanation("We detected UK / London intent and routed to your Tiqets UK link.");
+          videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
+          videoTitle.textContent = "United Kingdom · London and beyond";
+          return;
+        }
+        if (isUS) {
+          openLink(LINKS.tiqetsUS);
+          setRoutingExplanation("We detected US intent and routed to your main Tiqets US link.");
+          videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
+          videoTitle.textContent = "United States · Cities, parks, and attractions";
+          return;
+        }
 
-function formatCompactNumber(value){if(value>=1e9)return (value/1e9).toFixed(1).replace(/\.0$/,'')+'B';if(value>=1e6)return (value/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(value>=1e3)return (value/1e3).toFixed(1).replace(/\.0$/,'')+'K';return String(value||0)}
-function hoursAgoFromPublishedAt(publishedAt){if(!publishedAt)return 'recent';const then=new Date(publishedAt).getTime();const hours=Math.max(1,Math.round((Date.now()-then)/3600000));return `${hours}h ago`}
-function buildVideoObject(item){const id=item.id||item.videoId||'';const thumbnail=item.thumbnail||(id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:'');const watchUrl=item.watchUrl||(id?`https://www.youtube.com/watch?v=${id}`:'#');const embedPlayerUrl=item.embedPlayerUrl||(id?`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`:'');return{id,title:item.title||'YouTube video',channel:item.channel||'YouTube',views:item.views?(typeof item.views==='string'?item.views:`${formatCompactNumber(Number(item.views||0))} views`):'',time:item.time||hoursAgoFromPublishedAt(item.publishedAt||new Date().toISOString()),thumbnail,watchUrl,embedPlayerUrl,embeddable:item.embeddable!==false}}
-function renderVideoCards(containerId,videos,emptyMessage){const container=document.getElementById(containerId);if(!container)return;if(!videos.length){container.innerHTML=`<div class="card"><div class="card-title">${emptyMessage}</div><div class="card-text">Please try again shortly.</div></div>`;return}container.innerHTML=videos.map(video=>{const data=encodeURIComponent(JSON.stringify(video));return `<div class="card" onclick="openVideoFromDataset(this)" data-video="${data}"><div class="video-thumb-wrap"><img class="video-thumb" src="${escapeHtml(video.thumbnail||'')}" alt="${escapeHtml(video.title||'YouTube video')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/640x360/e2e8f0/64748b?text=Video';"><div class="play-overlay"><div class="play-pill"><div class="play-triangle"></div></div></div></div><div class="video-title">${escapeHtml(video.title||'YouTube video')}</div><div class="video-meta">${escapeHtml(video.channel||'YouTube')}${video.views?` • ${escapeHtml(video.views)}`:''}${video.time?` • ${escapeHtml(video.time)}`:''}</div></div>`}).join('')}
-function renderFallbackMedia(){const container=document.getElementById('youtubeFeed');const note=document.getElementById('mediaFallbackNote');if(!container)return;note.classList.remove('hidden');const cards=[{title:'Beach getaway inspiration',text:'Sunny stays, fast booking paths, and strong travel intent.'},{title:'Family vacation ideas',text:'Useful for larger stays, vacation rentals, and flexible lodging.'},{title:'City trips and short stays',text:'Designed for quick hotel selection and fast travel planning.'}];container.innerHTML=cards.map(card=>`<div class="card"><div class="badge">Travel</div><div class="card-title">${escapeHtml(card.title)}</div><div class="card-text">${escapeHtml(card.text)}</div><div class="card-actions"><button class="mini-btn primary" onclick="scrollToSection('providersSection')">Explore providers</button></div></div>`).join('')}
-async function fetchJson(url){const response=await fetch(url);const text=await response.text();let data;try{data=JSON.parse(text)}catch{data=null}if(!response.ok){const message=(data&&data.error&&data.error.message)||(data&&data.message)||`Request failed with HTTP ${response.status}`;throw new Error(message)}if(data&&data.error)throw new Error(data.error.message||'API returned an error object');return data}
-async function initMedia(){try{const data=await fetchJson('/api/youtube/trending?region=US');const items=Array.isArray(data.items)?data.items:[];const videos=items.slice(0,6).map(buildVideoObject).filter(v=>v&&v.watchUrl);if(!videos.length){renderFallbackMedia();return}document.getElementById('mediaFallbackNote').classList.add('hidden');renderVideoCards('youtubeFeed',videos,'Popular videos unavailable')}catch{renderFallbackMedia()}}
-function openVideoModal(video){const modal=document.getElementById('videoModal');const player=document.getElementById('modalPlayer');const title=document.getElementById('modalTitle');const meta=document.getElementById('modalMeta');title.textContent=video.title||'Video';meta.textContent=`${video.channel||'YouTube'}${video.time?` • ${video.time}`:''}`;if(video.embeddable!==false&&video.embedPlayerUrl){player.src=video.embedPlayerUrl;player.style.display='block'}else{player.removeAttribute('src');player.style.display='none'}modal.classList.add('active')}
-function closeVideoModal(event){if(event&&event.target&&event.target.id!=='videoModal')return;const modal=document.getElementById('videoModal');const player=document.getElementById('modalPlayer');player.removeAttribute('src');modal.classList.remove('active')}
-function openVideoFromDataset(el){try{const raw=el.getAttribute('data-video')||'';const video=JSON.parse(decodeURIComponent(raw));openVideoModal(video)}catch(error){}}
-function safeString(value,fallback=''){if(typeof value==='string')return value;if(value===null||value===undefined)return fallback;return String(value)}
-function escapeHtml(value){return String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
-function escapeJs(value){return String(value ?? '').replaceAll('\\', '\\\\').replaceAll("'", "\\'").replaceAll('"', '\\"')}
-function capitalize(value){const str=String(value||'');return str?str.charAt(0).toUpperCase()+str.slice(1):''}
-function initApp(){initTheme();getSessionId();initMedia()}
-initApp();
-</script>
+        // Generic attractions fallback
+        openLink(LINKS.tiqetsUS);
+        setRoutingExplanation("We detected attractions intent and routed to your main Tiqets US link (global coverage).");
+        return;
+      }
+
+      // If nothing matched, keep it neutral
+      setRoutingExplanation(
+        "We did not detect a clear booking intent. Try mentioning attractions, car rentals, safaris, hotels, flights, or a destination."
+      );
+    }
+
+    // Handle Enter in search
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        routeIntentFromText(searchInput.value);
+      }
+    });
+
+    // Chip clicks
+    document.getElementById("chipsRow").addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+      const intent = chip.getAttribute("data-intent");
+      if (!intent) return;
+
+      switch (intent) {
+        case "attractions":
+          openLink(LINKS.tiqetsUS);
+          setRoutingExplanation("Attractions chip clicked · Routed to your main Tiqets US link (global coverage).");
+          break;
+        case "cars":
+          openLink(LINKS.vipCars);
+          setRoutingExplanation("Car rentals chip clicked · Routed to VIP Cars for global rentals.");
+          break;
+        case "safaris":
+        case "safari":
+          openLink(LINKS.go2Africa);
+          setRoutingExplanation("Safari chip clicked · Routed to Go2Africa for premium safaris.");
+          videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
+          videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
+          break;
+        case "hotels":
+          openLink(LINKS.hotels);
+          setRoutingExplanation("Hotels chip clicked · Routed to a global hotel search (e.g., Booking.com).");
+          break;
+        case "flights":
+          openLink(LINKS.flights);
+          setRoutingExplanation("Flights chip clicked · Routed to a global flights search (e.g., Google Flights).");
+          break;
+        case "italy":
+          openLink(LINKS.tiqetsIT);
+          setRoutingExplanation("Italy chip clicked · Routed to your Tiqets Italy link.");
+          videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
+          videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
+          break;
+        case "france":
+          openLink(LINKS.tiqetsFR);
+          setRoutingExplanation("France chip clicked · Routed to your Tiqets France link.");
+          videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
+          videoTitle.textContent = "France · Paris and beyond";
+          break;
+        case "germany":
+          openLink(LINKS.tiqetsDE);
+          setRoutingExplanation("Germany chip clicked · Routed to your Tiqets Germany link.");
+          videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
+          videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
+          break;
+        case "uk":
+          openLink(LINKS.tiqetsUK);
+          setRoutingExplanation("United Kingdom chip clicked · Routed to your Tiqets UK link.");
+          videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
+          videoTitle.textContent = "United Kingdom · London and beyond";
+          break;
+        case "us":
+          openLink(LINKS.tiqetsUS);
+          setRoutingExplanation("United States chip clicked · Routed to your main Tiqets US link.");
+          videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
+          videoTitle.textContent = "United States · Cities, parks, and attractions";
+          break;
+      }
+    });
+
+    // Card clicks
+    document.querySelectorAll(".card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const type = card.getAttribute("data-link-type");
+        switch (type) {
+          case "tiqets-global":
+            openLink(LINKS.tiqetsUS);
+            setRoutingExplanation("Core card · Tiqets global clicked · Routed to your main Tiqets US link.");
+            break;
+          case "vipcars":
+            openLink(LINKS.vipCars);
+            setRoutingExplanation("Core card · VIP Cars clicked · Routed to global car rentals.");
+            break;
+          case "go2africa":
+            openLink(LINKS.go2Africa);
+            setRoutingExplanation("Core card · Go2Africa clicked · Routed to premium safaris.");
+            videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
+            videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
+            break;
+          case "hotels":
+            openLink(LINKS.hotels);
+            setRoutingExplanation("Core card · Hotels clicked · Routed to a global hotel search (e.g., Booking.com).");
+            break;
+          case "flights":
+            openLink(LINKS.flights);
+            setRoutingExplanation("Core card · Flights clicked · Routed to a global flights search (e.g., Google Flights).");
+            break;
+        }
+      });
+    });
+
+    // Small destination items
+    document.querySelectorAll(".small-item[data-link-type]").forEach((item) => {
+      item.addEventListener("click", () => {
+        const type = item.getAttribute("data-link-type");
+        switch (type) {
+          case "tiqets-it":
+            openLink(LINKS.tiqetsIT);
+            setRoutingExplanation("Destination card · Italy clicked · Routed to your Tiqets Italy link.");
+            videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
+            videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
+            break;
+          case "tiqets-fr":
+            openLink(LINKS.tiqetsFR);
+            setRoutingExplanation("Destination card · France clicked · Routed to your Tiqets France link.");
+            videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
+            videoTitle.textContent = "France · Paris and beyond";
+            break;
+          case "tiqets-de":
+            openLink(LINKS.tiqetsDE);
+            setRoutingExplanation("Destination card · Germany clicked · Routed to your Tiqets Germany link.");
+            videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
+            videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
+            break;
+          case "tiqets-uk":
+            openLink(LINKS.tiqetsUK);
+            setRoutingExplanation("Destination card · United Kingdom clicked · Routed to your Tiqets UK link.");
+            videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
+            videoTitle.textContent = "United Kingdom · London and beyond";
+            break;
+          case "tiqets-us":
+            openLink(LINKS.tiqetsUS);
+            setRoutingExplanation("Destination card · United States clicked · Routed to your main Tiqets US link.");
+            videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
+            videoTitle.textContent = "United States · Cities, parks, and attractions";
+            break;
+        }
+      });
+    });
+  </script>
 </body>
 </html>
