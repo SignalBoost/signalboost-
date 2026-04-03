@@ -1,38 +1,89 @@
-/* styles.css */
+/* Global */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background: #f9f9f9;
+  color: #333;
 }
+
+/* Header */
 header {
   background: #0a3d62;
   color: white;
   padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
 nav ul {
   list-style: none;
   display: flex;
   gap: 1rem;
+  margin: 0;
+  padding: 0;
 }
-.card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem;
-}
-.card-base {
-  background: #f1f1f1;
-  padding: 1rem;
-  text-align: center;
-  flex: 1 1 150px;
+
+nav a {
+  color: white;
   text-decoration: none;
-  color: #333;
-  border-radius: 8px;
+  font-weight: 500;
 }
-.round .card-base { border-radius: 50%; }
-.square .card-base { border-radius: 4px; }
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Titles */
 .gradient-title {
   background: linear-gradient(90deg, #0a3d62, #3c6382);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Sections */
+section {
+  padding: 2rem;
+}
+
+/* Card Grid */
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.card-base {
+  background: white;
+  padding: 1.5rem;
+  text-align: center;
+  flex: 1 1 150px;
+  text-decoration: none;
+  color: #0a3d62;
+  font-weight: bold;
+  border: 2px solid #0a3d62;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-base:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Round vs Square */
+.round .card-base {
+  border-radius: 50%;
+}
+
+.square .card-base {
+  border-radius: 8px;
+}
+
+/* Footer */
+footer {
+  background: #0a3d62;
+  color: white;
+  text-align: center;
+  padding: 1rem;
 }
