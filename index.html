@@ -14,7 +14,6 @@
       --text: #e5e7eb;
       --muted: #9ca3af;
       --border: #1f2937;
-      --danger: #f97373;
       --radius-lg: 14px;
       --radius-md: 999px;
       --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
@@ -25,13 +24,8 @@
         "Segoe UI", sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -170,9 +164,7 @@
       transform: translateY(-1px);
     }
 
-    main {
-      flex: 1;
-    }
+    main { flex: 1; }
 
     .layout {
       max-width: 1120px;
@@ -532,7 +524,6 @@
       color: var(--muted);
     }
 
-    /* Merged services hub */
     .services-shell {
       max-width: 1120px;
       margin: 0 auto 38px;
@@ -614,7 +605,8 @@
 
     .service-card,
     .service-pill,
-    .service-wide {
+    .service-wide,
+    .service-static {
       border: 2px solid rgba(56, 189, 248, 0.55);
       color: var(--text);
       background: rgba(11, 16, 32, 0.8);
@@ -633,7 +625,13 @@
       box-shadow: 0 18px 42px rgba(15, 23, 42, 0.7);
     }
 
-    .service-pill {
+    .service-static {
+      opacity: 0.9;
+      cursor: default;
+    }
+
+    .service-pill,
+    .service-static {
       min-height: 110px;
       border-radius: 999px;
       display: flex;
@@ -670,15 +668,11 @@
     }
 
     @media (max-width: 900px) {
-      .service-heading {
-        font-size: 22px;
-      }
-
+      .service-heading { font-size: 22px; }
       .service-pill,
       .service-card,
-      .service-wide {
-        font-size: 18px;
-      }
+      .service-wide,
+      .service-static { font-size: 18px; }
     }
 
     footer {
@@ -749,7 +743,7 @@
                   id="searchInput"
                   class="search-input"
                   type="text"
-                  placeholder="Try: Rome attractions, Germany trip, safari in Kenya, car rental in Miami, hotels in Paris..."
+                  placeholder="Try: Rome attractions, Germany trip, safari in Kenya, car rental in Miami, visa for Spain, eSIM for Europe..."
                 />
               </div>
               <div class="chips-row" id="chipsRow">
@@ -763,8 +757,11 @@
                 <button class="chip" data-intent="safaris">
                   <span>Safaris</span>
                 </button>
-                <button class="chip" data-intent="hotels">
-                  <span>Hotels</span>
+                <button class="chip" data-intent="esim">
+                  <span>eSIM</span>
+                </button>
+                <button class="chip" data-intent="visa">
+                  <span>eVisa</span>
                 </button>
                 <button class="chip" data-intent="flights">
                   <span>Flights</span>
@@ -833,31 +830,31 @@
             <div class="right-panel-section">
               <div class="section-label">Core partners</div>
               <div class="cards-grid">
-                <article class="card" data-link-type="tiqets-global">
+                <article class="card" data-link-type="klook">
                   <div class="card-header-row">
-                    <div class="card-title">Attractions worldwide · Tiqets</div>
+                    <div class="card-title">Attractions worldwide · Klook</div>
                     <div class="card-tag">Attractions</div>
                   </div>
                   <div class="card-body">
-                    Skip-the-line tickets, museums, landmarks, and experiences across the world. High-volume, everyday conversions.
+                    Generic attractions, tours, and experience routing using your Klook link.
                   </div>
                   <div class="card-footer">
-                    <div class="card-cta">Open Tiqets US →</div>
+                    <div class="card-cta">Open Klook →</div>
                     <div class="card-pill">Global · Main link</div>
                   </div>
                 </article>
 
-                <article class="card" data-link-type="vipcars">
+                <article class="card" data-link-type="allycar">
                   <div class="card-header-row">
-                    <div class="card-title">Car rentals · VIP Cars</div>
+                    <div class="card-title">Car rentals · Allycar</div>
                     <div class="card-tag">Cars</div>
                   </div>
                   <div class="card-body">
-                    Global car rentals with strong coverage and mid-ticket value. Perfect for trip add-ons and airport pickups.
+                    Affiliate car rental option for broad trip-planning and transport intent.
                   </div>
                   <div class="card-footer">
-                    <div class="card-cta">Open VIP Cars →</div>
-                    <div class="card-pill">Global · Medium-ticket</div>
+                    <div class="card-cta">Open Allycar →</div>
+                    <div class="card-pill">Cars · Affiliate</div>
                   </div>
                 </article>
 
@@ -867,7 +864,7 @@
                     <div class="card-tag">Safaris</div>
                   </div>
                   <div class="card-body">
-                    Tailor-made safaris and luxury Africa trips. Low-volume, high-ticket bookings with strong commission potential.
+                    Tailor-made safaris and luxury Africa trips with strong commission potential.
                   </div>
                   <div class="card-footer">
                     <div class="card-cta">Open Go2Africa →</div>
@@ -875,31 +872,31 @@
                   </div>
                 </article>
 
-                <article class="card" data-link-type="hotels">
+                <article class="card" data-link-type="kiwi">
                   <div class="card-header-row">
-                    <div class="card-title">Hotels worldwide</div>
-                    <div class="card-tag">Hotels</div>
-                  </div>
-                  <div class="card-body">
-                    Route users to a trusted global hotel search. Simple, universal, and familiar.
-                  </div>
-                  <div class="card-footer">
-                    <div class="card-cta">Open hotels search →</div>
-                    <div class="card-pill">Universal · Intent routing</div>
-                  </div>
-                </article>
-
-                <article class="card" data-link-type="flights">
-                  <div class="card-header-row">
-                    <div class="card-title">Flights · Global search</div>
+                    <div class="card-title">Flights · Kiwi</div>
                     <div class="card-tag">Flights</div>
                   </div>
                   <div class="card-body">
-                    Use Google Flights or similar to route flight intent. High trust, no friction, works for any destination.
+                    Flights now route to your Kiwi affiliate link instead of a placeholder.
                   </div>
                   <div class="card-footer">
-                    <div class="card-cta">Open flights search →</div>
-                    <div class="card-pill">Universal · Non-affiliate</div>
+                    <div class="card-cta">Open Kiwi →</div>
+                    <div class="card-pill">Flights · Affiliate</div>
+                  </div>
+                </article>
+
+                <article class="card" data-link-type="evisa">
+                  <div class="card-header-row">
+                    <div class="card-title">eVisa</div>
+                    <div class="card-tag">Travel docs</div>
+                  </div>
+                  <div class="card-body">
+                    Route visa-related search intent to your eVisa affiliate option.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open eVisa →</div>
+                    <div class="card-pill">Travel docs</div>
                   </div>
                 </article>
               </div>
@@ -979,30 +976,42 @@
             <div class="services-section" id="utilities">
               <h3 class="service-heading">Core Utilities</h3>
               <div class="service-grid-round">
-                <a class="service-pill" href="https://www.booking.com/" target="_blank" rel="noopener noreferrer">Hotels</a>
-                <div class="service-pill">Card Services</div>
-                <div class="service-pill">AirHelp</div>
-                <div class="service-pill">BitJoy eSIM</div>
+                <div class="service-static">Hotels</div>
+                <div class="service-static">Card Services</div>
+                <a class="service-pill" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">AirHelp</a>
+                <a class="service-pill" href="https://yesim.tpo.lv/olNUcwvB" target="_blank" rel="noopener noreferrer">Yesim eSIM</a>
               </div>
             </div>
 
             <div class="services-section" id="lifestyle">
               <h3 class="service-heading">Lifestyle &amp; Productivity</h3>
               <div class="service-grid-square">
-                <div class="service-card">King Koil</div>
-                <div class="service-card">Calm / Headspace</div>
-                <div class="service-card">Fitness</div>
-                <div class="service-card">Nutrition</div>
-                <div class="service-card">PearlMountain</div>
-                <div class="service-card">Go! Go! España</div>
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">King Koil</a>
+                <a class="service-card" href="https://nordvpn.tpo.lv/q1aN4Xru" target="_blank" rel="noopener noreferrer">NordVPN</a>
+                <div class="service-static service-card">Fitness</div>
+                <div class="service-static service-card">Nutrition</div>
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">PearlMountain</a>
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go! Go! España</a>
               </div>
             </div>
 
             <div class="services-section" id="seasonal">
               <h3 class="service-heading">Luxury Escapes</h3>
               <div class="service-grid-wide">
-                <div class="service-wide">Desire Experience</div>
-                <div class="service-wide">Temptation Experience</div>
+                <a class="service-wide" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Desire Experience</a>
+                <a class="service-wide" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Temptation Experience</a>
+              </div>
+            </div>
+
+            <div class="services-section">
+              <h3 class="service-heading">Additional Travel Partners</h3>
+              <div class="service-grid-square">
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Allycar</a>
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Carmel Car &amp; Limousine</a>
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">eVisa</a>
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go2Africa (US)</a>
+                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Jumbo Car Costa Rica</a>
+                <a class="service-card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">Klook</a>
               </div>
             </div>
           </div>
@@ -1019,15 +1028,22 @@
 
   <script>
     const LINKS = {
+      klook: "https://klook.tpo.lv/fTRPLj2l",
+      yesim: "https://yesim.tpo.lv/olNUcwvB",
+      kiwi: "https://kiwi.tpo.lv/qKPZ1inz",
+      airhelp: "https://airhelp.tpo.lv/grL9Ojju",
+      nordvpn: "https://nordvpn.tpo.lv/q1aN4Xru",
+
       tiqetsUS: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
       tiqetsUK: "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
-      tiqetsFR: "https://www.awin1.com/cread.php?awinmid=7437&awinaffid=2834806",
+      tiqetsFR: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
       tiqetsIT: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
       tiqetsDE: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-      vipCars: "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
-      go2Africa: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
-      hotels: "https://www.booking.com/",
-      flights: "https://www.google.com/travel/flights"
+
+      allycar: "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806",
+      carmel: "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806",
+      go2Africa: "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
+      evisa: "https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806"
     };
 
     const searchInput = document.getElementById("searchInput");
@@ -1071,19 +1087,19 @@
         q.includes("car rental") ||
         q.includes("rent a car") ||
         q.includes("rental car") ||
-        q.includes("hire a car");
+        q.includes("hire a car") ||
+        q.includes("chauffeur") ||
+        q.includes("limousine");
 
-      const wantsHotels =
-        q.includes("hotel") ||
-        q.includes("stay") ||
-        q.includes("accommodation") ||
-        q.includes("where to sleep");
+      const wantsVisa =
+        q.includes("visa") ||
+        q.includes("evisa") ||
+        q.includes("travel visa");
 
-      const wantsFlights =
-        q.includes("flight") ||
-        q.includes("fly to") ||
-        q.includes("plane ticket") ||
-        q.includes("airline");
+      const wantsEsim =
+        q.includes("esim") ||
+        q.includes("sim card") ||
+        q.includes("data plan");
 
       const wantsSafari =
         q.includes("safari") ||
@@ -1092,29 +1108,41 @@
         q.includes("kruger") ||
         q.includes("africa trip");
 
+      const wantsFlights =
+        q.includes("flight") ||
+        q.includes("fly to") ||
+        q.includes("plane ticket") ||
+        q.includes("airline");
+
       if (wantsSafari) {
         openLink(LINKS.go2Africa);
-        setRoutingExplanation("We detected safari / Africa trip intent and routed to Go2Africa for premium tailor-made safaris.");
+        setRoutingExplanation("We detected safari / Africa trip intent and routed to Go2Africa.");
         videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
         videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
         return;
       }
 
       if (wantsCars) {
-        openLink(LINKS.vipCars);
-        setRoutingExplanation("We detected car rental intent and routed to VIP Cars for global rentals.");
+        openLink(LINKS.allycar);
+        setRoutingExplanation("We detected car rental or transfer intent and routed to Allycar.");
         return;
       }
 
-      if (wantsHotels) {
-        openLink(LINKS.hotels);
-        setRoutingExplanation("We detected hotel intent and routed to a global hotel search.");
+      if (wantsVisa) {
+        openLink(LINKS.evisa);
+        setRoutingExplanation("We detected visa intent and routed to eVisa.");
+        return;
+      }
+
+      if (wantsEsim) {
+        openLink(LINKS.yesim);
+        setRoutingExplanation("We detected eSIM / mobile data intent and routed to Yesim.");
         return;
       }
 
       if (wantsFlights) {
-        openLink(LINKS.flights);
-        setRoutingExplanation("We detected flight intent and routed to a global flights search.");
+        openLink(LINKS.kiwi);
+        setRoutingExplanation("We detected flight intent and routed to Kiwi.");
         return;
       }
 
@@ -1155,13 +1183,13 @@
           return;
         }
 
-        openLink(LINKS.tiqetsUS);
-        setRoutingExplanation("We detected attractions intent and routed to your main Tiqets US link.");
+        openLink(LINKS.klook);
+        setRoutingExplanation("We detected generic attractions intent and routed to Klook.");
         return;
       }
 
       setRoutingExplanation(
-        "We did not detect a clear booking intent. Try mentioning attractions, car rentals, safaris, hotels, flights, or a destination."
+        "We did not detect a clear booking intent. Try attractions, flights, car rentals, safaris, eVisa, or eSIM."
       );
     }
 
@@ -1179,12 +1207,12 @@
 
       switch (intent) {
         case "attractions":
-          openLink(LINKS.tiqetsUS);
-          setRoutingExplanation("Attractions chip clicked · Routed to your main Tiqets US link.");
+          openLink(LINKS.klook);
+          setRoutingExplanation("Attractions chip clicked · Routed to Klook.");
           break;
         case "cars":
-          openLink(LINKS.vipCars);
-          setRoutingExplanation("Car rentals chip clicked · Routed to VIP Cars.");
+          openLink(LINKS.allycar);
+          setRoutingExplanation("Car rentals chip clicked · Routed to Allycar.");
           break;
         case "safaris":
         case "safari":
@@ -1193,13 +1221,17 @@
           videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
           videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
           break;
-        case "hotels":
-          openLink(LINKS.hotels);
-          setRoutingExplanation("Hotels chip clicked · Routed to a global hotel search.");
+        case "esim":
+          openLink(LINKS.yesim);
+          setRoutingExplanation("eSIM chip clicked · Routed to Yesim.");
+          break;
+        case "visa":
+          openLink(LINKS.evisa);
+          setRoutingExplanation("eVisa chip clicked · Routed to eVisa.");
           break;
         case "flights":
-          openLink(LINKS.flights);
-          setRoutingExplanation("Flights chip clicked · Routed to a global flights search.");
+          openLink(LINKS.kiwi);
+          setRoutingExplanation("Flights chip clicked · Routed to Kiwi.");
           break;
         case "italy":
           openLink(LINKS.tiqetsIT);
@@ -1238,13 +1270,13 @@
       card.addEventListener("click", () => {
         const type = card.getAttribute("data-link-type");
         switch (type) {
-          case "tiqets-global":
-            openLink(LINKS.tiqetsUS);
-            setRoutingExplanation("Core card · Tiqets global clicked.");
+          case "klook":
+            openLink(LINKS.klook);
+            setRoutingExplanation("Core card · Klook clicked.");
             break;
-          case "vipcars":
-            openLink(LINKS.vipCars);
-            setRoutingExplanation("Core card · VIP Cars clicked.");
+          case "allycar":
+            openLink(LINKS.allycar);
+            setRoutingExplanation("Core card · Allycar clicked.");
             break;
           case "go2africa":
             openLink(LINKS.go2Africa);
@@ -1252,13 +1284,13 @@
             videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
             videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
             break;
-          case "hotels":
-            openLink(LINKS.hotels);
-            setRoutingExplanation("Core card · Hotels clicked.");
+          case "kiwi":
+            openLink(LINKS.kiwi);
+            setRoutingExplanation("Core card · Kiwi clicked.");
             break;
-          case "flights":
-            openLink(LINKS.flights);
-            setRoutingExplanation("Core card · Flights clicked.");
+          case "evisa":
+            openLink(LINKS.evisa);
+            setRoutingExplanation("Core card · eVisa clicked.");
             break;
         }
       });
