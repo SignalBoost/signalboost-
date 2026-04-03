@@ -1,60 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SignalBoost – Services Hub</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <!-- Header -->
-  <header>
-    <h1>SignalBoost</h1>
-    <nav>
-      <ul>
-        <li><a href="#utilities">Core Utilities</a></li>
-        <li><a href="#lifestyle">Lifestyle & Productivity</a></li>
-        <li><a href="#seasonal">Seasonal Suites</a></li>
-      </ul>
-    </nav>
-  </header>
+/* Global */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f9f9f9;
+  color: #333;
+}
 
-  <!-- Core Utilities (Round Cards) -->
-  <section id="utilities">
-    <h2>Core Utilities</h2>
-    <div class="card-grid round">
-      <div class="card"><a href="https://affiliate-link-hotels.com">Hotels</a></div>
-      <div class="card"><a href="https://affiliate-link-cardservices.com">Card Services</a></div>
-      <div class="card"><a href="https://affiliate-link-airhelp.com">AirHelp</a></div>
-      <div class="card"><a href="https://affiliate-link-bitjoy.com">BitJoy eSIM</a></div>
-    </div>
-  </section>
+/* Header */
+header {
+  background: #0a3d62;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  <!-- Lifestyle & Productivity (Square Cards) -->
-  <section id="lifestyle">
-    <h2>Lifestyle & Productivity</h2>
-    <div class="card-grid square">
-      <div class="card"><a href="https://affiliate-link-kingkoil.com">King Koil</a></div>
-      <div class="card"><a href="https://affiliate-link-calm.com">Calm / Headspace</a></div>
-      <div class="card"><a href="https://affiliate-link-fitness.com">Fitness</a></div>
-      <div class="card"><a href="https://affiliate-link-nutrition.com">Nutrition</a></div>
-      <div class="card"><a href="https://affiliate-link-pearlmountain.com">PearlMountain</a></div>
-      <div class="card"><a href="https://affiliate-link-gogoespana.com">Go! Go! España</a></div>
-    </div>
-  </section>
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
 
-  <!-- Seasonal Suites -->
-  <section id="seasonal">
-    <h2>Luxury Escapes</h2>
-    <div class="card-grid square">
-      <div class="card"><a href="https://affiliate-link-desire.com">Desire Experience</a></div>
-      <div class="card"><a href="https://affiliate-link-temptation.com">Temptation Experience</a></div>
-    </div>
-  </section>
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2026 SignalBoost. All rights reserved.</p>
-  </footer>
-</body>
-</html>
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Titles */
+h1, h2 {
+  margin: 0 0 1rem 0;
+}
+
+.gradient-title {
+  background: linear-gradient(90deg, #0a3d62, #3c6382);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Sections */
+section {
+  padding: 2rem;
+}
+
+/* Card Grid */
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.card {
+  background: white;
+  padding: 1.5rem;
+  text-align: center;
+  flex: 1 1 150px;
+  border: 2px solid #0a3d62;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card a {
+  text-decoration: none;
+  color: #0a3d62;
+  font-weight: bold;
+  display: block;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Round vs Square */
+.round .card {
+  border-radius: 50%;
+}
+
+.square .card {
+  border-radius: 8px;
+}
+
+/* Footer */
+footer {
+  background: #0a3d62;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
