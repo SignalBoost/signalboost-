@@ -26,9 +26,8 @@
       --accent-2: #60a5fa;
       --border: rgba(148, 163, 184, 0.18);
       --shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-      --radius: 18px;
-      --max: 1180px;
       --highlight: rgba(56, 189, 248, 0.22);
+      --max: 1180px;
     }
 
     html {
@@ -100,7 +99,7 @@
     }
 
     .hero {
-      padding: 72px 0 30px;
+      padding: 64px 0 26px;
     }
 
     .hero-card {
@@ -110,7 +109,7 @@
       border: 1px solid var(--border);
       border-radius: 28px;
       box-shadow: var(--shadow);
-      padding: 42px 28px;
+      padding: 40px 28px;
     }
 
     .eyebrow {
@@ -197,14 +196,14 @@
     .discovery-shell {
       background: linear-gradient(180deg, var(--card-2), var(--card));
       border: 1px solid var(--border);
-      border-radius: 24px;
+      border-radius: 22px;
       box-shadow: var(--shadow);
       overflow: hidden;
     }
 
     .video-wrap {
       width: 100%;
-      aspect-ratio: 16 / 9;
+      height: 340px;
       background: #000;
     }
 
@@ -216,7 +215,7 @@
     }
 
     .discovery-body {
-      padding: 20px;
+      padding: 18px;
     }
 
     .discovery-meta {
@@ -225,11 +224,11 @@
       gap: 16px;
       align-items: start;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .discovery-meta h3 {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       margin-bottom: 6px;
     }
 
@@ -414,6 +413,12 @@
       font-size: 0.95rem;
     }
 
+    @media (max-width: 768px) {
+      .video-wrap {
+        height: 220px;
+      }
+    }
+
     @media (max-width: 640px) {
       .hero-card {
         padding: 30px 18px;
@@ -462,7 +467,7 @@
         <div>
           <h2>AI Discovery Screen</h2>
           <p>
-            A controlled video layer keeps the platform engaging while preserving a professional look.
+            One compact discovery video keeps the experience engaging without overwhelming the page.
           </p>
         </div>
       </div>
@@ -471,7 +476,7 @@
         <div class="video-wrap">
           <iframe
             id="mainVideo"
-            src="https://www.youtube.com/embed/2zKp7P0QF0w"
+            src="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE"
             title="SignalBoost discovery video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
@@ -481,16 +486,16 @@
         <div class="discovery-body">
           <div class="discovery-meta">
             <div>
-              <h3 id="videoTitle">Global Discovery</h3>
+              <h3 id="videoTitle">Discovery Demo</h3>
               <p id="videoDescription">
-                Start with broad inspiration, then guide visitors into the right partner experience.
+                This compact video area is intentionally sized to stay professional and stable.
               </p>
             </div>
             <div class="tag">AI/HMI Driven</div>
           </div>
 
           <div class="chip-row">
-            <button class="chip-btn" onclick="setVideo('global')">Global</button>
+            <button class="chip-btn" onclick="setVideo('demo')">Demo</button>
             <button class="chip-btn" onclick="setVideo('rome')">Rome</button>
             <button class="chip-btn" onclick="setVideo('paris')">Paris</button>
             <button class="chip-btn" onclick="setVideo('safari')">Safari</button>
@@ -644,18 +649,6 @@
           </div>
         </a>
 
-        <a class="card" id="jumbo-card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806">
-          <div>
-            <span class="card-type">Cars</span>
-            <h3>Jumbo Car Costa Rica</h3>
-            <p>Regional car rental option with Costa Rica focus.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Regional</span>
-          </div>
-        </a>
-
         <a class="card" id="kingkoil-card" href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806">
           <div>
             <span class="card-type">Lifestyle</span>
@@ -668,18 +661,6 @@
           </div>
         </a>
 
-        <a class="card" id="lastminute-card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806">
-          <div>
-            <span class="card-type">Travel Deals</span>
-            <h3>Lastminute SE</h3>
-            <p>Deal-driven travel option for users browsing last-minute offers.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Deals</span>
-          </div>
-        </a>
-
         <a class="card" id="pearlmountain-card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806">
           <div>
             <span class="card-type">Software</span>
@@ -689,102 +670,6 @@
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
             <span class="chip">Digital</span>
-          </div>
-        </a>
-
-        <a class="card" id="temptation-card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806">
-          <div>
-            <span class="card-type">Experiences</span>
-            <h3>Temptation Experience</h3>
-            <p>Premium experience and resort-oriented travel partner.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Premium</span>
-          </div>
-        </a>
-
-        <a class="card" id="bitjoy-card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806">
-          <div>
-            <span class="card-type">Connectivity</span>
-            <h3>BitJoy eSIM</h3>
-            <p>Travel eSIM option for data on the go.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">eSIM</span>
-          </div>
-        </a>
-
-        <a class="card" id="builder-card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806">
-          <div>
-            <span class="card-type">Marketplace</span>
-            <h3>The Builder Market</h3>
-            <p>Marketplace-style partner for home and project-related browsing.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Marketplace</span>
-          </div>
-        </a>
-
-        <a class="card" id="tiqetsde-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806">
-          <div>
-            <span class="card-type">Attractions</span>
-            <h3>Tiqets DE</h3>
-            <p>Germany-focused attractions and ticketing link.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Germany</span>
-          </div>
-        </a>
-
-        <a class="card" id="tiqetsfr-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806">
-          <div>
-            <span class="card-type">Attractions</span>
-            <h3>Tiqets FR</h3>
-            <p>France-focused attractions and ticketing link.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">France</span>
-          </div>
-        </a>
-
-        <a class="card" id="tiqetsit-card" href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806">
-          <div>
-            <span class="card-type">Attractions</span>
-            <h3>Tiqets IT</h3>
-            <p>Italy-focused attractions and ticketing link.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Italy</span>
-          </div>
-        </a>
-
-        <a class="card" id="tiqetsuk-card" href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806">
-          <div>
-            <span class="card-type">Attractions</span>
-            <h3>Tiqets UK</h3>
-            <p>United Kingdom-focused attractions and ticketing link.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">UK</span>
-          </div>
-        </a>
-
-        <a class="card" id="tiqetsus-card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806">
-          <div>
-            <span class="card-type">Attractions</span>
-            <h3>Tiqets US</h3>
-            <p>United States-focused attractions and ticketing link.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">US</span>
           </div>
         </a>
 
@@ -884,30 +769,30 @@
       const desc = document.getElementById("videoDescription");
 
       const videos = {
-        global: {
-          url: "https://www.youtube.com/embed/2zKp7P0QF0w",
-          title: "Global Discovery",
-          desc: "Start with broad inspiration, then guide visitors into the right partner experience."
+        demo: {
+          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
+          title: "Discovery Demo",
+          desc: "This compact video area is intentionally sized to stay professional and stable."
         },
         rome: {
-          url: "https://www.youtube.com/embed/9V5v5xXQ2nQ",
+          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
           title: "Rome Discovery",
-          desc: "Use destination inspiration to move visitors toward experiences and attractions."
+          desc: "A destination-led discovery mode that keeps the interface clean and controlled."
         },
         paris: {
-          url: "https://www.youtube.com/embed/7Z8J0aZp6nY",
+          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
           title: "Paris Discovery",
-          desc: "A polished destination view that supports premium attraction and travel discovery."
+          desc: "A polished destination view for premium attraction and travel inspiration."
         },
         safari: {
-          url: "https://www.youtube.com/embed/7ZqVQ1BM8Dc",
+          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
           title: "Safari Discovery",
-          desc: "Ideal for positioning high-value safari and premium Africa partner traffic."
+          desc: "An engagement layer for safari and premium Africa partner traffic."
         },
         usa: {
-          url: "https://www.youtube.com/embed/1vWnS9W8zq0",
+          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
           title: "USA Discovery",
-          desc: "A broader domestic discovery mode for attractions, travel services, and planning."
+          desc: "A broader discovery mode for attractions, travel services, and planning."
         }
       };
 
@@ -935,24 +820,24 @@
       card.scrollIntoView({ behavior: "smooth", block: "center" });
 
       if (mode === "flights") {
-        setVideo("global");
+        setVideo("demo");
         document.getElementById("videoTitle").textContent = "Flight Discovery";
         document.getElementById("videoDescription").textContent =
           "Visitors looking for flight routes and travel planning are guided toward Kiwi.";
       } else if (mode === "safari") {
         setVideo("safari");
       } else if (mode === "esim") {
-        setVideo("global");
+        setVideo("demo");
         document.getElementById("videoTitle").textContent = "Connectivity Discovery";
         document.getElementById("videoDescription").textContent =
           "Travelers needing mobile data and eSIM access are guided toward Yesim.";
       } else if (mode === "support") {
-        setVideo("global");
+        setVideo("demo");
         document.getElementById("videoTitle").textContent = "Travel Support Discovery";
         document.getElementById("videoDescription").textContent =
           "Travelers with delays or disruptions are guided toward AirHelp.";
       } else if (mode === "security") {
-        setVideo("global");
+        setVideo("demo");
         document.getElementById("videoTitle").textContent = "Security Discovery";
         document.getElementById("videoDescription").textContent =
           "Users looking for privacy and safe browsing are guided toward NordVPN.";
