@@ -28,6 +28,7 @@
       --shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
       --radius: 18px;
       --max: 1180px;
+      --highlight: rgba(56, 189, 248, 0.22);
     }
 
     html {
@@ -341,6 +342,12 @@
       border-color: rgba(56, 189, 248, 0.45);
     }
 
+    .card.highlighted {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--highlight), var(--shadow);
+      transform: translateY(-3px);
+    }
+
     .card-type {
       display: inline-block;
       font-size: 0.74rem;
@@ -504,33 +511,53 @@
       </div>
 
       <div class="top-picks">
-        <a class="pick-card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">
+        <a class="pick-card" href="https://klook.tpo.lv/fTRPLj2l">
           <span class="pick-tag">Experiences</span>
           <h3>Klook</h3>
           <p>Attractions, activities, and travel experiences in one place.</p>
           <span class="pick-link">Open partner →</span>
         </a>
 
-        <a class="pick-card" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">
+        <a class="pick-card" href="https://kiwi.tpo.lv/qKPZ1inz">
           <span class="pick-tag">Flights</span>
           <h3>Kiwi</h3>
           <p>Flight discovery and booking for travelers looking for route options and deals.</p>
           <span class="pick-link">Open partner →</span>
         </a>
 
-        <a class="pick-card" href="https://yesim.tpo.lv/olNUcwvB" target="_blank" rel="noopener noreferrer">
+        <a class="pick-card" href="https://yesim.tpo.lv/olNUcwvB">
           <span class="pick-tag">Connectivity</span>
           <h3>Yesim</h3>
           <p>eSIM access for travelers who need mobile data while abroad.</p>
           <span class="pick-link">Open partner →</span>
         </a>
 
-        <a class="pick-card" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">
+        <a class="pick-card" href="https://airhelp.tpo.lv/grL9Ojju">
           <span class="pick-tag">Travel Support</span>
           <h3>AirHelp</h3>
           <p>Flight disruption support for delayed, cancelled, or overbooked trips.</p>
           <span class="pick-link">Open partner →</span>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Smart Routing</h2>
+          <p>Guide visitors directly to the right category and highlight the strongest match.</p>
+        </div>
+      </div>
+
+      <div class="chip-row">
+        <button class="chip-btn" onclick="routeToPartner('kiwi-card', 'flights')">Flights</button>
+        <button class="chip-btn" onclick="routeToPartner('go2africa-card', 'safari')">Safari</button>
+        <button class="chip-btn" onclick="routeToPartner('yesim-card', 'esim')">eSIM</button>
+        <button class="chip-btn" onclick="routeToPartner('airhelp-card', 'support')">Support</button>
+        <button class="chip-btn" onclick="routeToPartner('nordvpn-card', 'security')">Security</button>
+        <button class="chip-btn" onclick="routeToPartner('gogoespana-card', 'spain')">Spain</button>
       </div>
     </div>
   </section>
@@ -545,7 +572,7 @@
       </div>
 
       <div class="grid">
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="allycar-card" href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806">
           <div>
             <span class="card-type">Mobility</span>
             <h3>Allycar</h3>
@@ -557,7 +584,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="carmel-card" href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806">
           <div>
             <span class="card-type">Transfers</span>
             <h3>Carmel Car & Limousine</h3>
@@ -569,7 +596,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="desire-card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806">
           <div>
             <span class="card-type">Experiences</span>
             <h3>Desire Experience</h3>
@@ -581,10 +608,10 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="evisa-card" href="https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806">
           <div>
             <span class="card-type">Travel Docs</span>
-            <h3>eVisa</h3>
+            <h3>Evisa</h3>
             <p>Visa-related support for travelers planning international trips.</p>
           </div>
           <div class="card-footer">
@@ -593,7 +620,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="gogoespana-card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806">
           <div>
             <span class="card-type">Travel</span>
             <h3>Go! Go! España</h3>
@@ -605,7 +632,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="go2africa-card" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806">
           <div>
             <span class="card-type">Safari</span>
             <h3>Go2Africa</h3>
@@ -617,7 +644,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="jumbo-card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806">
           <div>
             <span class="card-type">Cars</span>
             <h3>Jumbo Car Costa Rica</h3>
@@ -629,7 +656,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="kingkoil-card" href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806">
           <div>
             <span class="card-type">Lifestyle</span>
             <h3>King Koil</h3>
@@ -641,7 +668,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="lastminute-card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806">
           <div>
             <span class="card-type">Travel Deals</span>
             <h3>Lastminute SE</h3>
@@ -653,7 +680,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="pearlmountain-card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806">
           <div>
             <span class="card-type">Software</span>
             <h3>PearlMountain</h3>
@@ -665,7 +692,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="temptation-card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806">
           <div>
             <span class="card-type">Experiences</span>
             <h3>Temptation Experience</h3>
@@ -677,7 +704,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="bitjoy-card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806">
           <div>
             <span class="card-type">Connectivity</span>
             <h3>BitJoy eSIM</h3>
@@ -689,7 +716,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="builder-card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806">
           <div>
             <span class="card-type">Marketplace</span>
             <h3>The Builder Market</h3>
@@ -701,7 +728,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="tiqetsde-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806">
           <div>
             <span class="card-type">Attractions</span>
             <h3>Tiqets DE</h3>
@@ -713,7 +740,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="tiqetsfr-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806">
           <div>
             <span class="card-type">Attractions</span>
             <h3>Tiqets FR</h3>
@@ -725,7 +752,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="tiqetsit-card" href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806">
           <div>
             <span class="card-type">Attractions</span>
             <h3>Tiqets IT</h3>
@@ -737,7 +764,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="tiqetsuk-card" href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806">
           <div>
             <span class="card-type">Attractions</span>
             <h3>Tiqets UK</h3>
@@ -749,7 +776,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="tiqetsus-card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806">
           <div>
             <span class="card-type">Attractions</span>
             <h3>Tiqets US</h3>
@@ -761,7 +788,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="klook-card" href="https://klook.tpo.lv/fTRPLj2l">
           <div>
             <span class="card-type">Experiences</span>
             <h3>Klook</h3>
@@ -773,7 +800,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://yesim.tpo.lv/olNUcwvB" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="yesim-card" href="https://yesim.tpo.lv/olNUcwvB">
           <div>
             <span class="card-type">Connectivity</span>
             <h3>Yesim</h3>
@@ -785,7 +812,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="kiwi-card" href="https://kiwi.tpo.lv/qKPZ1inz">
           <div>
             <span class="card-type">Flights</span>
             <h3>Kiwi</h3>
@@ -797,7 +824,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="airhelp-card" href="https://airhelp.tpo.lv/grL9Ojju">
           <div>
             <span class="card-type">Support</span>
             <h3>AirHelp</h3>
@@ -809,7 +836,7 @@
           </div>
         </a>
 
-        <a class="card" href="https://nordvpn.tpo.lv/q1aN4Xru" target="_blank" rel="noopener noreferrer">
+        <a class="card" id="nordvpn-card" href="https://nordvpn.tpo.lv/q1aN4Xru">
           <div>
             <span class="card-type">Security</span>
             <h3>NordVPN</h3>
@@ -890,6 +917,51 @@
       frame.src = selected.url;
       title.textContent = selected.title;
       desc.textContent = selected.desc;
+    }
+
+    function clearHighlights() {
+      document.querySelectorAll(".card.highlighted").forEach((card) => {
+        card.classList.remove("highlighted");
+      });
+    }
+
+    function routeToPartner(cardId, mode) {
+      clearHighlights();
+
+      const card = document.getElementById(cardId);
+      if (!card) return;
+
+      card.classList.add("highlighted");
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      if (mode === "flights") {
+        setVideo("global");
+        document.getElementById("videoTitle").textContent = "Flight Discovery";
+        document.getElementById("videoDescription").textContent =
+          "Visitors looking for flight routes and travel planning are guided toward Kiwi.";
+      } else if (mode === "safari") {
+        setVideo("safari");
+      } else if (mode === "esim") {
+        setVideo("global");
+        document.getElementById("videoTitle").textContent = "Connectivity Discovery";
+        document.getElementById("videoDescription").textContent =
+          "Travelers needing mobile data and eSIM access are guided toward Yesim.";
+      } else if (mode === "support") {
+        setVideo("global");
+        document.getElementById("videoTitle").textContent = "Travel Support Discovery";
+        document.getElementById("videoDescription").textContent =
+          "Travelers with delays or disruptions are guided toward AirHelp.";
+      } else if (mode === "security") {
+        setVideo("global");
+        document.getElementById("videoTitle").textContent = "Security Discovery";
+        document.getElementById("videoDescription").textContent =
+          "Users looking for privacy and safe browsing are guided toward NordVPN.";
+      } else if (mode === "spain") {
+        setVideo("paris");
+        document.getElementById("videoTitle").textContent = "Europe Discovery";
+        document.getElementById("videoDescription").textContent =
+          "Regional European interest can be guided toward Spain-focused partner options.";
+      }
     }
   </script>
 </body>
