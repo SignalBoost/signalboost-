@@ -26,8 +26,8 @@
       --border: rgba(148, 163, 184, 0.18);
       --shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
       --highlight: rgba(56, 189, 248, 0.22);
-      --max: 1180px;
       --gold: #f6c453;
+      --max: 1180px;
     }
 
     html {
@@ -166,7 +166,9 @@
       color: var(--text);
     }
 
-    .btn:hover {
+    .btn:hover,
+    .search-btn:hover,
+    .chip-btn:hover {
       transform: translateY(-1px);
       opacity: 0.96;
     }
@@ -213,6 +215,17 @@
 
     .search-input::placeholder {
       color: #92a1b3;
+    }
+
+    .search-btn {
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #05101c;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
     }
 
     .search-result {
@@ -377,12 +390,6 @@
       font-weight: 600;
     }
 
-    .chip-btn:hover {
-      border-color: rgba(56, 189, 248, 0.45);
-      background: rgba(56, 189, 248, 0.08);
-      transform: translateY(-1px);
-    }
-
     .card {
       min-height: 170px;
       display: flex;
@@ -483,7 +490,7 @@
             type="text"
             placeholder="Try: safari in Africa, flights to Europe, esim for travel, Spain tours, delayed flight..."
           />
-          <button class="btn btn-primary" onclick="runAISearch()">Search</button>
+          <button class="search-btn" onclick="runAISearch()">Search</button>
         </div>
 
         <div id="searchResult" class="search-result">
@@ -498,9 +505,7 @@
       <div class="section-head">
         <div>
           <h2>Featured Paid Placements</h2>
-          <p>
-            These are premium sponsor-ready slots you can reorder later as paid inventory.
-          </p>
+          <p>These are premium sponsor-ready slots you can reorder later as paid inventory.</p>
         </div>
       </div>
 
@@ -534,9 +539,7 @@
       <div class="section-head">
         <div>
           <h2>AI Discovery Screen</h2>
-          <p>
-            A compact discovery player paired with adaptive recommendations.
-          </p>
+          <p>A rotating video pool keeps the experience fresh while recommendations adapt below.</p>
         </div>
       </div>
 
@@ -556,18 +559,20 @@
             <div>
               <h3 id="videoTitle">Discovery Demo</h3>
               <p id="videoDescription">
-                This compact video area is intentionally sized to stay professional and stable.
+                The player now rotates from a curated video pool instead of staying on one static video.
               </p>
             </div>
             <div class="tag">AI/HMI Driven</div>
           </div>
 
           <div class="chip-row">
-            <button class="chip-btn" onclick="setVideo('demo')">Demo</button>
+            <button class="chip-btn" onclick="setVideo('global')">Global</button>
             <button class="chip-btn" onclick="setVideo('rome')">Rome</button>
             <button class="chip-btn" onclick="setVideo('paris')">Paris</button>
             <button class="chip-btn" onclick="setVideo('safari')">Safari</button>
             <button class="chip-btn" onclick="setVideo('usa')">USA</button>
+            <button class="chip-btn" onclick="setVideo('flights')">Flights</button>
+            <button class="chip-btn" onclick="setVideo('spain')">Spain</button>
           </div>
         </div>
       </div>
@@ -811,41 +816,109 @@
   </footer>
 
   <script>
-    function setVideo(type) {
-      const frame = document.getElementById("mainVideo");
-      const title = document.getElementById("videoTitle");
-      const desc = document.getElementById("videoDescription");
-
-      const videos = {
-        demo: {
+    const videoPools = {
+      global: [
+        {
           url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
-          title: "Discovery Demo",
-          desc: "This compact video area is intentionally sized to stay professional and stable."
+          title: "Global Discovery",
+          desc: "A rotating general-discovery video for broad inspiration."
         },
-        rome: {
+        {
+          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
+          title: "Global Discovery",
+          desc: "SignalBoost rotates curated videos so the page does not feel static."
+        },
+        {
+          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
+          title: "Global Discovery",
+          desc: "A stable embed from the general discovery pool."
+        }
+      ],
+      rome: [
+        {
+          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
+          title: "Rome Discovery",
+          desc: "A destination-led discovery mode for European city inspiration."
+        },
+        {
           url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
           title: "Rome Discovery",
-          desc: "A destination-led discovery mode that keeps the interface clean and controlled."
-        },
-        paris: {
-          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
+          desc: "A curated rotating video for Rome and European attractions."
+        }
+      ],
+      paris: [
+        {
+          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
           title: "Paris Discovery",
           desc: "A polished destination view for premium attraction and travel inspiration."
         },
-        safari: {
+        {
+          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
+          title: "Paris Discovery",
+          desc: "Curated Paris and Europe-style inspiration from the rotating pool."
+        }
+      ],
+      safari: [
+        {
           url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
           title: "Safari Discovery",
-          desc: "An engagement layer for safari and premium Africa partner traffic."
+          desc: "A discovery layer for safari and premium Africa partner traffic."
         },
-        usa: {
-          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
+        {
+          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
+          title: "Safari Discovery",
+          desc: "A rotating safari-themed slot for high-ticket travel intent."
+        }
+      ],
+      usa: [
+        {
+          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
           title: "USA Discovery",
           desc: "A broader discovery mode for attractions, travel services, and planning."
+        },
+        {
+          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
+          title: "USA Discovery",
+          desc: "A rotating slot for domestic and broader travel interest."
         }
-      };
+      ],
+      flights: [
+        {
+          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
+          title: "Flight Discovery",
+          desc: "Visitors looking for routes and travel planning are guided toward Kiwi."
+        },
+        {
+          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
+          title: "Flight Discovery",
+          desc: "A rotating flight-oriented slot for users planning travel."
+        }
+      ],
+      spain: [
+        {
+          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
+          title: "Spain Discovery",
+          desc: "Regional European interest can be guided toward Spain-focused partner options."
+        },
+        {
+          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
+          title: "Spain Discovery",
+          desc: "A rotating Spain and Europe discovery slot."
+        }
+      ]
+    };
 
-      const selected = videos[type];
-      if (!selected) return;
+    function getRandomVideo(category) {
+      const pool = videoPools[category] || videoPools.global;
+      const index = Math.floor(Math.random() * pool.length);
+      return pool[index];
+    }
+
+    function setVideo(category) {
+      const frame = document.getElementById("mainVideo");
+      const title = document.getElementById("videoTitle");
+      const desc = document.getElementById("videoDescription");
+      const selected = getRandomVideo(category);
 
       frame.src = selected.url;
       title.textContent = selected.title;
@@ -879,47 +952,47 @@
       if (q.includes("safari") || q.includes("africa") || q.includes("wildlife")) {
         setVideo("safari");
         highlightPartner("go2africa-card");
-        result.textContent = "Best match: Go2Africa. We highlighted your safari partner.";
+        result.textContent = "Best match: Go2Africa. We highlighted your safari partner and rotated a safari video.";
         return;
       }
 
       if (q.includes("flight") || q.includes("airfare") || q.includes("ticket")) {
-        setVideo("usa");
+        setVideo("flights");
         highlightPartner("kiwi-card");
-        result.textContent = "Best match: Kiwi. We highlighted your flights partner.";
+        result.textContent = "Best match: Kiwi. We highlighted your flights partner and rotated a flight video.";
         return;
       }
 
       if (q.includes("esim") || q.includes("sim") || q.includes("data")) {
-        setVideo("demo");
+        setVideo("global");
         highlightPartner("yesim-card");
         result.textContent = "Best match: Yesim. We highlighted your eSIM partner.";
         return;
       }
 
       if (q.includes("delay") || q.includes("cancel") || q.includes("compensation")) {
-        setVideo("demo");
+        setVideo("global");
         highlightPartner("airhelp-card");
         result.textContent = "Best match: AirHelp. We highlighted your travel support partner.";
         return;
       }
 
       if (q.includes("vpn") || q.includes("privacy") || q.includes("security")) {
-        setVideo("demo");
+        setVideo("global");
         highlightPartner("nordvpn-card");
         result.textContent = "Best match: NordVPN. We highlighted your security partner.";
         return;
       }
 
       if (q.includes("spain") || q.includes("españa") || q.includes("madrid") || q.includes("barcelona")) {
-        setVideo("paris");
+        setVideo("spain");
         highlightPartner("gogoespana-card");
         result.textContent = "Best match: Go! Go! España. We highlighted your Spain-focused partner.";
         return;
       }
 
       if (q.includes("visa")) {
-        setVideo("demo");
+        setVideo("global");
         highlightPartner("evisa-card");
         result.textContent = "Best match: Evisa. We highlighted your visa partner.";
         return;
@@ -934,12 +1007,17 @@
 
       result.textContent = "No exact match found. Try safari, flights, esim, visa, Spain, privacy, or delayed flight.";
       clearHighlights();
+      setVideo("global");
     }
 
     document.getElementById("aiSearch").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         runAISearch();
       }
+    });
+
+    window.addEventListener("load", function() {
+      setVideo("global");
     });
   </script>
 </body>
