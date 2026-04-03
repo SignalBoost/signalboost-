@@ -1,177 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SignalBoost</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #020617;
-  color: #e5e7eb;
-}
-
-/* Layout */
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
-}
-
-/* Header */
-header {
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid #1f2937;
-}
-
-/* Panels */
-.panel {
-  background: #0b1020;
-  padding: 20px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-}
-
-/* Search */
-input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 999px;
-  border: none;
-  margin-bottom: 10px;
-}
-
-/* Cards */
-.card-grid {
-  display: grid;
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-/* Round cards */
-.card-grid.round {
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-}
-
-.card-grid.round .card {
-  background: #f0f0f0;
-  color: #000;
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-weight: bold;
-}
-
-/* Square cards */
-.card-grid.square {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-}
-
-.card-grid.square .card {
-  background: #f9f9f9;
-  color: #000;
-  border-radius: 8px;
-  padding: 2rem;
-  text-align: center;
-  font-weight: bold;
-}
-
-/* Buttons */
-button {
-  padding: 8px 12px;
-  margin: 4px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 20px;
-  border-top: 1px solid #1f2937;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignalBoost – Services Hub</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Header -->
+  <header>
+    <h1>SignalBoost</h1>
+    <nav>
+      <ul>
+        <li><a href="#utilities">Core Utilities</a></li>
+        <li><a href="#lifestyle">Lifestyle & Productivity</a></li>
+        <li><a href="#seasonal">Seasonal Suites</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<header>
-  <h1>SignalBoost Travel</h1>
-  <p>Video-first discovery · Neutral · Global</p>
-</header>
-
-<div class="container">
-
-  <!-- SEARCH + VIDEO -->
-  <div class="panel">
-    <h2>Travel Discovery</h2>
-    <input id="searchInput" placeholder="Try: Rome attractions, safari, hotels..." />
-
-    <iframe id="videoFrame"
-      width="100%" height="300"
-      src="https://www.youtube.com/embed/2zKp7P0QF0w"
-      frameborder="0" allowfullscreen>
-    </iframe>
-  </div>
-
-  <!-- SERVICES HUB -->
-  <div class="panel">
+  <!-- Core Utilities (Round Cards) -->
+  <section id="utilities">
     <h2>Core Utilities</h2>
     <div class="card-grid round">
-      <div class="card">Hotels</div>
-      <div class="card">Card Services</div>
-      <div class="card">AirHelp</div>
-      <div class="card">BitJoy eSIM</div>
+      <div class="card"><a href="https://affiliate-link-hotels.com">Hotels</a></div>
+      <div class="card"><a href="https://affiliate-link-cardservices.com">Card Services</a></div>
+      <div class="card"><a href="https://affiliate-link-airhelp.com">AirHelp</a></div>
+      <div class="card"><a href="https://affiliate-link-bitjoy.com">BitJoy eSIM</a></div>
     </div>
+  </section>
 
+  <!-- Lifestyle & Productivity (Square Cards) -->
+  <section id="lifestyle">
     <h2>Lifestyle & Productivity</h2>
     <div class="card-grid square">
-      <div class="card">King Koil</div>
-      <div class="card">Calm / Headspace</div>
-      <div class="card">Fitness</div>
-      <div class="card">Nutrition</div>
-      <div class="card">PearlMountain</div>
-      <div class="card">Go! Go! España</div>
+      <div class="card"><a href="https://affiliate-link-kingkoil.com">King Koil</a></div>
+      <div class="card"><a href="https://affiliate-link-calm.com">Calm / Headspace</a></div>
+      <div class="card"><a href="https://affiliate-link-fitness.com">Fitness</a></div>
+      <div class="card"><a href="https://affiliate-link-nutrition.com">Nutrition</a></div>
+      <div class="card"><a href="https://affiliate-link-pearlmountain.com">PearlMountain</a></div>
+      <div class="card"><a href="https://affiliate-link-gogoespana.com">Go! Go! España</a></div>
     </div>
+  </section>
 
+  <!-- Seasonal Suites -->
+  <section id="seasonal">
     <h2>Luxury Escapes</h2>
     <div class="card-grid square">
-      <div class="card">Desire Experience</div>
-      <div class="card">Temptation Experience</div>
+      <div class="card"><a href="https://affiliate-link-desire.com">Desire Experience</a></div>
+      <div class="card"><a href="https://affiliate-link-temptation.com">Temptation Experience</a></div>
     </div>
-  </div>
+  </section>
 
-</div>
-
-<footer>
-  SignalBoost · Discovery layer for travel & services
-</footer>
-
-<script>
-const LINKS = {
-  hotels: "https://www.booking.com",
-  flights: "https://www.google.com/travel/flights",
-  safari: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806"
-};
-
-document.getElementById("searchInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    const q = e.target.value.toLowerCase();
-
-    if (q.includes("hotel")) window.open(LINKS.hotels);
-    else if (q.includes("flight")) window.open(LINKS.flights);
-    else if (q.includes("safari")) window.open(LINKS.safari);
-  }
-});
-</script>
-
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 SignalBoost. All rights reserved.</p>
+  </footer>
 </body>
 </html>
