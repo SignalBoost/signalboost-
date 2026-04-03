@@ -1,89 +1,177 @@
-/* Global */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SignalBoost</title>
+
+<style>
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  background: #f9f9f9;
-  color: #333;
+  font-family: system-ui, sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+/* Layout */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
 }
 
 /* Header */
 header {
-  background: #0a3d62;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
-
-/* Titles */
-.gradient-title {
-  background: linear-gradient(90deg, #0a3d62, #3c6382);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Sections */
-section {
-  padding: 2rem;
-}
-
-/* Card Grid */
-.card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.card-base {
-  background: white;
-  padding: 1.5rem;
+  padding: 20px;
   text-align: center;
-  flex: 1 1 150px;
-  text-decoration: none;
-  color: #0a3d62;
-  font-weight: bold;
-  border: 2px solid #0a3d62;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border-bottom: 1px solid #1f2937;
 }
 
-.card-base:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* Panels */
+.panel {
+  background: #0b1020;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
 }
 
-/* Round vs Square */
-.round .card-base {
+/* Search */
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  margin-bottom: 10px;
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+/* Round cards */
+.card-grid.round {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.card-grid.round .card {
+  background: #f0f0f0;
+  color: #000;
   border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
 }
 
-.square .card-base {
+/* Square cards */
+.card-grid.square {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.card-grid.square .card {
+  background: #f9f9f9;
+  color: #000;
   border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Buttons */
+button {
+  padding: 8px 12px;
+  margin: 4px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
 }
 
 /* Footer */
 footer {
-  background: #0a3d62;
-  color: white;
   text-align: center;
-  padding: 1rem;
+  padding: 20px;
+  border-top: 1px solid #1f2937;
 }
+</style>
+
+</head>
+<body>
+
+<header>
+  <h1>SignalBoost Travel</h1>
+  <p>Video-first discovery · Neutral · Global</p>
+</header>
+
+<div class="container">
+
+  <!-- SEARCH + VIDEO -->
+  <div class="panel">
+    <h2>Travel Discovery</h2>
+    <input id="searchInput" placeholder="Try: Rome attractions, safari, hotels..." />
+
+    <iframe id="videoFrame"
+      width="100%" height="300"
+      src="https://www.youtube.com/embed/2zKp7P0QF0w"
+      frameborder="0" allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- SERVICES HUB -->
+  <div class="panel">
+    <h2>Core Utilities</h2>
+    <div class="card-grid round">
+      <div class="card">Hotels</div>
+      <div class="card">Card Services</div>
+      <div class="card">AirHelp</div>
+      <div class="card">BitJoy eSIM</div>
+    </div>
+
+    <h2>Lifestyle & Productivity</h2>
+    <div class="card-grid square">
+      <div class="card">King Koil</div>
+      <div class="card">Calm / Headspace</div>
+      <div class="card">Fitness</div>
+      <div class="card">Nutrition</div>
+      <div class="card">PearlMountain</div>
+      <div class="card">Go! Go! España</div>
+    </div>
+
+    <h2>Luxury Escapes</h2>
+    <div class="card-grid square">
+      <div class="card">Desire Experience</div>
+      <div class="card">Temptation Experience</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  SignalBoost · Discovery layer for travel & services
+</footer>
+
+<script>
+const LINKS = {
+  hotels: "https://www.booking.com",
+  flights: "https://www.google.com/travel/flights",
+  safari: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806"
+};
+
+document.getElementById("searchInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const q = e.target.value.toLowerCase();
+
+    if (q.includes("hotel")) window.open(LINKS.hotels);
+    else if (q.includes("flight")) window.open(LINKS.flights);
+    else if (q.includes("safari")) window.open(LINKS.safari);
+  }
+});
+</script>
+
+</body>
+</html>
