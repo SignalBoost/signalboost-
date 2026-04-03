@@ -1,26 +1,1306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SignalBoost – Services Hub</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <title>SignalBoost</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --danger: #f97373;
+      --radius-lg: 14px;
+      --radius-md: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --shadow-chip: 0 10px 30px rgba(15, 23, 42, 0.7);
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.22s ease-out;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to bottom,
+        rgba(2, 6, 23, 0.96),
+        rgba(2, 6, 23, 0.9),
+        rgba(2, 6, 23, 0.75)
+      );
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .nav {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 18px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 20% 0%, #38bdf8, #0ea5e9 40%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.45);
+      font-size: 18px;
+      font-weight: 700;
+      color: #0b1120;
+    }
+
+    .brand-text-main {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      font-size: 17px;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+    }
+
+    .nav-cta {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.9));
+      color: var(--text);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: default;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.55);
+      transition: border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .nav-links a:hover {
+      border-color: rgba(56, 189, 248, 0.7);
+      transform: translateY(-1px);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .layout {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 18px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
+      border-radius: 22px;
+      border: 1px solid rgba(15, 23, 42, 0.95);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.12), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .panel-badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .panel-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+    }
+
+    .search-shell {
+      margin-bottom: 12px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px 10px 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .search-input::placeholder {
+      color: #6b7280;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      padding: 6px 11px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      color: #e5e7eb;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-chip);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .chip span {
+      font-size: 13px;
+    }
+
+    .chip-label-muted {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, 0.7);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+    }
+
+    .chip-primary {
+      border-color: rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.98));
+    }
+
+    .chip-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin: 14px 0 6px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      border-radius: 16px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 10px 11px 11px;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform var(--transition-med), box-shadow var(--transition-med),
+        border-color var(--transition-med), background var(--transition-med);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.95);
+    }
+
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .card-body {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #38bdf8;
+      font-size: 11px;
+    }
+
+    .card-pill {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .video-shell {
+      margin-top: 10px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: #020617;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-shell iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .video-meta {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .video-title {
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    .video-badge {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .right-panel-section {
+      margin-bottom: 16px;
+    }
+
+    .right-panel-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .small-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .small-item {
+      padding: 7px 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .small-item:hover {
+      border-color: rgba(56, 189, 248, 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+    }
+
+    .small-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .small-item-title {
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .small-item-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .small-item-pill {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* Merged services hub */
+    .services-shell {
+      max-width: 1120px;
+      margin: 0 auto 38px;
+      padding: 0 18px 10px;
+    }
+
+    .services-panel {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
+      border-radius: 22px;
+      border: 1px solid rgba(15, 23, 42, 0.95);
+      box-shadow: var(--shadow-soft);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .services-panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.08), transparent 55%);
+      pointer-events: none;
+    }
+
+    .services-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .services-section {
+      margin-top: 10px;
+      margin-bottom: 28px;
+    }
+
+    .services-section:last-child {
+      margin-bottom: 4px;
+    }
+
+    .services-title {
+      font-size: 28px;
+      margin: 0 0 6px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .services-subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .service-heading {
+      margin: 0 0 14px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #f3f4f6;
+    }
+
+    .service-grid-round,
+    .service-grid-square,
+    .service-grid-wide {
+      display: grid;
+      gap: 18px;
+    }
+
+    .service-grid-round {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .service-grid-square {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .service-grid-wide {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .service-card,
+    .service-pill,
+    .service-wide {
+      border: 2px solid rgba(56, 189, 248, 0.55);
+      color: var(--text);
+      background: rgba(11, 16, 32, 0.8);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.45);
+      transition: transform var(--transition-fast), border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .service-card:hover,
+    .service-pill:hover,
+    .service-wide:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.95);
+      background: rgba(15, 23, 42, 0.95);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.7);
+    }
+
+    .service-pill {
+      min-height: 110px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 500;
+    }
+
+    .service-card {
+      min-height: 110px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .service-wide {
+      min-height: 100px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 900px) {
+      .service-heading {
+        font-size: 22px;
+      }
+
+      .service-pill,
+      .service-card,
+      .service-wide {
+        font-size: 18px;
+      }
+    }
+
+    footer {
+      border-top: 1px solid rgba(15, 23, 42, 0.95);
+      padding: 10px 18px 16px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #020617 100%);
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="logo">
-    <span class="logo-text">SignalBoost</span>
-    <nav>
-      <ul>
-        <li><a href="#utilities">Core Utilities</a></li>
-        <li><a href="#lifestyle">Lifestyle & Productivity</a></li>
-        <li><a href="#seasonal">Seasonal Suites</a></li>
-      </ul>
-    </nav>
-  </header>
+  <div class="app-shell">
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="brand-mark">S</div>
+          <div>
+            <div class="brand-text-main">SignalBoost Travel</div>
+            <div class="brand-text-sub">Video-first discovery · Neutral · Global</div>
+          </div>
+        </div>
 
-  <!-- Core Utilities -->
-  <section id="utilities">
-    <h2 class="gradient-title">Core Utilities</h2>
-    <div class="card-grid round">
-      <div class="card-base"><a href="https://affiliate-link-hotels.com">Hotels</a></div>
+        <div class="nav-links">
+          <a href="#discovery">Discovery</a>
+          <a href="#utilities">Core Utilities</a>
+          <a href="#lifestyle">Lifestyle & Productivity</a>
+          <a href="#seasonal">Seasonal Suites</a>
+        </div>
+
+        <div class="nav-right">
+          <div class="pill">
+            <div class="pill-dot"></div>
+            Live build · Luis
+          </div>
+          <div class="nav-cta">
+            <span>Front-end only · Ready to deploy</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="layout" id="discovery">
+        <section class="panel">
+          <div class="panel-inner">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Travel video discovery</div>
+                <div class="panel-subtitle">Search any destination or topic · We route intent to the right partner</div>
+              </div>
+              <div class="panel-badge">
+                <div class="panel-badge-dot"></div>
+                AI-assisted routing
+              </div>
+            </div>
+
+            <div class="search-shell">
+              <div class="search-input-wrap">
+                <span class="search-icon">🔍</span>
+                <input
+                  id="searchInput"
+                  class="search-input"
+                  type="text"
+                  placeholder="Try: Rome attractions, Germany trip, safari in Kenya, car rental in Miami, hotels in Paris..."
+                />
+              </div>
+              <div class="chips-row" id="chipsRow">
+                <button class="chip chip-primary" data-intent="attractions">
+                  <div class="chip-pill-dot"></div>
+                  <span>Attractions</span>
+                </button>
+                <button class="chip" data-intent="cars">
+                  <span>Car rentals</span>
+                </button>
+                <button class="chip" data-intent="safaris">
+                  <span>Safaris</span>
+                </button>
+                <button class="chip" data-intent="hotels">
+                  <span>Hotels</span>
+                </button>
+                <button class="chip" data-intent="flights">
+                  <span>Flights</span>
+                </button>
+
+                <button class="chip" data-intent="italy">
+                  <span>Italy</span>
+                  <span class="chip-label-muted">Tiqets IT</span>
+                </button>
+                <button class="chip" data-intent="france">
+                  <span>France</span>
+                  <span class="chip-label-muted">Tiqets FR</span>
+                </button>
+                <button class="chip" data-intent="germany">
+                  <span>Germany</span>
+                  <span class="chip-label-muted">Tiqets DE</span>
+                </button>
+                <button class="chip" data-intent="uk">
+                  <span>United Kingdom</span>
+                  <span class="chip-label-muted">Tiqets UK</span>
+                </button>
+                <button class="chip" data-intent="us">
+                  <span>United States</span>
+                  <span class="chip-label-muted">Tiqets US</span>
+                </button>
+                <button class="chip" data-intent="safari">
+                  <span>Safari trips</span>
+                  <span class="chip-label-muted">Go2Africa</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="section-label">Now playing</div>
+            <div class="video-shell">
+              <iframe
+                id="videoFrame"
+                src="https://www.youtube.com/embed/2zKp7P0QF0w"
+                title="Travel inspiration"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="video-meta">
+              <div>
+                <div class="video-title" id="videoTitle">Global travel inspiration · Neutral, creator-driven</div>
+                <div>SignalBoost surfaces content · You choose where to book</div>
+              </div>
+              <div class="video-badge">Discovery feed</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-inner">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Travel commerce engine</div>
+                <div class="panel-subtitle">We route intent to the right partner · You stay in control</div>
+              </div>
+              <div class="panel-badge">
+                <div class="panel-badge-dot"></div>
+                Affiliate-ready
+              </div>
+            </div>
+
+            <div class="right-panel-section">
+              <div class="section-label">Core partners</div>
+              <div class="cards-grid">
+                <article class="card" data-link-type="tiqets-global">
+                  <div class="card-header-row">
+                    <div class="card-title">Attractions worldwide · Tiqets</div>
+                    <div class="card-tag">Attractions</div>
+                  </div>
+                  <div class="card-body">
+                    Skip-the-line tickets, museums, landmarks, and experiences across the world. High-volume, everyday conversions.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open Tiqets US →</div>
+                    <div class="card-pill">Global · Main link</div>
+                  </div>
+                </article>
+
+                <article class="card" data-link-type="vipcars">
+                  <div class="card-header-row">
+                    <div class="card-title">Car rentals · VIP Cars</div>
+                    <div class="card-tag">Cars</div>
+                  </div>
+                  <div class="card-body">
+                    Global car rentals with strong coverage and mid-ticket value. Perfect for trip add-ons and airport pickups.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open VIP Cars →</div>
+                    <div class="card-pill">Global · Medium-ticket</div>
+                  </div>
+                </article>
+
+                <article class="card" data-link-type="go2africa">
+                  <div class="card-header-row">
+                    <div class="card-title">African safaris · Go2Africa</div>
+                    <div class="card-tag">Safaris</div>
+                  </div>
+                  <div class="card-body">
+                    Tailor-made safaris and luxury Africa trips. Low-volume, high-ticket bookings with strong commission potential.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open Go2Africa →</div>
+                    <div class="card-pill">Premium · High-ticket</div>
+                  </div>
+                </article>
+
+                <article class="card" data-link-type="hotels">
+                  <div class="card-header-row">
+                    <div class="card-title">Hotels worldwide</div>
+                    <div class="card-tag">Hotels</div>
+                  </div>
+                  <div class="card-body">
+                    Route users to a trusted global hotel search. Simple, universal, and familiar.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open hotels search →</div>
+                    <div class="card-pill">Universal · Intent routing</div>
+                  </div>
+                </article>
+
+                <article class="card" data-link-type="flights">
+                  <div class="card-header-row">
+                    <div class="card-title">Flights · Global search</div>
+                    <div class="card-tag">Flights</div>
+                  </div>
+                  <div class="card-body">
+                    Use Google Flights or similar to route flight intent. High trust, no friction, works for any destination.
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-cta">Open flights search →</div>
+                    <div class="card-pill">Universal · Non-affiliate</div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div class="right-panel-section">
+              <div class="section-label">Destination-specific attractions</div>
+              <div class="small-list">
+                <div class="small-item" data-link-type="tiqets-it">
+                  <div class="small-item-main">
+                    <div class="small-item-title">Italy · Tiqets IT</div>
+                    <div class="small-item-sub">Rome, Vatican, Florence, Venice, and more.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · IT</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-fr">
+                  <div class="small-item-main">
+                    <div class="small-item-title">France · Tiqets FR</div>
+                    <div class="small-item-sub">Paris, Louvre, Eiffel Tower, Versailles.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · FR</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-de">
+                  <div class="small-item-main">
+                    <div class="small-item-title">Germany · Tiqets DE</div>
+                    <div class="small-item-sub">Berlin, Munich, castles, museums.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · DE</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-uk">
+                  <div class="small-item-main">
+                    <div class="small-item-title">United Kingdom · Tiqets UK</div>
+                    <div class="small-item-sub">London attractions, museums, experiences.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · UK</div>
+                </div>
+
+                <div class="small-item" data-link-type="tiqets-us">
+                  <div class="small-item-main">
+                    <div class="small-item-title">United States · Tiqets US</div>
+                    <div class="small-item-sub">US-focused attractions via your main link.</div>
+                  </div>
+                  <div class="small-item-pill">Regional · US</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="right-panel-section">
+              <div class="section-label">Routing explanation</div>
+              <div class="small-list">
+                <div class="small-item">
+                  <div class="small-item-main">
+                    <div class="small-item-title">How this works</div>
+                    <div class="small-item-sub" id="routingExplanation">
+                      Type a query or click a chip. We infer intent and open the most relevant partner in a new tab.
+                    </div>
+                  </div>
+                  <div class="small-item-pill">Transparent · Neutral</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="services-shell">
+        <div class="services-panel">
+          <div class="services-inner">
+            <div class="services-section">
+              <h2 class="services-title">SignalBoost</h2>
+              <div class="services-subtitle">Services hub merged into your discovery site</div>
+            </div>
+
+            <div class="services-section" id="utilities">
+              <h3 class="service-heading">Core Utilities</h3>
+              <div class="service-grid-round">
+                <a class="service-pill" href="https://www.booking.com/" target="_blank" rel="noopener noreferrer">Hotels</a>
+                <div class="service-pill">Card Services</div>
+                <div class="service-pill">AirHelp</div>
+                <div class="service-pill">BitJoy eSIM</div>
+              </div>
+            </div>
+
+            <div class="services-section" id="lifestyle">
+              <h3 class="service-heading">Lifestyle &amp; Productivity</h3>
+              <div class="service-grid-square">
+                <div class="service-card">King Koil</div>
+                <div class="service-card">Calm / Headspace</div>
+                <div class="service-card">Fitness</div>
+                <div class="service-card">Nutrition</div>
+                <div class="service-card">PearlMountain</div>
+                <div class="service-card">Go! Go! España</div>
+              </div>
+            </div>
+
+            <div class="services-section" id="seasonal">
+              <h3 class="service-heading">Luxury Escapes</h3>
+              <div class="service-grid-wide">
+                <div class="service-wide">Desire Experience</div>
+                <div class="service-wide">Temptation Experience</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        SignalBoost Travel · Video-first discovery layer. You stay in control of where to book. Neutral, global, and affiliate-powered.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const LINKS = {
+      tiqetsUS: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+      tiqetsUK: "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
+      tiqetsFR: "https://www.awin1.com/cread.php?awinmid=7437&awinaffid=2834806",
+      tiqetsIT: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
+      tiqetsDE: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+      vipCars: "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
+      go2Africa: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
+      hotels: "https://www.booking.com/",
+      flights: "https://www.google.com/travel/flights"
+    };
+
+    const searchInput = document.getElementById("searchInput");
+    const routingExplanation = document.getElementById("routingExplanation");
+    const videoFrame = document.getElementById("videoFrame");
+    const videoTitle = document.getElementById("videoTitle");
+
+    function openLink(url) {
+      if (!url) return;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    function setRoutingExplanation(text) {
+      routingExplanation.textContent = text;
+    }
+
+    function routeIntentFromText(text) {
+      const q = (text || "").toLowerCase();
+
+      const isItaly =
+        q.includes("italy") || q.includes("rome") || q.includes("vatican") || q.includes("florence") || q.includes("venice");
+      const isFrance =
+        q.includes("france") || q.includes("paris") || q.includes("louvre") || q.includes("eiffel");
+      const isGermany =
+        q.includes("germany") || q.includes("berlin") || q.includes("munich") || q.includes("hamburg");
+      const isUK =
+        q.includes("uk") || q.includes("london") || q.includes("britain") || q.includes("england");
+      const isUS =
+        q.includes("usa") || q.includes("united states") || q.includes("new york") || q.includes("miami") || q.includes("orlando");
+
+      const wantsAttractions =
+        q.includes("attraction") ||
+        q.includes("ticket") ||
+        q.includes("museum") ||
+        q.includes("things to do") ||
+        q.includes("what to do") ||
+        q.includes("tour") ||
+        q.includes("skip the line");
+
+      const wantsCars =
+        q.includes("car rental") ||
+        q.includes("rent a car") ||
+        q.includes("rental car") ||
+        q.includes("hire a car");
+
+      const wantsHotels =
+        q.includes("hotel") ||
+        q.includes("stay") ||
+        q.includes("accommodation") ||
+        q.includes("where to sleep");
+
+      const wantsFlights =
+        q.includes("flight") ||
+        q.includes("fly to") ||
+        q.includes("plane ticket") ||
+        q.includes("airline");
+
+      const wantsSafari =
+        q.includes("safari") ||
+        q.includes("masai mara") ||
+        q.includes("serengeti") ||
+        q.includes("kruger") ||
+        q.includes("africa trip");
+
+      if (wantsSafari) {
+        openLink(LINKS.go2Africa);
+        setRoutingExplanation("We detected safari / Africa trip intent and routed to Go2Africa for premium tailor-made safaris.");
+        videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
+        videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
+        return;
+      }
+
+      if (wantsCars) {
+        openLink(LINKS.vipCars);
+        setRoutingExplanation("We detected car rental intent and routed to VIP Cars for global rentals.");
+        return;
+      }
+
+      if (wantsHotels) {
+        openLink(LINKS.hotels);
+        setRoutingExplanation("We detected hotel intent and routed to a global hotel search.");
+        return;
+      }
+
+      if (wantsFlights) {
+        openLink(LINKS.flights);
+        setRoutingExplanation("We detected flight intent and routed to a global flights search.");
+        return;
+      }
+
+      if (wantsAttractions || isItaly || isFrance || isGermany || isUK || isUS) {
+        if (isItaly) {
+          openLink(LINKS.tiqetsIT);
+          setRoutingExplanation("We detected Italy / Rome intent and routed to your Tiqets Italy link.");
+          videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
+          videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
+          return;
+        }
+        if (isFrance) {
+          openLink(LINKS.tiqetsFR);
+          setRoutingExplanation("We detected France / Paris intent and routed to your Tiqets France link.");
+          videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
+          videoTitle.textContent = "France · Paris and beyond";
+          return;
+        }
+        if (isGermany) {
+          openLink(LINKS.tiqetsDE);
+          setRoutingExplanation("We detected Germany intent and routed to your Tiqets Germany link.");
+          videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
+          videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
+          return;
+        }
+        if (isUK) {
+          openLink(LINKS.tiqetsUK);
+          setRoutingExplanation("We detected UK / London intent and routed to your Tiqets UK link.");
+          videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
+          videoTitle.textContent = "United Kingdom · London and beyond";
+          return;
+        }
+        if (isUS) {
+          openLink(LINKS.tiqetsUS);
+          setRoutingExplanation("We detected US intent and routed to your main Tiqets US link.");
+          videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
+          videoTitle.textContent = "United States · Cities, parks, and attractions";
+          return;
+        }
+
+        openLink(LINKS.tiqetsUS);
+        setRoutingExplanation("We detected attractions intent and routed to your main Tiqets US link.");
+        return;
+      }
+
+      setRoutingExplanation(
+        "We did not detect a clear booking intent. Try mentioning attractions, car rentals, safaris, hotels, flights, or a destination."
+      );
+    }
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        routeIntentFromText(searchInput.value);
+      }
+    });
+
+    document.getElementById("chipsRow").addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+      const intent = chip.getAttribute("data-intent");
+      if (!intent) return;
+
+      switch (intent) {
+        case "attractions":
+          openLink(LINKS.tiqetsUS);
+          setRoutingExplanation("Attractions chip clicked · Routed to your main Tiqets US link.");
+          break;
+        case "cars":
+          openLink(LINKS.vipCars);
+          setRoutingExplanation("Car rentals chip clicked · Routed to VIP Cars.");
+          break;
+        case "safaris":
+        case "safari":
+          openLink(LINKS.go2Africa);
+          setRoutingExplanation("Safari chip clicked · Routed to Go2Africa.");
+          videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
+          videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
+          break;
+        case "hotels":
+          openLink(LINKS.hotels);
+          setRoutingExplanation("Hotels chip clicked · Routed to a global hotel search.");
+          break;
+        case "flights":
+          openLink(LINKS.flights);
+          setRoutingExplanation("Flights chip clicked · Routed to a global flights search.");
+          break;
+        case "italy":
+          openLink(LINKS.tiqetsIT);
+          setRoutingExplanation("Italy chip clicked · Routed to your Tiqets Italy link.");
+          videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
+          videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
+          break;
+        case "france":
+          openLink(LINKS.tiqetsFR);
+          setRoutingExplanation("France chip clicked · Routed to your Tiqets France link.");
+          videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
+          videoTitle.textContent = "France · Paris and beyond";
+          break;
+        case "germany":
+          openLink(LINKS.tiqetsDE);
+          setRoutingExplanation("Germany chip clicked · Routed to your Tiqets Germany link.");
+          videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
+          videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
+          break;
+        case "uk":
+          openLink(LINKS.tiqetsUK);
+          setRoutingExplanation("United Kingdom chip clicked · Routed to your Tiqets UK link.");
+          videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
+          videoTitle.textContent = "United Kingdom · London and beyond";
+          break;
+        case "us":
+          openLink(LINKS.tiqetsUS);
+          setRoutingExplanation("United States chip clicked · Routed to your main Tiqets US link.");
+          videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
+          videoTitle.textContent = "United States · Cities, parks, and attractions";
+          break;
+      }
+    });
+
+    document.querySelectorAll(".card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const type = card.getAttribute("data-link-type");
+        switch (type) {
+          case "tiqets-global":
+            openLink(LINKS.tiqetsUS);
+            setRoutingExplanation("Core card · Tiqets global clicked.");
+            break;
+          case "vipcars":
+            openLink(LINKS.vipCars);
+            setRoutingExplanation("Core card · VIP Cars clicked.");
+            break;
+          case "go2africa":
+            openLink(LINKS.go2Africa);
+            setRoutingExplanation("Core card · Go2Africa clicked.");
+            videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
+            videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
+            break;
+          case "hotels":
+            openLink(LINKS.hotels);
+            setRoutingExplanation("Core card · Hotels clicked.");
+            break;
+          case "flights":
+            openLink(LINKS.flights);
+            setRoutingExplanation("Core card · Flights clicked.");
+            break;
+        }
+      });
+    });
+
+    document.querySelectorAll(".small-item[data-link-type]").forEach((item) => {
+      item.addEventListener("click", () => {
+        const type = item.getAttribute("data-link-type");
+        switch (type) {
+          case "tiqets-it":
+            openLink(LINKS.tiqetsIT);
+            setRoutingExplanation("Destination card · Italy clicked.");
+            videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
+            videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
+            break;
+          case "tiqets-fr":
+            openLink(LINKS.tiqetsFR);
+            setRoutingExplanation("Destination card · France clicked.");
+            videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
+            videoTitle.textContent = "France · Paris and beyond";
+            break;
+          case "tiqets-de":
+            openLink(LINKS.tiqetsDE);
+            setRoutingExplanation("Destination card · Germany clicked.");
+            videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
+            videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
+            break;
+          case "tiqets-uk":
+            openLink(LINKS.tiqetsUK);
+            setRoutingExplanation("Destination card · United Kingdom clicked.");
+            videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
+            videoTitle.textContent = "United Kingdom · London and beyond";
+            break;
+          case "tiqets-us":
+            openLink(LINKS.tiqetsUS);
+            setRoutingExplanation("Destination card · United States clicked.");
+            videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
+            videoTitle.textContent = "United States · Cities, parks, and attractions";
+            break;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
