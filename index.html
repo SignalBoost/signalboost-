@@ -2,1337 +2,895 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="SignalBoost is a digital shopping mall for travel, mobility, lifestyle, and digital services."
+  />
   <style>
-    :root {
-      --bg: #050816;
-      --bg-alt: #0b1020;
-      --card: #111827;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.12);
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --border: #1f2937;
-      --radius-lg: 14px;
-      --radius-md: 999px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
-      --shadow-chip: 0 10px 30px rgba(15, 23, 42, 0.7);
-      --transition-fast: 0.18s ease-out;
-      --transition-med: 0.22s ease-out;
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0d1b2a;
+      --card: #10243a;
+      --card-2: #132b45;
+      --text: #f5f7fb;
+      --muted: #a8b3c2;
+      --accent: #38bdf8;
+      --accent-2: #60a5fa;
+      --border: rgba(148, 163, 184, 0.18);
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+      --radius: 18px;
+      --max: 1180px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
-      margin: 0;
-      font-family: var(--font-sans);
-      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 30%),
+        linear-gradient(180deg, #06101c 0%, #081423 100%);
       color: var(--text);
-      -webkit-font-smoothing: antialiased;
     }
 
-    .app-shell {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    header {
+    .container {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .navbar {
       position: sticky;
       top: 0;
-      z-index: 40;
-      backdrop-filter: blur(18px);
-      background: linear-gradient(
-        to bottom,
-        rgba(2, 6, 23, 0.96),
-        rgba(2, 6, 23, 0.9),
-        rgba(2, 6, 23, 0.75)
-      );
-      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      background: rgba(7, 17, 31, 0.82);
+      border-bottom: 1px solid var(--border);
     }
 
-    .nav {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 14px 18px 10px;
+    .navbar-inner {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 0;
       flex-wrap: wrap;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 20% 0%, #38bdf8, #0ea5e9 40%, #0f172a 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.45);
-      font-size: 18px;
+    .logo {
+      font-size: 1.45rem;
       font-weight: 700;
-      color: #0b1120;
-    }
-
-    .brand-text-main {
-      font-weight: 600;
       letter-spacing: 0.02em;
-      font-size: 17px;
-    }
-
-    .brand-text-sub {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
-    }
-
-    .pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
-    }
-
-    .nav-cta {
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.9));
-      color: var(--text);
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: default;
     }
 
     .nav-links {
+      list-style: none;
       display: flex;
+      gap: 12px;
       flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
     }
 
     .nav-links a {
-      text-decoration: none;
-      color: var(--text);
-      font-size: 12px;
-      padding: 7px 12px;
+      color: var(--muted);
+      padding: 8px 12px;
+      border: 1px solid transparent;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      background: rgba(15, 23, 42, 0.55);
-      transition: border-color var(--transition-fast), transform var(--transition-fast);
+      transition: 0.2s ease;
     }
 
     .nav-links a:hover {
-      border-color: rgba(56, 189, 248, 0.7);
-      transform: translateY(-1px);
-    }
-
-    main { flex: 1; }
-
-    .layout {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 18px 18px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
-      gap: 18px;
-    }
-
-    @media (max-width: 900px) {
-      .layout {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .panel {
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
-      border-radius: 22px;
-      border: 1px solid rgba(15, 23, 42, 0.95);
-      box-shadow: var(--shadow-soft);
-      padding: 16px 16px 18px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.12), transparent 55%);
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    .panel-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .panel-title {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      color: #e5e7eb;
-    }
-
-    .panel-subtitle {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .panel-badge {
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      font-size: 11px;
-      color: var(--muted);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .panel-badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
-    }
-
-    .search-shell {
-      margin-bottom: 12px;
-    }
-
-    .search-input-wrap {
-      position: relative;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 10px 12px 10px 30px;
-      border-radius: 999px;
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
       color: var(--text);
-      font-size: 13px;
-      outline: none;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+      border-color: var(--border);
+      background: rgba(255, 255, 255, 0.03);
     }
 
-    .search-input::placeholder {
-      color: #6b7280;
+    .hero {
+      padding: 72px 0 30px;
     }
 
-    .search-icon {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 13px;
-      color: #6b7280;
+    .hero-card {
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 35%),
+        linear-gradient(180deg, rgba(16, 36, 58, 0.95), rgba(10, 24, 40, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 42px 28px;
     }
 
-    .chips-row {
+    .eyebrow {
+      display: inline-block;
+      color: var(--accent);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1.05;
+      margin-bottom: 14px;
+      max-width: 900px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 780px;
+      margin-bottom: 22px;
+    }
+
+    .hero-actions {
       display: flex;
+      gap: 12px;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
     }
 
-    .chip {
-      padding: 6px 11px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
-      color: #e5e7eb;
-      font-size: 11px;
+    .btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      transition: 0.2s ease;
       cursor: pointer;
-      box-shadow: var(--shadow-chip);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-        border-color var(--transition-fast), background var(--transition-fast);
     }
 
-    .chip span {
-      font-size: 13px;
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #05101c;
+      border: none;
     }
 
-    .chip-label-muted {
-      color: var(--muted);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
     }
 
-    .chip:hover {
+    .btn:hover {
       transform: translateY(-1px);
-      border-color: rgba(56, 189, 248, 0.7);
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+      opacity: 0.96;
     }
 
-    .chip-primary {
-      border-color: rgba(56, 189, 248, 0.9);
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.98));
+    section {
+      padding: 22px 0;
     }
 
-    .chip-pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
-    }
-
-    .section-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      margin: 14px 0 6px;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 10px;
-    }
-
-    .card {
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
-      border-radius: 16px;
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      padding: 10px 11px 11px;
-      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.9);
+    .section-head {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-      transition: transform var(--transition-med), box-shadow var(--transition-med),
-        border-color var(--transition-med), background var(--transition-med);
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(56, 189, 248, 0.9);
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.95);
-    }
-
-    .card-header-row {
-      display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      align-items: end;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
     }
 
-    .card-title {
-      font-size: 13px;
-      font-weight: 500;
+    .section-head h2 {
+      font-size: 1.7rem;
     }
 
-    .card-tag {
-      font-size: 10px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
+    .section-head p {
       color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+      max-width: 760px;
     }
 
-    .card-body {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 4px;
-      font-size: 11px;
-      color: #9ca3af;
-    }
-
-    .card-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: #38bdf8;
-      font-size: 11px;
-    }
-
-    .card-pill {
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      background: rgba(15, 23, 42, 0.9);
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .video-shell {
-      margin-top: 10px;
-      border-radius: 16px;
+    .discovery-shell {
+      background: linear-gradient(180deg, var(--card-2), var(--card));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
       overflow: hidden;
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      background: #020617;
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
-      aspect-ratio: 16 / 9;
     }
 
-    .video-shell iframe {
+    .video-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .video-wrap iframe {
       width: 100%;
       height: 100%;
       border: 0;
       display: block;
     }
 
-    .video-meta {
-      margin-top: 8px;
+    .discovery-body {
+      padding: 20px;
+    }
+
+    .discovery-meta {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .video-title {
-      font-size: 12px;
-      color: #e5e7eb;
-    }
-
-    .video-badge {
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-    }
-
-    .right-panel-section {
+      gap: 16px;
+      align-items: start;
+      flex-wrap: wrap;
       margin-bottom: 16px;
     }
 
-    .right-panel-section:last-child {
-      margin-bottom: 0;
+    .discovery-meta h3 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
     }
 
-    .small-list {
+    .discovery-meta p {
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .tag {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chip-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-weight: 600;
+    }
+
+    .chip-btn:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .top-picks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+    }
+
+    .pick-card {
+      background: linear-gradient(180deg, var(--card-2), var(--card));
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: 0.2s ease;
+    }
+
+    .pick-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .pick-tag {
+      display: inline-block;
+      font-size: 0.76rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .pick-card h3 {
+      margin-bottom: 8px;
+      font-size: 1.15rem;
+    }
+
+    .pick-card p {
+      color: var(--muted);
+      font-size: 0.96rem;
+      margin-bottom: 16px;
+      min-height: 70px;
+    }
+
+    .pick-link {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--card), #0d2134);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: 0.2s ease;
+      min-height: 170px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 6px;
+      justify-content: space-between;
     }
 
-    .small-item {
-      padding: 7px 9px;
-      border-radius: 12px;
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
-      font-size: 11px;
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .card-type {
+      display: inline-block;
+      font-size: 0.74rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .card h3 {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-bottom: 16px;
+    }
+
+    .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: border-color var(--transition-fast), transform var(--transition-fast),
-        box-shadow var(--transition-fast);
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+      gap: 10px;
+      margin-top: auto;
     }
 
-    .small-item:hover {
-      border-color: rgba(56, 189, 248, 0.9);
-      transform: translateY(-1px);
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+    .card-link {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.95rem;
     }
 
-    .small-item-main {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .small-item-title {
-      font-size: 11px;
-      color: #e5e7eb;
-    }
-
-    .small-item-sub {
-      font-size: 10px;
+    .chip {
+      font-size: 0.75rem;
       color: var(--muted);
-    }
-
-    .small-item-pill {
-      padding: 3px 7px;
+      border: 1px solid var(--border);
+      padding: 5px 9px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      font-size: 10px;
-      color: var(--muted);
+      white-space: nowrap;
     }
 
-    .services-shell {
-      max-width: 1120px;
-      margin: 0 auto 38px;
-      padding: 0 18px 10px;
-    }
-
-    .services-panel {
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
+    .about-card,
+    .contact-card {
+      background: linear-gradient(180deg, var(--card), #0d2134);
+      border: 1px solid var(--border);
       border-radius: 22px;
-      border: 1px solid rgba(15, 23, 42, 0.95);
-      box-shadow: var(--shadow-soft);
-      padding: 18px;
-      position: relative;
-      overflow: hidden;
+      padding: 24px;
+      box-shadow: var(--shadow);
     }
 
-    .services-panel::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.08), transparent 55%);
-      pointer-events: none;
-    }
-
-    .services-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .services-section {
-      margin-top: 10px;
-      margin-bottom: 28px;
-    }
-
-    .services-section:last-child {
-      margin-bottom: 4px;
-    }
-
-    .services-title {
-      font-size: 28px;
-      margin: 0 0 6px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .services-subtitle {
+    .about-card p,
+    .contact-card p {
       color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 18px;
-    }
-
-    .service-heading {
-      margin: 0 0 14px;
-      font-size: 26px;
-      font-weight: 700;
-      color: #f3f4f6;
-    }
-
-    .service-grid-round,
-    .service-grid-square,
-    .service-grid-wide {
-      display: grid;
-      gap: 18px;
-    }
-
-    .service-grid-round {
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    }
-
-    .service-grid-square {
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    }
-
-    .service-grid-wide {
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    }
-
-    .service-card,
-    .service-pill,
-    .service-wide,
-    .service-static {
-      border: 2px solid rgba(56, 189, 248, 0.55);
-      color: var(--text);
-      background: rgba(11, 16, 32, 0.8);
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.45);
-      transition: transform var(--transition-fast), border-color var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast);
-      text-decoration: none;
-    }
-
-    .service-card:hover,
-    .service-pill:hover,
-    .service-wide:hover {
-      transform: translateY(-2px);
-      border-color: rgba(56, 189, 248, 0.95);
-      background: rgba(15, 23, 42, 0.95);
-      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.7);
-    }
-
-    .service-static {
-      opacity: 0.9;
-      cursor: default;
-    }
-
-    .service-pill,
-    .service-static {
-      min-height: 110px;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
-      font-size: 26px;
-      font-weight: 500;
-    }
-
-    .service-card {
-      min-height: 110px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: 500;
-    }
-
-    .service-wide {
-      min-height: 100px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: 500;
-    }
-
-    @media (max-width: 900px) {
-      .service-heading { font-size: 22px; }
-      .service-pill,
-      .service-card,
-      .service-wide,
-      .service-static { font-size: 18px; }
+      max-width: 760px;
     }
 
     footer {
-      border-top: 1px solid rgba(15, 23, 42, 0.95);
-      padding: 10px 18px 16px;
-      font-size: 11px;
-      color: var(--muted);
       text-align: center;
-      background: radial-gradient(circle at top, #020617, #020617 60%, #020617 100%);
+      padding: 28px 16px 36px;
+      color: var(--muted);
+      font-size: 0.95rem;
     }
 
-    .footer-inner {
-      max-width: 1120px;
-      margin: 0 auto;
+    @media (max-width: 640px) {
+      .hero-card {
+        padding: 30px 18px;
+      }
+
+      .discovery-body {
+        padding: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header>
-      <div class="nav">
-        <div class="brand">
-          <div class="brand-mark">S</div>
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <div class="logo">SignalBoost</div>
+      <ul class="nav-links">
+        <li><a href="#discovery">Discovery</a></li>
+        <li><a href="#top-picks">Top Picks</a></li>
+        <li><a href="#partners">Partners</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <span class="eyebrow">Digital Shopping Mall</span>
+        <h1>Discover premium travel, mobility, digital, and lifestyle solutions.</h1>
+        <p>
+          SignalBoost is an AI/HMI-inspired discovery mall that helps visitors explore curated
+          partners through clean design, guided discovery, and a professional shopping experience.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#top-picks">Explore Top Picks</a>
+          <a class="btn btn-secondary" href="#partners">Browse All Partners</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="discovery">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>AI Discovery Screen</h2>
+          <p>
+            A controlled video layer keeps the platform engaging while preserving a professional look.
+          </p>
+        </div>
+      </div>
+
+      <div class="discovery-shell">
+        <div class="video-wrap">
+          <iframe
+            id="mainVideo"
+            src="https://www.youtube.com/embed/2zKp7P0QF0w"
+            title="SignalBoost discovery video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <div class="discovery-body">
+          <div class="discovery-meta">
+            <div>
+              <h3 id="videoTitle">Global Discovery</h3>
+              <p id="videoDescription">
+                Start with broad inspiration, then guide visitors into the right partner experience.
+              </p>
+            </div>
+            <div class="tag">AI/HMI Driven</div>
+          </div>
+
+          <div class="chip-row">
+            <button class="chip-btn" onclick="setVideo('global')">Global</button>
+            <button class="chip-btn" onclick="setVideo('rome')">Rome</button>
+            <button class="chip-btn" onclick="setVideo('paris')">Paris</button>
+            <button class="chip-btn" onclick="setVideo('safari')">Safari</button>
+            <button class="chip-btn" onclick="setVideo('usa')">USA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="top-picks">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Top Picks</h2>
+          <p>Featured options placed first to help visitors reach your strongest categories faster.</p>
+        </div>
+      </div>
+
+      <div class="top-picks">
+        <a class="pick-card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">
+          <span class="pick-tag">Experiences</span>
+          <h3>Klook</h3>
+          <p>Attractions, activities, and travel experiences in one place.</p>
+          <span class="pick-link">Open partner →</span>
+        </a>
+
+        <a class="pick-card" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">
+          <span class="pick-tag">Flights</span>
+          <h3>Kiwi</h3>
+          <p>Flight discovery and booking for travelers looking for route options and deals.</p>
+          <span class="pick-link">Open partner →</span>
+        </a>
+
+        <a class="pick-card" href="https://yesim.tpo.lv/olNUcwvB" target="_blank" rel="noopener noreferrer">
+          <span class="pick-tag">Connectivity</span>
+          <h3>Yesim</h3>
+          <p>eSIM access for travelers who need mobile data while abroad.</p>
+          <span class="pick-link">Open partner →</span>
+        </a>
+
+        <a class="pick-card" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">
+          <span class="pick-tag">Travel Support</span>
+          <h3>AirHelp</h3>
+          <p>Flight disruption support for delayed, cancelled, or overbooked trips.</p>
+          <span class="pick-link">Open partner →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="partners">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>All Partners</h2>
+          <p>A focused, live set of affiliate partners across travel, mobility, digital tools, and experiences.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <div class="brand-text-main">SignalBoost Travel</div>
-            <div class="brand-text-sub">Video-first discovery · Neutral · Global</div>
+            <span class="card-type">Mobility</span>
+            <h3>Allycar</h3>
+            <p>Car rental option for travelers who need flexible transportation.</p>
           </div>
-        </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Cars</span>
+          </div>
+        </a>
 
-        <div class="nav-links">
-          <a href="#discovery">Discovery</a>
-          <a href="#utilities">Core Utilities</a>
-          <a href="#lifestyle">Lifestyle & Productivity</a>
-          <a href="#seasonal">Seasonal Suites</a>
-        </div>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Transfers</span>
+            <h3>Carmel Car & Limousine</h3>
+            <p>Ground transportation and private ride solutions.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Transport</span>
+          </div>
+        </a>
 
-        <div class="nav-right">
-          <div class="pill">
-            <div class="pill-dot"></div>
-            Live build · Luis
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Experiences</span>
+            <h3>Desire Experience</h3>
+            <p>Resort and experience-based lifestyle travel offering.</p>
           </div>
-          <div class="nav-cta">
-            <span>Front-end only · Ready to deploy</span>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Premium</span>
           </div>
-        </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Travel Docs</span>
+            <h3>eVisa</h3>
+            <p>Visa-related support for travelers planning international trips.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Documents</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Travel</span>
+            <h3>Go! Go! España</h3>
+            <p>Spain-focused partner option for visitors exploring that market.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Regional</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Safari</span>
+            <h3>Go2Africa</h3>
+            <p>Safari and Africa-focused premium travel planning.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">High Value</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Cars</span>
+            <h3>Jumbo Car Costa Rica</h3>
+            <p>Regional car rental option with Costa Rica focus.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Regional</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Lifestyle</span>
+            <h3>King Koil</h3>
+            <p>Home and comfort-focused lifestyle product partner.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Lifestyle</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Travel Deals</span>
+            <h3>Lastminute SE</h3>
+            <p>Deal-driven travel option for users browsing last-minute offers.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Deals</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Software</span>
+            <h3>PearlMountain</h3>
+            <p>Creative and utility software offering.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Digital</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Experiences</span>
+            <h3>Temptation Experience</h3>
+            <p>Premium experience and resort-oriented travel partner.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Premium</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Connectivity</span>
+            <h3>BitJoy eSIM</h3>
+            <p>Travel eSIM option for data on the go.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">eSIM</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Marketplace</span>
+            <h3>The Builder Market</h3>
+            <p>Marketplace-style partner for home and project-related browsing.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Marketplace</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Attractions</span>
+            <h3>Tiqets DE</h3>
+            <p>Germany-focused attractions and ticketing link.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Germany</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Attractions</span>
+            <h3>Tiqets FR</h3>
+            <p>France-focused attractions and ticketing link.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">France</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Attractions</span>
+            <h3>Tiqets IT</h3>
+            <p>Italy-focused attractions and ticketing link.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Italy</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Attractions</span>
+            <h3>Tiqets UK</h3>
+            <p>United Kingdom-focused attractions and ticketing link.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">UK</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Attractions</span>
+            <h3>Tiqets US</h3>
+            <p>United States-focused attractions and ticketing link.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">US</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Experiences</span>
+            <h3>Klook</h3>
+            <p>Broad travel experiences and attraction booking option.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Global</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://yesim.tpo.lv/olNUcwvB" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Connectivity</span>
+            <h3>Yesim</h3>
+            <p>eSIM and mobile data solution for travelers.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">eSIM</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Flights</span>
+            <h3>Kiwi</h3>
+            <p>Flight search and booking option for global travel routes.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Flights</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Support</span>
+            <h3>AirHelp</h3>
+            <p>Travel disruption and passenger support partner.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Support</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://nordvpn.tpo.lv/q1aN4Xru" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="card-type">Security</span>
+            <h3>NordVPN</h3>
+            <p>Privacy and security solution for connected travelers and remote users.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Digital</span>
+          </div>
+        </a>
       </div>
-    </header>
+    </div>
+  </section>
 
-    <main>
-      <div class="layout" id="discovery">
-        <section class="panel">
-          <div class="panel-inner">
-            <div class="panel-header">
-              <div>
-                <div class="panel-title">Travel video discovery</div>
-                <div class="panel-subtitle">Search any destination or topic · We route intent to the right partner</div>
-              </div>
-              <div class="panel-badge">
-                <div class="panel-badge-dot"></div>
-                AI-assisted routing
-              </div>
-            </div>
-
-            <div class="search-shell">
-              <div class="search-input-wrap">
-                <span class="search-icon">🔍</span>
-                <input
-                  id="searchInput"
-                  class="search-input"
-                  type="text"
-                  placeholder="Try: Rome attractions, Germany trip, safari in Kenya, car rental in Miami, visa for Spain, eSIM for Europe..."
-                />
-              </div>
-              <div class="chips-row" id="chipsRow">
-                <button class="chip chip-primary" data-intent="attractions">
-                  <div class="chip-pill-dot"></div>
-                  <span>Attractions</span>
-                </button>
-                <button class="chip" data-intent="cars">
-                  <span>Car rentals</span>
-                </button>
-                <button class="chip" data-intent="safaris">
-                  <span>Safaris</span>
-                </button>
-                <button class="chip" data-intent="esim">
-                  <span>eSIM</span>
-                </button>
-                <button class="chip" data-intent="visa">
-                  <span>eVisa</span>
-                </button>
-                <button class="chip" data-intent="flights">
-                  <span>Flights</span>
-                </button>
-
-                <button class="chip" data-intent="italy">
-                  <span>Italy</span>
-                  <span class="chip-label-muted">Tiqets IT</span>
-                </button>
-                <button class="chip" data-intent="france">
-                  <span>France</span>
-                  <span class="chip-label-muted">Tiqets FR</span>
-                </button>
-                <button class="chip" data-intent="germany">
-                  <span>Germany</span>
-                  <span class="chip-label-muted">Tiqets DE</span>
-                </button>
-                <button class="chip" data-intent="uk">
-                  <span>United Kingdom</span>
-                  <span class="chip-label-muted">Tiqets UK</span>
-                </button>
-                <button class="chip" data-intent="us">
-                  <span>United States</span>
-                  <span class="chip-label-muted">Tiqets US</span>
-                </button>
-                <button class="chip" data-intent="safari">
-                  <span>Safari trips</span>
-                  <span class="chip-label-muted">Go2Africa</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="section-label">Now playing</div>
-            <div class="video-shell">
-              <iframe
-                id="videoFrame"
-                src="https://www.youtube.com/embed/2zKp7P0QF0w"
-                title="Travel inspiration"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              ></iframe>
-            </div>
-            <div class="video-meta">
-              <div>
-                <div class="video-title" id="videoTitle">Global travel inspiration · Neutral, creator-driven</div>
-                <div>SignalBoost surfaces content · You choose where to book</div>
-              </div>
-              <div class="video-badge">Discovery feed</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-inner">
-            <div class="panel-header">
-              <div>
-                <div class="panel-title">Travel commerce engine</div>
-                <div class="panel-subtitle">We route intent to the right partner · You stay in control</div>
-              </div>
-              <div class="panel-badge">
-                <div class="panel-badge-dot"></div>
-                Affiliate-ready
-              </div>
-            </div>
-
-            <div class="right-panel-section">
-              <div class="section-label">Core partners</div>
-              <div class="cards-grid">
-                <article class="card" data-link-type="klook">
-                  <div class="card-header-row">
-                    <div class="card-title">Attractions worldwide · Klook</div>
-                    <div class="card-tag">Attractions</div>
-                  </div>
-                  <div class="card-body">
-                    Generic attractions, tours, and experience routing using your Klook link.
-                  </div>
-                  <div class="card-footer">
-                    <div class="card-cta">Open Klook →</div>
-                    <div class="card-pill">Global · Main link</div>
-                  </div>
-                </article>
-
-                <article class="card" data-link-type="allycar">
-                  <div class="card-header-row">
-                    <div class="card-title">Car rentals · Allycar</div>
-                    <div class="card-tag">Cars</div>
-                  </div>
-                  <div class="card-body">
-                    Affiliate car rental option for broad trip-planning and transport intent.
-                  </div>
-                  <div class="card-footer">
-                    <div class="card-cta">Open Allycar →</div>
-                    <div class="card-pill">Cars · Affiliate</div>
-                  </div>
-                </article>
-
-                <article class="card" data-link-type="go2africa">
-                  <div class="card-header-row">
-                    <div class="card-title">African safaris · Go2Africa</div>
-                    <div class="card-tag">Safaris</div>
-                  </div>
-                  <div class="card-body">
-                    Tailor-made safaris and luxury Africa trips with strong commission potential.
-                  </div>
-                  <div class="card-footer">
-                    <div class="card-cta">Open Go2Africa →</div>
-                    <div class="card-pill">Premium · High-ticket</div>
-                  </div>
-                </article>
-
-                <article class="card" data-link-type="kiwi">
-                  <div class="card-header-row">
-                    <div class="card-title">Flights · Kiwi</div>
-                    <div class="card-tag">Flights</div>
-                  </div>
-                  <div class="card-body">
-                    Flights now route to your Kiwi affiliate link instead of a placeholder.
-                  </div>
-                  <div class="card-footer">
-                    <div class="card-cta">Open Kiwi →</div>
-                    <div class="card-pill">Flights · Affiliate</div>
-                  </div>
-                </article>
-
-                <article class="card" data-link-type="evisa">
-                  <div class="card-header-row">
-                    <div class="card-title">eVisa</div>
-                    <div class="card-tag">Travel docs</div>
-                  </div>
-                  <div class="card-body">
-                    Route visa-related search intent to your eVisa affiliate option.
-                  </div>
-                  <div class="card-footer">
-                    <div class="card-cta">Open eVisa →</div>
-                    <div class="card-pill">Travel docs</div>
-                  </div>
-                </article>
-              </div>
-            </div>
-
-            <div class="right-panel-section">
-              <div class="section-label">Destination-specific attractions</div>
-              <div class="small-list">
-                <div class="small-item" data-link-type="tiqets-it">
-                  <div class="small-item-main">
-                    <div class="small-item-title">Italy · Tiqets IT</div>
-                    <div class="small-item-sub">Rome, Vatican, Florence, Venice, and more.</div>
-                  </div>
-                  <div class="small-item-pill">Regional · IT</div>
-                </div>
-
-                <div class="small-item" data-link-type="tiqets-fr">
-                  <div class="small-item-main">
-                    <div class="small-item-title">France · Tiqets FR</div>
-                    <div class="small-item-sub">Paris, Louvre, Eiffel Tower, Versailles.</div>
-                  </div>
-                  <div class="small-item-pill">Regional · FR</div>
-                </div>
-
-                <div class="small-item" data-link-type="tiqets-de">
-                  <div class="small-item-main">
-                    <div class="small-item-title">Germany · Tiqets DE</div>
-                    <div class="small-item-sub">Berlin, Munich, castles, museums.</div>
-                  </div>
-                  <div class="small-item-pill">Regional · DE</div>
-                </div>
-
-                <div class="small-item" data-link-type="tiqets-uk">
-                  <div class="small-item-main">
-                    <div class="small-item-title">United Kingdom · Tiqets UK</div>
-                    <div class="small-item-sub">London attractions, museums, experiences.</div>
-                  </div>
-                  <div class="small-item-pill">Regional · UK</div>
-                </div>
-
-                <div class="small-item" data-link-type="tiqets-us">
-                  <div class="small-item-main">
-                    <div class="small-item-title">United States · Tiqets US</div>
-                    <div class="small-item-sub">US-focused attractions via your main link.</div>
-                  </div>
-                  <div class="small-item-pill">Regional · US</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="right-panel-section">
-              <div class="section-label">Routing explanation</div>
-              <div class="small-list">
-                <div class="small-item">
-                  <div class="small-item-main">
-                    <div class="small-item-title">How this works</div>
-                    <div class="small-item-sub" id="routingExplanation">
-                      Type a query or click a chip. We infer intent and open the most relevant partner in a new tab.
-                    </div>
-                  </div>
-                  <div class="small-item-pill">Transparent · Neutral</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+  <section id="about">
+    <div class="container">
+      <div class="about-card">
+        <h2>About SignalBoost</h2>
+        <p>
+          SignalBoost is a digital shopping mall that blends clean interface design with guided discovery.
+          The goal is to keep the experience professional as new partners are added, while still creating
+          engagement through controlled video and curated categories.
+        </p>
       </div>
+    </div>
+  </section>
 
-      <section class="services-shell">
-        <div class="services-panel">
-          <div class="services-inner">
-            <div class="services-section">
-              <h2 class="services-title">SignalBoost</h2>
-              <div class="services-subtitle">Services hub merged into your discovery site</div>
-            </div>
-
-            <div class="services-section" id="utilities">
-              <h3 class="service-heading">Core Utilities</h3>
-              <div class="service-grid-round">
-                <div class="service-static">Hotels</div>
-                <div class="service-static">Card Services</div>
-                <a class="service-pill" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">AirHelp</a>
-                <a class="service-pill" href="https://yesim.tpo.lv/olNUcwvB" target="_blank" rel="noopener noreferrer">Yesim eSIM</a>
-              </div>
-            </div>
-
-            <div class="services-section" id="lifestyle">
-              <h3 class="service-heading">Lifestyle &amp; Productivity</h3>
-              <div class="service-grid-square">
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">King Koil</a>
-                <a class="service-card" href="https://nordvpn.tpo.lv/q1aN4Xru" target="_blank" rel="noopener noreferrer">NordVPN</a>
-                <div class="service-static service-card">Fitness</div>
-                <div class="service-static service-card">Nutrition</div>
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">PearlMountain</a>
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go! Go! España</a>
-              </div>
-            </div>
-
-            <div class="services-section" id="seasonal">
-              <h3 class="service-heading">Luxury Escapes</h3>
-              <div class="service-grid-wide">
-                <a class="service-wide" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Desire Experience</a>
-                <a class="service-wide" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Temptation Experience</a>
-              </div>
-            </div>
-
-            <div class="services-section">
-              <h3 class="service-heading">Additional Travel Partners</h3>
-              <div class="service-grid-square">
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Allycar</a>
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Carmel Car &amp; Limousine</a>
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">eVisa</a>
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go2Africa (US)</a>
-                <a class="service-card" href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Jumbo Car Costa Rica</a>
-                <a class="service-card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">Klook</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="footer-inner">
-        SignalBoost Travel · Video-first discovery layer. You stay in control of where to book. Neutral, global, and affiliate-powered.
+  <section id="contact">
+    <div class="container">
+      <div class="contact-card">
+        <h2>Contact</h2>
+        <p>Email: support@signalboostapp.com</p>
       </div>
-    </footer>
-  </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 SignalBoost. All rights reserved.</p>
+  </footer>
 
   <script>
-    const LINKS = {
-      klook: "https://klook.tpo.lv/fTRPLj2l",
-      yesim: "https://yesim.tpo.lv/olNUcwvB",
-      kiwi: "https://kiwi.tpo.lv/qKPZ1inz",
-      airhelp: "https://airhelp.tpo.lv/grL9Ojju",
-      nordvpn: "https://nordvpn.tpo.lv/q1aN4Xru",
+    function setVideo(type) {
+      const frame = document.getElementById("mainVideo");
+      const title = document.getElementById("videoTitle");
+      const desc = document.getElementById("videoDescription");
 
-      tiqetsUS: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-      tiqetsUK: "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
-      tiqetsFR: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-      tiqetsIT: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
-      tiqetsDE: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+      const videos = {
+        global: {
+          url: "https://www.youtube.com/embed/2zKp7P0QF0w",
+          title: "Global Discovery",
+          desc: "Start with broad inspiration, then guide visitors into the right partner experience."
+        },
+        rome: {
+          url: "https://www.youtube.com/embed/9V5v5xXQ2nQ",
+          title: "Rome Discovery",
+          desc: "Use destination inspiration to move visitors toward experiences and attractions."
+        },
+        paris: {
+          url: "https://www.youtube.com/embed/7Z8J0aZp6nY",
+          title: "Paris Discovery",
+          desc: "A polished destination view that supports premium attraction and travel discovery."
+        },
+        safari: {
+          url: "https://www.youtube.com/embed/7ZqVQ1BM8Dc",
+          title: "Safari Discovery",
+          desc: "Ideal for positioning high-value safari and premium Africa partner traffic."
+        },
+        usa: {
+          url: "https://www.youtube.com/embed/1vWnS9W8zq0",
+          title: "USA Discovery",
+          desc: "A broader domestic discovery mode for attractions, travel services, and planning."
+        }
+      };
 
-      allycar: "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806",
-      carmel: "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806",
-      go2Africa: "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
-      evisa: "https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806"
-    };
+      const selected = videos[type];
+      if (!selected) return;
 
-    const searchInput = document.getElementById("searchInput");
-    const routingExplanation = document.getElementById("routingExplanation");
-    const videoFrame = document.getElementById("videoFrame");
-    const videoTitle = document.getElementById("videoTitle");
-
-    function openLink(url) {
-      if (!url) return;
-      window.open(url, "_blank", "noopener,noreferrer");
+      frame.src = selected.url;
+      title.textContent = selected.title;
+      desc.textContent = selected.desc;
     }
-
-    function setRoutingExplanation(text) {
-      routingExplanation.textContent = text;
-    }
-
-    function routeIntentFromText(text) {
-      const q = (text || "").toLowerCase();
-
-      const isItaly =
-        q.includes("italy") || q.includes("rome") || q.includes("vatican") || q.includes("florence") || q.includes("venice");
-      const isFrance =
-        q.includes("france") || q.includes("paris") || q.includes("louvre") || q.includes("eiffel");
-      const isGermany =
-        q.includes("germany") || q.includes("berlin") || q.includes("munich") || q.includes("hamburg");
-      const isUK =
-        q.includes("uk") || q.includes("london") || q.includes("britain") || q.includes("england");
-      const isUS =
-        q.includes("usa") || q.includes("united states") || q.includes("new york") || q.includes("miami") || q.includes("orlando");
-
-      const wantsAttractions =
-        q.includes("attraction") ||
-        q.includes("ticket") ||
-        q.includes("museum") ||
-        q.includes("things to do") ||
-        q.includes("what to do") ||
-        q.includes("tour") ||
-        q.includes("skip the line");
-
-      const wantsCars =
-        q.includes("car rental") ||
-        q.includes("rent a car") ||
-        q.includes("rental car") ||
-        q.includes("hire a car") ||
-        q.includes("chauffeur") ||
-        q.includes("limousine");
-
-      const wantsVisa =
-        q.includes("visa") ||
-        q.includes("evisa") ||
-        q.includes("travel visa");
-
-      const wantsEsim =
-        q.includes("esim") ||
-        q.includes("sim card") ||
-        q.includes("data plan");
-
-      const wantsSafari =
-        q.includes("safari") ||
-        q.includes("masai mara") ||
-        q.includes("serengeti") ||
-        q.includes("kruger") ||
-        q.includes("africa trip");
-
-      const wantsFlights =
-        q.includes("flight") ||
-        q.includes("fly to") ||
-        q.includes("plane ticket") ||
-        q.includes("airline");
-
-      if (wantsSafari) {
-        openLink(LINKS.go2Africa);
-        setRoutingExplanation("We detected safari / Africa trip intent and routed to Go2Africa.");
-        videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
-        videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
-        return;
-      }
-
-      if (wantsCars) {
-        openLink(LINKS.allycar);
-        setRoutingExplanation("We detected car rental or transfer intent and routed to Allycar.");
-        return;
-      }
-
-      if (wantsVisa) {
-        openLink(LINKS.evisa);
-        setRoutingExplanation("We detected visa intent and routed to eVisa.");
-        return;
-      }
-
-      if (wantsEsim) {
-        openLink(LINKS.yesim);
-        setRoutingExplanation("We detected eSIM / mobile data intent and routed to Yesim.");
-        return;
-      }
-
-      if (wantsFlights) {
-        openLink(LINKS.kiwi);
-        setRoutingExplanation("We detected flight intent and routed to Kiwi.");
-        return;
-      }
-
-      if (wantsAttractions || isItaly || isFrance || isGermany || isUK || isUS) {
-        if (isItaly) {
-          openLink(LINKS.tiqetsIT);
-          setRoutingExplanation("We detected Italy / Rome intent and routed to your Tiqets Italy link.");
-          videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
-          videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
-          return;
-        }
-        if (isFrance) {
-          openLink(LINKS.tiqetsFR);
-          setRoutingExplanation("We detected France / Paris intent and routed to your Tiqets France link.");
-          videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
-          videoTitle.textContent = "France · Paris and beyond";
-          return;
-        }
-        if (isGermany) {
-          openLink(LINKS.tiqetsDE);
-          setRoutingExplanation("We detected Germany intent and routed to your Tiqets Germany link.");
-          videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
-          videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
-          return;
-        }
-        if (isUK) {
-          openLink(LINKS.tiqetsUK);
-          setRoutingExplanation("We detected UK / London intent and routed to your Tiqets UK link.");
-          videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
-          videoTitle.textContent = "United Kingdom · London and beyond";
-          return;
-        }
-        if (isUS) {
-          openLink(LINKS.tiqetsUS);
-          setRoutingExplanation("We detected US intent and routed to your main Tiqets US link.");
-          videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
-          videoTitle.textContent = "United States · Cities, parks, and attractions";
-          return;
-        }
-
-        openLink(LINKS.klook);
-        setRoutingExplanation("We detected generic attractions intent and routed to Klook.");
-        return;
-      }
-
-      setRoutingExplanation(
-        "We did not detect a clear booking intent. Try attractions, flights, car rentals, safaris, eVisa, or eSIM."
-      );
-    }
-
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        routeIntentFromText(searchInput.value);
-      }
-    });
-
-    document.getElementById("chipsRow").addEventListener("click", (e) => {
-      const chip = e.target.closest(".chip");
-      if (!chip) return;
-      const intent = chip.getAttribute("data-intent");
-      if (!intent) return;
-
-      switch (intent) {
-        case "attractions":
-          openLink(LINKS.klook);
-          setRoutingExplanation("Attractions chip clicked · Routed to Klook.");
-          break;
-        case "cars":
-          openLink(LINKS.allycar);
-          setRoutingExplanation("Car rentals chip clicked · Routed to Allycar.");
-          break;
-        case "safaris":
-        case "safari":
-          openLink(LINKS.go2Africa);
-          setRoutingExplanation("Safari chip clicked · Routed to Go2Africa.");
-          videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
-          videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
-          break;
-        case "esim":
-          openLink(LINKS.yesim);
-          setRoutingExplanation("eSIM chip clicked · Routed to Yesim.");
-          break;
-        case "visa":
-          openLink(LINKS.evisa);
-          setRoutingExplanation("eVisa chip clicked · Routed to eVisa.");
-          break;
-        case "flights":
-          openLink(LINKS.kiwi);
-          setRoutingExplanation("Flights chip clicked · Routed to Kiwi.");
-          break;
-        case "italy":
-          openLink(LINKS.tiqetsIT);
-          setRoutingExplanation("Italy chip clicked · Routed to your Tiqets Italy link.");
-          videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
-          videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
-          break;
-        case "france":
-          openLink(LINKS.tiqetsFR);
-          setRoutingExplanation("France chip clicked · Routed to your Tiqets France link.");
-          videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
-          videoTitle.textContent = "France · Paris and beyond";
-          break;
-        case "germany":
-          openLink(LINKS.tiqetsDE);
-          setRoutingExplanation("Germany chip clicked · Routed to your Tiqets Germany link.");
-          videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
-          videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
-          break;
-        case "uk":
-          openLink(LINKS.tiqetsUK);
-          setRoutingExplanation("United Kingdom chip clicked · Routed to your Tiqets UK link.");
-          videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
-          videoTitle.textContent = "United Kingdom · London and beyond";
-          break;
-        case "us":
-          openLink(LINKS.tiqetsUS);
-          setRoutingExplanation("United States chip clicked · Routed to your main Tiqets US link.");
-          videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
-          videoTitle.textContent = "United States · Cities, parks, and attractions";
-          break;
-      }
-    });
-
-    document.querySelectorAll(".card").forEach((card) => {
-      card.addEventListener("click", () => {
-        const type = card.getAttribute("data-link-type");
-        switch (type) {
-          case "klook":
-            openLink(LINKS.klook);
-            setRoutingExplanation("Core card · Klook clicked.");
-            break;
-          case "allycar":
-            openLink(LINKS.allycar);
-            setRoutingExplanation("Core card · Allycar clicked.");
-            break;
-          case "go2africa":
-            openLink(LINKS.go2Africa);
-            setRoutingExplanation("Core card · Go2Africa clicked.");
-            videoFrame.src = "https://www.youtube.com/embed/7ZqVQ1BM8Dc";
-            videoTitle.textContent = "Safari inspiration · Africa trips and wildlife experiences";
-            break;
-          case "kiwi":
-            openLink(LINKS.kiwi);
-            setRoutingExplanation("Core card · Kiwi clicked.");
-            break;
-          case "evisa":
-            openLink(LINKS.evisa);
-            setRoutingExplanation("Core card · eVisa clicked.");
-            break;
-        }
-      });
-    });
-
-    document.querySelectorAll(".small-item[data-link-type]").forEach((item) => {
-      item.addEventListener("click", () => {
-        const type = item.getAttribute("data-link-type");
-        switch (type) {
-          case "tiqets-it":
-            openLink(LINKS.tiqetsIT);
-            setRoutingExplanation("Destination card · Italy clicked.");
-            videoFrame.src = "https://www.youtube.com/embed/9V5v5xXQ2nQ";
-            videoTitle.textContent = "Italy · Rome, Florence, Venice and more";
-            break;
-          case "tiqets-fr":
-            openLink(LINKS.tiqetsFR);
-            setRoutingExplanation("Destination card · France clicked.");
-            videoFrame.src = "https://www.youtube.com/embed/7Z8J0aZp6nY";
-            videoTitle.textContent = "France · Paris and beyond";
-            break;
-          case "tiqets-de":
-            openLink(LINKS.tiqetsDE);
-            setRoutingExplanation("Destination card · Germany clicked.");
-            videoFrame.src = "https://www.youtube.com/embed/0q3qX9nQ2xY";
-            videoTitle.textContent = "Germany · Berlin, Munich, castles and culture";
-            break;
-          case "tiqets-uk":
-            openLink(LINKS.tiqetsUK);
-            setRoutingExplanation("Destination card · United Kingdom clicked.");
-            videoFrame.src = "https://www.youtube.com/embed/45ETZ1xvHS0";
-            videoTitle.textContent = "United Kingdom · London and beyond";
-            break;
-          case "tiqets-us":
-            openLink(LINKS.tiqetsUS);
-            setRoutingExplanation("Destination card · United States clicked.");
-            videoFrame.src = "https://www.youtube.com/embed/1vWnS9W8zq0";
-            videoTitle.textContent = "United States · Cities, parks, and attractions";
-            break;
-        }
-      });
-    });
   </script>
 </body>
 </html>
