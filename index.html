@@ -859,6 +859,161 @@
       margin-left: 6px;
     }
 
+  
+    body {
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #05101c;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .revenue-bar {
+      margin: 18px 0 6px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .revenue-link {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      display: block;
+      transition: 0.2s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .revenue-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .revenue-link strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.96rem;
+    }
+
+    .revenue-link span {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .light-mode {
+      --bg: #f7f4ee;
+      --card: #fffaf2;
+      --card-2: #f4ede3;
+      --text: #1f2937;
+      --muted: #5b6472;
+      --accent: #c98b2b;
+      --accent-2: #e6b85c;
+      --border: rgba(120, 96, 58, 0.16);
+      --shadow: 0 16px 44px rgba(83, 63, 34, 0.10);
+      --highlight: rgba(201, 139, 43, 0.18);
+      --gold: #b8831e;
+      --sponsored: #c66117;
+    }
+
+    body.light-mode {
+      background:
+        radial-gradient(circle at top, rgba(201, 139, 43, 0.10), transparent 28%),
+        linear-gradient(180deg, #fcfaf6 0%, #f5efe6 100%);
+      color: var(--text);
+    }
+
+    body.light-mode .navbar {
+      background: rgba(252, 248, 241, 0.84);
+      border-bottom: 1px solid var(--border);
+    }
+
+    body.light-mode .hero-card,
+    body.light-mode .featured-card,
+    body.light-mode .pick-card,
+    body.light-mode .card,
+    body.light-mode .about-card,
+    body.light-mode .contact-card,
+    body.light-mode .discovery-shell,
+    body.light-mode .newsletter-card,
+    body.light-mode .shop-panel,
+    body.light-mode .creator-panel,
+    body.light-mode .creator-queue,
+    body.light-mode .revenue-link {
+      background:
+        radial-gradient(circle at top left, rgba(201, 139, 43, 0.10), transparent 42%),
+        linear-gradient(180deg, rgba(255, 252, 246, 0.98), rgba(248, 241, 231, 0.98));
+    }
+
+    body.light-mode .search-input,
+    body.light-mode .newsletter-input,
+    body.light-mode .creator-input {
+      background: rgba(255,255,255,0.8);
+      color: var(--text);
+    }
+
+    body.light-mode .tag,
+    body.light-mode .chip,
+    body.light-mode .theme-toggle,
+    body.light-mode .chip-btn {
+      background: rgba(255,255,255,0.7);
+    }
+
+    body.light-mode .btn-primary,
+    body.light-mode .search-btn,
+    body.light-mode .newsletter-btn,
+    body.light-mode .creator-btn,
+    body.light-mode .nav-cta {
+      color: #2b1b05;
+    }
+
+    @media (max-width: 900px) {
+      .navbar-inner {
+        justify-content: center;
+      }
+
+      .navbar-actions {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -874,6 +1029,10 @@
         <li><a href="#creator">Creators</a></li>
         <li><a href="#about">About</a></li>
       </ul>
+      <div class="navbar-actions">
+        <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()">☀️ Light mode</button>
+        <a class="nav-cta" href="#featured">Top deals</a>
+      </div>
     </div>
   </nav>
 
@@ -890,6 +1049,25 @@
         <div class="hero-actions">
           <a class="btn btn-primary" href="#featured">Featured Placements</a>
           <a class="btn btn-secondary" href="#partners">Browse All Partners</a>
+        </div>
+
+        <div class="revenue-bar">
+          <a class="revenue-link" href="https://kiwi.tpo.lv/qKPZ1inz" data-partner-id="kiwi">
+            <strong>Book flights faster</strong>
+            <span>High-intent route and airfare shoppers</span>
+          </a>
+          <a class="revenue-link" href="https://klook.tpo.lv/fTRPLj2l" data-partner-id="klook">
+            <strong>Find top attractions</strong>
+            <span>Experiences, tours, and city activities</span>
+          </a>
+          <a class="revenue-link" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" data-partner-id="go2africa">
+            <strong>Plan a safari</strong>
+            <span>Premium travel intent and bigger-ticket bookings</span>
+          </a>
+          <a class="revenue-link" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" data-partner-id="bitjoy">
+            <strong>Get travel eSIM</strong>
+            <span>Fast mobile data for trips and remote work</span>
+          </a>
         </div>
 
         <div class="search-shell">
@@ -2212,7 +2390,30 @@
     /***********************
      * INIT
      ***********************/
+
+    function updateThemeButton() {
+      const btn = document.getElementById("themeToggle");
+      if (!btn) return;
+      btn.textContent = document.body.classList.contains("light-mode")
+        ? "🌙 Dark mode"
+        : "☀️ Light mode";
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("light-mode");
+      localStorage.setItem(
+        "signalboost-theme",
+        document.body.classList.contains("light-mode") ? "light" : "dark"
+      );
+      updateThemeButton();
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("signalboost-theme");
+      if (savedTheme === "light") {
+        document.body.classList.add("light-mode");
+      }
+      updateThemeButton();
       updateShopPanel("global");
       attachClickTracking();
       setVideo("global");
