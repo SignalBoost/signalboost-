@@ -1,8 +1,19 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LH5EWG1T7S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LH5EWG1T7S');
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
@@ -144,8 +155,8 @@
 
     .v12-grid{
       display:grid;
-      grid-template-columns:240px minmax(420px,1fr) 280px;
-      gap:18px;
+      grid-template-columns:260px minmax(560px,1fr) 320px;
+      gap:20px;
       align-items:start;
       padding:8px 0 28px;
     }
@@ -279,15 +290,16 @@
     }
 
     .video-stage{
-      padding:18px;
+      padding:22px 22px 12px;
       display:grid;
-      grid-template-columns:1fr 220px;
+      grid-template-columns:1fr;
       gap:18px;
       align-items:center;
+      justify-items:center;
     }
 
     .phone-frame{
-      width:min(100%,540px);
+      width:min(100%,500px);
       margin:0 auto;
       aspect-ratio:9/16;
       border-radius:34px;
@@ -519,9 +531,29 @@
       margin-bottom:8px;
     }
 
+    .center-focus-note{
+      text-align:center;
+      color:var(--muted);
+      font-size:.9rem;
+      padding:0 18px 6px;
+    }
+
+    .video-shell{
+      position:relative;
+    }
+
+    .video-shell::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at center, rgba(56,189,248,.08), transparent 45%);
+      pointer-events:none;
+    }
+
+
     @media (max-width:1240px){
       .v12-grid{
-        grid-template-columns:220px minmax(320px,1fr) 250px;
+        grid-template-columns:230px minmax(420px,1fr) 280px;
       }
       .upnext-cards{grid-template-columns:repeat(2,minmax(0,1fr));}
       .row-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
