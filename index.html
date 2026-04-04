@@ -653,6 +653,80 @@
     }
 
 
+
+    .hub-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .hub-list a {
+      display: inline-flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      transition: 0.2s ease;
+    }
+
+    .hub-list a:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .mini-chip {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .video-shelf {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .video-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      transition: 0.2s ease;
+      min-height: 112px;
+    }
+
+    .video-card:hover,
+    .video-card.active {
+      border-color: rgba(56, 189, 248, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.12);
+    }
+
+    .video-card-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .video-card-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .helper-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
     /* Services Hub */
     .hub-grid {
       display: grid;
@@ -869,7 +943,7 @@
         <div class="video-wrap">
           <iframe
             id="mainVideo"
-            src="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE"
+            src="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE?rel=0&modestbranding=1&playsinline=1"
             title="SignalBoost discovery video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
@@ -896,6 +970,9 @@
             <button class="chip-btn" onclick="setVideo('flights')">Flights</button>
             <button class="chip-btn" onclick="setVideo('spain')">Spain</button>
           </div>
+
+          <div class="helper-note">Videos now rotate automatically, and clicking a video card below keeps playback inside SignalBoost.</div>
+          <div id="videoShelf" class="video-shelf"></div>
 
           <!-- Monetization: Shop this video / contextual offers -->
           <div id="shopPanel" class="shop-panel">
@@ -995,6 +1072,7 @@
 
 
 
+  
   <section id="services-hub">
     <div class="container">
       <div class="section-head">
@@ -1008,36 +1086,44 @@
         <div class="hub-card">
           <h3>Core Utilities</h3>
           <ul class="hub-list">
-            <li>Hotels</li>
-            <li>Card Services</li>
-            <li>AirHelp</li>
-            <li>BitJoy eSIM</li>
+            <li><a href="https://www.booking.com/index.html?aid=2439663" data-partner-id="hotels">Hotels <span class="mini-chip">Stay</span></a></li>
+            <li><a href="#partners">Card Services <span class="mini-chip">Browse</span></a></li>
+            <li><a href="https://airhelp.tpo.lv/grL9Ojju" data-partner-id="airhelp">AirHelp <span class="mini-chip">Support</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" data-partner-id="bitjoy-us">BitJoy eSIM (US) <span class="mini-chip">eSIM</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" data-partner-id="lastminute-se">Lastminute SE <span class="mini-chip">Travel</span></a></li>
           </ul>
         </div>
 
         <div class="hub-card">
           <h3>Lifestyle &amp; Productivity</h3>
           <ul class="hub-list">
-            <li>King Koil</li>
-            <li>Calm / Headspace</li>
-            <li>Fitness</li>
-            <li>Nutrition</li>
-            <li>PearlMountain</li>
-            <li>Go! Go! España</li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" data-partner-id="kingkoil">King Koil <span class="mini-chip">Lifestyle</span></a></li>
+            <li><a href="#partners">Calm / Headspace <span class="mini-chip">Wellness</span></a></li>
+            <li><a href="#partners">Fitness <span class="mini-chip">Health</span></a></li>
+            <li><a href="#partners">Nutrition <span class="mini-chip">Health</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" data-partner-id="pearlmountain">PearlMountain Limited <span class="mini-chip">Software</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" data-partner-id="gogoespana">Go! Go! España <span class="mini-chip">Spain</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" data-partner-id="buildermarket-us">The Builder Market (US) <span class="mini-chip">Home</span></a></li>
           </ul>
         </div>
 
         <div class="hub-card">
           <h3>Luxury Escapes</h3>
           <ul class="hub-list">
-            <li>Desire Experience</li>
-            <li>Temptation Experience</li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" data-partner-id="desire">Desire Experience <span class="mini-chip">Resort</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" data-partner-id="temptation-us">Temptation Experience (US) <span class="mini-chip">Resort</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-de">Tiqets DE <span class="mini-chip">Tickets</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-fr">Tiqets FR <span class="mini-chip">Tickets</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" data-partner-id="tiqets-it">Tiqets IT <span class="mini-chip">Tickets</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" data-partner-id="tiqets-uk">Tiqets UK <span class="mini-chip">Tickets</span></a></li>
+            <li><a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" data-partner-id="tiqets-us">Tiqets US <span class="mini-chip">Tickets</span></a></li>
           </ul>
-          <p class="hub-note">These original categories are now preserved inside the richer SignalBoost layout.</p>
+          <p class="hub-note">These original categories are now preserved inside the richer SignalBoost layout, and each item now points to a destination.</p>
         </div>
       </div>
     </div>
   </section>
+
 
   <section id="partners">
     <div class="container">
@@ -1136,7 +1222,7 @@
         <a class="card" id="pearlmountain-card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" data-partner-id="pearlmountain">
           <div>
             <span class="card-type">Software</span>
-            <h3>PearlMountain</h3>
+            <h3>PearlMountain Limited</h3>
             <p>Creative and utility software offering.</p>
           </div>
           <div class="card-footer">
@@ -1204,6 +1290,114 @@
             <span class="chip">Digital</span>
           </div>
         </a>
+        <a class="card" id="lastminute-se-card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" data-partner-id="lastminute-se">
+          <div>
+            <span class="card-type">Travel</span>
+            <h3>Lastminute SE</h3>
+            <p>Last-minute travel deals and planning support for Sweden-focused traffic.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Deals</span>
+          </div>
+        </a>
+
+        <a class="card" id="bitjoy-us-card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" data-partner-id="bitjoy-us">
+          <div>
+            <span class="card-type">Connectivity</span>
+            <h3>BitJoy eSIM (US)</h3>
+            <p>Travel data connectivity for U.S. audiences needing eSIM access.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">eSIM</span>
+          </div>
+        </a>
+
+        <a class="card" id="buildermarket-us-card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" data-partner-id="buildermarket-us">
+          <div>
+            <span class="card-type">Home</span>
+            <h3>The Builder Market (US)</h3>
+            <p>Home improvement and builder marketplace option for U.S. shoppers.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Marketplace</span>
+          </div>
+        </a>
+
+        <a class="card" id="temptation-us-card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" data-partner-id="temptation-us">
+          <div>
+            <span class="card-type">Experiences</span>
+            <h3>Temptation Experience (US)</h3>
+            <p>U.S.-linked resort and lifestyle travel partner for experience-driven visitors.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Premium</span>
+          </div>
+        </a>
+
+        <a class="card" id="tiqets-de-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-de">
+          <div>
+            <span class="card-type">Tickets</span>
+            <h3>Tiqets DE</h3>
+            <p>Attractions and ticketing inventory for German market traffic.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">DE</span>
+          </div>
+        </a>
+
+        <a class="card" id="tiqets-fr-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-fr">
+          <div>
+            <span class="card-type">Tickets</span>
+            <h3>Tiqets FR</h3>
+            <p>Attractions and ticketing inventory for France-focused traffic.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">FR</span>
+          </div>
+        </a>
+
+        <a class="card" id="tiqets-it-card" href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" data-partner-id="tiqets-it">
+          <div>
+            <span class="card-type">Tickets</span>
+            <h3>Tiqets IT</h3>
+            <p>Attractions and ticketing inventory for Italy-focused traffic.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">IT</span>
+          </div>
+        </a>
+
+        <a class="card" id="tiqets-uk-card" href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" data-partner-id="tiqets-uk">
+          <div>
+            <span class="card-type">Tickets</span>
+            <h3>Tiqets UK</h3>
+            <p>Attractions and ticketing inventory for United Kingdom visitors.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">UK</span>
+          </div>
+        </a>
+
+        <a class="card" id="tiqets-us-card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" data-partner-id="tiqets-us">
+          <div>
+            <span class="card-type">Tickets</span>
+            <h3>Tiqets US</h3>
+            <p>Attractions and ticketing inventory for U.S.-based discovery and bookings.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">US</span>
+          </div>
+        </a>
+
       </div>
     </div>
   </section>
@@ -1625,6 +1819,30 @@
       }
 
       // Flights
+      if (q.includes("lastminute")) {
+        setVideo("flights");
+        highlightPartner("lastminute-se-card");
+        result.textContent = "Best match: Lastminute SE. We highlighted your last-minute travel partner.";
+        showSponsoredStrip(
+          "Sponsored: Lastminute SE for last-minute deals and planning.",
+          "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
+          "lastminute-se"
+        );
+        return;
+      }
+
+      if (q.includes("tiqets") || q.includes("museum") || q.includes("attraction ticket")) {
+        setVideo("rome");
+        highlightPartner("tiqets-us-card");
+        result.textContent = "Best match: Tiqets. We highlighted your attraction ticket partner.";
+        showSponsoredStrip(
+          "Sponsored: Tiqets for attraction and museum tickets.",
+          "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+          "tiqets-us"
+        );
+        return;
+      }
+
       if (q.includes("flight") || q.includes("airfare") || q.includes("ticket")) {
         setVideo("flights");
         highlightPartner("kiwi-card");
@@ -1786,13 +2004,24 @@
     const creatorVideos = [];
 
     function normalizeYouTubeUrl(url) {
-      if (url.includes("youtube.com/watch?v=")) {
-        return url.replace("watch?v=", "embed/");
+      if (!url) return "";
+      const trimmed = url.trim();
+
+      if (trimmed.includes("youtube-nocookie.com/embed/") || trimmed.includes("youtube.com/embed/")) {
+        return trimmed.replace("https://www.youtube.com/embed/", "https://www.youtube-nocookie.com/embed/");
       }
-      if (url.includes("youtu.be/")) {
-        return url.replace("https://youtu.be/", "https://www.youtube-nocookie.com/embed/");
+
+      if (trimmed.includes("youtube.com/watch?v=")) {
+        const videoId = trimmed.split("watch?v=")[1].split("&")[0];
+        return `https://www.youtube-nocookie.com/embed/${videoId}`;
       }
-      return url;
+
+      if (trimmed.includes("youtu.be/")) {
+        const videoId = trimmed.split("youtu.be/")[1].split("?")[0];
+        return `https://www.youtube-nocookie.com/embed/${videoId}`;
+      }
+
+      return trimmed;
     }
 
     function submitCreatorVideo(event) {
@@ -1801,11 +2030,19 @@
       const url = document.getElementById("creatorVideoUrl").value.trim();
       const title = document.getElementById("creatorTitle").value.trim();
       const boost = document.getElementById("creatorBoost").value;
+      const embed = normalizeYouTubeUrl(url);
+
+      if (!embed.includes("/embed/")) {
+        alert("Please paste a YouTube watch link, share link, or embed link.");
+        return;
+      }
 
       creatorVideos.push({ url, title, boost });
       updateCreatorList();
-      addToDiscoveryPool(url, title, boost);
-      alert("Your video has been submitted to the SignalBoost discovery queue.");
+      const newIndex = addToDiscoveryPool(url, title, boost);
+      setVideo("global");
+      playVideoAt("global", newIndex);
+      alert("Your video has been added to the SignalBoost discovery rotation and now plays inside the platform.");
       event.target.reset();
     }
 
@@ -1832,17 +2069,25 @@
       const newVideo = {
         url: embed,
         title,
-        desc: "Creator-submitted video",
+        desc: "Creator-submitted video playing inside SignalBoost.",
         monetizationKey: "global"
       };
 
-      if (boost === "boost") {
-        videoPools.global.push(newVideo, newVideo);
-      } else if (boost === "featured") {
-        videoPools.global.unshift(newVideo, newVideo, newVideo);
-      } else {
-        videoPools.global.push(newVideo);
+      if (boost === "featured") {
+        videoPools.global.unshift(newVideo);
+        currentVideoIndexByCategory.global = 0;
+        renderVideoShelf("global");
+        return 0;
       }
+
+      videoPools.global.push(newVideo);
+
+      if (boost === "boost") {
+        videoPools.global.push({ ...newVideo });
+      }
+
+      renderVideoShelf("global");
+      return videoPools.global.indexOf(newVideo);
     }
 
 
@@ -1850,10 +2095,10 @@
      * INIT
      ***********************/
     document.addEventListener("DOMContentLoaded", () => {
-      // Initialize default video monetization
       updateShopPanel("global");
-      // Attach click tracking
       attachClickTracking();
+      setVideo("global");
+      restartAutoRotate();
     });
   </script>
 </body>
