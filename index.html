@@ -5,323 +5,149 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
-  <meta name="description" content="SignalBoost is a smart travel and discovery platform blending short-form video, curated recommendations, and monetized offers." />
+  <meta name="description" content="SignalBoost — discover travel, stays, tickets, luxury escapes, and digital offers through a dynamic video-led experience." />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root{
-      --bg:#07111f;
-      --bg-2:#0b1728;
-      --panel:#0f2238;
-      --panel-2:#132b45;
-      --text:#f5f7fb;
-      --muted:#9fb0c4;
-      --accent:#37bdf8;
-      --accent-2:#60a5fa;
-      --gold:#f6c453;
-      --border:rgba(148,163,184,.18);
-      --shadow:0 12px 34px rgba(0,0,0,.25);
-      --danger:#fb7185;
-      --success:#34d399;
-      --max:1400px;
+      --bg:#07111f; --bg-2:#0b1728; --panel:#0f2238; --panel-2:#132b45;
+      --text:#f5f7fb; --muted:#9fb0c4; --accent:#37bdf8; --accent-2:#60a5fa;
+      --gold:#f6c453; --border:rgba(148,163,184,.18); --shadow:0 12px 34px rgba(0,0,0,.25);
+      --danger:#fb7185; --success:#34d399; --max:1400px;
     }
     body.light-mode{
-      --bg:#f6f0e7;
-      --bg-2:#fbf8f2;
-      --panel:#fffaf3;
-      --panel-2:#f8f0e3;
-      --text:#1d2530;
-      --muted:#5a6775;
-      --accent:#0ea5e9;
-      --accent-2:#2563eb;
-      --gold:#b8892a;
-      --border:rgba(28,36,48,.12);
-      --shadow:0 10px 28px rgba(50,40,20,.08);
-      --danger:#d9465f;
-      --success:#0f9a5f;
+      --bg:#f5efe4; --bg-2:#fbf7ef; --panel:#fffaf2; --panel-2:#f7efe0;
+      --text:#1d2530; --muted:#5a6775; --accent:#0ea5e9; --accent-2:#2563eb;
+      --gold:#b8892a; --border:rgba(28,36,48,.12); --shadow:0 10px 28px rgba(50,40,20,.08);
+      --danger:#d9465f; --success:#0f9a5f;
     }
     html{scroll-behavior:smooth;}
     body{
-      font-family: Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top, rgba(56,189,248,.12), transparent 30%),
-        linear-gradient(180deg,var(--bg),var(--bg-2));
-      min-height:100vh;
-      line-height:1.5;
-      transition:background .25s ease,color .25s ease;
+      font-family: Arial, sans-serif; color:var(--text);
+      background: radial-gradient(circle at top, rgba(56,189,248,.12), transparent 30%),
+                  linear-gradient(180deg,var(--bg),var(--bg-2));
+      min-height:100vh; line-height:1.5; transition:background .25s ease,color .25s ease;
     }
     a{text-decoration:none;color:inherit;}
     .container{width:min(var(--max),calc(100% - 28px));margin:0 auto;}
     .navbar{
-      position:sticky;top:0;z-index:1000;
-      backdrop-filter:blur(12px);
-      background:rgba(7,17,31,.82);
-      border-bottom:1px solid var(--border);
+      position:sticky;top:0;z-index:1000;backdrop-filter:blur(12px);
+      background:rgba(7,17,31,.82);border-bottom:1px solid var(--border);
     }
     body.light-mode .navbar{background:rgba(255,250,242,.84);}
-    .navbar-inner{
-      display:flex;align-items:center;justify-content:space-between;
-      gap:12px;padding:12px 0;flex-wrap:wrap;
-    }
+    .navbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap;}
     .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.35rem;}
     .brand-mark{
-      width:34px;height:34px;border-radius:10px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      color:#04111d;font-weight:900;
-      box-shadow:var(--shadow);
+      width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#04111d;font-weight:900;box-shadow:var(--shadow);
     }
-    .nav-links{
-      list-style:none;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    .nav-links{list-style:none;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+    .nav-links a,.theme-toggle,.mode-chip,.control-btn,.feed-btn,.small-btn{
+      border:1px solid transparent;background:rgba(255,255,255,.04);color:var(--muted);
+      padding:10px 14px;border-radius:999px;cursor:pointer;font-weight:700;transition:.2s ease;
     }
-    .nav-links a,.theme-toggle,.mode-chip,.control-btn,.feed-btn,.small-btn,.mode-card{
-      border:1px solid transparent;
-      background:rgba(255,255,255,.04);
-      color:var(--muted);
-      padding:10px 14px;border-radius:999px;
-      cursor:pointer;font-weight:700;transition:.2s ease;
-    }
-    .nav-links a:hover,.theme-toggle:hover,.mode-chip:hover,.control-btn:hover,.feed-btn:hover,.small-btn:hover,.mode-card:hover{
-      transform:translateY(-1px);
-      border-color:var(--border);
-      color:var(--text);
+    .nav-links a:hover,.theme-toggle:hover,.mode-chip:hover,.control-btn:hover,.feed-btn:hover,.small-btn:hover,.video-card button:hover{
+      transform:translateY(-1px);border-color:var(--border);color:var(--text);
     }
     .topbar{padding:16px 0 10px;}
     .topbar-shell{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
-    .feed-btn.active,.mode-chip.active,.control-btn.active,.mode-card.active{
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#06111d;border:none;
-    }
+    .feed-btn.active,.mode-chip.active,.control-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#06111d;border:none;}
 
-    .v10-grid{
-      display:grid;
-      grid-template-columns:290px minmax(320px, 1fr) 360px;
-      gap:18px;
-      align-items:start;
-      padding:8px 0 28px;
-    }
-    .panel{
-      background:linear-gradient(180deg,var(--panel-2),var(--panel));
-      border:1px solid var(--border);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-    }
+    .v10-grid{display:grid;grid-template-columns:290px minmax(320px,1fr) 360px;gap:18px;align-items:start;padding:8px 0 28px;}
+    .panel{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);}
     .panel-pad{padding:18px;}
-    .section-kicker{
-      font-size:.76rem;font-weight:800;letter-spacing:.14em;
-      text-transform:uppercase;color:var(--accent);margin-bottom:10px;
-    }
-    .panel-title{font-size:1.05rem;font-weight:800;margin-bottom:10px;}
+    .section-kicker{font-size:.76rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
     .muted{color:var(--muted);}
     .left-stack,.right-stack{display:grid;gap:16px;}
 
     .explore-list{display:grid;gap:10px;}
-    .explore-item{
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-      border:1px solid var(--border);
-      border-radius:16px;padding:12px 14px;
-      background:rgba(255,255,255,.03);
-    }
+    .explore-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--border);border-radius:16px;padding:12px 14px;background:rgba(255,255,255,.03);}
     .explore-item strong{display:block;}
     .explore-item span{font-size:.82rem;color:var(--muted);}
-    .explore-tag{
-      font-size:.72rem;font-weight:800;color:var(--accent);
-      text-transform:uppercase;letter-spacing:.1em;
-    }
+    .explore-tag{font-size:.72rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;}
 
     .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
-    .mode-card{
-      border-radius:18px;padding:12px;text-align:left;
-      background:rgba(255,255,255,.03);
-    }
+    .mode-card{border:1px solid var(--border);border-radius:18px;padding:12px;background:rgba(255,255,255,.03);cursor:pointer;transition:.2s ease;}
+    .mode-card:hover{transform:translateY(-1px);border-color:rgba(56,189,248,.4);}
+    .mode-card.active{box-shadow:0 0 0 2px rgba(56,189,248,.2) inset;border-color:rgba(56,189,248,.45);}
     .mode-card h4{margin-bottom:4px;}
     .mode-card p{font-size:.86rem;color:var(--muted);}
 
-    .cta-box{
-      margin-top:4px;
-      border:1px dashed rgba(56,189,248,.32);
-      border-radius:18px;padding:14px;
-      background:rgba(56,189,248,.05);
-    }
+    .cta-box{margin-top:4px;border:1px dashed rgba(56,189,248,.32);border-radius:18px;padding:14px;background:rgba(56,189,248,.05);}
     .cta-box strong{display:block;margin-bottom:6px;}
     .cta-box p{font-size:.9rem;color:var(--muted);margin-bottom:10px;}
+    .small-btn{display:inline-flex;align-items:center;justify-content:center;color:var(--text);border-color:var(--border);}
 
     .center-col{display:grid;gap:16px;}
-    .hero-strip{
-      padding:16px 18px;
-      display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
-    }
+    .hero-strip{padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;}
     .hero-strip h1{font-size:1.65rem;line-height:1.05;}
     .hero-strip p{color:var(--muted);max-width:760px;font-size:.96rem;}
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
-    .hero-link{
-      padding:11px 15px;border-radius:999px;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#07111f;font-weight:900;
-    }
-    .hero-secondary{
-      padding:11px 15px;border-radius:999px;border:1px solid var(--border);font-weight:800;color:var(--text);
-    }
 
     .video-shell{overflow:hidden;}
-    .video-stage{
-      padding:18px;
-      display:grid;
-      grid-template-columns:minmax(310px, 1fr) 260px;
-      gap:16px;
-      align-items:start;
-    }
+    .video-stage{padding:18px;display:grid;grid-template-columns:minmax(310px,1fr) 260px;gap:16px;align-items:start;}
     .phone-frame{
-      width:min(100%, 460px);
-      margin:0 auto;
-      aspect-ratio:9 / 16;
-      border-radius:34px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#000;
-      position:relative;
-      overflow:hidden;
-      box-shadow:0 20px 50px rgba(0,0,0,.35);
+      width:min(100%,460px);margin:0 auto;aspect-ratio:9/16;border-radius:34px;border:1px solid rgba(255,255,255,.08);
+      background:#000;position:relative;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);
     }
-    .phone-frame iframe{
-      width:100%;height:100%;border:0;display:block;pointer-events:none;
-    }
-    .phone-overlay-top{
-      position:absolute;top:12px;left:12px;right:12px;
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-      pointer-events:none;
-    }
+    .phone-frame iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;}
+    .phone-overlay-top{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none;}
     .video-pill{
-      background:rgba(7,17,31,.72);
-      border:1px solid rgba(255,255,255,.12);
-      padding:8px 12px;border-radius:999px;
-      color:#fff;font-size:.78rem;font-weight:800;
-      backdrop-filter:blur(10px);
+      background:rgba(7,17,31,.72);border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:999px;
+      color:#fff;font-size:.78rem;font-weight:800;backdrop-filter:blur(10px);
     }
-    .phone-overlay-bottom{
-      position:absolute;left:0;right:0;bottom:0;padding:18px 16px 14px;
-      background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.72));
-      pointer-events:none;
-    }
+    .phone-overlay-bottom{position:absolute;left:0;right:0;bottom:0;padding:18px 16px 14px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.72));pointer-events:none;}
     .overlay-title{font-size:1.05rem;font-weight:800;margin-bottom:4px;}
     .overlay-desc{font-size:.88rem;color:rgba(255,255,255,.86);}
+
     .video-side-info{display:grid;gap:12px;}
-    .side-card{
-      border:1px solid var(--border);
-      border-radius:20px;
-      background:rgba(255,255,255,.03);
-      padding:14px;
-    }
+    .side-card{border:1px solid var(--border);border-radius:20px;background:rgba(255,255,255,.03);padding:14px;}
     .side-card h3{font-size:.95rem;margin-bottom:8px;}
     .side-card p{font-size:.9rem;color:var(--muted);}
     .metric{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--text);margin-bottom:8px;}
 
-    .control-row{
-      display:flex;gap:10px;flex-wrap:wrap;
-      padding:0 18px 18px;
-      justify-content:center;
-    }
+    .control-row{display:flex;gap:10px;flex-wrap:wrap;padding:0 18px 18px;justify-content:center;}
     .category-row,.upnext-grid{padding:0 18px 18px;}
     .category-row .section-kicker,.upnext-grid .section-kicker{margin-bottom:10px;}
     .mode-chip{margin:0 8px 8px 0;}
     .upnext-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
-    .video-card{
-      border:1px solid var(--border);
-      border-radius:20px;
-      background:rgba(255,255,255,.03);
-      padding:12px;
-    }
-    .video-thumb{
-      aspect-ratio:9/16;border-radius:18px;
-      background:linear-gradient(135deg,rgba(56,189,248,.16),rgba(96,165,250,.16));
-      border:1px solid var(--border);
-      display:grid;place-items:center;
-      font-size:2rem;margin-bottom:10px;
-    }
+    .video-card{border:1px solid var(--border);border-radius:20px;background:rgba(255,255,255,.03);padding:12px;}
+    .video-thumb{aspect-ratio:9/16;border-radius:18px;background:linear-gradient(135deg,rgba(56,189,248,.16),rgba(96,165,250,.16));border:1px solid var(--border);display:grid;place-items:center;font-size:2rem;margin-bottom:10px;}
     .video-card strong{display:block;margin-bottom:4px;}
     .video-card span{display:block;color:var(--muted);font-size:.86rem;margin-bottom:10px;}
 
     .rows-shell{margin-top:2px;padding:18px;}
     .content-row{margin-bottom:18px;}
-    .row-head{
-      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-      margin-bottom:10px;
-    }
+    .row-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
     .row-head h3{font-size:1.05rem;}
     .row-head p{color:var(--muted);font-size:.9rem;}
     .row-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
-    .row-card{
-      border:1px solid var(--border);
-      border-radius:18px;
-      background:rgba(255,255,255,.03);
-      padding:14px;
-      min-height:150px;
-      display:flex;flex-direction:column;justify-content:space-between;
-    }
-    .row-card em{
-      font-style:normal;font-size:.72rem;font-weight:800;letter-spacing:.12em;
-      text-transform:uppercase;color:var(--accent);
-    }
+    .row-card{border:1px solid var(--border);border-radius:18px;background:rgba(255,255,255,.03);padding:14px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;}
+    .row-card em{font-style:normal;font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
     .row-card h4{margin:8px 0 6px;}
     .row-card p{color:var(--muted);font-size:.88rem;}
     .row-card a{color:var(--accent);font-weight:800;margin-top:12px;}
 
-    .offer-main{
-      border:1px solid rgba(56,189,248,.22);
-      border-radius:20px;padding:16px;
-      background:rgba(56,189,248,.06);
-    }
+    .offer-main{border:1px solid rgba(56,189,248,.22);border-radius:20px;padding:16px;background:rgba(56,189,248,.06);}
     .offer-main h3{font-size:1.06rem;margin-bottom:6px;}
     .offer-main p{font-size:.9rem;color:var(--muted);margin-bottom:10px;}
-    .offer-cta{
-      display:inline-flex;align-items:center;justify-content:center;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#04111d;padding:11px 14px;border-radius:14px;font-weight:900;
-    }
+    .offer-cta{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#04111d;padding:11px 14px;border-radius:14px;font-weight:900;}
     .offer-list{display:grid;gap:12px;}
-    .offer-item{
-      border:1px solid var(--border);
-      border-radius:18px;padding:14px;background:rgba(255,255,255,.03);
-    }
+    .offer-item{border:1px solid var(--border);border-radius:18px;padding:14px;background:rgba(255,255,255,.03);}
     .offer-item h4{margin-bottom:4px;}
     .offer-item p{font-size:.88rem;color:var(--muted);margin-bottom:10px;}
     .offer-item a{color:var(--accent);font-weight:800;}
-    .urgency{
-      display:inline-block;
-      font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
-      color:var(--danger);margin-bottom:8px;
-    }
-    .status-box{
-      border:1px solid var(--border);
-      border-radius:18px;padding:14px;background:rgba(255,255,255,.03);
-    }
+    .urgency{display:inline-block;font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--danger);margin-bottom:8px;}
+    .status-box{border:1px solid var(--border);border-radius:18px;padding:14px;background:rgba(255,255,255,.03);}
     .status-box strong{display:block;margin-bottom:6px;}
     .status-box p{font-size:.88rem;color:var(--muted);}
-    .newsletter-form{
-      margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;
-    }
-    .newsletter-form input{
-      flex:1;min-width:160px;
-      padding:11px 12px;border-radius:14px;border:1px solid var(--border);
-      background:rgba(255,255,255,.04);color:var(--text);outline:none;
-    }
-    .newsletter-form button{
-      padding:11px 14px;border:none;border-radius:14px;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#04111d;font-weight:900;cursor:pointer;
-    }
-    .footer{padding:24px 0 34px;color:var(--muted);text-align:center;font-size:.94rem;}
 
-    @media (max-width: 1240px){
+    @media (max-width:1240px){
       .v10-grid{grid-template-columns:260px minmax(280px,1fr) 320px;}
       .upnext-cards{grid-template-columns:repeat(2,minmax(0,1fr));}
       .row-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
       .video-stage{grid-template-columns:1fr;}
     }
-    @media (max-width: 960px){
-      .v10-grid{grid-template-columns:1fr;}
-      .phone-frame{width:min(100%, 420px);}
-    }
-    @media (max-width: 640px){
+    @media (max-width:960px){.v10-grid{grid-template-columns:1fr;}.phone-frame{width:min(100%,420px);}}
+    @media (max-width:640px){
       .upnext-cards,.row-grid,.mode-grid{grid-template-columns:1fr;}
       .hero-strip h1{font-size:1.3rem;}
       .container{width:min(var(--max),calc(100% - 18px));}
@@ -336,8 +162,9 @@
         <div>SignalBoost</div>
       </div>
       <ul class="nav-links">
-        <li><a href="#feed">For You</a></li>
+        <li><a href="#feed">Feed</a></li>
         <li><a href="#rows">Explore</a></li>
+        <li><a href="#stays">Stays</a></li>
         <li><a href="#tickets">Tickets</a></li>
         <li><a href="#luxury">Luxury</a></li>
         <li><button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button></li>
@@ -348,10 +175,10 @@
   <div class="topbar">
     <div class="container">
       <div class="topbar-shell">
-        <button class="feed-btn active">For You</button>
-        <button class="feed-btn">Trending</button>
-        <button class="feed-btn">Trip Ideas</button>
-        <button class="feed-btn">Tickets</button>
+        <button class="feed-btn active">Open feed</button>
+        <button class="feed-btn">Just watch</button>
+        <button class="feed-btn">Plan a trip</button>
+        <button class="feed-btn">Find tickets</button>
       </div>
     </div>
   </div>
@@ -359,42 +186,42 @@
   <main class="container v10-grid" id="feed">
     <aside class="left-stack">
       <section class="panel panel-pad">
-        <div class="section-kicker">Explore SignalBoost</div>
+        <div class="section-kicker">Explore</div>
         <div class="explore-list">
-          <div class="explore-item"><div><strong>For You</strong><span>smart video discovery</span></div><div class="explore-tag">discover</div></div>
-          <div class="explore-item"><div><strong>Trip ideas</strong><span>routes, destinations, inspiration</span></div><div class="explore-tag">travel</div></div>
-          <div class="explore-item"><div><strong>Tickets & attractions</strong><span>museums, landmarks, passes</span></div><div class="explore-tag">book</div></div>
+          <div class="explore-item"><div><strong>Main feed</strong><span>short-form discovery</span></div><div class="explore-tag">watch</div></div>
+          <div class="explore-item"><div><strong>Travel rows</strong><span>more places and offers</span></div><div class="explore-tag">browse</div></div>
+          <div class="explore-item"><div><strong>Stays & rentals</strong><span>homes and vacation stays</span></div><div class="explore-tag">stay</div></div>
+          <div class="explore-item"><div><strong>Deals & tickets</strong><span>attractions and city passes</span></div><div class="explore-tag">book</div></div>
           <div class="explore-item"><div><strong>Luxury escapes</strong><span>premium experiences</span></div><div class="explore-tag">premium</div></div>
-          <div class="explore-item"><div><strong>Creator picks</strong><span>fresh clips and trends</span></div><div class="explore-tag">fresh</div></div>
-          <div class="explore-item"><div><strong>Partner offers</strong><span>best matches for each trip</span></div><div class="explore-tag">offers</div></div>
+          <div class="explore-item"><div><strong>Partners</strong><span>featured offers</span></div><div class="explore-tag">offers</div></div>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">How you want to explore</div>
+        <div class="section-kicker">Choose your mode</div>
         <div class="mode-grid">
           <button class="mode-card active" data-mode="watch">
             <h4>🔥 Just watch</h4>
-            <p>Relaxed discovery with broad recommendations.</p>
+            <p>Relax and explore.</p>
           </button>
           <button class="mode-card" data-mode="trip">
             <h4>✈️ Plan a trip</h4>
-            <p>Routes, destinations, and practical travel picks.</p>
+            <p>Flights, stays, and ideas.</p>
           </button>
           <button class="mode-card" data-mode="tickets">
             <h4>🎟 Buy tickets</h4>
-            <p>Attractions, museums, and city passes first.</p>
+            <p>Attractions and city experiences.</p>
           </button>
           <button class="mode-card" data-mode="luxury">
             <h4>💎 Go luxury</h4>
-            <p>Premium getaways and higher-value escapes.</p>
+            <p>Premium escapes and higher-end stays.</p>
           </button>
         </div>
 
         <div class="cta-box">
-          <strong>Your feed is adapting</strong>
-          <p id="intentMessage">You’re in relaxed browsing right now. SignalBoost is keeping the feed broad and useful while learning what you want next.</p>
-          <button class="small-btn" onclick="scrollToRows()">See more ideas</button>
+          <strong id="modeBoxTitle">Discover more with every video</strong>
+          <p id="intentMessage">Browse popular travel clips, then jump into the offers that match what you like.</p>
+          <button class="small-btn" onclick="scrollToRows()">See featured rows</button>
         </div>
       </section>
     </aside>
@@ -402,13 +229,9 @@
     <section class="center-col">
       <section class="panel hero-strip">
         <div>
-          <div class="section-kicker">Smart travel discovery</div>
-          <h1>Watch, explore, and book what fits your trip.</h1>
-          <p>SignalBoost blends short-form discovery with curated travel and lifestyle offers, so visitors can browse naturally and act when they are ready.</p>
-        </div>
-        <div class="hero-actions">
-          <a class="hero-link" href="#feed">Open feed</a>
-          <a class="hero-secondary" href="#rows">Browse categories</a>
+          <div class="section-kicker">Discover, watch, and book</div>
+          <h1>Find travel ideas, stays, tickets, and premium offers in one place.</h1>
+          <p>Watch the feed, switch modes, and open the best matching offers without losing your place.</p>
         </div>
       </section>
 
@@ -423,31 +246,33 @@
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen>
             </iframe>
+
             <div class="phone-overlay-top">
-              <div class="video-pill">For You</div>
-              <div class="video-pill">Stays inside SignalBoost</div>
+              <div class="video-pill">Trending</div>
+              <div class="video-pill">Inside SignalBoost</div>
             </div>
+
             <div class="phone-overlay-bottom">
               <div class="overlay-title" id="videoTitle">Global Discovery</div>
-              <div class="overlay-desc" id="videoDescription">General discovery designed to keep visitors exploring and surface the most useful next offer.</div>
+              <div class="overlay-desc" id="videoDescription">Popular travel clips and destination inspiration.</div>
             </div>
           </div>
 
           <div class="video-side-info">
             <div class="side-card">
-              <div class="section-kicker">You’re exploring</div>
-              <div class="metric"><span id="currentModeLabel">Just watch</span></div>
-              <p id="feedStateText">The feed is keeping things broad right now, mixing inspiration, practical travel, and easy next steps.</p>
+              <div class="section-kicker">Now playing</div>
+              <div class="metric">Mode: <span id="currentModeLabel">Just watch</span></div>
+              <p id="feedStateText">A broad mix of travel clips, destination ideas, and popular categories.</p>
             </div>
             <div class="side-card">
-              <div class="section-kicker">Why this is showing</div>
-              <h3 id="whyNowTitle">A broad pick to start</h3>
-              <p id="whyNowText">This helps SignalBoost learn what kinds of trips, cities, and offers are most useful for this session.</p>
+              <div class="section-kicker">Recommended</div>
+              <h3 id="whyNowTitle">Fresh travel inspiration</h3>
+              <p id="whyNowText">Watch what’s trending now, then move into flights, stays, tickets, or luxury offers when you’re ready.</p>
             </div>
             <div class="side-card">
-              <div class="section-kicker">Coming up next</div>
-              <h3 id="nextReactionTitle">More tailored picks</h3>
-              <p id="nextReactionText">If the same type of content keeps showing up, recommendations will become more focused and useful.</p>
+              <div class="section-kicker">Up next</div>
+              <h3 id="nextReactionTitle">More destinations and experiences</h3>
+              <p id="nextReactionText">The feed keeps moving so you can quickly discover the next trip idea.</p>
             </div>
           </div>
         </div>
@@ -459,9 +284,9 @@
         </div>
 
         <div class="category-row">
-          <div class="section-kicker">Browse by mood</div>
-          <button class="mode-chip active" onclick="setVideoCategory('global', this)">For You</button>
-          <button class="mode-chip" onclick="setVideoCategory('paris', this)">City Breaks</button>
+          <div class="section-kicker">Categories</div>
+          <button class="mode-chip active" onclick="setVideoCategory('global', this)">Global</button>
+          <button class="mode-chip" onclick="setVideoCategory('paris', this)">Paris</button>
           <button class="mode-chip" onclick="setVideoCategory('safari', this)">Safari</button>
           <button class="mode-chip" onclick="setVideoCategory('flights', this)">Flights</button>
           <button class="mode-chip" onclick="setVideoCategory('tickets', this)">Tickets</button>
@@ -469,7 +294,7 @@
         </div>
 
         <div class="upnext-grid">
-          <div class="section-kicker">Recommended next</div>
+          <div class="section-kicker">Play next</div>
           <div id="videoGrid" class="upnext-cards"></div>
         </div>
       </section>
@@ -478,15 +303,30 @@
         <div class="content-row">
           <div class="row-head">
             <div>
-              <h3>Trending right now</h3>
-              <p>Fast paths for visitors ready to move from browsing to action.</p>
+              <h3>Trending now</h3>
+              <p>Popular picks people are opening right now.</p>
             </div>
           </div>
           <div class="row-grid">
-            <div class="row-card"><div><em>Flights</em><h4>Kiwi</h4><p>Search routes, compare options, and move quickly into trip planning.</p></div><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">Find flights →</a></div>
-            <div class="row-card"><div><em>Tickets</em><h4>Tiqets US</h4><p>Attractions and museum tickets for city visitors ready to book.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Get tickets →</a></div>
-            <div class="row-card"><div><em>Safari</em><h4>Go2Africa</h4><p>Premium safari planning for higher-value travel interest.</p></div><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Plan safari →</a></div>
-            <div class="row-card"><div><em>Connectivity</em><h4>BitJoy eSIM</h4><p>Travel data and connectivity for smoother journeys abroad.</p></div><a href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Get eSIM →</a></div>
+            <div class="row-card"><div><em>Flights</em><h4>Kiwi</h4><p>Search routes and airfare options.</p></div><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">Find flights →</a></div>
+            <div class="row-card"><div><em>Stays</em><h4>Vrbo</h4><p>Vacation rentals and full homes for your trip.</p></div><a href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">Find stays →</a></div>
+            <div class="row-card"><div><em>Tickets</em><h4>Tiqets US</h4><p>Museums, attractions, and city experiences.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Get tickets →</a></div>
+            <div class="row-card"><div><em>Safari</em><h4>Go2Africa</h4><p>Premium safari planning and Africa itineraries.</p></div><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Plan safari →</a></div>
+          </div>
+        </div>
+
+        <div class="content-row" id="stays">
+          <div class="row-head">
+            <div>
+              <h3>Stays & rentals</h3>
+              <p>Vacation homes, city stays, and trip-friendly accommodations.</p>
+            </div>
+          </div>
+          <div class="row-grid">
+            <div class="row-card"><div><em>Stays</em><h4>Vrbo</h4><p>Vacation rentals, homes, and longer stays for destination trips.</p></div><a href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">Browse Vrbo stays →</a></div>
+            <div class="row-card"><div><em>Luxury stay</em><h4>Vrbo Premium Picks</h4><p>Use Vrbo for larger spaces and premium vacation-home travel.</p></div><a href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">See premium stays →</a></div>
+            <div class="row-card"><div><em>Family trips</em><h4>Vrbo Family Homes</h4><p>Stronger fit for multi-room stays and group travel.</p></div><a href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">Find family stays →</a></div>
+            <div class="row-card"><div><em>City breaks</em><h4>Vrbo City Rentals</h4><p>Vacation rentals that work well with flights and ticket-led planning.</p></div><a href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">Find city rentals →</a></div>
           </div>
         </div>
 
@@ -494,14 +334,14 @@
           <div class="row-head">
             <div>
               <h3>Deals & tickets</h3>
-              <p>Useful options for visitors focused on cities, attractions, and savings.</p>
+              <p>Attractions, museums, and destination ticket offers.</p>
             </div>
           </div>
           <div class="row-grid">
-            <div class="row-card"><div><em>Deals</em><h4>Lastminute SE</h4><p>Travel deals and package options for complete-trip shoppers.</p></div><a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">View deals →</a></div>
-            <div class="row-card"><div><em>DE</em><h4>Tiqets DE</h4><p>Germany-facing attractions and cultural experiences.</p></div><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
-            <div class="row-card"><div><em>FR</em><h4>Tiqets FR</h4><p>France-focused museums, landmarks, and city passes.</p></div><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
-            <div class="row-card"><div><em>IT</em><h4>Tiqets IT</h4><p>Italy-facing ticketing for city discovery and attractions.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
+            <div class="row-card"><div><em>Deals</em><h4>Lastminute SE</h4><p>Travel booking and package deals.</p></div><a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Book deal →</a></div>
+            <div class="row-card"><div><em>DE</em><h4>Tiqets DE</h4><p>Germany-facing attraction tickets.</p></div><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
+            <div class="row-card"><div><em>FR</em><h4>Tiqets FR</h4><p>France-focused experiences and museum tickets.</p></div><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
+            <div class="row-card"><div><em>IT</em><h4>Tiqets IT</h4><p>Italy-facing attractions and city passes.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
           </div>
         </div>
 
@@ -509,14 +349,14 @@
           <div class="row-head">
             <div>
               <h3>Luxury escapes</h3>
-              <p>Premium travel, standout experiences, and higher-value recommendations.</p>
+              <p>Premium travel and higher-end offers.</p>
             </div>
           </div>
           <div class="row-grid">
-            <div class="row-card"><div><em>Luxury</em><h4>Desire Experience</h4><p>Resort and experience-based premium travel recommendations.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">See experience →</a></div>
-            <div class="row-card"><div><em>Luxury</em><h4>Temptation Experience (US)</h4><p>US-facing premium resort and adults-only luxury travel.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">See experience →</a></div>
-            <div class="row-card"><div><em>Software</em><h4>PearlMountain Limited</h4><p>Creative tools for a broader digital revenue mix.</p></div><a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open offer →</a></div>
-            <div class="row-card"><div><em>Home</em><h4>The Builder Market</h4><p>An extra consumer channel beyond travel and tickets.</p></div><a href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open offer →</a></div>
+            <div class="row-card"><div><em>Luxury</em><h4>Desire Experience</h4><p>Premium resort and experience travel.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go luxury →</a></div>
+            <div class="row-card"><div><em>Luxury</em><h4>Temptation Experience (US)</h4><p>US-facing premium resort experiences.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go luxury →</a></div>
+            <div class="row-card"><div><em>Stays</em><h4>Vrbo Luxury Stays</h4><p>Vacation-home inventory that fits premium destination planning.</p></div><a href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">Find luxury stays →</a></div>
+            <div class="row-card"><div><em>Software</em><h4>PearlMountain Limited</h4><p>Creative and utility software offers.</p></div><a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open offer →</a></div>
           </div>
         </div>
       </section>
@@ -524,224 +364,218 @@
 
     <aside class="right-stack">
       <section class="panel panel-pad">
-        <div class="section-kicker">Recommended for this video</div>
+        <div class="section-kicker">Shop this video</div>
         <div class="offer-main">
-          <div class="urgency" id="offerUrgency">good match</div>
+          <div class="urgency" id="offerUrgency">featured</div>
           <h3 id="shopMainPartner">Global Discovery Bundle</h3>
-          <p id="shopMainDesc">Experiences, flights, and support matched to broad travel discovery.</p>
-          <a id="shopMainLink" class="offer-cta" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">See top pick →</a>
+          <p id="shopMainDesc">Experiences, flights, stays, and support matched to popular travel discovery.</p>
+          <a id="shopMainLink" class="offer-cta" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">Open main offer →</a>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">Best next steps</div>
+        <div class="section-kicker">Recommended offers</div>
         <div class="offer-list">
           <div class="offer-item">
-            <div class="urgency">popular now</div>
+            <div class="urgency">popular</div>
             <h4 id="offer1Title">Flights via Kiwi</h4>
-            <p id="offer1Desc">A practical next step if this trip is moving from inspiration to planning.</p>
+            <p id="offer1Desc">Search routes and travel dates quickly.</p>
             <a id="offer1Link" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">Open →</a>
           </div>
           <div class="offer-item">
-            <div class="urgency">worth saving</div>
-            <h4 id="offer2Title">Travel support via AirHelp</h4>
-            <p id="offer2Desc">Useful support if travel changes, delays, or cancellations come into play.</p>
-            <a id="offer2Link" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">Open →</a>
+            <div class="urgency">stay option</div>
+            <h4 id="offer2Title">Vrbo stays</h4>
+            <p id="offer2Desc">Vacation rentals and homes that fit destination planning.</p>
+            <a id="offer2Link" href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">Open →</a>
           </div>
           <div class="offer-item">
-            <div class="urgency">recommended extra</div>
+            <div class="urgency">featured partner</div>
             <h4 id="offer3Title">BitJoy eSIM</h4>
-            <p id="offer3Desc">A simple add-on for staying connected while traveling.</p>
+            <p id="offer3Desc">A simple way to stay connected abroad.</p>
             <a id="offer3Link" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open →</a>
           </div>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">Picked for this session</div>
+        <div class="section-kicker">What’s hot</div>
         <div class="status-box">
-          <strong id="statusTitle">You’re still exploring</strong>
-          <p id="statusText">SignalBoost is keeping recommendations flexible until your direction becomes clearer.</p>
+          <strong id="statusTitle">Popular picks are updating live</strong>
+          <p id="statusText">Watch the feed and use the right-side offers to jump into flights, stays, tickets, and destination deals.</p>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">Stay in the loop</div>
-        <p class="muted">Get weekly picks for travel, attractions, and standout offers.</p>
-        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
-          <input id="newsletterEmail" type="email" placeholder="Enter your email" required />
-          <button type="submit">Join</button>
-        </form>
+        <div class="section-kicker">Quick picks</div>
+        <div class="offer-list">
+          <div class="offer-item"><h4>Vrbo</h4><p>Vacation rentals and homes for trip planning.</p><a href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener noreferrer">Find stays →</a></div>
+          <div class="offer-item"><h4>Go! Go! España</h4><p>Regional travel discovery for Spain-focused users.</p><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open →</a></div>
+        </div>
       </section>
     </aside>
   </main>
-
-  <footer class="footer">
-    <div class="container">© 2026 SignalBoost. All rights reserved.</div>
-  </footer>
 
   <script>
     const modeConfigs = {
       watch: {
         label: "Just watch",
-        intentMessage: "You’re in relaxed browsing right now. SignalBoost is keeping the feed broad and useful while learning what you want next.",
-        feedStateText: "The feed is keeping things broad right now, mixing inspiration, practical travel, and easy next steps.",
-        whyNowTitle: "A broad pick to start",
-        whyNowText: "This helps SignalBoost learn what kinds of trips, cities, and offers are most useful for this session.",
-        nextReactionTitle: "More tailored picks",
-        nextReactionText: "If the same type of content keeps showing up, recommendations will become more focused and useful.",
+        modeBoxTitle: "Discover more with every video",
+        intentMessage: "Browse popular travel clips, then jump into the offers that match what you like.",
+        feedStateText: "A broad mix of travel clips, destination ideas, and popular categories.",
+        whyNowTitle: "Fresh travel inspiration",
+        whyNowText: "Watch what’s trending now, then move into flights, stays, tickets, or luxury offers when you’re ready.",
+        nextReactionTitle: "More destinations and experiences",
+        nextReactionText: "The feed keeps moving so you can quickly discover the next trip idea.",
         defaultCategory: "global"
       },
       trip: {
         label: "Plan a trip",
-        intentMessage: "You’re in trip-planning mode. SignalBoost is giving more weight to routes, destinations, and practical travel offers.",
-        feedStateText: "The feed is leaning toward videos that help move from inspiration into planning.",
-        whyNowTitle: "More planning-focused picks",
-        whyNowText: "Route ideas, destination themes, and practical travel options appear sooner in this mode.",
-        nextReactionTitle: "Practical suggestions next",
-        nextReactionText: "If planning patterns keep repeating, routes, deals, and matching offers will become more specific.",
+        modeBoxTitle: "Trip planning starts here",
+        intentMessage: "Switch into trip mode to surface flights, stays, and planning-friendly offers faster.",
+        feedStateText: "Flights, stays, and destination-focused categories are showing first.",
+        whyNowTitle: "Travel planning picks",
+        whyNowText: "This mode favors clips that pair well with flights, vacation rentals, and destination booking.",
+        nextReactionTitle: "More routes, stays, and destinations",
+        nextReactionText: "Expect more trip-ready videos and stronger travel planning offers next.",
         defaultCategory: "flights"
       },
       tickets: {
         label: "Buy tickets",
-        intentMessage: "You’re focused on attractions and city experiences, so SignalBoost is surfacing stronger ticket options first.",
-        feedStateText: "The feed is narrowing around museums, landmarks, passes, and destination attractions.",
-        whyNowTitle: "A better fit for city plans",
-        whyNowText: "This mode pushes more ticket-friendly discovery because it’s closer to action than broad browsing.",
-        nextReactionTitle: "More city-based picks",
-        nextReactionText: "If city interest keeps repeating, recommendations will tighten around attractions and destination passes.",
+        modeBoxTitle: "Ready for attractions and passes",
+        intentMessage: "Ticket mode brings museums, landmarks, and city experiences closer to the top.",
+        feedStateText: "The feed is leaning into cities, attractions, and bookable experiences.",
+        whyNowTitle: "Popular ticket destinations",
+        whyNowText: "You’ll see more city clips that work well with attraction and museum offers.",
+        nextReactionTitle: "More ticket-friendly cities",
+        nextReactionText: "Look for more destination clips with matching attraction offers.",
         defaultCategory: "tickets"
       },
       luxury: {
         label: "Go luxury",
-        intentMessage: "You’re exploring premium travel, so SignalBoost is favoring higher-value escapes and standout experiences.",
-        feedStateText: "The feed is surfacing elevated travel ideas and stronger premium recommendations.",
-        whyNowTitle: "A more premium direction",
-        whyNowText: "This mode reduces low-value noise and focuses more on higher-end travel options.",
-        nextReactionTitle: "More premium suggestions",
-        nextReactionText: "If luxury interest continues, recommendations will lean harder into premium escapes and higher-value offers.",
+        modeBoxTitle: "Premium escapes and higher-end offers",
+        intentMessage: "Luxury mode highlights premium travel, safari inspiration, upscale stays, and premium experiences.",
+        feedStateText: "You’re seeing more premium destinations and higher-end travel ideas.",
+        whyNowTitle: "Luxury-focused discovery",
+        whyNowText: "This mode keeps the feed closer to premium travel, luxury stays, and high-value experiences.",
+        nextReactionTitle: "More premium travel next",
+        nextReactionText: "Expect additional safari, resort, and upscale stay recommendations.",
         defaultCategory: "safari"
       }
     };
 
     const baseVideoPools = {
       global: [
-        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "General discovery designed to keep visitors exploring and surface the most useful next offer.", monetizationKey: "global" },
-        { id: "M7lc1UVf-VE", title: "For You", desc: "A broad discovery clip for visitors still deciding where to go next.", monetizationKey: "global" },
-        { id: "ysz5S6PUM-U", title: "Smart Picks", desc: "Fast-moving discovery content for general travel and lifestyle browsing.", monetizationKey: "global" }
+        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "Popular travel clips and destination inspiration.", monetizationKey: "global" },
+        { id: "M7lc1UVf-VE", title: "Global Discovery", desc: "A rotating travel feed for broad discovery.", monetizationKey: "global" },
+        { id: "ysz5S6PUM-U", title: "Global Discovery", desc: "Quick inspiration for your next trip.", monetizationKey: "global" }
       ],
       paris: [
-        { id: "ysz5S6PUM-U", title: "City Breaks", desc: "City-energy content designed to convert into attraction and ticket demand.", monetizationKey: "tickets" },
-        { id: "ScMzIvxBSi4", title: "Paris Discovery", desc: "A city-focused pick for attractions, landmarks, and memorable experiences.", monetizationKey: "tickets" }
+        { id: "ysz5S6PUM-U", title: "Paris Discovery", desc: "City energy, attractions, and iconic landmarks.", monetizationKey: "tickets" },
+        { id: "ScMzIvxBSi4", title: "Paris Discovery", desc: "A Paris-style clip built for attractions and city stays.", monetizationKey: "tickets" }
       ],
       safari: [
-        { id: "M7lc1UVf-VE", title: "Safari Discovery", desc: "Luxury safari inspiration mapped to premium Africa planning.", monetizationKey: "safari" },
-        { id: "ScMzIvxBSi4", title: "Wild Escape", desc: "A higher-value travel direction built around premium adventure interest.", monetizationKey: "safari" }
+        { id: "M7lc1UVf-VE", title: "Safari Discovery", desc: "Wildlife, premium escapes, and Africa planning.", monetizationKey: "safari" },
+        { id: "ScMzIvxBSi4", title: "Safari Discovery", desc: "Premium safari ideas and higher-end travel inspiration.", monetizationKey: "safari" }
       ],
       flights: [
-        { id: "ScMzIvxBSi4", title: "Trip Planning", desc: "Flight-led discovery for visitors moving into practical planning.", monetizationKey: "flights" },
-        { id: "M7lc1UVf-VE", title: "Route Finder", desc: "Travel content shaped around routes, options, and planning behavior.", monetizationKey: "flights" }
+        { id: "ScMzIvxBSi4", title: "Flight Discovery", desc: "Trip planning, routes, and airfare discovery.", monetizationKey: "flights" },
+        { id: "M7lc1UVf-VE", title: "Flight Discovery", desc: "Flight-led inspiration for people ready to plan.", monetizationKey: "flights" }
       ],
       tickets: [
-        { id: "ysz5S6PUM-U", title: "Tickets & Attractions", desc: "Attraction and activity discovery for ticket-ready city interest.", monetizationKey: "tickets" },
-        { id: "ScMzIvxBSi4", title: "City Highlights", desc: "Destination-friendly picks tied to museums, landmarks, and passes.", monetizationKey: "tickets" }
+        { id: "ysz5S6PUM-U", title: "Ticket Discovery", desc: "Attractions, museums, and city experiences.", monetizationKey: "tickets" },
+        { id: "ScMzIvxBSi4", title: "Ticket Discovery", desc: "Bookable city moments and destination activities.", monetizationKey: "tickets" }
       ],
       spain: [
-        { id: "M7lc1UVf-VE", title: "Spain Discovery", desc: "Regional travel inspiration tied to Spain-focused routes and offers.", monetizationKey: "spain" },
-        { id: "ysz5S6PUM-U", title: "Spain Picks", desc: "A regional mix of experiences, flights, and destination discovery.", monetizationKey: "spain" }
+        { id: "M7lc1UVf-VE", title: "Spain Discovery", desc: "Spain routes, cities, and regional travel inspiration.", monetizationKey: "spain" },
+        { id: "ysz5S6PUM-U", title: "Spain Discovery", desc: "Spain-focused discovery for your next European trip.", monetizationKey: "spain" }
       ]
     };
 
     const monetizationByKey = {
       global: {
-        urgency: "good match",
-        mainTitle: "Top pick for broad discovery",
-        mainDesc: "A flexible recommendation for visitors still exploring options.",
+        urgency: "featured",
+        mainTitle: "Global Discovery Bundle",
+        mainDesc: "Experiences, flights, stays, and support matched to popular travel discovery.",
         mainHref: "https://klook.tpo.lv/fTRPLj2l",
-        mainCta: "See top pick →",
         offer1Title: "Flights via Kiwi",
-        offer1Desc: "A practical next step if this trip is moving from inspiration to planning.",
+        offer1Desc: "Search routes and travel dates quickly.",
         offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer2Title: "Travel support via AirHelp",
-        offer2Desc: "Useful support if travel changes, delays, or cancellations come into play.",
-        offer2Href: "https://airhelp.tpo.lv/grL9Ojju",
+        offer2Title: "Vrbo stays",
+        offer2Desc: "Vacation rentals and homes that fit destination planning.",
+        offer2Href: "https://vrbo.tpo.lv/ldtO3nzY",
         offer3Title: "BitJoy eSIM",
-        offer3Desc: "A simple add-on for staying connected while traveling.",
+        offer3Desc: "A simple way to stay connected abroad.",
         offer3Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-        statusTitle: "You’re still exploring",
-        statusText: "SignalBoost is keeping recommendations flexible until your direction becomes clearer."
+        statusTitle: "Popular picks are updating live",
+        statusText: "Watch the feed and use the right-side offers to jump into flights, stays, tickets, and destination deals."
       },
       safari: {
-        urgency: "premium fit",
-        mainTitle: "A strong match for safari interest",
-        mainDesc: "Premium Africa planning and higher-value travel ideas for this viewing pattern.",
+        urgency: "premium",
+        mainTitle: "Safari & Africa Planning",
+        mainDesc: "Premium safari planning, higher-end travel, and luxury stay pathways.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
-        mainCta: "Plan safari →",
         offer1Title: "Flights via Kiwi",
-        offer1Desc: "Long-haul route support for safari and premium travel planning.",
+        offer1Desc: "Pair safari plans with long-haul route discovery.",
         offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer2Title: "BitJoy eSIM",
-        offer2Desc: "A useful extra for international travel and connected trips.",
-        offer2Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-        offer3Title: "Lastminute SE",
-        offer3Desc: "Alternative deal discovery for visitors still comparing ideas.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-        statusTitle: "Premium travel interest is growing",
-        statusText: "This session is leaning toward higher-value travel, so premium recommendations are showing more often."
+        offer2Title: "Vrbo stays",
+        offer2Desc: "Upscale vacation-home stays for premium destination travel.",
+        offer2Href: "https://vrbo.tpo.lv/ldtO3nzY",
+        offer3Title: "BitJoy eSIM",
+        offer3Desc: "Stay connected on international travel.",
+        offer3Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
+        statusTitle: "Luxury and safari picks are trending",
+        statusText: "Premium trips and wildlife destinations are getting stronger attention right now."
       },
       flights: {
         urgency: "trip-ready",
-        mainTitle: "A strong match for planning",
-        mainDesc: "Flight-focused picks for visitors who are moving from browsing into real trip planning.",
+        mainTitle: "Flight Discovery & Routes",
+        mainDesc: "Compare flights, plan trips, and move into booking faster.",
         mainHref: "https://kiwi.tpo.lv/qKPZ1inz",
-        mainCta: "Find flights →",
-        offer1Title: "Deals via Lastminute SE",
-        offer1Desc: "Useful if the trip is moving toward package deals or complete bookings.",
-        offer1Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-        offer2Title: "Travel support via AirHelp",
-        offer2Desc: "Helpful for travelers thinking ahead about delays or changes.",
-        offer2Href: "https://airhelp.tpo.lv/grL9Ojju",
-        offer3Title: "BitJoy eSIM",
-        offer3Desc: "A practical add-on once a trip starts taking shape.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-        statusTitle: "Trip-planning signals are clearer",
-        statusText: "This session is leaning toward routes and bookings, so planning-friendly picks are being prioritized."
+        offer1Title: "Vrbo stays",
+        offer1Desc: "Add vacation rentals and home stays to your trip planning.",
+        offer1Href: "https://vrbo.tpo.lv/ldtO3nzY",
+        offer2Title: "Deals via Lastminute SE",
+        offer2Desc: "Package deals and travel booking options.",
+        offer2Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
+        offer3Title: "Travel support via AirHelp",
+        offer3Desc: "Extra help for delays and cancellations.",
+        offer3Href: "https://airhelp.tpo.lv/grL9Ojju",
+        statusTitle: "Trip planning is heating up",
+        statusText: "Flight, stay, and travel planning offers are being surfaced more strongly."
       },
       tickets: {
-        urgency: "popular now",
-        mainTitle: "A strong match for attractions",
-        mainDesc: "Good options for city visitors ready to choose museums, landmarks, and experiences.",
+        urgency: "limited availability",
+        mainTitle: "Attractions & Tickets",
+        mainDesc: "Popular city attractions, stay options, and experience tickets.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-        mainCta: "Get tickets →",
-        offer1Title: "Tiqets FR",
-        offer1Desc: "France-facing attraction and museum ticket picks.",
-        offer1Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-        offer2Title: "Tiqets IT",
-        offer2Desc: "Italy-facing ticket options for city and attraction planning.",
-        offer2Href: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
-        offer3Title: "Tiqets UK",
-        offer3Desc: "A useful next option for UK-facing city discovery and attractions.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
-        statusTitle: "This looks like city-interest traffic",
-        statusText: "Recommendations are shifting toward attractions and passes because city exploration is repeating."
+        offer1Title: "Vrbo stays",
+        offer1Desc: "Vacation rentals that pair well with city attraction plans.",
+        offer1Href: "https://vrbo.tpo.lv/ldtO3nzY",
+        offer2Title: "Tiqets FR",
+        offer2Desc: "France-facing attraction and museum tickets.",
+        offer2Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+        offer3Title: "Tiqets IT",
+        offer3Desc: "Italy-facing attractions and city passes.",
+        offer3Href: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
+        statusTitle: "Attractions are popular right now",
+        statusText: "City, stay, and museum-style offers are showing strong interest."
       },
       spain: {
-        urgency: "regional fit",
-        mainTitle: "A strong match for Spain interest",
-        mainDesc: "Regional travel picks and matching offers for visitors leaning toward Spain.",
+        urgency: "regional",
+        mainTitle: "Spain-Focused Planning",
+        mainDesc: "Regional discovery for Spain routes, cities, stays, and related offers.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
-        mainCta: "See Spain picks →",
-        offer1Title: "Flights via Kiwi",
-        offer1Desc: "Helpful for comparing routes and getting a Spain trip moving.",
-        offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer2Title: "Tiqets FR",
-        offer2Desc: "Nearby ticket-friendly discovery that fits broader Europe interest.",
-        offer2Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+        offer1Title: "Vrbo stays",
+        offer1Desc: "Find vacation rentals and home stays for Spain trips.",
+        offer1Href: "https://vrbo.tpo.lv/ldtO3nzY",
+        offer2Title: "Flights via Kiwi",
+        offer2Desc: "Look for Spain-bound route options.",
+        offer2Href: "https://kiwi.tpo.lv/qKPZ1inz",
         offer3Title: "Lastminute SE",
-        offer3Desc: "A useful package-deal layer for destination-focused sessions.",
+        offer3Desc: "Add deal-focused options to regional planning.",
         offer3Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-        statusTitle: "Regional interest is becoming clearer",
-        statusText: "The session is leaning toward Spain and nearby travel ideas, so regional picks are showing more often."
+        statusTitle: "Spain-related discovery is active",
+        statusText: "Regional travel content is pulling stronger attention right now."
       }
     };
 
@@ -769,7 +603,6 @@
       document.getElementById("shopMainPartner").textContent = config.mainTitle;
       document.getElementById("shopMainDesc").textContent = config.mainDesc;
       document.getElementById("shopMainLink").href = config.mainHref;
-      document.getElementById("shopMainLink").textContent = config.mainCta;
 
       document.getElementById("offer1Title").textContent = config.offer1Title;
       document.getElementById("offer1Desc").textContent = config.offer1Desc;
@@ -820,6 +653,10 @@
       renderVideoGrid(currentCategory);
       clearCategoryButtons();
       if(el) el.classList.add("active");
+      else{
+        const match = [...document.querySelectorAll(".category-row .mode-chip")].find(btn => btn.textContent.trim().toLowerCase() === category);
+        if(match) match.classList.add("active");
+      }
       if(rotationOn) restartRotation();
     }
 
@@ -830,10 +667,7 @@
       updateMainVideo(pool[currentIndex]);
     }
 
-    function playNext(){
-      rotateNextVideo();
-      if(rotationOn) restartRotation();
-    }
+    function playNext(){ rotateNextVideo(); if(rotationOn) restartRotation(); }
 
     function playPrev(){
       const pool = videoPools[currentCategory] || [];
@@ -865,6 +699,7 @@
     function setMode(mode){
       const cfg = modeConfigs[mode];
       document.getElementById("currentModeLabel").textContent = cfg.label;
+      document.getElementById("modeBoxTitle").textContent = cfg.modeBoxTitle;
       document.getElementById("intentMessage").textContent = cfg.intentMessage;
       document.getElementById("feedStateText").textContent = cfg.feedStateText;
       document.getElementById("whyNowTitle").textContent = cfg.whyNowTitle;
@@ -879,23 +714,15 @@
 
     function toggleTheme(){
       document.body.classList.toggle("light-mode");
-      localStorage.setItem("signalboost_theme_v10", document.body.classList.contains("light-mode") ? "light" : "dark");
+      localStorage.setItem("signalboost_theme_v10_vrbo", document.body.classList.contains("light-mode") ? "light" : "dark");
     }
 
     function scrollToRows(){
       document.getElementById("rows").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
-    function handleNewsletter(event){
-      event.preventDefault();
-      const email = document.getElementById("newsletterEmail").value.trim();
-      if(!email) return;
-      alert("Thanks — this demo captures interest on-page only. Add your email platform next for real collection.");
-      event.target.reset();
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("signalboost_theme_v10");
+      const savedTheme = localStorage.getItem("signalboost_theme_v10_vrbo");
       if(savedTheme === "light") document.body.classList.add("light-mode");
       document.querySelectorAll(".mode-card").forEach(card => {
         card.addEventListener("click", () => setMode(card.dataset.mode));
