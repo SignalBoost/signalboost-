@@ -828,6 +828,31 @@
       border-bottom: none;
     }
 
+    .creator-item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .creator-play-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .creator-play-btn:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      transform: translateY(-1px);
+    }
+
     .boost-badge {
       color: var(--gold);
       font-size: 0.8rem;
@@ -887,7 +912,7 @@
             <div class="sponsored-label">Sponsored match</div>
             <div id="sponsoredText">Premium partner placement for this type of search.</div>
           </div>
-          <a id="sponsoredLink" href="#" target="_blank" class="sponsored-link" data-partner-id="">Open offer →</a>
+          <a id="sponsoredLink" href="#" class="sponsored-link" data-partner-id="">Open offer →</a>
         </div>
       </div>
     </div>
@@ -1708,10 +1733,29 @@
     /***********************
      * VIDEO + SHOP PANEL
      ***********************/
-    function getRandomVideo(category) {
+    let currentCategory = "global";
+    let autoRotateHandle = null;
+    const AUTO_ROTATE_MS = 12000;
+    const currentVideoIndexByCategory = {
+      global: 0,
+      rome: 0,
+      paris: 0,
+      safari: 0,
+      usa: 0,
+      flights: 0,
+      spain: 0
+    };
+
+    function withPlayerParams(url) {
+      if (!url) return "";
+      const joiner = url.includes("?") ? "&" : "?";
+      return `${url}${joiner}rel=0&modestbranding=1&playsinline=1`;
+    }
+
+    function clampVideoIndex(category, index) {
       const pool = videoPools[category] || videoPools.global;
-      const index = Math.floor(Math.random() * pool.length);
-      return pool[index];
+      if (!pool.length) return 0;
+      return ((index % pool.length) + pool.length) % pool.length;
     }
 
     function updateShopPanel(monetizationKey) {
@@ -1743,21 +1787,75 @@
       }
     }
 
-    function setVideo(category) {
+    function renderVideoShelf(category) {
+      const shelf = document.getElementById("videoShelf");
+      if (!shelf) return;
+
+      const pool = videoPools[category] || videoPools.global;
+      const activeIndex = clampVideoIndex(category, currentVideoIndexByCategory[category] || 0);
+
+      shelf.innerHTML = pool.map((video, index) => `
+        <button
+          type="button"
+          class="video-card ${index === activeIndex ? "active" : ""}"
+          onclick="playVideoAt('${category}', ${index}, true)"
+          aria-label="Play ${video.title} inside SignalBoost"
+        >
+          <div class="video-card-title">${video.title}</div>
+          <div class="video-card-desc">${video.desc}</div>
+        </button>
+      `).join("");
+    }
+
+    function playVideoAt(category, index, userInitiated = false) {
       const frame = document.getElementById("mainVideo");
       const title = document.getElementById("videoTitle");
       const desc = document.getElementById("videoDescription");
-      const selected = getRandomVideo(category);
+      const pool = videoPools[category] || videoPools.global;
 
-      frame.src = selected.url;
+      if (!pool.length) return;
+
+      currentCategory = category;
+      const safeIndex = clampVideoIndex(category, index);
+      const selected = pool[safeIndex];
+      currentVideoIndexByCategory[category] = safeIndex;
+
+      frame.src = withPlayerParams(selected.url);
       title.textContent = selected.title;
       desc.textContent = selected.desc;
-
-      // Update monetization panel based on monetizationKey
       updateShopPanel(selected.monetizationKey || category || "global");
+      renderVideoShelf(category);
+
+      if (userInitiated) {
+        restartAutoRotate();
+      }
     }
 
-    /***********************
+    function nextVideo(category = currentCategory) {
+      const pool = videoPools[category] || videoPools.global;
+      if (!pool.length) return;
+      const nextIndex = clampVideoIndex(category, (currentVideoIndexByCategory[category] || 0) + 1);
+      playVideoAt(category, nextIndex, false);
+    }
+
+    function restartAutoRotate() {
+      if (autoRotateHandle) {
+        clearInterval(autoRotateHandle);
+      }
+      autoRotateHandle = setInterval(() => {
+        nextVideo(currentCategory);
+      }, AUTO_ROTATE_MS);
+    }
+
+    function setVideo(category) {
+      const pool = videoPools[category] || videoPools.global;
+      if (!pool.length) return;
+      currentCategory = category;
+      const nextIndex = clampVideoIndex(category, (currentVideoIndexByCategory[category] ?? -1) + 1);
+      playVideoAt(category, nextIndex, true);
+    }
+
+/***********************
      * CARD HIGHLIGHTING
      ***********************/
     function clearHighlights() {
@@ -2051,17 +2149,37 @@
       if (!list) return;
       list.innerHTML = "";
 
-      creatorVideos.forEach((video) => {
+      creatorVideos.forEach((video, index) => {
         const div = document.createElement("div");
         div.className = "creator-item";
         div.innerHTML = `
           <strong>${video.title}</strong>
           ${video.boost !== "none" ? `<span class="boost-badge">${video.boost.toUpperCase()}</span>` : ""}
-          <br>
-          <small>${video.url}</small>
+          <div class="creator-item-meta">
+            <small>${video.url}</small>
+            <button type="button" class="creator-play-btn" onclick="playCreatorVideo(${index})">Play inside SignalBoost</button>
+          </div>
         `;
         list.appendChild(div);
       });
+    }
+
+
+    function playCreatorVideo(index) {
+      const creator = creatorVideos[index];
+      if (!creator) return;
+      const embed = normalizeYouTubeUrl(creator.url);
+      const tempVideo = {
+        url: embed,
+        title: creator.title,
+        desc: "Creator-submitted video playing inside SignalBoost.",
+        monetizationKey: "global"
+      };
+
+      const existingIndex = videoPools.global.findIndex((video) => video.url === tempVideo.url && video.title === tempVideo.title);
+      const targetIndex = existingIndex >= 0 ? existingIndex : addToDiscoveryPool(creator.url, creator.title, creator.boost || "none");
+      playVideoAt("global", targetIndex, true);
+      document.getElementById("discovery").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function addToDiscoveryPool(url, title, boost) {
