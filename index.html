@@ -1,55 +1,59 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
-  <meta
-    name="description"
-    content="SignalBoost is a digital shopping mall for travel, mobility, lifestyle, and digital services."
-  />
+  <meta name="description" content="SignalBoost is a video-led discovery platform for travel, tickets, lifestyle, and digital services." />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg: #07111f;
+      --bg-2: #0a1729;
       --card: #10243a;
       --card-2: #132b45;
       --text: #f5f7fb;
       --muted: #a8b3c2;
       --accent: #38bdf8;
       --accent-2: #60a5fa;
-      --border: rgba(148, 163, 184, 0.18);
-      --shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-      --highlight: rgba(56, 189, 248, 0.22);
       --gold: #f6c453;
-      --max: 1180px;
-      --sponsored: #f97316;
+      --border: rgba(148,163,184,0.18);
+      --shadow: 0 12px 38px rgba(0,0,0,0.25);
+      --max: 1220px;
+      --success: #34d399;
+      --danger: #f97316;
     }
 
-    html {
-      scroll-behavior: smooth;
+    body.light-mode {
+      --bg: #f5efe4;
+      --bg-2: #fbf7ef;
+      --card: #fffaf2;
+      --card-2: #f7efe0;
+      --text: #1c2430;
+      --muted: #5f6b7a;
+      --accent: #0ea5e9;
+      --accent-2: #2563eb;
+      --gold: #b8892a;
+      --border: rgba(28,36,48,0.10);
+      --shadow: 0 12px 30px rgba(60,50,30,0.08);
+      --success: #0f9a5f;
+      --danger: #d95f15;
     }
 
+    html { scroll-behavior: smooth; }
     body {
       font-family: Arial, sans-serif;
-      line-height: 1.6;
       background:
-        radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 30%),
-        linear-gradient(180deg, #06101c 0%, #081423 100%);
+        radial-gradient(circle at top, rgba(56,189,248,0.12), transparent 30%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
       color: var(--text);
+      line-height: 1.6;
+      transition: background 0.25s ease, color 0.25s ease;
     }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
 
     .container {
       width: min(var(--max), calc(100% - 32px));
@@ -61,142 +65,142 @@
       top: 0;
       z-index: 1000;
       backdrop-filter: blur(12px);
-      background: rgba(7, 17, 31, 0.82);
+      background: rgba(7,17,31,0.82);
       border-bottom: 1px solid var(--border);
     }
+    body.light-mode .navbar { background: rgba(255,250,242,0.84); }
 
     .navbar-inner {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 20px;
-      padding: 16px 0;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
       flex-wrap: wrap;
     }
 
     .logo {
       font-size: 1.45rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
+      font-weight: 800;
+      letter-spacing: .02em;
     }
 
     .nav-links {
       list-style: none;
       display: flex;
-      gap: 12px;
       flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
     }
 
-    .nav-links a {
-      color: var(--muted);
-      padding: 8px 12px;
-      border: 1px solid transparent;
+    .nav-links a,
+    .theme-toggle {
+      padding: 9px 12px;
       border-radius: 999px;
-      transition: 0.2s ease;
+      border: 1px solid transparent;
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      font-weight: 700;
+      transition: .2s ease;
     }
 
-    .nav-links a:hover {
-      color: var(--text);
+    .nav-links a:hover,
+    .theme-toggle:hover,
+    .pill:hover,
+    .btn:hover,
+    .video-card button:hover,
+    .search-btn:hover {
+      transform: translateY(-1px);
       border-color: var(--border);
-      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
     }
 
-    .hero {
-      padding: 64px 0 26px;
-    }
-
+    .hero { padding: 54px 0 20px; }
     .hero-card {
       background:
-        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 35%),
-        linear-gradient(180deg, rgba(16, 36, 58, 0.95), rgba(10, 24, 40, 0.96));
+        radial-gradient(circle at top left, rgba(56,189,248,0.16), transparent 35%),
+        linear-gradient(180deg, rgba(16,36,58,0.96), rgba(10,24,40,0.97));
       border: 1px solid var(--border);
       border-radius: 28px;
       box-shadow: var(--shadow);
-      padding: 40px 28px;
+      padding: 34px 24px;
+    }
+    body.light-mode .hero-card {
+      background:
+        radial-gradient(circle at top left, rgba(14,165,233,0.10), transparent 35%),
+        linear-gradient(180deg, rgba(255,250,242,0.96), rgba(247,239,224,0.98));
     }
 
     .eyebrow {
       display: inline-block;
       color: var(--accent);
-      font-size: 0.82rem;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      margin-bottom: 12px;
-      font-weight: 700;
+      margin-bottom: 10px;
     }
-
     .hero h1 {
       font-size: clamp(2rem, 5vw, 3.8rem);
       line-height: 1.05;
-      margin-bottom: 14px;
-      max-width: 900px;
+      margin-bottom: 12px;
+      max-width: 920px;
     }
-
     .hero p {
       color: var(--muted);
+      max-width: 840px;
+      margin-bottom: 18px;
       font-size: 1.05rem;
-      max-width: 820px;
-      margin-bottom: 22px;
     }
 
-    .hero-actions {
+    .hero-actions, .quick-row, .chip-row {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
     }
 
-    .btn {
+    .btn, .pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 18px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      font-weight: 700;
-      transition: 0.2s ease;
+      font-weight: 800;
       cursor: pointer;
+      transition: .2s ease;
     }
 
+    .btn {
+      padding: 12px 18px;
+      border: 1px solid var(--border);
+    }
     .btn-primary {
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: #05101c;
+      color: #07111f;
       border: none;
     }
-
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255,255,255,0.03);
       color: var(--text);
     }
 
-    .btn:hover,
-    .search-btn:hover,
-    .chip-btn:hover {
-      transform: translateY(-1px);
-      opacity: 0.96;
+    .quick-row {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
     }
 
-    section {
-      padding: 22px 0;
+    .quick-card {
+      background: linear-gradient(180deg, var(--card-2), var(--card));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
     }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 14px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .section-head h2 {
-      font-size: 1.7rem;
-    }
-
-    .section-head p {
-      color: var(--muted);
-      max-width: 760px;
-    }
+    .quick-card strong { display: block; margin-bottom: 4px; }
+    .quick-card span { color: var(--muted); font-size: .92rem; }
 
     .search-shell {
       margin-top: 18px;
@@ -204,7 +208,6 @@
       grid-template-columns: 1fr auto;
       gap: 10px;
     }
-
     .search-input {
       width: 100%;
       padding: 14px 16px;
@@ -215,156 +218,97 @@
       outline: none;
       font-size: 1rem;
     }
-
-    .search-input::placeholder {
-      color: #92a1b3;
-    }
-
+    body.light-mode .search-input { background: rgba(255,255,255,0.65); }
     .search-btn {
       padding: 14px 18px;
       border-radius: 16px;
       border: none;
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
       color: #05101c;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      transition: 0.2s ease;
     }
-
     .search-result {
-      margin-top: 14px;
+      margin-top: 12px;
+      min-height: 22px;
       color: var(--muted);
-      font-size: 0.97rem;
-      min-height: 24px;
+      font-size: .96rem;
     }
 
-    /* Sponsored search strip */
-    .sponsored-strip {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px dashed rgba(248, 250, 252, 0.12);
-      background: rgba(15, 23, 42, 0.9);
+    section { padding: 22px 0; }
+    .section-head {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9rem;
+      align-items: end;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
     }
+    .section-head h2 { font-size: 1.7rem; }
+    .section-head p { color: var(--muted); max-width: 760px; }
 
-    .sponsored-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--sponsored);
-      font-weight: 700;
-    }
-
-    .sponsored-link {
-      color: var(--accent);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .featured-grid,
-    .top-picks,
-    .grid {
+    .grid, .featured-grid, .video-grid, .top-grid {
       display: grid;
       gap: 16px;
     }
+    .grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .featured-grid, .top-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .video-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 
-    .featured-grid,
-    .top-picks {
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    }
-
-    .grid {
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-
-    .featured-card,
-    .pick-card,
-    .card {
+    .card, .featured-card, .video-card, .panel {
       background: linear-gradient(180deg, var(--card-2), var(--card));
       border: 1px solid var(--border);
       border-radius: 22px;
-      padding: 20px;
       box-shadow: var(--shadow);
-      transition: 0.2s ease;
-      position: relative;
     }
 
-    .featured-card:hover,
-    .pick-card:hover,
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(56, 189, 248, 0.45);
-    }
+    .card, .featured-card { padding: 20px; min-height: 210px; display: flex; flex-direction: column; justify-content: space-between; }
+    .featured-card { border-color: rgba(246,196,83,0.35); }
+    .card:hover, .featured-card:hover, .video-card:hover, .panel:hover { transform: translateY(-2px); transition: .2s ease; }
 
-    .featured-card {
-      border-color: rgba(246, 196, 83, 0.35);
-      box-shadow: 0 0 0 1px rgba(246, 196, 83, 0.14), var(--shadow);
-    }
-
-    .featured-badge,
-    .pick-tag,
-    .card-type {
+    .badge {
       display: inline-block;
-      font-size: 0.75rem;
+      font-size: .74rem;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      font-weight: 800;
       margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .featured-badge {
-      color: var(--gold);
-    }
-
-    .pick-tag,
-    .card-type {
       color: var(--accent);
     }
+    .gold { color: var(--gold); }
 
-    .featured-card h3,
-    .pick-card h3,
-    .card h3 {
-      margin-bottom: 8px;
+    .card p, .featured-card p, .panel p { color: var(--muted); font-size: .95rem; }
+    .card h3, .featured-card h3, .video-meta strong, .panel h3 { margin-bottom: 8px; }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
     }
-
-    .featured-card p,
-    .pick-card p,
-    .card p {
+    .chip {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: .78rem;
       color: var(--muted);
-      font-size: 0.96rem;
-      margin-bottom: 16px;
     }
-
-    .pick-card p {
-      min-height: 70px;
-    }
-
-    .pick-link,
-    .card-link {
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
+    .card-link { color: var(--accent); font-weight: 800; }
 
     .discovery-shell {
-      background: linear-gradient(180deg, var(--card-2), var(--card));
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
       overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      background: linear-gradient(180deg, var(--card-2), var(--card));
     }
 
     .video-wrap {
       width: 100%;
-      height: 340px;
+      aspect-ratio: 16 / 9;
       background: #000;
     }
-
     .video-wrap iframe {
       width: 100%;
       height: 100%;
@@ -372,649 +316,175 @@
       display: block;
     }
 
-    .discovery-body {
-      padding: 18px;
-    }
-
+    .discovery-body { padding: 18px; }
     .discovery-meta {
       display: flex;
       justify-content: space-between;
-      gap: 16px;
-      align-items: start;
+      gap: 12px;
+      align-items: flex-start;
       flex-wrap: wrap;
       margin-bottom: 14px;
     }
+    .discovery-meta p { color: var(--muted); max-width: 760px; }
 
-    .discovery-meta h3 {
-      font-size: 1.12rem;
-      margin-bottom: 6px;
-    }
-
-    .discovery-meta p {
-      color: var(--muted);
-      max-width: 760px;
-    }
-
-    .tag,
-    .chip {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 6px 10px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      white-space: nowrap;
-    }
-
-    .chip-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .chip-btn {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text);
-      cursor: pointer;
-      transition: 0.2s ease;
-      font-weight: 600;
-    }
-
-    .card {
-      min-height: 170px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card.highlighted {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--highlight), var(--shadow);
-      transform: translateY(-3px);
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-top: auto;
-    }
-
-    .about-card,
-    .contact-card {
-      background: linear-gradient(180deg, var(--card), #0d2134);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .about-card p,
-    .contact-card p {
-      color: var(--muted);
-      max-width: 760px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 28px 16px 36px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    /* Monetization: Shop this video panel */
     .shop-panel {
       margin-top: 16px;
       padding: 14px 16px;
       border-radius: 18px;
       border: 1px solid var(--border);
-      background: radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 40%), #07111f;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 40%), rgba(7,17,31,0.35);
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+      grid-template-columns: minmax(0,2fr) minmax(0,1.2fr);
       gap: 14px;
-      align-items: center;
+    }
+    body.light-mode .shop-panel {
+      background: radial-gradient(circle at top left, rgba(14,165,233,0.08), transparent 40%), rgba(255,255,255,0.50);
     }
 
-    .shop-main-title {
-      font-size: 0.9rem;
+    .shop-main-title, .mini-title {
+      font-size: .78rem;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: .12em;
+      font-weight: 800;
       color: var(--accent);
-      margin-bottom: 4px;
-      font-weight: 700;
+      margin-bottom: 6px;
     }
-
     .shop-main-partner {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 4px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
     }
-
-    .shop-main-desc {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .shop-main-cta {
-      font-size: 0.9rem;
+    .shop-main-desc, .shop-secondary-item span { color: var(--muted); font-size: .92rem; }
+    .shop-main-cta, .shop-secondary-item a {
       color: var(--accent);
-      font-weight: 600;
+      font-weight: 800;
     }
-
     .shop-secondary {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      font-size: 0.85rem;
+      gap: 8px;
     }
-
-    .shop-secondary-title {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin-bottom: 2px;
-    }
-
     .shop-secondary-item {
       display: flex;
       justify-content: space-between;
+      gap: 10px;
       align-items: center;
-      gap: 8px;
     }
 
-    .shop-secondary-item span {
-      color: var(--muted);
-    }
-
-    .shop-secondary-item a {
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 0.85rem;
-      white-space: nowrap;
-    }
-
-    /* Sponsored / boosted badges */
-    .badge-sponsored {
-      position: absolute;
-      top: 12px;
-      right: 14px;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--sponsored);
-      border-radius: 999px;
-      border: 1px solid rgba(249,115,22,0.4);
-      padding: 3px 8px;
-      background: rgba(15,23,42,0.9);
-    }
-
-    .badge-boosted {
-      position: absolute;
-      top: 12px;
-      right: 14px;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--accent-2);
-      border-radius: 999px;
-      border: 1px solid rgba(96,165,250,0.4);
-      padding: 3px 8px;
-      background: rgba(15,23,42,0.9);
-    }
-
-    /* Simple newsletter monetization block */
-    .newsletter-card {
-      margin-top: 18px;
-      background: linear-gradient(135deg, #0b1727, #0f172a);
-      border-radius: 22px;
+    .video-card { padding: 14px; }
+    .video-thumb {
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(96,165,250,0.15));
       border: 1px solid var(--border);
-      padding: 18px 20px;
-      display: grid;
-      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
-      gap: 14px;
-      align-items: center;
-    }
-
-    .newsletter-card h3 {
-      margin-bottom: 6px;
-      font-size: 1.1rem;
-    }
-
-    .newsletter-card p {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .newsletter-form {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .newsletter-input {
-      flex: 1;
-      min-width: 160px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.9);
-      color: var(--text);
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .newsletter-btn {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: #05101c;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .newsletter-note {
-      margin-top: 6px;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    @media (max-width: 768px) {
-      .video-wrap {
-        height: 220px;
-      }
-
-      .search-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .shop-panel {
-        grid-template-columns: 1fr;
-      }
-
-      .newsletter-card {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .hero-card {
-        padding: 30px 18px;
-      }
-
-      .discovery-body {
-        padding: 16px;
-      }
-    }
-
-
-
-    .hub-list {
-      list-style: none;
-      display: grid;
-      gap: 10px;
-    }
-
-    .hub-list a {
-      display: inline-flex;
-      width: 100%;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
-      transition: 0.2s ease;
-    }
-
-    .hub-list a:hover {
-      border-color: rgba(56, 189, 248, 0.45);
-      transform: translateY(-2px);
-    }
-
-    .mini-chip {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 4px 8px;
-      color: var(--muted);
-      font-size: 0.72rem;
-      white-space: nowrap;
-    }
-
-    .video-shelf {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-    }
-
-    .video-card {
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(255,255,255,0.03);
-      cursor: pointer;
-      transition: 0.2s ease;
-      min-height: 112px;
-    }
-
-    .video-card:hover,
-    .video-card.active {
-      border-color: rgba(56, 189, 248, 0.45);
-      transform: translateY(-2px);
-      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.12);
-    }
-
-    .video-card-title {
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .video-card-desc {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .helper-note {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    /* Services Hub */
-    .hub-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-
-    .hub-card {
-      background: linear-gradient(180deg, var(--card-2), var(--card));
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .hub-card h3 {
-      margin-bottom: 12px;
-    }
-
-    .hub-list {
-      list-style: none;
-      display: grid;
-      gap: 10px;
-      color: var(--muted);
-    }
-
-    .hub-list li {
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
-    }
-
-    .hub-note {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    /* Creator submissions */
-    .creator-panel {
-      margin-top: 0;
-      padding: 20px;
-      border-radius: 22px;
-      background: linear-gradient(180deg, #0d1b2e, #0a1524);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    .creator-panel h3 {
+      justify-content: center;
+      font-size: 2rem;
       margin-bottom: 10px;
-      font-size: 1.3rem;
     }
-
-    .creator-panel p {
-      color: var(--muted);
-      margin-bottom: 14px;
+    .video-meta { margin-bottom: 10px; }
+    .video-meta span { display: block; color: var(--muted); font-size: .9rem; }
+    .video-card button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
     }
 
     .creator-form {
       display: grid;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
-
     .creator-input {
+      width: 100%;
       padding: 12px 14px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.04);
       color: var(--text);
-      font-size: 0.95rem;
+      font-size: .95rem;
+      outline: none;
     }
+    body.light-mode .creator-input { background: rgba(255,255,255,0.65); }
 
-    .creator-btn {
+    .creator-btn, .newsletter-btn {
       padding: 12px 16px;
       border-radius: 14px;
       border: none;
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
       color: #05101c;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
     }
 
-    .creator-queue {
-      margin-top: 16px;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.03);
+    .creator-queue, .newsletter-card {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 18px;
       border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+    body.light-mode .creator-queue, body.light-mode .newsletter-card {
+      background: rgba(255,255,255,0.50);
     }
 
     .creator-item {
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .creator-item:last-child {
-      border-bottom: none;
-    }
-
-    .creator-item-meta {
+      border-bottom: 1px solid var(--border);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 6px;
+    }
+    .creator-item:last-child { border-bottom: none; }
+    .boost-badge {
+      color: var(--gold);
+      font-size: .8rem;
+      font-weight: 800;
+      margin-left: 8px;
     }
 
-    .creator-play-btn {
+    .newsletter-form {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .newsletter-input {
+      flex: 1;
+      min-width: 180px;
+      padding: 11px 12px;
+      border-radius: 999px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.04);
       color: var(--text);
-      border-radius: 999px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 700;
+      outline: none;
     }
+    body.light-mode .newsletter-input { background: rgba(255,255,255,0.65); }
+    .newsletter-note { margin-top: 8px; color: var(--muted); font-size: .82rem; }
 
-    .creator-play-btn:hover {
-      border-color: rgba(56, 189, 248, 0.45);
-      transform: translateY(-1px);
-    }
-
-    .boost-badge {
-      color: var(--gold);
-      font-size: 0.8rem;
-      margin-left: 6px;
-    }
-
-  
-    body {
-      transition: background 0.35s ease, color 0.35s ease;
-    }
-
-    .navbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .theme-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 700;
-      transition: 0.2s ease;
-      box-shadow: var(--shadow);
-    }
-
-    .theme-toggle:hover {
-      transform: translateY(-1px);
-      border-color: rgba(56, 189, 248, 0.35);
-    }
-
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: #05101c;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .revenue-bar {
-      margin: 18px 0 6px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 10px;
-    }
-
-    .revenue-link {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px 14px 12px;
-      display: block;
-      transition: 0.2s ease;
-      box-shadow: var(--shadow);
-    }
-
-    .revenue-link:hover {
-      transform: translateY(-2px);
-      border-color: rgba(56, 189, 248, 0.45);
-    }
-
-    .revenue-link strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.96rem;
-    }
-
-    .revenue-link span {
+    .footer {
+      padding: 32px 16px 36px;
       color: var(--muted);
-      font-size: 0.86rem;
-    }
-
-    .light-mode {
-      --bg: #f7f4ee;
-      --card: #fffaf2;
-      --card-2: #f4ede3;
-      --text: #1f2937;
-      --muted: #5b6472;
-      --accent: #c98b2b;
-      --accent-2: #e6b85c;
-      --border: rgba(120, 96, 58, 0.16);
-      --shadow: 0 16px 44px rgba(83, 63, 34, 0.10);
-      --highlight: rgba(201, 139, 43, 0.18);
-      --gold: #b8831e;
-      --sponsored: #c66117;
-    }
-
-    body.light-mode {
-      background:
-        radial-gradient(circle at top, rgba(201, 139, 43, 0.10), transparent 28%),
-        linear-gradient(180deg, #fcfaf6 0%, #f5efe6 100%);
-      color: var(--text);
-    }
-
-    body.light-mode .navbar {
-      background: rgba(252, 248, 241, 0.84);
-      border-bottom: 1px solid var(--border);
-    }
-
-    body.light-mode .hero-card,
-    body.light-mode .featured-card,
-    body.light-mode .pick-card,
-    body.light-mode .card,
-    body.light-mode .about-card,
-    body.light-mode .contact-card,
-    body.light-mode .discovery-shell,
-    body.light-mode .newsletter-card,
-    body.light-mode .shop-panel,
-    body.light-mode .creator-panel,
-    body.light-mode .creator-queue,
-    body.light-mode .revenue-link {
-      background:
-        radial-gradient(circle at top left, rgba(201, 139, 43, 0.10), transparent 42%),
-        linear-gradient(180deg, rgba(255, 252, 246, 0.98), rgba(248, 241, 231, 0.98));
-    }
-
-    body.light-mode .search-input,
-    body.light-mode .newsletter-input,
-    body.light-mode .creator-input {
-      background: rgba(255,255,255,0.8);
-      color: var(--text);
-    }
-
-    body.light-mode .tag,
-    body.light-mode .chip,
-    body.light-mode .theme-toggle,
-    body.light-mode .chip-btn {
-      background: rgba(255,255,255,0.7);
-    }
-
-    body.light-mode .btn-primary,
-    body.light-mode .search-btn,
-    body.light-mode .newsletter-btn,
-    body.light-mode .creator-btn,
-    body.light-mode .nav-cta {
-      color: #2b1b05;
+      text-align: center;
+      font-size: .95rem;
     }
 
     @media (max-width: 900px) {
-      .navbar-inner {
-        justify-content: center;
-      }
-
-      .navbar-actions {
-        width: 100%;
-        justify-content: center;
-      }
+      .shop-panel { grid-template-columns: 1fr; }
     }
-
+    @media (max-width: 768px) {
+      .search-shell { grid-template-columns: 1fr; }
+      .navbar-inner { justify-content: center; }
+      .hero-card { padding: 28px 18px; }
+    }
   </style>
 </head>
 <body>
@@ -1023,76 +493,55 @@
       <div class="logo">SignalBoost</div>
       <ul class="nav-links">
         <li><a href="#featured">Featured</a></li>
-        <li><a href="#discovery">Discovery</a></li>
-        <li><a href="#top-picks">Top Picks</a></li>
-        <li><a href="#services-hub">Services Hub</a></li>
+        <li><a href="#discovery">Videos</a></li>
+        <li><a href="#services">Services Hub</a></li>
+        <li><a href="#tickets">Deals & Tickets</a></li>
+        <li><a href="#luxury">Luxury Escapes</a></li>
         <li><a href="#partners">Partners</a></li>
-        <li><a href="#creator">Creators</a></li>
-        <li><a href="#about">About</a></li>
+        <li><button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button></li>
       </ul>
-      <div class="navbar-actions">
-        <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()">☀️ Light mode</button>
-        <a class="nav-cta" href="#featured">Top deals</a>
-      </div>
     </div>
   </nav>
 
   <header class="hero">
     <div class="container">
       <div class="hero-card">
-        <span class="eyebrow">Digital Video Mall</span>
-        <h1>Discover premium travel, mobility, digital, and lifestyle solutions.</h1>
+        <span class="eyebrow">Video-led discovery platform</span>
+        <h1>Discover travel, tickets, lifestyle, and digital offers through a dynamic video-first experience.</h1>
         <p>
-          SignalBoost is a digital shopping mall with AI-style discovery, featured placement inventory,
-          and an intelligent search bar that guides users to the best matching partner.
+          SignalBoost combines entertainment, discovery, and monetized partner routing. Browse videos, jump into categories,
+          and shop the best matching offer without leaving the platform’s video experience.
         </p>
 
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#featured">Featured Placements</a>
-          <a class="btn btn-secondary" href="#partners">Browse All Partners</a>
+          <a class="btn btn-primary" href="#discovery">Watch videos</a>
+          <a class="btn btn-secondary" href="#partners">Browse all partners</a>
         </div>
 
-        <div class="revenue-bar">
-          <a class="revenue-link" href="https://kiwi.tpo.lv/qKPZ1inz" data-partner-id="kiwi">
-            <strong>Book flights faster</strong>
-            <span>High-intent route and airfare shoppers</span>
+        <div class="quick-row">
+          <a class="quick-card" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">
+            <strong>Book flights</strong>
+            <span>Route discovery and global airfare options.</span>
           </a>
-          <a class="revenue-link" href="https://klook.tpo.lv/fTRPLj2l" data-partner-id="klook">
-            <strong>Find top attractions</strong>
-            <span>Experiences, tours, and city activities</span>
+          <a class="quick-card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+            <strong>Top attractions</strong>
+            <span>Tiqets US for museums, shows, and landmarks.</span>
           </a>
-          <a class="revenue-link" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" data-partner-id="go2africa">
+          <a class="quick-card" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
             <strong>Plan a safari</strong>
-            <span>Premium travel intent and bigger-ticket bookings</span>
+            <span>Premium Africa itineraries through Go2Africa.</span>
           </a>
-          <a class="revenue-link" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" data-partner-id="bitjoy">
+          <a class="quick-card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
             <strong>Get travel eSIM</strong>
-            <span>Fast mobile data for trips and remote work</span>
+            <span>BitJoy eSIM for connected travel.</span>
           </a>
         </div>
 
         <div class="search-shell">
-          <input
-            id="aiSearch"
-            class="search-input"
-            type="text"
-            placeholder="Try: safari in Africa, flights to Europe, esim for travel, Spain tours, delayed flight..."
-          />
+          <input id="aiSearch" class="search-input" type="text" placeholder="Try: safari, Paris tickets, flights to Europe, travel eSIM, delayed flight..." />
           <button class="search-btn" onclick="runAISearch()">Search</button>
         </div>
-
-        <div id="searchResult" class="search-result">
-          Search by need or destination and SignalBoost will guide the user to the best match.
-        </div>
-
-        <!-- Sponsored search strip (dynamic) -->
-        <div id="sponsoredStrip" class="sponsored-strip" style="display:none;">
-          <div>
-            <div class="sponsored-label">Sponsored match</div>
-            <div id="sponsoredText">Premium partner placement for this type of search.</div>
-          </div>
-          <a id="sponsoredLink" href="#" class="sponsored-link" data-partner-id="">Open offer →</a>
-        </div>
+        <div id="searchResult" class="search-result">Search by travel need or destination and SignalBoost will guide you to the best match.</div>
       </div>
     </div>
   </header>
@@ -1101,34 +550,46 @@
     <div class="container">
       <div class="section-head">
         <div>
-          <h2>Featured Paid Placements</h2>
-          <p>These are premium sponsor-ready slots you can reorder later as paid inventory.</p>
+          <h2>Featured paid placements</h2>
+          <p>These are prime visibility slots for partners and high-intent user journeys.</p>
         </div>
       </div>
 
       <div class="featured-grid">
-        <a class="featured-card" href="https://klook.tpo.lv/fTRPLj2l" data-partner-id="klook" data-sponsored="true">
-          <span class="featured-badge">Featured Placement</span>
-          <span class="badge-sponsored">Sponsored</span>
-          <h3>Klook</h3>
-          <p>Prime discovery slot for attractions, tours, and travel experiences.</p>
-          <span class="pick-link">Open partner →</span>
+        <a class="featured-card" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge gold">Featured placement</span>
+            <h3>Kiwi</h3>
+            <p>High-intent flight traffic and route discovery.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Open partner →</span>
+            <span class="chip">Flights</span>
+          </div>
         </a>
 
-        <a class="featured-card" href="https://kiwi.tpo.lv/qKPZ1inz" data-partner-id="kiwi" data-sponsored="true">
-          <span class="featured-badge">Featured Placement</span>
-          <span class="badge-sponsored">Sponsored</span>
-          <h3>Kiwi</h3>
-          <p>High-visibility placement for users actively planning flights and routes.</p>
-          <span class="pick-link">Open partner →</span>
+        <a class="featured-card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge gold">Featured placement</span>
+            <h3>Klook</h3>
+            <p>Experiences, activities, and destination discovery.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Open partner →</span>
+            <span class="chip">Experiences</span>
+          </div>
         </a>
 
-        <a class="featured-card" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" data-partner-id="go2africa" data-sponsored="true">
-          <span class="featured-badge">Featured Placement</span>
-          <span class="badge-sponsored">Sponsored</span>
-          <h3>Go2Africa</h3>
-          <p>Premium sponsor-ready position for safari and high-ticket travel intent.</p>
-          <span class="pick-link">Open partner →</span>
+        <a class="featured-card" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge gold">Featured placement</span>
+            <h3>Go2Africa</h3>
+            <p>Premium safari planning and high-ticket travel journeys.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Open partner →</span>
+            <span class="chip">Safari</span>
+          </div>
         </a>
       </div>
     </div>
@@ -1138,8 +599,8 @@
     <div class="container">
       <div class="section-head">
         <div>
-          <h2>AI Discovery Screen</h2>
-          <p>A rotating video pool keeps the experience fresh while recommendations adapt below.</p>
+          <h2>Video discovery</h2>
+          <p>Videos play inside the platform. Use the categories or cards below to change the main player without leaving the site.</p>
         </div>
       </div>
 
@@ -1147,9 +608,10 @@
         <div class="video-wrap">
           <iframe
             id="mainVideo"
-            src="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE?rel=0&modestbranding=1&playsinline=1"
-            title="SignalBoost discovery video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            src="https://www.youtube-nocookie.com/embed/ScMzIvxBSi4?rel=0&modestbranding=1&playsinline=1"
+            title="SignalBoost main video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen>
           </iframe>
         </div>
@@ -1157,325 +619,70 @@
         <div class="discovery-body">
           <div class="discovery-meta">
             <div>
-              <h3 id="videoTitle">Discovery Demo</h3>
-              <p id="videoDescription">
-                The player now rotates from a curated video pool instead of staying on one static video.
-              </p>
+              <h3 id="videoTitle">Global Discovery</h3>
+              <p id="videoDescription">A rotating discovery stream built to keep users engaged and route them to the best matching partner.</p>
             </div>
-            <div class="tag">AI/HMI Driven</div>
+            <div class="chip">Plays inside SignalBoost</div>
           </div>
 
           <div class="chip-row">
-            <button class="chip-btn" onclick="setVideo('global')">Global</button>
-            <button class="chip-btn" onclick="setVideo('rome')">Rome</button>
-            <button class="chip-btn" onclick="setVideo('paris')">Paris</button>
-            <button class="chip-btn" onclick="setVideo('safari')">Safari</button>
-            <button class="chip-btn" onclick="setVideo('usa')">USA</button>
-            <button class="chip-btn" onclick="setVideo('flights')">Flights</button>
-            <button class="chip-btn" onclick="setVideo('spain')">Spain</button>
+            <button class="theme-toggle" onclick="setVideoCategory('global')">Global</button>
+            <button class="theme-toggle" onclick="setVideoCategory('paris')">Paris</button>
+            <button class="theme-toggle" onclick="setVideoCategory('safari')">Safari</button>
+            <button class="theme-toggle" onclick="setVideoCategory('flights')">Flights</button>
+            <button class="theme-toggle" onclick="setVideoCategory('tickets')">Tickets</button>
+            <button class="theme-toggle" onclick="setVideoCategory('spain')">Spain</button>
           </div>
 
-          <div class="helper-note">Videos now rotate automatically, and clicking a video card below keeps playback inside SignalBoost.</div>
-          <div id="videoShelf" class="video-shelf"></div>
-
-          <!-- Monetization: Shop this video / contextual offers -->
-          <div id="shopPanel" class="shop-panel">
+          <div class="shop-panel">
             <div>
               <div class="shop-main-title">Shop this video</div>
               <div id="shopMainPartner" class="shop-main-partner">Global Discovery Bundle</div>
-              <div id="shopMainDesc" class="shop-main-desc">
-                Flights, experiences, and travel support matched to this discovery mode.
-              </div>
-              <a id="shopMainLink" href="#partners" class="shop-main-cta" data-partner-id="">
-                View recommended partner → 
-              </a>
+              <div id="shopMainDesc" class="shop-main-desc">Experiences, flights, and support matched to this discovery mode.</div>
+              <a id="shopMainLink" class="shop-main-cta" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">View recommended partner →</a>
             </div>
+
             <div class="shop-secondary">
-              <div class="shop-secondary-title">Related offers</div>
+              <div class="mini-title">Related offers</div>
               <div class="shop-secondary-item">
-                <span id="shopSecondary1Label">Experiences via Klook</span>
-                <a id="shopSecondary1Link" href="https://klook.tpo.lv/fTRPLj2l" data-partner-id="klook">Open →</a>
+                <span id="shopSecondary1Label">Flights via Kiwi</span>
+                <a id="shopSecondary1Link" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">Open →</a>
               </div>
               <div class="shop-secondary-item">
-                <span id="shopSecondary2Label">Flight disruption help via AirHelp</span>
-                <a id="shopSecondary2Link" href="https://airhelp.tpo.lv/grL9Ojju" data-partner-id="airhelp">Open →</a>
+                <span id="shopSecondary2Label">Travel support via AirHelp</span>
+                <a id="shopSecondary2Link" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">Open →</a>
               </div>
             </div>
           </div>
-          <!-- End monetization panel -->
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="top-picks">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2>Top Picks</h2>
-          <p>Featured options placed first to help visitors reach your strongest categories faster.</p>
-        </div>
-      </div>
-
-      <div class="top-picks">
-        <a class="pick-card" href="https://klook.tpo.lv/fTRPLj2l" data-partner-id="klook" data-boosted="true">
-          <span class="pick-tag">Experiences</span>
-          <span class="badge-boosted">Boosted</span>
-          <h3>Klook</h3>
-          <p>Attractions, activities, and travel experiences in one place.</p>
-          <span class="pick-link">Open partner →</span>
-        </a>
-
-        <a class="pick-card" href="https://kiwi.tpo.lv/qKPZ1inz" data-partner-id="kiwi" data-boosted="true">
-          <span class="pick-tag">Flights</span>
-          <span class="badge-boosted">Boosted</span>
-          <h3>Kiwi</h3>
-          <p>Flight discovery and booking for travelers looking for route options and deals.</p>
-          <span class="pick-link">Open partner →</span>
-        </a>
-
-        <a class="pick-card" href="https://yesim.tpo.lv/olNUcwvB" data-partner-id="yesim">
-          <span class="pick-tag">Connectivity</span>
-          <h3>Yesim</h3>
-          <p>eSIM access for travelers who need mobile data while abroad.</p>
-          <span class="pick-link">Open partner →</span>
-        </a>
-
-        <a class="pick-card" href="https://airhelp.tpo.lv/grL9Ojju" data-partner-id="airhelp">
-          <span class="pick-tag">Travel Support</span>
-          <h3>AirHelp</h3>
-          <p>Flight disruption support for delayed, cancelled, or overbooked trips.</p>
-          <span class="pick-link">Open partner →</span>
-        </a>
-      </div>
-
-      <!-- Newsletter monetization block -->
-      <div class="newsletter-card">
-        <div>
-          <h3>SignalBoost Deal Briefing</h3>
-          <p>Get a short weekly briefing with the best travel, mobility, and digital partner offers.</p>
-          <div class="newsletter-note">
-            Contains affiliate links and sponsored placements. You can unsubscribe anytime.
+          <div class="section-head" style="margin-top:18px; margin-bottom:12px;">
+            <div>
+              <h2 style="font-size:1.2rem;">Up next</h2>
+              <p>These buttons switch the embedded video inside the player above.</p>
+            </div>
           </div>
-        </div>
-        <div>
-          <form class="newsletter-form" onsubmit="handleNewsletter(event)">
-            <input
-              id="newsletterEmail"
-              type="email"
-              class="newsletter-input"
-              placeholder="Enter your email"
-              required
-            />
-            <button class="newsletter-btn" type="submit">Join the list</button>
-          </form>
+
+          <div id="videoGrid" class="video-grid"></div>
         </div>
       </div>
     </div>
   </section>
 
-
-
-  
-  <section id="services-hub">
+  <section id="services">
     <div class="container">
       <div class="section-head">
         <div>
-          <h2>Services Hub</h2>
-          <p>This section keeps the original SignalBoost categories from your live site while the upgraded experience adds discovery, monetization, and partner routing.</p>
-        </div>
-      </div>
-
-      <div class="hub-grid">
-        <div class="hub-card">
-          <h3>Core Utilities</h3>
-          <ul class="hub-list">
-            <li><a href="https://www.booking.com/index.html?aid=2439663" data-partner-id="hotels">Hotels <span class="mini-chip">Stay</span></a></li>
-            <li><a href="#partners">Card Services <span class="mini-chip">Browse</span></a></li>
-            <li><a href="https://airhelp.tpo.lv/grL9Ojju" data-partner-id="airhelp">AirHelp <span class="mini-chip">Support</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" data-partner-id="bitjoy-us">BitJoy eSIM (US) <span class="mini-chip">eSIM</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" data-partner-id="lastminute-se">Lastminute SE <span class="mini-chip">Travel</span></a></li>
-          </ul>
-        </div>
-
-        <div class="hub-card">
-          <h3>Lifestyle &amp; Productivity</h3>
-          <ul class="hub-list">
-            <li><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" data-partner-id="kingkoil">King Koil <span class="mini-chip">Lifestyle</span></a></li>
-            <li><a href="#partners">Calm / Headspace <span class="mini-chip">Wellness</span></a></li>
-            <li><a href="#partners">Fitness <span class="mini-chip">Health</span></a></li>
-            <li><a href="#partners">Nutrition <span class="mini-chip">Health</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" data-partner-id="pearlmountain">PearlMountain Limited <span class="mini-chip">Software</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" data-partner-id="gogoespana">Go! Go! España <span class="mini-chip">Spain</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" data-partner-id="buildermarket-us">The Builder Market (US) <span class="mini-chip">Home</span></a></li>
-          </ul>
-        </div>
-
-        <div class="hub-card">
-          <h3>Luxury Escapes</h3>
-          <ul class="hub-list">
-            <li><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" data-partner-id="desire">Desire Experience <span class="mini-chip">Resort</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" data-partner-id="temptation-us">Temptation Experience (US) <span class="mini-chip">Resort</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-de">Tiqets DE <span class="mini-chip">Tickets</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-fr">Tiqets FR <span class="mini-chip">Tickets</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" data-partner-id="tiqets-it">Tiqets IT <span class="mini-chip">Tickets</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" data-partner-id="tiqets-uk">Tiqets UK <span class="mini-chip">Tickets</span></a></li>
-            <li><a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" data-partner-id="tiqets-us">Tiqets US <span class="mini-chip">Tickets</span></a></li>
-          </ul>
-          <p class="hub-note">These original categories are now preserved inside the richer SignalBoost layout, and each item now points to a destination.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <section id="partners">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2>All Partners</h2>
-          <p>A focused, live set of affiliate partners across travel, mobility, digital tools, and experiences.</p>
+          <h2>Services hub</h2>
+          <p>Core services and lifestyle links that are always available.</p>
         </div>
       </div>
 
       <div class="grid">
-        <a class="card" id="allycar-card" href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" data-partner-id="allycar">
+        <a class="card" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Mobility</span>
-            <h3>Allycar</h3>
-            <p>Car rental option for travelers who need flexible transportation.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Cars</span>
-          </div>
-        </a>
-
-        <a class="card" id="carmel-card" href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" data-partner-id="carmel">
-          <div>
-            <span class="card-type">Transfers</span>
-            <h3>Carmel Car & Limousine</h3>
-            <p>Ground transportation and private ride solutions.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Transport</span>
-          </div>
-        </a>
-
-        <a class="card" id="desire-card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" data-partner-id="desire">
-          <div>
-            <span class="card-type">Experiences</span>
-            <h3>Desire Experience</h3>
-            <p>Resort and experience-based lifestyle travel offering.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Premium</span>
-          </div>
-        </a>
-
-        <a class="card" id="evisa-card" href="https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806" data-partner-id="evisa">
-          <div>
-            <span class="card-type">Travel Docs</span>
-            <h3>Evisa</h3>
-            <p>Visa-related support for travelers planning international trips.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Documents</span>
-          </div>
-        </a>
-
-        <a class="card" id="gogoespana-card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" data-partner-id="gogoespana">
-          <div>
-            <span class="card-type">Travel</span>
-            <h3>Go! Go! España</h3>
-            <p>Spain-focused partner option for visitors exploring that market.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Regional</span>
-          </div>
-        </a>
-
-        <a class="card" id="go2africa-card" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" data-partner-id="go2africa">
-          <div>
-            <span class="card-type">Safari</span>
-            <h3>Go2Africa</h3>
-            <p>Safari and Africa-focused premium travel planning.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">High Value</span>
-          </div>
-        </a>
-
-        <a class="card" id="kingkoil-card" href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" data-partner-id="kingkoil">
-          <div>
-            <span class="card-type">Lifestyle</span>
-            <h3>King Koil</h3>
-            <p>Home and comfort-focused lifestyle product partner.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Lifestyle</span>
-          </div>
-        </a>
-
-        <a class="card" id="pearlmountain-card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" data-partner-id="pearlmountain">
-          <div>
-            <span class="card-type">Software</span>
-            <h3>PearlMountain Limited</h3>
-            <p>Creative and utility software offering.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Digital</span>
-          </div>
-        </a>
-
-        <a class="card" id="klook-card" href="https://klook.tpo.lv/fTRPLj2l" data-partner-id="klook">
-          <div>
-            <span class="card-type">Experiences</span>
-            <h3>Klook</h3>
-            <p>Broad travel experiences and attraction booking option.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Global</span>
-          </div>
-        </a>
-
-        <a class="card" id="yesim-card" href="https://yesim.tpo.lv/olNUcwvB" data-partner-id="yesim">
-          <div>
-            <span class="card-type">Connectivity</span>
-            <h3>Yesim</h3>
-            <p>eSIM and mobile data solution for travelers.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">eSIM</span>
-          </div>
-        </a>
-
-        <a class="card" id="kiwi-card" href="https://kiwi.tpo.lv/qKPZ1inz" data-partner-id="kiwi">
-          <div>
-            <span class="card-type">Flights</span>
-            <h3>Kiwi</h3>
-            <p>Flight search and booking option for global travel routes.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Flights</span>
-          </div>
-        </a>
-
-        <a class="card" id="airhelp-card" href="https://airhelp.tpo.lv/grL9Ojju" data-partner-id="airhelp">
-          <div>
-            <span class="card-type">Support</span>
+            <span class="badge">Travel support</span>
             <h3>AirHelp</h3>
-            <p>Travel disruption and passenger support partner.</p>
+            <p>Flight disruption support for delays, cancellations, and passenger claims.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
@@ -1483,34 +690,11 @@
           </div>
         </a>
 
-        <a class="card" id="nordvpn-card" href="https://nordvpn.tpo.lv/q1aN4Xru" data-partner-id="nordvpn">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Security</span>
-            <h3>NordVPN</h3>
-            <p>Privacy and security solution for connected travelers and remote users.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Digital</span>
-          </div>
-        </a>
-        <a class="card" id="lastminute-se-card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" data-partner-id="lastminute-se">
-          <div>
-            <span class="card-type">Travel</span>
-            <h3>Lastminute SE</h3>
-            <p>Last-minute travel deals and planning support for Sweden-focused traffic.</p>
-          </div>
-          <div class="card-footer">
-            <span class="card-link">Visit partner →</span>
-            <span class="chip">Deals</span>
-          </div>
-        </a>
-
-        <a class="card" id="bitjoy-us-card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" data-partner-id="bitjoy-us">
-          <div>
-            <span class="card-type">Connectivity</span>
+            <span class="badge">Connectivity</span>
             <h3>BitJoy eSIM (US)</h3>
-            <p>Travel data connectivity for U.S. audiences needing eSIM access.</p>
+            <p>Travel data and connectivity for users who need mobile service while abroad.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
@@ -1518,35 +702,84 @@
           </div>
         </a>
 
-        <a class="card" id="buildermarket-us-card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" data-partner-id="buildermarket-us">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Home</span>
+            <span class="badge">Software</span>
+            <h3>PearlMountain Limited</h3>
+            <p>Creative and utility software partner with the corrected affiliate link.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Digital</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge">Travel</span>
+            <h3>Go! Go! España</h3>
+            <p>Spain-focused planning and travel discovery.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Spain</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge">Lifestyle</span>
+            <h3>King Koil</h3>
+            <p>Comfort and home lifestyle products with strong brand recognition.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Lifestyle</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge">Home</span>
             <h3>The Builder Market (US)</h3>
-            <p>Home improvement and builder marketplace option for U.S. shoppers.</p>
+            <p>US home and building marketplace partner for broader consumer monetization.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
-            <span class="chip">Marketplace</span>
+            <span class="chip">Home</span>
           </div>
         </a>
+      </div>
+    </div>
+  </section>
 
-        <a class="card" id="temptation-us-card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" data-partner-id="temptation-us">
+  <section id="tickets">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Travel deals & tickets</h2>
+          <p>Lastminute and Tiqets are separated here so ticket and deal traffic has its own dedicated area.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Experiences</span>
-            <h3>Temptation Experience (US)</h3>
-            <p>U.S.-linked resort and lifestyle travel partner for experience-driven visitors.</p>
+            <span class="badge">Deals</span>
+            <h3>Lastminute SE</h3>
+            <p>Travel booking and packaged deal options for users shopping complete trips.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
-            <span class="chip">Premium</span>
+            <span class="chip">Deals</span>
           </div>
         </a>
 
-        <a class="card" id="tiqets-de-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-de">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Tickets</span>
+            <span class="badge">Tickets</span>
             <h3>Tiqets DE</h3>
-            <p>Attractions and ticketing inventory for German market traffic.</p>
+            <p>Germany-facing ticketing for attractions, cultural experiences, and landmarks.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
@@ -1554,11 +787,11 @@
           </div>
         </a>
 
-        <a class="card" id="tiqets-fr-card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" data-partner-id="tiqets-fr">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Tickets</span>
+            <span class="badge">Tickets</span>
             <h3>Tiqets FR</h3>
-            <p>Attractions and ticketing inventory for France-focused traffic.</p>
+            <p>France-facing attraction tickets and destination activities.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
@@ -1566,11 +799,11 @@
           </div>
         </a>
 
-        <a class="card" id="tiqets-it-card" href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" data-partner-id="tiqets-it">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Tickets</span>
+            <span class="badge">Tickets</span>
             <h3>Tiqets IT</h3>
-            <p>Attractions and ticketing inventory for Italy-focused traffic.</p>
+            <p>Italy-facing tickets for high-intent attraction and museum traffic.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
@@ -1578,11 +811,11 @@
           </div>
         </a>
 
-        <a class="card" id="tiqets-uk-card" href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" data-partner-id="tiqets-uk">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Tickets</span>
+            <span class="badge">Tickets</span>
             <h3>Tiqets UK</h3>
-            <p>Attractions and ticketing inventory for United Kingdom visitors.</p>
+            <p>United Kingdom-focused ticketing and attraction discovery.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
@@ -1590,835 +823,421 @@
           </div>
         </a>
 
-        <a class="card" id="tiqets-us-card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" data-partner-id="tiqets-us">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
           <div>
-            <span class="card-type">Tickets</span>
+            <span class="badge">Tickets</span>
             <h3>Tiqets US</h3>
-            <p>Attractions and ticketing inventory for U.S.-based discovery and bookings.</p>
+            <p>US market attraction tickets and discovery-led booking traffic.</p>
           </div>
           <div class="card-footer">
             <span class="card-link">Visit partner →</span>
             <span class="chip">US</span>
           </div>
         </a>
-
       </div>
     </div>
   </section>
 
+  <section id="luxury">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Luxury escapes</h2>
+          <p>This section now only contains the intended luxury resort and experience partners.</p>
+        </div>
+      </div>
 
+      <div class="top-grid">
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge">Luxury</span>
+            <h3>Desire Experience</h3>
+            <p>Resort and experience-based premium lifestyle travel partner.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">Premium</span>
+          </div>
+        </a>
+
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">
+          <div>
+            <span class="badge">Luxury</span>
+            <h3>Temptation Experience (US)</h3>
+            <p>US-facing premium resort and adult-oriented luxury experience traffic.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-link">Visit partner →</span>
+            <span class="chip">US</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <section id="creator">
     <div class="container">
       <div class="section-head">
         <div>
-          <h2>Creator Submissions</h2>
-          <p>Creators can submit videos to join the discovery rotation, with optional boosted or featured priority.</p>
+          <h2>Creator submissions</h2>
+          <p>Submitted videos get added to the on-page rotation and can be played inside the main SignalBoost player.</p>
         </div>
       </div>
 
-      <div class="creator-panel">
-        <h3>Submit a video</h3>
-        <p>Submit your travel, lifestyle, or digital services video to appear in the SignalBoost discovery rotation. Boosted videos get priority placement.</p>
-
+      <div class="panel" style="padding:20px;">
         <form class="creator-form" onsubmit="submitCreatorVideo(event)">
-          <input id="creatorVideoUrl" class="creator-input" type="text" placeholder="YouTube video URL" required />
-          <input id="creatorTitle" class="creator-input" type="text" placeholder="Video title" required />
+          <input id="creatorVideoUrl" class="creator-input" type="text" placeholder="YouTube URL" required />
+          <input id="creatorTitleInput" class="creator-input" type="text" placeholder="Video title" required />
           <select id="creatorBoost" class="creator-input">
             <option value="none">Standard (Free)</option>
-            <option value="boost">Boosted ($10)</option>
-            <option value="featured">Featured ($25)</option>
+            <option value="boost">Boosted</option>
+            <option value="featured">Featured</option>
           </select>
-          <button class="creator-btn" type="submit">Submit Video</button>
+          <button class="creator-btn" type="submit">Submit video</button>
         </form>
 
         <div class="creator-queue">
-          <strong>Creator Queue</strong>
+          <strong>Creator queue</strong>
           <div id="creatorList"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="about">
+  <section id="partners">
     <div class="container">
-      <div class="about-card">
-        <h2>About SignalBoost</h2>
-        <p>
-          SignalBoost is a digital shopping mall that blends clean interface design with guided discovery.
-          The goal is to keep the experience professional as new partners are added, while still creating
-          engagement through controlled video and curated categories.
-        </p>
+      <div class="section-head">
+        <div>
+          <h2>All partners</h2>
+          <p>A broader affiliate directory for travel, support, tickets, digital tools, and lifestyle monetization.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer"><div><span class="badge">Flights</span><h3>Kiwi</h3><p>Flight search and booking for travelers shopping route options.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Flights</span></div></a>
+        <a class="card" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer"><div><span class="badge">Experiences</span><h3>Klook</h3><p>Activities, tours, and global travel experiences.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Global</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Safari</span><h3>Go2Africa</h3><p>Africa and safari travel planning for high-value bookings.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Safari</span></div></a>
+        <a class="card" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer"><div><span class="badge">Support</span><h3>AirHelp</h3><p>Travel compensation and disruption support.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Support</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Deals</span><h3>Lastminute SE</h3><p>Travel booking and packaged trip options.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Deals</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Tickets</span><h3>Tiqets US</h3><p>Attraction tickets and travel experiences for US users.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Tickets</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Connectivity</span><h3>BitJoy eSIM (US)</h3><p>Travel data connectivity and eSIM service.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">eSIM</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Software</span><h3>PearlMountain Limited</h3><p>Creative software and digital utilities.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Digital</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Luxury</span><h3>Desire Experience</h3><p>Premium resort and experience monetization partner.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Luxury</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Luxury</span><h3>Temptation Experience (US)</h3><p>Luxury experience traffic for US users.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Luxury</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Home</span><h3>The Builder Market (US)</h3><p>Additional monetization outside travel through home-improvement demand.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Home</span></div></a>
+        <a class="card" href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener noreferrer"><div><span class="badge">Lifestyle</span><h3>King Koil</h3><p>Lifestyle monetization with comfort and home products.</p></div><div class="card-footer"><span class="card-link">Visit partner →</span><span class="chip">Lifestyle</span></div></a>
+      </div>
+
+      <div class="newsletter-card">
+        <h3>SignalBoost deal briefing</h3>
+        <p>Build repeat traffic with a weekly email of top travel, ticket, and lifestyle offers.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+          <input id="newsletterEmail" class="newsletter-input" type="email" placeholder="Enter your email" required />
+          <button class="newsletter-btn" type="submit">Join the list</button>
+        </form>
+        <div class="newsletter-note">This is front-end only right now. For real lead collection you will need a form backend or email platform.</div>
       </div>
     </div>
   </section>
 
-  <section id="contact">
-    <div class="container">
-      <div class="contact-card">
-        <h2>Contact</h2>
-        <p>Email: support@signalboostapp.com</p>
-      </div>
-    </div>
-  </section>
-
-  <footer>
+  <footer class="footer">
     <p>&copy; 2026 SignalBoost. All rights reserved.</p>
   </footer>
 
   <script>
-    /***********************
-     * VIDEO POOLS
-     ***********************/
-    const videoPools = {
+    const baseVideoPools = {
       global: [
-        {
-          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
-          title: "Global Discovery",
-          desc: "A rotating general-discovery video for broad inspiration.",
-          monetizationKey: "global"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
-          title: "Global Discovery",
-          desc: "SignalBoost rotates curated videos so the page does not feel static.",
-          monetizationKey: "global"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
-          title: "Global Discovery",
-          desc: "A stable embed from the general discovery pool.",
-          monetizationKey: "global"
-        }
-      ],
-      rome: [
-        {
-          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
-          title: "Rome Discovery",
-          desc: "A destination-led discovery mode for European city inspiration.",
-          monetizationKey: "rome"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
-          title: "Rome Discovery",
-          desc: "A curated rotating video for Rome and European attractions.",
-          monetizationKey: "rome"
-        }
+        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "General discovery designed to keep visitors exploring.", monetizationKey: "global" },
+        { id: "M7lc1UVf-VE", title: "Global Discovery", desc: "A rotating discovery clip that supports broad partner routing.", monetizationKey: "global" },
+        { id: "ysz5S6PUM-U", title: "Global Discovery", desc: "Fast-moving discovery content for general travel intent.", monetizationKey: "global" }
       ],
       paris: [
-        {
-          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
-          title: "Paris Discovery",
-          desc: "A polished destination view for premium attraction and travel inspiration.",
-          monetizationKey: "paris"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
-          title: "Paris Discovery",
-          desc: "Curated Paris and Europe-style inspiration from the rotating pool.",
-          monetizationKey: "paris"
-        }
+        { id: "ysz5S6PUM-U", title: "Paris Discovery", desc: "Use a Paris-themed story to drive attractions and ticket clicks.", monetizationKey: "tickets" },
+        { id: "ScMzIvxBSi4", title: "Paris Discovery", desc: "Premium city discovery focused on experiences and attractions.", monetizationKey: "tickets" }
       ],
       safari: [
-        {
-          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
-          title: "Safari Discovery",
-          desc: "A discovery layer for safari and premium Africa partner traffic.",
-          monetizationKey: "safari"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
-          title: "Safari Discovery",
-          desc: "A rotating safari-themed slot for high-ticket travel intent.",
-          monetizationKey: "safari"
-        }
-      ],
-      usa: [
-        {
-          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
-          title: "USA Discovery",
-          desc: "A broader discovery mode for attractions, travel services, and planning.",
-          monetizationKey: "usa"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
-          title: "USA Discovery",
-          desc: "A rotating slot for domestic and broader travel interest.",
-          monetizationKey: "usa"
-        }
+        { id: "M7lc1UVf-VE", title: "Safari Discovery", desc: "Luxury safari inspiration matched with premium travel offers.", monetizationKey: "safari" },
+        { id: "ScMzIvxBSi4", title: "Safari Discovery", desc: "High-intent wildlife and Africa planning traffic.", monetizationKey: "safari" }
       ],
       flights: [
-        {
-          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
-          title: "Flight Discovery",
-          desc: "Visitors looking for routes and travel planning are guided toward Kiwi.",
-          monetizationKey: "flights"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/M7lc1UVf-VE",
-          title: "Flight Discovery",
-          desc: "A rotating flight-oriented slot for users planning travel.",
-          monetizationKey: "flights"
-        }
+        { id: "ScMzIvxBSi4", title: "Flight Discovery", desc: "Flight-led travel planning that routes users toward Kiwi.", monetizationKey: "flights" },
+        { id: "M7lc1UVf-VE", title: "Flight Discovery", desc: "Discovery layer for route shopping and global air travel.", monetizationKey: "flights" }
+      ],
+      tickets: [
+        { id: "ysz5S6PUM-U", title: "Ticket Discovery", desc: "Attraction and activity discovery for Tiqets traffic.", monetizationKey: "tickets" },
+        { id: "ScMzIvxBSi4", title: "Ticket Discovery", desc: "Video-led inspiration tied to destination ticket sales.", monetizationKey: "tickets" }
       ],
       spain: [
-        {
-          url: "https://www.youtube-nocookie.com/embed/ysz5S6PUM-U",
-          title: "Spain Discovery",
-          desc: "Regional European interest can be guided toward Spain-focused partner options.",
-          monetizationKey: "spain"
-        },
-        {
-          url: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
-          title: "Spain Discovery",
-          desc: "A rotating Spain and Europe discovery slot.",
-          monetizationKey: "spain"
-        }
+        { id: "M7lc1UVf-VE", title: "Spain Discovery", desc: "Spain content matched to regional travel offers.", monetizationKey: "spain" },
+        { id: "ysz5S6PUM-U", title: "Spain Discovery", desc: "Regional discovery focused on Spain planning and experiences.", monetizationKey: "spain" }
       ]
     };
 
-    /***********************
-     * MONETIZATION MAPS
-     ***********************/
     const monetizationByKey = {
       global: {
-        mainPartnerId: "klook",
         mainTitle: "Global Discovery Bundle",
-        mainDesc: "Experiences, flights, and disruption support for broad travel planning.",
+        mainDesc: "Experiences, flights, and support matched to broad travel discovery.",
         mainHref: "https://klook.tpo.lv/fTRPLj2l",
-        secondary: [
-          {
-            label: "Flights via Kiwi",
-            partnerId: "kiwi",
-            href: "https://kiwi.tpo.lv/qKPZ1inz"
-          },
-          {
-            label: "Flight disruption help via AirHelp",
-            partnerId: "airhelp",
-            href: "https://airhelp.tpo.lv/grL9Ojju"
-          }
-        ]
+        sec1Label: "Flights via Kiwi",
+        sec1Href: "https://kiwi.tpo.lv/qKPZ1inz",
+        sec2Label: "Travel support via AirHelp",
+        sec2Href: "https://airhelp.tpo.lv/grL9Ojju"
       },
       safari: {
-        mainPartnerId: "go2africa",
         mainTitle: "Safari & Africa Planning",
         mainDesc: "High-ticket safari planning and premium Africa itineraries.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
-        secondary: [
-          {
-            label: "Experiences via Klook",
-            partnerId: "klook",
-            href: "https://klook.tpo.lv/fTRPLj2l"
-          },
-          {
-            label: "Flight disruption help via AirHelp",
-            partnerId: "airhelp",
-            href: "https://airhelp.tpo.lv/grL9Ojju"
-          }
-        ]
+        sec1Label: "Flights via Kiwi",
+        sec1Href: "https://kiwi.tpo.lv/qKPZ1inz",
+        sec2Label: "Travel eSIM via BitJoy",
+        sec2Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806"
       },
       flights: {
-        mainPartnerId: "kiwi",
         mainTitle: "Flight Discovery & Routes",
-        mainDesc: "Search routes, compare options, and book flights globally.",
+        mainDesc: "Compare flights, plan trips, and route traffic to Kiwi.",
         mainHref: "https://kiwi.tpo.lv/qKPZ1inz",
-        secondary: [
-          {
-            label: "eSIM data via Yesim",
-            partnerId: "yesim",
-            href: "https://yesim.tpo.lv/olNUcwvB"
-          },
-          {
-            label: "Disruption compensation via AirHelp",
-            partnerId: "airhelp",
-            href: "https://airhelp.tpo.lv/grL9Ojju"
-          }
-        ]
+        sec1Label: "Deals via Lastminute SE",
+        sec1Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
+        sec2Label: "Travel support via AirHelp",
+        sec2Href: "https://airhelp.tpo.lv/grL9Ojju"
+      },
+      tickets: {
+        mainTitle: "Attractions & Tickets",
+        mainDesc: "Ticket traffic routed to Tiqets where destination demand is strongest.",
+        mainHref: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+        sec1Label: "Tiqets FR",
+        sec1Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+        sec2Label: "Tiqets IT",
+        sec2Href: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806"
       },
       spain: {
-        mainPartnerId: "gogoespana",
         mainTitle: "Spain-Focused Planning",
-        mainDesc: "Language, study, and travel options focused on Spain.",
+        mainDesc: "Regional discovery that routes users to Spain-focused offers.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
-        secondary: [
-          {
-            label: "Experiences via Klook",
-            partnerId: "klook",
-            href: "https://klook.tpo.lv/fTRPLj2l"
-          },
-          {
-            label: "Flights via Kiwi",
-            partnerId: "kiwi",
-            href: "https://kiwi.tpo.lv/qKPZ1inz"
-          }
-        ]
-      },
-      rome: {
-        mainPartnerId: "klook",
-        mainTitle: "Rome & Europe Experiences",
-        mainDesc: "Attractions and activities across Rome and wider Europe.",
-        mainHref: "https://klook.tpo.lv/fTRPLj2l",
-        secondary: [
-          {
-            label: "Flights via Kiwi",
-            partnerId: "kiwi",
-            href: "https://kiwi.tpo.lv/qKPZ1inz"
-          },
-          {
-            label: "eSIM data via Yesim",
-            partnerId: "yesim",
-            href: "https://yesim.tpo.lv/olNUcwvB"
-          }
-        ]
-      },
-      paris: {
-        mainPartnerId: "klook",
-        mainTitle: "Paris & Premium Europe",
-        mainDesc: "Curated attractions and experiences in Paris and beyond.",
-        mainHref: "https://klook.tpo.lv/fTRPLj2l",
-        secondary: [
-          {
-            label: "Flights via Kiwi",
-            partnerId: "kiwi",
-            href: "https://kiwi.tpo.lv/qKPZ1inz"
-          },
-          {
-            label: "eSIM data via Yesim",
-            partnerId: "yesim",
-            href: "https://yesim.tpo.lv/olNUcwvB"
-          }
-        ]
-      },
-      usa: {
-        mainPartnerId: "klook",
-        mainTitle: "USA Attractions & Services",
-        mainDesc: "Attractions, tours, and services across the United States.",
-        mainHref: "https://klook.tpo.lv/fTRPLj2l",
-        secondary: [
-          {
-            label: "Flights via Kiwi",
-            partnerId: "kiwi",
-            href: "https://kiwi.tpo.lv/qKPZ1inz"
-          },
-          {
-            label: "Security via NordVPN",
-            partnerId: "nordvpn",
-            href: "https://nordvpn.tpo.lv/q1aN4Xru"
-          }
-        ]
+        sec1Label: "Flights via Kiwi",
+        sec1Href: "https://kiwi.tpo.lv/qKPZ1inz",
+        sec2Label: "Tickets via Tiqets FR",
+        sec2Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806"
       }
     };
 
-    /***********************
-     * VIDEO + SHOP PANEL
-     ***********************/
+    const videoPools = JSON.parse(JSON.stringify(baseVideoPools));
     let currentCategory = "global";
-    let autoRotateHandle = null;
-    const AUTO_ROTATE_MS = 12000;
-    const currentVideoIndexByCategory = {
-      global: 0,
-      rome: 0,
-      paris: 0,
-      safari: 0,
-      usa: 0,
-      flights: 0,
-      spain: 0
-    };
+    let currentIndex = 0;
+    let rotationTimer = null;
+    const creatorVideos = [];
 
-    function withPlayerParams(url) {
-      if (!url) return "";
-      const joiner = url.includes("?") ? "&" : "?";
-      return `${url}${joiner}rel=0&modestbranding=1&playsinline=1`;
+    function buildEmbedUrl(videoId) {
+      return "https://www.youtube-nocookie.com/embed/" + videoId + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
     }
 
-    function clampVideoIndex(category, index) {
-      const pool = videoPools[category] || videoPools.global;
-      if (!pool.length) return 0;
-      return ((index % pool.length) + pool.length) % pool.length;
-    }
-
-    function updateShopPanel(monetizationKey) {
-      const config = monetizationByKey[monetizationKey] || monetizationByKey.global;
-
-      const mainPartner = document.getElementById("shopMainPartner");
-      const mainDesc = document.getElementById("shopMainDesc");
-      const mainLink = document.getElementById("shopMainLink");
-      const sec1Label = document.getElementById("shopSecondary1Label");
-      const sec1Link = document.getElementById("shopSecondary1Link");
-      const sec2Label = document.getElementById("shopSecondary2Label");
-      const sec2Link = document.getElementById("shopSecondary2Link");
-
-      mainPartner.textContent = config.mainTitle;
-      mainDesc.textContent = config.mainDesc;
-      mainLink.href = config.mainHref;
-      mainLink.dataset.partnerId = config.mainPartnerId;
-
-      if (config.secondary && config.secondary[0]) {
-        sec1Label.textContent = config.secondary[0].label;
-        sec1Link.href = config.secondary[0].href;
-        sec1Link.dataset.partnerId = config.secondary[0].partnerId;
-      }
-
-      if (config.secondary && config.secondary[1]) {
-        sec2Label.textContent = config.secondary[1].label;
-        sec2Link.href = config.secondary[1].href;
-        sec2Link.dataset.partnerId = config.secondary[1].partnerId;
-      }
-    }
-
-    function renderVideoShelf(category) {
-      const shelf = document.getElementById("videoShelf");
-      if (!shelf) return;
-
-      const pool = videoPools[category] || videoPools.global;
-      const activeIndex = clampVideoIndex(category, currentVideoIndexByCategory[category] || 0);
-
-      shelf.innerHTML = pool.map((video, index) => `
-        <button
-          type="button"
-          class="video-card ${index === activeIndex ? "active" : ""}"
-          onclick="playVideoAt('${category}', ${index}, true)"
-          aria-label="Play ${video.title} inside SignalBoost"
-        >
-          <div class="video-card-title">${video.title}</div>
-          <div class="video-card-desc">${video.desc}</div>
-        </button>
-      `).join("");
-    }
-
-    function playVideoAt(category, index, userInitiated = false) {
+    function updateMainVideo(video) {
       const frame = document.getElementById("mainVideo");
-      const title = document.getElementById("videoTitle");
-      const desc = document.getElementById("videoDescription");
-      const pool = videoPools[category] || videoPools.global;
-
-      if (!pool.length) return;
-
-      currentCategory = category;
-      const safeIndex = clampVideoIndex(category, index);
-      const selected = pool[safeIndex];
-      currentVideoIndexByCategory[category] = safeIndex;
-
-      frame.src = withPlayerParams(selected.url);
-      title.textContent = selected.title;
-      desc.textContent = selected.desc;
-      updateShopPanel(selected.monetizationKey || category || "global");
-      renderVideoShelf(category);
-
-      if (userInitiated) {
-        restartAutoRotate();
-      }
+      document.getElementById("videoTitle").textContent = video.title;
+      document.getElementById("videoDescription").textContent = video.desc;
+      frame.src = buildEmbedUrl(video.id);
+      updateShopPanel(video.monetizationKey || currentCategory);
     }
 
-    function nextVideo(category = currentCategory) {
-      const pool = videoPools[category] || videoPools.global;
-      if (!pool.length) return;
-      const nextIndex = clampVideoIndex(category, (currentVideoIndexByCategory[category] || 0) + 1);
-      playVideoAt(category, nextIndex, false);
+    function updateShopPanel(key) {
+      const config = monetizationByKey[key] || monetizationByKey.global;
+      document.getElementById("shopMainPartner").textContent = config.mainTitle;
+      document.getElementById("shopMainDesc").textContent = config.mainDesc;
+      document.getElementById("shopMainLink").href = config.mainHref;
+      document.getElementById("shopSecondary1Label").textContent = config.sec1Label;
+      document.getElementById("shopSecondary1Link").href = config.sec1Href;
+      document.getElementById("shopSecondary2Label").textContent = config.sec2Label;
+      document.getElementById("shopSecondary2Link").href = config.sec2Href;
     }
 
-    function restartAutoRotate() {
-      if (autoRotateHandle) {
-        clearInterval(autoRotateHandle);
-      }
-      autoRotateHandle = setInterval(() => {
-        nextVideo(currentCategory);
-      }, AUTO_ROTATE_MS);
-    }
-
-    function setVideo(category) {
-      const pool = videoPools[category] || videoPools.global;
-      if (!pool.length) return;
-      currentCategory = category;
-      const nextIndex = clampVideoIndex(category, (currentVideoIndexByCategory[category] ?? -1) + 1);
-      playVideoAt(category, nextIndex, true);
-    }
-
-/***********************
-     * CARD HIGHLIGHTING
-     ***********************/
-    function clearHighlights() {
-      document.querySelectorAll(".card.highlighted").forEach((card) => {
-        card.classList.remove("highlighted");
+    function renderVideoGrid(category) {
+      const grid = document.getElementById("videoGrid");
+      grid.innerHTML = "";
+      (videoPools[category] || []).forEach((video, index) => {
+        const item = document.createElement("div");
+        item.className = "video-card";
+        item.innerHTML = `
+          <div class="video-thumb">▶</div>
+          <div class="video-meta">
+            <strong>${video.title}</strong>
+            <span>${video.desc}</span>
+          </div>
+          <button type="button" data-index="${index}">Play inside SignalBoost</button>
+        `;
+        item.querySelector("button").addEventListener("click", () => {
+          currentIndex = index;
+          updateMainVideo(video);
+          restartRotation();
+        });
+        grid.appendChild(item);
       });
     }
 
-    function highlightPartner(cardId) {
-      clearHighlights();
-      const card = document.getElementById(cardId);
-      if (!card) return;
-      card.classList.add("highlighted");
-      card.scrollIntoView({ behavior: "smooth", block: "center" });
+    function setVideoCategory(category) {
+      currentCategory = category;
+      currentIndex = 0;
+      const pool = videoPools[currentCategory] || videoPools.global;
+      updateMainVideo(pool[currentIndex]);
+      renderVideoGrid(currentCategory);
+      restartRotation();
     }
 
-    /***********************
-     * AI SEARCH + SPONSORED STRIP
-     ***********************/
-    function showSponsoredStrip(text, href, partnerId) {
-      const strip = document.getElementById("sponsoredStrip");
-      const textEl = document.getElementById("sponsoredText");
-      const linkEl = document.getElementById("sponsoredLink");
-
-      textEl.textContent = text;
-      linkEl.href = href;
-      linkEl.dataset.partnerId = partnerId;
-      strip.style.display = "flex";
+    function rotateNextVideo() {
+      const pool = videoPools[currentCategory] || [];
+      if (!pool.length) return;
+      currentIndex = (currentIndex + 1) % pool.length;
+      updateMainVideo(pool[currentIndex]);
     }
 
-    function hideSponsoredStrip() {
-      const strip = document.getElementById("sponsoredStrip");
-      strip.style.display = "none";
+    function restartRotation() {
+      if (rotationTimer) clearInterval(rotationTimer);
+      rotationTimer = setInterval(rotateNextVideo, 20000);
     }
 
     function runAISearch() {
-      const input = document.getElementById("aiSearch");
+      const q = document.getElementById("aiSearch").value.trim().toLowerCase();
       const result = document.getElementById("searchResult");
-      const q = input.value.toLowerCase().trim();
-
-      hideSponsoredStrip();
 
       if (!q) {
-        result.textContent = "Please enter a search like safari, flights, Spain, esim, visa, or delayed flight.";
+        result.textContent = "Please enter a search like safari, flights, Paris tickets, eSIM, or delayed flight.";
         return;
       }
 
-      // Safari / Africa
       if (q.includes("safari") || q.includes("africa") || q.includes("wildlife")) {
-        setVideo("safari");
-        highlightPartner("go2africa-card");
-        result.textContent = "Best match: Go2Africa. We highlighted your safari partner and rotated a safari video.";
-        showSponsoredStrip(
-          "Premium safari planning and Africa itineraries via Go2Africa.",
-          "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
-          "go2africa"
-        );
+        setVideoCategory("safari");
+        result.textContent = "Best match: safari discovery with Go2Africa in the shop panel.";
         return;
       }
-
-      // Flights
-      if (q.includes("lastminute")) {
-        setVideo("flights");
-        highlightPartner("lastminute-se-card");
-        result.textContent = "Best match: Lastminute SE. We highlighted your last-minute travel partner.";
-        showSponsoredStrip(
-          "Sponsored: Lastminute SE for last-minute deals and planning.",
-          "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-          "lastminute-se"
-        );
-        return;
-      }
-
-      if (q.includes("tiqets") || q.includes("museum") || q.includes("attraction ticket")) {
-        setVideo("rome");
-        highlightPartner("tiqets-us-card");
-        result.textContent = "Best match: Tiqets. We highlighted your attraction ticket partner.";
-        showSponsoredStrip(
-          "Sponsored: Tiqets for attraction and museum tickets.",
-          "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-          "tiqets-us"
-        );
-        return;
-      }
-
       if (q.includes("flight") || q.includes("airfare") || q.includes("ticket")) {
-        setVideo("flights");
-        highlightPartner("kiwi-card");
-        result.textContent = "Best match: Kiwi. We highlighted your flights partner and rotated a flight video.";
-        showSponsoredStrip(
-          "Sponsored: Kiwi for global flight discovery and booking.",
-          "https://kiwi.tpo.lv/qKPZ1inz",
-          "kiwi"
-        );
+        setVideoCategory("flights");
+        result.textContent = "Best match: flight discovery with Kiwi and Lastminute SE.";
         return;
       }
-
-      // eSIM / data
+      if (q.includes("ticket") || q.includes("museum") || q.includes("attraction") || q.includes("paris")) {
+        setVideoCategory("tickets");
+        result.textContent = "Best match: ticket discovery with Tiqets in the shop panel.";
+        return;
+      }
       if (q.includes("esim") || q.includes("sim") || q.includes("data")) {
-        setVideo("global");
-        highlightPartner("yesim-card");
-        result.textContent = "Best match: Yesim. We highlighted your eSIM partner.";
-        showSponsoredStrip(
-          "Sponsored: Yesim for travel eSIM and mobile data.",
-          "https://yesim.tpo.lv/olNUcwvB",
-          "yesim"
-        );
+        setVideoCategory("global");
+        result.textContent = "Best match: BitJoy eSIM is available in Services Hub and related offers.";
         return;
       }
-
-      // Delay / cancellation
+      if (q.includes("spain") || q.includes("madrid") || q.includes("barcelona")) {
+        setVideoCategory("spain");
+        result.textContent = "Best match: Spain discovery with Go! Go! España and related travel options.";
+        return;
+      }
       if (q.includes("delay") || q.includes("cancel") || q.includes("compensation")) {
-        setVideo("global");
-        highlightPartner("airhelp-card");
-        result.textContent = "Best match: AirHelp. We highlighted your travel support partner.";
-        showSponsoredStrip(
-          "Sponsored: AirHelp for flight delay and cancellation compensation.",
-          "https://airhelp.tpo.lv/grL9Ojju",
-          "airhelp"
-        );
+        setVideoCategory("flights");
+        result.textContent = "Best match: AirHelp for flight disruption support.";
         return;
       }
 
-      // VPN / security
-      if (q.includes("vpn") || q.includes("privacy") || q.includes("security")) {
-        setVideo("global");
-        highlightPartner("nordvpn-card");
-        result.textContent = "Best match: NordVPN. We highlighted your security partner.";
-        showSponsoredStrip(
-          "Sponsored: NordVPN for secure browsing and streaming while traveling.",
-          "https://nordvpn.tpo.lv/q1aN4Xru",
-          "nordvpn"
-        );
-        return;
-      }
-
-      // Spain
-      if (q.includes("spain") || q.includes("españa") || q.includes("madrid") || q.includes("barcelona")) {
-        setVideo("spain");
-        highlightPartner("gogoespana-card");
-        result.textContent = "Best match: Go! Go! España. We highlighted your Spain-focused partner.";
-        showSponsoredStrip(
-          "Sponsored: Go! Go! España for Spain-focused planning and services.",
-          "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
-          "gogoespana"
-        );
-        return;
-      }
-
-      // Visa
-      if (q.includes("visa")) {
-        setVideo("global");
-        highlightPartner("evisa-card");
-        result.textContent = "Best match: Evisa. We highlighted your travel documentation partner.";
-        showSponsoredStrip(
-          "Sponsored: Evisa for visa-related travel documentation support.",
-          "https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806",
-          "evisa"
-        );
-        return;
-      }
-
-      // Cars / transport
-      if (q.includes("car") || q.includes("rental") || q.includes("drive")) {
-        setVideo("usa");
-        highlightPartner("allycar-card");
-        result.textContent = "Best match: Allycar. We highlighted your mobility partner.";
-        showSponsoredStrip(
-          "Sponsored: Allycar for flexible car rentals.",
-          "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806",
-          "allycar"
-        );
-        return;
-      }
-
-      // Fallback
-      setVideo("global");
-      result.textContent = "No exact match, so we kept you in global discovery. Browse partners below.";
-    }
-
-    /***********************
-     * CLICK TRACKING HOOKS
-     ***********************/
-    function trackClick(partnerId, href, context) {
-      // This is where you’d send data to your backend or analytics.
-      // For now, we log it so you can see the structure.
-      console.log("Partner click:", {
-        partnerId,
-        href,
-        context,
-        ts: new Date().toISOString()
-      });
-
-      // Example: send to a tracking endpoint (uncomment and adjust when backend exists)
-      /*
-      navigator.sendBeacon(
-        "https://your-tracking-endpoint.com/click",
-        JSON.stringify({ partnerId, href, context, ts: Date.now() })
-      );
-      */
-    }
-
-    function attachClickTracking() {
-      const links = document.querySelectorAll("a[data-partner-id]");
-      links.forEach((link) => {
-        link.addEventListener("click", (e) => {
-          const partnerId = link.dataset.partnerId || "unknown";
-          const href = link.href;
-          const context = link.closest("[data-sponsored]") ? "sponsored" :
-                          link.closest("[data-boosted]") ? "boosted" :
-                          "organic";
-          trackClick(partnerId, href, context);
-        });
-      });
-    }
-
-    /***********************
-     * NEWSLETTER HANDLER
-     ***********************/
-    function handleNewsletter(event) {
-      event.preventDefault();
-      const emailInput = document.getElementById("newsletterEmail");
-      const email = emailInput.value.trim();
-
-      if (!email) return;
-
-      console.log("Newsletter signup:", {
-        email,
-        ts: new Date().toISOString()
-      });
-
-      // Placeholder: send to backend when ready
-      // navigator.sendBeacon("https://your-endpoint.com/newsletter", JSON.stringify({ email }));
-
-      emailInput.value = "";
-      alert("Thanks for subscribing to SignalBoost Deal Briefing.");
-    }
-
-
-
-    /***********************
-     * CREATOR SUBMISSIONS
-     ***********************/
-    const creatorVideos = [];
-
-    function normalizeYouTubeUrl(url) {
-      if (!url) return "";
-      const trimmed = url.trim();
-
-      if (trimmed.includes("youtube-nocookie.com/embed/") || trimmed.includes("youtube.com/embed/")) {
-        return trimmed.replace("https://www.youtube.com/embed/", "https://www.youtube-nocookie.com/embed/");
-      }
-
-      if (trimmed.includes("youtube.com/watch?v=")) {
-        const videoId = trimmed.split("watch?v=")[1].split("&")[0];
-        return `https://www.youtube-nocookie.com/embed/${videoId}`;
-      }
-
-      if (trimmed.includes("youtu.be/")) {
-        const videoId = trimmed.split("youtu.be/")[1].split("?")[0];
-        return `https://www.youtube-nocookie.com/embed/${videoId}`;
-      }
-
-      return trimmed;
-    }
-
-    function submitCreatorVideo(event) {
-      event.preventDefault();
-
-      const url = document.getElementById("creatorVideoUrl").value.trim();
-      const title = document.getElementById("creatorTitle").value.trim();
-      const boost = document.getElementById("creatorBoost").value;
-      const embed = normalizeYouTubeUrl(url);
-
-      if (!embed.includes("/embed/")) {
-        alert("Please paste a YouTube watch link, share link, or embed link.");
-        return;
-      }
-
-      creatorVideos.push({ url, title, boost });
-      updateCreatorList();
-      const newIndex = addToDiscoveryPool(url, title, boost);
-      setVideo("global");
-      playVideoAt("global", newIndex);
-      alert("Your video has been added to the SignalBoost discovery rotation and now plays inside the platform.");
-      event.target.reset();
-    }
-
-    function updateCreatorList() {
-      const list = document.getElementById("creatorList");
-      if (!list) return;
-      list.innerHTML = "";
-
-      creatorVideos.forEach((video, index) => {
-        const div = document.createElement("div");
-        div.className = "creator-item";
-        div.innerHTML = `
-          <strong>${video.title}</strong>
-          ${video.boost !== "none" ? `<span class="boost-badge">${video.boost.toUpperCase()}</span>` : ""}
-          <div class="creator-item-meta">
-            <small>${video.url}</small>
-            <button type="button" class="creator-play-btn" onclick="playCreatorVideo(${index})">Play inside SignalBoost</button>
-          </div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-
-    function playCreatorVideo(index) {
-      const creator = creatorVideos[index];
-      if (!creator) return;
-      const embed = normalizeYouTubeUrl(creator.url);
-      const tempVideo = {
-        url: embed,
-        title: creator.title,
-        desc: "Creator-submitted video playing inside SignalBoost.",
-        monetizationKey: "global"
-      };
-
-      const existingIndex = videoPools.global.findIndex((video) => video.url === tempVideo.url && video.title === tempVideo.title);
-      const targetIndex = existingIndex >= 0 ? existingIndex : addToDiscoveryPool(creator.url, creator.title, creator.boost || "none");
-      playVideoAt("global", targetIndex, true);
-      document.getElementById("discovery").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function addToDiscoveryPool(url, title, boost) {
-      const embed = normalizeYouTubeUrl(url);
-      const newVideo = {
-        url: embed,
-        title,
-        desc: "Creator-submitted video playing inside SignalBoost.",
-        monetizationKey: "global"
-      };
-
-      if (boost === "featured") {
-        videoPools.global.unshift(newVideo);
-        currentVideoIndexByCategory.global = 0;
-        renderVideoShelf("global");
-        return 0;
-      }
-
-      videoPools.global.push(newVideo);
-
-      if (boost === "boost") {
-        videoPools.global.push({ ...newVideo });
-      }
-
-      renderVideoShelf("global");
-      return videoPools.global.indexOf(newVideo);
-    }
-
-
-    /***********************
-     * INIT
-     ***********************/
-
-    function updateThemeButton() {
-      const btn = document.getElementById("themeToggle");
-      if (!btn) return;
-      btn.textContent = document.body.classList.contains("light-mode")
-        ? "🌙 Dark mode"
-        : "☀️ Light mode";
+      setVideoCategory("global");
+      result.textContent = "No exact match found, so SignalBoost stayed in global discovery mode.";
     }
 
     function toggleTheme() {
       document.body.classList.toggle("light-mode");
-      localStorage.setItem(
-        "signalboost-theme",
-        document.body.classList.contains("light-mode") ? "light" : "dark"
-      );
-      updateThemeButton();
+      localStorage.setItem("signalboost_theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+    }
+
+    function parseYouTubeId(url) {
+      const value = url.trim();
+      if (value.includes("watch?v=")) {
+        return value.split("watch?v=")[1].split("&")[0];
+      }
+      if (value.includes("youtu.be/")) {
+        return value.split("youtu.be/")[1].split("?")[0];
+      }
+      if (value.includes("embed/")) {
+        return value.split("embed/")[1].split("?")[0];
+      }
+      return "";
+    }
+
+    function submitCreatorVideo(event) {
+      event.preventDefault();
+      const url = document.getElementById("creatorVideoUrl").value.trim();
+      const title = document.getElementById("creatorTitleInput").value.trim();
+      const boost = document.getElementById("creatorBoost").value;
+      const videoId = parseYouTubeId(url);
+
+      if (!videoId) {
+        alert("Please use a valid YouTube URL.");
+        return;
+      }
+
+      const newVideo = {
+        id: videoId,
+        title: title,
+        desc: "Creator-submitted video",
+        monetizationKey: "global"
+      };
+
+      creatorVideos.push({ id: videoId, title, boost });
+
+      if (boost === "featured") {
+        videoPools.global.unshift(newVideo, newVideo, newVideo);
+      } else if (boost === "boost") {
+        videoPools.global.push(newVideo, newVideo);
+      } else {
+        videoPools.global.push(newVideo);
+      }
+
+      updateCreatorList();
+      setVideoCategory("global");
+      event.target.reset();
+      alert("Video submitted and added to the in-page SignalBoost rotation.");
+    }
+
+    function updateCreatorList() {
+      const list = document.getElementById("creatorList");
+      list.innerHTML = "";
+
+      if (!creatorVideos.length) {
+        list.innerHTML = "<div class='creator-item'><span>No submissions yet.</span></div>";
+        return;
+      }
+
+      creatorVideos.forEach((video, index) => {
+        const row = document.createElement("div");
+        row.className = "creator-item";
+        row.innerHTML = `
+          <div>
+            <strong>${video.title}</strong>
+            ${video.boost !== "none" ? `<span class="boost-badge">${video.boost.toUpperCase()}</span>` : ""}
+          </div>
+          <button class="theme-toggle" type="button">Play inside SignalBoost</button>
+        `;
+        row.querySelector("button").addEventListener("click", () => {
+          setVideoCategory("global");
+          const pool = videoPools.global;
+          const matchIndex = pool.findIndex(v => v.id === video.id && v.title === video.title);
+          if (matchIndex >= 0) {
+            currentIndex = matchIndex;
+            updateMainVideo(pool[matchIndex]);
+            restartRotation();
+          }
+        });
+        list.appendChild(row);
+      });
+    }
+
+    function handleNewsletter(event) {
+      event.preventDefault();
+      const email = document.getElementById("newsletterEmail").value.trim();
+      if (!email) return;
+      alert("Thanks. This demo captured your email on the page only. Add a real email backend next.");
+      event.target.reset();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("signalboost-theme");
-      if (savedTheme === "light") {
-        document.body.classList.add("light-mode");
-      }
-      updateThemeButton();
-      updateShopPanel("global");
-      attachClickTracking();
-      setVideo("global");
-      restartAutoRotate();
+      const savedTheme = localStorage.getItem("signalboost_theme");
+      if (savedTheme === "light") document.body.classList.add("light-mode");
+      updateCreatorList();
+      setVideoCategory("global");
     });
   </script>
 </body>
