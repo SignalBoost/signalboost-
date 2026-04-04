@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost V9</title>
-  <meta name="description" content="SignalBoost V9 — a TikTok x YouTube x Netflix hybrid for travel, tickets, luxury, lifestyle, and digital monetization." />
+  <title>SignalBoost</title>
+  <meta name="description" content="SignalBoost is a smart travel and discovery platform blending short-form video, curated recommendations, and monetized offers." />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root{
@@ -25,10 +25,10 @@
       --max:1400px;
     }
     body.light-mode{
-      --bg:#f5efe4;
-      --bg-2:#fbf7ef;
-      --panel:#fffaf2;
-      --panel-2:#f7efe0;
+      --bg:#f6f0e7;
+      --bg-2:#fbf8f2;
+      --panel:#fffaf3;
+      --panel-2:#f8f0e3;
       --text:#1d2530;
       --muted:#5a6775;
       --accent:#0ea5e9;
@@ -74,32 +74,28 @@
     .nav-links{
       list-style:none;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
     }
-    .nav-links a,.theme-toggle,.mode-chip,.control-btn,.feed-btn,.small-btn{
+    .nav-links a,.theme-toggle,.mode-chip,.control-btn,.feed-btn,.small-btn,.mode-card{
       border:1px solid transparent;
       background:rgba(255,255,255,.04);
       color:var(--muted);
       padding:10px 14px;border-radius:999px;
       cursor:pointer;font-weight:700;transition:.2s ease;
     }
-    .nav-links a:hover,.theme-toggle:hover,.mode-chip:hover,.control-btn:hover,.feed-btn:hover,.small-btn:hover{
+    .nav-links a:hover,.theme-toggle:hover,.mode-chip:hover,.control-btn:hover,.feed-btn:hover,.small-btn:hover,.mode-card:hover{
       transform:translateY(-1px);
       border-color:var(--border);
       color:var(--text);
     }
-    .topbar{
-      padding:16px 0 10px;
-    }
-    .topbar-shell{
-      display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;
-    }
-    .feed-btn.active,.mode-chip.active,.control-btn.active{
+    .topbar{padding:16px 0 10px;}
+    .topbar-shell{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
+    .feed-btn.active,.mode-chip.active,.control-btn.active,.mode-card.active{
       background:linear-gradient(90deg,var(--accent),var(--accent-2));
       color:#06111d;border:none;
     }
 
-    .v9-grid{
+    .v10-grid{
       display:grid;
-      grid-template-columns: 290px minmax(320px, 1fr) 360px;
+      grid-template-columns:290px minmax(320px, 1fr) 360px;
       gap:18px;
       align-items:start;
       padding:8px 0 28px;
@@ -133,19 +129,11 @@
       text-transform:uppercase;letter-spacing:.1em;
     }
 
-    .mode-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
+    .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
     .mode-card{
-      border:1px solid var(--border);
-      border-radius:18px;padding:12px;
+      border-radius:18px;padding:12px;text-align:left;
       background:rgba(255,255,255,.03);
-      cursor:pointer;transition:.2s ease;
     }
-    .mode-card:hover{transform:translateY(-1px);border-color:rgba(56,189,248,.4);}
-    .mode-card.active{box-shadow:0 0 0 2px rgba(56,189,248,.2) inset;border-color:rgba(56,189,248,.45);}
     .mode-card h4{margin-bottom:4px;}
     .mode-card p{font-size:.86rem;color:var(--muted);}
 
@@ -157,10 +145,6 @@
     }
     .cta-box strong{display:block;margin-bottom:6px;}
     .cta-box p{font-size:.9rem;color:var(--muted);margin-bottom:10px;}
-    .small-btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      color:var(--text);border-color:var(--border);
-    }
 
     .center-col{display:grid;gap:16px;}
     .hero-strip{
@@ -169,9 +153,17 @@
     }
     .hero-strip h1{font-size:1.65rem;line-height:1.05;}
     .hero-strip p{color:var(--muted);max-width:760px;font-size:.96rem;}
-    .video-shell{
-      overflow:hidden;
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+    .hero-link{
+      padding:11px 15px;border-radius:999px;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:#07111f;font-weight:900;
     }
+    .hero-secondary{
+      padding:11px 15px;border-radius:999px;border:1px solid var(--border);font-weight:800;color:var(--text);
+    }
+
+    .video-shell{overflow:hidden;}
     .video-stage{
       padding:18px;
       display:grid;
@@ -212,9 +204,7 @@
     }
     .overlay-title{font-size:1.05rem;font-weight:800;margin-bottom:4px;}
     .overlay-desc{font-size:.88rem;color:rgba(255,255,255,.86);}
-    .video-side-info{
-      display:grid;gap:12px;
-    }
+    .video-side-info{display:grid;gap:12px;}
     .side-card{
       border:1px solid var(--border);
       border-radius:20px;
@@ -223,28 +213,17 @@
     }
     .side-card h3{font-size:.95rem;margin-bottom:8px;}
     .side-card p{font-size:.9rem;color:var(--muted);}
-    .metric{
-      display:inline-flex;align-items:center;gap:8px;
-      font-weight:800;color:var(--text);
-      margin-bottom:8px;
-    }
+    .metric{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--text);margin-bottom:8px;}
 
     .control-row{
       display:flex;gap:10px;flex-wrap:wrap;
       padding:0 18px 18px;
       justify-content:center;
     }
-
-    .category-row,.upnext-grid{
-      padding:0 18px 18px;
-    }
+    .category-row,.upnext-grid{padding:0 18px 18px;}
     .category-row .section-kicker,.upnext-grid .section-kicker{margin-bottom:10px;}
     .mode-chip{margin:0 8px 8px 0;}
-    .upnext-cards{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-    }
+    .upnext-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
     .video-card{
       border:1px solid var(--border);
       border-radius:20px;
@@ -261,10 +240,7 @@
     .video-card strong{display:block;margin-bottom:4px;}
     .video-card span{display:block;color:var(--muted);font-size:.86rem;margin-bottom:10px;}
 
-    .rows-shell{
-      margin-top:2px;
-      padding:18px;
-    }
+    .rows-shell{margin-top:2px;padding:18px;}
     .content-row{margin-bottom:18px;}
     .row-head{
       display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
@@ -272,9 +248,7 @@
     }
     .row-head h3{font-size:1.05rem;}
     .row-head p{color:var(--muted);font-size:.9rem;}
-    .row-grid{
-      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;
-    }
+    .row-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
     .row-card{
       border:1px solid var(--border);
       border-radius:18px;
@@ -322,17 +296,29 @@
     }
     .status-box strong{display:block;margin-bottom:6px;}
     .status-box p{font-size:.88rem;color:var(--muted);}
-    .status-good{color:var(--success);font-weight:800;}
+    .newsletter-form{
+      margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;
+    }
+    .newsletter-form input{
+      flex:1;min-width:160px;
+      padding:11px 12px;border-radius:14px;border:1px solid var(--border);
+      background:rgba(255,255,255,.04);color:var(--text);outline:none;
+    }
+    .newsletter-form button{
+      padding:11px 14px;border:none;border-radius:14px;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:#04111d;font-weight:900;cursor:pointer;
+    }
+    .footer{padding:24px 0 34px;color:var(--muted);text-align:center;font-size:.94rem;}
 
     @media (max-width: 1240px){
-      .v9-grid{grid-template-columns:260px minmax(280px,1fr) 320px;}
+      .v10-grid{grid-template-columns:260px minmax(280px,1fr) 320px;}
       .upnext-cards{grid-template-columns:repeat(2,minmax(0,1fr));}
       .row-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
       .video-stage{grid-template-columns:1fr;}
     }
     @media (max-width: 960px){
-      .v9-grid{grid-template-columns:1fr;}
-      .left-stack,.right-stack,.center-col{order:initial;}
+      .v10-grid{grid-template-columns:1fr;}
       .phone-frame{width:min(100%, 420px);}
     }
     @media (max-width: 640px){
@@ -347,12 +333,12 @@
     <div class="container navbar-inner">
       <div class="brand">
         <div class="brand-mark">S</div>
-        <div>SignalBoost V9</div>
+        <div>SignalBoost</div>
       </div>
       <ul class="nav-links">
-        <li><a href="#feed">Open feed</a></li>
-        <li><a href="#rows">Travel rows</a></li>
-        <li><a href="#tickets">Deals & Tickets</a></li>
+        <li><a href="#feed">For You</a></li>
+        <li><a href="#rows">Explore</a></li>
+        <li><a href="#tickets">Tickets</a></li>
         <li><a href="#luxury">Luxury</a></li>
         <li><button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button></li>
       </ul>
@@ -362,53 +348,53 @@
   <div class="topbar">
     <div class="container">
       <div class="topbar-shell">
-        <button class="feed-btn active">Open feed</button>
-        <button class="feed-btn">Just watch</button>
-        <button class="feed-btn">Plan a trip</button>
-        <button class="feed-btn">Find tickets</button>
+        <button class="feed-btn active">For You</button>
+        <button class="feed-btn">Trending</button>
+        <button class="feed-btn">Trip Ideas</button>
+        <button class="feed-btn">Tickets</button>
       </div>
     </div>
   </div>
 
-  <main class="container v9-grid" id="feed">
+  <main class="container v10-grid" id="feed">
     <aside class="left-stack">
       <section class="panel panel-pad">
         <div class="section-kicker">Explore SignalBoost</div>
         <div class="explore-list">
-          <div class="explore-item"><div><strong>Main feed</strong><span>scrolling attention engine</span></div><div class="explore-tag">attention</div></div>
-          <div class="explore-item"><div><strong>Travel rows</strong><span>depth and discovery</span></div><div class="explore-tag">depth</div></div>
-          <div class="explore-item"><div><strong>Deals & tickets</strong><span>high conversion traffic</span></div><div class="explore-tag">conversion</div></div>
-          <div class="explore-item"><div><strong>Luxury escapes</strong><span>premium offers</span></div><div class="explore-tag">high value</div></div>
-          <div class="explore-item"><div><strong>Creators</strong><span>fresh content loop</span></div><div class="explore-tag">repeat visits</div></div>
-          <div class="explore-item"><div><strong>Partners</strong><span>all monetized offers</span></div><div class="explore-tag">revenue</div></div>
+          <div class="explore-item"><div><strong>For You</strong><span>smart video discovery</span></div><div class="explore-tag">discover</div></div>
+          <div class="explore-item"><div><strong>Trip ideas</strong><span>routes, destinations, inspiration</span></div><div class="explore-tag">travel</div></div>
+          <div class="explore-item"><div><strong>Tickets & attractions</strong><span>museums, landmarks, passes</span></div><div class="explore-tag">book</div></div>
+          <div class="explore-item"><div><strong>Luxury escapes</strong><span>premium experiences</span></div><div class="explore-tag">premium</div></div>
+          <div class="explore-item"><div><strong>Creator picks</strong><span>fresh clips and trends</span></div><div class="explore-tag">fresh</div></div>
+          <div class="explore-item"><div><strong>Partner offers</strong><span>best matches for each trip</span></div><div class="explore-tag">offers</div></div>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">AI intent modes</div>
+        <div class="section-kicker">How you want to explore</div>
         <div class="mode-grid">
           <button class="mode-card active" data-mode="watch">
             <h4>🔥 Just watch</h4>
-            <p>Entertainment-first feed with lighter monetization.</p>
+            <p>Relaxed discovery with broad recommendations.</p>
           </button>
           <button class="mode-card" data-mode="trip">
-            <h4>✈️ Plan trip</h4>
-            <p>Trip-ready routing and destination stack.</p>
+            <h4>✈️ Plan a trip</h4>
+            <p>Routes, destinations, and practical travel picks.</p>
           </button>
           <button class="mode-card" data-mode="tickets">
             <h4>🎟 Buy tickets</h4>
-            <p>Attractions and museum conversion mode.</p>
+            <p>Attractions, museums, and city passes first.</p>
           </button>
           <button class="mode-card" data-mode="luxury">
             <h4>💎 Go luxury</h4>
-            <p>Premium and high-ticket offer routing.</p>
+            <p>Premium getaways and higher-value escapes.</p>
           </button>
         </div>
 
         <div class="cta-box">
-          <strong>SignalBoost behavior engine</strong>
-          <p id="intentMessage">Current mode: attention-first browsing. SignalBoost is prioritizing broad discovery while watching for stronger planning signals.</p>
-          <button class="small-btn" onclick="scrollToRows()">Open travel rows</button>
+          <strong>Your feed is adapting</strong>
+          <p id="intentMessage">You’re in relaxed browsing right now. SignalBoost is keeping the feed broad and useful while learning what you want next.</p>
+          <button class="small-btn" onclick="scrollToRows()">See more ideas</button>
         </div>
       </section>
     </aside>
@@ -416,9 +402,13 @@
     <section class="center-col">
       <section class="panel hero-strip">
         <div>
-          <div class="section-kicker">TikTok x YouTube x Netflix hybrid</div>
-          <h1>Scroll attention, trigger intent, convert traffic.</h1>
-          <p>The center feed attracts users. The right rail monetizes them. The lower content rows deepen discovery and keep people coming back.</p>
+          <div class="section-kicker">Smart travel discovery</div>
+          <h1>Watch, explore, and book what fits your trip.</h1>
+          <p>SignalBoost blends short-form discovery with curated travel and lifestyle offers, so visitors can browse naturally and act when they are ready.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="hero-link" href="#feed">Open feed</a>
+          <a class="hero-secondary" href="#rows">Browse categories</a>
         </div>
       </section>
 
@@ -428,38 +418,36 @@
             <iframe
               id="mainVideo"
               src="https://www.youtube-nocookie.com/embed/ScMzIvxBSi4?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&controls=0&disablekb=1&fs=0&iv_load_policy=3"
-              title="SignalBoost V9 player"
+              title="SignalBoost player"
               allow="autoplay; encrypted-media; picture-in-picture"
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen>
             </iframe>
-
             <div class="phone-overlay-top">
-              <div class="video-pill">Trending now</div>
-              <div class="video-pill">Locked inside SignalBoost</div>
+              <div class="video-pill">For You</div>
+              <div class="video-pill">Stays inside SignalBoost</div>
             </div>
-
             <div class="phone-overlay-bottom">
               <div class="overlay-title" id="videoTitle">Global Discovery</div>
-              <div class="overlay-desc" id="videoDescription">General discovery designed to keep visitors exploring and trigger stronger travel intent.</div>
+              <div class="overlay-desc" id="videoDescription">General discovery designed to keep visitors exploring and surface the most useful next offer.</div>
             </div>
           </div>
 
           <div class="video-side-info">
             <div class="side-card">
-              <div class="section-kicker">Live feed state</div>
-              <div class="metric">Mode: <span id="currentModeLabel">Just watch</span></div>
-              <p id="feedStateText">SignalBoost is in attention mode, showing broader discovery while monitoring repeated interest signals.</p>
+              <div class="section-kicker">You’re exploring</div>
+              <div class="metric"><span id="currentModeLabel">Just watch</span></div>
+              <p id="feedStateText">The feed is keeping things broad right now, mixing inspiration, practical travel, and easy next steps.</p>
             </div>
             <div class="side-card">
-              <div class="section-kicker">Why this video now</div>
-              <h3 id="whyNowTitle">Current mode: attention-first browsing</h3>
-              <p id="whyNowText">The system is maximizing engagement first. Stronger repeated patterns will narrow the feed and offers automatically.</p>
+              <div class="section-kicker">Why this is showing</div>
+              <h3 id="whyNowTitle">A broad pick to start</h3>
+              <p id="whyNowText">This helps SignalBoost learn what kinds of trips, cities, and offers are most useful for this session.</p>
             </div>
             <div class="side-card">
-              <div class="section-kicker">Next reaction</div>
-              <h3 id="nextReactionTitle">Watching for stronger intent</h3>
-              <p id="nextReactionText">If the same category repeats, SignalBoost will tighten partner routing and show stronger conversion offers.</p>
+              <div class="section-kicker">Coming up next</div>
+              <h3 id="nextReactionTitle">More tailored picks</h3>
+              <p id="nextReactionText">If the same type of content keeps showing up, recommendations will become more focused and useful.</p>
             </div>
           </div>
         </div>
@@ -471,9 +459,9 @@
         </div>
 
         <div class="category-row">
-          <div class="section-kicker">Smart categories</div>
-          <button class="mode-chip active" onclick="setVideoCategory('global', this)">Global</button>
-          <button class="mode-chip" onclick="setVideoCategory('paris', this)">Paris</button>
+          <div class="section-kicker">Browse by mood</div>
+          <button class="mode-chip active" onclick="setVideoCategory('global', this)">For You</button>
+          <button class="mode-chip" onclick="setVideoCategory('paris', this)">City Breaks</button>
           <button class="mode-chip" onclick="setVideoCategory('safari', this)">Safari</button>
           <button class="mode-chip" onclick="setVideoCategory('flights', this)">Flights</button>
           <button class="mode-chip" onclick="setVideoCategory('tickets', this)">Tickets</button>
@@ -481,7 +469,7 @@
         </div>
 
         <div class="upnext-grid">
-          <div class="section-kicker">Up next inside SignalBoost</div>
+          <div class="section-kicker">Recommended next</div>
           <div id="videoGrid" class="upnext-cards"></div>
         </div>
       </section>
@@ -491,14 +479,14 @@
           <div class="row-head">
             <div>
               <h3>Trending right now</h3>
-              <p>Fast-click discovery cards for high-intent travel users.</p>
+              <p>Fast paths for visitors ready to move from browsing to action.</p>
             </div>
           </div>
           <div class="row-grid">
-            <div class="row-card"><div><em>Flights</em><h4>Kiwi</h4><p>Route discovery and airfare shopping for global travel intent.</p></div><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">Find flights →</a></div>
-            <div class="row-card"><div><em>Tickets</em><h4>Tiqets US</h4><p>Attraction tickets and experiences for strong city-intent visitors.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Get tickets →</a></div>
-            <div class="row-card"><div><em>Safari</em><h4>Go2Africa</h4><p>High-value safari planning and premium Africa itineraries.</p></div><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Plan safari →</a></div>
-            <div class="row-card"><div><em>Connectivity</em><h4>BitJoy eSIM</h4><p>Travel eSIM for data-driven trip planning and frictionless travel.</p></div><a href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Get eSIM →</a></div>
+            <div class="row-card"><div><em>Flights</em><h4>Kiwi</h4><p>Search routes, compare options, and move quickly into trip planning.</p></div><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">Find flights →</a></div>
+            <div class="row-card"><div><em>Tickets</em><h4>Tiqets US</h4><p>Attractions and museum tickets for city visitors ready to book.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Get tickets →</a></div>
+            <div class="row-card"><div><em>Safari</em><h4>Go2Africa</h4><p>Premium safari planning for higher-value travel interest.</p></div><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Plan safari →</a></div>
+            <div class="row-card"><div><em>Connectivity</em><h4>BitJoy eSIM</h4><p>Travel data and connectivity for smoother journeys abroad.</p></div><a href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Get eSIM →</a></div>
           </div>
         </div>
 
@@ -506,14 +494,14 @@
           <div class="row-head">
             <div>
               <h3>Deals & tickets</h3>
-              <p>Destination and ticket conversion stack.</p>
+              <p>Useful options for visitors focused on cities, attractions, and savings.</p>
             </div>
           </div>
           <div class="row-grid">
-            <div class="row-card"><div><em>Deals</em><h4>Lastminute SE</h4><p>Travel booking and package deal traffic.</p></div><a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Book deal →</a></div>
+            <div class="row-card"><div><em>Deals</em><h4>Lastminute SE</h4><p>Travel deals and package options for complete-trip shoppers.</p></div><a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">View deals →</a></div>
             <div class="row-card"><div><em>DE</em><h4>Tiqets DE</h4><p>Germany-facing attractions and cultural experiences.</p></div><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
-            <div class="row-card"><div><em>FR</em><h4>Tiqets FR</h4><p>France-focused attraction and museum ticket traffic.</p></div><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
-            <div class="row-card"><div><em>IT</em><h4>Tiqets IT</h4><p>Italy-facing ticketing for premium city discovery.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
+            <div class="row-card"><div><em>FR</em><h4>Tiqets FR</h4><p>France-focused museums, landmarks, and city passes.</p></div><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
+            <div class="row-card"><div><em>IT</em><h4>Tiqets IT</h4><p>Italy-facing ticketing for city discovery and attractions.</p></div><a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open tickets →</a></div>
           </div>
         </div>
 
@@ -521,14 +509,14 @@
           <div class="row-head">
             <div>
               <h3>Luxury escapes</h3>
-              <p>Premium travel offers and higher-ticket conversion paths.</p>
+              <p>Premium travel, standout experiences, and higher-value recommendations.</p>
             </div>
           </div>
           <div class="row-grid">
-            <div class="row-card"><div><em>Luxury</em><h4>Desire Experience</h4><p>Resort and experience-based premium travel monetization.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go luxury →</a></div>
-            <div class="row-card"><div><em>Luxury</em><h4>Temptation Experience (US)</h4><p>US-facing premium resort and adult-oriented luxury traffic.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go luxury →</a></div>
-            <div class="row-card"><div><em>Software</em><h4>PearlMountain Limited</h4><p>Creative and utility software to widen monetization beyond travel.</p></div><a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open offer →</a></div>
-            <div class="row-card"><div><em>Home</em><h4>The Builder Market</h4><p>Additional non-travel consumer monetization channel.</p></div><a href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open offer →</a></div>
+            <div class="row-card"><div><em>Luxury</em><h4>Desire Experience</h4><p>Resort and experience-based premium travel recommendations.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">See experience →</a></div>
+            <div class="row-card"><div><em>Luxury</em><h4>Temptation Experience (US)</h4><p>US-facing premium resort and adults-only luxury travel.</p></div><a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener noreferrer">See experience →</a></div>
+            <div class="row-card"><div><em>Software</em><h4>PearlMountain Limited</h4><p>Creative tools for a broader digital revenue mix.</p></div><a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open offer →</a></div>
+            <div class="row-card"><div><em>Home</em><h4>The Builder Market</h4><p>An extra consumer channel beyond travel and tickets.</p></div><a href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open offer →</a></div>
           </div>
         </div>
       </section>
@@ -536,214 +524,224 @@
 
     <aside class="right-stack">
       <section class="panel panel-pad">
-        <div class="section-kicker">Shop this video</div>
+        <div class="section-kicker">Recommended for this video</div>
         <div class="offer-main">
-          <div class="urgency" id="offerUrgency">hot route</div>
+          <div class="urgency" id="offerUrgency">good match</div>
           <h3 id="shopMainPartner">Global Discovery Bundle</h3>
           <p id="shopMainDesc">Experiences, flights, and support matched to broad travel discovery.</p>
-          <a id="shopMainLink" class="offer-cta" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">View main offer →</a>
+          <a id="shopMainLink" class="offer-cta" href="https://klook.tpo.lv/fTRPLj2l" target="_blank" rel="noopener noreferrer">See top pick →</a>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">Fast conversion stack</div>
+        <div class="section-kicker">Best next steps</div>
         <div class="offer-list">
           <div class="offer-item">
-            <div class="urgency">trip-ready</div>
+            <div class="urgency">popular now</div>
             <h4 id="offer1Title">Flights via Kiwi</h4>
-            <p id="offer1Desc">High-intent flight routing when users show planning behavior.</p>
+            <p id="offer1Desc">A practical next step if this trip is moving from inspiration to planning.</p>
             <a id="offer1Link" href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener noreferrer">Open →</a>
           </div>
           <div class="offer-item">
-            <div class="urgency">add-on</div>
+            <div class="urgency">worth saving</div>
             <h4 id="offer2Title">Travel support via AirHelp</h4>
-            <p id="offer2Desc">Useful adjacent monetization without breaking the feed journey.</p>
+            <p id="offer2Desc">Useful support if travel changes, delays, or cancellations come into play.</p>
             <a id="offer2Link" href="https://airhelp.tpo.lv/grL9Ojju" target="_blank" rel="noopener noreferrer">Open →</a>
           </div>
           <div class="offer-item">
-            <div class="urgency">sponsored slot</div>
+            <div class="urgency">recommended extra</div>
             <h4 id="offer3Title">BitJoy eSIM</h4>
-            <p id="offer3Desc">Connectivity offer that pairs well with broad travel intent.</p>
+            <p id="offer3Desc">A simple add-on for staying connected while traveling.</p>
             <a id="offer3Link" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open →</a>
           </div>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">Preemptive monetization</div>
+        <div class="section-kicker">Picked for this session</div>
         <div class="status-box">
-          <strong id="statusTitle">No strong reaction yet</strong>
-          <p id="statusText">The system is still learning. Repeated interest will trigger stronger partner routing automatically.</p>
+          <strong id="statusTitle">You’re still exploring</strong>
+          <p id="statusText">SignalBoost is keeping recommendations flexible until your direction becomes clearer.</p>
         </div>
       </section>
 
       <section class="panel panel-pad">
-        <div class="section-kicker">Partner quicklinks</div>
-        <div class="offer-list">
-          <div class="offer-item"><h4>Go! Go! España</h4><p>Regional travel discovery for Spain-focused users.</p><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open →</a></div>
-          <div class="offer-item"><h4>King Koil</h4><p>Lifestyle monetization for comfort and home product shoppers.</p><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Open →</a></div>
-        </div>
+        <div class="section-kicker">Stay in the loop</div>
+        <p class="muted">Get weekly picks for travel, attractions, and standout offers.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+          <input id="newsletterEmail" type="email" placeholder="Enter your email" required />
+          <button type="submit">Join</button>
+        </form>
       </section>
     </aside>
   </main>
+
+  <footer class="footer">
+    <div class="container">© 2026 SignalBoost. All rights reserved.</div>
+  </footer>
 
   <script>
     const modeConfigs = {
       watch: {
         label: "Just watch",
-        intentMessage: "Current mode: attention-first browsing. SignalBoost is prioritizing broad discovery while watching for stronger planning signals.",
-        feedStateText: "SignalBoost is in attention mode, showing broader discovery while monitoring repeated interest signals.",
-        whyNowTitle: "Current mode: attention-first browsing",
-        whyNowText: "The system is maximizing engagement first. Stronger repeated patterns will narrow the feed and offers automatically.",
-        nextReactionTitle: "Watching for stronger intent",
-        nextReactionText: "If the same category repeats, SignalBoost will tighten partner routing and show stronger conversion offers.",
+        intentMessage: "You’re in relaxed browsing right now. SignalBoost is keeping the feed broad and useful while learning what you want next.",
+        feedStateText: "The feed is keeping things broad right now, mixing inspiration, practical travel, and easy next steps.",
+        whyNowTitle: "A broad pick to start",
+        whyNowText: "This helps SignalBoost learn what kinds of trips, cities, and offers are most useful for this session.",
+        nextReactionTitle: "More tailored picks",
+        nextReactionText: "If the same type of content keeps showing up, recommendations will become more focused and useful.",
         defaultCategory: "global"
       },
       trip: {
         label: "Plan a trip",
-        intentMessage: "Current mode: trip-planning. SignalBoost is weighting flights, safari, and destination offers more aggressively.",
-        feedStateText: "The feed is prioritizing videos that help users move from inspiration to booking behavior.",
-        whyNowTitle: "Current mode: route and destination planning",
-        whyNowText: "Travel-related videos appear first so partner routing can start earlier in the journey.",
-        nextReactionTitle: "Flight and hotel signals next",
-        nextReactionText: "Repeated trip-planning behavior will strengthen Kiwi, Lastminute, and destination partner placement.",
+        intentMessage: "You’re in trip-planning mode. SignalBoost is giving more weight to routes, destinations, and practical travel offers.",
+        feedStateText: "The feed is leaning toward videos that help move from inspiration into planning.",
+        whyNowTitle: "More planning-focused picks",
+        whyNowText: "Route ideas, destination themes, and practical travel options appear sooner in this mode.",
+        nextReactionTitle: "Practical suggestions next",
+        nextReactionText: "If planning patterns keep repeating, routes, deals, and matching offers will become more specific.",
         defaultCategory: "flights"
       },
       tickets: {
         label: "Buy tickets",
-        intentMessage: "Current mode: ticket conversion. SignalBoost is pushing attractions and city-experience inventory faster.",
-        feedStateText: "The feed is narrowing around museum, attraction, and destination-ticket signals.",
-        whyNowTitle: "Current mode: attraction conversion",
-        whyNowText: "Ticket-led videos are prioritized because the viewer is closer to purchase than broad inspiration.",
-        nextReactionTitle: "Destination matching next",
-        nextReactionText: "Repeated city interest will localize Tiqets offers by market and destination theme.",
+        intentMessage: "You’re focused on attractions and city experiences, so SignalBoost is surfacing stronger ticket options first.",
+        feedStateText: "The feed is narrowing around museums, landmarks, passes, and destination attractions.",
+        whyNowTitle: "A better fit for city plans",
+        whyNowText: "This mode pushes more ticket-friendly discovery because it’s closer to action than broad browsing.",
+        nextReactionTitle: "More city-based picks",
+        nextReactionText: "If city interest keeps repeating, recommendations will tighten around attractions and destination passes.",
         defaultCategory: "tickets"
       },
       luxury: {
         label: "Go luxury",
-        intentMessage: "Current mode: premium routing. SignalBoost is favoring higher-value luxury and safari intent.",
-        feedStateText: "The feed is surfacing premium experiences and higher-ticket travel pathways.",
-        whyNowTitle: "Current mode: luxury filtering",
-        whyNowText: "SignalBoost is reducing low-value noise to push premium attention toward higher-margin partners.",
-        nextReactionTitle: "High-value routing next",
-        nextReactionText: "Repeated luxury behavior will intensify Go2Africa, Desire, and Temptation-style offers.",
+        intentMessage: "You’re exploring premium travel, so SignalBoost is favoring higher-value escapes and standout experiences.",
+        feedStateText: "The feed is surfacing elevated travel ideas and stronger premium recommendations.",
+        whyNowTitle: "A more premium direction",
+        whyNowText: "This mode reduces low-value noise and focuses more on higher-end travel options.",
+        nextReactionTitle: "More premium suggestions",
+        nextReactionText: "If luxury interest continues, recommendations will lean harder into premium escapes and higher-value offers.",
         defaultCategory: "safari"
       }
     };
 
     const baseVideoPools = {
       global: [
-        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "General discovery designed to keep visitors exploring and trigger broader monetization.", monetizationKey: "global" },
-        { id: "M7lc1UVf-VE", title: "Global Discovery", desc: "A rotating discovery clip for broad attention capture.", monetizationKey: "global" },
-        { id: "ysz5S6PUM-U", title: "Global Discovery", desc: "Fast-moving discovery content for general travel intent.", monetizationKey: "global" }
+        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "General discovery designed to keep visitors exploring and surface the most useful next offer.", monetizationKey: "global" },
+        { id: "M7lc1UVf-VE", title: "For You", desc: "A broad discovery clip for visitors still deciding where to go next.", monetizationKey: "global" },
+        { id: "ysz5S6PUM-U", title: "Smart Picks", desc: "Fast-moving discovery content for general travel and lifestyle browsing.", monetizationKey: "global" }
       ],
       paris: [
-        { id: "ysz5S6PUM-U", title: "Paris Discovery", desc: "City-energy content designed to convert into attraction and ticket demand.", monetizationKey: "tickets" },
-        { id: "ScMzIvxBSi4", title: "Paris Discovery", desc: "Premium Paris-style inspiration for attractions and destination clicks.", monetizationKey: "tickets" }
+        { id: "ysz5S6PUM-U", title: "City Breaks", desc: "City-energy content designed to convert into attraction and ticket demand.", monetizationKey: "tickets" },
+        { id: "ScMzIvxBSi4", title: "Paris Discovery", desc: "A city-focused pick for attractions, landmarks, and memorable experiences.", monetizationKey: "tickets" }
       ],
       safari: [
         { id: "M7lc1UVf-VE", title: "Safari Discovery", desc: "Luxury safari inspiration mapped to premium Africa planning.", monetizationKey: "safari" },
-        { id: "ScMzIvxBSi4", title: "Safari Discovery", desc: "High-intent wildlife discovery for higher-ticket routing.", monetizationKey: "safari" }
+        { id: "ScMzIvxBSi4", title: "Wild Escape", desc: "A higher-value travel direction built around premium adventure interest.", monetizationKey: "safari" }
       ],
       flights: [
-        { id: "ScMzIvxBSi4", title: "Flight Discovery", desc: "Flight-led trip planning with stronger booking intent signals.", monetizationKey: "flights" },
-        { id: "M7lc1UVf-VE", title: "Flight Discovery", desc: "Route-shopping content tied to trip-planning behavior.", monetizationKey: "flights" }
+        { id: "ScMzIvxBSi4", title: "Trip Planning", desc: "Flight-led discovery for visitors moving into practical planning.", monetizationKey: "flights" },
+        { id: "M7lc1UVf-VE", title: "Route Finder", desc: "Travel content shaped around routes, options, and planning behavior.", monetizationKey: "flights" }
       ],
       tickets: [
-        { id: "ysz5S6PUM-U", title: "Ticket Discovery", desc: "Attraction and activity discovery for Tiqets-style conversion.", monetizationKey: "tickets" },
-        { id: "ScMzIvxBSi4", title: "Ticket Discovery", desc: "City-ticket inspiration tied to museums and landmark demand.", monetizationKey: "tickets" }
+        { id: "ysz5S6PUM-U", title: "Tickets & Attractions", desc: "Attraction and activity discovery for ticket-ready city interest.", monetizationKey: "tickets" },
+        { id: "ScMzIvxBSi4", title: "City Highlights", desc: "Destination-friendly picks tied to museums, landmarks, and passes.", monetizationKey: "tickets" }
       ],
       spain: [
-        { id: "M7lc1UVf-VE", title: "Spain Discovery", desc: "Regional planning tied to Spain-focused offers and experiences.", monetizationKey: "spain" },
-        { id: "ysz5S6PUM-U", title: "Spain Discovery", desc: "Travel discovery aligned with Spain routes and related ticket demand.", monetizationKey: "spain" }
+        { id: "M7lc1UVf-VE", title: "Spain Discovery", desc: "Regional travel inspiration tied to Spain-focused routes and offers.", monetizationKey: "spain" },
+        { id: "ysz5S6PUM-U", title: "Spain Picks", desc: "A regional mix of experiences, flights, and destination discovery.", monetizationKey: "spain" }
       ]
     };
 
     const monetizationByKey = {
       global: {
-        urgency: "hot route",
-        mainTitle: "Global Discovery Bundle",
-        mainDesc: "Experiences, flights, and support matched to broad travel discovery.",
+        urgency: "good match",
+        mainTitle: "Top pick for broad discovery",
+        mainDesc: "A flexible recommendation for visitors still exploring options.",
         mainHref: "https://klook.tpo.lv/fTRPLj2l",
+        mainCta: "See top pick →",
         offer1Title: "Flights via Kiwi",
-        offer1Desc: "High-intent flight routing when users show planning behavior.",
+        offer1Desc: "A practical next step if this trip is moving from inspiration to planning.",
         offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
         offer2Title: "Travel support via AirHelp",
-        offer2Desc: "Useful adjacent monetization without breaking the feed journey.",
+        offer2Desc: "Useful support if travel changes, delays, or cancellations come into play.",
         offer2Href: "https://airhelp.tpo.lv/grL9Ojju",
         offer3Title: "BitJoy eSIM",
-        offer3Desc: "Connectivity offer that pairs well with broad travel intent.",
+        offer3Desc: "A simple add-on for staying connected while traveling.",
         offer3Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-        statusTitle: "Engagement mode active",
-        statusText: "The system is prioritizing attention first while waiting for stronger purchase signals."
+        statusTitle: "You’re still exploring",
+        statusText: "SignalBoost is keeping recommendations flexible until your direction becomes clearer."
       },
       safari: {
-        urgency: "premium intent",
-        mainTitle: "Safari & Africa Planning",
-        mainDesc: "High-ticket safari planning and premium Africa itineraries.",
+        urgency: "premium fit",
+        mainTitle: "A strong match for safari interest",
+        mainDesc: "Premium Africa planning and higher-value travel ideas for this viewing pattern.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
+        mainCta: "Plan safari →",
         offer1Title: "Flights via Kiwi",
-        offer1Desc: "Strong route pairing for long-haul safari planning.",
+        offer1Desc: "Long-haul route support for safari and premium travel planning.",
         offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
         offer2Title: "BitJoy eSIM",
-        offer2Desc: "Useful travel-data upsell for international safari travelers.",
+        offer2Desc: "A useful extra for international travel and connected trips.",
         offer2Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
         offer3Title: "Lastminute SE",
-        offer3Desc: "Alternative travel-deal discovery for planning-stage users.",
+        offer3Desc: "Alternative deal discovery for visitors still comparing ideas.",
         offer3Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-        statusTitle: "High-value traffic detected",
-        statusText: "Luxury and safari viewing patterns justify stronger premium partner exposure."
+        statusTitle: "Premium travel interest is growing",
+        statusText: "This session is leaning toward higher-value travel, so premium recommendations are showing more often."
       },
       flights: {
         urgency: "trip-ready",
-        mainTitle: "Flight Discovery & Routes",
-        mainDesc: "Compare flights, plan trips, and route traffic to Kiwi faster.",
+        mainTitle: "A strong match for planning",
+        mainDesc: "Flight-focused picks for visitors who are moving from browsing into real trip planning.",
         mainHref: "https://kiwi.tpo.lv/qKPZ1inz",
+        mainCta: "Find flights →",
         offer1Title: "Deals via Lastminute SE",
-        offer1Desc: "Package and deal-layer monetization for users closer to booking.",
+        offer1Desc: "Useful if the trip is moving toward package deals or complete bookings.",
         offer1Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
         offer2Title: "Travel support via AirHelp",
-        offer2Desc: "Support and compensation offer for disruption-aware travelers.",
+        offer2Desc: "Helpful for travelers thinking ahead about delays or changes.",
         offer2Href: "https://airhelp.tpo.lv/grL9Ojju",
         offer3Title: "BitJoy eSIM",
-        offer3Desc: "Strong add-on when the trip-planning journey is underway.",
+        offer3Desc: "A practical add-on once a trip starts taking shape.",
         offer3Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-        statusTitle: "Planner mode is hot",
-        statusText: "Repeated travel-planning signals make flight and deal inventory more likely to convert."
+        statusTitle: "Trip-planning signals are clearer",
+        statusText: "This session is leaning toward routes and bookings, so planning-friendly picks are being prioritized."
       },
       tickets: {
-        urgency: "limited availability",
-        mainTitle: "Attractions & Tickets",
-        mainDesc: "Ticket traffic routed to Tiqets where destination demand is strongest.",
+        urgency: "popular now",
+        mainTitle: "A strong match for attractions",
+        mainDesc: "Good options for city visitors ready to choose museums, landmarks, and experiences.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+        mainCta: "Get tickets →",
         offer1Title: "Tiqets FR",
-        offer1Desc: "France-focused attraction and museum ticket routing.",
+        offer1Desc: "France-facing attraction and museum ticket picks.",
         offer1Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
         offer2Title: "Tiqets IT",
-        offer2Desc: "Italy-facing ticket inventory for stronger city-intent traffic.",
+        offer2Desc: "Italy-facing ticket options for city and attraction planning.",
         offer2Href: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
         offer3Title: "Tiqets UK",
-        offer3Desc: "UK-facing ticket discovery for destination-specific conversion.",
+        offer3Desc: "A useful next option for UK-facing city discovery and attractions.",
         offer3Href: "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
-        statusTitle: "Ticket mode engaged",
-        statusText: "The feed is seeing attraction-style demand, so the monetization rail is narrowing around tickets."
+        statusTitle: "This looks like city-interest traffic",
+        statusText: "Recommendations are shifting toward attractions and passes because city exploration is repeating."
       },
       spain: {
-        urgency: "regional stack",
-        mainTitle: "Spain-Focused Planning",
-        mainDesc: "Regional discovery that routes users to Spain-focused offers.",
+        urgency: "regional fit",
+        mainTitle: "A strong match for Spain interest",
+        mainDesc: "Regional travel picks and matching offers for visitors leaning toward Spain.",
         mainHref: "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
+        mainCta: "See Spain picks →",
         offer1Title: "Flights via Kiwi",
-        offer1Desc: "Flight discovery for Spain-bound traffic.",
+        offer1Desc: "Helpful for comparing routes and getting a Spain trip moving.",
         offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
         offer2Title: "Tiqets FR",
-        offer2Desc: "Nearby destination ticketing for Europe-leaning discovery journeys.",
+        offer2Desc: "Nearby ticket-friendly discovery that fits broader Europe interest.",
         offer2Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
         offer3Title: "Lastminute SE",
-        offer3Desc: "Package deal support for route and destination bundling.",
+        offer3Desc: "A useful package-deal layer for destination-focused sessions.",
         offer3Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-        statusTitle: "Regional demand visible",
-        statusText: "Spain-related interest is strong enough to justify localized offer stacking."
+        statusTitle: "Regional interest is becoming clearer",
+        statusText: "The session is leaning toward Spain and nearby travel ideas, so regional picks are showing more often."
       }
     };
 
@@ -752,7 +750,6 @@
     let currentIndex = 0;
     let rotationOn = true;
     let rotationTimer = null;
-    let currentMode = "watch";
 
     function buildEmbedUrl(videoId){
       return "https://www.youtube-nocookie.com/embed/" + videoId + "?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&controls=0&disablekb=1&fs=0&iv_load_policy=3";
@@ -772,6 +769,7 @@
       document.getElementById("shopMainPartner").textContent = config.mainTitle;
       document.getElementById("shopMainDesc").textContent = config.mainDesc;
       document.getElementById("shopMainLink").href = config.mainHref;
+      document.getElementById("shopMainLink").textContent = config.mainCta;
 
       document.getElementById("offer1Title").textContent = config.offer1Title;
       document.getElementById("offer1Desc").textContent = config.offer1Desc;
@@ -822,10 +820,6 @@
       renderVideoGrid(currentCategory);
       clearCategoryButtons();
       if(el) el.classList.add("active");
-      else{
-        const match = [...document.querySelectorAll(".category-row .mode-chip")].find(btn => btn.textContent.trim().toLowerCase() === category);
-        if(match) match.classList.add("active");
-      }
       if(rotationOn) restartRotation();
     }
 
@@ -869,7 +863,6 @@
     }
 
     function setMode(mode){
-      currentMode = mode;
       const cfg = modeConfigs[mode];
       document.getElementById("currentModeLabel").textContent = cfg.label;
       document.getElementById("intentMessage").textContent = cfg.intentMessage;
@@ -886,15 +879,23 @@
 
     function toggleTheme(){
       document.body.classList.toggle("light-mode");
-      localStorage.setItem("signalboost_theme_v9", document.body.classList.contains("light-mode") ? "light" : "dark");
+      localStorage.setItem("signalboost_theme_v10", document.body.classList.contains("light-mode") ? "light" : "dark");
     }
 
     function scrollToRows(){
       document.getElementById("rows").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
+    function handleNewsletter(event){
+      event.preventDefault();
+      const email = document.getElementById("newsletterEmail").value.trim();
+      if(!email) return;
+      alert("Thanks — this demo captures interest on-page only. Add your email platform next for real collection.");
+      event.target.reset();
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("signalboost_theme_v9");
+      const savedTheme = localStorage.getItem("signalboost_theme_v10");
       if(savedTheme === "light") document.body.classList.add("light-mode");
       document.querySelectorAll(".mode-card").forEach(card => {
         card.addEventListener("click", () => setMode(card.dataset.mode));
