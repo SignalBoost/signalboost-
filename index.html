@@ -155,8 +155,8 @@
 
     .v12-grid{
       display:grid;
-      grid-template-columns:260px minmax(560px,1fr) 320px;
-      gap:20px;
+      grid-template-columns:240px minmax(420px,1fr) 280px;
+      gap:18px;
       align-items:start;
       padding:8px 0 28px;
     }
@@ -290,16 +290,15 @@
     }
 
     .video-stage{
-      padding:22px 22px 12px;
+      padding:18px;
       display:grid;
-      grid-template-columns:1fr;
+      grid-template-columns:1fr 220px;
       gap:18px;
       align-items:center;
-      justify-items:center;
     }
 
     .phone-frame{
-      width:min(100%,500px);
+      width:min(100%,540px);
       margin:0 auto;
       aspect-ratio:9/16;
       border-radius:34px;
@@ -531,29 +530,9 @@
       margin-bottom:8px;
     }
 
-    .center-focus-note{
-      text-align:center;
-      color:var(--muted);
-      font-size:.9rem;
-      padding:0 18px 6px;
-    }
-
-    .video-shell{
-      position:relative;
-    }
-
-    .video-shell::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:radial-gradient(circle at center, rgba(56,189,248,.08), transparent 45%);
-      pointer-events:none;
-    }
-
-
     @media (max-width:1240px){
       .v12-grid{
-        grid-template-columns:230px minmax(420px,1fr) 280px;
+        grid-template-columns:220px minmax(320px,1fr) 250px;
       }
       .upnext-cards{grid-template-columns:repeat(2,minmax(0,1fr));}
       .row-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -640,11 +619,11 @@
       </div>
       <ul class="nav-links">
         <li><a href="#feed">Feed</a></li>
-        <li><a href="#rows">Explore</a></li>
-        <li><a href="#stays">Stays</a></li>
-        <li><a href="#tickets">Tickets</a></li>
-        <li><a href="#luxury">Luxury</a></li>
-        <li><a href="#partners">Partners</a></li>
+        <li><a href="#travel">Explore</a></li>
+        <li><a href="#travel">Travel</a></li>
+        <li><a href="#finance">Finance</a></li>
+        <li><a href="#insurance">Insurance</a></li>
+        <li><a href="#services">Services</a></li>
         <li><button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button></li>
       </ul>
     </div>
@@ -671,23 +650,23 @@
             <div class="explore-tag">watch</div>
           </a>
           <a href="#rows" class="explore-item">
-            <div><strong>Travel rows</strong><span>more places and offers</span></div>
-            <div class="explore-tag">browse</div>
+            <div><strong>Travel</strong><span>destinations, stays, tickets</span></div>
+            <div class="explore-tag">travel</div>
           </a>
-          <a href="#stays" class="explore-item">
-            <div><strong>Stays & rentals</strong><span>homes and vacation stays</span></div>
-            <div class="explore-tag">stay</div>
+          <a href="#finance" class="explore-item">
+            <div><strong>Finance</strong><span>platforms, money tools, trading</span></div>
+            <div class="explore-tag">finance</div>
           </a>
-          <a href="#tickets" class="explore-item">
-            <div><strong>Deals & tickets</strong><span>attractions and city passes</span></div>
-            <div class="explore-tag">book</div>
+          <a href="#insurance" class="explore-item">
+            <div><strong>Insurance</strong><span>coverage and protection</span></div>
+            <div class="explore-tag">cover</div>
           </a>
-          <a href="#luxury" class="explore-item">
-            <div><strong>Luxury escapes</strong><span>premium experiences</span></div>
-            <div class="explore-tag">premium</div>
+          <a href="#services" class="explore-item">
+            <div><strong>Services</strong><span>online tools and useful offers</span></div>
+            <div class="explore-tag">services</div>
           </a>
           <a href="#partners" class="explore-item">
-            <div><strong>Partners</strong><span>featured offers</span></div>
+            <div><strong>Partners</strong><span>featured offers and networks</span></div>
             <div class="explore-tag">offers</div>
           </a>
         </div>
@@ -726,8 +705,8 @@
       <section class="panel hero-strip">
         <div>
           <div class="section-kicker">Discover, watch, and book</div>
-          <h1>Find travel ideas, stays, tickets, and premium offers in one place.</h1>
-          <p>Watch the feed, switch modes, and open the best matching offers without losing your place.</p>
+          <h1>Find travel, finance, insurance, and online services in one place.</h1>
+          <p>Browse featured categories, switch discovery modes, and open the best matching partner offers without losing your place.</p>
         </div>
       </section>
 
@@ -757,13 +736,13 @@
           <div class="video-side-info">
             <div class="side-card">
               <div class="section-kicker">Why watch this</div>
-              <h3 id="whyWatchTitle">Travel ideas worth opening</h3>
-              <p id="feedStateText">Short travel clips that lead to flights, stays, tickets, and destination offers.</p>
+              <h3 id="whyWatchTitle">Discovery worth opening</h3>
+              <p id="feedStateText">Short-form discovery that can lead into travel, finance, insurance, and service offers.</p>
             </div>
 
             <div class="side-card">
               <div class="section-kicker">Recommended</div>
-              <h3 id="whyNowTitle">Fresh travel inspiration</h3>
+              <h3 id="whyNowTitle">Fresh mixed-category inspiration</h3>
               <p id="whyNowText">Watch what’s trending now, then move into flights, stays, tickets, or luxury offers when you’re ready.</p>
             </div>
 
@@ -783,12 +762,12 @@
 
         <div class="category-row">
           <div class="section-kicker">Categories</div>
-          <button class="mode-chip active" onclick="setVideoCategory('global', this)">Global</button>
-          <button class="mode-chip" onclick="setVideoCategory('paris', this)">Paris</button>
-          <button class="mode-chip" onclick="setVideoCategory('safari', this)">Safari</button>
-          <button class="mode-chip" onclick="setVideoCategory('flights', this)">Flights</button>
-          <button class="mode-chip" onclick="setVideoCategory('tickets', this)">Tickets</button>
-          <button class="mode-chip" onclick="setVideoCategory('spain', this)">Spain</button>
+          <button class="mode-chip active" onclick="setVideoCategory('travel', this)">Travel</button>
+          <button class="mode-chip" onclick="setVideoCategory('finance', this)">Finance</button>
+          <button class="mode-chip" onclick="setVideoCategory('insurance', this)">Insurance</button>
+          <button class="mode-chip" onclick="setVideoCategory('services', this)">Services</button>
+          <button class="mode-chip" onclick="setVideoCategory('partners', this)">Partners</button>
+          <button class="mode-chip" onclick="setVideoCategory('global', this)">Global</button>
         </div>
 
         <div class="upnext-grid">
@@ -797,7 +776,7 @@
         </div>
       </section>
 
-      <section class="panel rows-shell" id="rows">
+      <section class="panel rows-shell" id="travel">
         <div class="content-row">
           <div class="row-head">
             <div>
@@ -808,11 +787,11 @@
           <div class="row-grid">
             <div class="row-card">
               <div><em>Flights</em><h4>Kiwi</h4><p>Search routes and airfare options.</p></div>
-              <a href="https://kiwi.tpo.lv/qKPZ1inz">Find flights →</a>
+              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Find flights →</a>
             </div>
             <div class="row-card">
               <div><em>Stays</em><h4>Vrbo</h4><p>Vacation rentals and full homes for your trip.</p></div>
-              <a href="https://vrbo.tpo.lv/ldtO3nzY">Find stays →</a>
+              <a href="https://ektatraveling.tpo.lv/">Find stays →</a>
             </div>
             <div class="row-card">
               <div><em>Tickets</em><h4>Tiqets US</h4><p>Museums, attractions, and city experiences.</p></div>
@@ -825,83 +804,83 @@
           </div>
         </div>
 
-        <div class="content-row" id="stays">
+        <div class="content-row" id="finance">
           <div class="row-head">
             <div>
-              <h3>Stays & rentals</h3>
-              <p>Vacation homes, city stays, and trip-friendly accommodations.</p>
+              <h3>Finance</h3>
+              <p>Platforms and finance offers you can feature beside travel and services.</p>
             </div>
           </div>
           <div class="row-grid">
             <div class="row-card">
-              <div><em>Stays</em><h4>Vrbo</h4><p>Vacation rentals, homes, and longer stays for destination trips.</p></div>
-              <a href="https://vrbo.tpo.lv/ldtO3nzY">Browse Vrbo stays →</a>
+              <div><em>Finance</em><h4>ZuluTrade</h4><p>Trading and copy-trading platform for finance-focused users.</p></div>
+              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Open platform →</a>
             </div>
             <div class="row-card">
-              <div><em>Luxury stay</em><h4>Vrbo Premium Picks</h4><p>Use Vrbo for larger spaces and premium vacation-home travel.</p></div>
-              <a href="https://vrbo.tpo.lv/ldtO3nzY">See premium stays →</a>
+              <div><em>Finance</em><h4>Market Discovery</h4><p>Pair finance content with partner tools and smart online services.</p></div>
+              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Explore finance →</a>
             </div>
             <div class="row-card">
-              <div><em>Family trips</em><h4>Vrbo Family Homes</h4><p>Stronger fit for multi-room stays and group travel.</p></div>
-              <a href="https://vrbo.tpo.lv/ldtO3nzY">Find family stays →</a>
+              <div><em>Finance</em><h4>Money Tools</h4><p>Useful financial services and business-ready online platforms.</p></div>
+              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">See tools →</a>
             </div>
             <div class="row-card">
-              <div><em>City breaks</em><h4>Vrbo City Rentals</h4><p>Vacation rentals that work well with flights and ticket-led planning.</p></div>
-              <a href="https://vrbo.tpo.lv/ldtO3nzY">Find city rentals →</a>
+              <div><em>Finance</em><h4>Smart Services</h4><p>High-intent finance traffic can flow into related service offers.</p></div>
+              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Open finance →</a>
             </div>
           </div>
         </div>
 
-        <div class="content-row" id="tickets">
+        <div class="content-row" id="insurance">
           <div class="row-head">
             <div>
-              <h3>Deals & tickets</h3>
-              <p>Attractions, museums, and destination ticket offers.</p>
+              <h3>Insurance</h3>
+              <p>Protection-focused offers that fit travel and international users.</p>
             </div>
           </div>
           <div class="row-grid">
             <div class="row-card">
-              <div><em>Deals</em><h4>Lastminute SE</h4><p>Travel booking and package deals.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806">Book deal →</a>
+              <div><em>Insurance</em><h4>EKTA Travelling</h4><p>Protect your trip from delays, cancellations, and emergencies.</p></div>
+              <a href="https://ektatraveling.tpo.lv/">Get covered →</a>
             </div>
             <div class="row-card">
-              <div><em>DE</em><h4>Tiqets DE</h4><p>Germany-facing attraction tickets.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806">Open tickets →</a>
+              <div><em>Insurance</em><h4>VisitorsCoverage</h4><p>Insurance options for travelers and international protection needs.</p></div>
+              <a href="https://visitorscoverage.tpo.lv/">Open coverage →</a>
             </div>
             <div class="row-card">
-              <div><em>FR</em><h4>Tiqets FR</h4><p>France-focused experiences and museum tickets.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806">Open tickets →</a>
+              <div><em>Insurance</em><h4>Insubuy</h4><p>Travel and visitor insurance options with strong affiliate potential.</p></div>
+              <a href="https://insubuy.tpo.lv/">See insurance →</a>
             </div>
             <div class="row-card">
-              <div><em>IT</em><h4>Tiqets IT</h4><p>Italy-facing attractions and city passes.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806">Open tickets →</a>
+              <div><em>Insurance</em><h4>Travel Safety</h4><p>Add protection offers naturally beside travel bookings and services.</p></div>
+              <a href="https://ektatraveling.tpo.lv/">View cover →</a>
             </div>
           </div>
         </div>
 
-        <div class="content-row" id="luxury">
+        <div class="content-row" id="services">
           <div class="row-head">
             <div>
-              <h3>Luxury escapes</h3>
-              <p>Premium travel and higher-end offers.</p>
+              <h3>Services</h3>
+              <p>Useful online services, tools, and digital offers that broaden SignalBoost.</p>
             </div>
           </div>
           <div class="row-grid">
             <div class="row-card">
-              <div><em>Luxury</em><h4>Desire Experience</h4><p>Premium resort and experience travel.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806">Go luxury →</a>
+              <div><em>Services</em><h4>Airalo</h4><p>eSIM connectivity for travelers and international users.</p></div>
+              <a href="https://airalo.tpo.lv/eXjKLiuw">Open service →</a>
             </div>
             <div class="row-card">
-              <div><em>Luxury</em><h4>Temptation Experience (US)</h4><p>US-facing premium resort experiences.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806">Go luxury →</a>
+              <div><em>Services</em><h4>Airalo</h4><p>Stay connected abroad with a simple digital service offer.</p></div>
+              <a href="https://airalo.tpo.lv/eXjKLiuw">Open service →</a>
             </div>
             <div class="row-card">
-              <div><em>Stays</em><h4>Vrbo Luxury Stays</h4><p>Vacation-home inventory that fits premium destination planning.</p></div>
-              <a href="https://vrbo.tpo.lv/ldtO3nzY">Find luxury stays →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Software</em><h4>PearlMountain Limited</h4><p>Creative and utility software offers.</p></div>
+              <div><em>Services</em><h4>PearlMountain</h4><p>Creative and utility software offers for wider audience targeting.</p></div>
               <a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806">Open offer →</a>
+            </div>
+            <div class="row-card">
+              <div><em>Services</em><h4>AirHelp</h4><p>Useful travel support service that fits a broader online audience.</p></div>
+              <a href="https://airhelp.tpo.lv/grL9Ojju">Open service →</a>
             </div>
           </div>
         </div>
@@ -910,7 +889,7 @@
           <div class="row-head">
             <div>
               <h3>Partners</h3>
-              <p>Travel brands, booking tools, and destination offers.</p>
+              <p>Travel brands, finance platforms, insurance offers, and useful services.</p>
             </div>
           </div>
           <div class="row-grid">
@@ -937,11 +916,11 @@
 
     <aside class="right-stack">
       <section class="panel panel-pad">
-        <div class="section-kicker">Shop this video</div>
+        <div class="section-kicker">Featured action</div>
         <div class="offer-main">
           <div class="urgency" id="offerUrgency">featured</div>
-          <h3 id="shopMainPartner">Global Discovery Bundle</h3>
-          <p id="shopMainDesc">Experiences, flights, stays, and support matched to popular travel discovery.</p>
+          <h3 id="shopMainPartner">SignalBoost Featured Offer</h3>
+          <p id="shopMainDesc">Travel, finance, insurance, and services matched to what users are exploring.</p>
           <a id="shopMainLink" class="offer-cta" href="https://klook.tpo.lv/fTRPLj2l">Open main offer →</a>
         </div>
       </section>
@@ -951,20 +930,20 @@
         <div class="offer-list">
           <div class="offer-item">
             <div class="urgency">popular</div>
-            <h4 id="offer1Title">Flights via Kiwi</h4>
-            <p id="offer1Desc">Search routes and travel dates quickly.</p>
+            <h4 id="offer1Title">ZuluTrade</h4>
+            <p id="offer1Desc">Finance platform for users interested in markets and trading.</p>
             <a id="offer1Link" href="https://kiwi.tpo.lv/qKPZ1inz">Open →</a>
           </div>
           <div class="offer-item">
             <div class="urgency">stay option</div>
-            <h4 id="offer2Title">Vrbo stays</h4>
-            <p id="offer2Desc">Vacation rentals and homes that fit destination planning.</p>
+            <h4 id="offer2Title">EKTA Travelling</h4>
+            <p id="offer2Desc">Trip protection and insurance for travel-focused users.</p>
             <a id="offer2Link" href="https://vrbo.tpo.lv/ldtO3nzY">Open →</a>
           </div>
           <div class="offer-item">
             <div class="urgency">featured partner</div>
             <h4 id="offer3Title">BitJoy eSIM</h4>
-            <p id="offer3Desc">A simple way to stay connected abroad.</p>
+            <p id="offer3Desc">Digital service for connectivity and global travel support.</p>
             <a id="offer3Link" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806">Open →</a>
           </div>
         </div>
@@ -978,8 +957,8 @@
         label: "Just watch",
         modeBoxTitle: "Discover more with every video",
         intentMessage: "Browse popular travel clips, then jump into the offers that match what you like.",
-        feedStateText: "Short travel clips that lead to flights, stays, tickets, and destination offers.",
-        whyNowTitle: "Fresh travel inspiration",
+        feedStateText: "Short-form discovery that can lead into travel, finance, insurance, and service offers.",
+        whyNowTitle: "Fresh mixed-category inspiration",
         whyNowText: "Watch what’s trending now, then move into flights, stays, tickets, or luxury offers when you’re ready.",
         nextReactionTitle: "More destinations and experiences",
         nextReactionText: "The feed keeps moving so you can quickly discover the next trip idea.",
@@ -1022,107 +1001,121 @@
 
     const baseVideoPools = {
       global: [
-        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "Popular travel clips and destination inspiration.", monetizationKey: "global" },
-        { id: "M7lc1UVf-VE", title: "Global Discovery", desc: "A rotating travel feed for broad discovery.", monetizationKey: "global" },
-        { id: "ysz5S6PUM-U", title: "Global Discovery", desc: "Quick inspiration for your next trip.", monetizationKey: "global" }
+        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "Popular discovery clips across travel, finance, insurance, and services.", monetizationKey: "global" },
+        { id: "M7lc1UVf-VE", title: "Global Discovery", desc: "A rotating feed for broad discovery across categories.", monetizationKey: "global" }
       ],
-      paris: [
-        { id: "ysz5S6PUM-U", title: "Paris Discovery", desc: "City energy, attractions, and iconic landmarks.", monetizationKey: "tickets" },
-        { id: "ScMzIvxBSi4", title: "Paris Discovery", desc: "A Paris-style clip built for attractions and city stays.", monetizationKey: "tickets" }
+      travel: [
+        { id: "ysz5S6PUM-U", title: "Travel Discovery", desc: "Destinations, flights, stays, and experiences.", monetizationKey: "travel" },
+        { id: "ScMzIvxBSi4", title: "Travel Discovery", desc: "Travel inspiration with high-intent offers.", monetizationKey: "travel" }
       ],
-      safari: [
-        { id: "M7lc1UVf-VE", title: "Safari Discovery", desc: "Wildlife, premium escapes, and Africa planning.", monetizationKey: "safari" },
-        { id: "ScMzIvxBSi4", title: "Safari Discovery", desc: "Premium safari ideas and higher-end travel inspiration.", monetizationKey: "safari" }
+      finance: [
+        { id: "M7lc1UVf-VE", title: "Finance Discovery", desc: "Platforms, money tools, and smart finance services.", monetizationKey: "finance" },
+        { id: "ScMzIvxBSi4", title: "Finance Discovery", desc: "Finance-focused discovery matched with partner offers.", monetizationKey: "finance" }
       ],
-      flights: [
-        { id: "ScMzIvxBSi4", title: "Flight Discovery", desc: "Trip planning, routes, and airfare discovery.", monetizationKey: "flights" },
-        { id: "M7lc1UVf-VE", title: "Flight Discovery", desc: "Flight-led inspiration for people ready to plan.", monetizationKey: "flights" }
+      insurance: [
+        { id: "ScMzIvxBSi4", title: "Insurance Discovery", desc: "Protection, coverage, and safety-focused offers.", monetizationKey: "insurance" },
+        { id: "M7lc1UVf-VE", title: "Insurance Discovery", desc: "Travel and visitor protection ideas.", monetizationKey: "insurance" }
       ],
-      tickets: [
-        { id: "ysz5S6PUM-U", title: "Ticket Discovery", desc: "Attractions, museums, and city experiences.", monetizationKey: "tickets" },
-        { id: "ScMzIvxBSi4", title: "Ticket Discovery", desc: "Bookable city moments and destination activities.", monetizationKey: "tickets" }
+      services: [
+        { id: "ysz5S6PUM-U", title: "Services Discovery", desc: "Useful online services, connectivity, and software offers.", monetizationKey: "services" },
+        { id: "ScMzIvxBSi4", title: "Services Discovery", desc: "Digital services that fit a broad online audience.", monetizationKey: "services" }
       ],
-      spain: [
-        { id: "M7lc1UVf-VE", title: "Spain Discovery", desc: "Spain routes, cities, and regional travel inspiration.", monetizationKey: "spain" },
-        { id: "ysz5S6PUM-U", title: "Spain Discovery", desc: "Spain-focused discovery for your next European trip.", monetizationKey: "spain" }
+      partners: [
+        { id: "M7lc1UVf-VE", title: "Partner Discovery", desc: "Featured partner brands across categories.", monetizationKey: "partners" },
+        { id: "ScMzIvxBSi4", title: "Partner Discovery", desc: "Highlighted affiliate opportunities and offers.", monetizationKey: "partners" }
       ]
     };
 
     const monetizationByKey = {
       global: {
         urgency: "featured",
-        mainTitle: "Global Discovery Bundle",
-        mainDesc: "Experiences, flights, stays, and support matched to popular travel discovery.",
-        mainHref: "https://klook.tpo.lv/fTRPLj2l",
-        offer1Title: "Flights via Kiwi",
-        offer1Desc: "Search routes and travel dates quickly.",
-        offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer2Title: "Vrbo stays",
-        offer2Desc: "Vacation rentals and homes that fit destination planning.",
-        offer2Href: "https://vrbo.tpo.lv/ldtO3nzY",
-        offer3Title: "BitJoy eSIM",
-        offer3Desc: "A simple way to stay connected abroad.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806"
+        mainTitle: "SignalBoost Featured Offer",
+        mainDesc: "Travel, finance, insurance, and services matched to what users are exploring.",
+        mainHref: "https://airalo.tpo.lv/eXjKLiuw",
+        offer1Title: "ZuluTrade",
+        offer1Desc: "Finance platform for users interested in markets and trading.",
+        offer1Href: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
+        offer2Title: "EKTA Travelling",
+        offer2Desc: "Trip protection and insurance for travel-focused users.",
+        offer2Href: "https://ektatraveling.tpo.lv/",
+        offer3Title: "Airalo",
+        offer3Desc: "Digital service for connectivity and global travel support.",
+        offer3Href: "https://airalo.tpo.lv/eXjKLiuw"
       },
-      safari: {
-        urgency: "premium",
-        mainTitle: "Safari & Africa Planning",
-        mainDesc: "Premium safari planning, higher-end travel, and luxury stay pathways.",
-        mainHref: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
-        offer1Title: "Flights via Kiwi",
-        offer1Desc: "Pair safari plans with long-haul route discovery.",
-        offer1Href: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer2Title: "Vrbo stays",
-        offer2Desc: "Upscale vacation-home stays for premium destination travel.",
-        offer2Href: "https://vrbo.tpo.lv/ldtO3nzY",
-        offer3Title: "BitJoy eSIM",
-        offer3Desc: "Stay connected on international travel.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806"
-      },
-      flights: {
-        urgency: "trip-ready",
-        mainTitle: "Flight Discovery & Routes",
-        mainDesc: "Compare flights, plan trips, and move into booking faster.",
+      travel: {
+        urgency: "travel",
+        mainTitle: "Travel Discovery Bundle",
+        mainDesc: "Flights, stays, tickets, and travel support matched to destination interest.",
         mainHref: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer1Title: "Vrbo stays",
-        offer1Desc: "Add vacation rentals and home stays to your trip planning.",
+        offer1Title: "Vrbo",
+        offer1Desc: "Vacation rentals and homes for destination planning.",
         offer1Href: "https://vrbo.tpo.lv/ldtO3nzY",
-        offer2Title: "Deals via Lastminute SE",
-        offer2Desc: "Package deals and travel booking options.",
-        offer2Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-        offer3Title: "Travel support via AirHelp",
-        offer3Desc: "Extra help for delays and cancellations.",
-        offer3Href: "https://airhelp.tpo.lv/grL9Ojju"
+        offer2Title: "Tiqets",
+        offer2Desc: "Attractions and city experiences.",
+        offer2Href: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+        offer3Title: "Go2Africa",
+        offer3Desc: "Premium safari planning and high-ticket journeys.",
+        offer3Href: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806"
       },
-      tickets: {
-        urgency: "limited availability",
-        mainTitle: "Attractions & Tickets",
-        mainDesc: "Popular city attractions, stay options, and experience tickets.",
-        mainHref: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-        offer1Title: "Vrbo stays",
-        offer1Desc: "Vacation rentals that pair well with city attraction plans.",
-        offer1Href: "https://vrbo.tpo.lv/ldtO3nzY",
-        offer2Title: "Tiqets FR",
-        offer2Desc: "France-facing attraction and museum tickets.",
-        offer2Href: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-        offer3Title: "Tiqets IT",
-        offer3Desc: "Italy-facing attractions and city passes.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806"
+      finance: {
+        urgency: "finance",
+        mainTitle: "Finance Platform Highlight",
+        mainDesc: "Finance discovery, trading access, and smart money-focused services.",
+        mainHref: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
+        offer1Title: "ZuluTrade",
+        offer1Desc: "Copy-trading and finance platform.",
+        offer1Href: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
+        offer2Title: "Smart Services",
+        offer2Desc: "Cross-category services that pair well with finance traffic.",
+        offer2Href: "https://airalo.tpo.lv/eXjKLiuw",
+        offer3Title: "Useful Tools",
+        offer3Desc: "Digital offers for business-minded users.",
+        offer3Href: "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"
       },
-      spain: {
-        urgency: "regional",
-        mainTitle: "Spain-Focused Planning",
-        mainDesc: "Regional discovery for Spain routes, cities, stays, and related offers.",
-        mainHref: "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
-        offer1Title: "Vrbo stays",
-        offer1Desc: "Find vacation rentals and home stays for Spain trips.",
-        offer1Href: "https://vrbo.tpo.lv/ldtO3nzY",
-        offer2Title: "Flights via Kiwi",
-        offer2Desc: "Look for Spain-bound route options.",
-        offer2Href: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer3Title: "Lastminute SE",
-        offer3Desc: "Add deal-focused options to regional planning.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806"
+      insurance: {
+        urgency: "protection",
+        mainTitle: "Insurance & Protection",
+        mainDesc: "Trip coverage, visitor insurance, and protection-focused offers.",
+        mainHref: "https://ektatraveling.tpo.lv/",
+        offer1Title: "VisitorsCoverage",
+        offer1Desc: "Insurance options for international users.",
+        offer1Href: "https://visitorscoverage.tpo.lv/",
+        offer2Title: "Insubuy",
+        offer2Desc: "Visitor and travel insurance options.",
+        offer2Href: "https://insubuy.tpo.lv/",
+        offer3Title: "EKTA Travelling",
+        offer3Desc: "Simple travel protection offer.",
+        offer3Href: "https://ektatraveling.tpo.lv/"
+      },
+      services: {
+        urgency: "services",
+        mainTitle: "Useful Online Services",
+        mainDesc: "Connectivity, software, and digital services that expand SignalBoost beyond travel.",
+        mainHref: "https://airalo.tpo.lv/eXjKLiuw",
+        offer1Title: "Airalo",
+        offer1Desc: "eSIM service for global connectivity.",
+        offer1Href: "https://airalo.tpo.lv/eXjKLiuw",
+        offer2Title: "BitJoy eSIM",
+        offer2Desc: "Simple connectivity service for travelers.",
+        offer2Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
+        offer3Title: "PearlMountain",
+        offer3Desc: "Creative and utility software.",
+        offer3Href: "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"
+      },
+      partners: {
+        urgency: "partners",
+        mainTitle: "Featured Partners",
+        mainDesc: "A broader set of travel, finance, insurance, and services partners.",
+        mainHref: "https://kiwi.tpo.lv/qKPZ1inz",
+        offer1Title: "ZuluTrade",
+        offer1Desc: "Finance partner.",
+        offer1Href: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
+        offer2Title: "EKTA Travelling",
+        offer2Desc: "Insurance partner.",
+        offer2Href: "https://ektatraveling.tpo.lv/",
+        offer3Title: "Airalo",
+        offer3Desc: "Service partner.",
+        offer3Href: "https://airalo.tpo.lv/eXjKLiuw"
       }
     };
 
@@ -1254,9 +1247,9 @@
 
       const categoryMap = {
         watch: "global",
-        trip: "flights",
-        tickets: "tickets",
-        luxury: "safari"
+        trip: "travel",
+        tickets: "insurance",
+        luxury: "services"
       };
       const activeCategory = categoryMap[mode] || "global";
       const button = [...document.querySelectorAll(".category-row .mode-chip")]
