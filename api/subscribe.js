@@ -1,21 +1,15 @@
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  console.log("RAW BODY:", req.body);
-
   let email = "";
 
   try {
     email = (req.body && req.body.email ? req.body.email : "").trim();
-  } catch (e) {
-    console.log("BODY ERROR:", e);
-  }
-
-  console.log("EMAIL RECEIVED:", email);
+  } catch (e) {}
 
   if (!email) {
     return res.status(400).json({ error: "Email is empty" });
@@ -55,10 +49,9 @@ export default async function handler(req, res) {
       message: "Subscribed successfully",
     });
   } catch (err) {
-    console.error("SERVER ERROR:", err);
     return res.status(500).json({
       error: "Server error",
       detail: err.message,
     });
   }
-}
+};
