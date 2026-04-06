@@ -5,11 +5,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  let email = "";
-
-  try {
-    email = (req.body && req.body.email ? req.body.email : "").trim();
-  } catch (e) {}
+  const email = (req.body && req.body.email ? req.body.email : "").trim();
 
   if (!email) {
     return res.status(400).json({ error: "Email is empty" });
