@@ -1,11 +1,11 @@
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   res.setHeader("Content-Type", "application/json");
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const email = (req.body && req.body.email ? req.body.email : "").trim();
+  const email = (req.body?.email || "").trim();
 
   if (!email) {
     return res.status(400).json({ error: "Email is empty" });
@@ -36,18 +36,12 @@ module.exports = async (req, res) => {
     if (!response.ok) {
       return res.status(response.status).json({
         error: data.title || "Mailchimp error",
-        detail: data.detail || "Subscription failed",
+        detail: data.detail,
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Subscribed successfully",
-    });
+    return res.status(200).json({ success: true });
   } catch (err) {
-    return res.status(500).json({
-      error: "Server error",
-      detail: err.message,
-    });
+    return res.status(500).json({ error: "Server error" });
   }
-};
+}
