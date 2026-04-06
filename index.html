@@ -59,7 +59,7 @@
       right: 0;
       min-height: var(--topbar-h);
       display: grid;
-      grid-template-columns: minmax(220px, 1.35fr) auto auto;
+      grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(120px, 1fr)) auto;
       gap: 12px;
       align-items: center;
       padding: 12px 16px;
@@ -81,8 +81,9 @@
     .metric { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; text-align: center; box-shadow: var(--shadow); }
     .metric-label { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
     .metric-value { font-size: 1.05rem; font-weight: 700; }
-    #admin-metrics { display: none; gap: 12px; grid-template-columns: repeat(4, minmax(120px, 1fr)); }
     .theme-toggle { border: 1px solid var(--border); background: var(--card); color: var(--text); width: 44px; height: 44px; border-radius: 999px; cursor: pointer; box-shadow: var(--shadow); }
+    #dashboard-metrics { display: none; }
+    body.admin-view #dashboard-metrics { display: contents; }
 
     .layout {
       display: grid;
@@ -112,12 +113,12 @@
     .partner h3 { margin: 0 0 10px; font-size: 1rem; }
     .partner iframe { display: block; width: 100%; min-height: 200px; border: 0; border-radius: 10px; background: #000; }
 
-    .cta, .mall-card button, .panel-button, #subscribe-form button {
+    .cta, .mall-card button, .panel-button, .subscribe-box button {
       display: inline-flex; align-items: center; justify-content: center; margin-top: 12px; padding: 10px 14px;
       background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; border: none; cursor: pointer;
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
-    .cta:hover, .mall-card button:hover, .panel-button:hover, #subscribe-form button:hover { transform: translateY(-1px); opacity: 0.92; }
+    .cta:hover, .mall-card button:hover, .panel-button:hover, .subscribe-box button:hover { transform: translateY(-1px); opacity: 0.92; }
 
     .tiktok-feed {
       position: relative; overflow-y: auto; scroll-snap-type: y mandatory;
@@ -131,32 +132,15 @@
       align-items: center; justify-content: center; gap: 14px; padding: 24px; scroll-snap-align: start; border-bottom: 1px solid var(--border);
     }
 
-    .video-wrap, .embed-wrap {
+    .video-wrap, .embed-wrap, .reddit-wrap {
       position: relative; width: min(100%, 700px); aspect-ratio: 9 / 16; max-height: 75vh; background: #000;
       border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.45);
     }
-    .video-wrap::after, .embed-wrap::after {
+    .video-wrap::after, .embed-wrap::after, .reddit-wrap::after {
       content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.28)); pointer-events: none;
     }
-    .video-wrap video, .embed-wrap iframe, .embed-wrap blockquote {
+    .video-wrap video, .embed-wrap iframe, .reddit-wrap blockquote {
       width: 100%; height: 100%; display: block; border: 0; object-fit: cover; background: #000;
-    }
-    .embed-wrap blockquote { margin: 0 !important; }
-    .reddit-shell {
-      width: min(100%, 700px);
-      min-height: 480px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.32);
-      padding: 8px;
-    }
-    .reddit-shell blockquote {
-      width: 100%;
-      min-height: 440px;
-      border: 0;
-      margin: 0;
     }
 
     .feed-progress-dots { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 9; pointer-events: none; }
@@ -177,6 +161,30 @@
     .mall-card:hover { transform: translateY(-4px); }
     .mall-card h2 { margin: 0 0 10px; font-size: 1rem; }
     .mall-card p { margin: 0; color: var(--muted); font-size: 0.9rem; min-height: 2.6em; }
+
+    .subscribe-box {
+      width: min(100%, 700px);
+      margin: 24px auto;
+      padding: 28px;
+      background: var(--card);
+      color: var(--text);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .subscribe-box h2 { margin: 0 0 10px; font-size: 1.8em; }
+    .subscribe-box p { margin: 0 0 20px; font-size: 1.05em; color: var(--muted); }
+    .subscribe-box form { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .subscribe-box input {
+      flex: 1 1 260px;
+      min-width: 220px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+    }
 
     .gear-toggle {
       position: fixed; right: 16px; bottom: 18px; width: 48px; height: 48px; border-radius: 999px; border: 1px solid var(--border);
@@ -208,26 +216,9 @@
     #metrics-panel .metric { margin-bottom: 8px; text-align: left; padding: 8px 10px; }
     #metrics-panel .metric:last-child { margin-bottom: 0; }
 
-    .sb-modal {
-      display: none; position: fixed; inset: 0; z-index: 2100; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; padding: 16px;
-    }
-    .sb-modal.visible { display: flex; }
-    .sb-modal-content {
-      position: relative; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 14px;
-      padding: 22px; max-width: 420px; width: 100%; text-align: center; box-shadow: var(--shadow);
-    }
-    .sb-modal-content h2 { margin: 0 0 10px; }
-    .sb-modal-content p { color: var(--muted); line-height: 1.5; }
-    .sb-close { position: absolute; top: 10px; right: 10px; border: 0; background: transparent; color: var(--text); font-size: 24px; cursor: pointer; }
-    #subscribe-form { margin-top: 14px; }
-    #subscribe-form input {
-      width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);
-    }
-    #subscribe-message { margin-top: 12px; color: var(--accent-2); font-weight: 700; }
-
     @media (max-width: 1380px) {
-      .dashboard { grid-template-columns: minmax(220px, 1.4fr) auto auto; }
-      .theme-toggle { justify-self: end; }
+      .dashboard { grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(100px, 1fr)); }
+      .theme-toggle { grid-column: 1 / -1; justify-self: end; }
       .layout { grid-template-columns: 220px 1fr 1.6fr 1fr; }
       .subdirectory { display: none; }
       body.nav-mode-hidden .subdirectory { display: none; }
@@ -235,11 +226,11 @@
     @media (max-width: 1024px) {
       .dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .brand { grid-column: 1 / -1; }
-      #admin-metrics { grid-column: 1 / -1; }
+      .theme-toggle { grid-column: auto; }
       .layout { grid-template-columns: 1fr; }
       .directory, .yt-cards, .subdirectory, .tiktok-feed { min-height: auto; max-height: none; }
       .card { min-height: auto; padding: 20px; }
-      .video-wrap, .embed-wrap, .reddit-shell { width: 100%; max-height: none; }
+      .video-wrap, .embed-wrap, .reddit-wrap { width: 100%; max-height: none; }
       .subdirectory { display: block; }
       body.nav-mode-hidden .directory, body.nav-mode-hidden .yt-cards, body.nav-mode-hidden .subdirectory { display: none; }
     }
@@ -249,7 +240,8 @@
       .panel-inner { padding: 12px; }
       .partner iframe { min-height: 180px; }
       #metrics-panel { top: auto; bottom: 136px; right: 16px; left: 16px; min-width: 0; }
-      #admin-metrics { grid-template-columns: 1fr 1fr; }
+      .subscribe-box form { flex-direction: column; }
+      .subscribe-box input, .subscribe-box button { width: 100%; }
     }
   </style>
 </head>
@@ -262,14 +254,12 @@
         <p>Unified video feed + affiliate storefront</p>
       </div>
     </div>
-
-    <div id="admin-metrics">
+    <div id="dashboard-metrics">
       <div class="metric"><span class="metric-label">Views</span><span class="metric-value" id="views">0</span></div>
       <div class="metric"><span class="metric-label">Clicks</span><span class="metric-value" id="clicks">0</span></div>
       <div class="metric"><span class="metric-label">Revenue</span><span class="metric-value">$<span id="revenue">0.00</span></span></div>
       <div class="metric"><span class="metric-label">Conversion</span><span class="metric-value" id="conversion">0.00%</span></div>
     </div>
-
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">🌙</button>
   </div>
 
@@ -280,12 +270,10 @@
 
     <main class="tiktok-feed" id="feed" aria-label="Featured short video feed">
       <section class="card feed-card" data-card-type="video"><div class="video-wrap"><video class="promo-video" playsinline muted preload="metadata" controls><source src="promo1.mp4" type="video/mp4" />Your browser does not support HTML5 video.</video></div><div class="card-copy"><h3>Promo Reel</h3><p>This merges your direct MP4 block into the live feed. If <code>promo1.mp4</code> is not uploaded yet, the rest of the page still loads safely.</p></div><div class="video-fallback">Upload <code>promo1.mp4</code> in the same folder later if you want this card active.</div></section>
-
       <section class="card feed-card" data-card-type="youtube"><div class="embed-wrap"><iframe class="lazy-youtube" title="Featured YouTube video" loading="lazy" data-src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><div class="card-copy"><h3>YouTube Short Card</h3><p>This keeps your lazy YouTube logic but only loads the embed when the card enters view.</p></div></section>
-
-      <section class="card feed-card" data-card-type="reddit"><div class="reddit-shell"><blockquote class="reddit-embed-bq lazy-reddit" data-embed-theme="dark" data-embed-height="520" data-embed-showmedia="true" data-embed-showedits="false" data-embed-created="2026-04-06T00:00:00.000Z" data-embed-src="https://www.reddit.com/r/videos/comments/abc123/my_video_title/"><a href="https://www.reddit.com/r/videos/comments/abc123/my_video_title/" target="_blank" rel="noopener noreferrer">View this Reddit post</a></blockquote></div><div class="card-copy"><h3>Reddit Embed Card</h3><p>Replace the sample Reddit URL in <code>redditPosts</code> with your real Reddit post links and the feed will render them automatically.</p></div></section>
-
+      <section class="card feed-card" data-card-type="reddit"><div class="reddit-wrap"><blockquote class="reddit-embed-bq lazy-reddit" data-embed-theme="dark" data-embed-height="400" data-embed-width="600" data-embed-showmedia="true" data-embed-src="https://www.reddit.com/r/videos/comments/abc123/my_video_title/"><a href="https://www.reddit.com/r/videos/comments/abc123/my_video_title/">View on Reddit</a></blockquote></div><div class="card-copy"><h3>Reddit Embed Card</h3><p>This replaces the TikTok card with a Reddit embed card. Swap the Reddit URL in <code>data-embed-src</code> whenever you want a different Reddit post.</p></div></section>
       <section class="card feed-card" data-card-type="mall"><div class="mall-grid-wrap"><div class="mall-grid-head"><div class="card-copy"><h3>Affiliate Mall</h3><p>This card merges your partner JSON into a single storefront grid with safe outbound links.</p></div></div><section class="mall-grid" id="mall-grid"></section><div class="mall-note">Logos were not merged because the uploaded file used internal placeholder IDs instead of real image URLs. The grid still deploys cleanly.</div></div></section>
+      <section class="card"><div class="subscribe-box"><h2>Stay in the Loop</h2><p>Get weekly drops of trending Reddit &amp; YouTube reviews plus exclusive deals from SignalBoostAi.</p><form id="inline-subscribe-form"><input type="email" id="inline-email-input" placeholder="Enter your email" required /><button type="submit">Subscribe</button></form><p id="inline-subscribe-message" style="display:none; margin-top: 12px; color: var(--accent-2); font-weight: 700;"></p></div></section>
       <div class="feed-progress-dots" id="progress-dots" aria-hidden="true"></div>
       <div class="feed-progress-bar" id="progress-bar" aria-hidden="true"><span></span></div>
     </main>
@@ -299,8 +287,6 @@
 
   <button id="gear-toggle" class="gear-toggle" aria-label="Open preferences">⚙️</button>
   <div id="ui-preference" class="ui-preference" aria-label="Display preferences"><div class="pref-header"><h4>Display Preferences</h4><button type="button" id="pref-close" class="pref-close" aria-label="Close preferences">✖</button></div><div class="pref-group"><strong>Progress Indicator</strong><div class="radio-row"><label><input type="radio" name="indicatorMode" value="dots"> Dots</label><label><input type="radio" name="indicatorMode" value="bar"> Bar</label></div></div><div class="pref-group"><strong>Navigation Panels</strong><div class="radio-row"><label><input type="radio" name="navMode" value="always"> Always</label><label><input type="radio" name="navMode" value="auto"> Auto-fade</label><label><input type="radio" name="navMode" value="hidden"> Hidden</label></div></div></div>
-
-  <div id="email-modal" class="sb-modal" aria-hidden="true"><div class="sb-modal-content"><button id="close-modal" class="sb-close" aria-label="Close modal">&times;</button><h2>Stay in the Loop</h2><p>Get weekly drops of trending Reddit &amp; YouTube reviews plus exclusive deals from SignalBoostAi.</p><form id="subscribe-form"><input type="email" id="email-input" placeholder="Enter your email" required /><button type="submit">Subscribe</button></form><p id="subscribe-message" style="display:none;"></p></div></div>
 
   <script>
     (() => {
@@ -351,10 +337,6 @@
         { name: 'Compensair', url: 'https://compensair.tpo.lv/wxDDCITG', category: 'Travel' },
         { name: 'RadicalStorage', url: 'https://radicalstorage.tpo.lv/tna4hnly', category: 'Travel' },
         { name: 'LocalRent', url: 'https://localrent.tpo.lv/XS0CqdMP', category: 'Travel' }
-      ];
-
-      const redditPosts = window.SIGNALBOOST_REDDIT_URLS || [
-        'https://www.reddit.com/r/videos/comments/abc123/my_video_title/'
       ];
 
       const viewsEl = document.getElementById('views');
@@ -409,40 +391,6 @@
         });
         mallGrid.appendChild(fragment);
         registerClickTracking(mallGrid);
-      }
-
-      function buildDynamicRedditCards() {
-        const anchorCard = feed.querySelector('[data-card-type="reddit"]');
-        if (!anchorCard || !Array.isArray(redditPosts) || redditPosts.length <= 1) return;
-        const fragment = document.createDocumentFragment();
-        redditPosts.slice(1).forEach((url, index) => {
-          const card = document.createElement('section');
-          card.className = 'card feed-card';
-          card.dataset.cardType = 'reddit';
-          card.innerHTML = `
-            <div class="reddit-shell">
-              <blockquote class="reddit-embed-bq lazy-reddit"
-                data-embed-theme="dark"
-                data-embed-height="520"
-                data-embed-showmedia="true"
-                data-embed-showedits="false"
-                data-embed-created="2026-04-06T00:00:00.000Z"
-                data-embed-src="${url}">
-                <a href="${url}" target="_blank" rel="noopener noreferrer">View this Reddit post</a>
-              </blockquote>
-            </div>
-            <div class="card-copy">
-              <h3>Reddit Embed Card ${index + 2}</h3>
-              <p>This Reddit post was added from the dynamic <code>redditPosts</code> list.</p>
-            </div>`;
-          fragment.appendChild(card);
-        });
-        anchorCard.insertAdjacentElement('afterend', fragment.firstChild);
-        let cursor = anchorCard.nextElementSibling;
-        const extras = Array.from(fragment.childNodes);
-        extras.forEach(node => {
-          if (node) anchorCard.parentNode.insertBefore(node, anchorCard.nextSibling);
-        });
       }
 
       function applyTheme(theme) {
@@ -520,7 +468,7 @@
         document.addEventListener('keydown', (event) => {
           const cards = state.cards();
           if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-          if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+          if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
           event.preventDefault();
           if (event.key === 'ArrowDown') state.currentIndex = Math.min(state.currentIndex + 1, cards.length - 1);
           if (event.key === 'ArrowUp') state.currentIndex = Math.max(state.currentIndex - 1, 0);
@@ -564,9 +512,12 @@
               if (src && !target.getAttribute('src')) target.setAttribute('src', src);
             }
             if (target.classList.contains('lazy-reddit')) {
-              target.setAttribute('data-embed-src', target.getAttribute('data-embed-src'));
-              if (window.__redditEmbed && typeof window.__redditEmbed.init === 'function') {
-                try { window.__redditEmbed.init(); } catch (_) {}
+              const src = target.getAttribute('data-embed-src');
+              if (src) {
+                target.setAttribute('data-embed-src', src);
+                if (window.__redditEmbed && typeof window.__redditEmbed.init === 'function') {
+                  window.__redditEmbed.init();
+                }
               }
             }
             lazyObserver.unobserve(target);
@@ -575,42 +526,34 @@
         document.querySelectorAll('.lazy-youtube, .lazy-reddit').forEach(el => lazyObserver.observe(el));
       }
 
+      function initRedditScript() {
+        const redditScript = document.createElement('script');
+        redditScript.src = 'https://embed.redditmedia.com/widgets/platform.js';
+        redditScript.async = true;
+        document.body.appendChild(redditScript);
+      }
+
       function initAdminPanel() {
         const urlParams = new URLSearchParams(window.location.search);
-        const panel = document.getElementById('metrics-panel');
-        const dashboardMetrics = document.getElementById('admin-metrics');
         const isAdmin = urlParams.get('admin') === 'true';
+        const panel = document.getElementById('metrics-panel');
         if (isAdmin) {
+          document.body.classList.add('admin-view');
           if (panel) panel.style.display = 'block';
-          if (dashboardMetrics) dashboardMetrics.style.display = 'grid';
         } else {
+          document.body.classList.remove('admin-view');
           if (panel) panel.remove();
-          if (dashboardMetrics) dashboardMetrics.remove();
         }
       }
 
-      function initEmailModal() {
-        const modal = document.getElementById('email-modal');
-        const closeBtn = document.getElementById('close-modal');
-        const form = document.getElementById('subscribe-form');
-        const emailInput = document.getElementById('email-input');
-        const message = document.getElementById('subscribe-message');
-        if (!modal || !closeBtn || !form || !emailInput || !message) return;
-        const hasSubscribed = localStorage.getItem('sbSubscribed') === 'true';
-        const dismissed = sessionStorage.getItem('sbModalDismissed') === 'true';
-        if (!hasSubscribed && !dismissed) {
-          window.setTimeout(() => { modal.classList.add('visible'); modal.setAttribute('aria-hidden', 'false'); }, 3000);
-        }
-        function closeModal() {
-          modal.classList.remove('visible');
-          modal.setAttribute('aria-hidden', 'true');
-          sessionStorage.setItem('sbModalDismissed', 'true');
-        }
-        closeBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+      function initInlineSubscribe() {
+        const form = document.getElementById('inline-subscribe-form');
+        const input = document.getElementById('inline-email-input');
+        const message = document.getElementById('inline-subscribe-message');
+        if (!form || !input || !message) return;
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const email = emailInput.value.trim();
+          const email = input.value.trim();
           if (!email) return;
           message.style.display = 'block';
           message.textContent = '⏳ Submitting...';
@@ -623,8 +566,7 @@
             const data = await response.json();
             if (response.ok) {
               message.textContent = '✅ Thanks for subscribing!';
-              localStorage.setItem('sbSubscribed', 'true');
-              setTimeout(() => { closeModal(); }, 1200);
+              input.value = '';
             } else {
               message.textContent = `⚠️ ${data.detail || data.error || 'Something went wrong. Try again.'}`;
             }
@@ -635,32 +577,17 @@
         });
       }
 
-      function loadRedditScript() {
-        if (document.querySelector('script[data-sb-reddit="true"]')) return;
-        const redditScript = document.createElement('script');
-        redditScript.src = 'https://embed.redditmedia.com/widgets/platform.js';
-        redditScript.async = true;
-        redditScript.dataset.sbReddit = 'true';
-        redditScript.onload = () => {
-          if (window.__redditEmbed && typeof window.__redditEmbed.init === 'function') {
-            try { window.__redditEmbed.init(); } catch (_) {}
-          }
-        };
-        document.body.appendChild(redditScript);
-      }
-
       buildMallGrid();
-      buildDynamicRedditCards();
       registerClickTracking();
       initTheme();
       initPreferences();
       initProgressIndicators();
       initKeyboardNavigation();
       initMediaTracking();
-      loadRedditScript();
+      initRedditScript();
       initLazyEmbeds();
       initAdminPanel();
-      initEmailModal();
+      initInlineSubscribe();
       updateDashboard();
     })();
   </script>
