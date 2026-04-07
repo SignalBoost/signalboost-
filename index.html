@@ -3,11 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoostAI | Digital Shopping Mall</title>
+  <title>SignalBoostAI</title>
+  <meta
+    name="description"
+    content="SignalBoostAI — Handle your life’s errands without leaving your screen."
+  />
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1d212b;
+      --text: #f5f7fb;
+      --muted: #aeb7c7;
+      --line: rgba(255,255,255,0.08);
+      --accent: #ff6a00;
+      --accent-2: #ff8f3a;
+      --shadow: 0 12px 40px rgba(0,0,0,0.28);
+      --radius: 18px;
+      --header-h: 78px;
     }
+
+    * { box-sizing: border-box; }
 
     html {
       scroll-behavior: smooth;
@@ -16,417 +32,695 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f4f6;
-      color: #111;
-      line-height: 1.5;
+      background: linear-gradient(180deg, #0d0f14 0%, #12151c 100%);
+      color: var(--text);
     }
 
     a {
+      color: inherit;
       text-decoration: none;
     }
 
-    .container {
-      width: min(1120px, 92%);
-      margin: 0 auto;
+    img {
+      max-width: 100%;
+      display: block;
     }
 
-    .topbar {
-      background: #111;
-      color: white;
+    .site-header {
       position: sticky;
       top: 0;
       z-index: 1000;
+      height: var(--header-h);
+      backdrop-filter: blur(12px);
+      background: rgba(15,17,21,0.88);
+      border-bottom: 1px solid var(--line);
     }
 
-    .nav {
-      min-height: 70px;
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      flex-wrap: wrap;
-      padding: 10px 0;
     }
 
-    .logo {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: white;
-    }
-
-    .nav-links {
+    .brand {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
     }
 
-    .nav-links a {
-      color: #ddd;
-      font-size: 0.95rem;
-    }
-
-    .nav-links a:hover {
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: white;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 1.1rem;
+      line-height: 1.1;
+    }
+
+    .brand-copy p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      font-size: 0.92rem;
+    }
+
+    .nav-btn:hover {
+      color: white;
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 18px;
     }
 
     .hero {
-      background: linear-gradient(180deg, #111 0%, #1d1d22 100%);
-      color: white;
-      padding: 50px 0 70px;
+      margin: 16px 0 22px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border-radius: 24px;
+      box-shadow: var(--shadow);
     }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 1fr;
-      gap: 36px;
-      align-items: center;
-    }
-
-    .badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.08);
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      margin-bottom: 14px;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.2rem, 4vw, 4rem);
-      line-height: 1.05;
-      margin: 0 0 16px;
+    .hero h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      line-height: 1.02;
+      max-width: 800px;
     }
 
     .hero p {
-      color: #d7d7de;
-      font-size: 1.05rem;
-      max-width: 580px;
-      margin-bottom: 24px;
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+      font-size: 1.02rem;
+      line-height: 1.55;
     }
 
     .hero-actions {
+      margin-top: 18px;
       display: flex;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
     .btn {
-      display: inline-block;
-      padding: 12px 22px;
-      border-radius: 10px;
-      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
     }
 
     .btn-primary {
-      background: #ff6a00;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: white;
+      box-shadow: var(--shadow);
     }
 
     .btn-secondary {
-      background: rgba(255,255,255,0.08);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      border-color: var(--line);
+      color: var(--text);
     }
 
-    .hero-video {
-      background: black;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
-    }
-
-    .hero-video video {
-      width: 100%;
-      display: block;
-      height: auto;
-    }
-
-    .section {
-      padding: 72px 0;
-    }
-
-    .section-white {
-      background: white;
-    }
-
-    .section-light {
-      background: #f4f4f6;
-    }
-
-    .section-head {
-      text-align: center;
-      max-width: 760px;
-      margin: 0 auto 34px;
-    }
-
-    .section-head h2 {
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      margin: 0 0 12px;
-      color: #111;
-    }
-
-    .section-head p {
-      margin: 0;
-      color: #555;
-    }
-
-    .features {
+    .main-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
+      grid-template-columns: 280px minmax(0, 1fr) 320px;
+      gap: 18px;
+      align-items: start;
     }
 
-    .card {
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
-      padding: 26px;
-    }
-
-    .card h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #111;
-    }
-
-    .card p {
-      margin: 0;
-      color: #555;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-    }
-
-    .video-card {
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+    .panel {
+      position: sticky;
+      top: calc(var(--header-h) + 18px);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       overflow: hidden;
     }
 
-    .video-card video {
-      width: 100%;
-      display: block;
-      background: black;
+    .panel-inner {
+      padding: 16px;
     }
 
-    .video-content {
-      padding: 18px;
+    .panel h3 {
+      margin: 0 0 14px;
+      font-size: 1.02rem;
     }
 
-    .video-content h3 {
-      margin: 0 0 8px;
-      color: #111;
-    }
-
-    .video-content p {
+    .panel p {
       margin: 0;
-      color: #555;
-    }
-
-    .cta-section {
-      text-align: center;
-    }
-
-    .cta-box {
-      background: #111;
-      color: white;
-      border-radius: 24px;
-      padding: 50px 24px;
-    }
-
-    .cta-box h2 {
-      margin: 0 0 12px;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-    }
-
-    .cta-box p {
-      max-width: 700px;
-      margin: 0 auto 22px;
-      color: #ddd;
-    }
-
-    .footer {
-      background: #111;
-      color: #aaa;
-      text-align: center;
-      padding: 28px 16px;
+      color: var(--muted);
+      line-height: 1.5;
       font-size: 0.95rem;
     }
 
-    @media (max-width: 900px) {
-      .hero-grid,
-      .features,
-      .video-grid {
-        grid-template-columns: 1fr;
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .quick-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .quick-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.16);
+    }
+
+    .quick-item img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      margin: 0 auto 8px;
+    }
+
+    .quick-item span {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .feed-column {
+      min-width: 0;
+    }
+
+    .feed-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 10px 4px;
+    }
+
+    .feed-toolbar h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .feed-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    #feed {
+      display: grid;
+      gap: 16px;
+    }
+
+    .feed-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.025));
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .feed-card-header {
+      padding: 14px 16px 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .feed-card-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    .feed-card-tag {
+      flex: 0 0 auto;
+      font-size: 0.76rem;
+      color: white;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      border-radius: 999px;
+    }
+
+    .feed-card-copy {
+      padding: 0 16px 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .embed-shell {
+      position: relative;
+      width: 100%;
+      background: #090b10;
+      border-top: 1px solid var(--line);
+      min-height: 260px;
+    }
+
+    .embed-shell.ratio-16x9 {
+      aspect-ratio: 16 / 9;
+      min-height: auto;
+    }
+
+    .embed-shell.ratio-4x5 {
+      aspect-ratio: 4 / 5;
+      min-height: auto;
+    }
+
+    .embed-placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      background:
+        radial-gradient(circle at top left, rgba(255,106,0,0.12), transparent 35%),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    }
+
+    .embed-placeholder button {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .right-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .mini-card h4 {
+      margin: 0 0 8px;
+      font-size: 0.98rem;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .loader {
+      margin: 18px auto 12px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-space {
+      height: 30px;
+    }
+
+    @media (max-width: 1180px) {
+      .main-grid {
+        grid-template-columns: 240px minmax(0, 1fr);
       }
 
-      .nav {
-        justify-content: center;
+      .right-panel {
+        grid-column: 1 / -1;
+        position: static;
+      }
+
+      .right-panel .panel-inner {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .site-header {
+        height: auto;
+      }
+
+      .header-inner {
+        padding: 12px 16px;
+        height: auto;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .brand-copy p {
+        white-space: normal;
+      }
+
+      .page {
+        padding: 14px;
       }
 
       .hero {
-        padding: 36px 0 50px;
+        padding: 20px;
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        position: static;
+      }
+
+      .quick-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .quick-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero h2 {
+        font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">SB</div>
+        <div class="brand-copy">
+          <h1>SignalBoostAI</h1>
+          <p>Handle your life’s errands — without leaving your screen</p>
+        </div>
+      </div>
 
-  <header class="topbar">
-    <div class="container nav">
-      <div class="logo">SignalBoostAI</div>
-      <nav class="nav-links">
-        <a href="#about">About</a>
-        <a href="#videos">Videos</a>
-        <a href="#services">Services</a>
-        <a href="#start">Get Started</a>
+      <nav class="header-nav">
+        <a class="nav-btn" href="#feed">Feed</a>
+        <a class="nav-btn" href="#quick-access">Quick Access</a>
+        <a class="nav-btn" href="#highlights">Highlights</a>
       </nav>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="container hero-grid">
-      <div>
-        <div class="badge">Your Digital Shopping Mall</div>
-        <h1>Handle your errands virtually in one place.</h1>
-        <p>
-          SignalBoostAI connects users with trusted providers so everyday tasks
-          become faster, easier, and more reliable. Everything you need, all in
-          one digital space.
-        </p>
-        <div class="hero-actions">
-          <a href="#start" class="btn btn-primary">Get Started</a>
-          <a href="#videos" class="btn btn-secondary">Watch Videos</a>
-        </div>
+  <main class="page">
+    <section class="hero">
+      <h2>Your digital shopping mall for content, errands, discovery, and action.</h2>
+      <p>
+        SignalBoostAI brings high-intent users, trusted businesses, and social content
+        into one scrollable digital hub. Watch, explore, connect, and act from one place.
+      </p>
+      <div class="hero-actions">
+        <a href="#feed" class="btn btn-primary">Start Exploring</a>
+        <a href="#quick-access" class="btn btn-secondary">Open Quick Access</a>
       </div>
+    </section>
 
-      <div class="hero-video">
-        <video autoplay muted loop playsinline controls>
-          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-  </section>
-
-  <section id="about" class="section section-white">
-    <div class="container">
-      <div class="section-head">
-        <h2>What is SignalBoostAI?</h2>
-        <p>
-          SignalBoostAI is a digital shopping mall where people can complete
-          errands virtually, connect with trusted businesses, and save time by
-          finding the right services in one place.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="services" class="section section-light">
-    <div class="container">
-      <div class="section-head">
-        <h2>Why People Use SignalBoostAI</h2>
-        <p>
-          We make it easier for high-intent users to act quickly, confidently,
-          and conveniently.
-        </p>
-      </div>
-
-      <div class="features">
-        <div class="card">
-          <h3>One Convenient Hub</h3>
-          <p>
-            Stop jumping between platforms. Access services in one streamlined
-            digital environment.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>Trusted Partners</h3>
-          <p>
-            Connect with reliable providers and business partners you can feel
-            confident using.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>Faster Decisions</h3>
-          <p>
-            Reduce friction and get things done quickly with a simple, guided
-            experience.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="videos" class="section section-white">
-    <div class="container">
-      <div class="section-head">
-        <h2>Featured Videos</h2>
-        <p>
-          Show your audience how the platform works, build trust, and drive more
-          engagement through video.
-        </p>
-      </div>
-
-      <div class="video-grid">
-        <div class="video-card">
-          <video controls muted playsinline>
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div class="video-content">
-            <h3>How It Works</h3>
-            <p>Introduce users to the platform and show how easy it is to get started.</p>
+    <section class="main-grid">
+      <aside class="panel left-panel">
+        <div class="panel-inner">
+          <h3 id="quick-access">Quick Access</h3>
+          <div class="quick-grid">
+            <a class="quick-item" href="#"><img src="/assets/amazon.png" alt="Amazon"><span>Amazon</span></a>
+            <a class="quick-item" href="#"><img src="/assets/facebook.png" alt="Facebook"><span>Facebook</span></a>
+            <a class="quick-item" href="#"><img src="/assets/instagram.png" alt="Instagram"><span>Instagram</span></a>
+            <a class="quick-item" href="#"><img src="/assets/linkedin.png" alt="LinkedIn"><span>LinkedIn</span></a>
+            <a class="quick-item" href="#"><img src="/assets/signal.png" alt="Signal"><span>Signal</span></a>
+            <a class="quick-item" href="#"><img src="/assets/telegram.png" alt="Telegram"><span>Telegram</span></a>
+            <a class="quick-item" href="#"><img src="/assets/youtube.png" alt="YouTube"><span>YouTube</span></a>
+            <a class="quick-item" href="#"><img src="/assets/tiktok.png" alt="TikTok"><span>TikTok</span></a>
+            <a class="quick-item" href="#"><img src="/assets/reddit.png" alt="Reddit"><span>Reddit</span></a>
           </div>
         </div>
+      </aside>
 
-        <div class="video-card">
-          <video controls muted playsinline>
-            <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div class="video-content">
-            <h3>Trusted Services</h3>
-            <p>Highlight the categories and providers available through your digital mall.</p>
-          </div>
+      <section class="feed-column">
+        <div class="feed-toolbar">
+          <h3>Live Content Feed</h3>
+          <div class="feed-meta">Infinite scroll enabled</div>
         </div>
 
-        <div class="video-card">
-          <video controls muted playsinline>
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div class="video-content">
-            <h3>Customer Experience</h3>
-            <p>Use walkthroughs and real examples to encourage more traffic and action.</p>
+        <div id="feed"></div>
+        <div id="loader" class="loader">Loading more cards…</div>
+      </section>
+
+      <aside class="panel right-panel">
+        <div class="panel-inner">
+          <h3 id="highlights">Highlights</h3>
+          <div class="right-list">
+            <div class="mini-card">
+              <h4>Video-first experience</h4>
+              <p>Embeds are lazy-loaded so the page stays fast while keeping video at the center.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Sticky utility panels</h4>
+              <p>Quick Access and Highlights stay visible while the feed keeps moving.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Built for growth</h4>
+              <p>The center feed can keep appending new cards as users scroll deeper into the page.</p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </aside>
+    </section>
 
-  <section id="start" class="section section-light cta-section">
-    <div class="container">
-      <div class="cta-box">
-        <h2>Everything You Need. One Place.</h2>
-        <p>
-          SignalBoostAI brings trusted services together in one digital space so
-          users can take care of errands virtually and efficiently.
-        </p>
-        <a href="#" class="btn btn-primary">Launch Now</a>
-      </div>
-    </div>
-  </section>
+    <div class="footer-space"></div>
+  </main>
 
-  <footer class="footer">
-    © 2026 SignalBoostAI. All rights reserved.
-  </footer>
+  <script>
+    const feed = document.getElementById("feed");
+    const loader = document.getElementById("loader");
 
+    const starterCards = [
+      {
+        title: "Watch how SignalBoostAI centralizes discovery",
+        tag: "YouTube",
+        copy: "A wide-format embedded video card for platform storytelling and traffic growth.",
+        platform: "youtube",
+        embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      },
+      {
+        title: "Vertical short-form content for higher engagement",
+        tag: "TikTok",
+        copy: "Use vertical embeds to keep the page feeling social, dynamic, and mobile-friendly.",
+        platform: "tiktok",
+        embedUrl: "https://www.tiktok.com/embed/v2/7217490184957201669"
+      },
+      {
+        title: "Instagram spotlight card",
+        tag: "Instagram",
+        copy: "Use Instagram embed-friendly cards for brand, lifestyle, or promo content.",
+        platform: "instagram",
+        embedUrl: "https://www.instagram.com/p/CuE2WN5gA6W/embed"
+      },
+      {
+        title: "Service explainer video",
+        tag: "YouTube",
+        copy: "Keep educational content in the feed so users understand the platform quickly.",
+        platform: "youtube",
+        embedUrl: "https://www.youtube.com/embed/ysz5S6PUM-U"
+      },
+      {
+        title: "Short clip that feels native to the feed",
+        tag: "TikTok",
+        copy: "Short clips work well between wider videos and social-proof style cards.",
+        platform: "tiktok",
+        embedUrl: "https://www.tiktok.com/embed/v2/7296878923299882282"
+      },
+      {
+        title: "Instagram brand reel slot",
+        tag: "Instagram",
+        copy: "A clean layout block to feature lifestyle and trust-building visuals.",
+        platform: "instagram",
+        embedUrl: "https://www.instagram.com/p/CxQ1J5rL6fV/embed"
+      }
+    ];
+
+    let cardIndex = 0;
+    let loading = false;
+
+    function getRatioClass(platform) {
+      if (platform === "instagram" || platform === "tiktok") return "ratio-4x5";
+      return "ratio-16x9";
+    }
+
+    function createPlaceholder(text) {
+      const wrap = document.createElement("div");
+      wrap.className = "embed-placeholder";
+      wrap.innerHTML = `
+        <div>
+          <div>${text}</div>
+          <button type="button">Load video</button>
+        </div>
+      `;
+      return wrap;
+    }
+
+    function lazyEmbed(shell, url, title) {
+      const iframe = document.createElement("iframe");
+      iframe.loading = "lazy";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      iframe.src = url;
+      iframe.title = title;
+      shell.innerHTML = "";
+      shell.appendChild(iframe);
+    }
+
+    function buildCard(card) {
+      const article = document.createElement("article");
+      article.className = "feed-card";
+
+      const ratioClass = getRatioClass(card.platform);
+
+      article.innerHTML = `
+        <div class="feed-card-header">
+          <h4 class="feed-card-title">${card.title}</h4>
+          <span class="feed-card-tag">${card.tag}</span>
+        </div>
+        <div class="feed-card-copy">${card.copy}</div>
+        <div class="embed-shell ${ratioClass}"></div>
+      `;
+
+      const shell = article.querySelector(".embed-shell");
+      const placeholder = createPlaceholder("Click to load embedded content");
+      shell.appendChild(placeholder);
+
+      const button = placeholder.querySelector("button");
+      button.addEventListener("click", () => {
+        lazyEmbed(shell, card.embedUrl, card.title);
+      });
+
+      return article;
+    }
+
+    function appendBatch(batchSize = 3) {
+      const frag = document.createDocumentFragment();
+
+      for (let i = 0; i < batchSize; i++) {
+        const item = starterCards[cardIndex % starterCards.length];
+        frag.appendChild(buildCard(item));
+        cardIndex++;
+      }
+
+      feed.appendChild(frag);
+    }
+
+    function handleInfiniteScroll() {
+      if (loading) return;
+
+      const triggerPoint = window.innerHeight + window.scrollY;
+      const pageBottom = document.body.offsetHeight - 300;
+
+      if (triggerPoint >= pageBottom) {
+        loading = true;
+        loader.textContent = "Loading more cards…";
+
+        setTimeout(() => {
+          appendBatch(3);
+          loading = false;
+          loader.textContent = "Scroll for more";
+          observeEmbeds();
+        }, 450);
+      }
+    }
+
+    function observeEmbeds() {
+      const shells = document.querySelectorAll(".embed-shell");
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const shell = entry.target;
+          const placeholder = shell.querySelector(".embed-placeholder");
+          if (!placeholder) {
+            observer.unobserve(shell);
+            return;
+          }
+
+          placeholder.style.opacity = "1";
+          observer.unobserve(shell);
+        });
+      }, {
+        rootMargin: "200px 0px"
+      });
+
+      shells.forEach((shell) => {
+        if (!shell.dataset.observed) {
+          shell.dataset.observed = "true";
+          observer.observe(shell);
+        }
+      });
+    }
+
+    appendBatch(6);
+    observeEmbeds();
+    loader.textContent = "Scroll for more";
+    window.addEventListener("scroll", handleInfiniteScroll, { passive: true });
+  </script>
 </body>
 </html>
