@@ -1,595 +1,161 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoostAi Mall</title>
-  <style>
-    :root {
-      --bg: #050505;
-      --panel: #111111;
-      --card: #1a1a1a;
-      --card-2: #222222;
-      --text: #ffffff;
-      --muted: #b7b7b7;
-      --accent: #ff5a1f;
-      --accent-2: #00d8b6;
-      --border: rgba(255,255,255,0.08);
-      --shadow: 0 12px 40px rgba(0,0,0,0.35);
-      --radius: 14px;
-      --topbar-h: 72px;
-      --topbar-bg: rgba(16,16,16,0.92);
-      --dot: #666;
-      --dot-active: #fff;
-      --progress-bar: #ff5a1f;
-    }
-
-    html[data-theme="light"] {
-      --bg: #f6f7fb;
-      --panel: #ffffff;
-      --card: #ffffff;
-      --card-2: #f0f3f8;
-      --text: #171717;
-      --muted: #5a5a5a;
-      --border: rgba(0,0,0,0.08);
-      --shadow: 0 12px 40px rgba(0,0,0,0.08);
-      --topbar-bg: rgba(255,255,255,0.88);
-      --dot: #b3b3b3;
-      --dot-active: #171717;
-      --progress-bar: #171717;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background-color 0.25s ease, color 0.25s ease;
-    }
-    a { color: inherit; }
-    button { font: inherit; }
-
-    .dashboard {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      min-height: var(--topbar-h);
-      display: grid;
-      grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(120px, 1fr)) auto;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--topbar-bg);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      z-index: 1200;
-    }
-
-    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .brand-mark {
-      width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
-      font-weight: 700; box-shadow: var(--shadow); flex: 0 0 auto;
-    }
-    .brand-copy { min-width: 0; }
-    .brand-copy h1 { margin: 0; font-size: 1.05rem; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-copy p { margin: 2px 0 0; font-size: 0.8rem; color: var(--muted); }
-    .metric { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; text-align: center; box-shadow: var(--shadow); }
-    .metric-label { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
-    .metric-value { font-size: 1.05rem; font-weight: 700; }
-    .theme-toggle { border: 1px solid var(--border); background: var(--card); color: var(--text); width: 44px; height: 44px; border-radius: 999px; cursor: pointer; box-shadow: var(--shadow); }
-    #dashboard-metrics { display: none; }
-    body.admin-view #dashboard-metrics { display: contents; }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 240px minmax(250px, 1fr) minmax(360px, 2fr) minmax(250px, 1fr) 240px;
-      gap: 16px;
-      min-height: calc(100vh - var(--topbar-h));
-      margin-top: var(--topbar-h);
-      padding: 16px;
-    }
-
-    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow-y: auto; min-height: 0; box-shadow: var(--shadow); }
-    .panel-inner { padding: 16px; display: flex; flex-direction: column; }
-    .panel h2 { margin: 0 0 14px; font-size: 1rem; letter-spacing: 0.04em; }
-
-    details { margin-bottom: 12px; background: var(--card-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
-    summary { cursor: pointer; list-style: none; font-weight: 700; color: var(--accent); }
-    summary::-webkit-details-marker { display: none; }
-    details[open] summary { color: var(--accent-2); }
-    details ul { margin: 10px 0 0; padding-left: 18px; }
-    details li { margin-bottom: 8px; }
-
-    .nav-link { color: var(--text); text-decoration: none; }
-    .nav-link:hover { color: var(--accent); }
-    .section-title { margin: 12px 0 10px; font-size: 0.95rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-
-    .partner { background: var(--card-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; text-align: center; }
-    .partner h3 { margin: 0 0 10px; font-size: 1rem; }
-    .partner iframe { display: block; width: 100%; min-height: 200px; border: 0; border-radius: 10px; background: #000; }
-
-    .cta, .mall-card button, .panel-button, .subscribe-box button {
-      display: inline-flex; align-items: center; justify-content: center; margin-top: 12px; padding: 10px 14px;
-      background: var(--accent); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; border: none; cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-    .cta:hover, .mall-card button:hover, .panel-button:hover, .subscribe-box button:hover { transform: translateY(-1px); opacity: 0.92; }
-
-    .tiktok-feed {
-      position: relative; overflow-y: auto; scroll-snap-type: y mandatory;
-      background: linear-gradient(180deg, rgba(11,11,11,0.95), rgba(4,4,4,0.98));
-      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
-    }
-    html[data-theme="light"] .tiktok-feed { background: linear-gradient(180deg, #f7f9fd, #eef2f8); }
-
-    .card {
-      position: relative; min-height: calc(100vh - var(--topbar-h) - 32px); display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 14px; padding: 24px; scroll-snap-align: start; border-bottom: 1px solid var(--border);
-    }
-
-    .video-wrap, .embed-wrap, .reddit-wrap {
-      position: relative; width: min(100%, 700px); aspect-ratio: 9 / 16; max-height: 75vh; background: #000;
-      border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.45);
-    }
-    .video-wrap::after, .embed-wrap::after, .reddit-wrap::after {
-      content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.28)); pointer-events: none;
-    }
-    .video-wrap video, .embed-wrap iframe, .reddit-wrap blockquote {
-      width: 100%; height: 100%; display: block; border: 0; object-fit: cover; background: #000;
-    }
-
-    .feed-progress-dots { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 9; pointer-events: none; }
-    .feed-progress-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--dot); transition: background 0.25s ease, transform 0.25s ease; }
-    .feed-progress-dots span.active { background: var(--dot-active); transform: scale(1.15); }
-    .feed-progress-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,0.14); z-index: 9; display: none; }
-    .feed-progress-bar span { display: block; height: 100%; width: 0%; background: var(--progress-bar); transition: width 0.2s linear; }
-
-    .card-copy { max-width: 700px; width: 100%; text-align: left; }
-    .card-copy h3 { margin: 0 0 8px; font-size: 1.15rem; }
-    .card-copy p { margin: 0; color: var(--muted); line-height: 1.5; }
-    .video-fallback, .mall-note { margin-top: 8px; font-size: 0.85rem; color: var(--muted); text-align: center; }
-
-    .mall-grid-wrap { width: min(100%, 1100px); display: grid; gap: 16px; justify-items: stretch; }
-    .mall-grid-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .mall-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%; }
-    .mall-card { background: var(--card); color: var(--text); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); text-align: center; transition: transform 0.2s ease; }
-    .mall-card:hover { transform: translateY(-4px); }
-    .mall-card h2 { margin: 0 0 10px; font-size: 1rem; }
-    .mall-card p { margin: 0; color: var(--muted); font-size: 0.9rem; min-height: 2.6em; }
-
-    .subscribe-box {
-      width: min(100%, 700px);
-      margin: 24px auto;
-      padding: 28px;
-      background: var(--card);
-      color: var(--text);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-    .subscribe-box h2 { margin: 0 0 10px; font-size: 1.8em; }
-    .subscribe-box p { margin: 0 0 20px; font-size: 1.05em; color: var(--muted); }
-    .subscribe-box form { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-    .subscribe-box input {
-      flex: 1 1 260px;
-      min-width: 220px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--panel);
-      color: var(--text);
-    }
-
-    .gear-toggle {
-      position: fixed; right: 16px; bottom: 18px; width: 48px; height: 48px; border-radius: 999px; border: 1px solid var(--border);
-      background: var(--card); color: var(--text); box-shadow: var(--shadow); display: grid; place-items: center; font-size: 22px; cursor: pointer; z-index: 1300;
-    }
-    .ui-preference {
-      position: fixed; right: 16px; bottom: 76px; width: min(280px, calc(100vw - 32px)); background: var(--panel);
-      border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; box-shadow: var(--shadow); z-index: 1299; display: none;
-    }
-    .ui-preference.visible { display: block; }
-    .pref-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .pref-header h4 { margin: 0; }
-    .pref-close { background: transparent; border: 0; color: var(--text); cursor: pointer; font-size: 18px; }
-    .pref-group { margin: 12px 0; }
-    .pref-group strong { display: block; margin-bottom: 8px; font-size: 0.9rem; }
-    .radio-row { display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 0.9rem; }
-    .radio-row label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-
-    .nav-ghost { transition: opacity 0.25s ease; }
-    .nav-mode-hidden .directory, .nav-mode-hidden .yt-cards, .nav-mode-hidden .subdirectory { display: none; }
-    .nav-mode-hidden .layout { grid-template-columns: 1fr; }
-    .nav-mode-auto .directory, .nav-mode-auto .yt-cards, .nav-mode-auto .subdirectory { opacity: 0.82; }
-    .nav-mode-auto .directory:hover, .nav-mode-auto .yt-cards:hover, .nav-mode-auto .subdirectory:hover { opacity: 1; }
-
-    #metrics-panel {
-      display: none; position: fixed; top: 84px; right: 20px; background: var(--panel); color: var(--text); padding: 12px;
-      border-radius: 10px; z-index: 2000; box-shadow: var(--shadow); font-size: 14px; border: 1px solid var(--border); min-width: 180px;
-    }
-    #metrics-panel .metric { margin-bottom: 8px; text-align: left; padding: 8px 10px; }
-    #metrics-panel .metric:last-child { margin-bottom: 0; }
-
-    @media (max-width: 1380px) {
-      .dashboard { grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(100px, 1fr)); }
-      .theme-toggle { grid-column: 1 / -1; justify-self: end; }
-      .layout { grid-template-columns: 220px 1fr 1.6fr 1fr; }
-      .subdirectory { display: none; }
-      body.nav-mode-hidden .subdirectory { display: none; }
-    }
-    @media (max-width: 1024px) {
-      .dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .brand { grid-column: 1 / -1; }
-      .theme-toggle { grid-column: auto; }
-      .layout { grid-template-columns: 1fr; }
-      .directory, .yt-cards, .subdirectory, .tiktok-feed { min-height: auto; max-height: none; }
-      .card { min-height: auto; padding: 20px; }
-      .video-wrap, .embed-wrap, .reddit-wrap { width: 100%; max-height: none; }
-      .subdirectory { display: block; }
-      body.nav-mode-hidden .directory, body.nav-mode-hidden .yt-cards, body.nav-mode-hidden .subdirectory { display: none; }
-    }
-    @media (max-width: 640px) {
-      .dashboard { grid-template-columns: 1fr; }
-      .layout { padding: 10px; gap: 10px; }
-      .panel-inner { padding: 12px; }
-      .partner iframe { min-height: 180px; }
-      #metrics-panel { top: auto; bottom: 136px; right: 16px; left: 16px; min-width: 0; }
-      .subscribe-box form { flex-direction: column; }
-      .subscribe-box input, .subscribe-box button { width: 100%; }
-    }
-  </style>
+  <title>SignalBoostAI | Digital Shopping Mall</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="dashboard" aria-label="Site dashboard">
-    <div class="brand">
-      <div class="brand-mark">SB</div>
-      <div class="brand-copy">
-        <h1>SignalBoostAi Mall</h1>
-        <p>Unified video feed + affiliate storefront</p>
+  <header class="topbar">
+    <div class="container nav">
+      <div class="logo">SignalBoostAI</div>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#videos">Videos</a>
+        <a href="#request">Request Service</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <p class="eyebrow">Your Digital Shopping Mall</p>
+        <h1>Handle your errands virtually in one place.</h1>
+        <p class="hero-copy">
+          SignalBoostAI connects users with trusted providers so everyday tasks
+          become faster, easier, and more reliable.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#request">Get Started</a>
+          <a class="btn btn-secondary" href="#videos">Watch Videos</a>
+        </div>
+      </div>
+
+      <div class="hero-video">
+        <video autoplay muted loop playsinline controls poster="">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
-    <div id="dashboard-metrics">
-      <div class="metric"><span class="metric-label">Views</span><span class="metric-value" id="views">0</span></div>
-      <div class="metric"><span class="metric-label">Clicks</span><span class="metric-value" id="clicks">0</span></div>
-      <div class="metric"><span class="metric-label">Revenue</span><span class="metric-value">$<span id="revenue">0.00</span></span></div>
-      <div class="metric"><span class="metric-label">Conversion</span><span class="metric-value" id="conversion">0.00%</span></div>
+  </section>
+
+  <section id="about" class="section light">
+    <div class="container narrow">
+      <h2>What is SignalBoostAI?</h2>
+      <p>
+        SignalBoostAI is a digital shopping mall where users can access trusted
+        services, complete errands virtually, and save time by finding what they
+        need in one convenient place.
+      </p>
     </div>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">🌙</button>
-  </div>
+  </section>
 
-  <div class="layout">
-    <aside class="panel directory nav-ghost" aria-label="Directory panel"><div class="panel-inner"><h2>DIRECTORY</h2><details open><summary>✈️ Travel Mall</summary><ul><li><a class="nav-link" href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener noreferrer">Airalo eSIM</a></li><li><a class="nav-link" href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" rel="noopener noreferrer">Busbud</a></li><li><a class="nav-link" href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener noreferrer">Big Bus Tours</a></li><li><a class="nav-link" href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" rel="noopener noreferrer">HolidayTaxis</a></li></ul></details><details><summary>🛡️ Insurance Mall</summary><ul><li><a class="nav-link" href="https://visitorscoverage.com" target="_blank" rel="noopener noreferrer">VisitorsCoverage</a></li><li><a class="nav-link" href="https://safetywing.com" target="_blank" rel="noopener noreferrer">SafetyWing</a></li><li><a class="nav-link" href="https://allianztravelinsurance.com" target="_blank" rel="noopener noreferrer">Allianz Travel</a></li></ul></details><details><summary>💳 Finance Mall</summary><ul><li><a class="nav-link" href="https://paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a></li><li><a class="nav-link" href="https://stripe.com" target="_blank" rel="noopener noreferrer">Stripe</a></li><li><a class="nav-link" href="https://wise.com" target="_blank" rel="noopener noreferrer">Wise</a></li><li><a class="nav-link" href="https://robinhood.com" target="_blank" rel="noopener noreferrer">Robinhood</a></li></ul></details><details><summary>⚙️ Services Mall</summary><ul><li><a class="nav-link" href="https://slack.com" target="_blank" rel="noopener noreferrer">Slack</a></li><li><a class="nav-link" href="https://openai.com" target="_blank" rel="noopener noreferrer">OpenAI</a></li><li><a class="nav-link" href="https://zoom.us" target="_blank" rel="noopener noreferrer">Zoom</a></li><li><a class="nav-link" href="https://notion.so" target="_blank" rel="noopener noreferrer">Notion</a></li></ul></details></div></aside>
+  <section id="videos" class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Featured Videos</h2>
+        <p>Use video to build trust, explain your service, and attract more traffic.</p>
+      </div>
 
-    <aside class="panel yt-cards nav-ghost" aria-label="Partner cards left"><div class="panel-inner"><h2>PARTNERS</h2><div class="section-title">Travel Mall</div><div class="partner"><h3>Airalo</h3><iframe src="https://www.youtube-nocookie.com/embed/3JZ_D3ELwOQ" title="Airalo video" allowfullscreen loading="lazy"></iframe><a href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener noreferrer" class="cta">Get eSIM</a></div><div class="partner"><h3>Busbud</h3><iframe src="https://www.youtube-nocookie.com/embed/L_jWHffIx5E" title="Busbud travel video" allowfullscreen loading="lazy"></iframe><a href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" rel="noopener noreferrer" class="cta">Book Trips</a></div><div class="partner"><h3>HolidayTaxis</h3><iframe src="https://www.youtube-nocookie.com/embed/9bZkp7q19f0" title="HolidayTaxis video" allowfullscreen loading="lazy"></iframe><a href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" rel="noopener noreferrer" class="cta">Airport Transfer</a></div></div></aside>
+      <div class="video-grid">
+        <div class="card video-card">
+          <video controls muted playsinline>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+          </video>
+          <div class="card-body">
+            <h3>How It Works</h3>
+            <p>Show users how your digital mall helps them get things done faster.</p>
+          </div>
+        </div>
 
-    <main class="tiktok-feed" id="feed" aria-label="Featured short video feed">
-      <section class="card feed-card" data-card-type="video"><div class="video-wrap"><video class="promo-video" playsinline muted preload="metadata" controls><source src="promo1.mp4" type="video/mp4" />Your browser does not support HTML5 video.</video></div><div class="card-copy"><h3>Promo Reel</h3><p>This merges your direct MP4 block into the live feed. If <code>promo1.mp4</code> is not uploaded yet, the rest of the page still loads safely.</p></div><div class="video-fallback">Upload <code>promo1.mp4</code> in the same folder later if you want this card active.</div></section>
-      <section class="card feed-card" data-card-type="youtube"><div class="embed-wrap"><iframe class="lazy-youtube" title="Featured YouTube video" loading="lazy" data-src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><div class="card-copy"><h3>YouTube Short Card</h3><p>This keeps your lazy YouTube logic but only loads the embed when the card enters view.</p></div></section>
-      <section class="card feed-card" data-card-type="reddit"><div class="reddit-wrap"><blockquote class="reddit-embed-bq lazy-reddit" data-embed-theme="dark" data-embed-height="400" data-embed-width="600" data-embed-showmedia="true" data-embed-src="https://www.reddit.com/r/videos/comments/abc123/my_video_title/"><a href="https://www.reddit.com/r/videos/comments/abc123/my_video_title/">View on Reddit</a></blockquote></div><div class="card-copy"><h3>Reddit Embed Card</h3><p>This replaces the TikTok card with a Reddit embed card. Swap the Reddit URL in <code>data-embed-src</code> whenever you want a different Reddit post.</p></div></section>
-      <section class="card feed-card" data-card-type="mall"><div class="mall-grid-wrap"><div class="mall-grid-head"><div class="card-copy"><h3>Affiliate Mall</h3><p>This card merges your partner JSON into a single storefront grid with safe outbound links.</p></div></div><section class="mall-grid" id="mall-grid"></section><div class="mall-note">Logos were not merged because the uploaded file used internal placeholder IDs instead of real image URLs. The grid still deploys cleanly.</div></div></section>
-      <section class="card"><div class="subscribe-box"><h2>Stay in the Loop</h2><p>Get weekly drops of trending Reddit &amp; YouTube reviews plus exclusive deals from SignalBoostAi.</p><form id="inline-subscribe-form"><input type="email" id="inline-email-input" placeholder="Enter your email" required /><button type="submit">Subscribe</button></form><p id="inline-subscribe-message" style="display:none; margin-top: 12px; color: var(--accent-2); font-weight: 700;"></p></div></section>
-      <div class="feed-progress-dots" id="progress-dots" aria-hidden="true"></div>
-      <div class="feed-progress-bar" id="progress-bar" aria-hidden="true"><span></span></div>
-    </main>
+        <div class="card video-card">
+          <video controls muted playsinline>
+            <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4" />
+          </video>
+          <div class="card-body">
+            <h3>Trusted Providers</h3>
+            <p>Highlight the businesses and services users can access in one place.</p>
+          </div>
+        </div>
 
-    <aside class="panel yt-cards nav-ghost" aria-label="Partner cards right"><div class="panel-inner"><h2>MORE PARTNERS</h2><div class="section-title">Insurance Mall</div><div class="partner"><h3>VisitorsCoverage</h3><iframe src="https://www.youtube-nocookie.com/embed/Zi_XLOBDo_Y" title="VisitorsCoverage video" allowfullscreen loading="lazy"></iframe><a href="https://visitorscoverage.com" target="_blank" rel="noopener noreferrer" class="cta">Buy Insurance</a></div><div class="partner"><h3>SafetyWing</h3><iframe src="https://www.youtube-nocookie.com/embed/ScMzIvxBSi4" title="SafetyWing video" allowfullscreen loading="lazy"></iframe><a href="https://safetywing.com" target="_blank" rel="noopener noreferrer" class="cta">Global Health</a></div><div class="section-title">Travel Tools</div><div class="partner"><h3>BigBusTours</h3><iframe src="https://www.youtube-nocookie.com/embed/5NV6Rdv1a3I" title="BigBusTours video" allowfullscreen loading="lazy"></iframe><a href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener noreferrer" class="cta">Explore Cities</a></div><div class="partner"><h3>GoCity</h3><iframe src="https://www.youtube-nocookie.com/embed/2vjPBrBU-TM" title="GoCity video" allowfullscreen loading="lazy"></iframe><a href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener noreferrer" class="cta">City Passes</a></div></div></aside>
+        <div class="card video-card">
+          <video controls muted playsinline>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+          </video>
+          <div class="card-body">
+            <h3>Customer Experience</h3>
+            <p>Use social proof and walkthrough content to increase conversions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <aside class="panel subdirectory nav-ghost" aria-label="Subdirectory panel"><div class="panel-inner"><h2>SUBDIRECTORY</h2><details open><summary>✈️ Travel Deals</summary><ul><li><a class="nav-link" href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" rel="noopener noreferrer">KiwiTaxi</a></li><li><a class="nav-link" href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener noreferrer">LocalRent</a></li><li><a class="nav-link" href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener noreferrer">QEEQ</a></li></ul></details><details><summary>🎟️ Tours & Tickets</summary><ul><li><a class="nav-link" href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener noreferrer">WeGoTrip</a></li><li><a class="nav-link" href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener noreferrer">GoCity</a></li><li><a class="nav-link" href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener noreferrer">BigBusTours</a></li></ul></details><details><summary>📶 Connectivity</summary><ul><li><a class="nav-link" href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener noreferrer">Airalo</a></li><li><a class="nav-link" href="https://saily.tpo.lv/dj71iCAi" target="_blank" rel="noopener noreferrer">Saily</a></li><li><a class="nav-link" href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener noreferrer">Drimsim</a></li></ul></details></div></aside>
-  </div>
+  <section class="section light">
+    <div class="container features">
+      <div class="feature card">
+        <h3>One Place</h3>
+        <p>Access services in one digital space instead of searching everywhere.</p>
+      </div>
+      <div class="feature card">
+        <h3>Trusted Connections</h3>
+        <p>Connect users with dependable providers and business partners.</p>
+      </div>
+      <div class="feature card">
+        <h3>Faster Decisions</h3>
+        <p>Reduce friction and help high-intent users take action immediately.</p>
+      </div>
+    </div>
+  </section>
 
-  <div id="metrics-panel"><div class="metric">Views: <span id="views-count">0</span></div><div class="metric">Clicks: <span id="clicks-count">0</span></div><div class="metric">Revenue: $<span id="revenue-count">0.00</span></div><div class="metric">Conversion: <span id="conversion-count">0%</span></div></div>
+  <section id="request" class="section">
+    <div class="container request-wrap">
+      <div class="request-copy">
+        <h2>Request a Service</h2>
+        <p>
+          Let visitors send their request directly through your site. This form
+          is connected to the backend.
+        </p>
 
-  <button id="gear-toggle" class="gear-toggle" aria-label="Open preferences">⚙️</button>
-  <div id="ui-preference" class="ui-preference" aria-label="Display preferences"><div class="pref-header"><h4>Display Preferences</h4><button type="button" id="pref-close" class="pref-close" aria-label="Close preferences">✖</button></div><div class="pref-group"><strong>Progress Indicator</strong><div class="radio-row"><label><input type="radio" name="indicatorMode" value="dots"> Dots</label><label><input type="radio" name="indicatorMode" value="bar"> Bar</label></div></div><div class="pref-group"><strong>Navigation Panels</strong><div class="radio-row"><label><input type="radio" name="navMode" value="always"> Always</label><label><input type="radio" name="navMode" value="auto"> Auto-fade</label><label><input type="radio" name="navMode" value="hidden"> Hidden</label></div></div></div>
+        <div id="apiStatus" class="status-box">Checking server...</div>
+      </div>
 
-  <script>
-    (() => {
-      const state = { views: 0, clicks: 0, revPerView: 0.05, revPerClick: 1, currentIndex: 0, cards: () => Array.from(document.querySelectorAll('.feed-card')) };
-      const partners = [
-        { name: 'Allycar', url: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806', category: 'Travel' },
-        { name: 'Carmel Car & Limousine', url: 'https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806', category: 'Travel' },
-        { name: 'Desire Experience (US)', url: 'https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806', category: 'Travel' },
-        { name: 'Evisa', url: 'https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806', category: 'Travel' },
-        { name: 'Go! Go! España', url: 'https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806', category: 'Travel' },
-        { name: 'Go2Africa (US)', url: 'https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806', category: 'Travel' },
-        { name: 'Jumbo Car Costa Rica (US)', url: 'https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806', category: 'Travel' },
-        { name: 'King Koil', url: 'https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806', category: 'Lifestyle' },
-        { name: 'Lastminute SE', url: 'https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806', category: 'Travel' },
-        { name: 'PearlMountain Limited', url: 'https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806', category: 'Software' },
-        { name: 'Temptation Experience (US)', url: 'https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806', category: 'Travel' },
-        { name: 'The BitJoy eSIM (US)', url: 'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806', category: 'Connectivity' },
-        { name: 'The Builder Market (US)', url: 'https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806', category: 'Marketplace' },
-        { name: 'Tiqets DE', url: 'https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806', category: 'Travel' },
-        { name: 'Tiqets FR', url: 'https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806', category: 'Travel' },
-        { name: 'Tiqets IT', url: 'https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806', category: 'Travel' },
-        { name: 'Tiqets UK', url: 'https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806', category: 'Travel' },
-        { name: 'Tiqets US', url: 'https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806', category: 'Travel' },
-        { name: 'Evisa (alt)', url: 'https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806', category: 'Travel' },
-        { name: 'Go2Africa (alt US)', url: 'https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806', category: 'Travel' },
-        { name: 'King Koil (alt)', url: 'https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806', category: 'Lifestyle' },
-        { name: 'Busbud', url: 'https://busbud.tpo.lv/h4C6YPFZ', category: 'Travel' },
-        { name: 'BigBusTours', url: 'https://bigbustours.tpo.lv/grT1QWXA', category: 'Travel' },
-        { name: 'AutoEurope', url: 'https://autoeurope.tpo.lv/t84AzZbO', category: 'Travel' },
-        { name: 'EatWith', url: 'https://eatwith.tpo.lv/BfAnpZNb', category: 'Travel' },
-        { name: 'HolidayTaxis', url: 'https://holidaytaxis.tpo.lv/oHwpbrFt', category: 'Travel' },
-        { name: 'GoCity', url: 'https://gocity.tpo.lv/Des5Cgov', category: 'Travel' },
-        { name: 'EconomyBookings', url: 'https://economybookings.tpo.lv/jSFMPEPA', category: 'Travel' },
-        { name: 'Aviasales', url: 'https://aviasales.tpo.lv/VoWXgFFm', category: 'Travel' },
-        { name: 'Intui', url: 'https://intui.tpo.lv/Rrx5VuN3', category: 'Travel' },
-        { name: 'BikesBooking', url: 'https://bikesbooking.tpo.lv/B3zIKanS', category: 'Travel' },
-        { name: 'GetTransfer', url: 'https://gettransfer.tpo.lv/Pb4p9ljm', category: 'Travel' },
-        { name: 'WeGoTrip', url: 'https://wegotrip.tpo.lv/kKIF0gIW', category: 'Travel' },
-        { name: 'AirHelp', url: 'https://airhelp.tpo.lv/EPrGDSO3', category: 'Travel' },
-        { name: 'GetRentACar', url: 'https://getrentacar.tpo.lv/OR2TWduQ', category: 'Travel' },
-        { name: 'Searadar', url: 'https://searadar.tpo.lv/TO4A5eBZ', category: 'Travel' },
-        { name: 'Saily', url: 'https://saily.tpo.lv/dj71iCAi', category: 'Connectivity' },
-        { name: 'Airalo', url: 'https://airalo.tpo.lv/eXjKLiuw', category: 'Connectivity' },
-        { name: 'KiwiTaxi', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', category: 'Travel' },
-        { name: 'EktaTraveling', url: 'https://ektatraveling.tpo.lv/XWbZbj8S', category: 'Travel' },
-        { name: 'QEEQ', url: 'https://qeeq.tpo.lv/jklB4Pbm', category: 'Travel' },
-        { name: 'Drimsim', url: 'https://drimsim.tpo.lv/PGwr6JTr', category: 'Connectivity' },
-        { name: 'Compensair', url: 'https://compensair.tpo.lv/wxDDCITG', category: 'Travel' },
-        { name: 'RadicalStorage', url: 'https://radicalstorage.tpo.lv/tna4hnly', category: 'Travel' },
-        { name: 'LocalRent', url: 'https://localrent.tpo.lv/XS0CqdMP', category: 'Travel' }
-      ];
+      <form id="requestForm" class="request-form card">
+        <label for="name">Full Name</label>
+        <input id="name" name="name" type="text" placeholder="Your name" required />
 
-      const viewsEl = document.getElementById('views');
-      const clicksEl = document.getElementById('clicks');
-      const revenueEl = document.getElementById('revenue');
-      const conversionEl = document.getElementById('conversion');
-      const feed = document.getElementById('feed');
-      const mallGrid = document.getElementById('mall-grid');
-      const dotsContainer = document.getElementById('progress-dots');
-      const progressBar = document.getElementById('progress-bar');
-      const progressBarFill = progressBar.querySelector('span');
-      const themeToggle = document.getElementById('theme-toggle');
-      const gearToggle = document.getElementById('gear-toggle');
-      const prefPanel = document.getElementById('ui-preference');
-      const prefClose = document.getElementById('pref-close');
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" required />
 
-      function updateDashboard() {
-        const revenue = (state.views * state.revPerView) + (state.clicks * state.revPerClick);
-        const conversion = state.views > 0 ? (state.clicks / state.views) * 100 : 0;
-        if (viewsEl) viewsEl.textContent = String(state.views);
-        if (clicksEl) clicksEl.textContent = String(state.clicks);
-        if (revenueEl) revenueEl.textContent = revenue.toFixed(2);
-        if (conversionEl) conversionEl.textContent = conversion.toFixed(2) + '%';
-        const v = document.getElementById('views-count');
-        const c = document.getElementById('clicks-count');
-        const r = document.getElementById('revenue-count');
-        const conv = document.getElementById('conversion-count');
-        if (v) v.textContent = state.views;
-        if (c) c.textContent = state.clicks;
-        if (r) r.textContent = revenue.toFixed(2);
-        if (conv) conv.textContent = conversion.toFixed(2) + '%';
-      }
+        <label for="service">Service Needed</label>
+        <select id="service" name="service" required>
+          <option value="">Select a service</option>
+          <option value="Home Services">Home Services</option>
+          <option value="Errand Assistance">Errand Assistance</option>
+          <option value="Business Services">Business Services</option>
+          <option value="Delivery">Delivery</option>
+          <option value="Consultation">Consultation</option>
+        </select>
 
-      function registerClickTracking(root = document) {
-        root.querySelectorAll('a').forEach(link => {
-          if (link.dataset.sbBound === 'true') return;
-          link.dataset.sbBound = 'true';
-          link.addEventListener('click', () => {
-            state.clicks += 1;
-            updateDashboard();
-          });
-        });
-      }
+        <label for="details">Details</label>
+        <textarea id="details" name="details" rows="5" placeholder="Tell us what you need..."></textarea>
 
-      function buildMallGrid() {
-        const fragment = document.createDocumentFragment();
-        partners.forEach(company => {
-          const card = document.createElement('article');
-          card.className = 'mall-card';
-          card.innerHTML = `<h2>${company.name}</h2><p>${company.category}</p><a href="${company.url}" target="_blank" rel="noopener noreferrer"><button type="button">Shop Now</button></a>`;
-          fragment.appendChild(card);
-        });
-        mallGrid.appendChild(fragment);
-        registerClickTracking(mallGrid);
-      }
+        <button type="submit" class="btn btn-primary full">Submit Request</button>
 
-      function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-      }
+        <div id="formMessage" class="form-message"></div>
+      </form>
+    </div>
+  </section>
 
-      function initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        applyTheme(savedTheme);
-        themeToggle.addEventListener('click', () => {
-          const current = document.documentElement.getAttribute('data-theme') || 'dark';
-          applyTheme(current === 'dark' ? 'light' : 'dark');
-        });
-      }
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>© 2026 SignalBoostAI. All rights reserved.</p>
+    </div>
+  </footer>
 
-      function setIndicatorMode(mode) {
-        localStorage.setItem('indicatorMode', mode);
-        dotsContainer.style.display = mode === 'dots' ? 'flex' : 'none';
-        progressBar.style.display = mode === 'bar' ? 'block' : 'none';
-      }
-
-      function setNavMode(mode) {
-        localStorage.setItem('navMode', mode);
-        document.body.classList.remove('nav-mode-always', 'nav-mode-auto', 'nav-mode-hidden');
-        document.body.classList.add(`nav-mode-${mode}`);
-      }
-
-      function initPreferences() {
-        const savedIndicatorMode = localStorage.getItem('indicatorMode') || 'dots';
-        const savedNavMode = localStorage.getItem('navMode') || 'always';
-        setIndicatorMode(savedIndicatorMode);
-        setNavMode(savedNavMode);
-        const indicatorInput = document.querySelector(`input[name="indicatorMode"][value="${savedIndicatorMode}"]`);
-        const navInput = document.querySelector(`input[name="navMode"][value="${savedNavMode}"]`);
-        if (indicatorInput) indicatorInput.checked = true;
-        if (navInput) navInput.checked = true;
-        document.querySelectorAll('input[name="indicatorMode"]').forEach(input => input.addEventListener('change', () => setIndicatorMode(input.value)));
-        document.querySelectorAll('input[name="navMode"]').forEach(input => input.addEventListener('change', () => setNavMode(input.value)));
-        gearToggle.addEventListener('click', () => prefPanel.classList.toggle('visible'));
-        prefClose.addEventListener('click', () => prefPanel.classList.remove('visible'));
-        document.addEventListener('click', (event) => {
-          if (!prefPanel.contains(event.target) && !gearToggle.contains(event.target)) prefPanel.classList.remove('visible');
-        });
-      }
-
-      function initProgressIndicators() {
-        const cards = state.cards();
-        const frag = document.createDocumentFragment();
-        cards.forEach(() => frag.appendChild(document.createElement('span')));
-        dotsContainer.innerHTML = '';
-        dotsContainer.appendChild(frag);
-        const dots = Array.from(dotsContainer.querySelectorAll('span'));
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              state.currentIndex = cards.indexOf(entry.target);
-              dots.forEach(dot => dot.classList.remove('active'));
-              if (dots[state.currentIndex]) dots[state.currentIndex].classList.add('active');
-            }
-          });
-        }, { root: feed, threshold: 0.55 });
-        cards.forEach(card => observer.observe(card));
-        const updateScrollBar = () => {
-          const scrollHeight = Math.max(feed.scrollHeight - feed.clientHeight, 1);
-          const progress = (feed.scrollTop / scrollHeight) * 100;
-          progressBarFill.style.width = progress + '%';
-        };
-        feed.addEventListener('scroll', updateScrollBar, { passive: true });
-        updateScrollBar();
-      }
-
-      function initKeyboardNavigation() {
-        document.addEventListener('keydown', (event) => {
-          const cards = state.cards();
-          if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-          if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-          event.preventDefault();
-          if (event.key === 'ArrowDown') state.currentIndex = Math.min(state.currentIndex + 1, cards.length - 1);
-          if (event.key === 'ArrowUp') state.currentIndex = Math.max(state.currentIndex - 1, 0);
-          cards[state.currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      }
-
-      function initMediaTracking() {
-        document.querySelectorAll('.promo-video').forEach(video => {
-          let countedView = false;
-          video.addEventListener('play', () => {
-            if (!countedView) {
-              countedView = true;
-              state.views += 1;
-              updateDashboard();
-            }
-          });
-          video.addEventListener('error', () => {});
-        });
-        const videoObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            const video = entry.target;
-            if (entry.isIntersecting) {
-              const promise = video.play();
-              if (promise && typeof promise.catch === 'function') promise.catch(() => {});
-            } else {
-              video.pause();
-            }
-          });
-        }, { root: feed, threshold: 0.65 });
-        document.querySelectorAll('.promo-video').forEach(video => videoObserver.observe(video));
-      }
-
-      function initLazyEmbeds() {
-        const lazyObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const target = entry.target;
-            if (target.classList.contains('lazy-youtube')) {
-              const src = target.getAttribute('data-src');
-              if (src && !target.getAttribute('src')) target.setAttribute('src', src);
-            }
-            if (target.classList.contains('lazy-reddit')) {
-              const src = target.getAttribute('data-embed-src');
-              if (src) {
-                target.setAttribute('data-embed-src', src);
-                if (window.__redditEmbed && typeof window.__redditEmbed.init === 'function') {
-                  window.__redditEmbed.init();
-                }
-              }
-            }
-            lazyObserver.unobserve(target);
-          });
-        }, { root: feed, threshold: 0.2, rootMargin: '200px 0px' });
-        document.querySelectorAll('.lazy-youtube, .lazy-reddit').forEach(el => lazyObserver.observe(el));
-      }
-
-      function initRedditScript() {
-        const redditScript = document.createElement('script');
-        redditScript.src = 'https://embed.redditmedia.com/widgets/platform.js';
-        redditScript.async = true;
-        document.body.appendChild(redditScript);
-      }
-
-      function initAdminPanel() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const isAdmin = urlParams.get('admin') === 'true';
-        const panel = document.getElementById('metrics-panel');
-        if (isAdmin) {
-          document.body.classList.add('admin-view');
-          if (panel) panel.style.display = 'block';
-        } else {
-          document.body.classList.remove('admin-view');
-          if (panel) panel.remove();
-        }
-      }
-
-      function initInlineSubscribe() {
-        const form = document.getElementById('inline-subscribe-form');
-        const input = document.getElementById('inline-email-input');
-        const message = document.getElementById('inline-subscribe-message');
-        if (!form || !input || !message) return;
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const email = input.value.trim();
-          if (!email) return;
-          message.style.display = 'block';
-          message.textContent = '⏳ Submitting...';
-          try {
-            const response = await fetch('/api/subscribe', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email })
-            });
-            const data = await response.json();
-            if (response.ok) {
-              message.textContent = '✅ Thanks for subscribing!';
-              input.value = '';
-            } else {
-              message.textContent = `⚠️ ${data.detail || data.error || 'Something went wrong. Try again.'}`;
-            }
-          } catch (err) {
-            console.error(err);
-            message.textContent = '⚠️ Network error. Try again.';
-          }
-        });
-      }
-
-      buildMallGrid();
-      registerClickTracking();
-      initTheme();
-      initPreferences();
-      initProgressIndicators();
-      initKeyboardNavigation();
-      initMediaTracking();
-      initRedditScript();
-      initLazyEmbeds();
-      initAdminPanel();
-      initInlineSubscribe();
-      updateDashboard();
-    })();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
