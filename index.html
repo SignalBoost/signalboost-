@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost eHub</title>
-  <meta name="description" content="SignalBoostAI — Handle your life's errands without leaving your screen." />
   <style>
     :root {
       --bg: #050505;
@@ -15,151 +14,95 @@
       --accent: #ff5a1f;
       --accent-2: #00d8b6;
       --border: rgba(255, 255, 255, 0.08);
-      --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+      --shadow: 0 12px 40px rgba(0,0,0,0.35);
       --radius: 14px;
-      --header-h: 58px;
     }
 
     * { box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-    }
 
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: var(--bg);
       color: var(--text);
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: auto 1fr;
+      height: 100vh;
+      gap: 14px;
+      padding: 14px;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .dashboard {
+    .dashboard-header {
       position: sticky;
       top: 0;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 16px;
-      padding: 10px 16px;
+      padding: 16px;
       background: rgba(16, 16, 16, 0.92);
       backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       z-index: 1000;
-      min-height: var(--header-h);
+      grid-column: 1 / span 3;
+      box-shadow: var(--shadow);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      min-width: 0;
+      gap: 12px;
     }
 
     .brand-mark {
-      width: 34px;
-      height: 34px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       display: grid;
       place-items: center;
       color: white;
       font-weight: 700;
-      font-size: 0.9rem;
-      flex: 0 0 auto;
-    }
-
-    .brand-copy {
-      min-width: 0;
     }
 
     .brand-copy h1 {
       margin: 0;
-      font-size: 1rem;
+      font-size: 1.2rem;
       font-weight: 800;
-      line-height: 1.1;
     }
 
     .brand-copy p {
-      margin: 1px 0 0;
-      font-size: 0.74rem;
+      margin: 0;
+      font-size: 0.9rem;
       color: var(--accent-2);
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .header-nav {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .nav-btn {
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      background: rgba(255,255,255,0.03);
-      font-size: 0.82rem;
-    }
-
-    .nav-btn:hover {
-      color: white;
-      border-color: rgba(255,255,255,0.16);
-    }
-
-    .page {
-      padding: 14px;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 260px minmax(0, 1fr) 290px;
-      gap: 14px;
-      align-items: start;
     }
 
     .panel {
-      position: sticky;
-      top: calc(var(--header-h) + 14px);
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow: hidden;
+      overflow-y: auto;
+      padding: 16px;
+      min-height: 0;
     }
 
-    .panel-inner {
-      padding: 14px;
-    }
-
-    h3.panel-title {
-      margin: 0 0 12px;
-      font-size: 0.92rem;
+    h2 {
+      margin-top: 0;
+      font-size: 1rem;
       color: var(--accent);
       letter-spacing: 0.02em;
     }
 
-    .panel p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.45;
-      font-size: 0.88rem;
+    h3 {
+      margin: 0 0 8px;
+      font-size: 0.9rem;
+      color: var(--accent);
     }
 
     details {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -170,251 +113,146 @@
       cursor: pointer;
       font-weight: 700;
       color: var(--accent);
-      font-size: 0.9rem;
     }
 
-    ul.partner-list {
+    ul {
       padding-left: 0;
       margin: 10px 0 0;
       list-style: none;
     }
 
-    .partner-list li {
-      margin-bottom: 8px;
+    li {
+      margin-bottom: 6px;
     }
 
-    .partner-list a {
+    li a {
       color: var(--accent-2);
+      text-decoration: none;
       font-size: 0.86rem;
     }
 
-    .feed-column {
-      min-width: 0;
-    }
-
-    .feed-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      padding: 2px 2px;
-    }
-
-    .feed-toolbar h3 {
-      margin: 0;
-      font-size: 0.92rem;
-      color: var(--accent);
-    }
-
-    .feed-meta {
-      color: var(--muted);
-      font-size: 0.8rem;
+    li a:hover {
+      text-decoration: underline;
     }
 
     #feed {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 14px;
+      overflow-y: auto;
+      height: 100%;
+      padding-right: 2px;
+      align-content: start;
     }
 
     .feed-card {
-      display: flex;
-      flex-direction: column;
-      height: auto;
       border: 1px solid var(--border);
       background: var(--card);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: var(--shadow);
-    }
-
-    .feed-card-header {
-      flex: 0 0 auto;
-      padding: 8px 10px 4px;
       display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
+      flex-direction: column;
+      height: auto;
+      justify-content: flex-start;
     }
 
-    .feed-card-title {
-      margin: 0;
-      font-size: 0.84rem;
-      line-height: 1.25;
-      color: white;
+    .feed-card h3 {
+      margin: 10px 10px 4px;
+      font-size: 0.95rem;
+      color: var(--accent);
     }
 
-    .feed-card-tag {
-      flex: 0 0 auto;
-      font-size: 0.68rem;
-      color: white;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--border);
-      padding: 5px 8px;
-      border-radius: 999px;
-    }
-
-    .feed-card-copy {
-      flex: 0 0 auto;
-      padding: 0 10px 8px;
+    .feed-card p {
+      margin: 0 10px 10px;
+      font-size: 0.85rem;
       color: var(--muted);
-      font-size: 0.74rem;
-      line-height: 1.35;
     }
 
     .embed-shell {
-      flex: 1;
-      position: relative;
-      width: 100%;
-      min-height: 180px;
-      background: #000;
-      display: flex;
-      overflow: hidden;
+      flex: none;
+      min-height: 100px;
+      background: #090909;
       border-top: 1px solid var(--border);
     }
 
-    .embed-shell iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
+    .widget {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
     }
 
-    .embed-placeholder {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 16px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      background:
-        radial-gradient(circle at top left, rgba(255,90,31,0.12), transparent 35%),
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    }
-
-    .embed-placeholder button {
-      margin-top: 10px;
-      padding: 8px 10px;
-      border: 0;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.75rem;
-    }
-
-    .loader {
-      margin: 12px auto 0;
-      text-align: center;
+    .widget p {
+      margin: 4px 0;
       color: var(--muted);
       font-size: 0.84rem;
     }
 
-    .mini-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .mini-card {
-      border: 1px solid var(--border);
-      background: var(--card);
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .mini-card h4 {
-      margin: 0 0 7px;
-      font-size: 0.88rem;
-      color: white;
-    }
-
-    .mini-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
+    .up { color: #4caf50; }
+    .down { color: #f44336; }
 
     .quick-buttons {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 12px;
+      gap: 10px;
+      margin-top: 10px;
     }
 
     .quick-buttons a {
+      text-align: center;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.72rem;
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: rgba(255,255,255,0.03);
       padding: 8px 6px;
-      text-align: center;
+      background: rgba(255,255,255,0.03);
     }
 
     .quick-buttons img {
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       object-fit: contain;
       border-radius: 6px;
       background: #fff;
-      padding: 4px;
-      margin: 0 auto 5px;
+      padding: 5px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    .quick-buttons span {
+      transition: transform 0.2s;
       display: block;
-      font-size: 0.72rem;
-      color: var(--muted);
+      margin: 0 auto 6px;
     }
 
-    .footer-space {
-      height: 20px;
+    .quick-buttons img:hover {
+      transform: scale(1.1);
     }
 
-    @media (max-width: 1180px) {
-      .main-grid {
-        grid-template-columns: 230px minmax(0, 1fr);
-      }
-
-      .right-panel {
-        grid-column: 1 / -1;
-        position: static;
-      }
-    }
-
-    @media (max-width: 860px) {
-      .dashboard {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .brand-copy p {
-        white-space: normal;
-      }
-
-      .main-grid {
+    @media (max-width: 980px) {
+      body {
         grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        height: auto;
       }
 
-      .panel {
-        position: static;
-      }
-
-      .header-nav {
-        width: 100%;
+      .dashboard-header {
+        grid-column: 1;
       }
 
       #feed {
         grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .panel {
+        overflow: visible;
       }
     }
   </style>
 </head>
 <body>
-  <header class="dashboard">
+
+  <div class="dashboard-header">
     <div class="brand">
       <div class="brand-mark">Se</div>
       <div class="brand-copy">
@@ -422,224 +260,152 @@
         <p>Handle your life's errands — without leaving your screen</p>
       </div>
     </div>
+  </div>
 
-    <nav class="header-nav">
-      <a class="nav-btn" href="#feed">Feed</a>
-      <a class="nav-btn" href="#directory">Partners</a>
-      <a class="nav-btn" href="#quick-access">Quick Access</a>
-    </nav>
-  </header>
+  <aside class="panel directory">
+    <h2>PARTNER DIRECTORY</h2>
 
-  <main class="page">
-    <section class="main-grid">
-      <aside class="panel left-panel" id="directory">
-        <div class="panel-inner">
-          <h3 class="panel-title">PARTNER DIRECTORY</h3>
+    <details open>
+      <summary>Transport</summary>
+      <ul>
+        <li><a href="#">Allycar</a></li>
+        <li><a href="#">Carmel Car &amp; Limousine</a></li>
+        <li><a href="#">Jumbo Car Costa Rica</a></li>
+      </ul>
+    </details>
 
-          <details open>
-            <summary>Transport</summary>
-            <ul class="partner-list">
-              <li><a href="#">Allycar</a></li>
-              <li><a href="#">Carmel Car & Limousine</a></li>
-              <li><a href="#">Jumbo Car Costa Rica</a></li>
-            </ul>
-          </details>
+    <details>
+      <summary>Travel</summary>
+      <ul>
+        <li><a href="#">Lastminute SE</a></li>
+        <li><a href="#">Go! Go! España</a></li>
+        <li><a href="#">Go2Africa (US)</a></li>
+        <li><a href="#">Evisa</a></li>
+      </ul>
+    </details>
 
-          <details>
-            <summary>Travel</summary>
-            <ul class="partner-list">
-              <li><a href="#">Lastminute SE</a></li>
-              <li><a href="#">Go! Go! España</a></li>
-              <li><a href="#">Go2Africa (US)</a></li>
-              <li><a href="#">Evisa</a></li>
-            </ul>
-          </details>
+    <details>
+      <summary>Lifestyle</summary>
+      <ul>
+        <li><a href="#">King Koil</a></li>
+        <li><a href="#">PearlMountain Limited</a></li>
+      </ul>
+    </details>
 
-          <details>
-            <summary>Business</summary>
-            <ul class="partner-list">
-              <li><a href="#">LinkedIn Services</a></li>
-              <li><a href="#">Marketing Partners</a></li>
-              <li><a href="#">Virtual Assistants</a></li>
-            </ul>
-          </details>
-        </div>
-      </aside>
+    <details>
+      <summary>Telecom</summary>
+      <ul>
+        <li><a href="#">The BitJoy eSIM</a></li>
+        <li><a href="#">Drimsim</a></li>
+        <li><a href="#">Airalo</a></li>
+        <li><a href="#">Saily</a></li>
+      </ul>
+    </details>
 
-      <section class="feed-column">
-        <div class="feed-toolbar">
-          <h3>LIVE CONTENT FEED</h3>
-          <div class="feed-meta">Compact grid</div>
-        </div>
+    <details>
+      <summary>Experiences</summary>
+      <ul>
+        <li><a href="#">Desire Experience</a></li>
+        <li><a href="#">Temptation Experience</a></li>
+        <li><a href="#">Tiqets</a></li>
+      </ul>
+    </details>
 
-        <div id="feed"></div>
-        <div id="loader" class="loader">Loading more cards…</div>
-      </section>
+    <details>
+      <summary>Services</summary>
+      <ul>
+        <li><a href="#">The Builder Market</a></li>
+        <li><a href="#">RadicalStorage</a></li>
+        <li><a href="#">AirHelp</a></li>
+      </ul>
+    </details>
 
-      <aside class="panel right-panel">
-        <div class="panel-inner">
-          <h3 class="panel-title">DASHBOARD</h3>
+    <details>
+      <summary>Business Partners</summary>
+      <ul>
+        <li><a href="#">LinkedIn Services</a></li>
+        <li><a href="#">Marketing Partners</a></li>
+        <li><a href="#">Virtual Assistants</a></li>
+        <li><a href="#">Featured Business Offer</a></li>
+      </ul>
+    </details>
+  </aside>
 
-          <div class="mini-list">
-            <div class="mini-card">
-              <h4>Weather</h4>
-              <p>Use this panel for local utility info, alerts, or quick tools.</p>
-            </div>
+  <main class="panel">
+    <h2>LIVE CONTENT FEED</h2>
+    <div id="feed">
+      <div class="feed-card">
+        <h3>YouTube Video</h3>
+        <p>youtube.com</p>
+        <div class="embed-shell"></div>
+      </div>
 
-            <div class="mini-card">
-              <h4>Headlines</h4>
-              <p>Feature platform updates, key notices, or trending content.</p>
-            </div>
-          </div>
+      <div class="feed-card">
+        <h3>TikTok Clip</h3>
+        <p>tiktok.com</p>
+        <div class="embed-shell"></div>
+      </div>
 
-          <div id="quick-access" style="margin-top:16px;">
-            <h3 class="panel-title">QUICK ACCESS</h3>
-            <div class="quick-buttons">
-              <a href="#"><img src="/assets/amazon.png" alt="Amazon"><span>Amazon</span></a>
-              <a href="#"><img src="/assets/facebook.png" alt="Facebook"><span>Facebook</span></a>
-              <a href="#"><img src="/assets/instagram.png" alt="Instagram"><span>Instagram</span></a>
-              <a href="#"><img src="/assets/linkedin.png" alt="LinkedIn"><span>LinkedIn</span></a>
-              <a href="#"><img src="/assets/signal.png" alt="Signal"><span>Signal</span></a>
-              <a href="#"><img src="/assets/telegram.png" alt="Telegram"><span>Telegram</span></a>
-              <a href="#"><img src="/assets/youtube.png" alt="YouTube"><span>YouTube</span></a>
-              <a href="#"><img src="/assets/tiktok.png" alt="TikTok"><span>TikTok</span></a>
-              <a href="#"><img src="/assets/reddit.png" alt="Reddit"><span>Reddit</span></a>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </section>
+      <div class="feed-card">
+        <h3>Instagram Reel</h3>
+        <p>instagram.com</p>
+        <div class="embed-shell"></div>
+      </div>
 
-    <div class="footer-space"></div>
+      <div class="feed-card">
+        <h3>Reddit Highlight</h3>
+        <p>reddit.com</p>
+        <div class="embed-shell"></div>
+      </div>
+    </div>
   </main>
 
-  <script>
-    const feed = document.getElementById("feed");
-    const loader = document.getElementById("loader");
+  <aside class="panel">
+    <h2>DASHBOARD</h2>
 
-    const starterCards = [
-      {
-        title: "Watch how SignalBoost eHub centralizes discovery",
-        tag: "YouTube",
-        copy: "A wide-format embedded video card for platform storytelling and traffic growth.",
-        embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
-      },
-      {
-        title: "Vertical short-form content for higher engagement",
-        tag: "TikTok",
-        copy: "Use compact social content to keep the page dynamic and mobile-friendly.",
-        embedUrl: "https://www.tiktok.com/embed/v2/7217490184957201669"
-      },
-      {
-        title: "Instagram spotlight card",
-        tag: "Instagram",
-        copy: "Use Instagram-style content blocks for brand, lifestyle, or promo content.",
-        embedUrl: "https://www.instagram.com/p/CuE2WN5gA6W/embed"
-      },
-      {
-        title: "Service explainer video",
-        tag: "YouTube",
-        copy: "Keep educational content in the feed so users understand the platform quickly.",
-        embedUrl: "https://www.youtube.com/embed/ysz5S6PUM-U"
-      },
-      {
-        title: "Short clip that feels native to the feed",
-        tag: "TikTok",
-        copy: "Short clips work well between wider videos and social-proof style cards.",
-        embedUrl: "https://www.tiktok.com/embed/v2/7296878923299882282"
-      },
-      {
-        title: "Instagram brand reel slot",
-        tag: "Instagram",
-        copy: "A clean layout block to feature lifestyle and trust-building visuals.",
-        embedUrl: "https://www.instagram.com/p/CxQ1J5rL6fV/embed"
-      }
-    ];
+    <section class="widget">
+      <h3>Weather</h3>
+      <p>72°F, Partly Cloudy — Miami, FL</p>
+    </section>
 
-    let cardIndex = 0;
-    let loading = false;
+    <section class="widget">
+      <h3>Crypto Prices</h3>
+      <p>BTC: $52,300</p>
+      <p>ETH: $3,500</p>
+    </section>
 
-    function createPlaceholder() {
-      const wrap = document.createElement("div");
-      wrap.className = "embed-placeholder";
-      wrap.innerHTML = `
-        <div>
-          <div>Click to load content</div>
-          <button type="button">Load</button>
-        </div>
-      `;
-      return wrap;
-    }
+    <section class="widget">
+      <h3>Market Watch</h3>
+      <p>Dow 42,180 <span class="up">(+0.62%)</span></p>
+      <p>S&amp;P 5,721 <span class="up">(+0.41%)</span></p>
+      <p>Nasdaq 18,203 <span class="down">(-0.18%)</span></p>
+    </section>
 
-    function lazyEmbed(shell, url, title) {
-      const iframe = document.createElement("iframe");
-      iframe.loading = "lazy";
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.allowFullscreen = true;
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      iframe.src = url;
-      iframe.title = title;
-      shell.innerHTML = "";
-      shell.appendChild(iframe);
-    }
+    <section class="widget">
+      <h3>Business Partners</h3>
+      <ul>
+        <li><a href="#">LinkedIn Services</a></li>
+        <li><a href="#">Marketing Partners</a></li>
+        <li><a href="#">Virtual Assistants</a></li>
+        <li><a href="#">Featured Business Offer</a></li>
+      </ul>
+    </section>
 
-    function buildCard(card) {
-      const article = document.createElement("article");
-      article.className = "feed-card";
+    <section class="widget">
+      <h3>Quick Access</h3>
+      <div class="quick-buttons">
+        <a href="#"><img src="/assets/amazon.png" alt="Amazon">Amazon</a>
+        <a href="#"><img src="/assets/facebook.png" alt="Facebook">Facebook</a>
+        <a href="#"><img src="/assets/instagram.png" alt="Instagram">Instagram</a>
+        <a href="#"><img src="/assets/linkedin.png" alt="LinkedIn">LinkedIn</a>
+        <a href="#"><img src="/assets/signal.png" alt="Signal">Signal</a>
+        <a href="#"><img src="/assets/telegram.png" alt="Telegram">Telegram</a>
+        <a href="#"><img src="/assets/youtube.png" alt="YouTube">YouTube</a>
+        <a href="#"><img src="/assets/tiktok.png" alt="TikTok">TikTok</a>
+        <a href="#"><img src="/assets/reddit.png" alt="Reddit">Reddit</a>
+      </div>
+    </section>
+  </aside>
 
-      article.innerHTML = `
-        <div class="feed-card-header">
-          <h4 class="feed-card-title">${card.title}</h4>
-          <span class="feed-card-tag">${card.tag}</span>
-        </div>
-        <div class="feed-card-copy">${card.copy}</div>
-        <div class="embed-shell"></div>
-      `;
-
-      const shell = article.querySelector(".embed-shell");
-      const placeholder = createPlaceholder();
-      shell.appendChild(placeholder);
-
-      placeholder.querySelector("button").addEventListener("click", () => {
-        lazyEmbed(shell, card.embedUrl, card.title);
-      });
-
-      return article;
-    }
-
-    function appendBatch(batchSize = 4) {
-      const frag = document.createDocumentFragment();
-
-      for (let i = 0; i < batchSize; i++) {
-        const item = starterCards[cardIndex % starterCards.length];
-        frag.appendChild(buildCard(item));
-        cardIndex++;
-      }
-
-      feed.appendChild(frag);
-    }
-
-    function handleInfiniteScroll() {
-      if (loading) return;
-
-      const triggerPoint = window.innerHeight + window.scrollY;
-      const pageBottom = document.body.offsetHeight - 250;
-
-      if (triggerPoint >= pageBottom) {
-        loading = true;
-        loader.textContent = "Loading more cards…";
-
-        setTimeout(() => {
-          appendBatch(4);
-          loading = false;
-          loader.textContent = "Scroll for more";
-        }, 300);
-      }
-    }
-
-    appendBatch(6);
-    loader.textContent = "Scroll for more";
-    window.addEventListener("scroll", handleInfiniteScroll, { passive: true });
-  </script>
 </body>
 </html>
