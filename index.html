@@ -4,37 +4,308 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoostAI | Digital Shopping Mall</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f6;
+      color: #111;
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      background: #111;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 10px 0;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #ddd;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, #111 0%, #1d1d22 100%);
+      color: white;
+      padding: 50px 0 70px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 1.05;
+      margin: 0 0 16px;
+    }
+
+    .hero p {
+      color: #d7d7de;
+      font-size: 1.05rem;
+      max-width: 580px;
+      margin-bottom: 24px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .btn-primary {
+      background: #ff6a00;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .hero-video {
+      background: black;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    .hero-video video {
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    .section {
+      padding: 72px 0;
+    }
+
+    .section-white {
+      background: white;
+    }
+
+    .section-light {
+      background: #f4f4f6;
+    }
+
+    .section-head {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 34px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      margin: 0 0 12px;
+      color: #111;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: #555;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #111;
+    }
+
+    .card p {
+      margin: 0;
+      color: #555;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .video-card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .video-card video {
+      width: 100%;
+      display: block;
+      background: black;
+    }
+
+    .video-content {
+      padding: 18px;
+    }
+
+    .video-content h3 {
+      margin: 0 0 8px;
+      color: #111;
+    }
+
+    .video-content p {
+      margin: 0;
+      color: #555;
+    }
+
+    .cta-section {
+      text-align: center;
+    }
+
+    .cta-box {
+      background: #111;
+      color: white;
+      border-radius: 24px;
+      padding: 50px 24px;
+    }
+
+    .cta-box h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+    }
+
+    .cta-box p {
+      max-width: 700px;
+      margin: 0 auto 22px;
+      color: #ddd;
+    }
+
+    .footer {
+      background: #111;
+      color: #aaa;
+      text-align: center;
+      padding: 28px 16px;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .features,
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        justify-content: center;
+      }
+
+      .hero {
+        padding: 36px 0 50px;
+      }
+    }
+  </style>
 </head>
 <body>
+
   <header class="topbar">
     <div class="container nav">
       <div class="logo">SignalBoostAI</div>
-      <nav>
+      <nav class="nav-links">
         <a href="#about">About</a>
         <a href="#videos">Videos</a>
-        <a href="#request">Request Service</a>
+        <a href="#services">Services</a>
+        <a href="#start">Get Started</a>
       </nav>
     </div>
   </header>
 
   <section class="hero">
-    <div class="container hero-content">
-      <div class="hero-text">
-        <p class="eyebrow">Your Digital Shopping Mall</p>
+    <div class="container hero-grid">
+      <div>
+        <div class="badge">Your Digital Shopping Mall</div>
         <h1>Handle your errands virtually in one place.</h1>
-        <p class="hero-copy">
+        <p>
           SignalBoostAI connects users with trusted providers so everyday tasks
-          become faster, easier, and more reliable.
+          become faster, easier, and more reliable. Everything you need, all in
+          one digital space.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#request">Get Started</a>
-          <a class="btn btn-secondary" href="#videos">Watch Videos</a>
+          <a href="#start" class="btn btn-primary">Get Started</a>
+          <a href="#videos" class="btn btn-secondary">Watch Videos</a>
         </div>
       </div>
 
       <div class="hero-video">
-        <video autoplay muted loop playsinline controls poster="">
+        <video autoplay muted loop playsinline controls>
           <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -42,120 +313,120 @@
     </div>
   </section>
 
-  <section id="about" class="section light">
-    <div class="container narrow">
-      <h2>What is SignalBoostAI?</h2>
-      <p>
-        SignalBoostAI is a digital shopping mall where users can access trusted
-        services, complete errands virtually, and save time by finding what they
-        need in one convenient place.
-      </p>
+  <section id="about" class="section section-white">
+    <div class="container">
+      <div class="section-head">
+        <h2>What is SignalBoostAI?</h2>
+        <p>
+          SignalBoostAI is a digital shopping mall where people can complete
+          errands virtually, connect with trusted businesses, and save time by
+          finding the right services in one place.
+        </p>
+      </div>
     </div>
   </section>
 
-  <section id="videos" class="section">
+  <section id="services" class="section section-light">
+    <div class="container">
+      <div class="section-head">
+        <h2>Why People Use SignalBoostAI</h2>
+        <p>
+          We make it easier for high-intent users to act quickly, confidently,
+          and conveniently.
+        </p>
+      </div>
+
+      <div class="features">
+        <div class="card">
+          <h3>One Convenient Hub</h3>
+          <p>
+            Stop jumping between platforms. Access services in one streamlined
+            digital environment.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Trusted Partners</h3>
+          <p>
+            Connect with reliable providers and business partners you can feel
+            confident using.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Faster Decisions</h3>
+          <p>
+            Reduce friction and get things done quickly with a simple, guided
+            experience.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="videos" class="section section-white">
     <div class="container">
       <div class="section-head">
         <h2>Featured Videos</h2>
-        <p>Use video to build trust, explain your service, and attract more traffic.</p>
+        <p>
+          Show your audience how the platform works, build trust, and drive more
+          engagement through video.
+        </p>
       </div>
 
       <div class="video-grid">
-        <div class="card video-card">
+        <div class="video-card">
           <video controls muted playsinline>
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
           </video>
-          <div class="card-body">
+          <div class="video-content">
             <h3>How It Works</h3>
-            <p>Show users how your digital mall helps them get things done faster.</p>
+            <p>Introduce users to the platform and show how easy it is to get started.</p>
           </div>
         </div>
 
-        <div class="card video-card">
+        <div class="video-card">
           <video controls muted playsinline>
             <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
           </video>
-          <div class="card-body">
-            <h3>Trusted Providers</h3>
-            <p>Highlight the businesses and services users can access in one place.</p>
+          <div class="video-content">
+            <h3>Trusted Services</h3>
+            <p>Highlight the categories and providers available through your digital mall.</p>
           </div>
         </div>
 
-        <div class="card video-card">
+        <div class="video-card">
           <video controls muted playsinline>
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
           </video>
-          <div class="card-body">
+          <div class="video-content">
             <h3>Customer Experience</h3>
-            <p>Use social proof and walkthrough content to increase conversions.</p>
+            <p>Use walkthroughs and real examples to encourage more traffic and action.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section light">
-    <div class="container features">
-      <div class="feature card">
-        <h3>One Place</h3>
-        <p>Access services in one digital space instead of searching everywhere.</p>
-      </div>
-      <div class="feature card">
-        <h3>Trusted Connections</h3>
-        <p>Connect users with dependable providers and business partners.</p>
-      </div>
-      <div class="feature card">
-        <h3>Faster Decisions</h3>
-        <p>Reduce friction and help high-intent users take action immediately.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="request" class="section">
-    <div class="container request-wrap">
-      <div class="request-copy">
-        <h2>Request a Service</h2>
+  <section id="start" class="section section-light cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Everything You Need. One Place.</h2>
         <p>
-          Let visitors send their request directly through your site. This form
-          is connected to the backend.
+          SignalBoostAI brings trusted services together in one digital space so
+          users can take care of errands virtually and efficiently.
         </p>
-
-        <div id="apiStatus" class="status-box">Checking server...</div>
+        <a href="#" class="btn btn-primary">Launch Now</a>
       </div>
-
-      <form id="requestForm" class="request-form card">
-        <label for="name">Full Name</label>
-        <input id="name" name="name" type="text" placeholder="Your name" required />
-
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" required />
-
-        <label for="service">Service Needed</label>
-        <select id="service" name="service" required>
-          <option value="">Select a service</option>
-          <option value="Home Services">Home Services</option>
-          <option value="Errand Assistance">Errand Assistance</option>
-          <option value="Business Services">Business Services</option>
-          <option value="Delivery">Delivery</option>
-          <option value="Consultation">Consultation</option>
-        </select>
-
-        <label for="details">Details</label>
-        <textarea id="details" name="details" rows="5" placeholder="Tell us what you need..."></textarea>
-
-        <button type="submit" class="btn btn-primary full">Submit Request</button>
-
-        <div id="formMessage" class="form-message"></div>
-      </form>
     </div>
   </section>
 
   <footer class="footer">
-    <div class="container footer-inner">
-      <p>© 2026 SignalBoostAI. All rights reserved.</p>
-    </div>
+    © 2026 SignalBoostAI. All rights reserved.
   </footer>
 
-  <script src="app.js"></script>
 </body>
 </html>
