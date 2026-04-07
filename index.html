@@ -43,7 +43,6 @@
       display: block;
     }
 
-    /* COMPACT HEADER FROM YOUR VERSION */
     .dashboard {
       position: sticky;
       top: 0;
@@ -126,7 +125,7 @@
 
     .hero {
       margin: 0 0 16px;
-      padding: 18px;
+      padding: 16px;
       border: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
       border-radius: 18px;
@@ -135,21 +134,21 @@
 
     .hero h2 {
       margin: 0 0 8px;
-      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-size: clamp(1.35rem, 2.6vw, 2.2rem);
       line-height: 1.05;
-      max-width: 760px;
+      max-width: 720px;
     }
 
     .hero p {
       margin: 0;
       color: var(--muted);
-      max-width: 760px;
-      font-size: 0.96rem;
-      line-height: 1.5;
+      max-width: 720px;
+      font-size: 0.92rem;
+      line-height: 1.45;
     }
 
     .hero-actions {
-      margin-top: 14px;
+      margin-top: 12px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -159,11 +158,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 14px;
+      padding: 9px 13px;
       border-radius: 10px;
       font-weight: 700;
       border: 1px solid transparent;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .btn-primary {
@@ -177,11 +176,10 @@
       color: var(--text);
     }
 
-    /* MAIN INDEX LAYOUT */
     .main-grid {
       display: grid;
-      grid-template-columns: 280px minmax(0, 1fr) 320px;
-      gap: 16px;
+      grid-template-columns: 260px minmax(0, 1fr) 290px;
+      gap: 14px;
       align-items: start;
     }
 
@@ -201,7 +199,7 @@
 
     h3.panel-title {
       margin: 0 0 12px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: var(--accent);
       letter-spacing: 0.02em;
     }
@@ -209,11 +207,10 @@
     .panel p {
       margin: 0;
       color: var(--muted);
-      line-height: 1.5;
-      font-size: 0.92rem;
+      line-height: 1.45;
+      font-size: 0.88rem;
     }
 
-    /* LEFT */
     details {
       margin-bottom: 10px;
       background: var(--card);
@@ -226,7 +223,7 @@
       cursor: pointer;
       font-weight: 700;
       color: var(--accent);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
     ul.partner-list {
@@ -241,10 +238,9 @@
 
     .partner-list a {
       color: var(--accent-2);
-      font-size: 0.9rem;
+      font-size: 0.86rem;
     }
 
-    /* CENTER FEED */
     .feed-column {
       min-width: 0;
     }
@@ -254,82 +250,88 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 12px;
-      padding: 4px 2px;
+      margin-bottom: 10px;
+      padding: 2px 2px;
     }
 
     .feed-toolbar h3 {
       margin: 0;
-      font-size: 0.98rem;
+      font-size: 0.92rem;
       color: var(--accent);
     }
 
     .feed-meta {
       color: var(--muted);
-      font-size: 0.84rem;
+      font-size: 0.8rem;
     }
 
     #feed {
       display: grid;
-      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
 
     .feed-card {
+      display: flex;
+      flex-direction: column;
+      height: auto;
       border: 1px solid var(--border);
       background: var(--card);
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
       box-shadow: var(--shadow);
     }
 
     .feed-card-header {
-      padding: 12px 14px 8px;
+      flex: 0 0 auto;
+      padding: 8px 10px 4px;
       display: flex;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
     }
 
     .feed-card-title {
       margin: 0;
-      font-size: 0.95rem;
-      line-height: 1.3;
+      font-size: 0.84rem;
+      line-height: 1.25;
       color: white;
     }
 
     .feed-card-tag {
       flex: 0 0 auto;
-      font-size: 0.74rem;
+      font-size: 0.68rem;
       color: white;
       background: rgba(255,255,255,0.08);
       border: 1px solid var(--border);
-      padding: 6px 9px;
+      padding: 5px 8px;
       border-radius: 999px;
     }
 
     .feed-card-copy {
-      padding: 0 14px 12px;
+      flex: 0 0 auto;
+      padding: 0 10px 8px;
       color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.45;
+      font-size: 0.74rem;
+      line-height: 1.35;
     }
 
     .embed-shell {
+      flex: 1;
       position: relative;
       width: 100%;
-      background: #090909;
+      min-height: 180px;
+      background: #000;
+      display: flex;
+      overflow: hidden;
       border-top: 1px solid var(--border);
-      min-height: 260px;
     }
 
-    .embed-shell.ratio-16x9 {
-      aspect-ratio: 16 / 9;
-      min-height: auto;
-    }
-
-    .embed-shell.ratio-4x5 {
-      aspect-ratio: 4 / 5;
-      min-height: auto;
+    .embed-shell iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
     }
 
     .embed-placeholder {
@@ -338,42 +340,36 @@
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 18px;
+      padding: 16px;
       color: var(--muted);
+      font-size: 0.78rem;
       background:
         radial-gradient(circle at top left, rgba(255,90,31,0.12), transparent 35%),
         linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     }
 
     .embed-placeholder button {
-      margin-top: 12px;
-      padding: 9px 12px;
+      margin-top: 10px;
+      padding: 8px 10px;
       border: 0;
-      border-radius: 10px;
+      border-radius: 8px;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: white;
       font-weight: 700;
       cursor: pointer;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
+      font-size: 0.75rem;
     }
 
     .loader {
-      margin: 14px auto 0;
+      margin: 12px auto 0;
       text-align: center;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.84rem;
     }
 
-    /* RIGHT */
     .mini-list {
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
     .mini-card {
@@ -385,20 +381,20 @@
 
     .mini-card h4 {
       margin: 0 0 7px;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       color: white;
     }
 
     .mini-card p {
       margin: 0;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.82rem;
     }
 
     .quick-buttons {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 8px;
       margin-top: 12px;
     }
 
@@ -406,24 +402,24 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       background: rgba(255,255,255,0.03);
-      padding: 10px 8px;
+      padding: 8px 6px;
       text-align: center;
     }
 
     .quick-buttons img {
-      width: 34px;
-      height: 34px;
+      width: 30px;
+      height: 30px;
       object-fit: contain;
       border-radius: 6px;
       background: #fff;
-      padding: 5px;
-      margin: 0 auto 6px;
+      padding: 4px;
+      margin: 0 auto 5px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     .quick-buttons span {
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       color: var(--muted);
     }
 
@@ -433,7 +429,7 @@
 
     @media (max-width: 1180px) {
       .main-grid {
-        grid-template-columns: 240px minmax(0, 1fr);
+        grid-template-columns: 230px minmax(0, 1fr);
       }
 
       .right-panel {
@@ -463,15 +459,9 @@
       .header-nav {
         width: 100%;
       }
-    }
 
-    @media (max-width: 560px) {
-      .quick-buttons {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .hero h2 {
-        font-size: 1.7rem;
+      #feed {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -544,7 +534,7 @@
       <section class="feed-column">
         <div class="feed-toolbar">
           <h3>LIVE CONTENT FEED</h3>
-          <div class="feed-meta">Infinite scroll enabled</div>
+          <div class="feed-meta">Compact grid</div>
         </div>
 
         <div id="feed"></div>
@@ -597,42 +587,36 @@
         title: "Watch how SignalBoost eHub centralizes discovery",
         tag: "YouTube",
         copy: "A wide-format embedded video card for platform storytelling and traffic growth.",
-        platform: "youtube",
         embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
       },
       {
         title: "Vertical short-form content for higher engagement",
         tag: "TikTok",
-        copy: "Use vertical embeds to keep the page feeling social, dynamic, and mobile-friendly.",
-        platform: "tiktok",
+        copy: "Use compact social content to keep the page dynamic and mobile-friendly.",
         embedUrl: "https://www.tiktok.com/embed/v2/7217490184957201669"
       },
       {
         title: "Instagram spotlight card",
         tag: "Instagram",
-        copy: "Use Instagram embed-friendly cards for brand, lifestyle, or promo content.",
-        platform: "instagram",
+        copy: "Use Instagram-style content blocks for brand, lifestyle, or promo content.",
         embedUrl: "https://www.instagram.com/p/CuE2WN5gA6W/embed"
       },
       {
         title: "Service explainer video",
         tag: "YouTube",
         copy: "Keep educational content in the feed so users understand the platform quickly.",
-        platform: "youtube",
         embedUrl: "https://www.youtube.com/embed/ysz5S6PUM-U"
       },
       {
         title: "Short clip that feels native to the feed",
         tag: "TikTok",
         copy: "Short clips work well between wider videos and social-proof style cards.",
-        platform: "tiktok",
         embedUrl: "https://www.tiktok.com/embed/v2/7296878923299882282"
       },
       {
         title: "Instagram brand reel slot",
         tag: "Instagram",
         copy: "A clean layout block to feature lifestyle and trust-building visuals.",
-        platform: "instagram",
         embedUrl: "https://www.instagram.com/p/CxQ1J5rL6fV/embed"
       }
     ];
@@ -640,18 +624,13 @@
     let cardIndex = 0;
     let loading = false;
 
-    function getRatioClass(platform) {
-      if (platform === "instagram" || platform === "tiktok") return "ratio-4x5";
-      return "ratio-16x9";
-    }
-
-    function createPlaceholder(text) {
+    function createPlaceholder() {
       const wrap = document.createElement("div");
       wrap.className = "embed-placeholder";
       wrap.innerHTML = `
         <div>
-          <div>${text}</div>
-          <button type="button">Load video</button>
+          <div>Click to load content</div>
+          <button type="button">Load</button>
         </div>
       `;
       return wrap;
@@ -673,30 +652,27 @@
       const article = document.createElement("article");
       article.className = "feed-card";
 
-      const ratioClass = getRatioClass(card.platform);
-
       article.innerHTML = `
         <div class="feed-card-header">
           <h4 class="feed-card-title">${card.title}</h4>
           <span class="feed-card-tag">${card.tag}</span>
         </div>
         <div class="feed-card-copy">${card.copy}</div>
-        <div class="embed-shell ${ratioClass}"></div>
+        <div class="embed-shell"></div>
       `;
 
       const shell = article.querySelector(".embed-shell");
-      const placeholder = createPlaceholder("Click to load embedded content");
+      const placeholder = createPlaceholder();
       shell.appendChild(placeholder);
 
-      const button = placeholder.querySelector("button");
-      button.addEventListener("click", () => {
+      placeholder.querySelector("button").addEventListener("click", () => {
         lazyEmbed(shell, card.embedUrl, card.title);
       });
 
       return article;
     }
 
-    function appendBatch(batchSize = 3) {
+    function appendBatch(batchSize = 4) {
       const frag = document.createDocumentFragment();
 
       for (let i = 0; i < batchSize; i++) {
@@ -712,17 +688,17 @@
       if (loading) return;
 
       const triggerPoint = window.innerHeight + window.scrollY;
-      const pageBottom = document.body.offsetHeight - 300;
+      const pageBottom = document.body.offsetHeight - 250;
 
       if (triggerPoint >= pageBottom) {
         loading = true;
         loader.textContent = "Loading more cards…";
 
         setTimeout(() => {
-          appendBatch(3);
+          appendBatch(4);
           loading = false;
           loader.textContent = "Scroll for more";
-        }, 350);
+        }, 300);
       }
     }
 
