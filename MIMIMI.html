@@ -473,7 +473,7 @@
   <!-- ════════════════════════════════════════════════
        COLUMN 5 – BUSINESS DASHBOARD
        ════════════════════════════════════════════════ -->
-  <aside class="sidebar" id="col5" style="border-right:none;border-left:1px solid var(--border);">
+  <aside class="sidebar" id="col5">
 
     <div class="sidebar-header">📊 Dashboard</div>
 
@@ -633,7 +633,7 @@ const TT_LIKE_MAX            = 50;     // upper bound for random TikTok like cou
 const TT_LIKE_MIN            = 10;     // lower bound for random TikTok like count (K)
 const TT_COMMENT_MAX         = 5;      // upper bound for random TikTok comment count (K)
 const TT_COMMENT_MIN         = 1;      // lower bound for random TikTok comment count (K)
-const TICKER_DECIMAL_THRESHOLD = 100;   // values below this are shown with decimals (e.g. crypto sub-$100)
+const TICKER_DECIMAL_THRESHOLD = 100;   // values at/above this use integer formatting; below shows 2 decimals
 
 /* ═══════════════════════════════════════════
    ANALYTICS
@@ -655,18 +655,24 @@ function updateStats() {
 ═══════════════════════════════════════════ */
 function makeYTCard(item) {
   const platformColors = { YT: '#ff0000', TT: '#ff004f', IG: '#c13584' };
+  const color = platformColors[item.platform] || '#555';
   const card = document.createElement('div');
   card.className = 'yt-card';
   card.innerHTML = `
       <div class="yt-thumb" style="background:linear-gradient(135deg,#1a1a1a,#2a2a2a)">
-        <span class="play">${item.emoji}</span>
-        <span class="badge" style="background:${platformColors[item.platform] || '#555'}">${item.platform}</span>
+        <span class="play"></span>
+        <span class="badge"></span>
       </div>
       <div class="yt-info">
         <div class="yt-title"></div>
-        <div class="yt-meta">👁 ${item.views} · ${item.category}</div>
+        <div class="yt-meta"></div>
       </div>`;
-  card.querySelector('.yt-title').textContent = item.title;
+  card.querySelector('.play').textContent                 = item.emoji;
+  const badge = card.querySelector('.badge');
+  badge.textContent                                       = item.platform;
+  badge.style.background                                  = color;
+  card.querySelector('.yt-title').textContent             = item.title;
+  card.querySelector('.yt-meta').textContent              = `👁 ${item.views} · ${item.category}`;
   card.addEventListener('click', trackClick);
   return card;
 }
@@ -730,11 +736,11 @@ function makeTTCard(item) {
       <div class="tiktok-side">
         <div>
           <div class="tiktok-icon">❤️</div>
-          <div class="tiktok-count">${likeCount}K</div>
+          <div class="tiktok-count like-count"></div>
         </div>
         <div>
           <div class="tiktok-icon">💬</div>
-          <div class="tiktok-count">${commentCount}K</div>
+          <div class="tiktok-count comment-count"></div>
         </div>
         <div>
           <div class="tiktok-icon">↗️</div>
@@ -742,10 +748,12 @@ function makeTTCard(item) {
         </div>
       </div>
       <div class="tiktok-progress"></div>`;
-  card.querySelector('.tiktok-bg').textContent    = item.bg;
-  card.querySelector('.tiktok-badge').textContent = item.badge;
-  card.querySelector('.tiktok-title').textContent = item.title;
-  card.querySelector('.tiktok-sub').textContent   = item.sub;
+  card.querySelector('.tiktok-bg').textContent      = item.bg;
+  card.querySelector('.tiktok-badge').textContent   = item.badge;
+  card.querySelector('.tiktok-title').textContent   = item.title;
+  card.querySelector('.tiktok-sub').textContent     = item.sub;
+  card.querySelector('.like-count').textContent     = likeCount + 'K';
+  card.querySelector('.comment-count').textContent  = commentCount + 'K';
   card.querySelector('.tiktok-btn.primary').addEventListener('click', trackClick);
   card.querySelectorAll('.tiktok-icon')[0].addEventListener('click', trackClick);
   return card;
