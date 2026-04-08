@@ -231,7 +231,7 @@ async function fetchRedditRss(subreddit) {
             ? entry.title
             : entry.title?.['#text'] || 'Reddit post';
         return {
-          title: decodeEntities(rawTitle.trim()),
+          title: decodeEntities(String(rawTitle).trim()),
           url: itemUrl,
           cat,
           source: `r/${subreddit}`,
