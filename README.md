@@ -73,21 +73,29 @@ Edit the `RSS_FEEDS` array in `api/generate-feed.mjs`:
 
 ```js
 const RSS_FEEDS = [
-  {
-    url: 'https://www.theguardian.com/travel/rss',
-    cat: 'travel',
-    source: 'The Guardian – Travel',
-  },
+  // Travel
+  { url: 'https://www.nomadicmatt.com/feed/', cat: 'travel', source: 'Nomadic Matt' },
+  { url: 'https://feeds.feedburner.com/TravelLeisure', cat: 'travel', source: 'Travel + Leisure' },
+  // Tech
+  { url: 'https://techcrunch.com/feed/', cat: 'tech', source: 'TechCrunch' },
+  { url: 'https://www.theverge.com/rss/index.xml', cat: 'tech', source: 'The Verge' },
+  // Finance
+  { url: 'https://feeds.marketwatch.com/marketwatch/topstories/', cat: 'finance', source: 'MarketWatch' },
   // Add more feeds here ↓
-  {
-    url: 'https://feeds.example.com/tech',
-    cat: 'tech',
-    source: 'Example Tech',
-  },
 ];
 ```
 
-### 4. Run locally
+> **Note on feed selection:** The original Guardian Travel RSS feed was removed because it triggered a
+> fast-xml-parser entity expansion limit. Any replacement feeds should be standard RSS 2.0 or Atom.
+
+### 4. Reddit in GitHub Actions
+
+Reddit's JSON API sometimes returns HTTP 403 when called from GitHub Actions' shared IP ranges.
+The generator automatically falls back to Reddit's public RSS/Atom endpoint when the JSON API is
+blocked. If the RSS endpoint also fails, that subreddit is skipped and the other sources still
+populate the feed.
+
+### 5. Run locally
 
 ```bash
 # Install dependencies
