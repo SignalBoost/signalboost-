@@ -1314,7 +1314,7 @@
     <a href="#" class="footer-link">Contact Us</a>
     <a href="#" class="footer-link">About</a>
   </div>
-  <div class="footer-copy">© 2026 SignalBoostAi · All Rights Reserved · Curated Deals Across All Sectors</div>
+  <div class="footer-copy" id="footer-copy">© 2026 SignalBoostAi · All Rights Reserved · Curated Deals Across All Sectors</div>
 </footer>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -1322,6 +1322,26 @@
 ═══════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
+
+/* ──────────────────────────────────────────────
+   NAMED CONSTANTS
+────────────────────────────────────────────── */
+const MIN_CPC                = 1;          // Minimum simulated cost-per-click ($)
+const MAX_CPC                = 5;          // Maximum simulated cost-per-click ($)
+const STOCK_UPDATE_INTERVAL  = 5 * 1000;  // 5 seconds between stock updates
+const NEWS_REFRESH_INTERVAL  = 5 * 60 * 1000;   // 5 minutes between news refresh
+const WEATHER_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes between weather update
+const STOCK_BIAS             = 0.48;      // Slight upward bias (> 0.5 = more down)
+const STOCK_VOLATILITY       = 0.004;     // Max price swing per update (0.4%)
+const SCROLL_RESET_OFFSET    = 2;         // Pixels offset when looping TikTok scroll
+
+/* ──────────────────────────────────────────────
+   DYNAMIC COPYRIGHT YEAR
+────────────────────────────────────────────── */
+(function setFooterYear() {
+  const el = document.getElementById('footer-copy');
+  if (el) el.textContent = `© ${new Date().getFullYear()} SignalBoostAi · All Rights Reserved · Curated Deals Across All Sectors`;
+})();
 
 /* ──────────────────────────────────────────────
    ADMIN METRICS (Hidden from public)
@@ -1333,7 +1353,7 @@ const _admin = {
   revenue: parseFloat(localStorage.getItem('_sb_revenue') || '0'),
   log(partner) {
     this.clicks++;
-    this.revenue += Math.random() * 4 + 1; // simulated CPC $1–$5
+    this.revenue += Math.random() * (MAX_CPC - MIN_CPC) + MIN_CPC;
     localStorage.setItem('_sb_views', this.views);
     localStorage.setItem('_sb_clicks', this.clicks);
     localStorage.setItem('_sb_revenue', this.revenue.toFixed(2));
@@ -1389,7 +1409,7 @@ const PLAYLISTS = {
     { song: 'Gymnopédie No.1',     artist: 'Erik Satie' },
     { song: 'Clair de Lune',       artist: 'Claude Debussy' },
     { song: 'Nocturne Op.9 No.2',  artist: 'Frédéric Chopin' },
-    { song: 'Comptine d\'un autre été', artist: 'Yann Tiersen' },
+    { song: "Comptine d'un autre été", artist: 'Yann Tiersen' },
     { song: 'Experience',          artist: 'Ludovico Einaudi' },
     { song: 'River Flows in You',  artist: 'Yiruma' },
   ],
@@ -1514,7 +1534,7 @@ function buildTikTokCards() {
   container.addEventListener('scroll', () => {
     const el = container;
     if (el.scrollTop + el.clientHeight >= el.scrollHeight - 10) {
-      el.scrollTop = 2; // loop back
+      el.scrollTop = SCROLL_RESET_OFFSET; // loop back (avoid 0 to prevent scroll-start flicker)
     }
   });
 }
@@ -1538,7 +1558,7 @@ const STOCKS = {
 
 function updateStocks() {
   Object.values(STOCKS).forEach(stock => {
-    const delta  = (Math.random() - 0.48) * stock.base * 0.004;
+    const delta  = (Math.random() - STOCK_BIAS) * stock.base * STOCK_VOLATILITY;
     stock.base  += delta;
     const pct    = delta / (stock.base - delta) * 100;
     const up     = pct >= 0;
@@ -1565,7 +1585,7 @@ function updateStocks() {
   });
 }
 
-setInterval(updateStocks, 5000);
+setInterval(updateStocks, STOCK_UPDATE_INTERVAL);
 
 /* ──────────────────────────────────────────────
    FINANCIAL NEWS FEED (Simulated, refreshes 5min)
@@ -1605,7 +1625,7 @@ function renderNews() {
 }
 
 renderNews();
-setInterval(renderNews, 300000); // every 5 minutes
+setInterval(renderNews, NEWS_REFRESH_INTERVAL);
 
 /* ──────────────────────────────────────────────
    WEATHER (Simulated — connect OpenWeather for real)
@@ -1638,8 +1658,7 @@ document.getElementById('weather-hum').textContent   = '65%';
 document.getElementById('weather-feels').textContent = '20°C';
 document.getElementById('weather-uv').textContent    = 'UV 4';
 
-// Gently refresh weather every 30 minutes
-setInterval(updateWeather, 1800000);
+setInterval(updateWeather, WEATHER_REFRESH_INTERVAL);
 </script>
 </body>
 </html>
