@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalBoostAi — Dashboard</title>
+  <meta name="description" content="SignalBoostAi — your all-in-one dark-theme dashboard for partners, trending content, and market data." />
+  <style>
+    /* ── Reset & tokens ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0a0a0a;
+      --bg2:      #050505;
+      --surface:  #111117;
+      --surface2: #18181f;
+      --border:   rgba(255,255,255,.07);
+      --border2:  rgba(255,255,255,.12);
+      --text:     #f0f0f5;
+      --muted:    #7a7a90;
+      --pink:     #ff004f;
+      --cyan:     #00ffcc;
+      --yellow:   #ffe234;
+      --radius:   18px;
+      --radius-sm:10px;
+      --shadow:   0 4px 24px rgba(0,0,0,.55);
+      --shadow-lg:0 8px 40px rgba(0,0,0,.7);
+      --transition:.18s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg2);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 99px; }
+
+    /* ── Topbar ─────────────────────────────────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(5,5,5,.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+    }
+    .topbar-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; height: 52px; max-width: 1920px; margin: 0 auto;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 900; font-size: 1.1rem; letter-spacing: -.02em;
+    }
+    .brand-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      display: grid; place-items: center; font-size: .8rem; font-weight: 900;
+      color: #000; flex-shrink: 0;
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+    @keyframes logoPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,0,79,.4); }
+      50% { box-shadow: 0 0 0 8px rgba(255,0,79,0); }
+    }
+    .brand-name { background: linear-gradient(90deg,var(--pink),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .topbar-actions { display: flex; align-items: center; gap: 8px; }
+    .pill-btn {
+      background: var(--surface); border: 1px solid var(--border2);
+      color: var(--muted); padding: 6px 14px; border-radius: 99px;
+      font-size: .8rem; font-weight: 700; transition: var(--transition);
+    }
+    .pill-btn:hover { color: var(--text); border-color: var(--cyan); }
+    .pill-btn.active { background: var(--pink); color: #fff; border-color: var(--pink); }
+    .old-link { color: var(--muted); font-size: .75rem; transition: var(--transition); }
+    .old-link:hover { color: var(--cyan); }
+
+    /* ── Outer shell ────────────────────────────────────────────── */
+    .shell {
+      max-width: 1920px; margin: 0 auto;
+      padding: 16px 16px 32px;
+    }
+
+    /* ── 5-column grid ──────────────────────────────────────────── */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 220px 260px 1fr 280px 260px;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width:1400px) {
+      .dashboard { grid-template-columns: 200px 240px 1fr 260px; }
+      .col-dashboard { display: none; }
+    }
+    @media (max-width:1100px) {
+      .dashboard { grid-template-columns: 200px 1fr 240px; }
+      .col-promos { display: none; }
+    }
+    @media (max-width:780px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .col-partners { display: none; }
+      .col-widgets  { display: none; }
+    }
+
+    /* ── Panel base ─────────────────────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title {
+      font-size: .72rem; font-weight: 900; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--cyan);
+    }
+    .panel-badge {
+      background: var(--pink); color: #fff;
+      font-size: .65rem; font-weight: 900;
+      padding: 2px 7px; border-radius: 99px;
+    }
+    .panel-body { padding: 12px; }
+
+    /* ── COLUMN 1: Partners ─────────────────────────────────────── */
+    .col-partners { position: sticky; top: 68px; }
+
+    .partner-search {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+      color: var(--text); padding: 8px 12px; border-radius: var(--radius-sm);
+      font-size: .82rem; outline: none; margin-bottom: 12px;
+      transition: var(--transition);
+    }
+    .partner-search:focus { border-color: var(--cyan); }
+
+    .partner-cat { margin-bottom: 8px; }
+    .partner-cat-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; border-radius: var(--radius-sm);
+      background: var(--surface2); cursor: pointer;
+      user-select: none; transition: var(--transition);
+      font-size: .78rem; font-weight: 800;
+    }
+    .partner-cat-header:hover { background: rgba(255,255,255,.06); }
+    .partner-cat-header .cat-icon { font-size: 1rem; margin-right: 6px; }
+    .partner-cat-header .chevron {
+      color: var(--muted); font-size: .7rem;
+      transition: transform .2s ease;
+    }
+    .partner-cat.open .chevron { transform: rotate(90deg); }
+    .partner-items {
+      display: none; padding-top: 4px; padding-left: 4px;
+    }
+    .partner-cat.open .partner-items { display: block; }
+    .partner-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: var(--radius-sm);
+      font-size: .8rem; cursor: pointer; transition: var(--transition);
+      position: relative;
+    }
+    .partner-item:hover {
+      background: rgba(0,255,204,.06);
+      color: var(--cyan);
+    }
+    .partner-item .p-icon {
+      width: 26px; height: 26px; border-radius: 6px;
+      background: var(--surface2); display: grid; place-items: center;
+      font-size: .9rem; flex-shrink: 0;
+    }
+    .partner-item .p-name { font-weight: 700; flex: 1; }
+    .partner-item .p-tag {
+      font-size: .62rem; font-weight: 900; text-transform: uppercase;
+      color: var(--cyan); opacity: .7;
+    }
+    .partner-item.hot .p-tag { color: var(--pink); }
+
+    /* ── COLUMN 2: Promo cards ──────────────────────────────────── */
+    .promo-feed {
+      display: grid; gap: 12px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    .promo-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: var(--transition); cursor: pointer;
+    }
+    .promo-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .promo-thumb {
+      width: 100%; height: 130px;
+      display: grid; place-items: center;
+      font-size: 2.4rem; position: relative; overflow: hidden;
+    }
+    .promo-thumb::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.6));
+    }
+    .promo-new-badge {
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+      background: var(--pink); color: #fff;
+      font-size: .62rem; font-weight: 900; padding: 3px 8px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
+    }
+    .promo-body { padding: 12px 14px 14px; }
+    .promo-kicker {
+      font-size: .65rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--cyan); margin-bottom: 4px;
+    }
+    .promo-title { font-size: .92rem; font-weight: 800; margin-bottom: 4px; }
+    .promo-desc { font-size: .78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
+    .promo-cta {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: linear-gradient(90deg,var(--pink),#c0003c);
+      color: #fff; font-size: .75rem; font-weight: 900;
+      padding: 7px 14px; border-radius: 99px;
+      transition: var(--transition);
+    }
+    .promo-cta:hover { opacity: .85; transform: scale(1.03); }
+
+    /* ── COLUMN 3: Hero feed ────────────────────────────────────── */
+    .hero-feed {
+      display: grid; gap: 14px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .hero-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: var(--transition); cursor: pointer;
+    }
+    .hero-card:hover {
+      border-color: var(--pink);
+      transform: translateY(-2px);
+      box-shadow: 0 0 24px rgba(255,0,79,.18), var(--shadow-lg);
+    }
+    .hero-thumb {
+      width: 100%;
+      aspect-ratio: 9/14;
+      display: grid; place-items: center;
+      font-size: 4rem; position: relative;
+      overflow: hidden;
+    }
+    .hero-thumb .overlay-grad {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.85));
+    }
+    .hero-thumb .hero-badge {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      background: var(--pink); color: #fff;
+      font-size: .65rem; font-weight: 900; padding: 4px 10px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
+    }
+    .hero-thumb .hero-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      z-index: 2; padding: 14px;
+    }
+    .hero-thumb .hero-info .hero-cat {
+      font-size: .65rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--cyan); margin-bottom: 4px;
+    }
+    .hero-thumb .hero-info h3 {
+      font-size: 1.05rem; font-weight: 900; line-height: 1.25;
+    }
+    .hero-actions {
+      display: flex; gap: 10px; padding: 12px 14px;
+      align-items: center;
+    }
+    .hero-action-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); padding: 6px 12px;
+      border-radius: 99px; font-size: .75rem; font-weight: 700;
+      transition: var(--transition);
+    }
+    .hero-action-btn:hover { color: var(--text); border-color: var(--border2); }
+    .hero-action-btn.primary {
+      background: var(--pink); color: #fff; border-color: var(--pink);
+    }
+    .hero-stats { margin-left: auto; font-size: .72rem; color: var(--muted); }
+
+    /* ── COLUMN 4: Widgets ──────────────────────────────────────── */
+    .widget-feed {
+      display: grid; gap: 12px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .widget-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: var(--transition);
+    }
+    .widget-card:hover { border-color: var(--border2); }
+    .yt-thumb {
+      width: 100%; height: 110px;
+      display: grid; place-items: center;
+      font-size: 2.2rem; position: relative; overflow: hidden;
+    }
+    .yt-thumb .yt-play {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      background: rgba(0,0,0,.25);
+    }
+    .yt-play-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,0,79,.85); display: grid; place-items: center;
+      color: #fff; font-size: 1rem;
+      transition: var(--transition);
+    }
+    .widget-card:hover .yt-play-btn { transform: scale(1.12); }
+    .widget-body { padding: 10px 12px 12px; }
+    .widget-kicker {
+      font-size: .62rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--pink); margin-bottom: 3px;
+    }
+    .widget-title { font-size: .84rem; font-weight: 800; margin-bottom: 4px; line-height: 1.3; }
+    .widget-meta { font-size: .72rem; color: var(--muted); }
+
+    /* ticker & small widgets */
+    .ticker-row {
+      display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 12px;
+    }
+    .ticker-item {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 8px 12px;
+      flex: 1 1 70px; min-width: 70px;
+    }
+    .ticker-sym { font-size: .65rem; font-weight: 900; color: var(--muted); }
+    .ticker-val { font-size: .88rem; font-weight: 800; }
+    .ticker-chg { font-size: .65rem; font-weight: 800; }
+    .up { color: #00e676; }
+    .dn { color: var(--pink); }
+
+    .news-item {
+      display: flex; gap: 10px; padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer; transition: var(--transition);
+    }
+    .news-item:last-child { border-bottom: none; }
+    .news-item:hover { background: rgba(255,255,255,.03); }
+    .news-emoji { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+    .news-title { font-size: .78rem; font-weight: 700; line-height: 1.35; }
+    .news-time { font-size: .65rem; color: var(--muted); margin-top: 3px; }
+
+    /* ── COLUMN 5: Dashboard ────────────────────────────────────── */
+    .col-dashboard { position: sticky; top: 68px; display: grid; gap: 12px; }
+
+    /* stocks */
+    .stock-list { display: grid; gap: 8px; padding: 12px; }
+    .stock-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+    }
+    .stock-name { font-size: .78rem; font-weight: 700; }
+    .stock-spark { flex: 1; height: 28px; }
+    .stock-val { text-align: right; }
+    .stock-num { font-size: .82rem; font-weight: 800; display: block; }
+    .stock-pct { font-size: .65rem; font-weight: 900; }
+
+    /* weather */
+    .weather-inner { padding: 14px; text-align: center; }
+    .weather-temp { font-size: 2.8rem; font-weight: 900; line-height: 1; }
+    .weather-city { font-size: .78rem; color: var(--muted); margin-top: 4px; margin-bottom: 10px; }
+    .weather-row {
+      display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
+    }
+    .weather-pill {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 99px; padding: 4px 10px;
+      font-size: .7rem; font-weight: 700;
+    }
+
+    /* quick access */
+    .qa-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; padding: 12px;
+    }
+    .qa-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 4px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 5px; cursor: pointer; transition: var(--transition);
+      color: var(--muted); font-size: .62rem; font-weight: 800;
+    }
+    .qa-btn:hover { border-color: var(--cyan); color: var(--text); transform: translateY(-2px); }
+    .qa-btn .qa-icon { font-size: 1.2rem; }
+
+    /* ── Loading skeletons ──────────────────────────────────────── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--radius-sm);
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Infinite scroll sentinel ───────────────────────────────── */
+    .load-sentinel { height: 40px; display: grid; place-items: center; }
+    .spinner {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border2); border-top-color: var(--cyan);
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Notification dot ───────────────────────────────────────── */
+    .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--pink); margin-left: 5px; }
+
+    /* ── Gradient backgrounds for thumbnails ────────────────────── */
+    .g1 { background: linear-gradient(135deg,#1a0a2e,#3d1155); }
+    .g2 { background: linear-gradient(135deg,#0a1628,#1a3a6e); }
+    .g3 { background: linear-gradient(135deg,#0a2018,#0e5c3a); }
+    .g4 { background: linear-gradient(135deg,#28100a,#6e1a1a); }
+    .g5 { background: linear-gradient(135deg,#1a1a0a,#5c5c0a); }
+    .g6 { background: linear-gradient(135deg,#0a1a28,#0a4a6e); }
+    .g7 { background: linear-gradient(135deg,#2a0a1a,#8e1050); }
+    .g8 { background: linear-gradient(135deg,#0a2228,#0a6050); }
+
+    /* ── Light theme ────────────────────────────────────────────── */
+    body.light-theme {
+      --bg: #f5f5fa; --bg2: #ebebf2;
+      --surface: #ffffff; --surface2: #f0f0f5;
+      --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.14);
+      --text: #0a0a14; --muted: #606080;
+      background: var(--bg2);
+    }
+    body.light-theme .topbar { background: rgba(240,240,250,.92); }
+  </style>
+</head>
+<body>
+
+<!-- ── Topbar ───────────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-logo">🛰</div>
+      <span class="brand-name">SignalBoostAi</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="pill-btn active" id="liveBtn">🔴 LIVE</button>
+      <button class="pill-btn" id="themeBtn">☀️ Light</button>
+      <a href="../" class="old-link">← Classic site</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main shell ────────────────────────────────────────────────── -->
+<main class="shell">
+  <div class="dashboard">
+
+    <!-- ════════════════════════════════════════════════════════════
+         COLUMN 1 — Partners
+    ══════════════════════════════════════════════════════════════ -->
+    <aside class="col-partners">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Partners</span>
+          <span class="panel-badge">45+</span>
+        </div>
+        <div class="panel-body">
+          <input class="partner-search" type="search" placeholder="🔍 Search partners…" id="partnerSearch" />
+
+          <!-- Travel -->
+          <div class="partner-cat open" id="cat-travel">
+            <div class="partner-cat-header" onclick="toggleCat('cat-travel')">
+              <span><span class="cat-icon">✈️</span>Travel</span>
+              <span class="chevron">▶</span>
+            </div>
+            <div class="partner-items">
+              <a class="partner-item hot" href="https://vrbo.tpo.lv/ldtO3nzY" target="_blank" rel="noopener" onclick="trackClick('partner','VRBO')">
+                <span class="p-icon">🏠</span>
+                <span class="p-name">VRBO</span>
+                <span class="p-tag">HOT</span>
+              </a>
+              <a class="partner-item" href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('partner','Skyscanner')">
+                <span class="p-icon">✈️</span>
+                <span class="p-name">Skyscanner</span>
+                <span class="p-tag">FLY</span>
+              </a>
+              <a class="partner-item" href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('partner','Safari Portal')">
+                <span class="p-icon">🦁</span>
+                <span class="p-name">Safari Portal</span>
+                <span class="p-tag">ADV</span>
+              </a>
+              <a class="partner-item" href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('partner','Lastminute')">
+                <span class="p-icon">⏱</span>
+                <span class="p-name">Lastminute SE</span>
+                <span class="p-tag">DEAL</span>
+              </a>
+              <a class="partner-item" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('partner','Awin Offer')">
+                <span class="p-icon">🎁</span>
+                <span class="p-name">Exclusive Offer</span>
+                <span class="p-tag">NEW</span>
+              </a>
+              <a class="partner-item" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('partner','Travel Deal')">
+                <span class="p-icon">🌍</span>
+                <span class="p-name">World Deals</span>
+                <span class="p-tag">SAVE</span>
+              </a>
+              <a class="partner-item" href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate" target="_blank" rel="noopener" onclick="trackClick('partner','ZuluTrade')">
+                <span class="p-icon">📈</span>
+                <span class="p-name">ZuluTrade</span>
+                <span class="p-tag">FIN</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Tech -->
+          <div class="partner-cat" id="cat-tech">
+            <div class="partner-cat-header" onclick="toggleCat('cat-tech')">
+              <span><span class="cat-icon">💻</span>Tech</span>
+              <span class="chevron">▶</span>
+            </div>
+            <div class="partner-items">
+              <div class="partner-item"><span class="p-icon">🖥</span><span class="p-name">Amazon Tech</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">📱</span><span class="p-name">Best Buy</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">🎮</span><span class="p-name">Razer</span><span class="p-tag">Soon</span></div>
+            </div>
+          </div>
+
+          <!-- Fashion -->
+          <div class="partner-cat" id="cat-fashion">
+            <div class="partner-cat-header" onclick="toggleCat('cat-fashion')">
+              <span><span class="cat-icon">👗</span>Fashion</span>
+              <span class="chevron">▶</span>
+            </div>
+            <div class="partner-items">
+              <div class="partner-item"><span class="p-icon">👟</span><span class="p-name">ASOS</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">👜</span><span class="p-name">Farfetch</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">🧣</span><span class="p-name">Zalando</span><span class="p-tag">Soon</span></div>
+            </div>
+          </div>
+
+          <!-- Food -->
+          <div class="partner-cat" id="cat-food">
+            <div class="partner-cat-header" onclick="toggleCat('cat-food')">
+              <span><span class="cat-icon">🍔</span>Food & Drink</span>
+              <span class="chevron">▶</span>
+            </div>
+            <div class="partner-items">
+              <div class="partner-item"><span class="p-icon">🚀</span><span class="p-name">Uber Eats</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">🌮</span><span class="p-name">Deliveroo</span><span class="p-tag">Soon</span></div>
+            </div>
+          </div>
+
+          <!-- Finance -->
+          <div class="partner-cat" id="cat-finance">
+            <div class="partner-cat-header" onclick="toggleCat('cat-finance')">
+              <span><span class="cat-icon">💰</span>Finance</span>
+              <span class="chevron">▶</span>
+            </div>
+            <div class="partner-items">
+              <a class="partner-item hot" href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate" target="_blank" rel="noopener" onclick="trackClick('partner','ZuluTrade-fin')">
+                <span class="p-icon">📈</span>
+                <span class="p-name">ZuluTrade</span>
+                <span class="p-tag">HOT</span>
+              </a>
+              <div class="partner-item"><span class="p-icon">💳</span><span class="p-name">Wise</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">🏦</span><span class="p-name">Revolut</span><span class="p-tag">Soon</span></div>
+            </div>
+          </div>
+
+          <!-- Health -->
+          <div class="partner-cat" id="cat-health">
+            <div class="partner-cat-header" onclick="toggleCat('cat-health')">
+              <span><span class="cat-icon">💪</span>Health</span>
+              <span class="chevron">▶</span>
+            </div>
+            <div class="partner-items">
+              <div class="partner-item"><span class="p-icon">🧴</span><span class="p-name">iHerb</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">🏋️</span><span class="p-name">Gymshark</span><span class="p-tag">Soon</span></div>
+            </div>
+          </div>
+
+          <!-- Entertainment -->
+          <div class="partner-cat" id="cat-ent">
+            <div class="partner-cat-header" onclick="toggleCat('cat-ent')">
+              <span><span class="cat-icon">🎬</span>Entertainment</span>
+              <span class="chevron">▶</span>
+            </div>
+            <div class="partner-items">
+              <div class="partner-item"><span class="p-icon">🎵</span><span class="p-name">Spotify</span><span class="p-tag">Soon</span></div>
+              <div class="partner-item"><span class="p-icon">📺</span><span class="p-name">Disney+</span><span class="p-tag">Soon</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+
+    <!-- ════════════════════════════════════════════════════════════
+         COLUMN 2 — Featured Offers / Promotions
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="col-promos">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Featured Offers</span>
+          <span class="panel-badge">HOT</span>
+        </div>
+      </div>
+      <div class="promo-feed" id="promoFeed" style="margin-top:12px;">
+        <!-- seeded by JS -->
+      </div>
+      <div class="load-sentinel" id="promoSentinel"><div class="spinner"></div></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════
+         COLUMN 3 — Hero / TikTok Feed (primary)
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="col-hero">
+      <div class="panel" style="margin-bottom:14px;">
+        <div class="panel-header">
+          <span class="panel-title">🔥 Trending Now</span>
+          <div style="display:flex;gap:8px;">
+            <button class="pill-btn active" id="feedAll">All</button>
+            <button class="pill-btn" id="feedTravel">Travel</button>
+            <button class="pill-btn" id="feedTech">Tech</button>
+          </div>
+        </div>
+      </div>
+      <div class="hero-feed" id="heroFeed">
+        <!-- seeded by JS -->
+      </div>
+      <div class="load-sentinel" id="heroSentinel"><div class="spinner"></div></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════
+         COLUMN 4 — YouTube-style / Widgets
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="col-widgets">
+      <div class="panel" style="margin-bottom:12px;">
+        <div class="panel-header">
+          <span class="panel-title">▶ Watch & Discover</span>
+        </div>
+      </div>
+
+      <!-- Stock ticker mini -->
+      <div class="panel" style="margin-bottom:12px;">
+        <div class="panel-header">
+          <span class="panel-title">📊 Markets</span>
+          <span style="font-size:.65rem;color:var(--muted);" id="mktTime">Live</span>
+        </div>
+        <div class="ticker-row">
+          <div class="ticker-item">
+            <div class="ticker-sym">DJIA</div>
+            <div class="ticker-val" id="djia-val">38,241</div>
+            <div class="ticker-chg up" id="djia-chg">▲ +0.42%</div>
+          </div>
+          <div class="ticker-item">
+            <div class="ticker-sym">S&P500</div>
+            <div class="ticker-val" id="sp-val">5,021</div>
+            <div class="ticker-chg up" id="sp-chg">▲ +0.61%</div>
+          </div>
+          <div class="ticker-item">
+            <div class="ticker-sym">NASDAQ</div>
+            <div class="ticker-val" id="nq-val">15,812</div>
+            <div class="ticker-chg dn" id="nq-chg">▼ -0.23%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget-feed" id="widgetFeed">
+        <!-- seeded by JS -->
+      </div>
+      <div class="load-sentinel" id="widgetSentinel"><div class="spinner"></div></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════
+         COLUMN 5 — Dashboard Panel
+    ══════════════════════════════════════════════════════════════ -->
+    <aside class="col-dashboard">
+
+      <!-- Stocks full -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📈 Stocks</span>
+          <span class="dot"></span>
+        </div>
+        <div class="stock-list" id="stockList">
+          <div class="stock-row">
+            <span class="stock-name">DJIA</span>
+            <svg class="stock-spark" id="spark-djia" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+            <div class="stock-val">
+              <span class="stock-num" id="s-djia">38,241</span>
+              <span class="stock-pct up" id="p-djia">▲ +0.42%</span>
+            </div>
+          </div>
+          <div class="stock-row">
+            <span class="stock-name">S&amp;P 500</span>
+            <svg class="stock-spark" id="spark-sp" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+            <div class="stock-val">
+              <span class="stock-num" id="s-sp">5,021</span>
+              <span class="stock-pct up" id="p-sp">▲ +0.61%</span>
+            </div>
+          </div>
+          <div class="stock-row">
+            <span class="stock-name">NASDAQ</span>
+            <svg class="stock-spark" id="spark-nq" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+            <div class="stock-val">
+              <span class="stock-num" id="s-nq">15,812</span>
+              <span class="stock-pct dn" id="p-nq">▼ -0.23%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🌤 Weather</span>
+          <span style="font-size:.65rem;color:var(--muted);">Now</span>
+        </div>
+        <div class="weather-inner">
+          <div class="weather-temp" id="wTemp">72°F</div>
+          <div class="weather-city" id="wCity">New York, NY · Partly Cloudy</div>
+          <div class="weather-row">
+            <span class="weather-pill">💧 58% humidity</span>
+            <span class="weather-pill">💨 12 mph</span>
+            <span class="weather-pill">🌅 6:24 AM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- News -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📰 News</span>
+          <span class="panel-badge">LIVE</span>
+        </div>
+        <div id="newsWidget">
+          <div class="news-item"><span class="news-emoji">📡</span><div><div class="news-title">AI breakthroughs reshape digital commerce landscape</div><div class="news-time">2 min ago</div></div></div>
+          <div class="news-item"><span class="news-emoji">✈️</span><div><div class="news-title">Record summer travel bookings surge 34% YoY</div><div class="news-time">8 min ago</div></div></div>
+          <div class="news-item"><span class="news-emoji">📈</span><div><div class="news-title">S&amp;P 500 edges higher amid earnings optimism</div><div class="news-time">15 min ago</div></div></div>
+          <div class="news-item"><span class="news-emoji">💻</span><div><div class="news-title">New chip architecture promises 10× efficiency gains</div><div class="news-time">22 min ago</div></div></div>
+          <div class="news-item"><span class="news-emoji">🌍</span><div><div class="news-title">Eco-tourism gains traction as travelers go green</div><div class="news-time">31 min ago</div></div></div>
+        </div>
+      </div>
+
+      <!-- Quick Access -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">⚡ Quick Access</span>
+        </div>
+        <div class="qa-grid">
+          <a class="qa-btn" href="https://youtube.com/@SignalBoostAi" target="_blank" onclick="trackClick('social','YouTube')">
+            <span class="qa-icon">📺</span><span>YouTube</span>
+          </a>
+          <a class="qa-btn" href="https://www.tiktok.com/@signalboostai" target="_blank" onclick="trackClick('social','TikTok')">
+            <span class="qa-icon">🎵</span><span>TikTok</span>
+          </a>
+          <a class="qa-btn" href="https://instagram.com/signalboostai" target="_blank" onclick="trackClick('social','Instagram')">
+            <span class="qa-icon">📷</span><span>Instagram</span>
+          </a>
+          <a class="qa-btn" href="https://facebook.com/signalboostai" target="_blank" onclick="trackClick('social','Facebook')">
+            <span class="qa-icon">👤</span><span>Facebook</span>
+          </a>
+          <a class="qa-btn" href="https://reddit.com/r/signalboostai" target="_blank" onclick="trackClick('social','Reddit')">
+            <span class="qa-icon">🟠</span><span>Reddit</span>
+          </a>
+          <a class="qa-btn" href="https://linkedin.com/company/signalboostai" target="_blank" onclick="trackClick('social','LinkedIn')">
+            <span class="qa-icon">💼</span><span>LinkedIn</span>
+          </a>
+          <a class="qa-btn" href="https://x.com/signalboostai" target="_blank" onclick="trackClick('social','X')">
+            <span class="qa-icon">✖️</span><span>X</span>
+          </a>
+          <a class="qa-btn" href="https://t.me/signalboostai" target="_blank" onclick="trackClick('social','Telegram')">
+            <span class="qa-icon">✈️</span><span>Telegram</span>
+          </a>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</main>
+
+<script>
+/* ================================================================
+   Click Tracking
+================================================================ */
+function trackClick(category, label) {
+  const key = 'sb_clicks';
+  const stored = JSON.parse(localStorage.getItem(key) || '{}');
+  const entry = `${category}::${label}`;
+  stored[entry] = (stored[entry] || 0) + 1;
+  stored._lastClick = { category, label, ts: Date.now() };
+  localStorage.setItem(key, JSON.stringify(stored));
+}
+
+/* ================================================================
+   Partner category toggle
+================================================================ */
+function toggleCat(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ================================================================
+   Partner search filter
+================================================================ */
+document.getElementById('partnerSearch').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.partner-item').forEach(function(el) {
+    const name = el.querySelector('.p-name');
+    if (!name) return;
+    el.style.display = name.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+/* ================================================================
+   Content data — Promo cards
+================================================================ */
+const PROMO_POOL = [
+  { kicker:'Travel Deal', title:'VRBO: Vacation Rentals', desc:'Find the perfect vacation home. Entire properties just for you.', emoji:'🏖', grad:'g2', badge:'NEW', href:'https://vrbo.tpo.lv/ldtO3nzY', label:'VRBO' },
+  { kicker:'Finance', title:'ZuluTrade Copy Trading', desc:'Follow top traders automatically. Diversify with one click.', emoji:'📈', grad:'g3', badge:'HOT', href:'https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate', label:'ZuluTrade' },
+  { kicker:'Flights', title:'Skyscanner Deals', desc:'Compare millions of flights to find the cheapest fares.', emoji:'✈️', grad:'g1', badge:'SAVE', href:'https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806', label:'Skyscanner' },
+  { kicker:'Adventure', title:'Safari & Wildlife Tours', desc:'Epic bucket-list safaris curated for every budget.', emoji:'🦒', grad:'g5', badge:'NEW', href:'https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806', label:'Safari' },
+  { kicker:'Last Minute', title:'Lastminute SE Packages', desc:'Package holidays at unbeatable last-minute prices.', emoji:'⏱', grad:'g4', badge:'DEAL', href:'https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806', label:'Lastminute' },
+  { kicker:'Trending Tech', title:'AI Gadgets Review 2026', desc:'The best AI-powered gadgets you need to see this season.', emoji:'🤖', grad:'g6', badge:'NEW', href:'#', label:'Tech-Review' },
+  { kicker:'Lifestyle', title:'Wellness at Home', desc:'Top picks for building your perfect wellness routine.', emoji:'🧘', grad:'g7', badge:'', href:'#', label:'Wellness' },
+  { kicker:'Exclusive', title:'World Deals Portal', desc:'Curated global deals refreshed every 24 hours.', emoji:'🌍', grad:'g8', badge:'HOT', href:'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806', label:'WorldDeals' },
+  { kicker:'Finance', title:'Exclusive Finance Offer', desc:'Premium financial tools to help grow your portfolio.', emoji:'💹', grad:'g3', badge:'', href:'https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806', label:'FinOffer' },
+  { kicker:'Trending', title:'Top Streaming Picks', desc:'This week\'s most-watched content across every platform.', emoji:'📺', grad:'g1', badge:'HOT', href:'#', label:'Streaming' },
+];
+
+/* ================================================================
+   Content data — Hero feed
+================================================================ */
+const HERO_POOL = [
+  { cat:'Travel', title:'10 Hidden Beaches You\'ve Never Heard Of', emoji:'🏝', grad:'g2', badge:'NEW', views:'2.1M', href:'#' },
+  { cat:'Finance', title:'Copy Trading Made Simple: ZuluTrade 2026 Guide', emoji:'📈', grad:'g3', badge:'HOT', views:'891K', href:'https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate' },
+  { cat:'Tech', title:'GPT-5 vs Claude 4: Head-to-Head AI Battle', emoji:'🤖', grad:'g6', badge:'NEW', views:'3.4M', href:'#' },
+  { cat:'Travel', title:'VRBO vs Airbnb: Which Is Worth It in 2026?', emoji:'🏠', grad:'g1', badge:'', views:'1.2M', href:'https://vrbo.tpo.lv/ldtO3nzY' },
+  { cat:'Lifestyle', title:'Morning Routine That Changed My Life', emoji:'🌅', grad:'g5', badge:'', views:'5.6M', href:'#' },
+  { cat:'Finance', title:'The $100 a Month Investment Plan', emoji:'💰', grad:'g4', badge:'HOT', views:'4.1M', href:'#' },
+  { cat:'Travel', title:'Budget Safari: Under $2k All-In', emoji:'🦁', grad:'g7', badge:'NEW', views:'670K', href:'https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806' },
+  { cat:'Tech', title:'Best Smart Home Setup for 2026', emoji:'🏡', grad:'g8', badge:'', views:'1.8M', href:'#' },
+  { cat:'Travel', title:'Last Minute Weekend Escapes Under £500', emoji:'⏱', grad:'g2', badge:'DEAL', views:'3.0M', href:'https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806' },
+  { cat:'Lifestyle', title:'How to Build Passive Income in 2026', emoji:'💸', grad:'g6', badge:'NEW', views:'7.2M', href:'#' },
+];
+
+/* ================================================================
+   Content data — Widget (YouTube-style) feed
+================================================================ */
+const WIDGET_POOL = [
+  { kicker:'YouTube', title:'SignalBoost Top 10 Travel Destinations 2026', emoji:'🌏', grad:'g2', meta:'SignalBoostAi • 210K views • 2d' },
+  { kicker:'YouTube', title:'How to Start Copy Trading – Step by Step', emoji:'📊', grad:'g3', meta:'SignalBoostAi • 88K views • 5d' },
+  { kicker:'YouTube', title:'AI Tools That Will Replace Your Job (or Not)', emoji:'🤖', grad:'g1', meta:'SignalBoostAi • 1.2M views • 1w' },
+  { kicker:'YouTube', title:'VRBO Hidden Gems: Luxury for Less', emoji:'🏡', grad:'g5', meta:'SignalBoostAi • 330K views • 3d' },
+  { kicker:'YouTube', title:'Budget Travel Hacks 2026', emoji:'✈️', grad:'g4', meta:'SignalBoostAi • 590K views • 6d' },
+  { kicker:'YouTube', title:'Safari Planning 101: Everything You Need', emoji:'🦁', grad:'g7', meta:'SignalBoostAi • 145K views • 2w' },
+  { kicker:'YouTube', title:'Crypto vs Stocks: Where to Put $1000', emoji:'💹', grad:'g8', meta:'SignalBoostAi • 2.1M views • 4d' },
+  { kicker:'YouTube', title:'The Morning Routine That Earns $5k/mo', emoji:'🌅', grad:'g6', meta:'SignalBoostAi • 4.4M views • 1w' },
+];
+
+/* ================================================================
+   Card builders
+================================================================ */
+function buildPromoCard(item) {
+  const card = document.createElement('a');
+  card.className = 'promo-card';
+  card.href = item.href;
+  card.target = '_blank';
+  card.rel = 'noopener';
+  card.addEventListener('click', function() { trackClick('promo', item.label); });
+  card.innerHTML = `
+    <div class="promo-thumb ${item.grad}">
+      <span style="position:relative;z-index:1">${item.emoji}</span>
+      ${item.badge ? `<span class="promo-new-badge">${item.badge}</span>` : ''}
+    </div>
+    <div class="promo-body">
+      <div class="promo-kicker">${item.kicker}</div>
+      <div class="promo-title">${item.title}</div>
+      <div class="promo-desc">${item.desc}</div>
+      <span class="promo-cta">Open Deal →</span>
+    </div>`;
+  return card;
+}
+
+function buildHeroCard(item) {
+  const card = document.createElement('a');
+  card.className = 'hero-card';
+  card.href = item.href;
+  card.target = '_blank';
+  card.rel = 'noopener';
+  card.innerHTML = `
+    <div class="hero-thumb ${item.grad}">
+      <span style="font-size:5rem;position:relative;z-index:1">${item.emoji}</span>
+      <div class="overlay-grad"></div>
+      ${item.badge ? `<div class="hero-badge">${item.badge}</div>` : ''}
+      <div class="hero-info">
+        <div class="hero-cat">${item.cat}</div>
+        <h3>${item.title}</h3>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <button class="hero-action-btn primary">▶ Watch</button>
+      <button class="hero-action-btn">🔖 Save</button>
+      <span class="hero-stats">👁 ${item.views}</span>
+    </div>`;
+  return card;
+}
+
+function buildWidgetCard(item) {
+  const card = document.createElement('div');
+  card.className = 'widget-card';
+  card.innerHTML = `
+    <div class="yt-thumb ${item.grad}">
+      <span style="font-size:2.2rem;position:relative;">${item.emoji}</span>
+      <div class="yt-play"><div class="yt-play-btn">▶</div></div>
+    </div>
+    <div class="widget-body">
+      <div class="widget-kicker">${item.kicker}</div>
+      <div class="widget-title">${item.title}</div>
+      <div class="widget-meta">${item.meta}</div>
+    </div>`;
+  return card;
+}
+
+/* ================================================================
+   Initial seed
+================================================================ */
+(function seed() {
+  const pf = document.getElementById('promoFeed');
+  PROMO_POOL.slice(0, 4).forEach(function(item) { pf.appendChild(buildPromoCard(item)); });
+
+  const hf = document.getElementById('heroFeed');
+  HERO_POOL.slice(0, 3).forEach(function(item) { hf.appendChild(buildHeroCard(item)); });
+
+  const wf = document.getElementById('widgetFeed');
+  WIDGET_POOL.slice(0, 4).forEach(function(item) { wf.appendChild(buildWidgetCard(item)); });
+})();
+
+/* ================================================================
+   Infinite scroll via IntersectionObserver
+================================================================ */
+let promoIdx = 4, heroIdx = 3, widgetIdx = 4;
+
+/* Hero pool is mutable so the filter can swap it out */
+var activeHeroPool = HERO_POOL;
+
+function makeObserver(sentinelId, feedId, getPool, getIdx, setIdx, builder) {
+  const sentinel = document.getElementById(sentinelId);
+  const feed = document.getElementById(feedId);
+  const obs = new IntersectionObserver(function(entries) {
+    if (!entries[0].isIntersecting) return;
+    const pool = getPool();
+    if (!pool.length) return;
+    const idx = getIdx();
+    const item = pool[idx % pool.length];
+    feed.appendChild(builder(item));
+    setIdx(idx + 1);
+  }, { rootMargin: '200px' });
+  obs.observe(sentinel);
+}
+
+makeObserver('promoSentinel', 'promoFeed',
+  function() { return PROMO_POOL; },
+  function() { return promoIdx; },
+  function(v) { promoIdx = v; },
+  buildPromoCard);
+
+makeObserver('heroSentinel', 'heroFeed',
+  function() { return activeHeroPool; },
+  function() { return heroIdx; },
+  function(v) { heroIdx = v; },
+  buildHeroCard);
+
+makeObserver('widgetSentinel', 'widgetFeed',
+  function() { return WIDGET_POOL; },
+  function() { return widgetIdx; },
+  function(v) { widgetIdx = v; },
+  buildWidgetCard);
+
+/* ================================================================
+   Simulated stock ticker updates
+================================================================ */
+var stockData = {
+  djia: { base: 38241, el: 's-djia', pEl: 'p-djia', spark: 'spark-djia', pts: [] },
+  sp:   { base: 5021,  el: 's-sp',   pEl: 'p-sp',   spark: 'spark-sp',   pts: [] },
+  nq:   { base: 15812, el: 's-nq',   pEl: 'p-nq',   spark: 'spark-nq',   pts: [] },
+};
+
+function randWalk(base) {
+  /* Slight upward bias (0.48 < 0.5) mirrors typical long-run market drift */
+  return base + (Math.random() - 0.48) * base * 0.004;
+}
+
+function drawSparkline(svgId, points) {
+  const svg = document.getElementById(svgId);
+  if (!svg || points.length < 2) return;
+  const min = Math.min.apply(null, points);
+  const max = Math.max.apply(null, points);
+  const range = max - min || 1;
+  const w = 100, h = 30, pad = 2;
+  const coords = points.map(function(v, i) {
+    const x = pad + (i / (points.length - 1)) * (w - pad * 2);
+    const y = h - pad - ((v - min) / range) * (h - pad * 2);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  });
+  const isUp = points[points.length - 1] >= points[0];
+  svg.innerHTML = `<polyline points="${coords.join(' ')}" fill="none" stroke="${isUp ? '#00e676' : '#ff004f'}" stroke-width="1.5" stroke-linejoin="round"/>`;
+}
+
+function fmt(n) { return n.toLocaleString('en-US', { maximumFractionDigits: 0 }); }
+
+function tickStocks() {
+  ['djia','sp','nq'].forEach(function(key) {
+    var d = stockData[key];
+    d.base = randWalk(d.base);
+    d.pts.push(d.base);
+    if (d.pts.length > 20) d.pts.shift();
+    var pctChange = ((d.pts[d.pts.length-1] - d.pts[0]) / d.pts[0]) * 100;
+    var up = pctChange >= 0;
+    var sign = up ? '▲ +' : '▼ ';
+    var cls = up ? 'up' : 'dn';
+
+    var valEl = document.getElementById(d.el);
+    var pctEl = document.getElementById(d.pEl);
+    if (valEl) valEl.textContent = fmt(d.base);
+    if (pctEl) {
+      pctEl.textContent = sign + Math.abs(pctChange).toFixed(2) + '%';
+      pctEl.className = 'stock-pct ' + cls;
+    }
+    drawSparkline(d.spark, d.pts);
+
+    // also update col-4 mini ticker
+    var miniVal = document.getElementById(key + '-val');
+    var miniChg = document.getElementById(key + '-chg');
+    if (miniVal) miniVal.textContent = fmt(d.base);
+    if (miniChg) {
+      miniChg.textContent = sign + Math.abs(pctChange).toFixed(2) + '%';
+      miniChg.className = 'ticker-chg ' + cls;
+    }
+  });
+  document.getElementById('mktTime').textContent = new Date().toLocaleTimeString();
+}
+
+// Init sparklines with seed data
+['djia','sp','nq'].forEach(function(key) {
+  for (var i = 0; i < 12; i++) {
+    stockData[key].base = randWalk(stockData[key].base);
+    stockData[key].pts.push(stockData[key].base);
+  }
+  drawSparkline(stockData[key].spark, stockData[key].pts);
+});
+setInterval(tickStocks, 3000);
+
+/* ================================================================
+   Feed filter buttons
+================================================================ */
+document.getElementById('feedAll').addEventListener('click', function() {
+  setFilter('all');
+});
+document.getElementById('feedTravel').addEventListener('click', function() {
+  setFilter('Travel');
+});
+document.getElementById('feedTech').addEventListener('click', function() {
+  setFilter('Tech');
+});
+
+function setFilter(cat) {
+  ['feedAll','feedTravel','feedTech'].forEach(function(id) {
+    document.getElementById(id).classList.remove('active');
+  });
+  var btnId = cat === 'all' ? 'feedAll' : cat === 'Travel' ? 'feedTravel' : 'feedTech';
+  document.getElementById(btnId).classList.add('active');
+  activeHeroPool = cat === 'all' ? HERO_POOL : HERO_POOL.filter(function(x) { return x.cat === cat; });
+  heroIdx = 0;
+  var hf = document.getElementById('heroFeed');
+  hf.innerHTML = '';
+  activeHeroPool.slice(0, 3).forEach(function(item) { hf.appendChild(buildHeroCard(item)); });
+  heroIdx = Math.min(3, activeHeroPool.length);
+}
+
+/* ================================================================
+   Rotating news (simulated live)
+================================================================ */
+var NEWS = [
+  ['📡','AI breakthroughs reshape digital commerce landscape','2 min ago'],
+  ['✈️','Record summer travel bookings surge 34% YoY','8 min ago'],
+  ['📈','S&P 500 edges higher amid earnings optimism','15 min ago'],
+  ['💻','New chip architecture promises 10× efficiency gains','22 min ago'],
+  ['🌍','Eco-tourism gains traction as travelers go green','31 min ago'],
+  ['🏠','VRBO reports record Q1 bookings for unique stays','40 min ago'],
+  ['💰','Copy trading volumes hit all-time high on ZuluTrade','48 min ago'],
+  ['🤖','OpenAI unveils new reasoning model for enterprises','1 hr ago'],
+];
+var newsIdx = 0;
+setInterval(function() {
+  var w = document.getElementById('newsWidget');
+  if (!w) return;
+  newsIdx = (newsIdx + 1) % NEWS.length;
+  var n = NEWS[newsIdx];
+  var item = document.createElement('div');
+  item.className = 'news-item';
+  item.innerHTML = '<span class="news-emoji">' + n[0] + '</span><div><div class="news-title">' + n[1] + '</div><div class="news-time">' + n[2] + '</div></div>';
+  w.insertBefore(item, w.firstChild);
+  var items = w.querySelectorAll('.news-item');
+  if (items.length > 5) w.removeChild(items[items.length - 1]);
+}, 8000);
+
+/* ================================================================
+   Theme toggle (light mode)
+================================================================ */
+document.getElementById('themeBtn').addEventListener('click', function() {
+  var body = document.body;
+  var on = body.classList.toggle('light-theme');
+  this.textContent = on ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('sb_theme', on ? 'light' : 'dark');
+});
+
+// Restore saved theme preference
+(function() {
+  if (localStorage.getItem('sb_theme') === 'light') {
+    document.body.classList.add('light-theme');
+    document.getElementById('themeBtn').textContent = '🌙 Dark';
+  }
+})();
+</script>
+</body>
+</html>
