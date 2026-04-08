@@ -575,9 +575,8 @@
 
     function updateStats() {
       const conv = stats.views ? ((stats.clicks / stats.views) * 100).toFixed(2) : '0.00';
-      ['views','clicks'].forEach(k => {
-        document.querySelectorAll(`#stat-${k}, #dash-${k}`).forEach(el => { el.textContent = stats[k].toLocaleString(); });
-      });
+      document.querySelectorAll('#stat-views, #dash-views').forEach(el => { el.textContent = stats.views.toLocaleString(); });
+      document.querySelectorAll('#stat-clicks, #dash-clicks').forEach(el => { el.textContent = stats.clicks.toLocaleString(); });
       document.querySelectorAll('#stat-revenue, #dash-revenue').forEach(el => { el.textContent = stats.revenue.toFixed(2); });
       document.querySelectorAll('#stat-conv, #dash-conv').forEach(el => { el.textContent = conv; });
     }
@@ -632,7 +631,7 @@
       { id: 'kJQP7kiw5Fk', title: 'Budget Flights Hack', desc: 'Find cheap flights using these pro tips.', platform: 'YouTube', partner: PARTNERS[16] },
       { id: '2Vv-BfVoq4g', title: 'eSIM in 60 Seconds', desc: 'Stay connected anywhere – no SIM swap needed.', platform: 'YouTube', partner: PARTNERS[22] },
       { id: 'hT_nvWreIhg', title: 'Africa Safari Highlights', desc: 'Discover the magic of African wildlife with Go2Africa.', platform: 'YouTube', partner: PARTNERS[9] },
-      { id: 'RgKAFK5djSk', title: 'Top Experiences in Spain', desc: 'Cultural adventures you can not miss in España.', platform: 'YouTube', partner: PARTNERS[8] },
+      { id: 'RgKAFK5djSk', title: 'Top Experiences in Spain', desc: 'Cultural adventures you cannot miss in España.', platform: 'YouTube', partner: PARTNERS[8] },
       { id: 'YQHsXMglC9A', title: 'City Tours & Activities', desc: 'Book unique tours and experiences with Klook.', platform: 'YouTube', partner: PARTNERS[11] },
       { id: 'JGwWNGJdvx8', title: 'Solar Power on the Go', desc: 'Power your adventures with ALLPOWERS solar panels.', platform: 'YouTube', partner: PARTNERS[25] },
     ];
@@ -770,12 +769,6 @@
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', () => trackClick(0.03));
     });
-
-    /* Simulate ambient view growth for demo */
-    setInterval(() => {
-      stats.views += Math.floor(Math.random() * 3);
-      updateStats();
-    }, 5000);
   })();
   </script>
 </body>
