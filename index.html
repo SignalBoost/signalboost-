@@ -1,30 +1,104 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>SignalBoostAi — Redirecting…</title>
-    <meta http-equiv="refresh" content="0; url=./MIMIMI.html" />
-    <link rel="canonical" href="./MIMIMI.html" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Shopping Mall</title>
     <style>
-      html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a0a0a;color:#fff}
-      .wrap{min-height:100%;display:grid;place-items:center;padding:24px;text-align:center}
-      a{color:#00ffcc}
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s;
+        }
+        .light-mode {
+            background-color: #ffffff;
+            color: #000;
+        }
+        .dark-mode {
+            background-color: #000;
+            color: #fff;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 10px;
+            flex: 1 1 calc(33% - 20px);
+        }
+        /* Additional styles for responsive layout */
+        @media (max-width: 768px) {
+            .card {
+                flex: 1 1 100%;
+            }
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div>
-        <h1>SignalBoostAi</h1>
-        <p>Redirecting to <a href="./MIMIMI.html">MIMIMI.html</a>…</p>
-        <noscript>
-          <p>JavaScript is disabled. Please click: <a href="./MIMIMI.html">Open MIMIMI.html</a>.</p>
-        </noscript>
-        <script>
-          // JS redirect for environments that ignore meta refresh.
-          window.location.replace('./MIMIMI.html');
-        </script>
-      </div>
+</head>
+<body class="light-mode">
+    <header>
+        <div class="logo">
+            <img src="satellite-logo.png" alt="Satellite Logo" />
+        </div>
+        <div class="radio-player">
+            <button onclick="toggleRadio()">Toggle Radio</button>
+        </div>
+        <div class="mode-toggle">
+            <button onclick="toggleMode()">Toggle Dark/Light Mode</button>
+        </div>
+    </header>
+    <div class="container">
+        <div class="card radio-partners">
+            <h2>24/7 Radio</h2>
+            <audio controls id="radioPlayer">
+                <source src="radio-stream-url.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <div class="card tiktok-feed">
+            <h2>TikTok-Style Feed</h2>
+            <!-- TikTok feed implementation -->
+        </div>
+        <div class="card dashboard">
+            <h2>Business Dashboard</h2>
+            <div class="stocks">Stocks Component</div>
+            <div class="news">News Component</div>
+            <div class="weather">Weather Component</div>
+            <div class="social">Social Media Component</div>
+        </div>
     </div>
-  </body>
+    <footer>
+        <div class="affiliate-links">
+            <a href="https://www.expedia.com">Expedia</a>
+            <a href="https://www.booking.com">Booking.com</a>
+            <a href="https://www.trip.com">Trip.com</a>
+            <a href="https://www.viator.com">Viator</a>
+            <a href="https://www.vrbo.com">VRBO</a>
+            <a href="https://www.agoda.com">Agoda</a>
+            <a href="https://www.awin.com">Awin</a>
+        </div>
+    </footer>
+    <script>
+        function toggleMode() {
+            let body = document.body;
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+        }
+        function toggleRadio() {
+            let player = document.getElementById('radioPlayer');
+            if (player.paused) {
+                player.play();
+            } else {
+                player.pause();
+            }
+        }
+    </script>
+</body>
 </html>
