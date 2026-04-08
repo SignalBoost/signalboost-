@@ -1,46 +1,854 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MIMIMI</title>
-    <style>
-        body {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .column {
-            flex: 0 0 45%;
-            margin: 10px;
-        }
-        .card {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIMIMI – Hub</title>
+  <style>
+    /* ── Reset & variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0a0a0a;
+      --bg2:      #111;
+      --bg3:      #1a1a1a;
+      --text:     #e8e8e8;
+      --muted:    #888;
+      --accent:   #ff004f;
+      --cyan:     #00ffcc;
+      --border:   rgba(255,255,255,0.07);
+      --radius:   12px;
+    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+    /* ── Layout ── */
+    .hub {
+      display: grid;
+      grid-template-columns: 230px 1fr 340px 1fr 230px;
+      gap: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Shared sidebar style ── */
+    .sidebar {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+    }
+    .sidebar:last-child { border-right: none; border-left: 1px solid var(--border); }
+
+    /* ── Scroll columns ── */
+    .feed-col {
+      background: var(--bg);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--cyan) transparent;
+      padding: 12px 8px;
+    }
+
+    /* ── TikTok center ── */
+    .tiktok-col {
+      background: #000;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+    }
+    .tiktok-col::-webkit-scrollbar { display: none; }
+
+    /* ── Sidebar header ── */
+    .sidebar-header {
+      padding: 16px 14px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Collapsible partner sections ── */
+    details.partner-group { border-bottom: 1px solid var(--border); }
+    details.partner-group summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12.5px;
+      color: var(--cyan);
+      transition: background .2s;
+      user-select: none;
+    }
+    details.partner-group summary::-webkit-details-marker { display: none; }
+    details.partner-group summary::after {
+      content: '▸';
+      margin-left: auto;
+      color: var(--muted);
+      transition: transform .25s;
+      font-size: 11px;
+    }
+    details.partner-group[open] summary::after { transform: rotate(90deg); }
+    details.partner-group summary:hover { background: rgba(0,255,204,.05); }
+    .partner-links { padding: 4px 0 8px; }
+    .partner-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px 7px 28px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 12px;
+      border-radius: 0;
+      transition: background .15s, color .15s;
+      line-height: 1.3;
+    }
+    .partner-link:hover {
+      background: rgba(255,0,79,.08);
+      color: var(--accent);
+    }
+    .partner-link .tag {
+      font-size: 10px;
+      background: rgba(255,255,255,.06);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: var(--muted);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    /* ── YouTube-style cards ── */
+    .yt-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .yt-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.5); }
+    .yt-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #1e1e1e;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .yt-thumb .play { color: rgba(255,255,255,.7); }
+    .yt-thumb .badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--accent);
+      color: #fff;
+    }
+    .yt-info { padding: 10px 12px; }
+    .yt-title { font-weight: 600; font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
+    .yt-meta { font-size: 11px; color: var(--muted); }
+
+    /* ── TikTok cards ── */
+    .tiktok-card {
+      scroll-snap-align: start;
+      height: 100vh;
+      position: relative;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .tiktok-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      opacity: .12;
+    }
+    .tiktok-content { position: relative; z-index: 1; text-align: center; padding: 20px; width: 100%; }
+    .tiktok-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), #ff6b9d);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      letter-spacing: .5px;
+    }
+    .tiktok-title { font-size: 18px; font-weight: 700; line-height: 1.4; margin-bottom: 6px; }
+    .tiktok-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+    .tiktok-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .tiktok-btn {
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s;
+    }
+    .tiktok-btn:hover { transform: scale(1.05); }
+    .tiktok-btn.primary { background: linear-gradient(135deg, var(--accent), #ff6b9d); color: #fff; }
+    .tiktok-btn.secondary { background: rgba(255,255,255,.1); color: var(--text); border: 1px solid var(--border); }
+    .tiktok-progress {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      animation: progress 8s linear infinite;
+    }
+    @keyframes progress { from { width: 0 } to { width: 100% } }
+    .tiktok-side {
+      position: absolute;
+      right: 14px;
+      bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+    }
+    .tiktok-icon { font-size: 24px; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+    .tiktok-count { font-size: 10px; color: var(--muted); text-align: center; }
+
+    /* ── Right dashboard ── */
+    .dash-section {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dash-section h3 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* Stock ticker */
+    .ticker-wrap { overflow: hidden; }
+    .ticker-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .ticker-item:last-child { border-bottom: none; }
+    .ticker-name { font-size: 11px; font-weight: 700; color: var(--cyan); }
+    .ticker-val { font-size: 12px; font-weight: 600; }
+    .ticker-chg { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+    .up { color: #00e676; }
+    .down { color: var(--accent); }
+    .chg-up { background: rgba(0,230,118,.12); color: #00e676; }
+    .chg-dn { background: rgba(255,0,79,.12); color: var(--accent); }
+
+    /* Weather */
+    .weather-main { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .weather-icon { font-size: 36px; }
+    .weather-temp { font-size: 28px; font-weight: 700; }
+    .weather-info { font-size: 11px; color: var(--muted); line-height: 1.6; }
+    .weather-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); padding: 3px 0; }
+
+    /* News */
+    .news-item { padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .news-item:last-child { border-bottom: none; }
+    .news-item:hover .news-title { color: var(--cyan); }
+    .news-title { font-size: 11.5px; font-weight: 600; line-height: 1.4; margin-bottom: 2px; }
+    .news-meta { font-size: 10px; color: var(--muted); }
+    .news-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 5px; vertical-align: middle; }
+
+    /* Social buttons */
+    .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #fff;
+      transition: opacity .2s, transform .15s;
+      border: none;
+      cursor: pointer;
+    }
+    .social-btn:hover { opacity: .85; transform: translateY(-1px); }
+    .social-btn .ico { font-size: 14px; }
+    .sb-fb    { background: #1877f2; }
+    .sb-tt    { background: #010101; border: 1px solid #333; }
+    .sb-ig    { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); }
+    .sb-x     { background: #1d9bf0; }
+    .sb-li    { background: #0a66c2; }
+    .sb-rd    { background: #ff4500; }
+    .sb-wa    { background: #25d366; }
+    .sb-em    { background: #ea4335; }
+
+    /* Loading sentinel */
+    .load-sentinel { text-align: center; padding: 16px; color: var(--muted); font-size: 12px; }
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--cyan); border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg) } }
+
+    /* Mobile */
+    @media (max-width: 1100px) {
+      .hub { grid-template-columns: 200px 1fr 300px 1fr 200px; }
+    }
+    @media (max-width: 900px) {
+      .hub {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
+        overflow: visible;
+      }
+      .sidebar, .feed-col, .tiktok-col { overflow: visible; height: auto; }
+      .tiktok-col { height: 100vh; }
+    }
+
+    /* Scrollbar style for feed cols */
+    .feed-col::-webkit-scrollbar { width: 4px; }
+    .feed-col::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+    .sidebar::-webkit-scrollbar { width: 3px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+  </style>
 </head>
 <body>
-    <div class="column" id="column2">
-        <h2>YouTube Style Cards</h2>
-        <div class="card">Card 1</div>
-        <div class="card">Card 2</div>
-        <div class="card">Card 3</div>
-        <!-- Dynamic Infinite Scroll Logic Here -->
+
+<div class="hub">
+
+  <!-- ════════════════════════════════════════════════
+       COLUMN 1 – PARTNER NAVIGATION
+       ════════════════════════════════════════════════ -->
+  <nav class="sidebar" id="col1">
+    <div class="sidebar-header">🤝 Partners</div>
+
+    <!-- ✈️ Travel & Flights -->
+    <details class="partner-group" open>
+      <summary>✈️ Travel &amp; Flights</summary>
+      <div class="partner-links">
+        <a class="partner-link" href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener">
+          ✈ Aviasales <span class="tag">Flights</span>
+        </a>
+        <a class="partner-link" href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" rel="noopener">
+          🌍 Intui.travel <span class="tag">Hotels</span>
+        </a>
+        <a class="partner-link" href="https://searadar.tpo.lv/TO4A5eBZ" target="_blank" rel="noopener">
+          🔍 Sea Radar <span class="tag">Search</span>
+        </a>
+        <a class="partner-link" href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener">
+          🏨 EconomyBookings <span class="tag">Bookings</span>
+        </a>
+      </div>
+    </details>
+
+    <!-- 🚗 Transportation & Rentals -->
+    <details class="partner-group">
+      <summary>🚗 Transportation &amp; Rentals</summary>
+      <div class="partner-links">
+        <a class="partner-link" href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" rel="noopener">
+          🚌 Busbud <span class="tag">Bus</span>
+        </a>
+        <a class="partner-link" href="https://bikesbooking.tpo.lv/B3zIKanS" target="_blank" rel="noopener">
+          🚲 BikesBooking <span class="tag">Bikes</span>
+        </a>
+        <a class="partner-link" href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" rel="noopener">
+          🚕 Holiday Taxis <span class="tag">Taxi</span>
+        </a>
+        <a class="partner-link" href="https://autoeurope.tpo.lv/t84AzZbO" target="_blank" rel="noopener">
+          🚙 Auto Europe <span class="tag">Car</span>
+        </a>
+        <a class="partner-link" href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" rel="noopener">
+          🚗 GetRentaCar <span class="tag">Car</span>
+        </a>
+        <a class="partner-link" href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener">
+          🏠 LocalRent <span class="tag">Car</span>
+        </a>
+        <a class="partner-link" href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" rel="noopener">
+          🛺 KiwiTaxi <span class="tag">Transfer</span>
+        </a>
+        <a class="partner-link" href="https://gettransfer.tpo.lv/Pb4p9ljm" target="_blank" rel="noopener">
+          🚐 GetTransfer <span class="tag">Transfer</span>
+        </a>
+        <a class="partner-link" href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener">
+          🔑 QEEQ <span class="tag">Car</span>
+        </a>
+      </div>
+    </details>
+
+    <!-- 📱 Connectivity & SIM -->
+    <details class="partner-group">
+      <summary>📱 Connectivity &amp; SIM</summary>
+      <div class="partner-links">
+        <a class="partner-link" href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener">
+          📶 Airalo <span class="tag">eSIM</span>
+        </a>
+        <a class="partner-link" href="https://saily.tpo.lv/dj71iCAi" target="_blank" rel="noopener">
+          📡 Saily <span class="tag">SIM</span>
+        </a>
+        <a class="partner-link" href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener">
+          🌐 DrimSim <span class="tag">eSIM</span>
+        </a>
+      </div>
+    </details>
+
+    <!-- 🎫 Experiences & Tours -->
+    <details class="partner-group">
+      <summary>🎫 Experiences &amp; Tours</summary>
+      <div class="partner-links">
+        <a class="partner-link" href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener">
+          🏙 Go City <span class="tag">Pass</span>
+        </a>
+        <a class="partner-link" href="https://eatwith.tpo.lv/BfAnpZNb" target="_blank" rel="noopener">
+          🍽 EatWith <span class="tag">Food</span>
+        </a>
+        <a class="partner-link" href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener">
+          🎒 WeGoTrip <span class="tag">Tours</span>
+        </a>
+        <a class="partner-link" href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener">
+          🚌 Big Bus Tours <span class="tag">Tours</span>
+        </a>
+      </div>
+    </details>
+
+    <!-- 🛡️ Insurance & Claims -->
+    <details class="partner-group">
+      <summary>🛡️ Insurance &amp; Claims</summary>
+      <div class="partner-links">
+        <a class="partner-link" href="https://compensair.tpo.lv/wxDDCITG" target="_blank" rel="noopener">
+          💰 Compensair <span class="tag">Claims</span>
+        </a>
+        <a class="partner-link" href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener">
+          ✈ AirHelp <span class="tag">Claims</span>
+        </a>
+      </div>
+    </details>
+
+    <!-- 🎒 Luggage & Storage -->
+    <details class="partner-group">
+      <summary>🎒 Luggage &amp; Storage</summary>
+      <div class="partner-links">
+        <a class="partner-link" href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener">
+          🧳 Radical Storage <span class="tag">Storage</span>
+        </a>
+      </div>
+    </details>
+
+  </nav>
+
+  <!-- ════════════════════════════════════════════════
+       COLUMN 2 – YOUTUBE TRENDING
+       ════════════════════════════════════════════════ -->
+  <div class="feed-col" id="col2">
+    <div id="feed2"></div>
+    <div class="load-sentinel" id="sentinel2"><span class="spinner"></span>Loading…</div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       COLUMN 3 – TIKTOK HERO FEED
+       ════════════════════════════════════════════════ -->
+  <div class="tiktok-col" id="col3"></div>
+
+  <!-- ════════════════════════════════════════════════
+       COLUMN 4 – YOUTUBE POPULAR
+       ════════════════════════════════════════════════ -->
+  <div class="feed-col" id="col4">
+    <div id="feed4"></div>
+    <div class="load-sentinel" id="sentinel4"><span class="spinner"></span>Loading…</div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       COLUMN 5 – BUSINESS DASHBOARD
+       ════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="col5">
+
+    <div class="sidebar-header">📊 Dashboard</div>
+
+    <!-- Stock Ticker -->
+    <div class="dash-section">
+      <h3>📈 Markets</h3>
+      <div class="ticker-wrap" id="ticker">
+        <div class="ticker-item">
+          <span class="ticker-name">DJIA</span>
+          <span class="ticker-val" id="t-djia">38,245</span>
+          <span class="ticker-chg chg-up" id="tc-djia">+0.42%</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-name">S&amp;P 500</span>
+          <span class="ticker-val" id="t-sp500">5,117</span>
+          <span class="ticker-chg chg-up" id="tc-sp500">+0.61%</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-name">NASDAQ</span>
+          <span class="ticker-val" id="t-nasdaq">16,024</span>
+          <span class="ticker-chg chg-dn" id="tc-nasdaq">-0.18%</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-name">BTC</span>
+          <span class="ticker-val" id="t-btc">68,420</span>
+          <span class="ticker-chg chg-up" id="tc-btc">+1.34%</span>
+        </div>
+      </div>
     </div>
-    <div class="column" id="column3">
-        <h2>TikTok Style Feed</h2>
-        <div class="card">Feed Item 1</div>
-        <div class="card">Feed Item 2</div>
-        <div class="card">Feed Item 3</div>
-        <!-- Enhanced Feed Logic Here -->
+
+    <!-- Weather -->
+    <div class="dash-section">
+      <h3>🌤️ Weather</h3>
+      <div class="weather-main">
+        <div class="weather-icon" id="w-icon">⛅</div>
+        <div>
+          <div class="weather-temp" id="w-temp">22°C</div>
+          <div class="weather-info" id="w-desc">
+              <span id="w-desc-main">Partly Cloudy</span><br>
+              <span id="w-desc-feels">Feels like 20°C</span>
+            </div>
+        </div>
+      </div>
+      <div class="weather-row"><span>💧 Humidity</span><span id="w-humid">61%</span></div>
+      <div class="weather-row"><span>💨 Wind</span><span id="w-wind">14 km/h</span></div>
+      <div class="weather-row"><span>👁 Visibility</span><span id="w-vis">10 km</span></div>
     </div>
-    <div class="column" id="column4">
-        <h2>YouTube Style Cards</h2>
-        <div class="card">Card 1</div>
-        <div class="card">Card 2</div>
-        <div class="card">Card 3</div>
-        <!-- Dynamic Infinite Scroll Logic Here -->
+
+    <!-- News -->
+    <div class="dash-section">
+      <h3>📰 Headlines</h3>
+      <div id="news-feed">
+        <div class="news-item">
+          <div class="news-title"><span class="news-dot"></span>Travel demand surges ahead of summer season</div>
+          <div class="news-meta">Reuters · 2h ago</div>
+        </div>
+        <div class="news-item">
+          <div class="news-title"><span class="news-dot"></span>eSIM adoption triples in Europe</div>
+          <div class="news-meta">TechCrunch · 4h ago</div>
+        </div>
+        <div class="news-item">
+          <div class="news-title"><span class="news-dot"></span>EU flight delay compensation rules update</div>
+          <div class="news-meta">BBC · 6h ago</div>
+        </div>
+        <div class="news-item">
+          <div class="news-title"><span class="news-dot"></span>Markets rally on positive jobs data</div>
+          <div class="news-meta">Bloomberg · 8h ago</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Social Login -->
+    <div class="dash-section">
+      <h3>🌐 Social Media</h3>
+      <div class="social-grid">
+        <a class="social-btn sb-fb" href="https://www.facebook.com/login" target="_blank" rel="noopener">
+          <span class="ico">🔵</span> Facebook
+        </a>
+        <a class="social-btn sb-tt" href="https://www.tiktok.com/login" target="_blank" rel="noopener">
+          <span class="ico">🎵</span> TikTok
+        </a>
+        <a class="social-btn sb-ig" href="https://www.instagram.com/accounts/login" target="_blank" rel="noopener">
+          <span class="ico">📷</span> Instagram
+        </a>
+        <a class="social-btn sb-x" href="https://x.com/login" target="_blank" rel="noopener">
+          <span class="ico">❌</span> X / Twitter
+        </a>
+        <a class="social-btn sb-li" href="https://www.linkedin.com/login" target="_blank" rel="noopener">
+          <span class="ico">💼</span> LinkedIn
+        </a>
+        <a class="social-btn sb-rd" href="https://www.reddit.com/login" target="_blank" rel="noopener">
+          <span class="ico">🔴</span> Reddit
+        </a>
+        <a class="social-btn sb-wa" href="https://web.whatsapp.com" target="_blank" rel="noopener">
+          <span class="ico">💬</span> WhatsApp
+        </a>
+        <a class="social-btn sb-em" href="https://mail.google.com" target="_blank" rel="noopener">
+          <span class="ico">📧</span> Email
+        </a>
+      </div>
+    </div>
+
+    <!-- Analytics snapshot -->
+    <div class="dash-section">
+      <h3>⚡ Today</h3>
+      <div class="weather-row"><span>👁 Views</span><span id="stat-views" style="color:var(--cyan);font-weight:700;">0</span></div>
+      <div class="weather-row"><span>🖱 Clicks</span><span id="stat-clicks" style="color:var(--accent);font-weight:700;">0</span></div>
+      <div class="weather-row"><span>💰 Est. Revenue</span><span id="stat-rev" style="color:#00e676;font-weight:700;">$0.00</span></div>
+    </div>
+
+  </aside>
+
+</div><!-- /.hub -->
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════ */
+const YT_CARDS = [
+  { title: 'Best Budget Travel Hacks 2026', views: '1.2M', platform: 'YT', emoji: '✈️', category: 'Travel' },
+  { title: 'Top 10 eSIMs Compared', views: '834K', platform: 'YT', emoji: '📱', category: 'Connectivity' },
+  { title: 'Car Rental Secrets Agencies Hide', views: '2.1M', platform: 'YT', emoji: '🚗', category: 'Rental' },
+  { title: 'Flight Compensation Guide 2026', views: '567K', platform: 'YT', emoji: '🛡️', category: 'Insurance' },
+  { title: 'Solo Travel Europe on €50/day', views: '3.4M', platform: 'YT', emoji: '🌍', category: 'Travel' },
+  { title: 'Bus vs Train vs Plane: Which Wins?', views: '910K', platform: 'YT', emoji: '🚌', category: 'Transport' },
+  { title: 'Street Food Tours You Must Try', views: '1.8M', platform: 'IG', emoji: '🍜', category: 'Food' },
+  { title: 'Luggage Storage Hacks for Layovers', views: '245K', platform: 'YT', emoji: '🧳', category: 'Travel' },
+  { title: 'Airport Transfer vs Uber: Costs', views: '678K', platform: 'YT', emoji: '🚕', category: 'Transport' },
+  { title: 'Top Experiences in Barcelona', views: '1.1M', platform: 'TT', emoji: '🎫', category: 'Tours' },
+  { title: 'Airalo eSIM Review – Worth It?', views: '432K', platform: 'YT', emoji: '📶', category: 'Connectivity' },
+  { title: 'How to Claim Delayed Flight Cash', views: '789K', platform: 'YT', emoji: '💰', category: 'Insurance' },
+];
+
+const TIKTOK_CARDS = [
+  { badge: '🎵 TikTok', title: 'Pack Like a Pro: Minimalist Travel', sub: '@travelhacks · 2.4M plays', bg: '🌏', id: 1 },
+  { badge: '📷 Instagram', title: 'Hidden Gems in Lisbon 🇵🇹', sub: '@exploremore · 1.8M plays', bg: '🏛', id: 2 },
+  { badge: '🎵 TikTok', title: 'eSIM Setup in 60 Seconds', sub: '@techtravel · 3.1M plays', bg: '📱', id: 3 },
+  { badge: '▶️ YouTube', title: 'Car Rental Tips Nobody Tells You', sub: '@savvytraveler · 890K plays', bg: '🚗', id: 4 },
+  { badge: '🎵 TikTok', title: 'Flight Delay? Get Paid!', sub: '@airhelper · 1.5M plays', bg: '✈️', id: 5 },
+  { badge: '📷 Instagram', title: 'Midnight Food Tour – Bangkok', sub: '@foodventures · 2.7M plays', bg: '🍜', id: 6 },
+  { badge: '🎵 TikTok', title: 'Hop On Hop Off Bus Secret Stops', sub: '@cityexplorer · 1.2M plays', bg: '🚌', id: 7 },
+  { badge: '▶️ YouTube', title: 'Luggage Storage Anywhere – Guide', sub: '@packlighter · 445K plays', bg: '🧳', id: 8 },
+];
+
+/* ═══════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════ */
+const REVENUE_PER_CLICK      = 0.12;   // estimated $ earned per affiliate click
+const VIEWS_PER_CLICK_MIN    = 1;      // minimum simulated views added on click
+const VIEWS_PER_CLICK_RANGE  = 5;      // random range added on top of minimum
+const VIEWS_PER_SCROLL_MIN   = 5;      // minimum views added on scroll load
+const VIEWS_PER_SCROLL_RANGE = 10;     // random range for scroll-triggered views
+const VIEWS_PER_TICK_RANGE   = 3;      // background passive view increment
+const TICKER_RANDOM_OFFSET   = 0.48;   // subtracts from Math.random() to produce slight bearish bias
+const TICKER_VOLATILITY      = 0.8;    // % price movement scale per tick
+const TT_LIKE_MAX            = 50;     // upper bound for random TikTok like count (K)
+const TT_LIKE_MIN            = 10;     // lower bound for random TikTok like count (K)
+const TT_COMMENT_MAX         = 5;      // upper bound for random TikTok comment count (K)
+const TT_COMMENT_MIN         = 1;      // lower bound for random TikTok comment count (K)
+const TICKER_DECIMAL_THRESHOLD = 100;   // values at/above this use integer formatting; below shows 2 decimals
+
+/* ═══════════════════════════════════════════
+   ANALYTICS
+═══════════════════════════════════════════ */
+let totalViews = 0, totalClicks = 0;
+function trackClick() {
+  totalClicks++;
+  totalViews += Math.floor(Math.random() * VIEWS_PER_CLICK_RANGE) + VIEWS_PER_CLICK_MIN;
+  updateStats();
+}
+function updateStats() {
+  document.getElementById('stat-views').textContent = totalViews.toLocaleString();
+  document.getElementById('stat-clicks').textContent = totalClicks.toLocaleString();
+  document.getElementById('stat-rev').textContent = '$' + (totalClicks * REVENUE_PER_CLICK).toFixed(2);
+}
+
+/* ═══════════════════════════════════════════
+   YOUTUBE-STYLE FEED
+═══════════════════════════════════════════ */
+function makeYTCard(item) {
+  const platformColors = { YT: '#ff0000', TT: '#ff004f', IG: '#c13584' };
+  const color = platformColors[item.platform] || '#555';
+  const card = document.createElement('div');
+  card.className = 'yt-card';
+  card.innerHTML = `
+      <div class="yt-thumb" style="background:linear-gradient(135deg,#1a1a1a,#2a2a2a)">
+        <span class="play"></span>
+        <span class="badge"></span>
+      </div>
+      <div class="yt-info">
+        <div class="yt-title"></div>
+        <div class="yt-meta"></div>
+      </div>`;
+  card.querySelector('.play').textContent                 = item.emoji;
+  const badge = card.querySelector('.badge');
+  badge.textContent                                       = item.platform;
+  badge.style.background                                  = color;
+  card.querySelector('.yt-title').textContent             = item.title;
+  card.querySelector('.yt-meta').textContent              = `👁 ${item.views} · ${item.category}`;
+  card.addEventListener('click', trackClick);
+  return card;
+}
+
+// Feed state map: keyed by feedId, tracks current index into YT_CARDS
+const feedState = { feed2: 0, feed4: 0 };
+
+function loadMoreFeed(feedId) {
+  const feed  = document.getElementById(feedId);
+  const start = feedState[feedId];
+  for (let i = 0; i < 4; i++) {
+    feed.appendChild(makeYTCard(YT_CARDS[(start + i) % YT_CARDS.length]));
+  }
+  feedState[feedId] = (start + 4) % YT_CARDS.length;
+}
+
+loadMoreFeed('feed2');
+loadMoreFeed('feed4');
+
+// Intersection observer for infinite scroll on col2 / col4
+[
+  { colId: 'col2', sentinelId: 'sentinel2', feedId: 'feed2' },
+  { colId: 'col4', sentinelId: 'sentinel4', feedId: 'feed4' },
+].forEach(({ colId, sentinelId, feedId }) => {
+  const sentinel = document.getElementById(sentinelId);
+  const col      = document.getElementById(colId);
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        loadMoreFeed(feedId);
+        totalViews += Math.floor(Math.random() * VIEWS_PER_SCROLL_RANGE) + VIEWS_PER_SCROLL_MIN;
+        updateStats();
+      }
+    });
+  }, { root: col, threshold: 0.1 });
+  obs.observe(sentinel);
+});
+
+/* ═══════════════════════════════════════════
+   TIKTOK FEED
+═══════════════════════════════════════════ */
+let ttIdx = 0;
+const ttCol = document.getElementById('col3');
+
+function makeTTCard(item) {
+  const likeCount    = Math.floor(Math.random() * TT_LIKE_MAX)    + TT_LIKE_MIN;
+  const commentCount = Math.floor(Math.random() * TT_COMMENT_MAX) + TT_COMMENT_MIN;
+  const card = document.createElement('div');
+  card.className = 'tiktok-card';
+  card.innerHTML = `
+      <div class="tiktok-bg"></div>
+      <div class="tiktok-content">
+        <div class="tiktok-badge"></div>
+        <div class="tiktok-title"></div>
+        <div class="tiktok-sub"></div>
+        <div class="tiktok-actions">
+          <button class="tiktok-btn primary">▶ Watch Now</button>
+          <button class="tiktok-btn secondary">🔗 Share</button>
+        </div>
+      </div>
+      <div class="tiktok-side">
+        <div>
+          <div class="tiktok-icon">❤️</div>
+          <div class="tiktok-count like-count"></div>
+        </div>
+        <div>
+          <div class="tiktok-icon">💬</div>
+          <div class="tiktok-count comment-count"></div>
+        </div>
+        <div>
+          <div class="tiktok-icon">↗️</div>
+          <div class="tiktok-count">Share</div>
+        </div>
+      </div>
+      <div class="tiktok-progress"></div>`;
+  card.querySelector('.tiktok-bg').textContent      = item.bg;
+  card.querySelector('.tiktok-badge').textContent   = item.badge;
+  card.querySelector('.tiktok-title').textContent   = item.title;
+  card.querySelector('.tiktok-sub').textContent     = item.sub;
+  card.querySelector('.like-count').textContent     = likeCount + 'K';
+  card.querySelector('.comment-count').textContent  = commentCount + 'K';
+  card.querySelector('.tiktok-btn.primary').addEventListener('click', trackClick);
+  card.querySelectorAll('.tiktok-icon')[0].addEventListener('click', trackClick);
+  return card;
+}
+
+function loadMoreTT(count) {
+  for (let i = 0; i < count; i++) {
+    ttCol.appendChild(makeTTCard(TIKTOK_CARDS[ttIdx % TIKTOK_CARDS.length]));
+    ttIdx++;
+  }
+}
+
+loadMoreTT(4);
+
+// Infinite scroll for TikTok column
+const ttObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      loadMoreTT(3);
+    }
+  });
+}, { root: ttCol, threshold: 0.5 });
+
+function observeLastTT() {
+  const cards = ttCol.querySelectorAll('.tiktok-card');
+  if (cards.length > 0) ttObs.observe(cards[cards.length - 1]);
+}
+observeLastTT();
+
+const ttScrollObs = new MutationObserver(() => observeLastTT());
+ttScrollObs.observe(ttCol, { childList: true });
+
+/* ═══════════════════════════════════════════
+   PARTNER LINK CLICK TRACKING (event delegation)
+═══════════════════════════════════════════ */
+document.getElementById('col1').addEventListener('click', e => {
+  if (e.target.closest('.partner-link')) trackClick();
+});
+
+/* ═══════════════════════════════════════════
+   SIMULATED STOCK TICKER
+═══════════════════════════════════════════ */
+const stocks = [
+  { key: 'djia',   base: 38245, el: 't-djia',   chg: 'tc-djia'   },
+  { key: 'sp500',  base: 5117,  el: 't-sp500',  chg: 'tc-sp500'  },
+  { key: 'nasdaq', base: 16024, el: 't-nasdaq', chg: 'tc-nasdaq' },
+  { key: 'btc',    base: 68420, el: 't-btc',    chg: 'tc-btc'    },
+];
+
+function updateTicker() {
+  stocks.forEach(s => {
+    const pct   = (Math.random() - TICKER_RANDOM_OFFSET) * TICKER_VOLATILITY;
+    s.base      = s.base * (1 + pct / 100);
+    const valEl = document.getElementById(s.el);
+    const chgEl = document.getElementById(s.chg);
+    const sign  = pct >= 0 ? '+' : '';
+    valEl.textContent = s.base >= TICKER_DECIMAL_THRESHOLD
+      ? s.base.toLocaleString('en-US', { maximumFractionDigits: 0 })
+      : s.base.toFixed(2);
+    chgEl.textContent = sign + pct.toFixed(2) + '%';
+    chgEl.className   = 'ticker-chg ' + (pct >= 0 ? 'chg-up' : 'chg-dn');
+  });
+}
+setInterval(updateTicker, 5000);
+
+/* ═══════════════════════════════════════════
+   SIMULATED WEATHER ROTATION
+═══════════════════════════════════════════ */
+const weathers = [
+  { icon: '☀️', temp: '24°C', main: 'Sunny',          feels: 'Feels like 22°C', humid: '45%', wind: '12 km/h', vis: '10 km' },
+  { icon: '⛅', temp: '22°C', main: 'Partly Cloudy',   feels: 'Feels like 20°C', humid: '61%', wind: '14 km/h', vis: '8 km'  },
+  { icon: '🌧', temp: '17°C', main: 'Light Rain',      feels: 'Feels like 15°C', humid: '82%', wind: '20 km/h', vis: '5 km'  },
+  { icon: '🌩', temp: '19°C', main: 'Thunderstorms',   feels: 'Feels like 18°C', humid: '90%', wind: '35 km/h', vis: '3 km'  },
+];
+let wIdx = 1;
+function rotateWeather() {
+  wIdx = (wIdx + 1) % weathers.length;
+  const w = weathers[wIdx];
+  document.getElementById('w-icon').textContent       = w.icon;
+  document.getElementById('w-temp').textContent       = w.temp;
+  document.getElementById('w-desc-main').textContent  = w.main;
+  document.getElementById('w-desc-feels').textContent = w.feels;
+  document.getElementById('w-humid').textContent      = w.humid;
+  document.getElementById('w-wind').textContent       = w.wind;
+  document.getElementById('w-vis').textContent        = w.vis;
+}
+setInterval(rotateWeather, 15000);
+
+/* ═══════════════════════════════════════════
+   PAGE VIEW TRACKING
+═══════════════════════════════════════════ */
+setInterval(() => {
+  totalViews += Math.floor(Math.random() * VIEWS_PER_TICK_RANGE);
+  updateStats();
+}, 8000);
+</script>
 </body>
 </html>
