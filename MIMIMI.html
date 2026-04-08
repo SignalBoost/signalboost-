@@ -511,7 +511,10 @@
         <div class="weather-icon" id="w-icon">⛅</div>
         <div>
           <div class="weather-temp" id="w-temp">22°C</div>
-          <div class="weather-info" id="w-desc">Partly Cloudy<br>Feels like 20°C</div>
+          <div class="weather-info" id="w-desc">
+              <span id="w-desc-main">Partly Cloudy</span><br>
+              <span id="w-desc-feels">Feels like 20°C</span>
+            </div>
         </div>
       </div>
       <div class="weather-row"><span>💧 Humidity</span><span id="w-humid">61%</span></div>
@@ -629,6 +632,7 @@ const TICKER_VOLATILITY      = 0.8;    // % price movement scale per tick
 const TT_LIKE_MAX            = 50;     // upper bound for random TikTok like count (K)
 const TT_LIKE_MIN            = 10;     // lower bound for random TikTok like count (K)
 const TT_COMMENT_MAX         = 5;      // upper bound for random TikTok comment count (K)
+const TT_COMMENT_MIN         = 1;      // lower bound for random TikTok comment count (K)
 const TICKER_DECIMAL_THRESHOLD = 100;   // values below this are shown with decimals (e.g. crypto sub-$100)
 
 /* ═══════════════════════════════════════════
@@ -811,21 +815,22 @@ setInterval(updateTicker, 5000);
    SIMULATED WEATHER ROTATION
 ═══════════════════════════════════════════ */
 const weathers = [
-  { icon: '☀️', temp: '24°C', desc: 'Sunny\nFeels like 22°C',         humid: '45%', wind: '12 km/h', vis: '10 km' },
-  { icon: '⛅', temp: '22°C', desc: 'Partly Cloudy\nFeels like 20°C', humid: '61%', wind: '14 km/h', vis: '8 km'  },
-  { icon: '🌧', temp: '17°C', desc: 'Light Rain\nFeels like 15°C',    humid: '82%', wind: '20 km/h', vis: '5 km'  },
-  { icon: '🌩', temp: '19°C', desc: 'Thunderstorms\nFeels like 18°C', humid: '90%', wind: '35 km/h', vis: '3 km'  },
+  { icon: '☀️', temp: '24°C', main: 'Sunny',          feels: 'Feels like 22°C', humid: '45%', wind: '12 km/h', vis: '10 km' },
+  { icon: '⛅', temp: '22°C', main: 'Partly Cloudy',   feels: 'Feels like 20°C', humid: '61%', wind: '14 km/h', vis: '8 km'  },
+  { icon: '🌧', temp: '17°C', main: 'Light Rain',      feels: 'Feels like 15°C', humid: '82%', wind: '20 km/h', vis: '5 km'  },
+  { icon: '🌩', temp: '19°C', main: 'Thunderstorms',   feels: 'Feels like 18°C', humid: '90%', wind: '35 km/h', vis: '3 km'  },
 ];
 let wIdx = 1;
 function rotateWeather() {
   wIdx = (wIdx + 1) % weathers.length;
   const w = weathers[wIdx];
-  document.getElementById('w-icon').textContent  = w.icon;
-  document.getElementById('w-temp').textContent  = w.temp;
-  document.getElementById('w-desc').textContent  = w.desc;
-  document.getElementById('w-humid').textContent = w.humid;
-  document.getElementById('w-wind').textContent  = w.wind;
-  document.getElementById('w-vis').textContent   = w.vis;
+  document.getElementById('w-icon').textContent       = w.icon;
+  document.getElementById('w-temp').textContent       = w.temp;
+  document.getElementById('w-desc-main').textContent  = w.main;
+  document.getElementById('w-desc-feels').textContent = w.feels;
+  document.getElementById('w-humid').textContent      = w.humid;
+  document.getElementById('w-wind').textContent       = w.wind;
+  document.getElementById('w-vis').textContent        = w.vis;
 }
 setInterval(rotateWeather, 15000);
 
