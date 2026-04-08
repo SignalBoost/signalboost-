@@ -1,46 +1,1223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MIMIMI</title>
-    <style>
-        body {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .column {
-            flex: 0 0 45%;
-            margin: 10px;
-        }
-        .card {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalBoostAi — Digital Shopping Mall</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛰️</text></svg>" />
+  <style>
+    /* ============================================================
+       CSS VARIABLES & BASE RESET
+    ============================================================ */
+    :root {
+      --pink:   #ff004f;
+      --cyan:   #00ffcc;
+      --bg:     #0a0a0a;
+      --bg2:    #111111;
+      --bg3:    #1a1a1a;
+      --text:   #ffffff;
+      --text2:  #cccccc;
+      --border: rgba(255,0,79,.25);
+      --border2:rgba(0,255,204,.25);
+      --success:#00ff00;
+      --danger: #ff0000;
+      --radius: 14px;
+      --trans:  0.3s ease;
+    }
+    html.light {
+      --bg:     #f0f0f0;
+      --bg2:    #ffffff;
+      --bg3:    #e8e8e8;
+      --text:   #1a1a1a;
+      --text2:  #444444;
+      --border: rgba(255,0,79,.35);
+      --border2:rgba(0,255,204,.35);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background var(--trans), color var(--trans);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    img { max-width: 100%; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
+
+    /* ============================================================
+       SATELLITE LOGO SVG ANIMATION
+    ============================================================ */
+    .satellite-logo {
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer; user-select: none;
+    }
+    .sat-svg-wrap {
+      position: relative; width: 48px; height: 48px; flex-shrink: 0;
+    }
+    .sat-svg { width: 48px; height: 48px; transition: transform 3s ease; }
+    .satellite-logo:hover .sat-svg { transform: rotate(360deg); }
+    .sat-wave {
+      position: absolute; top: 50%; left: 50%;
+      border-radius: 50%; border: 2px solid var(--cyan);
+      opacity: 0; pointer-events: none;
+      animation: wave-pulse 2s ease-out infinite;
+    }
+    .sat-wave:nth-child(2) { animation-delay: 0.6s; }
+    .sat-wave:nth-child(3) { animation-delay: 1.2s; }
+    @keyframes wave-pulse {
+      0%   { width: 48px; height: 48px; margin-top:-24px; margin-left:-24px; opacity:.8; }
+      100% { width: 100px; height:100px; margin-top:-50px; margin-left:-50px; opacity:0; }
+    }
+    .brand-text { line-height: 1.1; }
+    .brand-name {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -.5px;
+      background: linear-gradient(90deg, var(--pink), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .brand-sub { font-size: .65rem; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(12px);
+    }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .theme-toggle {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--trans);
+    }
+    .theme-toggle:hover { border-color: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+    .header-tag {
+      font-size: .7rem; color: var(--cyan); letter-spacing: 1px;
+      text-transform: uppercase; border: 1px solid var(--border2);
+      padding: 4px 10px; border-radius: 20px;
+    }
+
+    /* ============================================================
+       3-COLUMN LAYOUT
+    ============================================================ */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      gap: 16px;
+      padding: 16px;
+      max-width: 1600px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    /* ============================================================
+       PANELS / CARDS
+    ============================================================ */
+    .panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      transition: background var(--trans);
+    }
+    .panel-title {
+      font-size: .75rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 14px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border2);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ============================================================
+       RADIO PLAYER
+    ============================================================ */
+    .radio-player {
+      background: linear-gradient(135deg, var(--bg3) 0%, #0d0d1a 100%);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .radio-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .radio-sat { width: 36px; height: 36px; flex-shrink: 0; }
+    .radio-title { font-size: .8rem; font-weight: 800; color: var(--pink); letter-spacing: .5px; }
+    .radio-subtitle { font-size: .6rem; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; }
+    .radio-display {
+      background: var(--bg); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    .radio-song { font-size: .8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .radio-artist { font-size: .65rem; color: var(--text2); margin-top: 2px; }
+    .radio-mode-badge {
+      display: inline-block; font-size: .6rem; letter-spacing: 1px;
+      padding: 2px 8px; border-radius: 10px; margin-top: 6px;
+      background: var(--bg3); color: var(--cyan);
+      border: 1px solid var(--border2);
+    }
+    .radio-controls {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .radio-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--trans);
+      flex-shrink: 0;
+    }
+    .radio-btn:hover { border-color: var(--pink); box-shadow: 0 0 10px var(--pink); }
+    .radio-btn.play-btn {
+      width: 48px; height: 48px; font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      border: none; color: #000;
+    }
+    .radio-vol { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .radio-vol label { font-size: .65rem; color: var(--text2); flex-shrink: 0; }
+    .vol-slider {
+      flex: 1; -webkit-appearance: none; height: 4px;
+      background: linear-gradient(90deg, var(--pink) 0%, var(--pink) var(--val, 50%), var(--bg3) var(--val, 50%));
+      border-radius: 2px; outline: none;
+    }
+    .vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+      background: var(--cyan); cursor: pointer;
+      box-shadow: 0 0 6px var(--cyan);
+    }
+    .vol-val { font-size: .65rem; color: var(--cyan); width: 28px; text-align: right; flex-shrink: 0; }
+    .mode-toggle-btn {
+      width: 100%; padding: 8px 12px; border-radius: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); font-size: .7rem; font-weight: 700;
+      letter-spacing: .5px; text-transform: uppercase;
+      transition: all var(--trans);
+    }
+    .mode-toggle-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ============================================================
+       PARTNER CATEGORIES (Left Column)
+    ============================================================ */
+    .category-section { margin-bottom: 14px; }
+    .cat-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0; cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .cat-title { font-size: .8rem; font-weight: 700; }
+    .cat-toggle { font-size: .7rem; color: var(--text2); transition: transform var(--trans); }
+    .cat-toggle.open { transform: rotate(180deg); }
+    .cat-cards { display: flex; flex-direction: column; gap: 8px; }
+    .cat-cards.collapsed { display: none; }
+
+    /* Partner card — rounded embedded style */
+    .partner-card {
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      box-shadow:
+        inset 0 2px 6px rgba(0,0,0,.5),
+        0 4px 16px rgba(0,0,0,.4);
+      cursor: pointer;
+      transition: all var(--trans);
+      display: flex; align-items: center; gap: 12px;
+      position: relative; overflow: hidden;
+    }
+    .partner-card:hover {
+      border-color: var(--pink);
+      box-shadow:
+        inset 0 2px 6px rgba(0,0,0,.4),
+        0 8px 32px rgba(255,0,79,.25),
+        0 0 0 1px var(--pink);
+    }
+    .partner-card:hover .partner-logo { transform: scale(1.15); }
+    .partner-card:hover .partner-cta { opacity: 1; transform: translateX(0); }
+    .partner-logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+      background: var(--bg2);
+      transition: transform var(--trans);
+    }
+    .partner-info { flex: 1; min-width: 0; }
+    .partner-name { font-size: .78rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .partner-desc { font-size: .62rem; color: var(--text2); margin-top: 2px; }
+    .partner-cta {
+      font-size: .6rem; font-weight: 700; color: var(--pink);
+      letter-spacing: .5px; opacity: 0; transform: translateX(10px);
+      transition: all var(--trans); flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       CENTER COLUMN — HERO + TIKTOK
+    ============================================================ */
+    .hero {
+      background: linear-gradient(135deg, rgba(255,0,79,.08), rgba(0,255,204,.08));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .hero-icon { font-size: 2rem; margin-bottom: 8px; }
+    .hero-title {
+      font-size: 1.3rem; font-weight: 800; letter-spacing: -.5px;
+      background: linear-gradient(90deg, var(--pink), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+    .hero-sub { font-size: .75rem; color: var(--text2); margin-bottom: 14px; }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px; border-radius: 24px;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      color: #000; font-weight: 800; font-size: .8rem; letter-spacing: .5px;
+      transition: all var(--trans);
+    }
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,0,79,.4); }
+
+    /* TikTok embed area */
+    .tiktok-section { border-radius: var(--radius); overflow: hidden; }
+    .tiktok-header {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-bottom: none; border-radius: var(--radius) var(--radius) 0 0;
+      padding: 10px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tiktok-title { font-size: .75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--pink); }
+    .tiktok-frame-wrap {
+      background: #000;
+      border: 1px solid var(--border); border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      min-height: 80vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tiktok-placeholder {
+      text-align: center; padding: 40px 20px;
+    }
+    .tiktok-placeholder-icon { font-size: 4rem; margin-bottom: 16px; }
+    .tiktok-placeholder h3 { font-size: 1.1rem; margin-bottom: 8px; color: var(--pink); }
+    .tiktok-placeholder p { font-size: .75rem; color: var(--text2); line-height: 1.5; max-width: 260px; margin: 0 auto 20px; }
+    .tiktok-placeholder a {
+      display: inline-block; padding: 10px 24px; border-radius: 24px;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      color: #000; font-weight: 800; font-size: .8rem;
+      transition: all var(--trans);
+    }
+    .tiktok-placeholder a:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,0,79,.4); }
+
+    /* ============================================================
+       RIGHT COLUMN — BUSINESS DASHBOARD
+    ============================================================ */
+    .dashboard { display: flex; flex-direction: column; gap: 14px; }
+    .dash-title {
+      font-size: .75rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 10px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    /* Stocks */
+    .stock-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; background: var(--bg3); border-radius: 8px;
+      border: 1px solid var(--border); margin-bottom: 6px;
+    }
+    .stock-name { font-size: .7rem; font-weight: 700; }
+    .stock-right { text-align: right; }
+    .stock-price { font-size: .8rem; font-weight: 800; }
+    .stock-change { font-size: .65rem; font-weight: 700; }
+    .stock-change.up { color: var(--success); }
+    .stock-change.down { color: var(--danger); }
+    @keyframes pulse-update { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+    .stock-pulse { animation: pulse-update .8s ease; }
+
+    /* News */
+    .news-item {
+      padding: 10px; background: var(--bg3); border-radius: 10px;
+      border: 1px solid var(--border); margin-bottom: 8px;
+      transition: all var(--trans);
+    }
+    .news-item:hover { border-color: var(--cyan); }
+    .news-meta {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 4px;
+    }
+    .news-badge {
+      font-size: .55rem; font-weight: 800; letter-spacing: 1px;
+      padding: 2px 6px; border-radius: 4px;
+      background: var(--pink); color: #fff;
+    }
+    .news-source { font-size: .6rem; color: var(--text2); }
+    .news-time { font-size: .6rem; color: var(--text2); margin-left: auto; }
+    .news-headline { font-size: .72rem; font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
+    .news-view {
+      font-size: .6rem; font-weight: 700; letter-spacing: 1px;
+      padding: 4px 10px; border-radius: 6px;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--cyan); transition: all var(--trans);
+    }
+    .news-view:hover { border-color: var(--cyan); box-shadow: 0 0 8px rgba(0,255,204,.3); }
+
+    /* Weather */
+    .weather-widget {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; background: var(--bg3); border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .weather-icon { font-size: 2.2rem; }
+    .weather-temp { font-size: 1.4rem; font-weight: 800; }
+    .weather-cond { font-size: .65rem; color: var(--text2); }
+    .weather-wind { font-size: .6rem; color: var(--cyan); margin-top: 2px; }
+
+    /* Social buttons */
+    .social-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+    .social-btn {
+      aspect-ratio: 1; border-radius: 10px;
+      background: var(--bg3); border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 4px;
+      font-size: .55rem; color: var(--text2); font-weight: 600;
+      transition: all var(--trans); padding: 6px;
+      min-height: 56px;
+    }
+    .social-btn .s-icon { font-size: 1.1rem; }
+    .social-btn:hover { border-color: var(--pink); color: var(--pink); transform: translateY(-2px); }
+
+    /* Top Performers */
+    .performer-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; background: var(--bg3); border-radius: 8px;
+      border: 1px solid var(--border); margin-bottom: 6px;
+    }
+    .perf-rank { font-size: .7rem; font-weight: 800; color: var(--pink); width: 20px; }
+    .perf-logo { font-size: 1.1rem; }
+    .perf-name { flex:1; font-size: .72rem; font-weight: 700; }
+    .perf-stat { font-size: .65rem; color: var(--success); font-weight: 700; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      margin-top: 32px; padding: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-inner { max-width: 1600px; margin: 0 auto; }
+    .footer-brand { margin-bottom: 10px; }
+    .footer-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 10px; }
+    .footer-links a { font-size: .7rem; color: var(--text2); transition: color var(--trans); }
+    .footer-links a:hover { color: var(--cyan); }
+    .footer-copy { font-size: .65rem; color: var(--text2); }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1100px) {
+      .main-grid { grid-template-columns: 280px 1fr; }
+      .col-right { display: none; }
+    }
+    @media (max-width: 720px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 12px;
+      }
+      .col-right { display: block; }
+      .site-header { padding: 8px 12px; }
+      .brand-name { font-size: 1rem; }
+      .header-tag { display: none; }
+      .tiktok-frame-wrap { min-height: 60vh; }
+    }
+
+    /* ============================================================
+       UTILITY
+    ============================================================ */
+    .spacer { margin-bottom: 14px; }
+    .flex-between { display: flex; align-items: center; justify-content: space-between; }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--success); display: inline-block;
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:.2; } }
+  </style>
 </head>
 <body>
-    <div class="column" id="column2">
-        <h2>YouTube Style Cards</h2>
-        <div class="card">Card 1</div>
-        <div class="card">Card 2</div>
-        <div class="card">Card 3</div>
-        <!-- Dynamic Infinite Scroll Logic Here -->
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header">
+    <div class="satellite-logo" title="SignalBoostAi">
+      <div class="sat-svg-wrap">
+        <!-- Signal wave rings -->
+        <div class="sat-wave"></div>
+        <div class="sat-wave"></div>
+        <div class="sat-wave"></div>
+        <!-- Satellite SVG -->
+        <svg class="sat-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- body -->
+          <rect x="36" y="36" width="28" height="28" rx="5" fill="#ff004f"/>
+          <!-- solar panels left -->
+          <rect x="8" y="42" width="24" height="16" rx="3" fill="#00ffcc" opacity=".9"/>
+          <!-- solar panel lines left -->
+          <line x1="16" y1="42" x2="16" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+          <line x1="24" y1="42" x2="24" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+          <!-- solar panels right -->
+          <rect x="68" y="42" width="24" height="16" rx="3" fill="#00ffcc" opacity=".9"/>
+          <line x1="76" y1="42" x2="76" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+          <line x1="84" y1="42" x2="84" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+          <!-- dish -->
+          <ellipse cx="50" cy="30" rx="10" ry="6" fill="none" stroke="#ff004f" stroke-width="2.5"/>
+          <line x1="50" y1="36" x2="50" y2="42" stroke="#ff004f" stroke-width="2"/>
+          <!-- antenna -->
+          <line x1="60" y1="36" x2="72" y2="22" stroke="#00ffcc" stroke-width="2"/>
+          <circle cx="72" cy="22" r="3" fill="#00ffcc"/>
+          <!-- signal dot -->
+          <circle cx="50" cy="50" r="5" fill="#ffffff" opacity=".8"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">SignalBoostAi</div>
+        <div class="brand-sub">Digital Shopping Mall</div>
+      </div>
     </div>
-    <div class="column" id="column3">
-        <h2>TikTok Style Feed</h2>
-        <div class="card">Feed Item 1</div>
-        <div class="card">Feed Item 2</div>
-        <div class="card">Feed Item 3</div>
-        <!-- Enhanced Feed Logic Here -->
+
+    <div class="header-right">
+      <span class="header-tag">🏬 Mall Live</span>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle dark/light mode">🌙</button>
     </div>
-    <div class="column" id="column4">
-        <h2>YouTube Style Cards</h2>
-        <div class="card">Card 1</div>
-        <div class="card">Card 2</div>
-        <div class="card">Card 3</div>
-        <!-- Dynamic Infinite Scroll Logic Here -->
+  </header>
+
+  <!-- ============================================================
+       MAIN GRID
+  ============================================================ -->
+  <main class="main-grid">
+
+    <!-- ==================== LEFT COLUMN ==================== -->
+    <aside class="col-left">
+
+      <!-- RADIO PLAYER -->
+      <div class="radio-player" id="radioPlayer">
+        <div class="radio-header">
+          <svg class="radio-sat" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="36" y="36" width="28" height="28" rx="5" fill="#ff004f"/>
+            <rect x="8" y="42" width="24" height="16" rx="3" fill="#00ffcc" opacity=".9"/>
+            <line x1="16" y1="42" x2="16" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+            <line x1="24" y1="42" x2="24" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+            <rect x="68" y="42" width="24" height="16" rx="3" fill="#00ffcc" opacity=".9"/>
+            <line x1="76" y1="42" x2="76" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+            <line x1="84" y1="42" x2="84" y2="58" stroke="#0a0a0a" stroke-width="1.5"/>
+            <ellipse cx="50" cy="30" rx="10" ry="6" fill="none" stroke="#ff004f" stroke-width="2.5"/>
+            <line x1="50" y1="36" x2="50" y2="42" stroke="#ff004f" stroke-width="2"/>
+            <line x1="60" y1="36" x2="72" y2="22" stroke="#00ffcc" stroke-width="2"/>
+            <circle cx="72" cy="22" r="3" fill="#00ffcc"/>
+          </svg>
+          <div>
+            <div class="radio-title">SignalBoostAi RADIO</div>
+            <div class="radio-subtitle">24/7 Non-Stop</div>
+          </div>
+        </div>
+
+        <div class="radio-display">
+          <div class="radio-song" id="radioSong">Loading station…</div>
+          <div class="radio-artist" id="radioArtist">— SignalBoostAi Radio —</div>
+          <div class="radio-mode-badge" id="radioModeBadge">🔊 NORMAL MODE</div>
+        </div>
+
+        <div class="radio-controls">
+          <button class="radio-btn" id="radioPrev" title="Previous" aria-label="Previous track">⏮</button>
+          <button class="radio-btn play-btn" id="radioPlay" title="Play/Pause" aria-label="Play or pause">▶</button>
+          <button class="radio-btn" id="radioNext" title="Next" aria-label="Next track">⏭</button>
+        </div>
+
+        <div class="radio-vol">
+          <label for="volSlider">🔈</label>
+          <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="50" aria-label="Volume" />
+          <span class="vol-val" id="volVal">50%</span>
+        </div>
+
+        <button class="mode-toggle-btn" id="modeToggle" aria-label="Toggle quiet/normal mode">
+          Switch to 🔇 QUIET MODE
+        </button>
+      </div>
+
+      <!-- PARTNER CATEGORIES -->
+      <div class="panel">
+        <div class="panel-title">🛍️ Partner Deals</div>
+
+        <!-- ✈️ TRAVEL (real links) -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">✈️ Travel &amp; Stays</span>
+            <span class="cat-toggle open">▲</span>
+          </div>
+          <div class="cat-cards">
+            <div class="partner-card" onclick="openLink('https://expedia.tpo.lv/Z56Ur0Cy')" role="button" tabindex="0" aria-label="Explore Expedia deals">
+              <div class="partner-logo">✈️</div>
+              <div class="partner-info">
+                <div class="partner-name">Expedia</div>
+                <div class="partner-desc">Flights, Hotels &amp; Packages</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+            <div class="partner-card" onclick="openLink('https://booking.tpo.lv/enwsEbCs')" role="button" tabindex="0" aria-label="Explore Booking.com deals">
+              <div class="partner-logo">🏨</div>
+              <div class="partner-info">
+                <div class="partner-name">Booking.com</div>
+                <div class="partner-desc">Hotels &amp; Accommodations</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+            <div class="partner-card" onclick="openLink('https://vrbo.tpo.lv/ldtO3nzY')" role="button" tabindex="0" aria-label="Explore VRBO deals">
+              <div class="partner-logo">🏠</div>
+              <div class="partner-info">
+                <div class="partner-name">VRBO</div>
+                <div class="partner-desc">Vacation Rentals By Owner</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+            <div class="partner-card" onclick="openLink('https://agoda.tpo.lv/UEhQ1dwR')" role="button" tabindex="0" aria-label="Explore Agoda deals">
+              <div class="partner-logo">🌏</div>
+              <div class="partner-info">
+                <div class="partner-name">Agoda</div>
+                <div class="partner-desc">Asia-Pacific Stays &amp; Deals</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+            <div class="partner-card" onclick="openLink('https://trip.tpo.lv/Ex4uS8Tu')" role="button" tabindex="0" aria-label="Explore Trip.com deals">
+              <div class="partner-logo">🗺️</div>
+              <div class="partner-info">
+                <div class="partner-name">Trip.com</div>
+                <div class="partner-desc">Global Travel Booking</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+            <div class="partner-card" onclick="openLink('https://viator.tpo.lv/XaGgmrGa')" role="button" tabindex="0" aria-label="Explore Viator deals">
+              <div class="partner-logo">🎭</div>
+              <div class="partner-info">
+                <div class="partner-name">Viator</div>
+                <div class="partner-desc">Tours, Activities &amp; Experiences</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 💳 FINANCE -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">💳 Finance &amp; Banking</span>
+            <span class="cat-toggle">▲</span>
+          </div>
+          <div class="cat-cards collapsed">
+            <div class="partner-card" onclick="openLink('https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806')" role="button" tabindex="0" aria-label="Explore Finance deals">
+              <div class="partner-logo">💳</div>
+              <div class="partner-info">
+                <div class="partner-name">Finance Partner</div>
+                <div class="partner-desc">Banking &amp; Money Services</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🛡️ INSURANCE -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">🛡️ Insurance &amp; Protection</span>
+            <span class="cat-toggle">▲</span>
+          </div>
+          <div class="cat-cards collapsed">
+            <div class="partner-card" onclick="openLink('https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806')" role="button" tabindex="0" aria-label="Explore Insurance deals">
+              <div class="partner-logo">🛡️</div>
+              <div class="partner-info">
+                <div class="partner-name">Insurance Partner</div>
+                <div class="partner-desc">Travel &amp; Life Protection</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⚙️ TECH -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">⚙️ Tech &amp; Software</span>
+            <span class="cat-toggle">▲</span>
+          </div>
+          <div class="cat-cards collapsed">
+            <div class="partner-card" onclick="openLink('https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806')" role="button" tabindex="0" aria-label="Explore Tech deals">
+              <div class="partner-logo">⚙️</div>
+              <div class="partner-info">
+                <div class="partner-name">Tech Partner</div>
+                <div class="partner-desc">Software &amp; Digital Tools</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🎫 EXPERIENCES -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">🎫 Experiences &amp; Entertainment</span>
+            <span class="cat-toggle">▲</span>
+          </div>
+          <div class="cat-cards collapsed">
+            <div class="partner-card" onclick="openLink('https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806')" role="button" tabindex="0" aria-label="Explore Entertainment deals">
+              <div class="partner-logo">🎫</div>
+              <div class="partner-info">
+                <div class="partner-name">Entertainment Partner</div>
+                <div class="partner-desc">Events, Shows &amp; Tickets</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 📱 CONNECTIVITY -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">📱 Connectivity &amp; Telecom</span>
+            <span class="cat-toggle">▲</span>
+          </div>
+          <div class="cat-cards collapsed">
+            <div class="partner-card" onclick="openLink('https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806')" role="button" tabindex="0" aria-label="Explore Telecom deals">
+              <div class="partner-logo">📱</div>
+              <div class="partner-info">
+                <div class="partner-name">Telecom Partner</div>
+                <div class="partner-desc">eSIM &amp; Connectivity Solutions</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 💼 LIFESTYLE -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">💼 Lifestyle &amp; Wellness</span>
+            <span class="cat-toggle">▲</span>
+          </div>
+          <div class="cat-cards collapsed">
+            <div class="partner-card" onclick="openLink('https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806')" role="button" tabindex="0" aria-label="Explore Lifestyle deals">
+              <div class="partner-logo">💼</div>
+              <div class="partner-info">
+                <div class="partner-name">Lifestyle Partner</div>
+                <div class="partner-desc">Health, Fitness &amp; Wellness</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🏢 B2B -->
+        <div class="category-section">
+          <div class="cat-header" onclick="toggleCat(this)">
+            <span class="cat-title">🏢 B2B Solutions</span>
+            <span class="cat-toggle">▲</span>
+          </div>
+          <div class="cat-cards collapsed">
+            <div class="partner-card" onclick="openLink('https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806')" role="button" tabindex="0" aria-label="Explore B2B deals">
+              <div class="partner-logo">🏢</div>
+              <div class="partner-info">
+                <div class="partner-name">B2B Partner</div>
+                <div class="partner-desc">Business &amp; Enterprise Tools</div>
+              </div>
+              <div class="partner-cta">→ EXPLORE</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end .panel -->
+    </aside><!-- end col-left -->
+
+    <!-- ==================== CENTER COLUMN ==================== -->
+    <section class="col-center">
+
+      <!-- HERO (minimal) -->
+      <div class="hero">
+        <div class="hero-icon">🏬</div>
+        <h1 class="hero-title">Digital Shopping Mall</h1>
+        <p class="hero-sub">Powered by SignalBoostAi · 24/7 Deals · Live Radio · Business Insights</p>
+        <a href="#partners" class="hero-cta">🛍️ Explore Deals</a>
+      </div>
+
+      <!-- TIKTOK FEED -->
+      <div class="tiktok-section" id="tiktokSection">
+        <div class="tiktok-header">
+          <span class="tiktok-title">🎬 TikTok Feed</span>
+          <span><span class="status-dot"></span>&nbsp;Live</span>
+        </div>
+        <div class="tiktok-frame-wrap">
+          <!-- TikTok embed placeholder — replace blockquote with live TikTok widget or iframe as needed -->
+          <div class="tiktok-placeholder">
+            <div class="tiktok-placeholder-icon">🎵</div>
+            <h3>@SignalBoostAi on TikTok</h3>
+            <p>Follow us on TikTok for viral content, deal alerts, and live radio moments — all day, every day.</p>
+            <a href="https://www.tiktok.com/@signalboostai" target="_blank" rel="noopener noreferrer">
+              Open TikTok Feed ↗
+            </a>
+            <br/><br/>
+            <p style="font-size:.65rem;color:var(--text2);">
+              Embed your TikTok profile widget here.<br/>
+              Visit <strong>tiktok.com/embed</strong> for embed options.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section><!-- end col-center -->
+
+    <!-- ==================== RIGHT COLUMN ==================== -->
+    <aside class="col-right dashboard">
+
+      <!-- STOCK TICKER -->
+      <div class="panel">
+        <div class="dash-title">📊 SignalBoostAi DASHBOARD</div>
+        <div class="panel-title">📈 Live Markets</div>
+        <div id="stocksFeed">
+          <div class="stock-item" id="stock-sp500">
+            <div><div class="stock-name">S&amp;P 500</div><div style="font-size:.6rem;color:var(--text2)">US Markets</div></div>
+            <div class="stock-right">
+              <div class="stock-price" id="sp500-price">—</div>
+              <div class="stock-change" id="sp500-change">—</div>
+            </div>
+          </div>
+          <div class="stock-item" id="stock-nasdaq">
+            <div><div class="stock-name">NASDAQ</div><div style="font-size:.6rem;color:var(--text2)">Tech Index</div></div>
+            <div class="stock-right">
+              <div class="stock-price" id="nasdaq-price">—</div>
+              <div class="stock-change" id="nasdaq-change">—</div>
+            </div>
+          </div>
+          <div class="stock-item" id="stock-djia">
+            <div><div class="stock-name">DJIA</div><div style="font-size:.6rem;color:var(--text2)">Dow Jones</div></div>
+            <div class="stock-right">
+              <div class="stock-price" id="djia-price">—</div>
+              <div class="stock-change" id="djia-change">—</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:.58rem;color:var(--text2);margin-top:6px;text-align:right;">
+          <span class="status-dot" style="width:6px;height:6px;background:var(--success);"></span>
+          Simulated · Updates every 5s
+        </div>
+      </div>
+
+      <!-- FINANCIAL NEWS -->
+      <div class="panel">
+        <div class="panel-title">📰 Financial News</div>
+        <div id="newsFeed"></div>
+        <div style="font-size:.58rem;color:var(--text2);margin-top:4px;text-align:right;">Updates every 5 min</div>
+      </div>
+
+      <!-- WEATHER -->
+      <div class="panel">
+        <div class="panel-title">🌤️ Weather</div>
+        <div class="weather-widget" id="weatherWidget">
+          <div class="weather-icon" id="weatherIcon">🌤️</div>
+          <div>
+            <div class="weather-temp" id="weatherTemp">72°F</div>
+            <div class="weather-cond" id="weatherCond">Partly Cloudy</div>
+            <div class="weather-wind" id="weatherWind">💨 12 mph winds</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOCIAL QUICK ACCESS -->
+      <div class="panel">
+        <div class="panel-title">📲 Social Hub</div>
+        <div class="social-grid">
+          <a class="social-btn" href="https://www.youtube.com/@signalboostai" target="_blank" rel="noopener noreferrer" title="YouTube" aria-label="YouTube">
+            <span class="s-icon">▶️</span>YouTube
+          </a>
+          <a class="social-btn" href="https://www.tiktok.com/@signalboostai" target="_blank" rel="noopener noreferrer" title="TikTok" aria-label="TikTok">
+            <span class="s-icon">🎵</span>TikTok
+          </a>
+          <a class="social-btn" href="https://www.instagram.com/signalboostai" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram">
+            <span class="s-icon">📸</span>Instagram
+          </a>
+          <a class="social-btn" href="https://twitter.com/signalboostai" target="_blank" rel="noopener noreferrer" title="X / Twitter" aria-label="X Twitter">
+            <span class="s-icon">✖️</span>X
+          </a>
+          <a class="social-btn" href="https://www.linkedin.com/company/signalboostai" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn">
+            <span class="s-icon">💼</span>LinkedIn
+          </a>
+          <a class="social-btn" href="https://www.reddit.com/r/signalboostai" target="_blank" rel="noopener noreferrer" title="Reddit" aria-label="Reddit">
+            <span class="s-icon">🔴</span>Reddit
+          </a>
+          <a class="social-btn" href="https://wa.me/signalboostai" target="_blank" rel="noopener noreferrer" title="WhatsApp" aria-label="WhatsApp">
+            <span class="s-icon">💬</span>WhatsApp
+          </a>
+          <a class="social-btn" href="mailto:hello@signalboostai.com" title="Email" aria-label="Email">
+            <span class="s-icon">📧</span>Email
+          </a>
+        </div>
+      </div>
+
+      <!-- TOP PERFORMERS -->
+      <div class="panel">
+        <div class="panel-title">🏆 Top Performers This Week</div>
+        <div id="topPerformers">
+          <div class="performer-item">
+            <span class="perf-rank">#1</span>
+            <span class="perf-logo">✈️</span>
+            <span class="perf-name">Expedia</span>
+            <span class="perf-stat">↑ 38% CTR</span>
+          </div>
+          <div class="performer-item">
+            <span class="perf-rank">#2</span>
+            <span class="perf-logo">🏨</span>
+            <span class="perf-name">Booking.com</span>
+            <span class="perf-stat">↑ 31% CTR</span>
+          </div>
+          <div class="performer-item">
+            <span class="perf-rank">#3</span>
+            <span class="perf-logo">🌏</span>
+            <span class="perf-name">Agoda</span>
+            <span class="perf-stat">↑ 27% CTR</span>
+          </div>
+          <div class="performer-item">
+            <span class="perf-rank">#4</span>
+            <span class="perf-logo">🎭</span>
+            <span class="perf-name">Viator</span>
+            <span class="perf-stat">↑ 22% CTR</span>
+          </div>
+          <div class="performer-item">
+            <span class="perf-rank">#5</span>
+            <span class="perf-logo">🗺️</span>
+            <span class="perf-name">Trip.com</span>
+            <span class="perf-stat">↑ 19% CTR</span>
+          </div>
+        </div>
+      </div>
+
+    </aside><!-- end col-right -->
+
+  </main><!-- end .main-grid -->
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="satellite-logo" style="justify-content:center;">
+          <div class="sat-svg-wrap" style="width:32px;height:32px;">
+            <div class="sat-wave"></div>
+            <svg class="sat-svg" style="width:32px;height:32px;" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect x="36" y="36" width="28" height="28" rx="5" fill="#ff004f"/>
+              <rect x="8" y="42" width="24" height="16" rx="3" fill="#00ffcc" opacity=".9"/>
+              <rect x="68" y="42" width="24" height="16" rx="3" fill="#00ffcc" opacity=".9"/>
+              <ellipse cx="50" cy="30" rx="10" ry="6" fill="none" stroke="#ff004f" stroke-width="2.5"/>
+              <line x1="50" y1="36" x2="50" y2="42" stroke="#ff004f" stroke-width="2"/>
+              <circle cx="50" cy="50" r="5" fill="#ffffff" opacity=".8"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-name" style="font-size:.95rem;">SignalBoostAi</div>
+            <div class="brand-sub">Digital Shopping Mall</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#partners">Partners</a>
+        <a href="https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Advertise With Us</a>
+        <a href="mailto:hello@signalboostai.com">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+      </div>
+      <div class="footer-copy">© 2026 SignalBoostAi · All rights reserved · Built with 🛰️ signal &amp; 💫 ambition</div>
     </div>
+  </footer>
+
+  <!-- ============================================================
+       EMBEDDED JAVASCRIPT
+  ============================================================ -->
+  <script>
+  /* ============================================================
+     THEME TOGGLE
+  ============================================================ */
+  (function() {
+    const btn = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('sbai-theme') || 'dark';
+    const applyTheme = function(theme) {
+      if (theme === 'light') {
+        document.documentElement.classList.add('light');
+        btn.textContent = '☀️';
+      } else {
+        document.documentElement.classList.remove('light');
+        btn.textContent = '🌙';
+      }
+      localStorage.setItem('sbai-theme', theme);
+    };
+    applyTheme(saved);
+    btn.addEventListener('click', function() {
+      const current = localStorage.getItem('sbai-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  })();
+
+  /* ============================================================
+     PARTNER LINK CLICK (with tracking hook)
+  ============================================================ */
+  function openLink(url) {
+    // Analytics tracking hook (integrate your tracker here)
+    if (typeof window.trackClick === 'function') {
+      window.trackClick(url);
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  // Keyboard accessibility for partner cards
+  document.querySelectorAll('.partner-card').forEach(function(card) {
+    card.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+
+  /* ============================================================
+     PARTNER CATEGORY COLLAPSE
+  ============================================================ */
+  function toggleCat(header) {
+    var cards = header.nextElementSibling;
+    var toggle = header.querySelector('.cat-toggle');
+    if (cards.classList.contains('collapsed')) {
+      cards.classList.remove('collapsed');
+      toggle.classList.add('open');
+    } else {
+      cards.classList.add('collapsed');
+      toggle.classList.remove('open');
+    }
+  }
+
+  /* ============================================================
+     RADIO PLAYER
+  ============================================================ */
+  var QUIET_PLAYLIST = [
+    { song: 'Clair de Lune', artist: 'Claude Debussy' },
+    { song: 'Gymnopédie No.1', artist: 'Erik Satie' },
+    { song: 'Ambient Drift', artist: 'SignalBoostAi Radio' },
+    { song: 'Weightless', artist: 'Marconi Union' },
+    { song: 'Nocturne Op.9 No.2', artist: 'Frédéric Chopin' },
+    { song: 'Peaceful Morning', artist: 'SignalBoostAi Ambient' },
+  ];
+  var NORMAL_PLAYLIST = [
+    { song: 'Autumn Leaves (Jazz)', artist: 'Bill Evans Trio' },
+    { song: 'Take Five', artist: 'Dave Brubeck Quartet' },
+    { song: 'Lo-Fi Study Beat #7', artist: 'SignalBoostAi Radio' },
+    { song: "So What", artist: 'Miles Davis' },
+    { song: 'Fly Me To The Moon', artist: 'Frank Sinatra' },
+    { song: 'Chill Groove Vol.12', artist: 'SignalBoostAi Lounge' },
+    { song: 'Blue in Green', artist: 'Miles Davis' },
+  ];
+
+  var radioState = {
+    playing: false,
+    mode: 'normal', // 'quiet' | 'normal'
+    trackIndex: 0,
+    volume: parseInt(localStorage.getItem('sbai-vol') || '50', 10),
+  };
+
+  var playBtn = document.getElementById('radioPlay');
+  var prevBtn = document.getElementById('radioPrev');
+  var nextBtn = document.getElementById('radioNext');
+  var volSlider = document.getElementById('volSlider');
+  var volVal = document.getElementById('volVal');
+  var modeToggle = document.getElementById('modeToggle');
+  var radioSong = document.getElementById('radioSong');
+  var radioArtist = document.getElementById('radioArtist');
+  var radioModeBadge = document.getElementById('radioModeBadge');
+
+  function currentPlaylist() {
+    return radioState.mode === 'quiet' ? QUIET_PLAYLIST : NORMAL_PLAYLIST;
+  }
+
+  function updateRadioDisplay() {
+    var list = currentPlaylist();
+    var track = list[radioState.trackIndex % list.length];
+    radioSong.textContent = track.song;
+    radioArtist.textContent = track.artist;
+    if (radioState.mode === 'quiet') {
+      radioModeBadge.textContent = '🔇 QUIET MODE';
+      radioModeBadge.style.color = 'var(--cyan)';
+    } else {
+      radioModeBadge.textContent = '🔊 NORMAL MODE';
+      radioModeBadge.style.color = 'var(--pink)';
+    }
+    playBtn.textContent = radioState.playing ? '⏸' : '▶';
+  }
+
+  function updateVolUI() {
+    var v = radioState.volume;
+    volSlider.value = v;
+    volVal.textContent = v + '%';
+    // Update gradient fill
+    volSlider.style.setProperty('--val', v + '%');
+    localStorage.setItem('sbai-vol', v);
+  }
+
+  playBtn.addEventListener('click', function() {
+    radioState.playing = !radioState.playing;
+    updateRadioDisplay();
+  });
+
+  prevBtn.addEventListener('click', function() {
+    var list = currentPlaylist();
+    radioState.trackIndex = (radioState.trackIndex - 1 + list.length) % list.length;
+    updateRadioDisplay();
+  });
+
+  nextBtn.addEventListener('click', function() {
+    var list = currentPlaylist();
+    radioState.trackIndex = (radioState.trackIndex + 1) % list.length;
+    updateRadioDisplay();
+  });
+
+  volSlider.addEventListener('input', function() {
+    radioState.volume = parseInt(this.value, 10);
+    updateVolUI();
+  });
+
+  modeToggle.addEventListener('click', function() {
+    if (radioState.mode === 'normal') {
+      radioState.mode = 'quiet';
+      radioState.volume = 15;
+      modeToggle.textContent = 'Switch to 🔊 NORMAL MODE';
+    } else {
+      radioState.mode = 'normal';
+      radioState.volume = 50;
+      modeToggle.textContent = 'Switch to 🔇 QUIET MODE';
+    }
+    radioState.trackIndex = 0;
+    updateVolUI();
+    updateRadioDisplay();
+  });
+
+  // Initialize
+  volSlider.value = radioState.volume;
+  updateVolUI();
+  updateRadioDisplay();
+
+  /* ============================================================
+     SIMULATED STOCK DATA (updates every 5 seconds)
+  ============================================================ */
+  var stocks = {
+    sp500:  { base: 5480,  el: { price: document.getElementById('sp500-price'),  change: document.getElementById('sp500-change')  } },
+    nasdaq: { base: 17920, el: { price: document.getElementById('nasdaq-price'), change: document.getElementById('nasdaq-change') } },
+    djia:   { base: 39600, el: { price: document.getElementById('djia-price'),   change: document.getElementById('djia-change')   } },
+  };
+
+  function fmtPrice(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function updateStocks() {
+    Object.keys(stocks).forEach(function(key) {
+      var s = stocks[key];
+      var delta = (Math.random() - 0.48) * s.base * 0.004;
+      s.base += delta;
+      var pct = ((delta / (s.base - delta)) * 100);
+      var isUp = delta >= 0;
+      s.el.price.textContent = '$' + fmtPrice(s.base);
+      s.el.change.textContent = (isUp ? '▲ +' : '▼ ') + pct.toFixed(2) + '%';
+      s.el.change.className = 'stock-change ' + (isUp ? 'up' : 'down');
+      // Pulse animation
+      s.el.price.classList.remove('stock-pulse');
+      void s.el.price.offsetWidth; // reflow
+      s.el.price.classList.add('stock-pulse');
+    });
+  }
+
+  updateStocks();
+  setInterval(updateStocks, 5000);
+
+  /* ============================================================
+     SIMULATED FINANCIAL NEWS (updates every 5 minutes)
+  ============================================================ */
+  var NEWS_ITEMS = [
+    { headline: 'S&P 500 Hits Record High Amid Tech Rally', source: 'MarketWatch', url: '#', breaking: true },
+    { headline: 'Federal Reserve Signals Rate Pause Through Q3 2026', source: 'Reuters', url: '#', breaking: false },
+    { headline: 'AI Stocks Surge as SignalBoostAi Sector Gains Momentum', source: 'Bloomberg', url: '#', breaking: true },
+    { headline: 'Travel Demand Rebounds — Expedia & Booking Report Record Bookings', source: 'CNBC', url: '#', breaking: false },
+    { headline: 'NASDAQ Composite Crosses 18,000 Milestone', source: 'WSJ', url: '#', breaking: true },
+    { headline: 'Global Tourism Recovery Lifts Asia-Pacific Hotel Stocks', source: 'FT', url: '#', breaking: false },
+    { headline: 'Digital Affiliate Revenue Grows 42% YoY — Industry Report', source: 'AdWeek', url: '#', breaking: false },
+    { headline: 'Dow Jones Gains 300 Points in Early Morning Trading', source: 'AP', url: '#', breaking: false },
+  ];
+
+  function timeAgo(minutes) {
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return minutes + 'm ago';
+    var h = Math.floor(minutes / 60);
+    return h + 'h ago';
+  }
+
+  function renderNews() {
+    var feed = document.getElementById('newsFeed');
+    var html = '';
+    var shuffled = NEWS_ITEMS.slice().sort(function() { return Math.random() - 0.5; });
+    shuffled.slice(0, 4).forEach(function(item, i) {
+      var mins = Math.floor(Math.random() * 120) + 1;
+      html += '<div class="news-item">' +
+        '<div class="news-meta">' +
+        (item.breaking ? '<span class="news-badge">BREAKING</span>' : '') +
+        '<span class="news-source">' + item.source + '</span>' +
+        '<span class="news-time">' + timeAgo(mins) + '</span>' +
+        '</div>' +
+        '<div class="news-headline">' + item.headline + '</div>' +
+        '<button class="news-view" onclick="openLink(\'' + item.url + '\')">VIEW →</button>' +
+        '</div>';
+    });
+    feed.innerHTML = html;
+  }
+
+  renderNews();
+  setInterval(renderNews, 300000); // every 5 minutes
+
+  /* ============================================================
+     SIMULATED WEATHER (static + mild variation)
+  ============================================================ */
+  var WEATHER_CONDITIONS = [
+    { icon: '☀️', cond: 'Sunny & Clear', wind: 8 },
+    { icon: '🌤️', cond: 'Partly Cloudy', wind: 12 },
+    { icon: '⛅', cond: 'Mostly Cloudy', wind: 15 },
+    { icon: '🌥️', cond: 'Overcast', wind: 20 },
+    { icon: '🌦️', cond: 'Light Showers', wind: 18 },
+  ];
+
+  (function initWeather() {
+    var w = WEATHER_CONDITIONS[Math.floor(Math.random() * WEATHER_CONDITIONS.length)];
+    var temp = Math.floor(Math.random() * 25) + 60; // 60–85°F
+    document.getElementById('weatherIcon').textContent = w.icon;
+    document.getElementById('weatherTemp').textContent = temp + '°F';
+    document.getElementById('weatherCond').textContent = w.cond;
+    document.getElementById('weatherWind').textContent = '💨 ' + w.wind + ' mph winds';
+  })();
+  </script>
+
 </body>
 </html>
