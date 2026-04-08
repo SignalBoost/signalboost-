@@ -1,46 +1,848 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MIMIMI</title>
-    <style>
-        body {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .column {
-            flex: 0 0 45%;
-            margin: 10px;
-        }
-        .card {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIMIMI – Partner Hub</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0a0a0a;
+      --bg2:       #111;
+      --bg3:       #1a1a1a;
+      --pink:      #ff004f;
+      --cyan:      #00ffcc;
+      --text:      #e0e0e0;
+      --muted:     #888;
+      --radius:    10px;
+      --col-gap:   8px;
+    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+    /* ── Layout ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 220px 200px 1fr 200px 220px;
+      gap: var(--col-gap);
+      height: 100vh;
+      overflow: hidden;
+      padding: var(--col-gap);
+    }
+    .col {
+      background: var(--bg2);
+      border-radius: var(--radius);
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: var(--bg3) transparent;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .col::-webkit-scrollbar { width: 4px; }
+    .col::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 4px; }
+
+    /* ── Column Headers ── */
+    .col-header {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--pink);
+      border-bottom: 1px solid var(--bg3);
+      padding-bottom: 6px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .col-header .badge {
+      background: var(--pink);
+      color: #fff;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 20px;
+    }
+
+    /* ── COLUMN 1: Partners ── */
+    .cat-section { margin-bottom: 6px; }
+    .cat-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 7px;
+      background: var(--bg3);
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--pink);
+      user-select: none;
+      transition: background .2s;
+    }
+    .cat-toggle:hover { background: #222; }
+    .cat-toggle .arrow { transition: transform .25s; font-size: 10px; }
+    .cat-toggle.open .arrow { transform: rotate(90deg); }
+    .cat-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+    }
+    .cat-body.open { max-height: 1000px; }
+    .partner-link {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 12px;
+      transition: background .15s, color .15s;
+    }
+    .partner-link:hover { background: var(--bg3); color: var(--cyan); }
+    .partner-link .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--muted); flex-shrink: 0;
+    }
+    .partner-link:hover .dot { background: var(--cyan); }
+
+    /* ── COLUMN 2: Featured Offers ── */
+    .offer-card {
+      background: var(--bg3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+    }
+    .offer-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,255,204,.15); }
+    .offer-card .thumb {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      position: relative;
+    }
+    .offer-card .thumb .play-btn {
+      position: absolute; width: 32px; height: 32px;
+      background: rgba(255,0,79,.85); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; opacity: 0; transition: opacity .2s;
+    }
+    .offer-card:hover .play-btn { opacity: 1; }
+    .offer-card .info { padding: 8px; }
+    .offer-card .info h4 { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+    .offer-card .info p { font-size: 11px; color: var(--muted); }
+    .brand-card {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg3); border-radius: var(--radius);
+      padding: 10px; cursor: pointer;
+      transition: background .2s, box-shadow .2s;
+    }
+    .brand-card:hover { background: #222; box-shadow: 0 4px 12px rgba(255,0,79,.12); }
+    .brand-card .logo { font-size: 22px; flex-shrink: 0; }
+    .brand-card .brand-info h4 { font-size: 12px; font-weight: 700; }
+    .brand-card .brand-info p { font-size: 11px; color: var(--muted); }
+    .tag { display: inline-block; font-size: 9px; font-weight: 700;
+           padding: 2px 6px; border-radius: 20px; margin-top: 3px; }
+    .tag-new { background: var(--pink); color: #fff; }
+    .tag-hot { background: #ff6600; color: #fff; }
+    .tag-deal { background: var(--cyan); color: #000; }
+
+    /* ── COLUMN 3: Center Hero Feed ── */
+    .hero-col {
+      scroll-snap-type: y mandatory;
+      padding: 0;
+    }
+    .hero-card {
+      scroll-snap-align: start;
+      min-height: calc(50vh - 16px);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .hero-card .bg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 64px;
+    }
+    .hero-card .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 60%);
+    }
+    .hero-card .content {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 14px;
+    }
+    .hero-card .content h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .hero-card .content p { font-size: 12px; color: #ccc; }
+    .hero-card .new-badge {
+      position: absolute; top: 10px; left: 10px;
+      background: var(--pink); color: #fff; font-size: 9px;
+      font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px;
+    }
+    /* gradient backgrounds for hero cards */
+    .grad1 { background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%); }
+    .grad2 { background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 50%, #40916c 100%); }
+    .grad3 { background: linear-gradient(135deg, #3c096c 0%, #5a189a 50%, #7b2d8b 100%); }
+    .grad4 { background: linear-gradient(135deg, #7f0000 0%, #c00 50%, #ff4500 100%); }
+    .grad5 { background: linear-gradient(135deg, #003049 0%, #023e8a 50%, #0077b6 100%); }
+    .grad6 { background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #b2bec3 100%); }
+
+    /* ── Shared: Widgets ── */
+    .widget {
+      background: var(--bg3); border-radius: var(--radius);
+      padding: 10px;
+    }
+    .widget-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+
+    /* ── Stock Ticker ── */
+    .ticker-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 0; border-bottom: 1px solid #222;
+    }
+    .ticker-row:last-child { border-bottom: none; }
+    .ticker-label { font-size: 11px; font-weight: 700; }
+    .ticker-val { font-size: 11px; }
+    .ticker-change { font-size: 10px; font-weight: 600; }
+    .up   { color: #00cc66; }
+    .down { color: var(--pink); }
+
+    /* ── Weather ── */
+    .weather-display {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .weather-display .temp { font-size: 26px; font-weight: 700; color: var(--cyan); }
+    .weather-display .cond { font-size: 11px; color: var(--muted); }
+
+    /* ── News Live ── */
+    .news-live {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--pink);
+      animation: pulse 1.4s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+
+    /* ── YouTube embed card ── */
+    .yt-card {
+      background: var(--bg3); border-radius: var(--radius); overflow: hidden;
+      cursor: pointer; transition: transform .2s;
+    }
+    .yt-card:hover { transform: scale(1.02); }
+    .yt-card .yt-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f0f 100%);
+      display: flex; align-items: center; justify-content: center; font-size: 32px;
+      position: relative;
+    }
+    .yt-card .yt-play {
+      position: absolute; bottom: 6px; right: 6px;
+      background: #ff0000; border-radius: 4px;
+      font-size: 9px; font-weight: 700; padding: 2px 6px; color: #fff;
+    }
+    .yt-card .yt-info { padding: 7px; }
+    .yt-card .yt-info h5 { font-size: 11px; font-weight: 600; }
+    .yt-card .yt-info span { font-size: 10px; color: var(--muted); }
+
+    /* ── COLUMN 5: Dashboard Quick Access ── */
+    .quick-access-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .social-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px; padding: 10px 6px;
+      background: var(--bg3); border-radius: var(--radius);
+      text-decoration: none; color: var(--text);
+      font-size: 10px; font-weight: 600;
+      cursor: pointer; transition: background .2s, transform .15s, box-shadow .2s;
+      border: 1px solid transparent;
+    }
+    .social-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,255,255,.08); }
+    .social-btn .icon { font-size: 20px; }
+    .sb-yt    { border-color: #ff0000; }
+    .sb-yt:hover    { background: rgba(255,0,0,.15); }
+    .sb-tiktok{ border-color: #69c9d0; }
+    .sb-tiktok:hover{ background: rgba(105,201,208,.15); }
+    .sb-ig    { border-color: #c13584; }
+    .sb-ig:hover    { background: rgba(193,53,132,.15); }
+    .sb-fb    { border-color: #1877f2; }
+    .sb-fb:hover    { background: rgba(24,119,242,.15); }
+    .sb-reddit{ border-color: #ff4500; }
+    .sb-reddit:hover{ background: rgba(255,69,0,.15); }
+    .sb-li    { border-color: #0a66c2; }
+    .sb-li:hover    { background: rgba(10,102,194,.15); }
+    .sb-x     { border-color: #888; }
+    .sb-x:hover     { background: rgba(136,136,136,.15); }
+    .sb-tg    { border-color: #26a5e4; }
+    .sb-tg:hover    { background: rgba(38,165,228,.15); }
+
+    /* ── Metrics ── */
+    .metric-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 0; border-bottom: 1px solid #222;
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label { font-size: 11px; color: var(--muted); }
+    .metric-val   { font-size: 12px; font-weight: 700; color: var(--cyan); }
+
+    /* ── Scrollbar hide for hero ── */
+    .hero-col::-webkit-scrollbar { display: none; }
+
+    /* ── Responsive fallback ── */
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+        height: auto; overflow: visible;
+      }
+      .col { height: auto; overflow: visible; }
+      .hero-col { scroll-snap-type: none; }
+    }
+  </style>
 </head>
 <body>
-    <div class="column" id="column2">
-        <h2>YouTube Style Cards</h2>
-        <div class="card">Card 1</div>
-        <div class="card">Card 2</div>
-        <div class="card">Card 3</div>
-        <!-- Dynamic Infinite Scroll Logic Here -->
+<div class="grid">
+
+  <!-- ════════════════════════════════════════════
+       COLUMN 1 – PARTNERS (50+) with Collapsible Categories
+  ════════════════════════════════════════════ -->
+  <div class="col" id="col-partners">
+    <div class="col-header">📋 Partners <span class="badge">50+</span></div>
+
+    <!-- 🚗 Transportation -->
+    <div class="cat-section">
+      <div class="cat-toggle open" onclick="toggleCat(this)">
+        <span>🚗 Transportation</span><span class="arrow">▶</span>
+      </div>
+      <div class="cat-body open">
+        <a class="partner-link" href="https://allycar.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Allycar')"><span class="dot"></span>Allycar</a>
+        <a class="partner-link" href="https://carmelcar.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Carmel Car')"><span class="dot"></span>Carmel Car</a>
+        <a class="partner-link" href="https://jumbocar.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Jumbo Car')"><span class="dot"></span>Jumbo Car</a>
+        <a class="partner-link" href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" onclick="trackClick('Localrent')"><span class="dot"></span>Localrent</a>
+        <a class="partner-link" href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" onclick="trackClick('GetRentacar')"><span class="dot"></span>GetRentacar</a>
+        <a class="partner-link" href="https://gettransfer.tpo.lv/Pb4p9ljm" target="_blank" onclick="trackClick('GetTransfer')"><span class="dot"></span>GetTransfer</a>
+        <a class="partner-link" href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" onclick="trackClick('Kiwitaxi')"><span class="dot"></span>Kiwitaxi</a>
+        <a class="partner-link" href="https://bikesbooking.tpo.lv/B3zIKanS" target="_blank" onclick="trackClick('BikesBooking')"><span class="dot"></span>BikesBooking</a>
+        <a class="partner-link" href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" onclick="trackClick('Holiday Taxis')"><span class="dot"></span>Holiday Taxis</a>
+        <a class="partner-link" href="https://autoeurope.tpo.lv/t84AzZbO" target="_blank" onclick="trackClick('Auto Europe')"><span class="dot"></span>Auto Europe</a>
+        <a class="partner-link" href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" onclick="trackClick('QEEQ')"><span class="dot"></span>QEEQ</a>
+      </div>
     </div>
-    <div class="column" id="column3">
-        <h2>TikTok Style Feed</h2>
-        <div class="card">Feed Item 1</div>
-        <div class="card">Feed Item 2</div>
-        <div class="card">Feed Item 3</div>
-        <!-- Enhanced Feed Logic Here -->
+
+    <!-- ✈️ Travel & Booking -->
+    <div class="cat-section">
+      <div class="cat-toggle open" onclick="toggleCat(this)">
+        <span>✈️ Travel &amp; Booking</span><span class="arrow">▶</span>
+      </div>
+      <div class="cat-body open">
+        <a class="partner-link" href="https://gogoespana.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Go! Go! España')"><span class="dot"></span>Go! Go! España</a>
+        <a class="partner-link" href="https://go2africa.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Go2Africa')"><span class="dot"></span>Go2Africa</a>
+        <a class="partner-link" href="https://lastminute.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Lastminute SE')"><span class="dot"></span>Lastminute SE</a>
+        <a class="partner-link" href="https://kiwi.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Kiwi.com')"><span class="dot"></span>Kiwi.com</a>
+        <a class="partner-link" href="https://tiqets.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Tiqets')"><span class="dot"></span>Tiqets</a>
+        <a class="partner-link" href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" onclick="trackClick('Aviasales')"><span class="dot"></span>Aviasales</a>
+        <a class="partner-link" href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" onclick="trackClick('Intui.travel')"><span class="dot"></span>Intui.travel</a>
+        <a class="partner-link" href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" onclick="trackClick('Economy Bookings')"><span class="dot"></span>Economy Bookings</a>
+        <a class="partner-link" href="https://booking.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Booking.com')"><span class="dot"></span>Booking.com</a>
+        <a class="partner-link" href="https://klook.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Klook')"><span class="dot"></span>Klook</a>
+      </div>
     </div>
-    <div class="column" id="column4">
-        <h2>YouTube Style Cards</h2>
-        <div class="card">Card 1</div>
-        <div class="card">Card 2</div>
-        <div class="card">Card 3</div>
-        <!-- Dynamic Infinite Scroll Logic Here -->
+
+    <!-- 🎫 Experiences & Tours -->
+    <div class="cat-section">
+      <div class="cat-toggle" onclick="toggleCat(this)">
+        <span>🎫 Experiences &amp; Tours</span><span class="arrow">▶</span>
+      </div>
+      <div class="cat-body">
+        <a class="partner-link" href="https://desire.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Desire')"><span class="dot"></span>Desire Resorts</a>
+        <a class="partner-link" href="https://temptationresorts.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Temptation')"><span class="dot"></span>Temptation</a>
+        <a class="partner-link" href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" onclick="trackClick('WeGoTrip')"><span class="dot"></span>WeGoTrip</a>
+        <a class="partner-link" href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" onclick="trackClick('BigBus Tours')"><span class="dot"></span>BigBus Tours</a>
+        <a class="partner-link" href="https://gocity.tpo.lv/Des5Cgov" target="_blank" onclick="trackClick('GoCity')"><span class="dot"></span>GoCity</a>
+        <a class="partner-link" href="https://eatwith.tpo.lv/BfAnpZNb" target="_blank" onclick="trackClick('EatWith')"><span class="dot"></span>EatWith</a>
+        <a class="partner-link" href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" onclick="trackClick('Busbud')"><span class="dot"></span>Busbud</a>
+        <a class="partner-link" href="https://ekta.com/?utm_source=mimimi" target="_blank" onclick="trackClick('EKTA')"><span class="dot"></span>EKTA</a>
+      </div>
     </div>
+
+    <!-- 📡 Connectivity & SIM -->
+    <div class="cat-section">
+      <div class="cat-toggle" onclick="toggleCat(this)">
+        <span>📡 Connectivity &amp; SIM</span><span class="arrow">▶</span>
+      </div>
+      <div class="cat-body">
+        <a class="partner-link" href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" onclick="trackClick('Airalo')"><span class="dot"></span>Airalo</a>
+        <a class="partner-link" href="https://yesim.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Yesim')"><span class="dot"></span>Yesim</a>
+        <a class="partner-link" href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" onclick="trackClick('DrimSim')"><span class="dot"></span>DrimSim</a>
+        <a class="partner-link" href="https://saily.tpo.lv/dj71iCAi" target="_blank" onclick="trackClick('Saily')"><span class="dot"></span>Saily</a>
+        <a class="partner-link" href="https://bitjoy.com/?utm_source=mimimi" target="_blank" onclick="trackClick('BitJoy')"><span class="dot"></span>BitJoy</a>
+        <a class="partner-link" href="https://nordvpn.com/?utm_source=mimimi" target="_blank" onclick="trackClick('NordVPN')"><span class="dot"></span>NordVPN</a>
+      </div>
+    </div>
+
+    <!-- 🛡️ Insurance & Claims -->
+    <div class="cat-section">
+      <div class="cat-toggle" onclick="toggleCat(this)">
+        <span>🛡️ Insurance &amp; Claims</span><span class="arrow">▶</span>
+      </div>
+      <div class="cat-body">
+        <a class="partner-link" href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" onclick="trackClick('AirHelp')"><span class="dot"></span>AirHelp</a>
+        <a class="partner-link" href="https://compensair.tpo.lv/wxDDCITG" target="_blank" onclick="trackClick('CompensAir')"><span class="dot"></span>CompensAir</a>
+        <a class="partner-link" href="https://evisa.com/?utm_source=mimimi" target="_blank" onclick="trackClick('eVisa')"><span class="dot"></span>eVisa</a>
+      </div>
+    </div>
+
+    <!-- 🎒 Travel Tools & Storage -->
+    <div class="cat-section">
+      <div class="cat-toggle" onclick="toggleCat(this)">
+        <span>🎒 Travel Tools</span><span class="arrow">▶</span>
+      </div>
+      <div class="cat-body">
+        <a class="partner-link" href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" onclick="trackClick('Radical Storage')"><span class="dot"></span>Radical Storage</a>
+        <a class="partner-link" href="https://searadar.tpo.lv/TO4A5eBZ" target="_blank" onclick="trackClick('Sea Radar')"><span class="dot"></span>Sea Radar</a>
+        <a class="partner-link" href="https://welcomepickups.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Welcome Pickups')"><span class="dot"></span>Welcome Pickups</a>
+      </div>
+    </div>
+
+    <!-- 💼 Products & Finance -->
+    <div class="cat-section">
+      <div class="cat-toggle" onclick="toggleCat(this)">
+        <span>💼 Products &amp; Finance</span><span class="arrow">▶</span>
+      </div>
+      <div class="cat-body">
+        <a class="partner-link" href="https://allpowers.com/?utm_source=mimimi" target="_blank" onclick="trackClick('ALLPOWERS')"><span class="dot"></span>ALLPOWERS</a>
+        <a class="partner-link" href="https://kingkoil.com/?utm_source=mimimi" target="_blank" onclick="trackClick('King Koil')"><span class="dot"></span>King Koil</a>
+        <a class="partner-link" href="https://pluscbdoil.com/?utm_source=mimimi" target="_blank" onclick="trackClick('PlusCBD')"><span class="dot"></span>PlusCBD</a>
+        <a class="partner-link" href="https://pearlmountain.com/?utm_source=mimimi" target="_blank" onclick="trackClick('PearlMountain')"><span class="dot"></span>PearlMountain</a>
+        <a class="partner-link" href="https://buildermarket.com/?utm_source=mimimi" target="_blank" onclick="trackClick('Builder Market')"><span class="dot"></span>Builder Market</a>
+      </div>
+    </div>
+
+    <!-- Monetization mini-stats -->
+    <div class="widget" style="margin-top:auto;">
+      <div class="widget-title">📊 Today's Stats</div>
+      <div class="metric-row"><span class="metric-label">Clicks</span><span class="metric-val" id="stat-clicks">0</span></div>
+      <div class="metric-row"><span class="metric-label">Est. Revenue</span><span class="metric-val" id="stat-rev">$0.00</span></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       COLUMN 2 – Featured Offers / IIRNCSS
+  ════════════════════════════════════════════ -->
+  <div class="col" id="col-offers">
+    <div class="col-header">🔥 Featured Offers</div>
+
+    <!-- Tech Deals card with play -->
+    <div class="offer-card" onclick="trackClick('Tech Deals')">
+      <div class="thumb" style="background:linear-gradient(135deg,#0d1b2a,#1b263b);">
+        💻<div class="play-btn">▶</div>
+      </div>
+      <div class="info">
+        <h4>Tech Deals</h4>
+        <p>Latest gadgets &amp; savings</p>
+        <span class="tag tag-hot">HOT</span>
+      </div>
+    </div>
+
+    <!-- Brand cards -->
+    <div class="brand-card" onclick="trackClick('Stripe')">
+      <div class="logo">💳</div>
+      <div class="brand-info">
+        <h4>Stripe</h4>
+        <p>Payments &amp; billing</p>
+        <span class="tag tag-deal">DEAL</span>
+      </div>
+    </div>
+
+    <div class="brand-card" onclick="trackClick('Samsung')">
+      <div class="logo">📱</div>
+      <div class="brand-info">
+        <h4>Samsung</h4>
+        <p>Galaxy &amp; home devices</p>
+        <span class="tag tag-new">NEW</span>
+      </div>
+    </div>
+
+    <div class="offer-card" onclick="trackClick('eCreams')">
+      <div class="thumb" style="background:linear-gradient(135deg,#2d0036,#6a0dad);">
+        🧴<div class="play-btn">▶</div>
+      </div>
+      <div class="info">
+        <h4>eCReams</h4>
+        <p>Beauty &amp; skincare</p>
+      </div>
+    </div>
+
+    <div class="offer-card" onclick="trackClick('Dreams')">
+      <div class="thumb" style="background:linear-gradient(135deg,#001a33,#003366);">
+        🌙<div class="play-btn">▶</div>
+      </div>
+      <div class="info">
+        <h4>Dreams</h4>
+        <p>Sleep better tonight</p>
+        <span class="tag tag-deal">DEAL</span>
+      </div>
+    </div>
+
+    <div class="brand-card" onclick="trackClick('ALLPOWERS')">
+      <div class="logo">⚡</div>
+      <div class="brand-info">
+        <h4>ALLPOWERS</h4>
+        <p>Solar &amp; portable power</p>
+        <span class="tag tag-new">NEW</span>
+      </div>
+    </div>
+
+    <div class="brand-card" onclick="trackClick('NordVPN')">
+      <div class="logo">🔒</div>
+      <div class="brand-info">
+        <h4>NordVPN</h4>
+        <p>Secure your connection</p>
+        <span class="tag tag-hot">HOT</span>
+      </div>
+    </div>
+
+    <div class="offer-card" onclick="trackClick('King Koil')">
+      <div class="thumb" style="background:linear-gradient(135deg,#1a0a00,#3d1c00);">
+        🛏️<div class="play-btn">▶</div>
+      </div>
+      <div class="info">
+        <h4>King Koil</h4>
+        <p>Luxury mattresses</p>
+      </div>
+    </div>
+
+    <div class="brand-card" onclick="trackClick('Airalo')">
+      <div class="logo">🌐</div>
+      <div class="brand-info">
+        <h4>Airalo</h4>
+        <p>Global eSIM plans</p>
+        <span class="tag tag-deal">DEAL</span>
+      </div>
+    </div>
+
+    <div class="offer-card" onclick="trackClick('PlusCBD')">
+      <div class="thumb" style="background:linear-gradient(135deg,#003300,#006600);">
+        🌿<div class="play-btn">▶</div>
+      </div>
+      <div class="info">
+        <h4>PlusCBD</h4>
+        <p>Wellness &amp; CBD products</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       COLUMN 3 – Center Hero Feed
+  ════════════════════════════════════════════ -->
+  <div class="col hero-col" id="col-hero">
+
+    <div class="hero-card grad1" onclick="trackClick('Travel Destinations')">
+      <div class="bg">🗺️</div>
+      <div class="overlay"></div>
+      <div class="new-badge">NEW</div>
+      <div class="content">
+        <h3>New Travel Offers</h3>
+        <p>Discover exclusive deals for your next adventure</p>
+      </div>
+    </div>
+
+    <div class="hero-card grad2" onclick="trackClick('Tech Deals Hero')">
+      <div class="bg">💻</div>
+      <div class="overlay"></div>
+      <div class="content">
+        <h3>Tech Deals</h3>
+        <p>Latest gadgets at unbeatable prices</p>
+      </div>
+    </div>
+
+    <div class="hero-card grad4" onclick="trackClick('CVS Pharmacy')">
+      <div class="bg">🏥</div>
+      <div class="overlay"></div>
+      <div class="new-badge">NEW</div>
+      <div class="content">
+        <h3>CVS Pharmacy</h3>
+        <p>Health &amp; wellness essentials delivered</p>
+      </div>
+    </div>
+
+    <div class="hero-card grad3" onclick="trackClick('BeShenerr')">
+      <div class="bg">✨</div>
+      <div class="overlay"></div>
+      <div class="content">
+        <h3>BeShenerr</h3>
+        <p>Premium beauty &amp; lifestyle brand</p>
+      </div>
+    </div>
+
+    <div class="hero-card grad5" onclick="trackClick('Island Getaway')">
+      <div class="bg">🏝️</div>
+      <div class="overlay"></div>
+      <div class="new-badge">NEW</div>
+      <div class="content">
+        <h3>Island Getaway</h3>
+        <p>Book your tropical escape with exclusive rates</p>
+      </div>
+    </div>
+
+    <div class="hero-card grad6" onclick="trackClick('City Explorer')">
+      <div class="bg">🏙️</div>
+      <div class="overlay"></div>
+      <div class="content">
+        <h3>City Explorer Pass</h3>
+        <p>Unlimited access to top attractions &amp; tours</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       COLUMN 4 – YOUTUBE with Metrics
+  ════════════════════════════════════════════ -->
+  <div class="col" id="col-youtube">
+    <div class="col-header">▶ YouTube</div>
+
+    <!-- Stock Tickers -->
+    <div class="widget">
+      <div class="widget-title">📈 Market</div>
+      <div class="ticker-row">
+        <span class="ticker-label">DJIA</span>
+        <span class="ticker-val up" id="t-djia">36,500</span>
+        <span class="ticker-change up" id="td-djia">▲ +0.8%</span>
+      </div>
+      <div class="ticker-row">
+        <span class="ticker-label">S&amp;P 500</span>
+        <span class="ticker-val down" id="t-sp">4,120</span>
+        <span class="ticker-change down" id="td-sp">▼ -0.3%</span>
+      </div>
+      <div class="ticker-row">
+        <span class="ticker-label">NASDAQ</span>
+        <span class="ticker-val up" id="t-nq">13,990</span>
+        <span class="ticker-change up" id="td-nq">▲ +1.2%</span>
+      </div>
+    </div>
+
+    <!-- Weather -->
+    <div class="widget">
+      <div class="widget-title">🌤️ Weather</div>
+      <div class="weather-display">
+        <span class="temp">72°F</span>
+        <div class="cond">Partly Cloudy<br>Miami, FL</div>
+      </div>
+    </div>
+
+    <!-- News -->
+    <div class="widget">
+      <div class="widget-title">📰 News</div>
+      <div class="news-live"><span class="live-dot"></span>Live</div>
+      <div style="margin-top:6px; font-size:11px; color:var(--muted); line-height:1.5;">
+        Markets react to Fed signals • Travel demand surges • Tech earnings beat
+      </div>
+    </div>
+
+    <!-- YouTube Video Cards -->
+    <div class="yt-card">
+      <div class="yt-thumb">🎬<div class="yt-play">YT</div></div>
+      <div class="yt-info"><h5>Top Travel Destinations 2025</h5><span>1.2M views • 3 days ago</span></div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">✈️<div class="yt-play">YT</div></div>
+      <div class="yt-info"><h5>Budget Travel Hacks</h5><span>890K views • 1 week ago</span></div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">🌍<div class="yt-play">YT</div></div>
+      <div class="yt-info"><h5>Hidden Gems in Europe</h5><span>2.3M views • 5 days ago</span></div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">🏖️<div class="yt-play">YT</div></div>
+      <div class="yt-info"><h5>Beach Resorts Review 2025</h5><span>450K views • 2 days ago</span></div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">🎒<div class="yt-play">YT</div></div>
+      <div class="yt-info"><h5>Solo Travel Tips</h5><span>670K views • 4 days ago</span></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       COLUMN 5 – DASHBOARD
+  ════════════════════════════════════════════ -->
+  <div class="col" id="col-dashboard">
+    <div class="col-header">📊 Dashboard</div>
+
+    <!-- Stock Tickers (same as col4) -->
+    <div class="widget">
+      <div class="widget-title">📈 Market</div>
+      <div class="ticker-row">
+        <span class="ticker-label">DJIA</span>
+        <span class="ticker-val up">36,500</span>
+        <span class="ticker-change up">▲ +0.8%</span>
+      </div>
+      <div class="ticker-row">
+        <span class="ticker-label">S&amp;P 500</span>
+        <span class="ticker-val down">4,120</span>
+        <span class="ticker-change down">▼ -0.3%</span>
+      </div>
+      <div class="ticker-row">
+        <span class="ticker-label">NASDAQ</span>
+        <span class="ticker-val up">13,990</span>
+        <span class="ticker-change up">▲ +1.2%</span>
+      </div>
+    </div>
+
+    <!-- Weather -->
+    <div class="widget">
+      <div class="widget-title">🌤️ Weather</div>
+      <div class="weather-display">
+        <span class="temp">72°F</span>
+        <div class="cond">Partly Cloudy<br>Miami, FL</div>
+      </div>
+    </div>
+
+    <!-- News -->
+    <div class="widget">
+      <div class="widget-title">📰 News</div>
+      <div class="news-live"><span class="live-dot"></span>Live</div>
+      <div style="margin-top:6px; font-size:11px; color:var(--muted); line-height:1.5;">
+        Markets react to Fed signals • Travel demand surges • Tech earnings beat
+      </div>
+    </div>
+
+    <!-- Business Metrics -->
+    <div class="widget">
+      <div class="widget-title">💹 Business Metrics</div>
+      <div class="metric-row"><span class="metric-label">Today Views</span><span class="metric-val" id="dash-views">0</span></div>
+      <div class="metric-row"><span class="metric-label">Total Clicks</span><span class="metric-val" id="dash-clicks">0</span></div>
+      <div class="metric-row"><span class="metric-label">Conversions</span><span class="metric-val" id="dash-conv">0</span></div>
+      <div class="metric-row"><span class="metric-label">Est. Revenue</span><span class="metric-val" id="dash-rev">$0.00</span></div>
+    </div>
+
+    <!-- QUICK ACCESS -->
+    <div class="widget">
+      <div class="widget-title">⚡ Quick Access</div>
+      <div class="quick-access-grid">
+        <a class="social-btn sb-yt" href="https://youtube.com" target="_blank">
+          <span class="icon">🔴</span>YouTube
+        </a>
+        <a class="social-btn sb-tiktok" href="https://tiktok.com" target="_blank">
+          <span class="icon">🎵</span>TikTok
+        </a>
+        <a class="social-btn sb-ig" href="https://instagram.com" target="_blank">
+          <span class="icon">📸</span>Instagram
+        </a>
+        <a class="social-btn sb-fb" href="https://facebook.com" target="_blank">
+          <span class="icon">🔵</span>Facebook
+        </a>
+        <a class="social-btn sb-reddit" href="https://reddit.com" target="_blank">
+          <span class="icon">🔴</span>Reddit
+        </a>
+        <a class="social-btn sb-li" href="https://linkedin.com" target="_blank">
+          <span class="icon">💼</span>LinkedIn
+        </a>
+        <a class="social-btn sb-x" href="https://x.com" target="_blank">
+          <span class="icon">❌</span>X / Twitter
+        </a>
+        <a class="social-btn sb-tg" href="https://t.me" target="_blank">
+          <span class="icon">✈️</span>Telegram
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.grid -->
+
+<script>
+  /* ── Configuration ── */
+  const ANALYTICS_ENDPOINT = '/api/events';
+  const INITIAL_VIEWS_MIN = 200;
+  const INITIAL_VIEWS_MAX = 800;
+  /* Slight upward bias (0.48 < 0.5) makes simulated prices trend marginally up */
+  const TICKER_DRIFT_BIAS = 0.48;
+
+  /* ── Collapsible categories ── */
+  function toggleCat(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.classList.toggle('open');
+    header.classList.toggle('open', isOpen);
+  }
+
+  /* ── Click tracking ── */
+  let totalClicks = 0;
+  const revenuePerClick = 0.05;
+
+  function trackClick(partner) {
+    totalClicks++;
+    const rev = (totalClicks * revenuePerClick).toFixed(2);
+    // Column 1 stats
+    const sc = document.getElementById('stat-clicks');
+    const sr = document.getElementById('stat-rev');
+    if (sc) sc.textContent = totalClicks;
+    if (sr) sr.textContent = '$' + rev;
+    // Dashboard stats
+    const dc = document.getElementById('dash-clicks');
+    const dr = document.getElementById('dash-rev');
+    if (dc) dc.textContent = totalClicks;
+    if (dr) dr.textContent = '$' + rev;
+
+    // Optional: send analytics ping
+    if (navigator.sendBeacon) {
+      try {
+        navigator.sendBeacon(ANALYTICS_ENDPOINT, JSON.stringify({ type: 'click', partner, ts: Date.now() }));
+      } catch(e) {}
+    }
+  }
+
+  /* ── Views counter ── */
+  let views = Math.floor(Math.random() * INITIAL_VIEWS_MAX) + INITIAL_VIEWS_MIN;
+  let conversions = Math.floor(Math.random() * 15) + 3;
+  function updateViews() {
+    views += Math.floor(Math.random() * 3);
+    const dv = document.getElementById('dash-views');
+    if (dv) dv.textContent = views.toLocaleString();
+    const dc = document.getElementById('dash-conv');
+    if (dc) dc.textContent = conversions;
+  }
+  setInterval(updateViews, 5000);
+  updateViews();
+
+  /* ── Live stock ticker simulation ── */
+  const tickers = {
+    djia: { el: 'djia', base: 36500, chEl: 'djia', pct: 0.8, dir: 1 },
+    sp:   { el: 'sp',   base: 4120,  chEl: 'sp',   pct: -0.3, dir: -1 },
+    nq:   { el: 'nq',   base: 13990, chEl: 'nq',   pct: 1.2, dir: 1 },
+  };
+
+  function refreshTickers() {
+    for (const [key, t] of Object.entries(tickers)) {
+      const drift = (Math.random() - TICKER_DRIFT_BIAS) * 20;
+      t.base = Math.max(t.base + drift, t.base * 0.9);
+      const newPct = t.pct + (Math.random() - 0.5) * 0.05;
+      t.pct = +newPct.toFixed(2);
+      t.dir = t.pct >= 0 ? 1 : -1;
+      const valEl = document.getElementById('t-' + t.el);
+      const chEl  = document.getElementById('td-' + t.chEl);
+      if (valEl) {
+        valEl.textContent = Math.round(t.base).toLocaleString();
+        valEl.className = 'ticker-val ' + (t.dir > 0 ? 'up' : 'down');
+      }
+      if (chEl) {
+        chEl.textContent = (t.dir > 0 ? '▲ +' : '▼ ') + Math.abs(t.pct) + '%';
+        chEl.className = 'ticker-change ' + (t.dir > 0 ? 'up' : 'down');
+      }
+    }
+  }
+  setInterval(refreshTickers, 8000);
+</script>
 </body>
 </html>
