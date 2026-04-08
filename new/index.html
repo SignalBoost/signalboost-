@@ -429,6 +429,16 @@
     .g6 { background: linear-gradient(135deg,#0a1a28,#0a4a6e); }
     .g7 { background: linear-gradient(135deg,#2a0a1a,#8e1050); }
     .g8 { background: linear-gradient(135deg,#0a2228,#0a6050); }
+
+    /* ── Light theme ────────────────────────────────────────────── */
+    body.light-theme {
+      --bg: #f5f5fa; --bg2: #ebebf2;
+      --surface: #ffffff; --surface2: #f0f0f5;
+      --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.14);
+      --text: #0a0a14; --muted: #606080;
+      background: var(--bg2);
+    }
+    body.light-theme .topbar { background: rgba(240,240,250,.92); }
   </style>
 </head>
 <body>
@@ -864,7 +874,7 @@ function buildPromoCard(item) {
   card.href = item.href;
   card.target = '_blank';
   card.rel = 'noopener';
-  card.setAttribute('onclick', `trackClick('promo','${item.label}')`);
+  card.addEventListener('click', function() { trackClick('promo', item.label); });
   card.innerHTML = `
     <div class="promo-thumb ${item.grad}">
       <span style="position:relative;z-index:1">${item.emoji}</span>
@@ -938,11 +948,16 @@ function buildWidgetCard(item) {
 ================================================================ */
 let promoIdx = 4, heroIdx = 3, widgetIdx = 4;
 
-function makeObserver(sentinelId, feedId, pool, getIdx, setIdx, builder) {
+/* Hero pool is mutable so the filter can swap it out */
+var activeHeroPool = HERO_POOL;
+
+function makeObserver(sentinelId, feedId, getPool, getIdx, setIdx, builder) {
   const sentinel = document.getElementById(sentinelId);
   const feed = document.getElementById(feedId);
   const obs = new IntersectionObserver(function(entries) {
     if (!entries[0].isIntersecting) return;
+    const pool = getPool();
+    if (!pool.length) return;
     const idx = getIdx();
     const item = pool[idx % pool.length];
     feed.appendChild(builder(item));
@@ -951,17 +966,20 @@ function makeObserver(sentinelId, feedId, pool, getIdx, setIdx, builder) {
   obs.observe(sentinel);
 }
 
-makeObserver('promoSentinel', 'promoFeed', PROMO_POOL,
+makeObserver('promoSentinel', 'promoFeed',
+  function() { return PROMO_POOL; },
   function() { return promoIdx; },
   function(v) { promoIdx = v; },
   buildPromoCard);
 
-makeObserver('heroSentinel', 'heroFeed', HERO_POOL,
+makeObserver('heroSentinel', 'heroFeed',
+  function() { return activeHeroPool; },
   function() { return heroIdx; },
   function(v) { heroIdx = v; },
   buildHeroCard);
 
-makeObserver('widgetSentinel', 'widgetFeed', WIDGET_POOL,
+makeObserver('widgetSentinel', 'widgetFeed',
+  function() { return WIDGET_POOL; },
   function() { return widgetIdx; },
   function(v) { widgetIdx = v; },
   buildWidgetCard);
@@ -976,6 +994,7 @@ var stockData = {
 };
 
 function randWalk(base) {
+  /* Slight upward bias (0.48 < 0.5) mirrors typical long-run market drift */
   return base + (Math.random() - 0.48) * base * 0.004;
 }
 
@@ -1058,11 +1077,12 @@ function setFilter(cat) {
   });
   var btnId = cat === 'all' ? 'feedAll' : cat === 'Travel' ? 'feedTravel' : 'feedTech';
   document.getElementById(btnId).classList.add('active');
+  activeHeroPool = cat === 'all' ? HERO_POOL : HERO_POOL.filter(function(x) { return x.cat === cat; });
+  heroIdx = 0;
   var hf = document.getElementById('heroFeed');
   hf.innerHTML = '';
-  heroIdx = 0;
-  var pool = cat === 'all' ? HERO_POOL : HERO_POOL.filter(function(x) { return x.cat === cat; });
-  pool.slice(0, 3).forEach(function(item) { hf.appendChild(buildHeroCard(item)); });
+  activeHeroPool.slice(0, 3).forEach(function(item) { hf.appendChild(buildHeroCard(item)); });
+  heroIdx = Math.min(3, activeHeroPool.length);
 }
 
 /* ================================================================
@@ -1102,20 +1122,8 @@ document.getElementById('themeBtn').addEventListener('click', function() {
   localStorage.setItem('sb_theme', on ? 'light' : 'dark');
 });
 
-// Light theme styles injected dynamically to keep single-file clean
+// Restore saved theme preference
 (function() {
-  var style = document.createElement('style');
-  style.textContent = `
-    body.light-theme {
-      --bg: #f5f5fa; --bg2: #ebebf2;
-      --surface: #ffffff; --surface2: #f0f0f5;
-      --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.14);
-      --text: #0a0a14; --muted: #6060808;
-      background: var(--bg2);
-    }
-    body.light-theme .topbar { background: rgba(240,240,250,.92); }
-  `;
-  document.head.appendChild(style);
   if (localStorage.getItem('sb_theme') === 'light') {
     document.body.classList.add('light-theme');
     document.getElementById('themeBtn').textContent = '🌙 Dark';
