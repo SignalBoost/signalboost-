@@ -624,12 +624,12 @@ const VIEWS_PER_CLICK_RANGE  = 5;      // random range added on top of minimum
 const VIEWS_PER_SCROLL_MIN   = 5;      // minimum views added on scroll load
 const VIEWS_PER_SCROLL_RANGE = 10;     // random range for scroll-triggered views
 const VIEWS_PER_TICK_RANGE   = 3;      // background passive view increment
-const TICKER_RANDOM_CENTER   = 0.48;   // centers Math.random() slightly bullish
+const TICKER_RANDOM_OFFSET   = 0.48;   // subtracts from Math.random() to produce slight bearish bias
 const TICKER_VOLATILITY      = 0.8;    // % price movement scale per tick
 const TT_LIKE_MAX            = 50;     // upper bound for random TikTok like count (K)
 const TT_LIKE_MIN            = 10;     // lower bound for random TikTok like count (K)
 const TT_COMMENT_MAX         = 5;      // upper bound for random TikTok comment count (K)
-const TT_COMMENT_MIN         = 1;      // lower bound for random TikTok comment count (K)
+const TICKER_DECIMAL_THRESHOLD = 100;   // values below this are shown with decimals (e.g. crypto sub-$100)
 
 /* ═══════════════════════════════════════════
    ANALYTICS
@@ -649,8 +649,6 @@ function updateStats() {
 /* ═══════════════════════════════════════════
    YOUTUBE-STYLE FEED
 ═══════════════════════════════════════════ */
-let idx2 = 0, idx4 = 0;
-
 function makeYTCard(item) {
   const platformColors = { YT: '#ff0000', TT: '#ff004f', IG: '#c13584' };
   const card = document.createElement('div');
@@ -669,30 +667,32 @@ function makeYTCard(item) {
   return card;
 }
 
-function loadMoreFeed(feedId, idxVar) {
-  const feed = document.getElementById(feedId);
-  const count = idxVar === 'idx2' ? idx2 : idx4;
+// Feed state map: keyed by feedId, tracks current index into YT_CARDS
+const feedState = { feed2: 0, feed4: 0 };
+
+function loadMoreFeed(feedId) {
+  const feed  = document.getElementById(feedId);
+  const start = feedState[feedId];
   for (let i = 0; i < 4; i++) {
-    feed.appendChild(makeYTCard(YT_CARDS[(count + i) % YT_CARDS.length]));
+    feed.appendChild(makeYTCard(YT_CARDS[(start + i) % YT_CARDS.length]));
   }
-  if (idxVar === 'idx2') idx2 = (idx2 + 4) % YT_CARDS.length;
-  else idx4 = (idx4 + 4) % YT_CARDS.length;
+  feedState[feedId] = (start + 4) % YT_CARDS.length;
 }
 
-loadMoreFeed('feed2', 'idx2');
-loadMoreFeed('feed4', 'idx4');
+loadMoreFeed('feed2');
+loadMoreFeed('feed4');
 
 // Intersection observer for infinite scroll on col2 / col4
-['col2', 'col4'].forEach(colId => {
-  const sentinelId = colId === 'col2' ? 'sentinel2' : 'sentinel4';
-  const feedId     = colId === 'col2' ? 'feed2'     : 'feed4';
-  const idxVar     = colId === 'col2' ? 'idx2'      : 'idx4';
-  const sentinel   = document.getElementById(sentinelId);
-  const col        = document.getElementById(colId);
+[
+  { colId: 'col2', sentinelId: 'sentinel2', feedId: 'feed2' },
+  { colId: 'col4', sentinelId: 'sentinel4', feedId: 'feed4' },
+].forEach(({ colId, sentinelId, feedId }) => {
+  const sentinel = document.getElementById(sentinelId);
+  const col      = document.getElementById(colId);
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        loadMoreFeed(feedId, idxVar);
+        loadMoreFeed(feedId);
         totalViews += Math.floor(Math.random() * VIEWS_PER_SCROLL_RANGE) + VIEWS_PER_SCROLL_MIN;
         updateStats();
       }
@@ -708,8 +708,8 @@ let ttIdx = 0;
 const ttCol = document.getElementById('col3');
 
 function makeTTCard(item) {
-  const likeCount    = (Math.random() * TT_LIKE_MAX    | 0) + TT_LIKE_MIN;
-  const commentCount = (Math.random() * TT_COMMENT_MAX | 0) + TT_COMMENT_MIN;
+  const likeCount    = Math.floor(Math.random() * TT_LIKE_MAX)    + TT_LIKE_MIN;
+  const commentCount = Math.floor(Math.random() * TT_COMMENT_MAX) + TT_COMMENT_MIN;
   const card = document.createElement('div');
   card.className = 'tiktok-card';
   card.innerHTML = `
@@ -793,12 +793,12 @@ const stocks = [
 
 function updateTicker() {
   stocks.forEach(s => {
-    const pct   = (Math.random() - TICKER_RANDOM_CENTER) * TICKER_VOLATILITY;
+    const pct   = (Math.random() - TICKER_RANDOM_OFFSET) * TICKER_VOLATILITY;
     s.base      = s.base * (1 + pct / 100);
     const valEl = document.getElementById(s.el);
     const chgEl = document.getElementById(s.chg);
     const sign  = pct >= 0 ? '+' : '';
-    valEl.textContent = s.base >= 100
+    valEl.textContent = s.base >= TICKER_DECIMAL_THRESHOLD
       ? s.base.toLocaleString('en-US', { maximumFractionDigits: 0 })
       : s.base.toFixed(2);
     chgEl.textContent = sign + pct.toFixed(2) + '%';
