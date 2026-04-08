@@ -113,7 +113,7 @@ async function fetchReddit(subreddit) {
   try {
     const res = await fetchWithTimeout(url, {
       headers: {
-        'User-Agent': 'SignalBoost-FeedGenerator/1.0 (github.com/SignalBoost/signalboost-)',
+        'User-Agent': 'SignalBoost-FeedGenerator/1.0 (github.com/SignalBoost/signalboost)',
         Accept: 'application/json',
       },
     });
