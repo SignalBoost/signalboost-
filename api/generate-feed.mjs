@@ -2,8 +2,9 @@
  * SignalBoost Hybrid Trending Feed Generator
  *
  * Sources:
- *   - Reddit JSON API (travel + tech + finance subreddits)
- *   - RSS feeds (travel blogs / news)
+ *   - Reddit JSON API (travel + tech + finance subreddits); falls back to RSS
+ *     endpoint if the JSON API returns HTTP 403/429 from GitHub Actions.
+ *   - RSS feeds (travel blogs / tech / finance news)
  *   - YouTube Data API v3 (optional; requires YOUTUBE_API_KEY secret)
  *
  * Output: /feed.json  { updated_at, items: [{ title, url, cat, source, thumb, ts }] }
@@ -34,15 +35,33 @@ const REDDIT_SUBREDDITS = [
 
 /** RSS feeds to include. Replace or extend with any valid RSS/Atom URL. */
 const RSS_FEEDS = [
+  // Travel
   {
-    url: 'https://www.theguardian.com/travel/rss',
+    url: 'https://www.nomadicmatt.com/feed/',
     cat: 'travel',
-    source: 'The Guardian – Travel',
+    source: 'Nomadic Matt',
   },
   {
     url: 'https://feeds.feedburner.com/TravelLeisure',
     cat: 'travel',
     source: 'Travel + Leisure',
+  },
+  // Tech
+  {
+    url: 'https://techcrunch.com/feed/',
+    cat: 'tech',
+    source: 'TechCrunch',
+  },
+  {
+    url: 'https://www.theverge.com/rss/index.xml',
+    cat: 'tech',
+    source: 'The Verge',
+  },
+  // Finance
+  {
+    url: 'https://feeds.marketwatch.com/marketwatch/topstories/',
+    cat: 'finance',
+    source: 'MarketWatch',
   },
 ];
 
@@ -71,6 +90,10 @@ const YT_CATEGORIES = [
 
 const HTTPS_RE = /^https:\/\//i;
 
+/** Browser-like User-Agent used for Reddit requests to reduce likelihood of 403. */
+const BROWSER_UA =
+  'Mozilla/5.0 (X11; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0';
+
 /** Returns true if url is a valid https URL */
 function isHttps(url) {
   if (!url || typeof url !== 'string') return false;
@@ -94,6 +117,22 @@ function normaliseUrl(raw) {
   }
 }
 
+/**
+ * Decode common HTML entities left in text when processEntities is disabled.
+ * Handles the most frequent entities found in RSS/Atom feed titles.
+ */
+function decodeEntities(str) {
+  if (!str || typeof str !== 'string') return str;
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 /** Fetch with a sensible timeout (default 10 s) */
 async function fetchWithTimeout(url, opts = {}, timeoutMs = 10_000) {
   const controller = new AbortController();
@@ -109,39 +148,100 @@ async function fetchWithTimeout(url, opts = {}, timeoutMs = 10_000) {
 // ─── Reddit ───────────────────────────────────────────────────────────────────
 
 async function fetchReddit(subreddit) {
-  const url = `https://www.reddit.com/r/${subreddit}/top.json?limit=${REDDIT_LIMIT}&t=day`;
+  const jsonUrl = `https://www.reddit.com/r/${subreddit}/top.json?limit=${REDDIT_LIMIT}&t=day`;
+  try {
+    const res = await fetchWithTimeout(jsonUrl, {
+      headers: {
+        'User-Agent': BROWSER_UA,
+        Accept: 'application/json',
+        'Accept-Language': 'en-US,en;q=0.5',
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const posts = data?.data?.children || [];
+      return posts
+        .map((p) => {
+          const d = p.data || {};
+          // Prefer the outbound URL; fall back to reddit permalink
+          const rawUrl = d.url_overridden_by_dest || `https://www.reddit.com${d.permalink}`;
+          const url = normaliseUrl(rawUrl) || normaliseUrl(`https://www.reddit.com${d.permalink}`);
+          if (!url) return null;
+          return {
+            title: d.title || 'Reddit post',
+            url,
+            cat: redditCat(subreddit),
+            source: `r/${subreddit}`,
+            thumb: normaliseUrl(d.thumbnail) || null,
+            ts: d.created_utc ? new Date(d.created_utc * 1000).toISOString() : null,
+          };
+        })
+        .filter(Boolean);
+    }
+    if (res.status === 403 || res.status === 429 || res.status === 401) {
+      console.warn(
+        `[reddit] r/${subreddit} JSON API returned HTTP ${res.status} (common in CI) – trying RSS fallback…`
+      );
+      return fetchRedditRss(subreddit);
+    }
+    console.warn(`[reddit] r/${subreddit} returned HTTP ${res.status}`);
+    return [];
+  } catch (err) {
+    console.warn(`[reddit] r/${subreddit} error: ${err.message}`);
+    return [];
+  }
+}
+
+/** Fallback: fetch the subreddit's public RSS feed when JSON API is blocked. */
+async function fetchRedditRss(subreddit) {
+  const url = `https://www.reddit.com/r/${subreddit}/top.rss?t=day&limit=${REDDIT_LIMIT}`;
   try {
     const res = await fetchWithTimeout(url, {
       headers: {
-        'User-Agent': 'SignalBoost-FeedGenerator/1.0 (github.com/SignalBoost/signalboost)',
-        Accept: 'application/json',
+        'User-Agent': BROWSER_UA,
+        Accept: 'application/rss+xml, application/xml, text/xml, */*',
+        'Accept-Language': 'en-US,en;q=0.5',
       },
     });
     if (!res.ok) {
-      console.warn(`[reddit] r/${subreddit} returned HTTP ${res.status}`);
+      console.warn(`[reddit] r/${subreddit} RSS also failed HTTP ${res.status} – skipping`);
       return [];
     }
-    const data = await res.json();
-    const posts = data?.data?.children || [];
-    return posts
-      .map((p) => {
-        const d = p.data || {};
-        // Prefer the outbound URL; fall back to reddit permalink
-        const rawUrl = d.url_overridden_by_dest || `https://www.reddit.com${d.permalink}`;
-        const url = normaliseUrl(rawUrl) || normaliseUrl(`https://www.reddit.com${d.permalink}`);
-        if (!url) return null;
+    const text = await res.text();
+    const parsed = xmlParser.parse(text);
+    // Reddit's RSS feed is Atom format
+    const feed = parsed?.feed;
+    const entries = feed?.entry
+      ? Array.isArray(feed.entry)
+        ? feed.entry
+        : [feed.entry]
+      : [];
+    const cat = redditCat(subreddit);
+    return entries
+      .slice(0, REDDIT_LIMIT)
+      .map((entry) => {
+        let rawUrl =
+          typeof entry.link === 'string'
+            ? entry.link
+            : entry.link?.['@_href'] || entry.link?.['#text'] || null;
+        const itemUrl = normaliseUrl(rawUrl);
+        if (!itemUrl) return null;
+        const rawTitle =
+          typeof entry.title === 'string'
+            ? entry.title
+            : entry.title?.['#text'] || 'Reddit post';
         return {
-          title: d.title || 'Reddit post',
-          url,
-          cat: redditCat(subreddit),
+          title: decodeEntities(String(rawTitle).trim()),
+          url: itemUrl,
+          cat,
           source: `r/${subreddit}`,
-          thumb: normaliseUrl(d.thumbnail) || null,
-          ts: d.created_utc ? new Date(d.created_utc * 1000).toISOString() : null,
+          thumb: null,
+          ts: entry.updated || entry.published || null,
         };
       })
       .filter(Boolean);
   } catch (err) {
-    console.warn(`[reddit] r/${subreddit} error: ${err.message}`);
+    console.warn(`[reddit] r/${subreddit} RSS error: ${err.message} – skipping`);
     return [];
   }
 }
@@ -160,6 +260,10 @@ const xmlParser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
   allowBooleanAttributes: true,
+  // Disable entity expansion to avoid "Entity expansion limit exceeded" errors
+  // from feeds with many entity references (e.g. The Guardian).
+  // decodeEntities() is used below to handle common HTML entities in titles.
+  processEntities: false,
 });
 
 async function fetchRss({ url, cat, source }) {
@@ -193,9 +297,10 @@ async function fetchRss({ url, cat, source }) {
       .slice(0, RSS_LIMIT)
       .map((item) => {
         // title
-        const title =
+        const rawTitle =
           (typeof item.title === 'string' ? item.title : item.title?.['#text']) ||
           'Article';
+        const title = decodeEntities(rawTitle.trim());
 
         // url – RSS uses <link>, Atom uses <link href="">
         let rawUrl = item.link;
@@ -215,7 +320,7 @@ async function fetchRss({ url, cat, source }) {
         const rawTs = item.pubDate || item.updated || item.published || null;
         const ts = rawTs ? new Date(rawTs).toISOString() : null;
 
-        return { title: title.trim(), url: itemUrl, cat, source, thumb, ts };
+        return { title, url: itemUrl, cat, source, thumb, ts };
       })
       .filter(Boolean);
   } catch (err) {
