@@ -1,1345 +1,918 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LH5EWG1T7S"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-LH5EWG1T7S');
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost</title>
-  <meta name="description" content="SignalBoost — discover travel, stays, tickets, luxury escapes, and digital offers through a dynamic video-led experience." />
+  <title>SignalBoostAi — Dashboard</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0a0a0a;
+      --bg2:      #050505;
+      --surface:  #111117;
+      --surface2: #18181f;
+      --border:   rgba(255,255,255,.07);
+      --border2:  rgba(255,255,255,.12);
+      --text:     #f0f0f5;
+      --muted:    #7a7a90;
+      --pink:     #ff004f;
+      --cyan:     #00ffcc;
+      --yellow:   #ffe234;
+      --green:    #00ff41;
+      --red:      #ff3333;
+      --radius:   18px;
+      --radius-sm:10px;
+      --shadow:   0 4px 24px rgba(0,0,0,.55);
+      --shadow-lg:0 8px 40px rgba(0,0,0,.7);
+      --transition:.18s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg2);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; }
+    
+    ::-webkit-scrollbar { width: 2px; height: 2px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 99px; }
 
-    :root{
-      --bg:#07111f; --bg-2:#0b1728; --panel:#0f2238; --panel-2:#132b45;
-      --text:#f5f7fb; --muted:#9fb0c4; --accent:#37bdf8; --accent-2:#60a5fa;
-      --gold:#f6c453; --border:rgba(148,163,184,.18); --shadow:0 12px 34px rgba(0,0,0,.25);
-      --danger:#fb7185; --success:#34d399; --max:1400px;
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(5,5,5,.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+    }
+    .topbar-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; height: 80px; max-width: 1920px; margin: 0 auto;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 14px;
+      font-weight: 900; font-size: 1.3rem; letter-spacing: -.02em;
+    }
+    .brand-logo {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--pink), var(--cyan));
+      display: grid; place-items: center; font-size: 1.2rem; font-weight: 900;
+      color: #000; flex-shrink: 0;
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+    @keyframes logoPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,0,79,.4); }
+      50% { box-shadow: 0 0 0 12px rgba(255,0,79,0); }
+    }
+    .brand-name { background: linear-gradient(90deg,var(--pink),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .topbar-actions { display: flex; align-items: center; gap: 12px; }
+    .pill-btn {
+      background: var(--surface); border: 1px solid var(--border2);
+      color: var(--muted); padding: 8px 16px; border-radius: 99px;
+      font-size: .9rem; font-weight: 700; transition: var(--transition);
+    }
+    .pill-btn:hover { color: var(--text); border-color: var(--cyan); }
+    .pill-btn.active { background: var(--pink); color: #fff; border-color: var(--pink); }
+    .old-link { color: var(--muted); font-size: .8rem; transition: var(--transition); }
+    .old-link:hover { color: var(--cyan); }
+
+    .social-bar {
+      background: rgba(5,5,5,.9);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .social-platforms {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      max-width: 1920px;
+      margin: 0 auto;
+    }
+    .platform-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .platform-btn:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      transform: translateY(-2px);
+    }
+    .platform-btn .icon { font-size: .9rem; }
+
+    .shell {
+      max-width: 1920px; margin: 0 auto;
+      padding: 16px 16px 32px;
+      min-height: calc(100vh - 140px);
     }
 
-    body.light-mode{
-      --bg:#f5efe4; --bg-2:#fbf7ef; --panel:#fffaf2; --panel-2:#f7efe0;
-      --text:#1d2530; --muted:#5a6775; --accent:#0ea5e9; --accent-2:#2563eb;
-      --gold:#b8892a; --border:rgba(28,36,48,.12); --shadow:0 10px 28px rgba(50,40,20,.08);
-      --danger:#d9465f; --success:#0f9a5f;
+    .dashboard {
+      display: grid;
+      grid-template-columns: 200px 240px 1fr 240px 200px;
+      gap: 14px;
+      align-items: stretch;
+      min-height: calc(100vh - 150px);
     }
 
-    html{scroll-behavior:smooth;}
-
-    body{
-      font-family: Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top, rgba(56,189,248,.12), transparent 30%),
-        linear-gradient(180deg,var(--bg),var(--bg-2));
-      min-height:100vh;
-      line-height:1.5;
-      transition:background .25s ease,color .25s ease;
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .panel-title {
+      font-size: .72rem; font-weight: 900; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--cyan);
+    }
+    .panel-badge {
+      background: var(--pink); color: #fff;
+      font-size: .65rem; font-weight: 900;
+      padding: 2px 7px; border-radius: 99px;
+    }
+    .panel-body { 
+      padding: 12px; flex: 1; overflow-y: auto; overflow-x: hidden;
+      display: flex; flex-direction: column;
     }
 
-    a{text-decoration:none;color:inherit;}
+    .col-partners {
+      position: sticky;
+      top: 140px;
+      height: calc(100vh - 180px);
+      align-self: start;
+    }
+    .col-partners .panel {
+      max-height: calc(100vh - 180px);
+      overflow: hidden;
+    }
+    .col-partners .panel-body {
+      padding: 12px;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .partner-search {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+      color: var(--text); padding: 8px 12px; border-radius: var(--radius-sm);
+      font-size: .82rem; outline: none; margin-bottom: 12px;
+      transition: var(--transition); flex-shrink: 0;
+    }
+    .partner-search:focus { border-color: var(--cyan); }
+    .partner-feed {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .partner-cat { }
+    .partner-cat-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      background: var(--surface2); cursor: pointer;
+      user-select: none; transition: var(--transition);
+      font-size: .76rem; font-weight: 800;
+      flex-shrink: 0; margin-bottom: 3px;
+    }
+    .partner-cat-header:hover { background: rgba(0,255,204,.08); }
+    .partner-cat-header .cat-icon { font-size: .95rem; margin-right: 6px; }
+    .partner-cat-header .cat-count {
+      font-size: .6rem; color: var(--muted); margin-left: auto; margin-right: 8px;
+    }
+    .partner-cat-header .chevron {
+      color: var(--muted); font-size: .65rem;
+      transition: transform .2s ease;
+    }
+    .partner-cat.open .chevron { transform: rotate(90deg); }
+    .partner-items {
+      display: none; padding-left: 8px;
+      flex-direction: column; gap: 2px;
+      margin-bottom: 3px;
+    }
+    .partner-cat.open .partner-items { display: flex; }
+    .partner-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; border-radius: var(--radius-sm);
+      font-size: .75rem; cursor: pointer; transition: var(--transition);
+      position: relative; border-left: 2px solid var(--border);
+    }
+    .partner-item:hover {
+      background: rgba(0,255,204,.06);
+      color: var(--cyan);
+      border-left-color: var(--cyan);
+    }
+    .partner-item a {
+      display: flex; align-items: center; gap: 8px; color: inherit; flex: 1;
+    }
+    .partner-item .p-icon {
+      width: 22px; height: 22px; border-radius: 4px;
+      background: var(--surface2); display: grid; place-items: center;
+      font-size: .8rem; flex-shrink: 0;
+    }
+    .partner-item .p-name { font-weight: 600; flex: 1; }
+    .partner-item .p-tag {
+      font-size: .6rem; font-weight: 900; text-transform: uppercase;
+      color: var(--cyan); opacity: .6;
+    }
+    .partner-item.hot .p-tag { color: var(--pink); opacity: 1; }
 
-    .container{
-      width:min(var(--max),calc(100% - 28px));
-      margin:0 auto;
+    .col-promos { align-self: stretch; }
+    .promo-feed {
+      display: grid; gap: 12px;
+      overflow-y: auto; overflow-x: hidden;
+      padding-right: 2px;
+      flex: 1;
+    }
+    .promo-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: var(--transition); cursor: pointer;
+    }
+    .promo-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .promo-thumb {
+      width: 100%; height: 130px;
+      display: grid; place-items: center;
+      font-size: 2.4rem; position: relative; overflow: hidden;
+      background: linear-gradient(135deg,#1a0a2e,#3d1155);
+    }
+    .promo-thumb::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.6));
+      pointer-events: none;
+    }
+    .promo-new-badge {
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+      background: var(--pink); color: #fff;
+      font-size: .62rem; font-weight: 900; padding: 3px 8px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
+    }
+    .promo-body { padding: 12px 14px 14px; }
+    .promo-kicker {
+      font-size: .65rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--cyan); margin-bottom: 4px;
+    }
+    .promo-title { font-size: .92rem; font-weight: 800; margin-bottom: 4px; }
+    .promo-desc { font-size: .78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
+    .promo-meta { font-size: .7rem; color: var(--muted); }
+
+    .col-hero {
+      position: sticky;
+      top: 140px;
+      height: calc(100vh - 180px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      align-self: start;
+    }
+    .col-hero .panel {
+      max-height: calc(100vh - 180px);
+    }
+    .hero-feed {
+      display: grid; gap: 14px;
+      overflow-y: auto; overflow-x: hidden;
+      flex: 1;
+      grid-auto-rows: max-content;
+    }
+    .hero-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: var(--transition); cursor: pointer;
+    }
+    .hero-card:hover {
+      border-color: var(--pink);
+      transform: translateY(-2px);
+      box-shadow: 0 0 24px rgba(255,0,79,.18), var(--shadow-lg);
+    }
+    .hero-thumb {
+      width: 100%; height: 380px;
+      display: grid; place-items: center;
+      font-size: 4rem; position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg,#0a1628,#1a3a6e);
+    }
+    .hero-thumb .overlay-grad {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.85));
+      pointer-events: none;
+    }
+    .hero-thumb .hero-badge {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      background: var(--pink); color: #fff;
+      font-size: .65rem; font-weight: 900; padding: 4px 10px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
+    }
+    .hero-thumb .hero-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      z-index: 2; padding: 14px;
+    }
+    .hero-thumb .hero-info h3 {
+      font-size: 1.05rem; font-weight: 900; line-height: 1.25;
+    }
+    .hero-actions {
+      display: flex; gap: 10px; padding: 12px 14px;
+      align-items: center;
+    }
+    .hero-action-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); padding: 6px 12px;
+      border-radius: 99px; font-size: .75rem; font-weight: 700;
+      transition: var(--transition);
+    }
+    .hero-action-btn.primary {
+      background: var(--pink); color: #fff; border-color: var(--pink);
+    }
+    .hero-stats { margin-left: auto; font-size: .72rem; color: var(--muted); }
+
+    .col-widgets { align-self: stretch; }
+    
+    .col-dashboard { 
+      align-self: stretch; 
+      display: flex; 
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .col-dashboard .panel { 
+      flex: 1;
+      overflow: hidden;
+    }
+    .dashboard-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
-    .navbar{
-      position:sticky;
-      top:0;
-      z-index:1000;
-      backdrop-filter:blur(12px);
-      background:rgba(7,17,31,.82);
-      border-bottom:1px solid var(--border);
+    .weather-widget {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .weather-widget .weather-icon { font-size: 2rem; }
+    .weather-widget .weather-temp { 
+      font-size: 1.6rem; 
+      font-weight: 900; 
+      color: var(--cyan);
+      margin: 4px 0;
+    }
+    .weather-widget .weather-desc { 
+      font-size: .7rem; 
+      color: var(--muted); 
     }
 
-    body.light-mode .navbar{
-      background:rgba(255,250,242,.84);
+    .stock-ticker {
+      background: linear-gradient(135deg, #1a0a0a, #2a1a1a);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      flex-shrink: 0;
+    }
+    .ticker-header {
+      font-size: .62rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+      text-align: center;
+      letter-spacing: .08em;
+    }
+    .ticker-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      font-size: .65rem;
+    }
+    .ticker-item:last-child { border-bottom: none; }
+    .ticker-symbol { font-weight: 800; color: var(--yellow); }
+    .ticker-price { color: var(--cyan); font-weight: 800; }
+    .ticker-change { font-weight: 700; font-size: .6rem; }
+    .ticker-change.up { color: var(--green); }
+    .ticker-change.down { color: var(--red); }
+
+    .financial-news {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      background: rgba(0,255,204,.03);
+    }
+    .news-header {
+      font-size: .62rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      letter-spacing: .08em;
+    }
+    .news-item {
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .news-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .news-title {
+      font-size: .65rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+    .news-meta {
+      font-size: .55rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .news-source { font-weight: 700; color: var(--yellow); }
+
+    .load-sentinel { height: 40px; display: grid; place-items: center; flex-shrink: 0; }
+    .spinner {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border2); border-top-color: var(--cyan);
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .embed-placeholder {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg,#1a0a2e,#3d1155);
+      color: #fff;
+      font-size: 3rem;
+      position: relative;
+    }
+    .embed-placeholder:hover {
+      filter: brightness(1.2);
+    }
+    .embed-label {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,.8);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: .7rem;
+      color: #fff;
+      z-index: 10;
     }
 
-    .navbar-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 0;
-      flex-wrap:wrap;
+    .g1 { background: linear-gradient(135deg,#1a0a2e,#3d1155); }
+    .g2 { background: linear-gradient(135deg,#0a1628,#1a3a6e); }
+    .g3 { background: linear-gradient(135deg,#0a2018,#0e5c3a); }
+    .g4 { background: linear-gradient(135deg,#28100a,#6e1a1a); }
+    .g5 { background: linear-gradient(135deg,#1a1a0a,#5c5c0a); }
+
+    body.light-theme {
+      --bg: #f5f5fa; --bg2: #ebebf2;
+      --surface: #ffffff; --surface2: #f0f0f5;
+      --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.14);
+      --text: #0a0a14; --muted: #606080;
+      background: var(--bg2);
     }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight:800;
-      font-size:1.35rem;
-    }
-
-    .brand-mark{
-      width:34px;
-      height:34px;
-      border-radius:10px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      color:#04111d;
-      font-weight:900;
-      box-shadow:var(--shadow);
-    }
-
-    .nav-links{
-      list-style:none;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
-
-    .nav-links a,
-    .theme-toggle,
-    .mode-chip,
-    .control-btn,
-    .feed-btn,
-    .small-btn{
-      border:1px solid transparent;
-      background:rgba(255,255,255,.04);
-      color:var(--muted);
-      padding:10px 14px;
-      border-radius:999px;
-      cursor:pointer;
-      font-weight:700;
-      transition:.2s ease;
-    }
-
-    .nav-links a:hover,
-    .theme-toggle:hover,
-    .mode-chip:hover,
-    .control-btn:hover,
-    .feed-btn:hover,
-    .small-btn:hover,
-    .video-card button:hover,
-    .explore-item:hover{
-      transform:translateY(-1px);
-      border-color:var(--border);
-      color:var(--text);
-    }
-
-    .topbar{
-      padding:16px 0 10px;
-    }
-
-    .topbar-shell{
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .feed-btn.active,
-    .mode-chip.active,
-    .control-btn.active{
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#06111d;
-      border:none;
-    }
-
-    .v12-grid{
-      display:grid;
-      grid-template-columns:240px minmax(420px,1fr) 280px;
-      gap:18px;
-      align-items:start;
-      padding:8px 0 28px;
-    }
-
-    .panel{
-      background:linear-gradient(180deg,var(--panel-2),var(--panel));
-      border:1px solid var(--border);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-    }
-
-    .panel-pad{padding:18px;}
-
-    .section-kicker{
-      font-size:.76rem;
-      font-weight:800;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color:var(--accent);
-      margin-bottom:10px;
-    }
-
-    .muted{color:var(--muted);}
-
-    .left-stack,.right-stack{
-      display:grid;
-      gap:16px;
-    }
-
-    .explore-list{
-      display:grid;
-      gap:10px;
-    }
-
-    .explore-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:12px 14px;
-      background:rgba(255,255,255,.03);
-      transition:.2s ease;
-    }
-
-    .explore-item strong{display:block;}
-    .explore-item span{font-size:.82rem;color:var(--muted);}
-    .explore-tag{
-      font-size:.72rem;
-      font-weight:800;
-      color:var(--accent);
-      text-transform:uppercase;
-      letter-spacing:.1em;
-    }
-
-    .mode-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .mode-card{
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:12px;
-      background:rgba(255,255,255,.03);
-      cursor:pointer;
-      transition:.2s ease;
-    }
-
-    .mode-card:hover{
-      transform:translateY(-1px);
-      border-color:rgba(56,189,248,.4);
-    }
-
-    .mode-card.active{
-      box-shadow:0 0 0 2px rgba(56,189,248,.2) inset;
-      border-color:rgba(56,189,248,.45);
-    }
-
-    .mode-card h4{margin-bottom:4px;}
-    .mode-card p{font-size:.86rem;color:var(--muted);}
-
-    .cta-box{
-      margin-top:4px;
-      border:1px dashed rgba(56,189,248,.32);
-      border-radius:18px;
-      padding:14px;
-      background:rgba(56,189,248,.05);
-    }
-
-    .cta-box strong{display:block;margin-bottom:6px;}
-    .cta-box p{font-size:.9rem;color:var(--muted);margin-bottom:10px;}
-
-    .small-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      color:var(--text);
-      border-color:var(--border);
-    }
-
-    .center-col{
-      display:grid;
-      gap:16px;
-    }
-
-    .hero-strip{
-      padding:16px 18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-
-    .hero-strip h1{
-      font-size:1.65rem;
-      line-height:1.05;
-    }
-
-    .hero-strip p{
-      color:var(--muted);
-      max-width:760px;
-      font-size:.96rem;
-    }
-
-    .video-shell{
-      overflow:hidden;
-    }
-
-    .video-stage{
-      padding:18px;
-      display:grid;
-      grid-template-columns:1fr 220px;
-      gap:18px;
-      align-items:center;
-    }
-
-    .phone-frame{
-      width:min(100%,540px);
-      margin:0 auto;
-      aspect-ratio:9/16;
-      border-radius:34px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#000;
-      position:relative;
-      overflow:hidden;
-      box-shadow:0 20px 50px rgba(0,0,0,.35);
-    }
-
-    .phone-frame iframe{
-      width:100%;
-      height:100%;
-      border:0;
-      display:block;
-      pointer-events:none;
-    }
-
-    .phone-overlay-top{
-      position:absolute;
-      top:12px;
-      left:12px;
-      right:12px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      pointer-events:none;
-    }
-
-    .video-pill{
-      background:rgba(7,17,31,.72);
-      border:1px solid rgba(255,255,255,.12);
-      padding:8px 12px;
-      border-radius:999px;
-      color:#fff;
-      font-size:.78rem;
-      font-weight:800;
-      backdrop-filter:blur(10px);
-    }
-
-    .phone-overlay-bottom{
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:0;
-      padding:18px 16px 14px;
-      background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.72));
-      pointer-events:none;
-    }
-
-    .overlay-title{
-      font-size:1.05rem;
-      font-weight:800;
-      margin-bottom:4px;
-    }
-
-    .overlay-desc{
-      font-size:.88rem;
-      color:rgba(255,255,255,.86);
-    }
-
-    .video-side-info{
-      display:grid;
-      gap:12px;
-    }
-
-    .side-card{
-      border:1px solid var(--border);
-      border-radius:20px;
-      background:rgba(255,255,255,.03);
-      padding:14px;
-    }
-
-    .side-card h3{font-size:.95rem;margin-bottom:8px;}
-    .side-card p{font-size:.9rem;color:var(--muted);}
-    .metric{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-weight:800;
-      color:var(--text);
-      margin-bottom:8px;
-    }
-
-    .control-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      padding:0 18px 18px;
-      justify-content:center;
-    }
-
-    .category-row,.upnext-grid{
-      padding:0 18px 18px;
-    }
-
-    .category-row .section-kicker,
-    .upnext-grid .section-kicker{
-      margin-bottom:10px;
-    }
-
-    .mode-chip{
-      margin:0 8px 8px 0;
-    }
-
-    .upnext-cards{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .video-card{
-      border:1px solid var(--border);
-      border-radius:20px;
-      background:rgba(255,255,255,.03);
-      padding:12px;
-    }
-
-    .video-thumb{
-      aspect-ratio:9/16;
-      border-radius:18px;
-      background:linear-gradient(135deg,rgba(56,189,248,.16),rgba(96,165,250,.16));
-      border:1px solid var(--border);
-      display:grid;
-      place-items:center;
-      font-size:2rem;
-      margin-bottom:10px;
-    }
-
-    .video-card strong{display:block;margin-bottom:4px;}
-    .video-card span{display:block;color:var(--muted);font-size:.86rem;margin-bottom:10px;}
-
-    .rows-shell{
-      margin-top:2px;
-      padding:18px;
-    }
-
-    .content-row{
-      margin-bottom:18px;
-    }
-
-    .row-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:10px;
-    }
-
-    .row-head h3{font-size:1.05rem;}
-    .row-head p{color:var(--muted);font-size:.9rem;}
-
-    .row-grid{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .row-card{
-      border:1px solid var(--border);
-      border-radius:18px;
-      background:rgba(255,255,255,.03);
-      padding:14px;
-      min-height:150px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
-
-    .row-card em{
-      font-style:normal;
-      font-size:.72rem;
-      font-weight:800;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:var(--accent);
-    }
-
-    .row-card h4{margin:8px 0 6px;}
-    .row-card p{color:var(--muted);font-size:.88rem;}
-    .row-card a{color:var(--accent);font-weight:800;margin-top:12px;}
-
-    .offer-main{
-      border:1px solid rgba(56,189,248,.22);
-      border-radius:20px;
-      padding:16px;
-      background:rgba(56,189,248,.06);
-    }
-
-    .offer-main h3{font-size:1.06rem;margin-bottom:6px;}
-    .offer-main p{font-size:.9rem;color:var(--muted);margin-bottom:10px;}
-
-    .offer-cta{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#04111d;
-      padding:11px 14px;
-      border-radius:14px;
-      font-weight:900;
-    }
-
-    .offer-list{
-      display:grid;
-      gap:12px;
-    }
-
-    .offer-item{
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
-      background:rgba(255,255,255,.03);
-    }
-
-    .offer-item h4{margin-bottom:4px;}
-    .offer-item p{font-size:.88rem;color:var(--muted);margin-bottom:10px;}
-    .offer-item a{color:var(--accent);font-weight:800;}
-
-    .urgency{
-      display:inline-block;
-      font-size:.72rem;
-      font-weight:900;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:var(--danger);
-      margin-bottom:8px;
-    }
-
-    @media (max-width:1240px){
-      .v12-grid{
-        grid-template-columns:220px minmax(320px,1fr) 250px;
+    @media (max-width: 900px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+        min-height: auto;
       }
-      .upnext-cards{grid-template-columns:repeat(2,minmax(0,1fr));}
-      .row-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-    }
-
-    @media (max-width:960px){
-      .v12-grid{
-        grid-template-columns:1fr;
+      .col-partners, .col-promos, .col-hero, .col-widgets, .col-dashboard {
+        position: static;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
       }
-      .video-stage{
-        grid-template-columns:1fr;
-      }
-      .phone-frame{
-        width:min(100%,460px);
-      }
+      .hero-thumb { height: 300px; }
     }
-
-    @media (max-width:640px){
-      .upnext-cards,
-      .row-grid,
-      .mode-grid{
-        grid-template-columns:1fr;
-      }
-      .hero-strip h1{
-        font-size:1.3rem;
-      }
-      .container{
-        width:min(var(--max),calc(100% - 18px));
-      }
-    }
- 
-    .partner-modal-backdrop{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.62);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:99999;
-      padding:18px;
-    }
-    .partner-modal{
-      width:min(420px,100%);
-      background:linear-gradient(180deg,var(--panel-2),var(--panel));
-      border:1px solid var(--border);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:22px;
-      text-align:center;
-    }
-    .partner-modal h3{font-size:1.15rem;margin-bottom:8px;}
-    .partner-modal p{color:var(--muted);font-size:.94rem;margin-bottom:16px;}
-    .partner-modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-    .partner-continue-btn{
-      border:none;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#04111d;
-      padding:12px 18px;
-      border-radius:14px;
-      font-weight:900;
-      cursor:pointer;
-      min-width:150px;
-    }
-    .partner-cancel-btn{
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      padding:12px 18px;
-      border-radius:14px;
-      font-weight:700;
-      cursor:pointer;
-      min-width:110px;
-    }
-    .partner-modal-note{margin-top:10px;font-size:.82rem;color:var(--muted);}
-
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container navbar-inner">
-      <div class="brand">
-        <div class="brand-mark">S</div>
-        <div>SignalBoost</div>
-      </div>
-      <ul class="nav-links">
-        <li><a href="#feed">Feed</a></li>
-        <li><a href="#travel">Explore</a></li>
-        <li><a href="#travel">Travel</a></li>
-        <li><a href="#finance">Finance</a></li>
-        <li><a href="#insurance">Insurance</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button></li>
-      </ul>
-    </div>
-  </nav>
 
-  <div class="topbar">
-    <div class="container">
-      <div class="topbar-shell">
-        <button class="feed-btn active">Open feed</button>
-        <button class="feed-btn">Just watch</button>
-        <button class="feed-btn">Plan a trip</button>
-        <button class="feed-btn">Find tickets</button>
-      </div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-logo">🛰</div>
+      <span class="brand-name">SignalBoostAi</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="pill-btn active" id="liveBtn">🔴 LIVE</button>
+      <button class="pill-btn" id="themeBtn">☀️ Light</button>
+      <a href="../" class="old-link">← Classic</a>
     </div>
   </div>
+</header>
 
-  <main class="container v12-grid" id="feed">
-    <aside class="left-stack">
-      <section class="panel panel-pad">
-        <div class="section-kicker">Explore</div>
-        <div class="explore-list">
-          <a href="#feed" class="explore-item">
-            <div><strong>Main feed</strong><span>short-form discovery</span></div>
-            <div class="explore-tag">watch</div>
-          </a>
-          <a href="#rows" class="explore-item">
-            <div><strong>Travel</strong><span>destinations, stays, tickets</span></div>
-            <div class="explore-tag">travel</div>
-          </a>
-          <a href="#finance" class="explore-item">
-            <div><strong>Finance</strong><span>platforms, money tools, trading</span></div>
-            <div class="explore-tag">finance</div>
-          </a>
-          <a href="#insurance" class="explore-item">
-            <div><strong>Insurance</strong><span>coverage and protection</span></div>
-            <div class="explore-tag">cover</div>
-          </a>
-          <a href="#services" class="explore-item">
-            <div><strong>Services</strong><span>online tools and useful offers</span></div>
-            <div class="explore-tag">services</div>
-          </a>
-          <a href="#partners" class="explore-item">
-            <div><strong>Partners</strong><span>featured offers and networks</span></div>
-            <div class="explore-tag">offers</div>
-          </a>
-        </div>
-      </section>
+<div class="social-bar">
+  <div class="social-platforms">
+    <a href="https://facebook.com" target="_blank" rel="noopener" class="platform-btn" title="Facebook"><span class="icon">f</span>Facebook</a>
+    <a href="https://youtube.com" target="_blank" rel="noopener" class="platform-btn" title="YouTube"><span class="icon">▶</span>YouTube</a>
+    <a href="https://instagram.com" target="_blank" rel="noopener" class="platform-btn" title="Instagram"><span class="icon">📷</span>Instagram</a>
+    <a href="https://tiktok.com" target="_blank" rel="noopener" class="platform-btn" title="TikTok"><span class="icon">♪</span>TikTok</a>
+    <a href="https://reddit.com" target="_blank" rel="noopener" class="platform-btn" title="Reddit"><span class="icon">🔴</span>Reddit</a>
+    <a href="https://wa.me" target="_blank" rel="noopener" class="platform-btn" title="WhatsApp"><span class="icon">💬</span>WhatsApp</a>
+    <a href="https://messenger.com" target="_blank" rel="noopener" class="platform-btn" title="Messenger"><span class="icon">💭</span>Messenger</a>
+    <a href="https://wechat.com" target="_blank" rel="noopener" class="platform-btn" title="WeChat"><span class="icon">🔗</span>WeChat</a>
+    <a href="https://x.com" target="_blank" rel="noopener" class="platform-btn" title="X"><span class="icon">𝕏</span>X</a>
+    <a href="https://snapchat.com" target="_blank" rel="noopener" class="platform-btn" title="Snapchat"><span class="icon">👻</span>Snapchat</a>
+    <a href="https://linkedin.com" target="_blank" rel="noopener" class="platform-btn" title="LinkedIn"><span class="icon">in</span>LinkedIn</a>
+    <a href="https://truthsocial.com" target="_blank" rel="noopener" class="platform-btn" title="Truth Social"><span class="icon">🇺🇸</span>Truth</a>
+  </div>
+</div>
 
-      <section class="panel panel-pad">
-        <div class="section-kicker">Choose your mode</div>
-        <div class="mode-grid">
-          <button class="mode-card active" data-mode="watch">
-            <h4>🔥 Just watch</h4>
-            <p>Relax and explore.</p>
-          </button>
-          <button class="mode-card" data-mode="trip">
-            <h4>✈️ Plan a trip</h4>
-            <p>Flights, stays, and ideas.</p>
-          </button>
-          <button class="mode-card" data-mode="tickets">
-            <h4>🎟 Buy tickets</h4>
-            <p>Attractions and city experiences.</p>
-          </button>
-          <button class="mode-card" data-mode="luxury">
-            <h4>💎 Go luxury</h4>
-            <p>Premium escapes and higher-end stays.</p>
-          </button>
-        </div>
+<main class="shell">
+  <div class="dashboard">
 
-        <div class="cta-box">
-          <strong id="modeBoxTitle">Discover more with every video</strong>
-          <p id="intentMessage">Browse popular travel clips, then jump into the offers that match what you like.</p>
-          <button class="small-btn" onclick="scrollToRows()">See featured rows</button>
+    <aside class="col-partners">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">💰 Affiliates</span>
+          <span class="panel-badge">40+</span>
         </div>
-      </section>
+        <div class="panel-body">
+          <input class="partner-search" type="search" placeholder="🔍 Search…" id="partnerSearch" />
+          <div class="partner-feed" id="partnerFeed">
+            <div class="partner-cat open" id="cat-rental">
+              <div class="partner-cat-header" onclick="toggleCat('cat-rental')">
+                <span><span class="cat-icon">🚗</span>Rental Cars</span>
+                <span class="cat-count">6</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item"><a href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" rel="noopener" onclick="trackClick('GetRentacar')"><span class="p-icon">🚙</span><span class="p-name">GetRentacar</span><span class="p-tag">CAR</span></a></div>
+                <div class="partner-item"><a href="https://autoeurope.tpo.lv/t84AzZbO" target="_blank" rel="noopener" onclick="trackClick('AutoEurope')"><span class="p-icon">🏎️</span><span class="p-name">AutoEurope</span><span class="p-tag">RENT</span></a></div>
+                <div class="partner-item"><a href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener" onclick="trackClick('LocalRent')"><span class="p-icon">🅿️</span><span class="p-name">LocalRent</span><span class="p-tag">LOCAL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Allycar')"><span class="p-icon">🚗</span><span class="p-name">Allycar</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Carmel')"><span class="p-icon">🚕</span><span class="p-name">Carmel Car</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('JumboCar')"><span class="p-icon">🏎️</span><span class="p-name">Jumbo Car CR</span><span class="p-tag">AWIN</span></a></div>
+              </div>
+            </div>
+
+            <div class="partner-cat" id="cat-hotels">
+              <div class="partner-cat-header" onclick="toggleCat('cat-hotels')">
+                <span><span class="cat-icon">🏨</span>Hotels</span>
+                <span class="cat-count">3</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item"><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener" onclick="trackClick('Booking')"><span class="p-icon">🏨</span><span class="p-name">Booking.com</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener" onclick="trackClick('EconomyBookings')"><span class="p-icon">💰</span><span class="p-name">Economy Book</span><span class="p-tag">BUDGET</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('KingKoil')"><span class="p-icon">🛏️</span><span class="p-name">King Koil</span><span class="p-tag">BED</span></a></div>
+              </div>
+            </div>
+
+            <div class="partner-cat" id="cat-insurance">
+              <div class="partner-cat-header" onclick="toggleCat('cat-insurance')">
+                <span><span class="cat-icon">🛡️</span>Insurance</span>
+                <span class="cat-count">2</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item"><a href="https://compensair.tpo.lv/wxDDCITG" target="_blank" rel="noopener" onclick="trackClick('CompensAir')"><span class="p-icon">💼</span><span class="p-name">CompensAir</span><span class="p-tag">CLAIM</span></a></div>
+                <div class="partner-item"><a href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener" onclick="trackClick('AirHelp')"><span class="p-icon">🆘</span><span class="p-name">AirHelp</span><span class="p-tag">CLAIM</span></a></div>
+              </div>
+            </div>
+
+            <div class="partner-cat" id="cat-travel">
+              <div class="partner-cat-header" onclick="toggleCat('cat-travel')">
+                <span><span class="cat-icon">✈️</span>Travel</span>
+                <span class="cat-count">12</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item hot"><a href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener" onclick="trackClick('Aviasales')"><span class="p-icon">🔍</span><span class="p-name">Aviasales</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener" onclick="trackClick('Kiwi')"><span class="p-icon">🥝</span><span class="p-name">Kiwi.com</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item hot"><a href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener" onclick="trackClick('Klook')"><span class="p-icon">🎫</span><span class="p-name">Klook</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" rel="noopener" onclick="trackClick('Intui')"><span class="p-icon">🎭</span><span class="p-name">Intui.travel</span><span class="p-tag">LOCAL</span></a></div>
+                <div class="partner-item"><a href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener" onclick="trackClick('WeGoTrip')"><span class="p-icon">🗺️</span><span class="p-name">WeGoTrip</span><span class="p-tag">GUIDE</span></a></div>
+                <div class="partner-item"><a href="https://eatwith.tpo.lv/BfAnpZNb" target="_blank" rel="noopener" onclick="trackClick('EatWith')"><span class="p-icon">🍽️</span><span class="p-name">Eat With</span><span class="p-tag">FOOD</span></a></div>
+                <div class="partner-item"><a href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener" onclick="trackClick('GoCity')"><span class="p-icon">🏙️</span><span class="p-name">GoCity</span><span class="p-tag">PASS</span></a></div>
+                <div class="partner-item"><a href="https://ektatraveling.tpo.lv/XWbZbj8S" target="_blank" rel="noopener" onclick="trackClick('EKTA')"><span class="p-icon">🌍</span><span class="p-name">EKTA Traveling</span><span class="p-tag">EXP</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('GoEspana')"><span class="p-icon">🇪🇸</span><span class="p-name">Go! España</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Go2Africa')"><span class="p-icon">🦁</span><span class="p-name">Go2Africa</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener" onclick="trackClick('BigBus')"><span class="p-icon">🚐</span><span class="p-name">Big Bus Tours</span><span class="p-tag">TOURS</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Tiqets')"><span class="p-icon">🎟️</span><span class="p-name">Tiqets</span><span class="p-tag">AWIN</span></a></div>
+              </div>
+            </div>
+
+            <div class="partner-cat" id="cat-services">
+              <div class="partner-cat-header" onclick="toggleCat('cat-services')">
+                <span><span class="cat-icon">🔧</span>Services</span>
+                <span class="cat-count">10</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item"><a href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" rel="noopener" onclick="trackClick('KiwiTaxi')"><span class="p-icon">🥝</span><span class="p-name">KiwiTaxi</span><span class="p-tag">TAXI</span></a></div>
+                <div class="partner-item"><a href="https://gettransfer.tpo.lv/Pb4p9ljm" target="_blank" rel="noopener" onclick="trackClick('GetTransfer')"><span class="p-icon">🚐</span><span class="p-name">GetTransfer</span><span class="p-tag">RIDE</span></a></div>
+                <div class="partner-item"><a href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" rel="noopener" onclick="trackClick('HolidayTaxis')"><span class="p-icon">🚖</span><span class="p-name">Holiday Taxis</span><span class="p-tag">TAXI</span></a></div>
+                <div class="partner-item"><a href="https://tpo.lv/XAJOoobr" target="_blank" rel="noopener" onclick="trackClick('WelcomePickups')"><span class="p-icon">🛫</span><span class="p-name">Welcome Pickups</span><span class="p-tag">AIRPORT</span></a></div>
+                <div class="partner-item"><a href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" rel="noopener" onclick="trackClick('BusBud')"><span class="p-icon">🚌</span><span class="p-name">BusBud</span><span class="p-tag">BUS</span></a></div>
+                <div class="partner-item"><a href="https://bikesbooking.tpo.lv/B3zIKanS" target="_blank" rel="noopener" onclick="trackClick('BikesBooking')"><span class="p-icon">🚴</span><span class="p-name">BikesBooking</span><span class="p-tag">BIKES</span></a></div>
+                <div class="partner-item"><a href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener" onclick="trackClick('RadicalStorage')"><span class="p-icon">🏪</span><span class="p-name">Radical Storage</span><span class="p-tag">STORAGE</span></a></div>
+                <div class="partner-item"><a href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener" onclick="trackClick('QEEQ')"><span class="p-icon">📦</span><span class="p-name">QEEQ</span><span class="p-tag">LUGGAGE</span></a></div>
+                <div class="partner-item"><a href="https://searadar.tpo.lv/TO4A5eBZ" target="_blank" rel="noopener" onclick="trackClick('SeaRadar')"><span class="p-icon">📡</span><span class="p-name">SeaRadar</span><span class="p-tag">TRACK</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Luxy')"><span class="p-icon">🚗</span><span class="p-name">Luxy App</span><span class="p-tag">RIDE</span></a></div>
+              </div>
+            </div>
+
+            <div class="partner-cat" id="cat-connectivity">
+              <div class="partner-cat-header" onclick="toggleCat('cat-connectivity')">
+                <span><span class="cat-icon">📱</span>Connectivity</span>
+                <span class="cat-count">6</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item hot"><a href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener" onclick="trackClick('Airalo')"><span class="p-icon">✈️</span><span class="p-name">Airalo</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener" onclick="trackClick('DrimSim')"><span class="p-icon">💬</span><span class="p-name">DrimSim</span><span class="p-tag">SIM</span></a></div>
+                <div class="partner-item"><a href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener" onclick="trackClick('Yesim')"><span class="p-icon">🌐</span><span class="p-name">Yesim</span><span class="p-tag">eSIM</span></a></div>
+                <div class="partner-item"><a href="https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629" target="_blank" rel="noopener" onclick="trackClick('Saily')"><span class="p-icon">📡</span><span class="p-name">Saily</span><span class="p-tag">DATA</span></a></div>
+                <div class="partner-item"><a href="https://nordvpn.tpo.lv/q1aN4Xru" target="_blank" rel="noopener" onclick="trackClick('NordVPN')"><span class="p-icon">🔒</span><span class="p-name">NordVPN</span><span class="p-tag">VPN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Evisa')"><span class="p-icon">📝</span><span class="p-name">Evisa</span><span class="p-tag">VISA</span></a></div>
+              </div>
+            </div>
+
+            <div class="partner-cat" id="cat-other">
+              <div class="partner-cat-header" onclick="toggleCat('cat-other')">
+                <span><span class="cat-icon">🎁</span>Other</span>
+                <span class="cat-count">1</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=40342&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('ALLPOWERS')"><span class="p-icon">🔋</span><span class="p-name">ALLPOWERS</span><span class="p-tag">GEAR</span></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </aside>
 
-    <section class="center-col">
-      <section class="panel hero-strip">
-        <div>
-          <div class="section-kicker">Discover, watch, and book</div>
-          <h1>Find travel, finance, insurance, and online services in one place.</h1>
-          <p>Browse featured categories, switch discovery modes, and open the best matching partner offers without losing your place.</p>
+    <section class="col-promos">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">▶ Popular Videos</span>
+          <span class="panel-badge">LIVE</span>
         </div>
-      </section>
-
-      <section class="panel video-shell">
-        <div class="video-stage">
-          <div class="phone-frame">
-            <iframe
-              id="mainVideo"
-              src="https://www.youtube-nocookie.com/embed/ScMzIvxBSi4?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&controls=0&disablekb=1&fs=0&iv_load_policy=3"
-              title="SignalBoost player"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen>
-            </iframe>
-
-            <div class="phone-overlay-top">
-              <div class="video-pill">Trending</div>
-              <div class="video-pill">Inside SignalBoost</div>
-            </div>
-
-            <div class="phone-overlay-bottom">
-              <div class="overlay-title" id="videoTitle">Global Discovery</div>
-              <div class="overlay-desc" id="videoDescription">Popular travel clips and destination inspiration.</div>
-            </div>
-          </div>
-
-          <div class="video-side-info">
-            <div class="side-card">
-              <div class="section-kicker">Why watch this</div>
-              <h3 id="whyWatchTitle">Discovery worth opening</h3>
-              <p id="feedStateText">Short-form discovery that can lead into travel, finance, insurance, and service offers.</p>
-            </div>
-
-            <div class="side-card">
-              <div class="section-kicker">Recommended</div>
-              <h3 id="whyNowTitle">Fresh mixed-category inspiration</h3>
-              <p id="whyNowText">Watch what’s trending now, then move into flights, stays, tickets, or luxury offers when you’re ready.</p>
-            </div>
-
-            <div class="side-card">
-              <div class="section-kicker">Up next</div>
-              <h3 id="nextReactionTitle">More destinations and experiences</h3>
-              <p id="nextReactionText">The feed keeps moving so you can quickly discover the next trip idea.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="control-row">
-          <button id="prevBtn" class="control-btn" type="button" onclick="playPrev()">⟵ Previous</button>
-          <button id="nextBtn" class="control-btn active" type="button" onclick="playNext()">Next ⟶</button>
-          <button id="rotateBtn" class="control-btn active" type="button" onclick="toggleRotation()">Pause rotation</button>
-        </div>
-
-        <div class="category-row">
-          <div class="section-kicker">Categories</div>
-          <button class="mode-chip active" onclick="setVideoCategory('travel', this)">Travel</button>
-          <button class="mode-chip" onclick="setVideoCategory('finance', this)">Finance</button>
-          <button class="mode-chip" onclick="setVideoCategory('insurance', this)">Insurance</button>
-          <button class="mode-chip" onclick="setVideoCategory('services', this)">Services</button>
-          <button class="mode-chip" onclick="setVideoCategory('partners', this)">Partners</button>
-          <button class="mode-chip" onclick="setVideoCategory('global', this)">Global</button>
-        </div>
-
-        <div class="upnext-grid">
-          <div class="section-kicker">Play next</div>
-          <div id="videoGrid" class="upnext-cards"></div>
-        </div>
-      </section>
-
-      <section class="panel rows-shell" id="travel">
-        <div class="content-row">
-          <div class="row-head">
-            <div>
-              <h3>Trending now</h3>
-              <p>Popular picks people are opening right now.</p>
-            </div>
-          </div>
-          <div class="row-grid">
-            <div class="row-card">
-              <div><em>Flights</em><h4>Kiwi</h4><p>Search routes and airfare options.</p></div>
-              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Find flights →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Stays</em><h4>Vrbo</h4><p>Vacation rentals and full homes for your trip.</p></div>
-              <a href="https://ektatraveling.tpo.lv/">Find stays →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Tickets</em><h4>Tiqets US</h4><p>Museums, attractions, and city experiences.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806">Get tickets →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Safari</em><h4>Go2Africa</h4><p>Premium safari planning and Africa itineraries.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806">Plan safari →</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="content-row" id="finance">
-          <div class="row-head">
-            <div>
-              <h3>Finance</h3>
-              <p>Platforms and finance offers you can feature beside travel and services.</p>
-            </div>
-          </div>
-          <div class="row-grid">
-            <div class="row-card">
-              <div><em>Finance</em><h4>ZuluTrade</h4><p>Trading and copy-trading platform for finance-focused users.</p></div>
-              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Open platform →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Finance</em><h4>Market Discovery</h4><p>Pair finance content with partner tools and smart online services.</p></div>
-              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Explore finance →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Finance</em><h4>Money Tools</h4><p>Useful financial services and business-ready online platforms.</p></div>
-              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">See tools →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Finance</em><h4>Smart Services</h4><p>High-intent finance traffic can flow into related service offers.</p></div>
-              <a href="https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate">Open finance →</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="content-row" id="insurance">
-          <div class="row-head">
-            <div>
-              <h3>Insurance</h3>
-              <p>Protection-focused offers that fit travel and international users.</p>
-            </div>
-          </div>
-          <div class="row-grid">
-            <div class="row-card">
-              <div><em>Insurance</em><h4>EKTA Travelling</h4><p>Protect your trip from delays, cancellations, and emergencies.</p></div>
-              <a href="https://ektatraveling.tpo.lv/">Get covered →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Insurance</em><h4>VisitorsCoverage</h4><p>Insurance options for travelers and international protection needs.</p></div>
-              <a href="https://visitorscoverage.tpo.lv/">Open coverage →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Insurance</em><h4>Insubuy</h4><p>Travel and visitor insurance options with strong affiliate potential.</p></div>
-              <a href="https://insubuy.tpo.lv/">See insurance →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Insurance</em><h4>Travel Safety</h4><p>Add protection offers naturally beside travel bookings and services.</p></div>
-              <a href="https://ektatraveling.tpo.lv/">View cover →</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="content-row" id="services">
-          <div class="row-head">
-            <div>
-              <h3>Services</h3>
-              <p>Useful online services, tools, and digital offers that broaden SignalBoost.</p>
-            </div>
-          </div>
-          <div class="row-grid">
-            <div class="row-card">
-              <div><em>Services</em><h4>Airalo</h4><p>eSIM connectivity for travelers and international users.</p></div>
-              <a href="https://airalo.tpo.lv/eXjKLiuw">Open service →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Services</em><h4>Airalo</h4><p>Stay connected abroad with a simple digital service offer.</p></div>
-              <a href="https://airalo.tpo.lv/eXjKLiuw">Open service →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Services</em><h4>PearlMountain</h4><p>Creative and utility software offers for wider audience targeting.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806">Open offer →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Services</em><h4>AirHelp</h4><p>Useful travel support service that fits a broader online audience.</p></div>
-              <a href="https://airhelp.tpo.lv/grL9Ojju">Open service →</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="content-row" id="partners">
-          <div class="row-head">
-            <div>
-              <h3>Partners</h3>
-              <p>Travel brands, finance platforms, insurance offers, and useful services.</p>
-            </div>
-          </div>
-          <div class="row-grid">
-            <div class="row-card">
-              <div><em>Flights</em><h4>Kiwi</h4><p>Flight search and route discovery.</p></div>
-              <a href="https://kiwi.tpo.lv/qKPZ1inz">Open →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Stays</em><h4>Vrbo</h4><p>Vacation rentals and full-home stays.</p></div>
-              <a href="https://vrbo.tpo.lv/ldtO3nzY">Open →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Tickets</em><h4>Tiqets</h4><p>Attractions and museum experiences.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806">Open →</a>
-            </div>
-            <div class="row-card">
-              <div><em>Deals</em><h4>Lastminute SE</h4><p>Travel booking and package deals.</p></div>
-              <a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806">Open →</a>
-            </div>
-          </div>
-        </div>
-      </section>
+        <div class="promo-feed" id="promoFeed"></div>
+        <div class="load-sentinel" id="promoSentinel"><div class="spinner"></div></div>
+      </div>
     </section>
 
-    <aside class="right-stack">
-      <section class="panel panel-pad">
-        <div class="section-kicker">Featured action</div>
-        <div class="offer-main">
-          <div class="urgency" id="offerUrgency">featured</div>
-          <h3 id="shopMainPartner">SignalBoost Featured Offer</h3>
-          <p id="shopMainDesc">Travel, finance, insurance, and services matched to what users are exploring.</p>
-          <a id="shopMainLink" class="offer-cta" href="https://klook.tpo.lv/fTRPLj2l">Open main offer →</a>
+    <section class="col-hero">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🔥 Trending Now</span>
+          <span class="panel-badge">HOT</span>
         </div>
-      </section>
-
-      <section class="panel panel-pad">
-        <div class="section-kicker">Recommended offers</div>
-        <div class="offer-list">
-          <div class="offer-item">
-            <div class="urgency">popular</div>
-            <h4 id="offer1Title">ZuluTrade</h4>
-            <p id="offer1Desc">Finance platform for users interested in markets and trading.</p>
-            <a id="offer1Link" href="https://kiwi.tpo.lv/qKPZ1inz">Open →</a>
-          </div>
-          <div class="offer-item">
-            <div class="urgency">stay option</div>
-            <h4 id="offer2Title">EKTA Travelling</h4>
-            <p id="offer2Desc">Trip protection and insurance for travel-focused users.</p>
-            <a id="offer2Link" href="https://vrbo.tpo.lv/ldtO3nzY">Open →</a>
-          </div>
-          <div class="offer-item">
-            <div class="urgency">featured partner</div>
-            <h4 id="offer3Title">BitJoy eSIM</h4>
-            <p id="offer3Desc">Digital service for connectivity and global travel support.</p>
-            <a id="offer3Link" href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806">Open →</a>
-          </div>
-        </div>
-      </section>
-    </aside>
-  </main>
-
-  <script>
-    const modeConfigs = {
-      watch: {
-        label: "Just watch",
-        modeBoxTitle: "Discover more with every video",
-        intentMessage: "Browse popular travel clips, then jump into the offers that match what you like.",
-        feedStateText: "Short-form discovery that can lead into travel, finance, insurance, and service offers.",
-        whyNowTitle: "Fresh mixed-category inspiration",
-        whyNowText: "Watch what’s trending now, then move into flights, stays, tickets, or luxury offers when you’re ready.",
-        nextReactionTitle: "More destinations and experiences",
-        nextReactionText: "The feed keeps moving so you can quickly discover the next trip idea.",
-        defaultCategory: "global"
-      },
-      trip: {
-        label: "Plan a trip",
-        modeBoxTitle: "Trip planning starts here",
-        intentMessage: "Switch into trip mode to surface flights, stays, and planning-friendly offers faster.",
-        feedStateText: "Travel clips matched to flights, stays, and stronger booking intent.",
-        whyNowTitle: "Travel planning picks",
-        whyNowText: "This mode favors clips that pair well with flights, vacation rentals, and destination booking.",
-        nextReactionTitle: "More routes, stays, and destinations",
-        nextReactionText: "Expect more trip-ready videos and stronger travel planning offers next.",
-        defaultCategory: "flights"
-      },
-      tickets: {
-        label: "Buy tickets",
-        modeBoxTitle: "Ready for attractions and passes",
-        intentMessage: "Ticket mode brings museums, landmarks, and city experiences closer to the top.",
-        feedStateText: "The feed is leaning into cities, attractions, and bookable experiences.",
-        whyNowTitle: "Popular ticket destinations",
-        whyNowText: "You’ll see more city clips that work well with attraction and museum offers.",
-        nextReactionTitle: "More ticket-friendly cities",
-        nextReactionText: "Look for more destination clips with matching attraction offers.",
-        defaultCategory: "tickets"
-      },
-      luxury: {
-        label: "Go luxury",
-        modeBoxTitle: "Premium escapes and higher-end offers",
-        intentMessage: "Luxury mode highlights premium travel, safari inspiration, upscale stays, and premium experiences.",
-        feedStateText: "You’re seeing more premium destinations and higher-end travel ideas.",
-        whyNowTitle: "Luxury-focused discovery",
-        whyNowText: "This mode keeps the feed closer to premium travel, luxury stays, and high-value experiences.",
-        nextReactionTitle: "More premium travel next",
-        nextReactionText: "Expect additional safari, resort, and upscale stay recommendations.",
-        defaultCategory: "safari"
-      }
-    };
-
-    const baseVideoPools = {
-      global: [
-        { id: "ScMzIvxBSi4", title: "Global Discovery", desc: "Popular discovery clips across travel, finance, insurance, and services.", monetizationKey: "global" },
-        { id: "M7lc1UVf-VE", title: "Global Discovery", desc: "A rotating feed for broad discovery across categories.", monetizationKey: "global" }
-      ],
-      travel: [
-        { id: "ysz5S6PUM-U", title: "Travel Discovery", desc: "Destinations, flights, stays, and experiences.", monetizationKey: "travel" },
-        { id: "ScMzIvxBSi4", title: "Travel Discovery", desc: "Travel inspiration with high-intent offers.", monetizationKey: "travel" }
-      ],
-      finance: [
-        { id: "M7lc1UVf-VE", title: "Finance Discovery", desc: "Platforms, money tools, and smart finance services.", monetizationKey: "finance" },
-        { id: "ScMzIvxBSi4", title: "Finance Discovery", desc: "Finance-focused discovery matched with partner offers.", monetizationKey: "finance" }
-      ],
-      insurance: [
-        { id: "ScMzIvxBSi4", title: "Insurance Discovery", desc: "Protection, coverage, and safety-focused offers.", monetizationKey: "insurance" },
-        { id: "M7lc1UVf-VE", title: "Insurance Discovery", desc: "Travel and visitor protection ideas.", monetizationKey: "insurance" }
-      ],
-      services: [
-        { id: "ysz5S6PUM-U", title: "Services Discovery", desc: "Useful online services, connectivity, and software offers.", monetizationKey: "services" },
-        { id: "ScMzIvxBSi4", title: "Services Discovery", desc: "Digital services that fit a broad online audience.", monetizationKey: "services" }
-      ],
-      partners: [
-        { id: "M7lc1UVf-VE", title: "Partner Discovery", desc: "Featured partner brands across categories.", monetizationKey: "partners" },
-        { id: "ScMzIvxBSi4", title: "Partner Discovery", desc: "Highlighted affiliate opportunities and offers.", monetizationKey: "partners" }
-      ]
-    };
-
-    const monetizationByKey = {
-      global: {
-        urgency: "featured",
-        mainTitle: "SignalBoost Featured Offer",
-        mainDesc: "Travel, finance, insurance, and services matched to what users are exploring.",
-        mainHref: "https://airalo.tpo.lv/eXjKLiuw",
-        offer1Title: "ZuluTrade",
-        offer1Desc: "Finance platform for users interested in markets and trading.",
-        offer1Href: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
-        offer2Title: "EKTA Travelling",
-        offer2Desc: "Trip protection and insurance for travel-focused users.",
-        offer2Href: "https://ektatraveling.tpo.lv/",
-        offer3Title: "Airalo",
-        offer3Desc: "Digital service for connectivity and global travel support.",
-        offer3Href: "https://airalo.tpo.lv/eXjKLiuw"
-      },
-      travel: {
-        urgency: "travel",
-        mainTitle: "Travel Discovery Bundle",
-        mainDesc: "Flights, stays, tickets, and travel support matched to destination interest.",
-        mainHref: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer1Title: "Vrbo",
-        offer1Desc: "Vacation rentals and homes for destination planning.",
-        offer1Href: "https://vrbo.tpo.lv/ldtO3nzY",
-        offer2Title: "Tiqets",
-        offer2Desc: "Attractions and city experiences.",
-        offer2Href: "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-        offer3Title: "Go2Africa",
-        offer3Desc: "Premium safari planning and high-ticket journeys.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806"
-      },
-      finance: {
-        urgency: "finance",
-        mainTitle: "Finance Platform Highlight",
-        mainDesc: "Finance discovery, trading access, and smart money-focused services.",
-        mainHref: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
-        offer1Title: "ZuluTrade",
-        offer1Desc: "Copy-trading and finance platform.",
-        offer1Href: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
-        offer2Title: "Smart Services",
-        offer2Desc: "Cross-category services that pair well with finance traffic.",
-        offer2Href: "https://airalo.tpo.lv/eXjKLiuw",
-        offer3Title: "Useful Tools",
-        offer3Desc: "Digital offers for business-minded users.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"
-      },
-      insurance: {
-        urgency: "protection",
-        mainTitle: "Insurance & Protection",
-        mainDesc: "Trip coverage, visitor insurance, and protection-focused offers.",
-        mainHref: "https://ektatraveling.tpo.lv/",
-        offer1Title: "VisitorsCoverage",
-        offer1Desc: "Insurance options for international users.",
-        offer1Href: "https://visitorscoverage.tpo.lv/",
-        offer2Title: "Insubuy",
-        offer2Desc: "Visitor and travel insurance options.",
-        offer2Href: "https://insubuy.tpo.lv/",
-        offer3Title: "EKTA Travelling",
-        offer3Desc: "Simple travel protection offer.",
-        offer3Href: "https://ektatraveling.tpo.lv/"
-      },
-      services: {
-        urgency: "services",
-        mainTitle: "Useful Online Services",
-        mainDesc: "Connectivity, software, and digital services that expand SignalBoost beyond travel.",
-        mainHref: "https://airalo.tpo.lv/eXjKLiuw",
-        offer1Title: "Airalo",
-        offer1Desc: "eSIM service for global connectivity.",
-        offer1Href: "https://airalo.tpo.lv/eXjKLiuw",
-        offer2Title: "BitJoy eSIM",
-        offer2Desc: "Simple connectivity service for travelers.",
-        offer2Href: "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-        offer3Title: "PearlMountain",
-        offer3Desc: "Creative and utility software.",
-        offer3Href: "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"
-      },
-      partners: {
-        urgency: "partners",
-        mainTitle: "Featured Partners",
-        mainDesc: "A broader set of travel, finance, insurance, and services partners.",
-        mainHref: "https://kiwi.tpo.lv/qKPZ1inz",
-        offer1Title: "ZuluTrade",
-        offer1Desc: "Finance partner.",
-        offer1Href: "https://www.zulutrade.com/?Ref=3002955&utm_medium=affiliate&utm_source=3002955&utm_campaign=affiliate",
-        offer2Title: "EKTA Travelling",
-        offer2Desc: "Insurance partner.",
-        offer2Href: "https://ektatraveling.tpo.lv/",
-        offer3Title: "Airalo",
-        offer3Desc: "Service partner.",
-        offer3Href: "https://airalo.tpo.lv/eXjKLiuw"
-      }
-    };
-
-    const videoPools = JSON.parse(JSON.stringify(baseVideoPools));
-    let currentCategory = "global";
-    let currentIndex = 0;
-    let rotationOn = true;
-    let rotationTimer = null;
-
-    function buildEmbedUrl(videoId){
-      return "https://www.youtube-nocookie.com/embed/" + videoId + "?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&controls=0&disablekb=1&fs=0&iv_load_policy=3";
-    }
-
-    function updateMainVideo(video){
-      const frame = document.getElementById("mainVideo");
-      document.getElementById("videoTitle").textContent = video.title;
-      document.getElementById("videoDescription").textContent = video.desc;
-      frame.src = buildEmbedUrl(video.id);
-      updateRightRail(video.monetizationKey || currentCategory);
-    }
-
-    function updateRightRail(key){
-      const config = monetizationByKey[key] || monetizationByKey.global;
-      document.getElementById("offerUrgency").textContent = config.urgency;
-      document.getElementById("shopMainPartner").textContent = config.mainTitle;
-      document.getElementById("shopMainDesc").textContent = config.mainDesc;
-      document.getElementById("shopMainLink").href = config.mainHref;
-
-      document.getElementById("offer1Title").textContent = config.offer1Title;
-      document.getElementById("offer1Desc").textContent = config.offer1Desc;
-      document.getElementById("offer1Link").href = config.offer1Href;
-
-      document.getElementById("offer2Title").textContent = config.offer2Title;
-      document.getElementById("offer2Desc").textContent = config.offer2Desc;
-      document.getElementById("offer2Link").href = config.offer2Href;
-
-      document.getElementById("offer3Title").textContent = config.offer3Title;
-      document.getElementById("offer3Desc").textContent = config.offer3Desc;
-      document.getElementById("offer3Link").href = config.offer3Href;
-    }
-
-    function renderVideoGrid(category){
-      const grid = document.getElementById("videoGrid");
-      grid.innerHTML = "";
-      (videoPools[category] || []).forEach((video, index) => {
-        const item = document.createElement("div");
-        item.className = "video-card";
-        item.innerHTML = `
-          <div class="video-thumb">▶</div>
-          <strong>${video.title}</strong>
-          <span>${video.desc}</span>
-          <button class="small-btn" type="button">Play inside SignalBoost</button>
-        `;
-        item.querySelector("button").addEventListener("click", () => {
-          currentIndex = index;
-          updateMainVideo(video);
-          if(rotationOn) restartRotation();
-        });
-        grid.appendChild(item);
-      });
-    }
-
-    function clearCategoryButtons(){
-      document.querySelectorAll(".category-row .mode-chip").forEach(btn => btn.classList.remove("active"));
-    }
-
-    function setVideoCategory(category, el = null){
-      currentCategory = category;
-      currentIndex = 0;
-      const pool = videoPools[currentCategory] || videoPools.global;
-      updateMainVideo(pool[currentIndex]);
-      renderVideoGrid(currentCategory);
-      clearCategoryButtons();
-      if(el) el.classList.add("active");
-      if(rotationOn) restartRotation();
-    }
-
-    function rotateNextVideo(){
-      const pool = videoPools[currentCategory] || [];
-      if(!pool.length) return;
-      currentIndex = (currentIndex + 1) % pool.length;
-      updateMainVideo(pool[currentIndex]);
-    }
-
-    function playNext(){
-      rotateNextVideo();
-      if(rotationOn) restartRotation();
-    }
-
-    function playPrev(){
-      const pool = videoPools[currentCategory] || [];
-      if(!pool.length) return;
-      currentIndex = (currentIndex - 1 + pool.length) % pool.length;
-      updateMainVideo(pool[currentIndex]);
-      if(rotationOn) restartRotation();
-    }
-
-    function restartRotation(){
-      clearInterval(rotationTimer);
-      rotationTimer = setInterval(rotateNextVideo, 20000);
-    }
-
-    function toggleRotation(){
-      rotationOn = !rotationOn;
-      const btn = document.getElementById("rotateBtn");
-      if(rotationOn){
-        btn.textContent = "Pause rotation";
-        btn.classList.add("active");
-        restartRotation();
-      } else {
-        btn.textContent = "Resume rotation";
-        btn.classList.remove("active");
-        clearInterval(rotationTimer);
-      }
-    }
-
-    function setMode(mode){
-      const cfg = modeConfigs[mode];
-      document.getElementById("modeBoxTitle").textContent = cfg.modeBoxTitle;
-      document.getElementById("intentMessage").textContent = cfg.intentMessage;
-      document.getElementById("feedStateText").textContent = cfg.feedStateText;
-      document.getElementById("whyNowTitle").textContent = cfg.whyNowTitle;
-      document.getElementById("whyNowText").textContent = cfg.whyNowText;
-      document.getElementById("nextReactionTitle").textContent = cfg.nextReactionTitle;
-      document.getElementById("nextReactionText").textContent = cfg.nextReactionText;
-      document.querySelectorAll(".mode-card").forEach(card => card.classList.remove("active"));
-      const active = document.querySelector(`.mode-card[data-mode="${mode}"]`);
-      if(active) active.classList.add("active");
-
-      const categoryMap = {
-        watch: "global",
-        trip: "travel",
-        tickets: "insurance",
-        luxury: "services"
-      };
-      const activeCategory = categoryMap[mode] || "global";
-      const button = [...document.querySelectorAll(".category-row .mode-chip")]
-        .find(btn => btn.textContent.trim().toLowerCase() === activeCategory);
-      setVideoCategory(activeCategory, button);
-    }
-
-    function toggleTheme(){
-      document.body.classList.toggle("light-mode");
-      localStorage.setItem("signalboost_theme_v12", document.body.classList.contains("light-mode") ? "light" : "dark");
-    }
-
-    function scrollToRows(){
-      document.getElementById("rows").scrollIntoView({behavior:"smooth", block:"start"});
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("signalboost_theme_v12");
-      if(savedTheme === "light") document.body.classList.add("light-mode");
-
-      document.querySelectorAll(".mode-card").forEach(card => {
-        card.addEventListener("click", () => setMode(card.dataset.mode));
-      });
-
-      setMode("watch");
-      restartRotation();
-    });
-  </script>
-
-  <div id="partnerModalBackdrop" class="partner-modal-backdrop">
-    <div class="partner-modal" role="dialog" aria-modal="true" aria-labelledby="partnerModalTitle">
-      <h3 id="partnerModalTitle">Continue</h3>
-      <p>You’ll continue on the partner site.</p>
-      <div class="partner-modal-actions">
-        <button id="partnerContinueBtn" class="partner-continue-btn" type="button">Continue →</button>
-        <button id="partnerCancelBtn" class="partner-cancel-btn" type="button">Back</button>
+        <div class="hero-feed" id="heroFeed"></div>
+        <div class="load-sentinel" id="heroSentinel"><div class="spinner"></div></div>
       </div>
-      <div class="partner-modal-note">Securely continue with partner</div>
-    </div>
+    </section>
+
+    <section class="col-widgets">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">▶ Trending</span>
+          <span class="panel-badge">NEW</span>
+        </div>
+        <div class="promo-feed" id="widgetFeed"></div>
+        <div class="load-sentinel" id="widgetSentinel"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <aside class="col-dashboard">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">💰 Finance</span>
+        </div>
+        <div class="panel-body dashboard-content">
+          <div class="weather-widget">
+            <div class="weather-icon">🌤️</div>
+            <div class="weather-temp">72°</div>
+            <div class="weather-desc">Cloudy</div>
+          </div>
+          <div class="stock-ticker">
+            <div class="ticker-header">📊 Markets</div>
+            <div class="ticker-item">
+              <span class="ticker-symbol">^DJI</span>
+              <span class="ticker-price">38.2K</span>
+              <span class="ticker-change up">+0.8%</span>
+            </div>
+            <div class="ticker-item">
+              <span class="ticker-symbol">^GSPC</span>
+              <span class="ticker-price">5.2K</span>
+              <span class="ticker-change up">+1.2%</span>
+            </div>
+            <div class="ticker-item">
+              <span class="ticker-symbol">^IXIC</span>
+              <span class="ticker-price">16.8K</span>
+              <span class="ticker-change up">+2.1%</span>
+            </div>
+          </div>
+          <div class="financial-news">
+            <div class="news-header">📰 News</div>
+            <div class="news-item">
+              <div class="news-title">S&P 500 reaches all-time high</div>
+              <div class="news-meta"><span class="news-source">Yahoo Finance</span><span>2h ago</span></div>
+            </div>
+            <div class="news-item">
+              <div class="news-title">Bitcoin surges past $50K</div>
+              <div class="news-meta"><span class="news-source">Bloomberg</span><span>3h ago</span></div>
+            </div>
+            <div class="news-item">
+              <div class="news-title">Tech stocks lead market rally</div>
+              <div class="news-meta"><span class="news-source">Reuters</span><span>5h ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
+</main>
 
-  <script>
-    (function(){
-      let partnerTargetUrl = "";
-      const backdrop = document.getElementById("partnerModalBackdrop");
-      const continueBtn = document.getElementById("partnerContinueBtn");
-      const cancelBtn = document.getElementById("partnerCancelBtn");
+<script>
+const clickTracker = {};
 
-      function openPartnerModal(url){
-        partnerTargetUrl = url;
-        backdrop.style.display = "flex";
-      }
+function trackClick(partner) {
+  clickTracker[partner] = (clickTracker[partner] || 0) + 1;
+  localStorage.setItem('affiliate_clicks', JSON.stringify(clickTracker));
+}
 
-      function closePartnerModal(){
-        backdrop.style.display = "none";
-        partnerTargetUrl = "";
-      }
+const saved = localStorage.getItem('affiliate_clicks');
+if (saved) Object.assign(clickTracker, JSON.parse(saved));
 
-      document.addEventListener("click", function(event){
-        const link = event.target.closest('a[href]');
-        if(!link) return;
+const VIDEO_POOL = [
+  { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M' },
+  { platform: 'TikTok', title: 'Quick Travel Tips', desc: 'Budget hacks', type: 'tiktok', id: '@travelguy/video/7234567890', views: '1.8M' },
+  { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', id: 'jNQXAC9IVRw', views: '890K' },
+  { platform: 'Instagram', title: 'Adventure Stories', desc: 'Epic journeys', type: 'instagram', id: 'p/CdE5FgH', views: '1.5M' },
+  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', id: '9bZkp7q19f0', views: '1.2M' },
+  { platform: 'Reddit', title: 'Amazing Life Hacks', desc: 'Community stories', type: 'reddit', id: 'r/travel/comments/abc123', views: '950K' },
+  { platform: 'TikTok', title: 'Viral Trends', desc: 'This week\'s hot', type: 'tiktok', id: '@trends/video/7345678901', views: '3.2M' },
+  { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', id: '90509568', views: '345K' },
+  { platform: 'Instagram', title: 'Dream Destinations', desc: 'Bucket list', type: 'instagram', id: 'p/CeF6GhI', views: '2.1M' },
+  { platform: 'Reddit', title: 'Hidden Gems', desc: 'Local favorites', type: 'reddit', id: 'r/travel/comments/def456', views: '720K' },
+  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', id: '0ml4GHJfh-I', views: '1.8M' },
+  { platform: 'TikTok', title: 'Summer Vibes', desc: 'Feel good content', type: 'tiktok', id: '@vibes/video/7456789012', views: '2.7M' },
+];
 
-        const href = link.getAttribute("href");
-        if(!href) return;
+function getEmbedIcon(item) {
+  const icons = { 'youtube': '▶️', 'tiktok': '♪', 'instagram': '📷', 'reddit': '🔴' };
+  return icons[item.type] || '🎬';
+}
 
-        const isExternal = /^https?:\/\//i.test(href);
-        if(!isExternal) return;
+function getVideoUrl(item) {
+  const urls = {
+    'youtube': 'https://www.youtube.com/watch?v=' + item.id,
+    'tiktok': 'https://www.tiktok.com/' + item.id,
+    'instagram': 'https://www.instagram.com/' + item.id,
+    'reddit': 'https://reddit.com/' + item.id
+  };
+  return urls[item.type] || '#';
+}
 
-        event.preventDefault();
-        event.stopPropagation();
-        openPartnerModal(href);
-      }, true);
+function buildPromoCard(item) {
+  const card = document.createElement('div');
+  card.className = 'promo-card';
+  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
+  const grad = gradients[Math.floor(Math.random() * gradients.length)];
+  const icon = getEmbedIcon(item);
+  
+  const thumb = document.createElement('div');
+  thumb.className = 'promo-thumb ' + grad;
+  thumb.innerHTML = '<div class="embed-placeholder">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><span class="promo-new-badge">' + item.platform + '</span>';
+  
+  const body = document.createElement('div');
+  body.className = 'promo-body';
+  body.innerHTML = '<div class="promo-kicker">' + item.platform + '</div><div class="promo-title">' + item.title + '</div><div class="promo-desc">' + item.desc + '</div><div class="promo-meta">👁 ' + item.views + '</div>';
+  
+  card.appendChild(thumb);
+  card.appendChild(body);
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function() {
+    window.location.href = getVideoUrl(item);
+  });
+  
+  return card;
+}
 
-      continueBtn.addEventListener("click", function(){
-        if(partnerTargetUrl){
-          window.location.href = partnerTargetUrl;
-        }
-      });
+function buildHeroCard(item) {
+  const card = document.createElement('div');
+  card.className = 'hero-card';
+  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
+  const grad = gradients[Math.floor(Math.random() * gradients.length)];
+  const icon = getEmbedIcon(item);
+  
+  const thumb = document.createElement('div');
+  thumb.className = 'hero-thumb ' + grad;
+  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
+  
+  const actions = document.createElement('div');
+  actions.className = 'hero-actions';
+  actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
+  
+  card.appendChild(thumb);
+  card.appendChild(actions);
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function() {
+    window.location.href = getVideoUrl(item);
+  });
+  
+  return card;
+}
 
-      cancelBtn.addEventListener("click", closePartnerModal);
+(function seed() {
+  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
+  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[1]));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2]));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[3]));
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[4]));
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[5]));
+})();
 
-      backdrop.addEventListener("click", function(event){
-        if(event.target === backdrop){
-          closePartnerModal();
-        }
-      });
+let promoIdx = 2, heroIdx = 4, widgetIdx = 2;
 
-      document.addEventListener("keydown", function(event){
-        if(event.key === "Escape"){
-          closePartnerModal();
-        }
-      });
-    })();
-  </script>
+function makeObserver(sentinelId, feedId, builder, getIdxFunc, setIdxFunc) {
+  const sentinel = document.getElementById(sentinelId);
+  const feed = document.getElementById(feedId);
+  
+  const obs = new IntersectionObserver(function(entries) {
+    if (!entries[0].isIntersecting) return;
+    const currentIdx = getIdxFunc();
+    const item = VIDEO_POOL[currentIdx % VIDEO_POOL.length];
+    feed.appendChild(builder(item));
+    setIdxFunc(currentIdx + 1);
+  }, { rootMargin: '300px' });
+  
+  obs.observe(sentinel);
+}
 
+makeObserver('promoSentinel', 'promoFeed', buildPromoCard, function() { return promoIdx; }, function(val) { promoIdx = val; });
+makeObserver('heroSentinel', 'heroFeed', buildHeroCard, function() { return heroIdx; }, function(val) { heroIdx = val; });
+makeObserver('widgetSentinel', 'widgetFeed', buildPromoCard, function() { return widgetIdx; }, function(val) { widgetIdx = val; });
+
+function toggleCat(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+document.getElementById('partnerSearch').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.partner-item').forEach(function(el) {
+    const name = el.querySelector('.p-name');
+    el.style.display = name && name.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+document.getElementById('themeBtn').addEventListener('click', function() {
+  const on = document.body.classList.toggle('light-theme');
+  this.textContent = on ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('sb_theme', on ? 'light' : 'dark');
+});
+
+if (localStorage.getItem('sb_theme') === 'light') {
+  document.body.classList.add('light-theme');
+  document.getElementById('themeBtn').textContent = '🌙 Dark';
+}
+</script>
 </body>
 </html>
