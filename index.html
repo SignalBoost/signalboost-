@@ -1,5 +1,7 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -806,6 +808,206 @@
   }
 }
 
+
+/* ===== Final permanent 5-column grid ===== */
+.sb-dashboard-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important; /* ALWAYS 5 columns */
+  gap: 12px !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sb-dashboard-grid > .sb-column {
+  min-width: 0;          /* prevents shrinking */
+  overflow: hidden;      /* prevents bleed */
+  box-sizing: border-box;
+}
+
+/* normalize all top-level columns inside the permanent grid */
+.sb-dashboard-grid > .col-partners,
+.sb-dashboard-grid > .col-promos,
+.sb-dashboard-grid > .col-hero,
+.sb-dashboard-grid > .col-widgets,
+.sb-dashboard-grid > .col-dashboard {
+  min-width: 0;
+}
+
+/* keep promo/hero/widgets behaving inside equal grid */
+.sb-dashboard-grid > .col-promos,
+.sb-dashboard-grid > .col-hero,
+.sb-dashboard-grid > .col-widgets,
+.sb-dashboard-grid > .col-dashboard {
+  align-self: stretch !important;
+  height: calc(100vh - 150px) !important;
+  max-height: calc(100vh - 150px) !important;
+  overflow: hidden !important;
+}
+
+.sb-dashboard-grid > .col-promos .panel,
+.sb-dashboard-grid > .col-hero .panel,
+.sb-dashboard-grid > .col-widgets .panel,
+.sb-dashboard-grid > .col-dashboard .panel {
+  height: 100% !important;
+  max-height: none !important;
+}
+
+.sb-dashboard-grid > .col-promos .promo-feed,
+.sb-dashboard-grid > .col-widgets .promo-feed,
+.sb-dashboard-grid > .col-hero .hero-feed {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  padding-right: 4px !important;
+}
+
+/* ===== Column 5 upgraded control panel ===== */
+.sb-dashboard-grid > .col-dashboard {
+  align-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.sb-dashboard-grid > .col-dashboard .panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sb-dashboard-grid > .col-dashboard .panel-body.dashboard-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  gap: 12px;
+}
+
+.sb-column5 {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  gap: 12px;
+}
+
+.sb-col5-header {
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .10em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: 8px;
+}
+
+.sb-col5-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sb-col5-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sb-weather-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.sb-weather-temp {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.sb-col5-right {
+  display: flex;
+  align-items: center;
+}
+
+.sb-lofi-btn {
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sb-lofi-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.sb-col5-center {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.sb-social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  font-size: 10px;
+  text-transform: lowercase;
+  text-decoration: none;
+  color: var(--muted);
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+}
+
+.sb-social:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(0,255,204,.05);
+}
+
+.sb-mini-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.02);
+  padding: 10px 12px;
+}
+
+.sb-mini-title {
+  font-size: .66rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.sb-mini-line {
+  font-size: .76rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.sb-mini-line:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .sb-dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -826,26 +1028,26 @@
 
 <div class="social-bar">
   <div class="social-platforms">
-    <a href=https://facebook.com target="_blank" rel="noopener" class="platform-btn" title="Facebook"><span class="icon">f</span>Facebook</a>
-    <a href=https://youtube.com target="_blank" rel="noopener" class="platform-btn" title="YouTube"><span class="icon">▶</span>YouTube</a>
-    <a href=https://instagram.com target="_blank" rel="noopener" class="platform-btn" title="Instagram"><span class="icon">📷</span>Instagram</a>
-    <a href=https://tiktok.com target="_blank" rel="noopener" class="platform-btn" title="TikTok"><span class="icon">♪</span>TikTok</a>
-    <a href=https://reddit.com target="_blank" rel="noopener" class="platform-btn" title="Reddit"><span class="icon">🔴</span>Reddit</a>
-    <a href=https://wa.me target="_blank" rel="noopener" class="platform-btn" title="WhatsApp"><span class="icon">💬</span>WhatsApp</a>
-    <a href=https://messenger.com target="_blank" rel="noopener" class="platform-btn" title="Messenger"><span class="icon">💭</span>Messenger</a>
-    <a href=https://wechat.com target="_blank" rel="noopener" class="platform-btn" title="WeChat"><span class="icon">🔗</span>WeChat</a>
-    <a href=https://x.com target="_blank" rel="noopener" class="platform-btn" title="X"><span class="icon">𝕏</span>X</a>
-    <a href=https://snapchat.com target="_blank" rel="noopener" class="platform-btn" title="Snapchat"><span class="icon">👻</span>Snapchat</a>
-    <a href=https://linkedin.com target="_blank" rel="noopener" class="platform-btn" title="LinkedIn"><span class="icon">in</span>LinkedIn</a>
-    <a href=https://truthsocial.com target="_blank" rel="noopener" class="platform-btn" title="Truth Social"><span class="icon">🇺🇸</span>Truth</a>
+    <a href="https://facebook.com" target="_blank" rel="noopener" class="platform-btn" title="Facebook"><span class="icon">f</span>Facebook</a>
+    <a href="https://youtube.com" target="_blank" rel="noopener" class="platform-btn" title="YouTube"><span class="icon">▶</span>YouTube</a>
+    <a href="https://instagram.com" target="_blank" rel="noopener" class="platform-btn" title="Instagram"><span class="icon">📷</span>Instagram</a>
+    <a href="https://tiktok.com" target="_blank" rel="noopener" class="platform-btn" title="TikTok"><span class="icon">♪</span>TikTok</a>
+    <a href="https://reddit.com" target="_blank" rel="noopener" class="platform-btn" title="Reddit"><span class="icon">🔴</span>Reddit</a>
+    <a href="https://wa.me" target="_blank" rel="noopener" class="platform-btn" title="WhatsApp"><span class="icon">💬</span>WhatsApp</a>
+    <a href="https://messenger.com" target="_blank" rel="noopener" class="platform-btn" title="Messenger"><span class="icon">💭</span>Messenger</a>
+    <a href="https://wechat.com" target="_blank" rel="noopener" class="platform-btn" title="WeChat"><span class="icon">🔗</span>WeChat</a>
+    <a href="https://x.com" target="_blank" rel="noopener" class="platform-btn" title="X"><span class="icon">𝕏</span>X</a>
+    <a href="https://snapchat.com" target="_blank" rel="noopener" class="platform-btn" title="Snapchat"><span class="icon">👻</span>Snapchat</a>
+    <a href="https://linkedin.com" target="_blank" rel="noopener" class="platform-btn" title="LinkedIn"><span class="icon">in</span>LinkedIn</a>
+    <a href="https://truthsocial.com" target="_blank" rel="noopener" class="platform-btn" title="Truth Social"><span class="icon">🇺🇸</span>Truth</a>
   </div>
 </div>
 
 <main class="shell">
   <div id="partner-banner" class="mall-banner" aria-live="polite"></div>
-  <div class="dashboard">
+  <div class="dashboard sb-dashboard-grid">
 
-    <aside class="col-partners">
+    <aside class="sb-column col-partners">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">💰 Affiliates</span>
@@ -861,13 +1063,13 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href=https://getrentacar.tpo.lv/OR2TWduQ target="_blank" rel="noopener" onclick="trackClick('GetRentacar')"><span class="p-icon">🚙</span><span class="p-name">GetRentacar</span><span class="p-tag">CAR</span></a></div>
-                <div class="partner-item"><a href=https://autoeurope.tpo.lv/t84AzZbO target="_blank" rel="noopener" onclick="trackClick('AutoEurope')"><span class="p-icon">🏎️</span><span class="p-name">AutoEurope</span><span class="p-tag">RENT</span></a></div>
-                <div class="partner-item"><a href=https://localrent.tpo.lv/XS0CqdMP target="_blank" rel="noopener" onclick="trackClick('LocalRent')"><span class="p-icon">🅿️</span><span class="p-name">LocalRent</span><span class="p-tag">LOCAL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Allycar')"><span class="p-icon">🚗</span><span class="p-name">Allycar</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Carmel')"><span class="p-icon">🚕</span><span class="p-name">Carmel Car</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('JumboCar')"><span class="p-icon">🏎️</span><span class="p-name">Jumbo Car CR</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=10777&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Europcar AU NZ')"><span class="p-icon">🚗</span><span class="p-name">Europcar AU NZ</span><span class="p-tag">RENT</span></a></div>
+                <div class="partner-item"><a href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" rel="noopener" onclick="trackClick('GetRentacar')"><span class="p-icon">🚙</span><span class="p-name">GetRentacar</span><span class="p-tag">CAR</span></a></div>
+                <div class="partner-item"><a href="https://autoeurope.tpo.lv/t84AzZbO" target="_blank" rel="noopener" onclick="trackClick('AutoEurope')"><span class="p-icon">🏎️</span><span class="p-name">AutoEurope</span><span class="p-tag">RENT</span></a></div>
+                <div class="partner-item"><a href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener" onclick="trackClick('LocalRent')"><span class="p-icon">🅿️</span><span class="p-name">LocalRent</span><span class="p-tag">LOCAL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Allycar')"><span class="p-icon">🚗</span><span class="p-name">Allycar</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Carmel')"><span class="p-icon">🚕</span><span class="p-name">Carmel Car</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('JumboCar')"><span class="p-icon">🏎️</span><span class="p-name">Jumbo Car CR</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=10777&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Europcar AU NZ')"><span class="p-icon">🚗</span><span class="p-name">Europcar AU NZ</span><span class="p-tag">RENT</span></a></div>
               </div>
             </div>
 
@@ -878,19 +1080,19 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href=https://booking.tpo.lv/enwsEbCs target="_blank" rel="noopener" onclick="trackClick('Booking')"><span class="p-icon">🏨</span><span class="p-name">Booking.com</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://economybookings.tpo.lv/jSFMPEPA target="_blank" rel="noopener" onclick="trackClick('EconomyBookings')"><span class="p-icon">💰</span><span class="p-name">Economy Book</span><span class="p-tag">BUDGET</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('KingKoil')"><span class="p-icon">🛏️</span><span class="p-name">King Koil</span><span class="p-tag">BED</span></a></div>
-                <div class="partner-item"><a href=https://hotels.tpo.lv/rHr4mbOu target="_blank" rel="noopener" onclick="trackClick('Hotels.com')"><span class="p-icon">🏨</span><span class="p-name">Hotels.com</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://agoda.tpo.lv/UEhQ1dwR target="_blank" rel="noopener" onclick="trackClick('Agoda')"><span class="p-icon">🏨</span><span class="p-name">Agoda</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105929&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago AR')"><span class="p-icon">🏨</span><span class="p-name">Trivago AR</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105937&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago BR')"><span class="p-icon">🏨</span><span class="p-name">Trivago BR</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105935&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago CO')"><span class="p-icon">🏨</span><span class="p-name">Trivago CO</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105923&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago DE')"><span class="p-icon">🏨</span><span class="p-name">Trivago DE</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105931&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago MX')"><span class="p-icon">🏨</span><span class="p-name">Trivago MX</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=66032&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago NZ')"><span class="p-icon">🏨</span><span class="p-name">Trivago NZ</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105927&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago PE')"><span class="p-icon">🏨</span><span class="p-name">Trivago PE</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=66034&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago USA')"><span class="p-icon">🏨</span><span class="p-name">Trivago USA</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener" onclick="trackClick('Booking')"><span class="p-icon">🏨</span><span class="p-name">Booking.com</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener" onclick="trackClick('EconomyBookings')"><span class="p-icon">💰</span><span class="p-name">Economy Book</span><span class="p-tag">BUDGET</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('KingKoil')"><span class="p-icon">🛏️</span><span class="p-name">King Koil</span><span class="p-tag">BED</span></a></div>
+                <div class="partner-item"><a href="https://hotels.tpo.lv/rHr4mbOu" target="_blank" rel="noopener" onclick="trackClick('Hotels.com')"><span class="p-icon">🏨</span><span class="p-name">Hotels.com</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://agoda.tpo.lv/UEhQ1dwR" target="_blank" rel="noopener" onclick="trackClick('Agoda')"><span class="p-icon">🏨</span><span class="p-name">Agoda</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105929&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago AR')"><span class="p-icon">🏨</span><span class="p-name">Trivago AR</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105937&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago BR')"><span class="p-icon">🏨</span><span class="p-name">Trivago BR</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105935&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago CO')"><span class="p-icon">🏨</span><span class="p-name">Trivago CO</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105923&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago DE')"><span class="p-icon">🏨</span><span class="p-name">Trivago DE</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105931&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago MX')"><span class="p-icon">🏨</span><span class="p-name">Trivago MX</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66032&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago NZ')"><span class="p-icon">🏨</span><span class="p-name">Trivago NZ</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105927&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago PE')"><span class="p-icon">🏨</span><span class="p-name">Trivago PE</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66034&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago USA')"><span class="p-icon">🏨</span><span class="p-name">Trivago USA</span><span class="p-tag">HOTEL</span></a></div>
               </div>
             </div>
 
@@ -901,8 +1103,8 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href=https://compensair.tpo.lv/wxDDCITG target="_blank" rel="noopener" onclick="trackClick('CompensAir')"><span class="p-icon">💼</span><span class="p-name">CompensAir</span><span class="p-tag">CLAIM</span></a></div>
-                <div class="partner-item"><a href=https://airhelp.tpo.lv/EPrGDSO3 target="_blank" rel="noopener" onclick="trackClick('AirHelp')"><span class="p-icon">🆘</span><span class="p-name">AirHelp</span><span class="p-tag">CLAIM</span></a></div>
+                <div class="partner-item"><a href="https://compensair.tpo.lv/wxDDCITG" target="_blank" rel="noopener" onclick="trackClick('CompensAir')"><span class="p-icon">💼</span><span class="p-name">CompensAir</span><span class="p-tag">CLAIM</span></a></div>
+                <div class="partner-item"><a href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener" onclick="trackClick('AirHelp')"><span class="p-icon">🆘</span><span class="p-name">AirHelp</span><span class="p-tag">CLAIM</span></a></div>
               </div>
             </div>
 
@@ -913,22 +1115,22 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item hot"><a href=https://aviasales.tpo.lv/VoWXgFFm target="_blank" rel="noopener" onclick="trackClick('Aviasales')"><span class="p-icon">🔍</span><span class="p-name">Aviasales</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href=https://kiwi.tpo.lv/qKPZ1inz target="_blank" rel="noopener" onclick="trackClick('Kiwi')"><span class="p-icon">🥝</span><span class="p-name">Kiwi.com</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item hot"><a href=https://klook.tpo.lv/pTp1NljF target="_blank" rel="noopener" onclick="trackClick('Klook')"><span class="p-icon">🎫</span><span class="p-name">Klook</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href=https://intui.tpo.lv/Rrx5VuN3 target="_blank" rel="noopener" onclick="trackClick('Intui')"><span class="p-icon">🎭</span><span class="p-name">Intui.travel</span><span class="p-tag">LOCAL</span></a></div>
-                <div class="partner-item"><a href=https://wegotrip.tpo.lv/kKIF0gIW target="_blank" rel="noopener" onclick="trackClick('WeGoTrip')"><span class="p-icon">🗺️</span><span class="p-name">WeGoTrip</span><span class="p-tag">GUIDE</span></a></div>
-                <div class="partner-item"><a href=https://eatwith.tpo.lv/BfAnpZNb target="_blank" rel="noopener" onclick="trackClick('EatWith')"><span class="p-icon">🍽️</span><span class="p-name">Eat With</span><span class="p-tag">FOOD</span></a></div>
-                <div class="partner-item"><a href=https://gocity.tpo.lv/Des5Cgov target="_blank" rel="noopener" onclick="trackClick('GoCity')"><span class="p-icon">🏙️</span><span class="p-name">GoCity</span><span class="p-tag">PASS</span></a></div>
-                <div class="partner-item"><a href=https://ektatraveling.tpo.lv/XWbZbj8S target="_blank" rel="noopener" onclick="trackClick('EKTA')"><span class="p-icon">🌍</span><span class="p-name">EKTA Traveling</span><span class="p-tag">EXP</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('GoEspana')"><span class="p-icon">🇪🇸</span><span class="p-name">Go! España</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Go2Africa')"><span class="p-icon">🦁</span><span class="p-name">Go2Africa</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href=https://bigbustours.tpo.lv/grT1QWXA target="_blank" rel="noopener" onclick="trackClick('BigBus')"><span class="p-icon">🚐</span><span class="p-name">Big Bus Tours</span><span class="p-tag">TOURS</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Tiqets')"><span class="p-icon">🎟️</span><span class="p-name">Tiqets</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=19859&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Kiwi CA')"><span class="p-icon">✈️</span><span class="p-name">Kiwi CA</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=20563&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Kiwi MX')"><span class="p-icon">✈️</span><span class="p-name">Kiwi MX</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=19856&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Kiwi US')"><span class="p-icon">✈️</span><span class="p-name">Kiwi US</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=29767&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Extranomical Tours (US)')"><span class="p-icon">🗺️</span><span class="p-name">Extranomical Tours (US)</span><span class="p-tag">TOURS</span></a></div>
+                <div class="partner-item hot"><a href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener" onclick="trackClick('Aviasales')"><span class="p-icon">🔍</span><span class="p-name">Aviasales</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener" onclick="trackClick('Kiwi')"><span class="p-icon">🥝</span><span class="p-name">Kiwi.com</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item hot"><a href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener" onclick="trackClick('Klook')"><span class="p-icon">🎫</span><span class="p-name">Klook</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" rel="noopener" onclick="trackClick('Intui')"><span class="p-icon">🎭</span><span class="p-name">Intui.travel</span><span class="p-tag">LOCAL</span></a></div>
+                <div class="partner-item"><a href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener" onclick="trackClick('WeGoTrip')"><span class="p-icon">🗺️</span><span class="p-name">WeGoTrip</span><span class="p-tag">GUIDE</span></a></div>
+                <div class="partner-item"><a href="https://eatwith.tpo.lv/BfAnpZNb" target="_blank" rel="noopener" onclick="trackClick('EatWith')"><span class="p-icon">🍽️</span><span class="p-name">Eat With</span><span class="p-tag">FOOD</span></a></div>
+                <div class="partner-item"><a href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener" onclick="trackClick('GoCity')"><span class="p-icon">🏙️</span><span class="p-name">GoCity</span><span class="p-tag">PASS</span></a></div>
+                <div class="partner-item"><a href="https://ektatraveling.tpo.lv/XWbZbj8S" target="_blank" rel="noopener" onclick="trackClick('EKTA')"><span class="p-icon">🌍</span><span class="p-name">EKTA Traveling</span><span class="p-tag">EXP</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('GoEspana')"><span class="p-icon">🇪🇸</span><span class="p-name">Go! España</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Go2Africa')"><span class="p-icon">🦁</span><span class="p-name">Go2Africa</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener" onclick="trackClick('BigBus')"><span class="p-icon">🚐</span><span class="p-name">Big Bus Tours</span><span class="p-tag">TOURS</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Tiqets')"><span class="p-icon">🎟️</span><span class="p-name">Tiqets</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19859&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi CA')"><span class="p-icon">✈️</span><span class="p-name">Kiwi CA</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=20563&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi MX')"><span class="p-icon">✈️</span><span class="p-name">Kiwi MX</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19856&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi US')"><span class="p-icon">✈️</span><span class="p-name">Kiwi US</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=29767&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Extranomical Tours (US)')"><span class="p-icon">🗺️</span><span class="p-name">Extranomical Tours (US)</span><span class="p-tag">TOURS</span></a></div>
               </div>
             </div>
 
@@ -939,16 +1141,16 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href=https://kiwitaxi.tpo.lv/DVaqmgKo target="_blank" rel="noopener" onclick="trackClick('KiwiTaxi')"><span class="p-icon">🥝</span><span class="p-name">KiwiTaxi</span><span class="p-tag">TAXI</span></a></div>
-                <div class="partner-item"><a href=https://gettransfer.tpo.lv/Pb4p9ljm target="_blank" rel="noopener" onclick="trackClick('GetTransfer')"><span class="p-icon">🚐</span><span class="p-name">GetTransfer</span><span class="p-tag">RIDE</span></a></div>
-                <div class="partner-item"><a href=https://holidaytaxis.tpo.lv/oHwpbrFt target="_blank" rel="noopener" onclick="trackClick('HolidayTaxis')"><span class="p-icon">🚖</span><span class="p-name">Holiday Taxis</span><span class="p-tag">TAXI</span></a></div>
-                <div class="partner-item"><a href=https://tpo.lv/XAJOoobr target="_blank" rel="noopener" onclick="trackClick('WelcomePickups')"><span class="p-icon">🛫</span><span class="p-name">Welcome Pickups</span><span class="p-tag">AIRPORT</span></a></div>
-                <div class="partner-item"><a href=https://busbud.tpo.lv/h4C6YPFZ target="_blank" rel="noopener" onclick="trackClick('BusBud')"><span class="p-icon">🚌</span><span class="p-name">BusBud</span><span class="p-tag">BUS</span></a></div>
-                <div class="partner-item"><a href=https://bikesbooking.tpo.lv/B3zIKanS target="_blank" rel="noopener" onclick="trackClick('BikesBooking')"><span class="p-icon">🚴</span><span class="p-name">BikesBooking</span><span class="p-tag">BIKES</span></a></div>
-                <div class="partner-item"><a href=https://radicalstorage.tpo.lv/tna4hnly target="_blank" rel="noopener" onclick="trackClick('RadicalStorage')"><span class="p-icon">🏪</span><span class="p-name">Radical Storage</span><span class="p-tag">STORAGE</span></a></div>
-                <div class="partner-item"><a href=https://qeeq.tpo.lv/jklB4Pbm target="_blank" rel="noopener" onclick="trackClick('QEEQ')"><span class="p-icon">📦</span><span class="p-name">QEEQ</span><span class="p-tag">LUGGAGE</span></a></div>
-                <div class="partner-item"><a href=https://searadar.tpo.lv/TO4A5eBZ target="_blank" rel="noopener" onclick="trackClick('SeaRadar')"><span class="p-icon">📡</span><span class="p-name">SeaRadar</span><span class="p-tag">TRACK</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Luxy')"><span class="p-icon">🚗</span><span class="p-name">Luxy App</span><span class="p-tag">RIDE</span></a></div>
+                <div class="partner-item"><a href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" rel="noopener" onclick="trackClick('KiwiTaxi')"><span class="p-icon">🥝</span><span class="p-name">KiwiTaxi</span><span class="p-tag">TAXI</span></a></div>
+                <div class="partner-item"><a href="https://gettransfer.tpo.lv/Pb4p9ljm" target="_blank" rel="noopener" onclick="trackClick('GetTransfer')"><span class="p-icon">🚐</span><span class="p-name">GetTransfer</span><span class="p-tag">RIDE</span></a></div>
+                <div class="partner-item"><a href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" rel="noopener" onclick="trackClick('HolidayTaxis')"><span class="p-icon">🚖</span><span class="p-name">Holiday Taxis</span><span class="p-tag">TAXI</span></a></div>
+                <div class="partner-item"><a href="https://tpo.lv/XAJOoobr" target="_blank" rel="noopener" onclick="trackClick('WelcomePickups')"><span class="p-icon">🛫</span><span class="p-name">Welcome Pickups</span><span class="p-tag">AIRPORT</span></a></div>
+                <div class="partner-item"><a href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" rel="noopener" onclick="trackClick('BusBud')"><span class="p-icon">🚌</span><span class="p-name">BusBud</span><span class="p-tag">BUS</span></a></div>
+                <div class="partner-item"><a href="https://bikesbooking.tpo.lv/B3zIKanS" target="_blank" rel="noopener" onclick="trackClick('BikesBooking')"><span class="p-icon">🚴</span><span class="p-name">BikesBooking</span><span class="p-tag">BIKES</span></a></div>
+                <div class="partner-item"><a href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener" onclick="trackClick('RadicalStorage')"><span class="p-icon">🏪</span><span class="p-name">Radical Storage</span><span class="p-tag">STORAGE</span></a></div>
+                <div class="partner-item"><a href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener" onclick="trackClick('QEEQ')"><span class="p-icon">📦</span><span class="p-name">QEEQ</span><span class="p-tag">LUGGAGE</span></a></div>
+                <div class="partner-item"><a href="https://searadar.tpo.lv/TO4A5eBZ" target="_blank" rel="noopener" onclick="trackClick('SeaRadar')"><span class="p-icon">📡</span><span class="p-name">SeaRadar</span><span class="p-tag">TRACK</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Luxy')"><span class="p-icon">🚗</span><span class="p-name">Luxy App</span><span class="p-tag">RIDE</span></a></div>
               </div>
             </div>
 
@@ -959,12 +1161,12 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item hot"><a href=https://airalo.tpo.lv/eXjKLiuw target="_blank" rel="noopener" onclick="trackClick('Airalo')"><span class="p-icon">✈️</span><span class="p-name">Airalo</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href=https://drimsim.tpo.lv/PGwr6JTr target="_blank" rel="noopener" onclick="trackClick('DrimSim')"><span class="p-icon">💬</span><span class="p-name">DrimSim</span><span class="p-tag">SIM</span></a></div>
-                <div class="partner-item"><a href=https://yesim.tpo.lv/3vIzBQts target="_blank" rel="noopener" onclick="trackClick('Yesim')"><span class="p-icon">🌐</span><span class="p-name">Yesim</span><span class="p-tag">eSIM</span></a></div>
-                <div class="partner-item"><a href=https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629 target="_blank" rel="noopener" onclick="trackClick('Saily')"><span class="p-icon">📡</span><span class="p-name">Saily</span><span class="p-tag">DATA</span></a></div>
-                <div class="partner-item"><a href=https://nordvpn.tpo.lv/q1aN4Xru target="_blank" rel="noopener" onclick="trackClick('NordVPN')"><span class="p-icon">🔒</span><span class="p-name">NordVPN</span><span class="p-tag">VPN</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Evisa')"><span class="p-icon">📝</span><span class="p-name">Evisa</span><span class="p-tag">VISA</span></a></div>
+                <div class="partner-item hot"><a href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener" onclick="trackClick('Airalo')"><span class="p-icon">✈️</span><span class="p-name">Airalo</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener" onclick="trackClick('DrimSim')"><span class="p-icon">💬</span><span class="p-name">DrimSim</span><span class="p-tag">SIM</span></a></div>
+                <div class="partner-item"><a href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener" onclick="trackClick('Yesim')"><span class="p-icon">🌐</span><span class="p-name">Yesim</span><span class="p-tag">eSIM</span></a></div>
+                <div class="partner-item"><a href="https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629" target="_blank" rel="noopener" onclick="trackClick('Saily')"><span class="p-icon">📡</span><span class="p-name">Saily</span><span class="p-tag">DATA</span></a></div>
+                <div class="partner-item"><a href="https://nordvpn.tpo.lv/q1aN4Xru" target="_blank" rel="noopener" onclick="trackClick('NordVPN')"><span class="p-icon">🔒</span><span class="p-name">NordVPN</span><span class="p-tag">VPN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Evisa')"><span class="p-icon">📝</span><span class="p-name">Evisa</span><span class="p-tag">VISA</span></a></div>
               </div>
             </div>
 
@@ -975,10 +1177,10 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=40342&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('ALLPOWERS')"><span class="p-icon">🔋</span><span class="p-name">ALLPOWERS</span><span class="p-tag">GEAR</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=109230&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Tsarbomba')"><span class="p-icon">⌚</span><span class="p-name">Tsarbomba</span><span class="p-tag">SHOP</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=50899&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Xuchang Aixiu Hair Products Co., Ltd.')"><span class="p-icon">💇</span><span class="p-name">Xuchang Aixiu Hair Products Co., Ltd.</span><span class="p-tag">SHOP</span></a></div>
-                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=109444&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('LogoNerds.com')"><span class="p-icon">🎨</span><span class="p-name">LogoNerds.com</span><span class="p-tag">DESIGN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=40342&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('ALLPOWERS')"><span class="p-icon">🔋</span><span class="p-name">ALLPOWERS</span><span class="p-tag">GEAR</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109230&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Tsarbomba')"><span class="p-icon">⌚</span><span class="p-name">Tsarbomba</span><span class="p-tag">SHOP</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=50899&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Xuchang Aixiu Hair Products Co., Ltd.')"><span class="p-icon">💇</span><span class="p-name">Xuchang Aixiu Hair Products Co., Ltd.</span><span class="p-tag">SHOP</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109444&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('LogoNerds.com')"><span class="p-icon">🎨</span><span class="p-name">LogoNerds.com</span><span class="p-tag">DESIGN</span></a></div>
               </div>
             </div>
           </div>
@@ -986,7 +1188,7 @@
       </div>
     </aside>
 
-    <section class="col-promos">
+    <section class="sb-column col-promos">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">▶ Popular Videos</span>
@@ -997,7 +1199,7 @@
       </div>
     </section>
 
-    <section class="col-hero">
+    <section class="sb-column col-hero">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">🔥 Trending Now</span>
@@ -1008,7 +1210,7 @@
       </div>
     </section>
 
-    <section class="col-widgets">
+    <section class="sb-column col-widgets">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">▶ Trending</span>
@@ -1019,48 +1221,51 @@
       </div>
     </section>
 
-    <aside class="col-dashboard">
+    <aside class="sb-column col-dashboard">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">💰 Finance</span>
         </div>
         <div class="panel-body dashboard-content">
-          <div class="weather-widget">
-            <div class="weather-icon">🌤️</div>
-            <div class="weather-temp">72°</div>
-            <div class="weather-desc">Cloudy</div>
-          </div>
-          <div class="stock-ticker">
-            <div class="ticker-header">📊 Markets</div>
-            <div class="ticker-item">
-              <span class="ticker-symbol">^DJI</span>
-              <span class="ticker-price">38.2K</span>
-              <span class="ticker-change up">+0.8%</span>
+          <div class="sb-column5">
+            <div class="sb-col5-header">System Panel</div>
+
+            <div class="sb-col5-top">
+              <div class="sb-col5-left">
+                <span class="sb-weather-icon">☀</span>
+                <span class="sb-weather-temp">72°</span>
+              </div>
+
+              <div class="sb-col5-right">
+                <button class="sb-lofi-btn" type="button" onclick="window.open('https://www.youtube.com/results?search_query=lofi+instrumental', '_blank')">
+                  🎧 Lo‑Fi
+                </button>
+              </div>
             </div>
-            <div class="ticker-item">
-              <span class="ticker-symbol">^GSPC</span>
-              <span class="ticker-price">5.2K</span>
-              <span class="ticker-change up">+1.2%</span>
+
+            <div class="sb-col5-center">
+              <a href="https://facebook.com" target="_blank" rel="noopener" class="sb-social" aria-label="Facebook">fb</a>
+              <a href="https://wa.me" target="_blank" rel="noopener" class="sb-social" aria-label="WhatsApp">wa</a>
+              <a href="https://instagram.com" target="_blank" rel="noopener" class="sb-social" aria-label="Instagram">ig</a>
+              <a href="https://youtube.com" target="_blank" rel="noopener" class="sb-social" aria-label="YouTube">yt</a>
+              <a href="https://tiktok.com" target="_blank" rel="noopener" class="sb-social" aria-label="TikTok">tt</a>
+              <a href="https://telegram.org" target="_blank" rel="noopener" class="sb-social" aria-label="Telegram">tg</a>
+              <a href="https://twitter.com" target="_blank" rel="noopener" class="sb-social" aria-label="Twitter / X">tw</a>
+              <a href="https://snapchat.com" target="_blank" rel="noopener" class="sb-social" aria-label="Snapchat">sc</a>
             </div>
-            <div class="ticker-item">
-              <span class="ticker-symbol">^IXIC</span>
-              <span class="ticker-price">16.8K</span>
-              <span class="ticker-change up">+2.1%</span>
+
+            <div class="sb-mini-block">
+              <div class="sb-mini-title">Market Status</div>
+              <div class="sb-mini-line">US session: Open</div>
+              <div class="sb-mini-line">BTC: +2.4%</div>
+              <div class="sb-mini-line">Volatility: Moderate</div>
             </div>
-          </div>
-          <div class="financial-news">
-            <div class="news-header">📰 News</div>
-            <div class="news-item">
-              <div class="news-title">S&P 500 reaches all-time high</div>
-              <div class="news-meta"><span class="news-source">Yahoo Finance</span><span>2h ago</span></div>
-            </div>
-            <div class="news-item">
-              <div class="news-title">Bitcoin surges past $50K</div>
-              <div class="news-meta"><span class="news-source">Bloomberg</span><span>3h ago</span></div>
-            </div>
-            <div class="news-item">
-              <div class="news-title">Tech stocks lead market rally</div>
-              <div class="news-meta"><span class="news-source">Reuters</span><span>5h ago</span></div>
+
+            <div class="sb-mini-block">
+              <div class="sb-mini-title">Quick Notes</div>
+              <div class="sb-mini-line">3 new partner clicks</div>
+              <div class="sb-mini-line">Banner rotation active</div>
+              <div class="sb-mini-line">Feeds loading normally</div>
             </div>
           </div>
         </div>
