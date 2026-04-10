@@ -128,8 +128,8 @@
 
     .dashboard {
       display: grid;
-      grid-template-columns: 220px 320px 480px 320px 220px;
-      gap: 14px;
+      grid-template-columns: 280px 260px 520px 260px 280px;
+      gap: 16px;
       align-items: stretch;
       min-height: calc(100vh - 150px);
     }
@@ -359,6 +359,7 @@
       display: flex; 
       flex-direction: column;
       overflow: hidden;
+      overflow-x: hidden;
     }
     .col-dashboard .panel { 
       flex: 1;
@@ -506,6 +507,39 @@
     .g3 { background: linear-gradient(135deg,#0a2018,#0e5c3a); }
     .g4 { background: linear-gradient(135deg,#28100a,#6e1a1a); }
     .g5 { background: linear-gradient(135deg,#1a1a0a,#5c5c0a); }
+
+
+    /* Hero video card */
+    .hero-video {
+      width: 100%; height: 100%; object-fit: cover; display: block; background: #000;
+      border-radius: var(--radius);
+    }
+    .hero-video:fullscreen,
+    .hero-video:-webkit-full-screen,
+    .hero-video:-ms-fullscreen { object-fit: contain; border-radius: 0; }
+    .expand-btn { display: inline-flex; }
+    .video-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 9999;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+    .video-modal.open {
+      opacity: 1; visibility: visible; pointer-events: auto;
+    }
+    .modal-content {
+      position: relative; width: min(1100px, 92vw); max-height: 90vh;
+      background: #000; border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-content video { width: 100%; height: auto; display: block; max-height: 90vh; background:#000; }
+    .close-btn {
+      position: absolute; top: 12px; right: 12px; z-index: 3;
+      width: 36px; height: 36px; border: none; border-radius: 999px;
+      background: var(--pink); color: #fff; font-size: 1.2rem; cursor: pointer;
+      display: grid; place-items: center;
+    }
+    @media (max-width: 768px) { .expand-btn { display: none; } }
 
     body.light-theme {
       --bg: #f5f5fa; --bg2: #ebebf2;
@@ -790,6 +824,16 @@
   </div>
 </main>
 
+
+<div id="videoModal" class="video-modal">
+  <div class="modal-content">
+    <button class="close-btn" type="button" onclick="closeModal()">×</button>
+    <video id="modalVideo" controls playsinline>
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
 <script>
 const clickTracker = {};
 
@@ -856,35 +900,47 @@ function buildPromoCard(item) {
   return card;
 }
 
-function buildHeroCard(item) {
+function buildHeroCard(item, isFeatured = false) {
   const card = document.createElement('div');
   card.className = 'hero-card';
   const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
   const grad = gradients[Math.floor(Math.random() * gradients.length)];
   const icon = getEmbedIcon(item);
-  
+
   const thumb = document.createElement('div');
   thumb.className = 'hero-thumb ' + grad;
-  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
-  
+
+  if (isFeatured) {
+    thumb.innerHTML = '<video id="heroVideo" class="hero-video" muted playsinline poster="https://via.placeholder.com/1280x720/0a1628/ffffff?text=Featured+Video"><source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"></video><div class="overlay-grad"></div><div class="hero-badge">LIVE</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
+  } else {
+    thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
+  }
+
   const actions = document.createElement('div');
   actions.className = 'hero-actions';
-  actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
-  
+  if (isFeatured) {
+    actions.innerHTML = '<button class="hero-action-btn primary" type="button" onclick="playInline()">▶ Play</button><button class="hero-action-btn expand-btn" type="button" onclick="expandVideo()">Expand</button><span class="hero-stats">👁 ' + item.views + '</span>';
+  } else {
+    actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
+  }
+
   card.appendChild(thumb);
   card.appendChild(actions);
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function() {
-    window.location.href = getVideoUrl(item);
-  });
-  
+
+  if (!isFeatured) {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      window.location.href = getVideoUrl(item);
+    });
+  }
+
   return card;
 }
 
 (function seed() {
   document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
   document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[1]));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2]));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2], true));
   document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[3]));
   document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[4]));
   document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[5]));
@@ -920,6 +976,59 @@ document.getElementById('partnerSearch').addEventListener('input', function() {
   document.querySelectorAll('.partner-item').forEach(function(el) {
     const name = el.querySelector('.p-name');
     el.style.display = name && name.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const heroVideo = document.getElementById('heroVideo');
+  const heroThumb = document.querySelector('.hero-thumb');
+  const videoModal = document.getElementById('videoModal');
+  const modalVideo = document.getElementById('modalVideo');
+  let previewPosition = 0;
+
+  if (window.innerWidth > 768 && heroVideo && heroThumb) {
+    heroThumb.addEventListener('mouseenter', () => {
+      if (videoModal?.classList.contains('open')) return;
+      heroVideo.play().catch(() => {});
+    });
+    heroThumb.addEventListener('mouseleave', () => {
+      if (videoModal?.classList.contains('open')) return;
+      previewPosition = heroVideo.currentTime || 0;
+      heroVideo.pause();
+    });
+  }
+
+  window.playInline = function () {
+    if (!heroVideo) return;
+    heroVideo.muted = false;
+    heroVideo.controls = true;
+    heroVideo.currentTime = previewPosition || heroVideo.currentTime || 0;
+    heroVideo.play().catch(() => {});
+  };
+
+  window.expandVideo = function () {
+    if (!videoModal || !modalVideo || !heroVideo) return;
+    videoModal.classList.add('open');
+    modalVideo.currentTime = heroVideo.currentTime || previewPosition || 0;
+    heroVideo.pause();
+    modalVideo.play().catch(() => {});
+  };
+
+  window.closeModal = function () {
+    if (!videoModal || !modalVideo || !heroVideo) return;
+    previewPosition = modalVideo.currentTime || previewPosition || 0;
+    modalVideo.pause();
+    videoModal.classList.remove('open');
+    heroVideo.currentTime = previewPosition;
+  };
+
+  videoModal?.addEventListener('click', (e) => {
+    if (e.target === videoModal) window.closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && videoModal?.classList.contains('open')) window.closeModal();
   });
 });
 
