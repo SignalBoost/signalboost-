@@ -128,8 +128,8 @@
 
     .dashboard {
       display: grid;
-      grid-template-columns: 280px 260px 520px 260px 280px;
-      gap: 16px;
+      grid-template-columns: 200px 240px 1fr 240px 200px;
+      gap: 14px;
       align-items: stretch;
       min-height: calc(100vh - 150px);
     }
@@ -359,7 +359,6 @@
       display: flex; 
       flex-direction: column;
       overflow: hidden;
-      overflow-x: hidden;
     }
     .col-dashboard .panel { 
       flex: 1;
@@ -508,39 +507,6 @@
     .g4 { background: linear-gradient(135deg,#28100a,#6e1a1a); }
     .g5 { background: linear-gradient(135deg,#1a1a0a,#5c5c0a); }
 
-
-    /* Hero video card */
-    .hero-video {
-      width: 100%; height: 100%; object-fit: cover; display: block; background: #000;
-      border-radius: var(--radius);
-    }
-    .hero-video:fullscreen,
-    .hero-video:-webkit-full-screen,
-    .hero-video:-ms-fullscreen { object-fit: contain; border-radius: 0; }
-    .expand-btn { display: inline-flex; }
-    .video-modal {
-      position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 9999;
-      display: flex; align-items: center; justify-content: center; padding: 24px;
-      opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity .3s ease, visibility .3s ease;
-    }
-    .video-modal.open {
-      opacity: 1; visibility: visible; pointer-events: auto;
-    }
-    .modal-content {
-      position: relative; width: min(1100px, 92vw); max-height: 90vh;
-      background: #000; border-radius: var(--radius); overflow: hidden;
-      box-shadow: var(--shadow-lg);
-    }
-    .modal-content video { width: 100%; height: auto; display: block; max-height: 90vh; background:#000; }
-    .close-btn {
-      position: absolute; top: 12px; right: 12px; z-index: 3;
-      width: 36px; height: 36px; border: none; border-radius: 999px;
-      background: var(--pink); color: #fff; font-size: 1.2rem; cursor: pointer;
-      display: grid; place-items: center;
-    }
-    @media (max-width: 768px) { .expand-btn { display: none; } }
-
     body.light-theme {
       --bg: #f5f5fa; --bg2: #ebebf2;
       --surface: #ffffff; --surface2: #f0f0f5;
@@ -562,7 +528,285 @@
       }
       .hero-thumb { height: 300px; }
     }
-  </style>
+  
+    .mall-banner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 54px;
+      margin: 0 0 14px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(90deg, rgba(255,0,79,.10), rgba(0,255,204,.08));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .mall-banner::before {
+      content: '✨ Featured Partner';
+      flex-shrink: 0;
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid var(--border);
+    }
+    .mall-banner a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+    .mall-banner-message {
+      display: block;
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mall-banner-sub {
+      display: block;
+      margin-top: 2px;
+      font-size: .73rem;
+      color: var(--muted);
+    }
+    .mall-banner a:hover .mall-banner-message {
+      text-decoration: underline;
+      text-decoration-color: var(--cyan);
+    }
+
+  
+
+/* ===== Immersive layout + preview overlay ===== */
+.col-hero .hero-card {
+  height: 90vh;
+  min-height: 500px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  aspect-ratio: 16 / 9;
+  min-height: 180px;
+  cursor: pointer;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.col-promos .promo-card:hover,
+.col-widgets .promo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.col-promos,
+.col-hero,
+.col-widgets {
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+  scroll-behavior: smooth;
+}
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 24px;
+}
+.preview-content {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+.close-btn {
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 6px 10px;
+  cursor: pointer;
+  float: right;
+  margin-bottom: 10px;
+}
+.preview-card-wrap {
+  clear: both;
+}
+
+
+
+/* ===== Force immersive card sizing to actually apply ===== */
+.col-promos .promo-feed,
+.col-widgets .promo-feed,
+.col-hero .hero-feed {
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+  scroll-behavior: smooth;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.col-promos .promo-thumb,
+.col-widgets .promo-thumb {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  flex-shrink: 0;
+}
+
+.col-promos .promo-body,
+.col-widgets .promo-body {
+  flex: 1;
+}
+
+.col-hero .hero-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  height: 80vh;
+}
+
+.col-hero .hero-thumb {
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+.col-hero .hero-actions {
+  flex-shrink: 0;
+}
+
+
+/* ===== STRONG VISUAL OVERRIDE FOR COLS 2, 3, 4 ===== */
+.dashboard {
+  grid-template-columns: 200px 300px 1.2fr 300px 200px !important;
+}
+
+.col-promos,
+.col-hero,
+.col-widgets {
+  align-self: stretch !important;
+  height: calc(100vh - 150px) !important;
+  max-height: calc(100vh - 150px) !important;
+  overflow: hidden !important;
+}
+
+.col-promos .panel,
+.col-hero .panel,
+.col-widgets .panel {
+  height: 100% !important;
+  max-height: none !important;
+}
+
+.col-promos .promo-feed,
+.col-widgets .promo-feed,
+.col-hero .hero-feed {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  padding-right: 4px !important;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+.col-promos .promo-thumb,
+.col-widgets .promo-thumb {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9 !important;
+  flex: 0 0 auto !important;
+}
+
+.col-promos .promo-body,
+.col-widgets .promo-body {
+  padding: 10px 12px 12px !important;
+}
+
+.col-promos .promo-title,
+.col-widgets .promo-title {
+  font-size: .86rem !important;
+}
+
+.col-promos .promo-desc,
+.col-widgets .promo-desc {
+  font-size: .72rem !important;
+  margin-bottom: 6px !important;
+}
+
+.col-hero .hero-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 78vh !important;
+  min-height: 78vh !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+.col-hero .hero-thumb {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.col-hero .hero-actions {
+  flex: 0 0 auto !important;
+  padding: 10px 14px !important;
+}
+
+@media (max-width: 1400px) {
+  .dashboard {
+    grid-template-columns: 200px 260px 1fr 260px 200px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr !important;
+  }
+  .col-promos,
+  .col-hero,
+  .col-widgets {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .col-hero .hero-card {
+    height: auto !important;
+    min-height: 520px !important;
+  }
+}
+
+</style>
 </head>
 <body>
 
@@ -598,6 +842,7 @@
 </div>
 
 <main class="shell">
+  <div id="partner-banner" class="mall-banner" aria-live="polite"></div>
   <div class="dashboard">
 
     <aside class="col-partners">
@@ -824,16 +1069,6 @@
   </div>
 </main>
 
-
-<div id="videoModal" class="video-modal">
-  <div class="modal-content">
-    <button class="close-btn" type="button" onclick="closeModal()">×</button>
-    <video id="modalVideo" controls playsinline>
-      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-    </video>
-  </div>
-</div>
-
 <script>
 const clickTracker = {};
 
@@ -844,6 +1079,83 @@ function trackClick(partner) {
 
 const saved = localStorage.getItem('affiliate_clicks');
 if (saved) Object.assign(clickTracker, JSON.parse(saved));
+
+function getAffiliatePartners() {
+  return Array.from(document.querySelectorAll('.partner-item a')).map((link) => {
+    const nameEl = link.querySelector('.p-name');
+    const tagEl = link.querySelector('.p-tag');
+    const iconEl = link.querySelector('.p-icon');
+    const categoryEl = link.closest('.partner-cat')?.querySelector('.partner-cat-header span');
+    const categoryText = categoryEl ? categoryEl.textContent.replace(/^[^\w]+/, '').trim() : 'Affiliate';
+    const rawName = nameEl ? nameEl.textContent.trim() : 'Partner';
+    const partnerKey = rawName;
+    const clicks = clickTracker[partnerKey] || 0;
+    return {
+      partner: partnerKey,
+      name: rawName,
+      tag: tagEl ? tagEl.textContent.trim() : 'DEAL',
+      icon: iconEl ? iconEl.textContent.trim() : '✨',
+      link: link.href,
+      category: categoryText,
+      clicks
+    };
+  }).filter((item, idx, arr) => item.link && arr.findIndex(x => x.partner === item.partner) == idx);
+}
+
+function buildBannerMessage(item, mode) {
+  if (mode === 'top') {
+    return `${item.icon} ${item.name}: trending with ${item.clicks} click${item.clicks === 1 ? '' : 's'} — open ${item.category} deal`;
+  }
+  if (mode === 'fresh') {
+    return `${item.icon} ${item.name}: featured ${item.category.toLowerCase()} pick right now`;
+  }
+  return `${item.icon} ${item.name}: explore this ${item.tag.toLowerCase()} partner offer`;
+}
+
+function getSmartBannerPool() {
+  const partners = getAffiliatePartners();
+  const sortedByClicks = [...partners].sort((a, b) => (b.clicks - a.clicks) || a.name.localeCompare(b.name));
+  const topClicked = sortedByClicks.filter(item => item.clicks > 0).slice(0, 4).map(item => ({ ...item, mode: 'top' }));
+  const featuredFallback = partners.filter(item => !topClicked.some(top => top.partner === item.partner));
+  const curated = featuredFallback.filter(item => ['HOT', 'HOTEL', 'FLIGHT', 'RENT', 'eSIM', 'DATA', 'TOURS', 'PASS'].includes(item.tag)).slice(0, 8);
+  const remaining = featuredFallback.filter(item => !curated.some(cur => cur.partner === item.partner)).slice(0, 8);
+  return [...topClicked, ...curated.map(item => ({ ...item, mode: 'fresh' })), ...remaining.map(item => ({ ...item, mode: 'standard' }))];
+}
+
+let currentBannerIndex = 0;
+let partnerBannerPool = [];
+
+function rotatePartnerBanner() {
+  const bannerEl = document.getElementById('partner-banner');
+  if (!bannerEl) return;
+
+  if (!partnerBannerPool.length) {
+    partnerBannerPool = getSmartBannerPool();
+  }
+  if (!partnerBannerPool.length) {
+    bannerEl.innerHTML = '<span class="mall-banner-message">No partner banners available.</span>';
+    return;
+  }
+
+  const banner = partnerBannerPool[currentBannerIndex % partnerBannerPool.length];
+  bannerEl.innerHTML = `
+    <a href="${banner.link}" target="_blank" rel="noopener" id="banner-link">
+      <span class="mall-banner-message">${buildBannerMessage(banner, banner.mode)}</span>
+      <span class="mall-banner-sub">${banner.category} • ${banner.tag} • ${banner.clicks > 0 ? 'Top clicked partner' : 'Featured rotation'}</span>
+    </a>
+  `;
+
+  const linkEl = document.getElementById('banner-link');
+  if (linkEl) {
+    linkEl.addEventListener('click', () => {
+      trackClick(banner.partner);
+      partnerBannerPool = [];
+    }, { once: true });
+  }
+
+  currentBannerIndex = (currentBannerIndex + 1) % Math.max(partnerBannerPool.length, 1);
+}
+
 
 const VIDEO_POOL = [
   { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M' },
@@ -900,47 +1212,38 @@ function buildPromoCard(item) {
   return card;
 }
 
-function buildHeroCard(item, isFeatured = false) {
+function buildHeroCard(item) {
   const card = document.createElement('div');
   card.className = 'hero-card';
   const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
   const grad = gradients[Math.floor(Math.random() * gradients.length)];
   const icon = getEmbedIcon(item);
-
+  
   const thumb = document.createElement('div');
   thumb.className = 'hero-thumb ' + grad;
-
-  if (isFeatured) {
-    thumb.innerHTML = '<video id="heroVideo" class="hero-video" muted playsinline poster="https://via.placeholder.com/1280x720/0a1628/ffffff?text=Featured+Video"><source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"></video><div class="overlay-grad"></div><div class="hero-badge">LIVE</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
-  } else {
-    thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
-  }
-
+  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
+  
   const actions = document.createElement('div');
   actions.className = 'hero-actions';
-  if (isFeatured) {
-    actions.innerHTML = '<button class="hero-action-btn primary" type="button" onclick="playInline()">▶ Play</button><button class="hero-action-btn expand-btn" type="button" onclick="expandVideo()">Expand</button><span class="hero-stats">👁 ' + item.views + '</span>';
-  } else {
-    actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
-  }
-
+  actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
+  
   card.appendChild(thumb);
   card.appendChild(actions);
-
-  if (!isFeatured) {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', function() {
-      window.location.href = getVideoUrl(item);
-    });
-  }
-
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function() {
+    window.location.href = getVideoUrl(item);
+  });
+  
   return card;
 }
+
+rotatePartnerBanner();
+setInterval(rotatePartnerBanner, 12000);
 
 (function seed() {
   document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
   document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[1]));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2], true));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2]));
   document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[3]));
   document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[4]));
   document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[5]));
@@ -979,59 +1282,6 @@ document.getElementById('partnerSearch').addEventListener('input', function() {
   });
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  const heroVideo = document.getElementById('heroVideo');
-  const heroThumb = document.querySelector('.hero-thumb');
-  const videoModal = document.getElementById('videoModal');
-  const modalVideo = document.getElementById('modalVideo');
-  let previewPosition = 0;
-
-  if (window.innerWidth > 768 && heroVideo && heroThumb) {
-    heroThumb.addEventListener('mouseenter', () => {
-      if (videoModal?.classList.contains('open')) return;
-      heroVideo.play().catch(() => {});
-    });
-    heroThumb.addEventListener('mouseleave', () => {
-      if (videoModal?.classList.contains('open')) return;
-      previewPosition = heroVideo.currentTime || 0;
-      heroVideo.pause();
-    });
-  }
-
-  window.playInline = function () {
-    if (!heroVideo) return;
-    heroVideo.muted = false;
-    heroVideo.controls = true;
-    heroVideo.currentTime = previewPosition || heroVideo.currentTime || 0;
-    heroVideo.play().catch(() => {});
-  };
-
-  window.expandVideo = function () {
-    if (!videoModal || !modalVideo || !heroVideo) return;
-    videoModal.classList.add('open');
-    modalVideo.currentTime = heroVideo.currentTime || previewPosition || 0;
-    heroVideo.pause();
-    modalVideo.play().catch(() => {});
-  };
-
-  window.closeModal = function () {
-    if (!videoModal || !modalVideo || !heroVideo) return;
-    previewPosition = modalVideo.currentTime || previewPosition || 0;
-    modalVideo.pause();
-    videoModal.classList.remove('open');
-    heroVideo.currentTime = previewPosition;
-  };
-
-  videoModal?.addEventListener('click', (e) => {
-    if (e.target === videoModal) window.closeModal();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && videoModal?.classList.contains('open')) window.closeModal();
-  });
-});
-
 document.getElementById('themeBtn').addEventListener('click', function() {
   const on = document.body.classList.toggle('light-theme');
   this.textContent = on ? '🌙 Dark' : '☀️ Light';
@@ -1042,6 +1292,78 @@ if (localStorage.getItem('sb_theme') === 'light') {
   document.body.classList.add('light-theme');
   document.getElementById('themeBtn').textContent = '🌙 Dark';
 }
+
+
+// Enhanced infinite scroll + preview overlay
+function setupInfiniteScroll(containerId, loadFn) {
+  const container = document.getElementById(containerId);
+  if (!container || typeof loadFn !== 'function') return;
+
+  let ticking = false;
+  container.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+        loadFn();
+      }
+      ticking = false;
+    });
+  });
+}
+
+function loadMorePromos() {
+  const item = VIDEO_POOL[promoIdx % VIDEO_POOL.length];
+  document.getElementById('promoFeed').appendChild(buildPromoCard(item));
+  promoIdx += 1;
+}
+
+function loadMoreHero() {
+  const item = VIDEO_POOL[heroIdx % VIDEO_POOL.length];
+  document.getElementById('heroFeed').appendChild(buildHeroCard(item));
+  heroIdx += 1;
+}
+
+function loadMoreWidgets() {
+  const item = VIDEO_POOL[widgetIdx % VIDEO_POOL.length];
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(item));
+  widgetIdx += 1;
+}
+
+function openPreviewFromCard(card) {
+  if (!card) return;
+  const preview = document.createElement('div');
+  preview.className = 'preview-overlay';
+  preview.innerHTML = `
+    <div class="preview-content">
+      <button class="close-btn" aria-label="Close preview">✖</button>
+      <div class="preview-card-wrap">${card.outerHTML}</div>
+    </div>
+  `;
+  document.body.appendChild(preview);
+
+  const close = () => preview.remove();
+  preview.querySelector('.close-btn').addEventListener('click', close);
+  preview.addEventListener('click', (e) => {
+    if (e.target === preview) close();
+  });
+}
+
+function setupPreview(selector) {
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest(selector);
+    if (!card) return;
+    if (e.target.closest('a, button')) return;
+    openPreviewFromCard(card);
+  });
+}
+
+setupInfiniteScroll('promoFeed', loadMorePromos);
+setupInfiniteScroll('heroFeed', loadMoreHero);
+setupInfiniteScroll('widgetFeed', loadMoreWidgets);
+setupPreview('.promo-card');
+setupPreview('.hero-card');
+
 </script>
 </body>
 </html>
