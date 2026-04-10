@@ -1,15 +1,12 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoostAi — Dashboard</title>
-
   <style>
-    /* ============================================================
-       BASE + THEME
-    ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg:       #0a0a0a;
@@ -42,14 +39,11 @@
     }
     a { text-decoration: none; color: inherit; }
     button { font-family: inherit; cursor: pointer; }
-
+    
     ::-webkit-scrollbar { width: 2px; height: 2px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 99px; }
 
-    /* ============================================================
-       TOPBAR
-    ============================================================ */
     .topbar {
       position: sticky; top: 0; z-index: 100;
       background: rgba(5,5,5,.95);
@@ -77,7 +71,6 @@
       50% { box-shadow: 0 0 0 12px rgba(255,0,79,0); }
     }
     .brand-name { background: linear-gradient(90deg,var(--pink),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-
     .topbar-actions { display: flex; align-items: center; gap: 12px; }
     .pill-btn {
       background: var(--surface); border: 1px solid var(--border2);
@@ -86,13 +79,9 @@
     }
     .pill-btn:hover { color: var(--text); border-color: var(--cyan); }
     .pill-btn.active { background: var(--pink); color: #fff; border-color: var(--pink); }
-
     .old-link { color: var(--muted); font-size: .8rem; transition: var(--transition); }
     .old-link:hover { color: var(--cyan); }
 
-    /* ============================================================
-       SOCIAL BAR
-    ============================================================ */
     .social-bar {
       background: rgba(5,5,5,.9);
       border-bottom: 1px solid var(--border);
@@ -129,10 +118,8 @@
       color: var(--cyan);
       transform: translateY(-2px);
     }
+    .platform-btn .icon { font-size: .9rem; }
 
-    /* ============================================================
-       MAIN SHELL + GRID
-    ============================================================ */
     .shell {
       max-width: 1920px; margin: 0 auto;
       padding: 16px 16px 32px;
@@ -147,9 +134,6 @@
       min-height: calc(100vh - 150px);
     }
 
-    /* ============================================================
-       PANELS
-    ============================================================ */
     .panel {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -173,16 +157,13 @@
     .panel-badge {
       background: var(--pink); color: #fff;
       font-size: .65rem; font-weight: 900;
-      padding: 2px 7px; border-radius: 999px;
+      padding: 2px 7px; border-radius: 99px;
     }
     .panel-body { 
       padding: 12px; flex: 1; overflow-y: auto; overflow-x: hidden;
       display: flex; flex-direction: column;
     }
 
-    /* ============================================================
-       PARTNER COLUMN
-    ============================================================ */
     .col-partners {
       position: sticky;
       top: 140px;
@@ -199,7 +180,6 @@
       overflow-y: auto;
       overflow-x: hidden;
     }
-
     .partner-search {
       width: 100%; background: var(--surface2); border: 1px solid var(--border2);
       color: var(--text); padding: 8px 12px; border-radius: var(--radius-sm);
@@ -207,70 +187,307 @@
       transition: var(--transition); flex-shrink: 0;
     }
     .partner-search:focus { border-color: var(--cyan); }
-
-    .partner-feed { display: flex; flex-direction: column; gap: 3px; }
-
+    .partner-feed {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      display: flex; flex-direction: column; gap: 3px;
+    }
     .partner-cat { }
     .partner-cat-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 10px 12px; border-radius: var(--radius-sm);
       background: var(--surface2); cursor: pointer;
+      user-select: none; transition: var(--transition);
+      font-size: .76rem; font-weight: 800;
+      flex-shrink: 0; margin-bottom: 3px;
     }
-    .partner-cat.open .partner-items { display: block; }
-    .partner-items { display: none; padding: 6px 0; }
-
-    .partner-item a {
+    .partner-cat-header:hover { background: rgba(0,255,204,.08); }
+    .partner-cat-header .cat-icon { font-size: .95rem; margin-right: 6px; }
+    .partner-cat-header .cat-count {
+      font-size: .6rem; color: var(--muted); margin-left: auto; margin-right: 8px;
+    }
+    .partner-cat-header .chevron {
+      color: var(--muted); font-size: .65rem;
+      transition: transform .2s ease;
+    }
+    .partner-cat.open .chevron { transform: rotate(90deg); }
+    .partner-items {
+      display: none; padding-left: 8px;
+      flex-direction: column; gap: 2px;
+      margin-bottom: 3px;
+    }
+    .partner-cat.open .partner-items { display: flex; }
+    .partner-item {
       display: flex; align-items: center; gap: 8px;
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
-      transition: var(--transition);
-      font-size: .8rem;
+      padding: 6px 8px; border-radius: var(--radius-sm);
+      font-size: .75rem; cursor: pointer; transition: var(--transition);
+      position: relative; border-left: 2px solid var(--border);
     }
-    .partner-item a:hover {
-      background: rgba(0,255,204,.08);
-      border-left: 3px solid var(--cyan);
-      padding-left: 7px;
+    .partner-item:hover {
+      background: rgba(0,255,204,.06);
+      color: var(--cyan);
+      border-left-color: var(--cyan);
     }
-    .p-icon { width: 20px; text-align: center; }
-    .p-name { flex: 1; }
-    .p-tag {
-      font-size: .65rem; font-weight: 900;
-      padding: 2px 6px; border-radius: 6px;
-      background: rgba(255,255,255,.08);
+    .partner-item a {
+      display: flex; align-items: center; gap: 8px; color: inherit; flex: 1;
     }
+    .partner-item .p-icon {
+      width: 22px; height: 22px; border-radius: 4px;
+      background: var(--surface2); display: grid; place-items: center;
+      font-size: .8rem; flex-shrink: 0;
+    }
+    .partner-item .p-name { font-weight: 600; flex: 1; }
+    .partner-item .p-tag {
+      font-size: .6rem; font-weight: 900; text-transform: uppercase;
+      color: var(--cyan); opacity: .6;
+    }
+    .partner-item.hot .p-tag { color: var(--pink); opacity: 1; }
 
-    /* ============================================================
-       PROMO / HERO / WIDGET FEEDS
-    ============================================================ */
-    .promo-card, .hero-card {
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
+    .col-promos { align-self: stretch; }
+    .promo-feed {
+      display: grid; gap: 12px;
+      overflow-y: auto; overflow-x: hidden;
+      padding-right: 2px;
+      flex: 1;
     }
-    .promo-card:hover, .hero-card:hover {
-      transform: translateY(-3px);
+    .promo-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: var(--transition); cursor: pointer;
+    }
+    .promo-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
-
-    .promo-thumb, .hero-thumb {
-      position: relative;
-      display: grid;
-      place-items: center;
-      height: auto;
-      aspect-ratio: 16/9;
+    .promo-thumb {
+      width: 100%; height: 130px;
+      display: grid; place-items: center;
+      font-size: 2.4rem; position: relative; overflow: hidden;
+      background: linear-gradient(135deg,#1a0a2e,#3d1155);
     }
+    .promo-thumb::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.6));
+      pointer-events: none;
+    }
+    .promo-new-badge {
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+      background: var(--pink); color: #fff;
+      font-size: .62rem; font-weight: 900; padding: 3px 8px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
+    }
+    .promo-body { padding: 12px 14px 14px; }
+    .promo-kicker {
+      font-size: .65rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--cyan); margin-bottom: 4px;
+    }
+    .promo-title { font-size: .92rem; font-weight: 800; margin-bottom: 4px; }
+    .promo-desc { font-size: .78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
+    .promo-meta { font-size: .7rem; color: var(--muted); }
+
+    .col-hero {
+      position: sticky;
+      top: 140px;
+      height: calc(100vh - 180px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      align-self: start;
+    }
+    .col-hero .panel {
+      max-height: calc(100vh - 180px);
+    }
+    .hero-feed {
+      display: grid; gap: 14px;
+      overflow-y: auto; overflow-x: hidden;
+      flex: 1;
+      grid-auto-rows: max-content;
+    }
+    .hero-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: var(--transition); cursor: pointer;
+    }
+    .hero-card:hover {
+      border-color: var(--pink);
+      transform: translateY(-2px);
+      box-shadow: 0 0 24px rgba(255,0,79,.18), var(--shadow-lg);
+    }
+    .hero-thumb {
+      width: 100%; height: 380px;
+      display: grid; place-items: center;
+      font-size: 4rem; position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg,#0a1628,#1a3a6e);
+    }
+    .hero-thumb .overlay-grad {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.85));
+      pointer-events: none;
+    }
+    .hero-thumb .hero-badge {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      background: var(--pink); color: #fff;
+      font-size: .65rem; font-weight: 900; padding: 4px 10px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
+    }
+    .hero-thumb .hero-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      z-index: 2; padding: 14px;
+    }
+    .hero-thumb .hero-info h3 {
+      font-size: 1.05rem; font-weight: 900; line-height: 1.25;
+    }
+    .hero-actions {
+      display: flex; gap: 10px; padding: 12px 14px;
+      align-items: center;
+    }
+    .hero-action-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); padding: 6px 12px;
+      border-radius: 99px; font-size: .75rem; font-weight: 700;
+      transition: var(--transition);
+    }
+    .hero-action-btn.primary {
+      background: var(--pink); color: #fff; border-color: var(--pink);
+    }
+    .hero-stats { margin-left: auto; font-size: .72rem; color: var(--muted); }
+
+    .col-widgets { align-self: stretch; }
+    
+    .col-dashboard { 
+      align-self: stretch; 
+      display: flex; 
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .col-dashboard .panel { 
+      flex: 1;
+      overflow: hidden;
+    }
+    .dashboard-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .weather-widget {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .weather-widget .weather-icon { font-size: 2rem; }
+    .weather-widget .weather-temp { 
+      font-size: 1.6rem; 
+      font-weight: 900; 
+      color: var(--cyan);
+      margin: 4px 0;
+    }
+    .weather-widget .weather-desc { 
+      font-size: .7rem; 
+      color: var(--muted); 
+    }
+
+    .stock-ticker {
+      background: linear-gradient(135deg, #1a0a0a, #2a1a1a);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      flex-shrink: 0;
+    }
+    .ticker-header {
+      font-size: .62rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+      text-align: center;
+      letter-spacing: .08em;
+    }
+    .ticker-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      font-size: .65rem;
+    }
+    .ticker-item:last-child { border-bottom: none; }
+    .ticker-symbol { font-weight: 800; color: var(--yellow); }
+    .ticker-price { color: var(--cyan); font-weight: 800; }
+    .ticker-change { font-weight: 700; font-size: .6rem; }
+    .ticker-change.up { color: var(--green); }
+    .ticker-change.down { color: var(--red); }
+
+    .financial-news {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      background: rgba(0,255,204,.03);
+    }
+    .news-header {
+      font-size: .62rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      letter-spacing: .08em;
+    }
+    .news-item {
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .news-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .news-title {
+      font-size: .65rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+    .news-meta {
+      font-size: .55rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .news-source { font-weight: 700; color: var(--yellow); }
+
+    .load-sentinel { height: 40px; display: grid; place-items: center; flex-shrink: 0; }
+    .spinner {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border2); border-top-color: var(--cyan);
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .embed-placeholder {
       display: grid;
       place-items: center;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,.3);
+      background: linear-gradient(135deg,#1a0a2e,#3d1155);
       color: #fff;
       font-size: 3rem;
       position: relative;
+    }
+    .embed-placeholder:hover {
+      filter: brightness(1.2);
     }
     .embed-label {
       position: absolute;
@@ -281,168 +498,315 @@
       border-radius: 4px;
       font-size: .7rem;
       color: #fff;
+      z-index: 10;
     }
 
-    .promo-body {
-      padding: 10px 12px;
-    }
-    .promo-title { font-size: .86rem; font-weight: 700; }
-    .promo-desc { font-size: .72rem; opacity: .8; margin-bottom: 6px; }
-    .promo-meta { font-size: .7rem; opacity: .7; }
+    .g1 { background: linear-gradient(135deg,#1a0a2e,#3d1155); }
+    .g2 { background: linear-gradient(135deg,#0a1628,#1a3a6e); }
+    .g3 { background: linear-gradient(135deg,#0a2018,#0e5c3a); }
+    .g4 { background: linear-gradient(135deg,#28100a,#6e1a1a); }
+    .g5 { background: linear-gradient(135deg,#1a1a0a,#5c5c0a); }
 
-    .hero-actions {
-      padding: 10px 14px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .hero-action-btn {
-      background: var(--pink);
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* ============================================================
-       BUSINESS DASHBOARD (COLUMN 5)
-    ============================================================ */
-    .sb-column5 {
-      height: 100%;
-      display: grid;
-      grid-template-rows: auto auto auto 1fr;
-      gap: 12px;
-    }
-    .sb-col5-header {
-      font-size: .68rem;
-      font-weight: 900;
-      letter-spacing: .10em;
-      color: var(--cyan);
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border2);
-      padding-bottom: 8px;
-    }
-    .sb-col5-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .sb-col5-left {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .sb-weather-icon { font-size: 14px; }
-    .sb-weather-temp { font-size: 12px; }
-
-    .sb-col5-right { display: flex; align-items: center; }
-    .sb-lofi-btn {
-      border: 1px solid var(--border2);
-      background: var(--surface2);
-      color: var(--text);
-      font-size: 11px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-    .sb-lofi-btn:hover {
-      border-color: var(--cyan);
-      color: var(--cyan);
-    }
-
-    .sb-col5-center {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 6px;
-    }
-    .sb-social {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 28px;
-      font-size: 10px;
-      text-transform: lowercase;
-      color: var(--muted);
-      border-radius: 6px;
-      border: 1px solid var(--border2);
-      background: var(--surface2);
-    }
-    .sb-social:hover {
-      border-color: var(--cyan);
-      color: var(--cyan);
-      background: rgba(0,255,204,.05);
-    }
-
-    .sb-mini-block {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: rgba(255,255,255,.02);
-      padding: 10px 12px;
-    }
-    .sb-mini-title {
-      font-size: .66rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--cyan);
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-    .sb-mini-line {
-      font-size: .76rem;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .sb-mini-line:last-child { margin-bottom: 0; }
-
-    /* ============================================================
-       GRID OVERRIDES
-    ============================================================ */
-    .dashboard {
-      grid-template-columns: 200px 300px 1.2fr 300px 200px !important;
-    }
-
-    .col-promos,
-    .col-hero,
-    .col-widgets {
-      align-self: stretch !important;
-      height: calc(100vh - 150px) !important;
-      max-height: calc(100vh - 150px) !important;
-      overflow: hidden !important;
-    }
-
-    .col-promos .panel,
-    .col-hero .panel,
-    .col-widgets .panel {
-      height: 100% !important;
-    }
-
-    .promo-feed,
-    .hero-feed,
-    .widget-feed {
-      flex: 1 1 auto !important;
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      padding-right: 4px !important;
+    body.light-theme {
+      --bg: #f5f5fa; --bg2: #ebebf2;
+      --surface: #ffffff; --surface2: #f0f0f5;
+      --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.14);
+      --text: #0a0a14; --muted: #606080;
+      background: var(--bg2);
     }
 
     @media (max-width: 900px) {
-      .dashboard { grid-template-columns: 1fr !important; }
-      .col-promos, .col-hero, .col-widgets {
-        height: auto !important;
-        max-height: none !important;
-        overflow: visible !important;
+      .dashboard {
+        grid-template-columns: 1fr;
+        min-height: auto;
       }
-      .col-hero .hero-card {
-        height: auto !important;
-        min-height: 520px !important;
+      .col-partners, .col-promos, .col-hero, .col-widgets, .col-dashboard {
+        position: static;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
       }
+      .hero-thumb { height: 300px; }
+    }
+  
+    .mall-banner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 54px;
+      margin: 0 0 14px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(90deg, rgba(255,0,79,.10), rgba(0,255,204,.08));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .mall-banner::before {
+      content: '✨ Featured Partner';
+      flex-shrink: 0;
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid var(--border);
+    }
+    .mall-banner a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+    .mall-banner-message {
+      display: block;
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mall-banner-sub {
+      display: block;
+      margin-top: 2px;
+      font-size: .73rem;
+      color: var(--muted);
+    }
+    .mall-banner a:hover .mall-banner-message {
+      text-decoration: underline;
+      text-decoration-color: var(--cyan);
     }
 
-  </style>
+  
+
+/* ===== Immersive layout + preview overlay ===== */
+.col-hero .hero-card {
+  height: 90vh;
+  min-height: 500px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  aspect-ratio: 16 / 9;
+  min-height: 180px;
+  cursor: pointer;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.col-promos .promo-card:hover,
+.col-widgets .promo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.col-promos,
+.col-hero,
+.col-widgets {
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+  scroll-behavior: smooth;
+}
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 24px;
+}
+.preview-content {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+.close-btn {
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 6px 10px;
+  cursor: pointer;
+  float: right;
+  margin-bottom: 10px;
+}
+.preview-card-wrap {
+  clear: both;
+}
+
+
+
+/* ===== Force immersive card sizing to actually apply ===== */
+.col-promos .promo-feed,
+.col-widgets .promo-feed,
+.col-hero .hero-feed {
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+  scroll-behavior: smooth;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.col-promos .promo-thumb,
+.col-widgets .promo-thumb {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  flex-shrink: 0;
+}
+
+.col-promos .promo-body,
+.col-widgets .promo-body {
+  flex: 1;
+}
+
+.col-hero .hero-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  height: 80vh;
+}
+
+.col-hero .hero-thumb {
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+.col-hero .hero-actions {
+  flex-shrink: 0;
+}
+
+
+/* ===== STRONG VISUAL OVERRIDE FOR COLS 2, 3, 4 ===== */
+.dashboard {
+  grid-template-columns: 200px 300px 1.2fr 300px 200px !important;
+}
+
+.col-promos,
+.col-hero,
+.col-widgets {
+  align-self: stretch !important;
+  height: calc(100vh - 150px) !important;
+  max-height: calc(100vh - 150px) !important;
+  overflow: hidden !important;
+}
+
+.col-promos .panel,
+.col-hero .panel,
+.col-widgets .panel {
+  height: 100% !important;
+  max-height: none !important;
+}
+
+.col-promos .promo-feed,
+.col-widgets .promo-feed,
+.col-hero .hero-feed {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  padding-right: 4px !important;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+.col-promos .promo-thumb,
+.col-widgets .promo-thumb {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9 !important;
+  flex: 0 0 auto !important;
+}
+
+.col-promos .promo-body,
+.col-widgets .promo-body {
+  padding: 10px 12px 12px !important;
+}
+
+.col-promos .promo-title,
+.col-widgets .promo-title {
+  font-size: .86rem !important;
+}
+
+.col-promos .promo-desc,
+.col-widgets .promo-desc {
+  font-size: .72rem !important;
+  margin-bottom: 6px !important;
+}
+
+.col-hero .hero-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 78vh !important;
+  min-height: 78vh !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+.col-hero .hero-thumb {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.col-hero .hero-actions {
+  flex: 0 0 auto !important;
+  padding: 10px 14px !important;
+}
+
+@media (max-width: 1400px) {
+  .dashboard {
+    grid-template-columns: 200px 260px 1fr 260px 200px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr !important;
+  }
+  .col-promos,
+  .col-hero,
+  .col-widgets {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .col-hero .hero-card {
+    height: auto !important;
+    min-height: 520px !important;
+  }
+}
+
+</style>
 </head>
 <body>
 
@@ -462,42 +826,34 @@
 
 <div class="social-bar">
   <div class="social-platforms">
-    <a href="https://facebook.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">f</span>Facebook</a>
-    <a href="https://youtube.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">▶</span>YouTube</a>
-    <a href="https://instagram.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">📷</span>Instagram</a>
-    <a href="https://tiktok.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">♪</span>TikTok</a>
-    <a href="https://reddit.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">🔴</span>Reddit</a>
-    <a href="https://wa.me" target="_blank" rel="noopener" class="platform-btn"><span class="icon">💬</span>WhatsApp</a>
-    <a href="https://messenger.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">💭</span>Messenger</a>
-    <a href="https://wechat.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">🔗</span>WeChat</a>
-    <a href="https://x.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">𝕏</span>X</a>
-    <a href="https://snapchat.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">👻</span>Snapchat</a>
-    <a href="https://linkedin.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">in</span>LinkedIn</a>
-    <a href="https://truthsocial.com" target="_blank" rel="noopener" class="platform-btn"><span class="icon">🇺🇸</span>Truth</a>
+    <a href=https://facebook.com target="_blank" rel="noopener" class="platform-btn" title="Facebook"><span class="icon">f</span>Facebook</a>
+    <a href=https://youtube.com target="_blank" rel="noopener" class="platform-btn" title="YouTube"><span class="icon">▶</span>YouTube</a>
+    <a href=https://instagram.com target="_blank" rel="noopener" class="platform-btn" title="Instagram"><span class="icon">📷</span>Instagram</a>
+    <a href=https://tiktok.com target="_blank" rel="noopener" class="platform-btn" title="TikTok"><span class="icon">♪</span>TikTok</a>
+    <a href=https://reddit.com target="_blank" rel="noopener" class="platform-btn" title="Reddit"><span class="icon">🔴</span>Reddit</a>
+    <a href=https://wa.me target="_blank" rel="noopener" class="platform-btn" title="WhatsApp"><span class="icon">💬</span>WhatsApp</a>
+    <a href=https://messenger.com target="_blank" rel="noopener" class="platform-btn" title="Messenger"><span class="icon">💭</span>Messenger</a>
+    <a href=https://wechat.com target="_blank" rel="noopener" class="platform-btn" title="WeChat"><span class="icon">🔗</span>WeChat</a>
+    <a href=https://x.com target="_blank" rel="noopener" class="platform-btn" title="X"><span class="icon">𝕏</span>X</a>
+    <a href=https://snapchat.com target="_blank" rel="noopener" class="platform-btn" title="Snapchat"><span class="icon">👻</span>Snapchat</a>
+    <a href=https://linkedin.com target="_blank" rel="noopener" class="platform-btn" title="LinkedIn"><span class="icon">in</span>LinkedIn</a>
+    <a href=https://truthsocial.com target="_blank" rel="noopener" class="platform-btn" title="Truth Social"><span class="icon">🇺🇸</span>Truth</a>
   </div>
 </div>
 
 <main class="shell">
   <div id="partner-banner" class="mall-banner" aria-live="polite"></div>
+  <div class="dashboard">
 
-  <div class="dashboard sb-dashboard-grid">
-
-    <!-- ============================================================
-         COLUMN 1 — PARTNERS
-    ============================================================ -->
-    <aside class="sb-column col-partners">
+    <aside class="col-partners">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">💰 Affiliates</span>
           <span class="panel-badge">58+</span>
         </div>
-
         <div class="panel-body">
           <input class="partner-search" type="search" placeholder="🔍 Search…" id="partnerSearch" />
-
           <div class="partner-feed" id="partnerFeed">
-
-            <!-- RENTAL CARS -->
             <div class="partner-cat open" id="cat-rental">
               <div class="partner-cat-header" onclick="toggleCat('cat-rental')">
                 <span><span class="cat-icon">🚗</span>Rental Cars</span>
@@ -505,17 +861,16 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" rel="noopener"><span class="p-icon">🚙</span><span class="p-name">GetRentacar</span><span class="p-tag">CAR</span></a></div>
-                <div class="partner-item"><a href="https://autoeurope.tpo.lv/t84AzZbO" target="_blank" rel="noopener"><span class="p-icon">🏎️</span><span class="p-name">AutoEurope</span><span class="p-tag">RENT</span></a></div>
-                <div class="partner-item"><a href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener"><span class="p-icon">🅿️</span><span class="p-name">LocalRent</span><span class="p-tag">LOCAL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🚗</span><span class="p-name">Allycar</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🚕</span><span class="p-name">Carmel Car</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏎️</span><span class="p-name">Jumbo Car CR</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🚗</span><span class="p-name">Europcar AU NZ</span><span class="p-tag">RENT</span></a></div>
+                <div class="partner-item"><a href=https://getrentacar.tpo.lv/OR2TWduQ target="_blank" rel="noopener" onclick="trackClick('GetRentacar')"><span class="p-icon">🚙</span><span class="p-name">GetRentacar</span><span class="p-tag">CAR</span></a></div>
+                <div class="partner-item"><a href=https://autoeurope.tpo.lv/t84AzZbO target="_blank" rel="noopener" onclick="trackClick('AutoEurope')"><span class="p-icon">🏎️</span><span class="p-name">AutoEurope</span><span class="p-tag">RENT</span></a></div>
+                <div class="partner-item"><a href=https://localrent.tpo.lv/XS0CqdMP target="_blank" rel="noopener" onclick="trackClick('LocalRent')"><span class="p-icon">🅿️</span><span class="p-name">LocalRent</span><span class="p-tag">LOCAL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Allycar')"><span class="p-icon">🚗</span><span class="p-name">Allycar</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Carmel')"><span class="p-icon">🚕</span><span class="p-name">Carmel Car</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('JumboCar')"><span class="p-icon">🏎️</span><span class="p-name">Jumbo Car CR</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=10777&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Europcar AU NZ')"><span class="p-icon">🚗</span><span class="p-name">Europcar AU NZ</span><span class="p-tag">RENT</span></a></div>
               </div>
             </div>
 
-            <!-- HOTELS -->
             <div class="partner-cat" id="cat-hotels">
               <div class="partner-cat-header" onclick="toggleCat('cat-hotels')">
                 <span><span class="cat-icon">🏨</span>Hotels</span>
@@ -523,25 +878,22 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Booking.com</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener"><span class="p-icon">💰</span><span class="p-name">Economy Book</span><span class="p-tag">BUDGET</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🛏️</span><span class="p-name">King Koil</span><span class="p-tag">BED</span></a></div>
-                <div class="partner-item"><a href="https://hotels.tpo.lv/rHr4mbOu" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Hotels.com</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://agoda.tpo.lv/UEhQ1dwR" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Agoda</span><span class="p-tag">HOTEL</span></a></div>
-
-                <!-- Trivago Regions -->
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago AR</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago BR</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105935&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago CO</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago DE</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago MX</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66032&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago NZ</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105927&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago PE</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🏨</span><span class="p-name">Trivago USA</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://booking.tpo.lv/enwsEbCs target="_blank" rel="noopener" onclick="trackClick('Booking')"><span class="p-icon">🏨</span><span class="p-name">Booking.com</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://economybookings.tpo.lv/jSFMPEPA target="_blank" rel="noopener" onclick="trackClick('EconomyBookings')"><span class="p-icon">💰</span><span class="p-name">Economy Book</span><span class="p-tag">BUDGET</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('KingKoil')"><span class="p-icon">🛏️</span><span class="p-name">King Koil</span><span class="p-tag">BED</span></a></div>
+                <div class="partner-item"><a href=https://hotels.tpo.lv/rHr4mbOu target="_blank" rel="noopener" onclick="trackClick('Hotels.com')"><span class="p-icon">🏨</span><span class="p-name">Hotels.com</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://agoda.tpo.lv/UEhQ1dwR target="_blank" rel="noopener" onclick="trackClick('Agoda')"><span class="p-icon">🏨</span><span class="p-name">Agoda</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105929&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago AR')"><span class="p-icon">🏨</span><span class="p-name">Trivago AR</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105937&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago BR')"><span class="p-icon">🏨</span><span class="p-name">Trivago BR</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105935&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago CO')"><span class="p-icon">🏨</span><span class="p-name">Trivago CO</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105923&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago DE')"><span class="p-icon">🏨</span><span class="p-name">Trivago DE</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105931&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago MX')"><span class="p-icon">🏨</span><span class="p-name">Trivago MX</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=66032&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago NZ')"><span class="p-icon">🏨</span><span class="p-name">Trivago NZ</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=105927&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago PE')"><span class="p-icon">🏨</span><span class="p-name">Trivago PE</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=66034&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Trivago USA')"><span class="p-icon">🏨</span><span class="p-name">Trivago USA</span><span class="p-tag">HOTEL</span></a></div>
               </div>
             </div>
 
-            <!-- INSURANCE -->
             <div class="partner-cat" id="cat-insurance">
               <div class="partner-cat-header" onclick="toggleCat('cat-insurance')">
                 <span><span class="cat-icon">🛡️</span>Insurance</span>
@@ -549,12 +901,11 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item"><a href="https://compensair.tpo.lv/wxDDCITG" target="_blank" rel="noopener"><span class="p-icon">💼</span><span class="p-name">CompensAir</span><span class="p-tag">CLAIM</span></a></div>
-                <div class="partner-item"><a href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener"><span class="p-icon">🆘</span><span class="p-name">AirHelp</span><span class="p-tag">CLAIM</span></a></div>
+                <div class="partner-item"><a href=https://compensair.tpo.lv/wxDDCITG target="_blank" rel="noopener" onclick="trackClick('CompensAir')"><span class="p-icon">💼</span><span class="p-name">CompensAir</span><span class="p-tag">CLAIM</span></a></div>
+                <div class="partner-item"><a href=https://airhelp.tpo.lv/EPrGDSO3 target="_blank" rel="noopener" onclick="trackClick('AirHelp')"><span class="p-icon">🆘</span><span class="p-name">AirHelp</span><span class="p-tag">CLAIM</span></a></div>
               </div>
             </div>
 
-            <!-- TRAVEL -->
             <div class="partner-cat" id="cat-travel">
               <div class="partner-cat-header" onclick="toggleCat('cat-travel')">
                 <span><span class="cat-icon">✈️</span>Travel</span>
@@ -562,144 +913,457 @@
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
-                <div class="partner-item hot"><a href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener"><span class="p-icon">🔍</span><span class="p-name">Aviasales</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener"><span class="p-icon">🥝</span><span class="p-name">Kiwi.com</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item hot"><a href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener"><span class="p-icon">🎫</span><span class="p-name">Klook</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" rel="noopener"><span class="p-icon">🎭</span><span class="p-name">Intui.travel</span><span class="p-tag">LOCAL</span></a></div>
-                <div class="partner-item"><a href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener"><span class="p-icon">🗺️</span><span class="p-name">WeGoTrip</span><span class="p-tag">GUIDE</span></a></div>
-                <div class="partner-item"><a href="https://eatwith.tpo.lv/BfAnpZNb" target="_blank" rel="noopener"><span class="p-icon">🍽️</span><span class="p-name">Eat With</span><span class="p-tag">FOOD</span></a></div>
-                <div class="partner-item"><a href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener"><span class="p-icon">🏙️</span><span class="p-name">GoCity</span><span class="p-tag">PASS</span></a></div>
-                <div class="partner-item"><a href="https://ektatraveling.tpo.lv/XWbZbj8S" target="_blank" rel="noopener"><span class="p-icon">🌍</span><span class="p-name">EKTA Traveling</span><span class="p-tag">EXP</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🇪🇸</span><span class="p-name">Go! España</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🦁</span><span class="p-name">Go2Africa</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener"><span class="p-icon">🚐</span><span class="p-name">Big Bus Tours</span><span class="p-tag">TOURS</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">🎟️</span><span class="p-name">Tiqets</span><span class="p-tag">AWIN</span></a></div>
-
-                <!-- Kiwi regional -->
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">✈️</span><span class="p-name">Kiwi CA</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806" target="_blank" rel="noopener"><span class="p-icon">✈️</span><span class="p-name">Kiwi MX</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner
-    <!-- ============================================================
-         COLUMN 2 — PROMOS
-    ============================================================ -->
-    <section class="sb-column col-promos">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">▶ Popular Videos</span>
-          <span class="panel-badge">LIVE</span>
-        </div>
-
-        <div class="promo-feed" id="promoFeed"></div>
-        <div class="load-sentinel" id="promoSentinel">
-          <div class="spinner"></div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ============================================================
-         COLUMN 3 — HERO (🔥 Trending Now)
-    ============================================================ -->
-    <section class="sb-column col-hero">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">🔥 Trending Now</span>
-          <span class="panel-badge">HOT</span>
-        </div>
-
-        <div class="hero-feed" id="heroFeed"></div>
-        <div class="load-sentinel" id="heroSentinel">
-          <div class="spinner"></div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ============================================================
-         COLUMN 4 — WIDGETS
-    ============================================================ -->
-    <section class="sb-column col-widgets">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">▶ Trending</span>
-          <span class="panel-badge">NEW</span>
-        </div>
-
-        <div class="promo-feed" id="widgetFeed"></div>
-        <div class="load-sentinel" id="widgetSentinel">
-          <div class="spinner"></div>
-        </div>
-      </div>
-    </section>
-    <!-- ============================================================
-         COLUMN 5 — FINANCE / SYSTEM PANEL
-    ============================================================ -->
-    <aside class="sb-column col-dashboard">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">💰 Finance</span>
-        </div>
-
-        <div class="panel-body dashboard-content">
-          <div class="sb-column5">
-
-            <!-- HEADER -->
-            <div class="sb-col5-header">System Panel</div>
-
-            <!-- WEATHER + LOFI -->
-            <div class="sb-col5-top">
-              <div class="sb-col5-left">
-                <span class="sb-weather-icon">☀</span>
-                <span class="sb-weather-temp">72°</span>
-              </div>
-
-              <div class="sb-col5-right">
-                <button class="sb-lofi-btn" type="button"
-                  onclick="window.open('https://www.youtube.com/results?search_query=lofi+instrumental', '_blank')">
-                  🎧 Lo‑Fi
-                </button>
+                <div class="partner-item hot"><a href=https://aviasales.tpo.lv/VoWXgFFm target="_blank" rel="noopener" onclick="trackClick('Aviasales')"><span class="p-icon">🔍</span><span class="p-name">Aviasales</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href=https://kiwi.tpo.lv/qKPZ1inz target="_blank" rel="noopener" onclick="trackClick('Kiwi')"><span class="p-icon">🥝</span><span class="p-name">Kiwi.com</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item hot"><a href=https://klook.tpo.lv/pTp1NljF target="_blank" rel="noopener" onclick="trackClick('Klook')"><span class="p-icon">🎫</span><span class="p-name">Klook</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href=https://intui.tpo.lv/Rrx5VuN3 target="_blank" rel="noopener" onclick="trackClick('Intui')"><span class="p-icon">🎭</span><span class="p-name">Intui.travel</span><span class="p-tag">LOCAL</span></a></div>
+                <div class="partner-item"><a href=https://wegotrip.tpo.lv/kKIF0gIW target="_blank" rel="noopener" onclick="trackClick('WeGoTrip')"><span class="p-icon">🗺️</span><span class="p-name">WeGoTrip</span><span class="p-tag">GUIDE</span></a></div>
+                <div class="partner-item"><a href=https://eatwith.tpo.lv/BfAnpZNb target="_blank" rel="noopener" onclick="trackClick('EatWith')"><span class="p-icon">🍽️</span><span class="p-name">Eat With</span><span class="p-tag">FOOD</span></a></div>
+                <div class="partner-item"><a href=https://gocity.tpo.lv/Des5Cgov target="_blank" rel="noopener" onclick="trackClick('GoCity')"><span class="p-icon">🏙️</span><span class="p-name">GoCity</span><span class="p-tag">PASS</span></a></div>
+                <div class="partner-item"><a href=https://ektatraveling.tpo.lv/XWbZbj8S target="_blank" rel="noopener" onclick="trackClick('EKTA')"><span class="p-icon">🌍</span><span class="p-name">EKTA Traveling</span><span class="p-tag">EXP</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('GoEspana')"><span class="p-icon">🇪🇸</span><span class="p-name">Go! España</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Go2Africa')"><span class="p-icon">🦁</span><span class="p-name">Go2Africa</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href=https://bigbustours.tpo.lv/grT1QWXA target="_blank" rel="noopener" onclick="trackClick('BigBus')"><span class="p-icon">🚐</span><span class="p-name">Big Bus Tours</span><span class="p-tag">TOURS</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Tiqets')"><span class="p-icon">🎟️</span><span class="p-name">Tiqets</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=19859&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Kiwi CA')"><span class="p-icon">✈️</span><span class="p-name">Kiwi CA</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=20563&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Kiwi MX')"><span class="p-icon">✈️</span><span class="p-name">Kiwi MX</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=19856&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Kiwi US')"><span class="p-icon">✈️</span><span class="p-name">Kiwi US</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=29767&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Extranomical Tours (US)')"><span class="p-icon">🗺️</span><span class="p-name">Extranomical Tours (US)</span><span class="p-tag">TOURS</span></a></div>
               </div>
             </div>
 
-            <!-- SOCIAL SHORTCUTS -->
-            <div class="sb-col5-center">
-              <a href="https://facebook.com" target="_blank" rel="noopener" class="sb-social">fb</a>
-              <a href="https://wa.me" target="_blank" rel="noopener" class="sb-social">wa</a>
-              <a href="https://instagram.com" target="_blank" rel="noopener" class="sb-social">ig</a>
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="sb-social">yt</a>
-              <a href="https://tiktok.com" target="_blank" rel="noopener" class="sb-social">tt</a>
-              <a href="https://telegram.org" target="_blank" rel="noopener" class="sb-social">tg</a>
-              <a href="https://twitter.com" target="_blank" rel="noopener" class="sb-social">tw</a>
-              <a href="https://snapchat.com" target="_blank" rel="noopener" class="sb-social">sc</a>
+            <div class="partner-cat" id="cat-services">
+              <div class="partner-cat-header" onclick="toggleCat('cat-services')">
+                <span><span class="cat-icon">🔧</span>Services</span>
+                <span class="cat-count">10</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item"><a href=https://kiwitaxi.tpo.lv/DVaqmgKo target="_blank" rel="noopener" onclick="trackClick('KiwiTaxi')"><span class="p-icon">🥝</span><span class="p-name">KiwiTaxi</span><span class="p-tag">TAXI</span></a></div>
+                <div class="partner-item"><a href=https://gettransfer.tpo.lv/Pb4p9ljm target="_blank" rel="noopener" onclick="trackClick('GetTransfer')"><span class="p-icon">🚐</span><span class="p-name">GetTransfer</span><span class="p-tag">RIDE</span></a></div>
+                <div class="partner-item"><a href=https://holidaytaxis.tpo.lv/oHwpbrFt target="_blank" rel="noopener" onclick="trackClick('HolidayTaxis')"><span class="p-icon">🚖</span><span class="p-name">Holiday Taxis</span><span class="p-tag">TAXI</span></a></div>
+                <div class="partner-item"><a href=https://tpo.lv/XAJOoobr target="_blank" rel="noopener" onclick="trackClick('WelcomePickups')"><span class="p-icon">🛫</span><span class="p-name">Welcome Pickups</span><span class="p-tag">AIRPORT</span></a></div>
+                <div class="partner-item"><a href=https://busbud.tpo.lv/h4C6YPFZ target="_blank" rel="noopener" onclick="trackClick('BusBud')"><span class="p-icon">🚌</span><span class="p-name">BusBud</span><span class="p-tag">BUS</span></a></div>
+                <div class="partner-item"><a href=https://bikesbooking.tpo.lv/B3zIKanS target="_blank" rel="noopener" onclick="trackClick('BikesBooking')"><span class="p-icon">🚴</span><span class="p-name">BikesBooking</span><span class="p-tag">BIKES</span></a></div>
+                <div class="partner-item"><a href=https://radicalstorage.tpo.lv/tna4hnly target="_blank" rel="noopener" onclick="trackClick('RadicalStorage')"><span class="p-icon">🏪</span><span class="p-name">Radical Storage</span><span class="p-tag">STORAGE</span></a></div>
+                <div class="partner-item"><a href=https://qeeq.tpo.lv/jklB4Pbm target="_blank" rel="noopener" onclick="trackClick('QEEQ')"><span class="p-icon">📦</span><span class="p-name">QEEQ</span><span class="p-tag">LUGGAGE</span></a></div>
+                <div class="partner-item"><a href=https://searadar.tpo.lv/TO4A5eBZ target="_blank" rel="noopener" onclick="trackClick('SeaRadar')"><span class="p-icon">📡</span><span class="p-name">SeaRadar</span><span class="p-tag">TRACK</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Luxy')"><span class="p-icon">🚗</span><span class="p-name">Luxy App</span><span class="p-tag">RIDE</span></a></div>
+              </div>
             </div>
 
-            <!-- MARKET STATUS -->
-            <div class="sb-mini-block">
-              <div class="sb-mini-title">Market Status</div>
-              <div class="sb-mini-line">US session: Open</div>
-              <div class="sb-mini-line">BTC: +2.4%</div>
-              <div class="sb-mini-line">Volatility: Moderate</div>
+            <div class="partner-cat" id="cat-connectivity">
+              <div class="partner-cat-header" onclick="toggleCat('cat-connectivity')">
+                <span><span class="cat-icon">📱</span>Connectivity</span>
+                <span class="cat-count">6</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item hot"><a href=https://airalo.tpo.lv/eXjKLiuw target="_blank" rel="noopener" onclick="trackClick('Airalo')"><span class="p-icon">✈️</span><span class="p-name">Airalo</span><span class="p-tag">HOT</span></a></div>
+                <div class="partner-item"><a href=https://drimsim.tpo.lv/PGwr6JTr target="_blank" rel="noopener" onclick="trackClick('DrimSim')"><span class="p-icon">💬</span><span class="p-name">DrimSim</span><span class="p-tag">SIM</span></a></div>
+                <div class="partner-item"><a href=https://yesim.tpo.lv/3vIzBQts target="_blank" rel="noopener" onclick="trackClick('Yesim')"><span class="p-icon">🌐</span><span class="p-name">Yesim</span><span class="p-tag">eSIM</span></a></div>
+                <div class="partner-item"><a href=https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629 target="_blank" rel="noopener" onclick="trackClick('Saily')"><span class="p-icon">📡</span><span class="p-name">Saily</span><span class="p-tag">DATA</span></a></div>
+                <div class="partner-item"><a href=https://nordvpn.tpo.lv/q1aN4Xru target="_blank" rel="noopener" onclick="trackClick('NordVPN')"><span class="p-icon">🔒</span><span class="p-name">NordVPN</span><span class="p-tag">VPN</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Evisa')"><span class="p-icon">📝</span><span class="p-name">Evisa</span><span class="p-tag">VISA</span></a></div>
+              </div>
             </div>
 
-            <!-- QUICK NOTES -->
-            <div class="sb-mini-block">
-              <div class="sb-mini-title">Quick Notes</div>
-              <div class="sb-mini-line">3 new partner clicks</div>
-              <div class="sb-mini-line">Banner rotation active</div>
-              <div class="sb-mini-line">Feeds loading normally</div>
+            <div class="partner-cat" id="cat-other">
+              <div class="partner-cat-header" onclick="toggleCat('cat-other')">
+                <span><span class="cat-icon">🎁</span>Other</span>
+                <span class="cat-count">4</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="partner-items">
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=40342&awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('ALLPOWERS')"><span class="p-icon">🔋</span><span class="p-name">ALLPOWERS</span><span class="p-tag">GEAR</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=109230&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Tsarbomba')"><span class="p-icon">⌚</span><span class="p-name">Tsarbomba</span><span class="p-tag">SHOP</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=50899&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('Xuchang Aixiu Hair Products Co., Ltd.')"><span class="p-icon">💇</span><span class="p-name">Xuchang Aixiu Hair Products Co., Ltd.</span><span class="p-tag">SHOP</span></a></div>
+                <div class="partner-item"><a href=https://www.awin1.com/cread.php?awinmid=109444&amp;awinaffid=2834806 target="_blank" rel="noopener" onclick="trackClick('LogoNerds.com')"><span class="p-icon">🎨</span><span class="p-name">LogoNerds.com</span><span class="p-tag">DESIGN</span></a></div>
+              </div>
             </div>
-
           </div>
         </div>
       </div>
     </aside>
 
-  </div> <!-- end dashboard -->
-</main>
-</div> <!-- end dashboard -->
+    <section class="col-promos">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">▶ Popular Videos</span>
+          <span class="panel-badge">LIVE</span>
+        </div>
+        <div class="promo-feed" id="promoFeed"></div>
+        <div class="load-sentinel" id="promoSentinel"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <section class="col-hero">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🔥 Trending Now</span>
+          <span class="panel-badge">HOT</span>
+        </div>
+        <div class="hero-feed" id="heroFeed"></div>
+        <div class="load-sentinel" id="heroSentinel"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <section class="col-widgets">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">▶ Trending</span>
+          <span class="panel-badge">NEW</span>
+        </div>
+        <div class="promo-feed" id="widgetFeed"></div>
+        <div class="load-sentinel" id="widgetSentinel"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <aside class="col-dashboard">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">💰 Finance</span>
+        </div>
+        <div class="panel-body dashboard-content">
+          <div class="weather-widget">
+            <div class="weather-icon">🌤️</div>
+            <div class="weather-temp">72°</div>
+            <div class="weather-desc">Cloudy</div>
+          </div>
+          <div class="stock-ticker">
+            <div class="ticker-header">📊 Markets</div>
+            <div class="ticker-item">
+              <span class="ticker-symbol">^DJI</span>
+              <span class="ticker-price">38.2K</span>
+              <span class="ticker-change up">+0.8%</span>
+            </div>
+            <div class="ticker-item">
+              <span class="ticker-symbol">^GSPC</span>
+              <span class="ticker-price">5.2K</span>
+              <span class="ticker-change up">+1.2%</span>
+            </div>
+            <div class="ticker-item">
+              <span class="ticker-symbol">^IXIC</span>
+              <span class="ticker-price">16.8K</span>
+              <span class="ticker-change up">+2.1%</span>
+            </div>
+          </div>
+          <div class="financial-news">
+            <div class="news-header">📰 News</div>
+            <div class="news-item">
+              <div class="news-title">S&P 500 reaches all-time high</div>
+              <div class="news-meta"><span class="news-source">Yahoo Finance</span><span>2h ago</span></div>
+            </div>
+            <div class="news-item">
+              <div class="news-title">Bitcoin surges past $50K</div>
+              <div class="news-meta"><span class="news-source">Bloomberg</span><span>3h ago</span></div>
+            </div>
+            <div class="news-item">
+              <div class="news-title">Tech stocks lead market rally</div>
+              <div class="news-meta"><span class="news-source">Reuters</span><span>5h ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
 </main>
 
 <script>
-  ... all your JS here ...
-</script>
+const clickTracker = {};
 
+function trackClick(partner) {
+  clickTracker[partner] = (clickTracker[partner] || 0) + 1;
+  localStorage.setItem('affiliate_clicks', JSON.stringify(clickTracker));
+}
+
+const saved = localStorage.getItem('affiliate_clicks');
+if (saved) Object.assign(clickTracker, JSON.parse(saved));
+
+function getAffiliatePartners() {
+  return Array.from(document.querySelectorAll('.partner-item a')).map((link) => {
+    const nameEl = link.querySelector('.p-name');
+    const tagEl = link.querySelector('.p-tag');
+    const iconEl = link.querySelector('.p-icon');
+    const categoryEl = link.closest('.partner-cat')?.querySelector('.partner-cat-header span');
+    const categoryText = categoryEl ? categoryEl.textContent.replace(/^[^\w]+/, '').trim() : 'Affiliate';
+    const rawName = nameEl ? nameEl.textContent.trim() : 'Partner';
+    const partnerKey = rawName;
+    const clicks = clickTracker[partnerKey] || 0;
+    return {
+      partner: partnerKey,
+      name: rawName,
+      tag: tagEl ? tagEl.textContent.trim() : 'DEAL',
+      icon: iconEl ? iconEl.textContent.trim() : '✨',
+      link: link.href,
+      category: categoryText,
+      clicks
+    };
+  }).filter((item, idx, arr) => item.link && arr.findIndex(x => x.partner === item.partner) == idx);
+}
+
+function buildBannerMessage(item, mode) {
+  if (mode === 'top') {
+    return `${item.icon} ${item.name}: trending with ${item.clicks} click${item.clicks === 1 ? '' : 's'} — open ${item.category} deal`;
+  }
+  if (mode === 'fresh') {
+    return `${item.icon} ${item.name}: featured ${item.category.toLowerCase()} pick right now`;
+  }
+  return `${item.icon} ${item.name}: explore this ${item.tag.toLowerCase()} partner offer`;
+}
+
+function getSmartBannerPool() {
+  const partners = getAffiliatePartners();
+  const sortedByClicks = [...partners].sort((a, b) => (b.clicks - a.clicks) || a.name.localeCompare(b.name));
+  const topClicked = sortedByClicks.filter(item => item.clicks > 0).slice(0, 4).map(item => ({ ...item, mode: 'top' }));
+  const featuredFallback = partners.filter(item => !topClicked.some(top => top.partner === item.partner));
+  const curated = featuredFallback.filter(item => ['HOT', 'HOTEL', 'FLIGHT', 'RENT', 'eSIM', 'DATA', 'TOURS', 'PASS'].includes(item.tag)).slice(0, 8);
+  const remaining = featuredFallback.filter(item => !curated.some(cur => cur.partner === item.partner)).slice(0, 8);
+  return [...topClicked, ...curated.map(item => ({ ...item, mode: 'fresh' })), ...remaining.map(item => ({ ...item, mode: 'standard' }))];
+}
+
+let currentBannerIndex = 0;
+let partnerBannerPool = [];
+
+function rotatePartnerBanner() {
+  const bannerEl = document.getElementById('partner-banner');
+  if (!bannerEl) return;
+
+  if (!partnerBannerPool.length) {
+    partnerBannerPool = getSmartBannerPool();
+  }
+  if (!partnerBannerPool.length) {
+    bannerEl.innerHTML = '<span class="mall-banner-message">No partner banners available.</span>';
+    return;
+  }
+
+  const banner = partnerBannerPool[currentBannerIndex % partnerBannerPool.length];
+  bannerEl.innerHTML = `
+    <a href="${banner.link}" target="_blank" rel="noopener" id="banner-link">
+      <span class="mall-banner-message">${buildBannerMessage(banner, banner.mode)}</span>
+      <span class="mall-banner-sub">${banner.category} • ${banner.tag} • ${banner.clicks > 0 ? 'Top clicked partner' : 'Featured rotation'}</span>
+    </a>
+  `;
+
+  const linkEl = document.getElementById('banner-link');
+  if (linkEl) {
+    linkEl.addEventListener('click', () => {
+      trackClick(banner.partner);
+      partnerBannerPool = [];
+    }, { once: true });
+  }
+
+  currentBannerIndex = (currentBannerIndex + 1) % Math.max(partnerBannerPool.length, 1);
+}
+
+
+const VIDEO_POOL = [
+  { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M' },
+  { platform: 'TikTok', title: 'Quick Travel Tips', desc: 'Budget hacks', type: 'tiktok', id: '@travelguy/video/7234567890', views: '1.8M' },
+  { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', id: 'jNQXAC9IVRw', views: '890K' },
+  { platform: 'Instagram', title: 'Adventure Stories', desc: 'Epic journeys', type: 'instagram', id: 'p/CdE5FgH', views: '1.5M' },
+  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', id: '9bZkp7q19f0', views: '1.2M' },
+  { platform: 'Reddit', title: 'Amazing Life Hacks', desc: 'Community stories', type: 'reddit', id: 'r/travel/comments/abc123', views: '950K' },
+  { platform: 'TikTok', title: 'Viral Trends', desc: 'This week\'s hot', type: 'tiktok', id: '@trends/video/7345678901', views: '3.2M' },
+  { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', id: '90509568', views: '345K' },
+  { platform: 'Instagram', title: 'Dream Destinations', desc: 'Bucket list', type: 'instagram', id: 'p/CeF6GhI', views: '2.1M' },
+  { platform: 'Reddit', title: 'Hidden Gems', desc: 'Local favorites', type: 'reddit', id: 'r/travel/comments/def456', views: '720K' },
+  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', id: '0ml4GHJfh-I', views: '1.8M' },
+  { platform: 'TikTok', title: 'Summer Vibes', desc: 'Feel good content', type: 'tiktok', id: '@vibes/video/7456789012', views: '2.7M' },
+];
+
+function getEmbedIcon(item) {
+  const icons = { 'youtube': '▶️', 'tiktok': '♪', 'instagram': '📷', 'reddit': '🔴' };
+  return icons[item.type] || '🎬';
+}
+
+function getVideoUrl(item) {
+  const urls = {
+    'youtube': 'https://www.youtube.com/watch?v=' + item.id,
+    'tiktok': 'https://www.tiktok.com/' + item.id,
+    'instagram': 'https://www.instagram.com/' + item.id,
+    'reddit': 'https://reddit.com/' + item.id
+  };
+  return urls[item.type] || '#';
+}
+
+function buildPromoCard(item) {
+  const card = document.createElement('div');
+  card.className = 'promo-card';
+  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
+  const grad = gradients[Math.floor(Math.random() * gradients.length)];
+  const icon = getEmbedIcon(item);
+  
+  const thumb = document.createElement('div');
+  thumb.className = 'promo-thumb ' + grad;
+  thumb.innerHTML = '<div class="embed-placeholder">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><span class="promo-new-badge">' + item.platform + '</span>';
+  
+  const body = document.createElement('div');
+  body.className = 'promo-body';
+  body.innerHTML = '<div class="promo-kicker">' + item.platform + '</div><div class="promo-title">' + item.title + '</div><div class="promo-desc">' + item.desc + '</div><div class="promo-meta">👁 ' + item.views + '</div>';
+  
+  card.appendChild(thumb);
+  card.appendChild(body);
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function() {
+    window.location.href = getVideoUrl(item);
+  });
+  
+  return card;
+}
+
+function buildHeroCard(item) {
+  const card = document.createElement('div');
+  card.className = 'hero-card';
+  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
+  const grad = gradients[Math.floor(Math.random() * gradients.length)];
+  const icon = getEmbedIcon(item);
+  
+  const thumb = document.createElement('div');
+  thumb.className = 'hero-thumb ' + grad;
+  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
+  
+  const actions = document.createElement('div');
+  actions.className = 'hero-actions';
+  actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
+  
+  card.appendChild(thumb);
+  card.appendChild(actions);
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function() {
+    window.location.href = getVideoUrl(item);
+  });
+  
+  return card;
+}
+
+rotatePartnerBanner();
+setInterval(rotatePartnerBanner, 12000);
+
+(function seed() {
+  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
+  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[1]));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2]));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[3]));
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[4]));
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[5]));
+})();
+
+let promoIdx = 2, heroIdx = 4, widgetIdx = 2;
+
+function makeObserver(sentinelId, feedId, builder, getIdxFunc, setIdxFunc) {
+  const sentinel = document.getElementById(sentinelId);
+  const feed = document.getElementById(feedId);
+  
+  const obs = new IntersectionObserver(function(entries) {
+    if (!entries[0].isIntersecting) return;
+    const currentIdx = getIdxFunc();
+    const item = VIDEO_POOL[currentIdx % VIDEO_POOL.length];
+    feed.appendChild(builder(item));
+    setIdxFunc(currentIdx + 1);
+  }, { rootMargin: '300px' });
+  
+  obs.observe(sentinel);
+}
+
+makeObserver('promoSentinel', 'promoFeed', buildPromoCard, function() { return promoIdx; }, function(val) { promoIdx = val; });
+makeObserver('heroSentinel', 'heroFeed', buildHeroCard, function() { return heroIdx; }, function(val) { heroIdx = val; });
+makeObserver('widgetSentinel', 'widgetFeed', buildPromoCard, function() { return widgetIdx; }, function(val) { widgetIdx = val; });
+
+function toggleCat(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+document.getElementById('partnerSearch').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.partner-item').forEach(function(el) {
+    const name = el.querySelector('.p-name');
+    el.style.display = name && name.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+document.getElementById('themeBtn').addEventListener('click', function() {
+  const on = document.body.classList.toggle('light-theme');
+  this.textContent = on ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('sb_theme', on ? 'light' : 'dark');
+});
+
+if (localStorage.getItem('sb_theme') === 'light') {
+  document.body.classList.add('light-theme');
+  document.getElementById('themeBtn').textContent = '🌙 Dark';
+}
+
+
+// Enhanced infinite scroll + preview overlay
+function setupInfiniteScroll(containerId, loadFn) {
+  const container = document.getElementById(containerId);
+  if (!container || typeof loadFn !== 'function') return;
+
+  let ticking = false;
+  container.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+        loadFn();
+      }
+      ticking = false;
+    });
+  });
+}
+
+function loadMorePromos() {
+  const item = VIDEO_POOL[promoIdx % VIDEO_POOL.length];
+  document.getElementById('promoFeed').appendChild(buildPromoCard(item));
+  promoIdx += 1;
+}
+
+function loadMoreHero() {
+  const item = VIDEO_POOL[heroIdx % VIDEO_POOL.length];
+  document.getElementById('heroFeed').appendChild(buildHeroCard(item));
+  heroIdx += 1;
+}
+
+function loadMoreWidgets() {
+  const item = VIDEO_POOL[widgetIdx % VIDEO_POOL.length];
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(item));
+  widgetIdx += 1;
+}
+
+function openPreviewFromCard(card) {
+  if (!card) return;
+  const preview = document.createElement('div');
+  preview.className = 'preview-overlay';
+  preview.innerHTML = `
+    <div class="preview-content">
+      <button class="close-btn" aria-label="Close preview">✖</button>
+      <div class="preview-card-wrap">${card.outerHTML}</div>
+    </div>
+  `;
+  document.body.appendChild(preview);
+
+  const close = () => preview.remove();
+  preview.querySelector('.close-btn').addEventListener('click', close);
+  preview.addEventListener('click', (e) => {
+    if (e.target === preview) close();
+  });
+}
+
+function setupPreview(selector) {
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest(selector);
+    if (!card) return;
+    if (e.target.closest('a, button')) return;
+    openPreviewFromCard(card);
+  });
+}
+
+setupInfiniteScroll('promoFeed', loadMorePromos);
+setupInfiniteScroll('heroFeed', loadMoreHero);
+setupInfiniteScroll('widgetFeed', loadMoreWidgets);
+setupPreview('.promo-card');
+setupPreview('.hero-card');
+
+</script>
+</body>
+</html>
