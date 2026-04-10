@@ -582,7 +582,397 @@
       text-decoration-color: var(--cyan);
     }
 
-  </style>
+  
+
+/* ===== Immersive layout + preview overlay ===== */
+.col-hero .hero-card {
+  height: 90vh;
+  min-height: 500px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  aspect-ratio: 16 / 9;
+  min-height: 180px;
+  cursor: pointer;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.col-promos .promo-card:hover,
+.col-widgets .promo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.col-promos,
+.col-hero,
+.col-widgets {
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+  scroll-behavior: smooth;
+}
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 24px;
+}
+.preview-content {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+.close-btn {
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 6px 10px;
+  cursor: pointer;
+  float: right;
+  margin-bottom: 10px;
+}
+.preview-card-wrap {
+  clear: both;
+}
+
+
+
+/* ===== Force immersive card sizing to actually apply ===== */
+.col-promos .promo-feed,
+.col-widgets .promo-feed,
+.col-hero .hero-feed {
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+  scroll-behavior: smooth;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.col-promos .promo-thumb,
+.col-widgets .promo-thumb {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  flex-shrink: 0;
+}
+
+.col-promos .promo-body,
+.col-widgets .promo-body {
+  flex: 1;
+}
+
+.col-hero .hero-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  height: 80vh;
+}
+
+.col-hero .hero-thumb {
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+.col-hero .hero-actions {
+  flex-shrink: 0;
+}
+
+
+/* ===== STRONG VISUAL OVERRIDE FOR COLS 2, 3, 4 ===== */
+.dashboard {
+  grid-template-columns: 200px 300px 1.2fr 300px 200px !important;
+}
+
+.col-promos,
+.col-hero,
+.col-widgets {
+  align-self: stretch !important;
+  height: calc(100vh - 150px) !important;
+  max-height: calc(100vh - 150px) !important;
+  overflow: hidden !important;
+}
+
+.col-promos .panel,
+.col-hero .panel,
+.col-widgets .panel {
+  height: 100% !important;
+  max-height: none !important;
+}
+
+.col-promos .promo-feed,
+.col-widgets .promo-feed,
+.col-hero .hero-feed {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  padding-right: 4px !important;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+.col-promos .promo-thumb,
+.col-widgets .promo-thumb {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9 !important;
+  flex: 0 0 auto !important;
+}
+
+.col-promos .promo-body,
+.col-widgets .promo-body {
+  padding: 10px 12px 12px !important;
+}
+
+.col-promos .promo-title,
+.col-widgets .promo-title {
+  font-size: .86rem !important;
+}
+
+.col-promos .promo-desc,
+.col-widgets .promo-desc {
+  font-size: .72rem !important;
+  margin-bottom: 6px !important;
+}
+
+.col-hero .hero-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 78vh !important;
+  min-height: 78vh !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+.col-hero .hero-thumb {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.col-hero .hero-actions {
+  flex: 0 0 auto !important;
+  padding: 10px 14px !important;
+}
+
+@media (max-width: 1400px) {
+  .dashboard {
+    grid-template-columns: 200px 260px 1fr 260px 200px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr !important;
+  }
+  .col-promos,
+  .col-hero,
+  .col-widgets {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .col-hero .hero-card {
+    height: auto !important;
+    min-height: 520px !important;
+  }
+}
+
+
+/* ===== FINAL LAYOUT + PREVIEW OVERRIDES ===== */
+.dashboard {
+  grid-template-columns: 220px 340px 1fr 340px 220px !important;
+}
+
+.col-promos,
+.col-hero,
+.col-widgets {
+  align-self: stretch !important;
+  height: calc(100vh - 150px) !important;
+  max-height: calc(100vh - 150px) !important;
+  overflow: hidden !important;
+}
+
+.col-promos .panel,
+.col-hero .panel,
+.col-widgets .panel {
+  height: 100% !important;
+  max-height: none !important;
+}
+
+.col-promos .promo-feed,
+.col-widgets .promo-feed,
+.col-hero .hero-feed {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  padding-right: 4px !important;
+  scroll-behavior: smooth !important;
+}
+
+.col-hero .hero-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 90vh !important;
+  min-height: 500px !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+}
+
+.col-hero .hero-thumb {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.col-promos .promo-card,
+.col-widgets .promo-card {
+  display: flex !important;
+  flex-direction: column !important;
+  aspect-ratio: 16 / 9 !important;
+  min-height: 200px !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  transition: transform .3s ease, box-shadow .3s ease !important;
+}
+
+.col-promos .promo-card:hover,
+.col-widgets .promo-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.col-promos .promo-thumb,
+.col-widgets .promo-thumb {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9 !important;
+  flex: 1 1 auto !important;
+}
+
+.col-promos .promo-body,
+.col-widgets .promo-body {
+  display: none !important;
+}
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+}
+.preview-content {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: min(960px, 90vw);
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+.close-btn {
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 6px 10px;
+  cursor: pointer;
+  float: right;
+}
+.preview-media {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 12px;
+  background: #000;
+}
+.preview-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.preview-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--pink);
+  color: #fff;
+  font-weight: 800;
+}
+.preview-title {
+  font-size: 1rem;
+  font-weight: 900;
+  margin: 10px 0 6px;
+}
+.preview-meta {
+  color: var(--muted);
+  font-size: .8rem;
+}
+
+@media (max-width: 1400px) {
+  .dashboard {
+    grid-template-columns: 200px 300px 1fr 300px 200px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard { grid-template-columns: 1fr !important; }
+  .col-promos, .col-hero, .col-widgets {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .col-promos .promo-feed, .col-widgets .promo-feed, .col-hero .hero-feed {
+    overflow: visible !important;
+  }
+  .col-promos .promo-body, .col-widgets .promo-body {
+    display: block !important;
+  }
+}
+
+</style>
 </head>
 <body>
 
@@ -963,53 +1353,63 @@ function getVideoUrl(item) {
   return urls[item.type] || '#';
 }
 
+function getEmbedUrl(item) {
+  const urls = {
+    'youtube': 'https://www.youtube.com/embed/' + item.id + '?autoplay=1&mute=1&rel=0',
+    'tiktok': '',
+    'instagram': '',
+    'reddit': ''
+  };
+  return urls[item.type] || '';
+}
+
 function buildPromoCard(item) {
   const card = document.createElement('div');
   card.className = 'promo-card';
+  card.dataset.link = getVideoUrl(item);
+  card.dataset.video = getEmbedUrl(item);
+  card.dataset.title = item.title;
+  card.dataset.platform = item.platform;
+  card.dataset.views = item.views;
   const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
   const grad = gradients[Math.floor(Math.random() * gradients.length)];
   const icon = getEmbedIcon(item);
-  
+
   const thumb = document.createElement('div');
   thumb.className = 'promo-thumb ' + grad;
-  thumb.innerHTML = '<div class="embed-placeholder">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><span class="promo-new-badge">' + item.platform + '</span>';
-  
+  thumb.innerHTML = '<div class="embed-placeholder">' + icon + '<span class="embed-label">' + item.platform + ' - Click to preview</span></div><span class="promo-new-badge">' + item.platform + '</span>';
+
   const body = document.createElement('div');
   body.className = 'promo-body';
   body.innerHTML = '<div class="promo-kicker">' + item.platform + '</div><div class="promo-title">' + item.title + '</div><div class="promo-desc">' + item.desc + '</div><div class="promo-meta">👁 ' + item.views + '</div>';
-  
+
   card.appendChild(thumb);
   card.appendChild(body);
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function() {
-    window.location.href = getVideoUrl(item);
-  });
-  
   return card;
 }
 
 function buildHeroCard(item) {
   const card = document.createElement('div');
   card.className = 'hero-card';
+  card.dataset.link = getVideoUrl(item);
+  card.dataset.video = getEmbedUrl(item);
+  card.dataset.title = item.title;
+  card.dataset.platform = item.platform;
+  card.dataset.views = item.views;
   const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
   const grad = gradients[Math.floor(Math.random() * gradients.length)];
   const icon = getEmbedIcon(item);
-  
+
   const thumb = document.createElement('div');
   thumb.className = 'hero-thumb ' + grad;
-  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
-  
+  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to preview</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
+
   const actions = document.createElement('div');
   actions.className = 'hero-actions';
-  actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
-  
+  actions.innerHTML = '<button class="hero-action-btn primary" type="button">▶ Preview</button><span class="hero-stats">👁 ' + item.views + '</span>';
+
   card.appendChild(thumb);
   card.appendChild(actions);
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function() {
-    window.location.href = getVideoUrl(item);
-  });
-  
   return card;
 }
 
@@ -1027,24 +1427,83 @@ setInterval(rotatePartnerBanner, 12000);
 
 let promoIdx = 2, heroIdx = 4, widgetIdx = 2;
 
-function makeObserver(sentinelId, feedId, builder, getIdxFunc, setIdxFunc) {
-  const sentinel = document.getElementById(sentinelId);
-  const feed = document.getElementById(feedId);
-  
-  const obs = new IntersectionObserver(function(entries) {
-    if (!entries[0].isIntersecting) return;
-    const currentIdx = getIdxFunc();
-    const item = VIDEO_POOL[currentIdx % VIDEO_POOL.length];
-    feed.appendChild(builder(item));
-    setIdxFunc(currentIdx + 1);
-  }, { rootMargin: '300px' });
-  
-  obs.observe(sentinel);
+function loadMorePromos() {
+  const item = VIDEO_POOL[promoIdx % VIDEO_POOL.length];
+  document.getElementById('promoFeed').appendChild(buildPromoCard(item));
+  promoIdx += 1;
 }
 
-makeObserver('promoSentinel', 'promoFeed', buildPromoCard, function() { return promoIdx; }, function(val) { promoIdx = val; });
-makeObserver('heroSentinel', 'heroFeed', buildHeroCard, function() { return heroIdx; }, function(val) { heroIdx = val; });
-makeObserver('widgetSentinel', 'widgetFeed', buildPromoCard, function() { return widgetIdx; }, function(val) { widgetIdx = val; });
+function loadMoreHero() {
+  const item = VIDEO_POOL[heroIdx % VIDEO_POOL.length];
+  document.getElementById('heroFeed').appendChild(buildHeroCard(item));
+  heroIdx += 1;
+}
+
+function loadMoreWidgets() {
+  const item = VIDEO_POOL[widgetIdx % VIDEO_POOL.length];
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(item));
+  widgetIdx += 1;
+}
+
+function setupInfiniteScroll(containerId, loadFn) {
+  const container = document.getElementById(containerId);
+  if (!container || typeof loadFn !== 'function') return;
+  let loading = false;
+  container.addEventListener('scroll', () => {
+    if (loading) return;
+    if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+      loading = true;
+      loadFn();
+      requestAnimationFrame(() => { loading = false; });
+    }
+  });
+}
+
+function openPreviewFromCard(card) {
+  if (!card) return;
+  const videoSrc = card.dataset.video || '';
+  const link = card.dataset.link || '#';
+  const title = card.dataset.title || 'Preview';
+  const platform = card.dataset.platform || '';
+  const views = card.dataset.views || '';
+
+  const preview = document.createElement('div');
+  preview.className = 'preview-overlay';
+  preview.innerHTML = `
+    <div class="preview-content">
+      <button class="close-btn" aria-label="Close preview">✖</button>
+      ${videoSrc ? `<iframe class="preview-media" src="${videoSrc}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>` : `<div class="preview-media embed-placeholder" style="display:grid;place-items:center;font-size:3rem;">▶</div>`}
+      <div class="preview-title">${title}</div>
+      <div class="preview-meta">${platform}${views ? ` • 👁 ${views}` : ''}</div>
+      <div class="preview-actions">
+        <a class="preview-link" href="${link}" target="_blank" rel="noopener">Open source</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(preview);
+
+  const close = () => preview.remove();
+  preview.querySelector('.close-btn').addEventListener('click', close);
+  preview.addEventListener('click', (e) => {
+    if (e.target === preview) close();
+  });
+}
+
+function setupPreview(selector) {
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest(selector);
+    if (!card) return;
+    e.preventDefault();
+    if (e.target.closest('.preview-link')) return;
+    openPreviewFromCard(card);
+  });
+}
+
+setupInfiniteScroll('promoFeed', loadMorePromos);
+setupInfiniteScroll('heroFeed', loadMoreHero);
+setupInfiniteScroll('widgetFeed', loadMoreWidgets);
+setupPreview('.promo-card');
+setupPreview('.hero-card');
 
 function toggleCat(id) {
   document.getElementById(id).classList.toggle('open');
@@ -1068,6 +1527,7 @@ if (localStorage.getItem('sb_theme') === 'light') {
   document.body.classList.add('light-theme');
   document.getElementById('themeBtn').textContent = '🌙 Dark';
 }
+
 </script>
 </body>
 </html>
