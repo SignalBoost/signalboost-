@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -526,6 +528,60 @@
       }
       .hero-thumb { height: 300px; }
     }
+  
+    .mall-banner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 54px;
+      margin: 0 0 14px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(90deg, rgba(255,0,79,.10), rgba(0,255,204,.08));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .mall-banner::before {
+      content: '✨ Featured Partner';
+      flex-shrink: 0;
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid var(--border);
+    }
+    .mall-banner a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+    .mall-banner-message {
+      display: block;
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mall-banner-sub {
+      display: block;
+      margin-top: 2px;
+      font-size: .73rem;
+      color: var(--muted);
+    }
+    .mall-banner a:hover .mall-banner-message {
+      text-decoration: underline;
+      text-decoration-color: var(--cyan);
+    }
+
   </style>
 </head>
 <body>
@@ -562,13 +618,14 @@
 </div>
 
 <main class="shell">
+  <div id="partner-banner" class="mall-banner" aria-live="polite"></div>
   <div class="dashboard">
 
     <aside class="col-partners">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">💰 Affiliates</span>
-          <span class="panel-badge">40+</span>
+          <span class="panel-badge">58+</span>
         </div>
         <div class="panel-body">
           <input class="partner-search" type="search" placeholder="🔍 Search…" id="partnerSearch" />
@@ -576,7 +633,7 @@
             <div class="partner-cat open" id="cat-rental">
               <div class="partner-cat-header" onclick="toggleCat('cat-rental')">
                 <span><span class="cat-icon">🚗</span>Rental Cars</span>
-                <span class="cat-count">6</span>
+                <span class="cat-count">7</span>
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
@@ -586,19 +643,30 @@
                 <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Allycar')"><span class="p-icon">🚗</span><span class="p-name">Allycar</span><span class="p-tag">AWIN</span></a></div>
                 <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Carmel')"><span class="p-icon">🚕</span><span class="p-name">Carmel Car</span><span class="p-tag">AWIN</span></a></div>
                 <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('JumboCar')"><span class="p-icon">🏎️</span><span class="p-name">Jumbo Car CR</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=10777&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Europcar AU NZ')"><span class="p-icon">🚗</span><span class="p-name">Europcar AU NZ</span><span class="p-tag">RENT</span></a></div>
               </div>
             </div>
 
             <div class="partner-cat" id="cat-hotels">
               <div class="partner-cat-header" onclick="toggleCat('cat-hotels')">
                 <span><span class="cat-icon">🏨</span>Hotels</span>
-                <span class="cat-count">3</span>
+                <span class="cat-count">13</span>
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
                 <div class="partner-item"><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener" onclick="trackClick('Booking')"><span class="p-icon">🏨</span><span class="p-name">Booking.com</span><span class="p-tag">HOTEL</span></a></div>
                 <div class="partner-item"><a href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener" onclick="trackClick('EconomyBookings')"><span class="p-icon">💰</span><span class="p-name">Economy Book</span><span class="p-tag">BUDGET</span></a></div>
                 <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('KingKoil')"><span class="p-icon">🛏️</span><span class="p-name">King Koil</span><span class="p-tag">BED</span></a></div>
+                <div class="partner-item"><a href="https://hotels.tpo.lv/rHr4mbOu" target="_blank" rel="noopener" onclick="trackClick('Hotels.com')"><span class="p-icon">🏨</span><span class="p-name">Hotels.com</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://agoda.tpo.lv/UEhQ1dwR" target="_blank" rel="noopener" onclick="trackClick('Agoda')"><span class="p-icon">🏨</span><span class="p-name">Agoda</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105929&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago AR')"><span class="p-icon">🏨</span><span class="p-name">Trivago AR</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105937&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago BR')"><span class="p-icon">🏨</span><span class="p-name">Trivago BR</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105935&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago CO')"><span class="p-icon">🏨</span><span class="p-name">Trivago CO</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105923&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago DE')"><span class="p-icon">🏨</span><span class="p-name">Trivago DE</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105931&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago MX')"><span class="p-icon">🏨</span><span class="p-name">Trivago MX</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66032&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago NZ')"><span class="p-icon">🏨</span><span class="p-name">Trivago NZ</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105927&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago PE')"><span class="p-icon">🏨</span><span class="p-name">Trivago PE</span><span class="p-tag">HOTEL</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66034&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago USA')"><span class="p-icon">🏨</span><span class="p-name">Trivago USA</span><span class="p-tag">HOTEL</span></a></div>
               </div>
             </div>
 
@@ -617,7 +685,7 @@
             <div class="partner-cat" id="cat-travel">
               <div class="partner-cat-header" onclick="toggleCat('cat-travel')">
                 <span><span class="cat-icon">✈️</span>Travel</span>
-                <span class="cat-count">12</span>
+                <span class="cat-count">16</span>
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
@@ -633,6 +701,10 @@
                 <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Go2Africa')"><span class="p-icon">🦁</span><span class="p-name">Go2Africa</span><span class="p-tag">AWIN</span></a></div>
                 <div class="partner-item"><a href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener" onclick="trackClick('BigBus')"><span class="p-icon">🚐</span><span class="p-name">Big Bus Tours</span><span class="p-tag">TOURS</span></a></div>
                 <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Tiqets')"><span class="p-icon">🎟️</span><span class="p-name">Tiqets</span><span class="p-tag">AWIN</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19859&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi CA')"><span class="p-icon">✈️</span><span class="p-name">Kiwi CA</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=20563&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi MX')"><span class="p-icon">✈️</span><span class="p-name">Kiwi MX</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19856&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi US')"><span class="p-icon">✈️</span><span class="p-name">Kiwi US</span><span class="p-tag">FLIGHT</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=29767&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Extranomical Tours (US)')"><span class="p-icon">🗺️</span><span class="p-name">Extranomical Tours (US)</span><span class="p-tag">TOURS</span></a></div>
               </div>
             </div>
 
@@ -675,11 +747,14 @@
             <div class="partner-cat" id="cat-other">
               <div class="partner-cat-header" onclick="toggleCat('cat-other')">
                 <span><span class="cat-icon">🎁</span>Other</span>
-                <span class="cat-count">1</span>
+                <span class="cat-count">4</span>
                 <span class="chevron">▶</span>
               </div>
               <div class="partner-items">
                 <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=40342&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('ALLPOWERS')"><span class="p-icon">🔋</span><span class="p-name">ALLPOWERS</span><span class="p-tag">GEAR</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109230&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Tsarbomba')"><span class="p-icon">⌚</span><span class="p-name">Tsarbomba</span><span class="p-tag">SHOP</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=50899&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Xuchang Aixiu Hair Products Co., Ltd.')"><span class="p-icon">💇</span><span class="p-name">Xuchang Aixiu Hair Products Co., Ltd.</span><span class="p-tag">SHOP</span></a></div>
+                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109444&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('LogoNerds.com')"><span class="p-icon">🎨</span><span class="p-name">LogoNerds.com</span><span class="p-tag">DESIGN</span></a></div>
               </div>
             </div>
           </div>
@@ -781,6 +856,83 @@ function trackClick(partner) {
 const saved = localStorage.getItem('affiliate_clicks');
 if (saved) Object.assign(clickTracker, JSON.parse(saved));
 
+function getAffiliatePartners() {
+  return Array.from(document.querySelectorAll('.partner-item a')).map((link) => {
+    const nameEl = link.querySelector('.p-name');
+    const tagEl = link.querySelector('.p-tag');
+    const iconEl = link.querySelector('.p-icon');
+    const categoryEl = link.closest('.partner-cat')?.querySelector('.partner-cat-header span');
+    const categoryText = categoryEl ? categoryEl.textContent.replace(/^[^\w]+/, '').trim() : 'Affiliate';
+    const rawName = nameEl ? nameEl.textContent.trim() : 'Partner';
+    const partnerKey = rawName;
+    const clicks = clickTracker[partnerKey] || 0;
+    return {
+      partner: partnerKey,
+      name: rawName,
+      tag: tagEl ? tagEl.textContent.trim() : 'DEAL',
+      icon: iconEl ? iconEl.textContent.trim() : '✨',
+      link: link.href,
+      category: categoryText,
+      clicks
+    };
+  }).filter((item, idx, arr) => item.link && arr.findIndex(x => x.partner === item.partner) == idx);
+}
+
+function buildBannerMessage(item, mode) {
+  if (mode === 'top') {
+    return `${item.icon} ${item.name}: trending with ${item.clicks} click${item.clicks === 1 ? '' : 's'} — open ${item.category} deal`;
+  }
+  if (mode === 'fresh') {
+    return `${item.icon} ${item.name}: featured ${item.category.toLowerCase()} pick right now`;
+  }
+  return `${item.icon} ${item.name}: explore this ${item.tag.toLowerCase()} partner offer`;
+}
+
+function getSmartBannerPool() {
+  const partners = getAffiliatePartners();
+  const sortedByClicks = [...partners].sort((a, b) => (b.clicks - a.clicks) || a.name.localeCompare(b.name));
+  const topClicked = sortedByClicks.filter(item => item.clicks > 0).slice(0, 4).map(item => ({ ...item, mode: 'top' }));
+  const featuredFallback = partners.filter(item => !topClicked.some(top => top.partner === item.partner));
+  const curated = featuredFallback.filter(item => ['HOT', 'HOTEL', 'FLIGHT', 'RENT', 'eSIM', 'DATA', 'TOURS', 'PASS'].includes(item.tag)).slice(0, 8);
+  const remaining = featuredFallback.filter(item => !curated.some(cur => cur.partner === item.partner)).slice(0, 8);
+  return [...topClicked, ...curated.map(item => ({ ...item, mode: 'fresh' })), ...remaining.map(item => ({ ...item, mode: 'standard' }))];
+}
+
+let currentBannerIndex = 0;
+let partnerBannerPool = [];
+
+function rotatePartnerBanner() {
+  const bannerEl = document.getElementById('partner-banner');
+  if (!bannerEl) return;
+
+  if (!partnerBannerPool.length) {
+    partnerBannerPool = getSmartBannerPool();
+  }
+  if (!partnerBannerPool.length) {
+    bannerEl.innerHTML = '<span class="mall-banner-message">No partner banners available.</span>';
+    return;
+  }
+
+  const banner = partnerBannerPool[currentBannerIndex % partnerBannerPool.length];
+  bannerEl.innerHTML = `
+    <a href="${banner.link}" target="_blank" rel="noopener" id="banner-link">
+      <span class="mall-banner-message">${buildBannerMessage(banner, banner.mode)}</span>
+      <span class="mall-banner-sub">${banner.category} • ${banner.tag} • ${banner.clicks > 0 ? 'Top clicked partner' : 'Featured rotation'}</span>
+    </a>
+  `;
+
+  const linkEl = document.getElementById('banner-link');
+  if (linkEl) {
+    linkEl.addEventListener('click', () => {
+      trackClick(banner.partner);
+      partnerBannerPool = [];
+    }, { once: true });
+  }
+
+  currentBannerIndex = (currentBannerIndex + 1) % Math.max(partnerBannerPool.length, 1);
+}
+
+
 const VIDEO_POOL = [
   { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M' },
   { platform: 'TikTok', title: 'Quick Travel Tips', desc: 'Budget hacks', type: 'tiktok', id: '@travelguy/video/7234567890', views: '1.8M' },
@@ -860,6 +1012,9 @@ function buildHeroCard(item) {
   
   return card;
 }
+
+rotatePartnerBanner();
+setInterval(rotatePartnerBanner, 12000);
 
 (function seed() {
   document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
