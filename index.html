@@ -1304,7 +1304,7 @@
                   <span class="chevron">▶</span>
                 </div>
                 <div class="partner-items">
-                  <div class="partner-item"><a href="https://https://klook.tpo.lv/pTp1NljF".replace('https://https://','https://') target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Klook</span><span class="p-tag">Tours</span></a></div>
+                  <div class="partner-item"><a href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Klook</span><span class="p-tag">Tours</span></a></div>
                   <div class="partner-item"><a href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener"><div class="p-icon">🎫</div><span class="p-name">WeGoTrip</span><span class="p-tag">Tours</span></a></div>
                   <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Tiqets DE</span><span class="p-tag">Affiliate</span></a></div>
                   <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Tiqets FR</span><span class="p-tag">Affiliate</span></a></div>
@@ -1591,30 +1591,21 @@ function rotatePartnerBanner() {
 }
 
 
-const VIDEO_POOL = [
-  { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M', previewUrl: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
-  { platform: 'TikTok', title: 'Quick Travel Tips', desc: 'Budget hacks', type: 'tiktok', id: '@travelguy/video/7234567890', views: '1.8M', previewUrl: 'https://via.placeholder.com/640x360/000000/ffffff?text=TikTok+Trending', url: 'https://www.tiktok.com/@travelguy/video/7234567890' },
-  { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', id: 'jNQXAC9IVRw', views: '890K', previewUrl: 'https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=jNQXAC9IVRw' },
-  { platform: 'Instagram', title: 'Adventure Stories', desc: 'Epic journeys', type: 'instagram', id: 'p/CdE5FgH', views: '1.5M', previewUrl: 'https://via.placeholder.com/640x360/111111/ffffff?text=Instagram+Reel', url: 'https://www.instagram.com/p/CdE5FgH' },
-  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', id: '9bZkp7q19f0', views: '1.2M', previewUrl: 'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=9bZkp7q19f0' },
-  { platform: 'Reddit', title: 'Amazing Life Hacks', desc: 'Community stories', type: 'reddit', id: 'r/travel/comments/abc123', views: '950K', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit+Viral', url: 'https://reddit.com/r/travel/comments/abc123' },
-  { platform: 'TikTok', title: 'Viral Trends', desc: "This week's hot", type: 'tiktok', id: '@trends/video/7345678901', views: '3.2M', previewUrl: 'https://via.placeholder.com/640x360/000000/ffffff?text=TikTok+Viral', url: 'https://www.tiktok.com/@trends/video/7345678901' },
-  { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', id: 'M7lc1UVf-VE', views: '345K', previewUrl: 'https://img.youtube.com/vi/M7lc1UVf-VE/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=M7lc1UVf-VE' },
-  { platform: 'Instagram', title: 'Dream Destinations', desc: 'Bucket list', type: 'instagram', id: 'p/CeF6GhI', views: '2.1M', previewUrl: 'https://via.placeholder.com/640x360/111111/ffffff?text=Instagram+Travel', url: 'https://www.instagram.com/p/CeF6GhI' },
-  { platform: 'Reddit', title: 'Hidden Gems', desc: 'Local favorites', type: 'reddit', id: 'r/travel/comments/def456', views: '720K', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit+Hidden+Gems', url: 'https://reddit.com/r/travel/comments/def456' },
-  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', id: '0ml4GHJfh-I', views: '1.8M', previewUrl: 'https://img.youtube.com/vi/0ml4GHJfh-I/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=0ml4GHJfh-I' },
-  { platform: 'TikTok', title: 'Summer Vibes', desc: 'Feel good content', type: 'tiktok', id: '@vibes/video/7456789012', views: '2.7M', previewUrl: 'https://via.placeholder.com/640x360/000000/ffffff?text=TikTok+Summer', url: 'https://www.tiktok.com/@vibes/video/7456789012' }
-];
 
-function getEmbedIcon(item) {
-  const icons = { 'youtube': '▶️', 'tiktok': '♪', 'instagram': '📷', 'reddit': '🔴' };
-  return icons[item.type] || '🎬';
-}
+const VIDEO_POOL = [
+  { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', views: '2.1M', previewUrl: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+  { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', views: '890K', previewUrl: 'https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=jNQXAC9IVRw' },
+  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', views: '1.2M', previewUrl: 'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=9bZkp7q19f0' },
+  { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', views: '345K', previewUrl: 'https://img.youtube.com/vi/M7lc1UVf-VE/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=M7lc1UVf-VE' },
+  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', views: '1.8M', previewUrl: 'https://img.youtube.com/vi/0ml4GHJfh-I/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=0ml4GHJfh-I' },
+  { platform: 'Reddit', title: 'Trending on Reddit', desc: 'Hot posts from r/videos', type: 'reddit', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit+Hot', url: 'https://www.reddit.com/r/videos/' },
+  { platform: 'Reddit', title: 'Interesting As F***', desc: 'Viral picks', type: 'reddit', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Interesting', url: 'https://www.reddit.com/r/interestingasfuck/' },
+  { platform: 'Reddit', title: 'Next Level', desc: 'Top community clips', type: 'reddit', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Next+Level', url: 'https://www.reddit.com/r/nextfuckinglevel/' }
+];
 
 function getVideoUrl(item) {
   return item.url || '#';
 }
-
 
 function getPreviewImage(item) {
   return item.previewUrl || 'https://via.placeholder.com/640x360?text=Video';
@@ -1635,8 +1626,12 @@ function nextVideo(excludedPlatforms = [], usedSet = new Set()) {
 const usedVideos = new Set();
 
 function buildPromoCard(item) {
-  const card = document.createElement('div');
+  const card = document.createElement('a');
   card.className = 'promo-card';
+  card.href = getVideoUrl(item);
+  card.target = '_blank';
+  card.rel = 'noopener';
+  card.style.cursor = 'pointer';
 
   const thumb = document.createElement('div');
   thumb.className = 'promo-thumb';
@@ -1651,18 +1646,16 @@ function buildPromoCard(item) {
 
   card.appendChild(thumb);
   card.appendChild(body);
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function(e) {
-    e.preventDefault();
-    window.open(getVideoUrl(item), '_blank', 'noopener');
-  });
-
   return card;
 }
 
 function buildHeroCard(item) {
-  const card = document.createElement('div');
+  const card = document.createElement('a');
   card.className = 'hero-card';
+  card.href = getVideoUrl(item);
+  card.target = '_blank';
+  card.rel = 'noopener';
+  card.style.cursor = 'pointer';
 
   const thumb = document.createElement('div');
   thumb.className = 'hero-thumb';
@@ -1675,63 +1668,135 @@ function buildHeroCard(item) {
 
   const actions = document.createElement('div');
   actions.className = 'hero-actions';
-  actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
+  actions.innerHTML = '<span class="hero-action-btn primary">▶ Open</span><span class="hero-stats">👁 ' + item.views + '</span>';
 
   card.appendChild(thumb);
   card.appendChild(actions);
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function(e) {
-    e.preventDefault();
-    window.open(getVideoUrl(item), '_blank', 'noopener');
-  });
-
   return card;
 }
 
+function seedVideoColumns() {
+  const promoFeed = document.getElementById('promoFeed');
+  const heroFeed = document.getElementById('heroFeed');
+  const widgetFeed = document.getElementById('widgetFeed');
+  if (!promoFeed || !heroFeed || !widgetFeed) return;
+  promoFeed.innerHTML = '';
+  heroFeed.innerHTML = '';
+  widgetFeed.innerHTML = '<div class="promo-card"><div class="promo-body"><div class="promo-kicker">Reddit</div><div class="promo-title">Loading live Reddit…</div></div></div>';
+
+  const promoA = nextVideo(['Reddit'], usedVideos);
+  const promoB = nextVideo(['Reddit', promoA.platform], usedVideos);
+  const heroA = nextVideo(['Reddit'], usedVideos);
+  const heroB = nextVideo(['Reddit', heroA.platform], usedVideos);
+
+  promoFeed.appendChild(buildPromoCard(promoA));
+  promoFeed.appendChild(buildPromoCard(promoB));
+  heroFeed.appendChild(buildHeroCard(heroA));
+  heroFeed.appendChild(buildHeroCard(heroB));
+}
+
+async function loadLiveReddit(subreddit = 'videos') {
+  const widgetFeed = document.getElementById('widgetFeed');
+  if (!widgetFeed) return;
+  try {
+    const res = await fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=6`, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error('Reddit request failed');
+    const data = await res.json();
+    const posts = (data?.data?.children || [])
+      .map(x => x.data)
+      .filter(post => post && post.permalink && post.title);
+
+    widgetFeed.innerHTML = '';
+    let added = 0;
+    for (const post of posts) {
+      const thumb = typeof post.thumbnail === 'string' && /^https?:/i.test(post.thumbnail)
+        ? post.thumbnail
+        : 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit+Hot';
+      const item = {
+        platform: 'Reddit',
+        title: post.title,
+        desc: `r/${subreddit} • ${post.ups || 0} upvotes`,
+        type: 'reddit',
+        views: 'LIVE',
+        previewUrl: thumb,
+        url: 'https://www.reddit.com' + post.permalink
+      };
+      widgetFeed.appendChild(buildPromoCard(item));
+      added += 1;
+      if (added >= 6) break;
+    }
+    if (!added) throw new Error('No usable Reddit posts');
+  } catch (err) {
+    widgetFeed.innerHTML = '';
+    ['videos', 'interestingasfuck', 'nextfuckinglevel'].forEach((sub, i) => {
+      const item = {
+        platform: 'Reddit',
+        title: i === 0 ? 'Trending Videos' : (i === 1 ? 'Interesting As F***' : 'Next Level'),
+        desc: `Open r/${sub}`,
+        type: 'reddit',
+        views: 'LIVE',
+        previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit',
+        url: `https://www.reddit.com/r/${sub}/`
+      };
+      widgetFeed.appendChild(buildPromoCard(item));
+    });
+  }
+}
 
 (function seed() {
-  const promoA = nextVideo([], usedVideos);
-  const promoB = nextVideo([promoA.platform], usedVideos);
-  const heroA = nextVideo([promoA.platform, promoB.platform], usedVideos);
-  const heroB = nextVideo([promoA.platform, promoB.platform, heroA.platform], usedVideos);
-  const widgetA = nextVideo([promoA.platform, promoB.platform, heroA.platform, heroB.platform], usedVideos);
-  const widgetB = nextVideo([promoA.platform, promoB.platform, heroA.platform, heroB.platform, widgetA.platform], usedVideos);
-
-  document.getElementById('promoFeed').appendChild(buildPromoCard(promoA));
-  document.getElementById('promoFeed').appendChild(buildPromoCard(promoB));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(heroA));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(heroB));
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(widgetA));
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(widgetB));
+  seedVideoColumns();
+  loadLiveReddit('videos');
 })();
 
-let promoIdx = Math.floor(Math.random() * VIDEO_POOL.length);
-let heroIdx = Math.floor(Math.random() * VIDEO_POOL.length);
-let widgetIdx = Math.floor(Math.random() * VIDEO_POOL.length);
+let promoIdx = 0;
+let heroIdx = 0;
+let widgetIdx = 0;
 
-function makeObserver(sentinelId, feedId, builder, getIdxFunc, setIdxFunc) {
-  const sentinel = document.getElementById(sentinelId);
-  const feed = document.getElementById(feedId);
-  
-  const obs = new IntersectionObserver(function(entries) {
-    if (!entries[0].isIntersecting) return;
-    const currentIdx = getIdxFunc();
-    const item = VIDEO_POOL[currentIdx % VIDEO_POOL.length];
-    feed.appendChild(builder(item));
-    setIdxFunc(currentIdx + 1);
-  }, { rootMargin: '300px' });
-  
-  obs.observe(sentinel);
+function loadMorePromos() {
+  const item = nextVideo(['Reddit'], usedVideos);
+  document.getElementById('promoFeed').appendChild(buildPromoCard(item));
+  promoIdx += 1;
 }
 
-makeObserver('promoSentinel', 'promoFeed', buildPromoCard, function() { return promoIdx; }, function(val) { promoIdx = val; });
-makeObserver('heroSentinel', 'heroFeed', buildHeroCard, function() { return heroIdx; }, function(val) { heroIdx = val; });
-makeObserver('widgetSentinel', 'widgetFeed', buildPromoCard, function() { return widgetIdx; }, function(val) { widgetIdx = val; });
-
-function toggleCat(id) {
-  document.getElementById(id).classList.toggle('open');
+function loadMoreHero() {
+  const item = nextVideo(['Reddit'], usedVideos);
+  document.getElementById('heroFeed').appendChild(buildHeroCard(item));
+  heroIdx += 1;
 }
 
+function loadMoreWidgets() {
+  loadLiveReddit(['videos','interestingasfuck','nextfuckinglevel'][Math.floor(Math.random()*3)]);
+  widgetIdx += 1;
+}
+
+function setupInfiniteScroll(containerId, loadFn) {
+  const container = document.getElementById(containerId);
+  if (!container || typeof loadFn !== 'function') return;
+
+  let ticking = false;
+  container.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+        loadFn();
+      }
+      ticking = false;
+    });
+  });
+}
+
+function openPreviewFromCard(card) {
+  if (!card || card.tagName === 'A') return;
+}
+
+function setupPreview(selector) {
+  return;
+}
+
+setupInfiniteScroll('promoFeed', loadMorePromos);
+setupInfiniteScroll('heroFeed', loadMoreHero);
+setupInfiniteScroll('widgetFeed', loadMoreWidgets);
 const _partnerSearch = document.getElementById('partnerSearch');
 if (_partnerSearch) {
   _partnerSearch.addEventListener('input', function() {
