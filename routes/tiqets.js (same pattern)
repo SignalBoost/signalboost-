@@ -1,0 +1,15 @@
+router.get("/", async (req, res) => {
+  const { cursor = 0 } = req.query;
+  const cacheKey = `tiqets:${cursor}`;
+
+  const cached = await getCache(cacheKey);
+  if (cached) return res.json(cached);
+
+  const response = await fetch(
+    `https://api.tiqets.com/v2/products?offset=${cursor}&limit=10&apikey=${process.env.TIQETS_KEY}`
+  );
+  const data = await response.json();
+
+  await setCache(cacheKey, data, 600); // cache for 10 minutes
+  res.json(data);
+});
