@@ -141,3 +141,17 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+import express from "express";
+import dotenv from "dotenv";
+import trivagoRoutes from "./routes/trivago.js";
+import tiqetsRoutes from "./routes/tiqets.js";
+import kiwiRoutes from "./routes/kiwi.js";
+
+dotenv.config();
+const app = express();
+
+app.use("/api/trivago", trivagoRoutes);
+app.use("/api/tiqets", tiqetsRoutes);
+app.use("/api/kiwi", kiwiRoutes);
+
+app.listen(4000, () => console.log("Backend running on http://localhost:4000"));
