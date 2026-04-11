@@ -1084,15 +1084,7 @@
 }
 
 
-/* ===== Column Five replacement ===== */
-.column-five {
-  font-family: Arial, sans-serif !important;
-  background: #f9f9f9 !important;
-  padding: 15px !important;
-  border-radius: 8px !important;
-  color: #222 !important;
-}
-.column-five a { color: inherit; text-decoration: none; }
+/* Column Five user version */
 .search-box input {
   width: 100%;
   padding: 10px;
@@ -1100,18 +1092,9 @@
   border-radius: 6px;
   font-size: 14px;
   transition: box-shadow 0.3s ease;
-  background: #fff;
-  color: #111;
 }
-.search-box input:focus {
-  outline: none;
-  box-shadow: 0 0 8px rgba(0, 150, 255, 0.5);
-}
-.markets {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 15px;
-}
+.search-box input:focus { box-shadow: 0 0 8px rgba(0, 150, 255, 0.5); }
+.markets { display: flex; flex-wrap: wrap; margin-top: 15px; }
 .tile {
   flex: 1 1 45%;
   margin: 5px;
@@ -1120,71 +1103,84 @@
   border-radius: 6px;
   text-align: center;
   font-size: 13px;
-  transition: transform .18s ease, box-shadow .18s ease;
 }
-.tile:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0,0,0,.12);
-}
-.news-feed {
-  margin-top: 20px;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-}
-.news-feed h3 {
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: #111;
-}
-.news-feed ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 12px 0;
-}
-.news-feed li {
-  margin-bottom: 5px;
-  font-size: 13px;
-}
-.news-feed li a:hover,
-.tile a:hover { text-decoration: underline; }
+.tile a { color: #111; text-decoration: none; }
+.custom-news-feed { margin-top: 20px; }
+.custom-news-feed h3 { margin-bottom: 5px; font-size: 14px; }
+.custom-news-feed ul { list-style: none; padding: 0; }
+.custom-news-feed li { margin-bottom: 5px; font-size: 13px; }
+.custom-news-feed a { color: var(--text); text-decoration: none; }
 .weather {
   margin-top: 20px;
   font-size: 13px;
   background: #eef6ff;
+  color: #111;
   padding: 10px;
   border-radius: 6px;
-  color: #1d2a3a;
 }
-.weather p { margin: 3px 0; }
-.platform-logos {
-  display: flex !important;
+.custom-platform-logos {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
-  gap: 0;
+  gap: 8px;
 }
-.platform-logos a {
-  display: inline-flex;
+.custom-platform-logos .logo-link {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  width: 54px;
+  text-decoration: none;
 }
-.platform-logos .logo-tile {
-  width: 28px !important;
-  height: 28px !important;
-  min-height: 28px !important;
+.custom-platform-logos .logo-tile {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
   margin: 6px;
   transition: transform 0.2s ease;
-  font-size: 14px !important;
-  border-radius: 6px !important;
+  font-size: 16px;
 }
-.platform-logos .logo-tile:hover {
-  transform: scale(1.1);
+.custom-platform-logos .logo-link:hover .logo-tile { transform: scale(1.1); }
+
+
+.partner-feed { margin: 10px 0 12px; }
+.partner-cat.open .partner-items { display: flex; }
+
+
+/* Rotating Affiliate Banner */
+.mall-banner {
+  background: linear-gradient(90deg, #ff004f, #ff7a00);
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid #222;
+}
+.mall-banner a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+}
+.mall-banner-message {
+  display: block;
+  font-size: 14px;
+}
+.mall-banner-sub {
+  display: block;
+  font-size: 12px;
+  opacity: 0.8;
 }
 
 </style>
 </head>
 <body>
+
+<div class="mall-banner" id="mallBanner">
+  <a href="#" id="bannerLink" target="_blank" rel="noopener">
+    <span class="mall-banner-message" id="bannerMessage">Loading…</span>
+    <span class="mall-banner-sub" id="bannerSub">Please wait</span>
+  </a>
+</div>
+
 
 <header class="topbar">
   <div class="topbar-inner">
@@ -1250,52 +1246,118 @@
 
             <p id="noResults" style="display:none; font-size:13px;">No results found.</p>
 
-            <div class="accordion travel us">
-              <button class="accordion-btn primary">✈️ Travel</button>
-              <div class="accordion-content">
-                <a href="https://www.expedia.com" target="_blank" rel="noopener"><span class="icon">✈️</span>Expedia</a>
-                <a href="https://www.tripadvisor.com" target="_blank" rel="noopener"><span class="icon">🌍</span>TripAdvisor</a>
-                <a href="https://www.kayak.com" target="_blank" rel="noopener"><span class="icon">🔍</span>Kayak</a>
-                <a href="https://www.skyscanner.com" target="_blank" rel="noopener"><span class="icon">🛫</span>Skyscanner</a>
+            <div class="partner-feed" id="affiliateHub">
+
+              <div class="partner-cat open">
+                <div class="partner-cat-header">
+                  <span class="cat-icon">🏨</span> Hotels & Booking
+                  <span class="cat-count">12</span>
+                  <span class="chevron">▶</span>
+                </div>
+                <div class="partner-items">
+                  <div class="partner-item"><a href="https://hotels.tpo.lv/rHr4mbOu" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Hotels.com</span><span class="p-tag">Book</span></a></div>
+                  <div class="partner-item"><a href="https://agoda.tpo.lv/UEhQ1dwR" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Agoda</span><span class="p-tag">Book</span></a></div>
+                  <div class="partner-item"><a href="https://www.trivago.com" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago</span><span class="p-tag">Compare</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago AR</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago BR</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105935&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago CO</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago DE</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago MX</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66032&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago NZ</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105927&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago PE</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Trivago USA</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener"><div class="p-icon">🏨</div><span class="p-name">Booking / Kiwi Offer</span><span class="p-tag">Deal</span></a></div>
+                </div>
               </div>
+
+              <div class="partner-cat">
+                <div class="partner-cat-header">
+                  <span class="cat-icon">✈️</span> Flights, Transfers & Mobility
+                  <span class="cat-count">15</span>
+                  <span class="chevron">▶</span>
+                </div>
+                <div class="partner-items">
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">✈️</div><span class="p-name">Kiwi CA</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">✈️</div><span class="p-name">Kiwi MX</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">✈️</div><span class="p-name">Kiwi US</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener"><div class="p-icon">✈️</div><span class="p-name">Aviasales</span><span class="p-tag">Flights</span></a></div>
+                  <div class="partner-item"><a href="https://gettransfer.tpo.lv/Pb4p9ljm" target="_blank" rel="noopener"><div class="p-icon">🚕</div><span class="p-name">GetTransfer</span><span class="p-tag">Transfer</span></a></div>
+                  <div class="partner-item"><a href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" rel="noopener"><div class="p-icon">🚕</div><span class="p-name">Kiwitaxi</span><span class="p-tag">Transfer</span></a></div>
+                  <div class="partner-item"><a href="https://tpo.lv/XAJOoobr" target="_blank" rel="noopener"><div class="p-icon">🚗</div><span class="p-name">Welcome Pickups</span><span class="p-tag">Transfer</span></a></div>
+                  <div class="partner-item"><a href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" rel="noopener"><div class="p-icon">🚐</div><span class="p-name">intui.travel</span><span class="p-tag">Transfer</span></a></div>
+                  <div class="partner-item"><a href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener"><div class="p-icon">🚗</div><span class="p-name">EconomyBookings</span><span class="p-tag">Rental</span></a></div>
+                  <div class="partner-item"><a href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener"><div class="p-icon">🚗</div><span class="p-name">QEEQ</span><span class="p-tag">Rental</span></a></div>
+                  <div class="partner-item"><a href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" rel="noopener"><div class="p-icon">🚗</div><span class="p-name">GetRentacar</span><span class="p-tag">Rental</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🚗</div><span class="p-name">Europcar AU/NZ</span><span class="p-tag">Rental</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🚙</div><span class="p-name">Allycar</span><span class="p-tag">Rental</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🚘</div><span class="p-name">Carmel Car & Limousine</span><span class="p-tag">Limo</span></a></div>
+                  <div class="partner-item"><a href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener"><div class="p-icon">🚗</div><span class="p-name">Localrent</span><span class="p-tag">Rental</span></a></div>
+                </div>
+              </div>
+
+              <div class="partner-cat">
+                <div class="partner-cat-header">
+                  <span class="cat-icon">🎟️</span> Tours, Activities & Travel Services
+                  <span class="cat-count">13</span>
+                  <span class="chevron">▶</span>
+                </div>
+                <div class="partner-items">
+                  <div class="partner-item"><a href="https://https://klook.tpo.lv/pTp1NljF".replace('https://https://','https://') target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Klook</span><span class="p-tag">Tours</span></a></div>
+                  <div class="partner-item"><a href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener"><div class="p-icon">🎫</div><span class="p-name">WeGoTrip</span><span class="p-tag">Tours</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Tiqets DE</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Tiqets FR</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Tiqets IT</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Tiqets UK</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎟️</div><span class="p-name">Tiqets US</span><span class="p-tag">Affiliate</span></a></div>
+                  <div class="partner-item"><a href="https://bikesbooking.tpo.lv/B3zIKanS" target="_blank" rel="noopener"><div class="p-icon">🚲</div><span class="p-name">BikesBooking</span><span class="p-tag">Booking</span></a></div>
+                  <div class="partner-item"><a href="https://searadar.tpo.lv/TO4A5eBZ" target="_blank" rel="noopener"><div class="p-icon">⛵</div><span class="p-name">SeaRadar</span><span class="p-tag">Yacht</span></a></div>
+                  <div class="partner-item"><a href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener"><div class="p-icon">🧳</div><span class="p-name">Radical Storage</span><span class="p-tag">Storage</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=29767&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🌉</div><span class="p-name">Extranomical Tours</span><span class="p-tag">Tours</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🌴</div><span class="p-name">Desire Experience</span><span class="p-tag">Resort</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🌴</div><span class="p-name">Temptation Experience</span><span class="p-tag">Resort</span></a></div>
+                </div>
+              </div>
+
+              <div class="partner-cat">
+                <div class="partner-cat-header">
+                  <span class="cat-icon">📶</span> Connectivity, Safety & Visa
+                  <span class="cat-count">10</span>
+                  <span class="chevron">▶</span>
+                </div>
+                <div class="partner-items">
+                  <div class="partner-item"><a href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener"><div class="p-icon">📶</div><span class="p-name">Yesim</span><span class="p-tag">eSIM</span></a></div>
+                  <div class="partner-item"><a href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener"><div class="p-icon">📱</div><span class="p-name">Airalo</span><span class="p-tag">eSIM</span></a></div>
+                  <div class="partner-item"><a href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener"><div class="p-icon">📡</div><span class="p-name">Drimsim</span><span class="p-tag">SIM</span></a></div>
+                  <div class="partner-item"><a href="https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629" target="_blank" rel="noopener"><div class="p-icon">📶</div><span class="p-name">Saily</span><span class="p-tag">eSIM</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">📶</div><span class="p-name">The BitJoy eSIM</span><span class="p-tag">eSIM</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🛂</div><span class="p-name">eVisa</span><span class="p-tag">Visa</span></a></div>
+                  <div class="partner-item"><a href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener"><div class="p-icon">🛫</div><span class="p-name">AirHelp</span><span class="p-tag">Claims</span></a></div>
+                  <div class="partner-item"><a href="https://compensair.tpo.lv/wxDDCITG" target="_blank" rel="noopener"><div class="p-icon">💼</div><span class="p-name">Compensair</span><span class="p-tag">Claims</span></a></div>
+                  <div class="partner-item"><a href="https://ektatraveling.tpo.lv/XWbZbj8S" target="_blank" rel="noopener"><div class="p-icon">🛡️</div><span class="p-name">EKTA</span><span class="p-tag">Insurance</span></a></div>
+                  <div class="partner-item"><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener"><div class="p-icon">🔒</div><span class="p-name">NordVPN Offer</span><span class="p-tag">VPN</span></a></div>
+                </div>
+              </div>
+
+              <div class="partner-cat">
+                <div class="partner-cat-header">
+                  <span class="cat-icon">🛍️</span> Shopping & Misc
+                  <span class="cat-count">8</span>
+                  <span class="chevron">▶</span>
+                </div>
+                <div class="partner-items">
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">⌚</div><span class="p-name">Tsarbomba</span><span class="p-tag">Watch</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">💇</div><span class="p-name">Aixiu Hair Products</span><span class="p-tag">Beauty</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109444&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🎨</div><span class="p-name">LogoNerds</span><span class="p-tag">Branding</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🏗️</div><span class="p-name">Builder Market</span><span class="p-tag">Home</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🛏️</div><span class="p-name">King Koil</span><span class="p-tag">Home</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🖼️</div><span class="p-name">PearlMountain</span><span class="p-tag">Software</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🇪🇸</div><span class="p-name">Go! Go! España</span><span class="p-tag">Travel</span></a></div>
+                  <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener"><div class="p-icon">🦁</div><span class="p-name">Go2Africa</span><span class="p-tag">Travel</span></a></div>
+                </div>
+              </div>
+
             </div>
 
-            <div class="accordion hotels eu">
-              <button class="accordion-btn primary">🏨 Hotels</button>
-              <div class="accordion-content">
-                <a href="https://www.booking.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Booking.com</a>
-                <a href="https://www.agoda.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Agoda</a>
-                <a href="https://www.trivago.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Trivago</a>
-                <a href="https://www.hotels.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Hotels.com</a>
-              </div>
-            </div>
-
-            <div class="accordion services us">
-              <button class="accordion-btn primary">🛡️ Services</button>
-              <div class="accordion-content">
-                <a href="#" data-favorite="Insurance"><span class="icon">🛡️</span>Insurance</a>
-                <a href="#" data-favorite="Utilities"><span class="icon">⚡</span>Utilities</a>
-                <a href="#" data-favorite="Payment Platforms"><span class="icon">💳</span>Payment Platforms</a>
-              </div>
-            </div>
-
-            <div class="accordion connectivity us eu asia">
-              <button class="accordion-btn">📶 Connectivity</button>
-              <div class="accordion-content">
-                <a href="https://zoom.us" target="_blank" rel="noopener"><span class="icon">💻</span>Zoom</a>
-                <a href="https://slack.com" target="_blank" rel="noopener"><span class="icon">💬</span>Slack</a>
-                <a href="https://www.whatsapp.com" target="_blank" rel="noopener"><span class="icon">📱</span>WhatsApp</a>
-              </div>
-            </div>
-
-            <div class="accordion misc us eu asia">
-              <button class="accordion-btn">➕ More</button>
-              <div class="accordion-content">
-                <a href="#" data-favorite="Hair Products"><span class="icon">🛍️</span>Hair Products</a>
-                <a href="#" data-favorite="Logo Design"><span class="icon">🎨</span>Logo Design</a>
-                <a href="#" data-favorite="Misc Shops"><span class="icon">🛒</span>Misc Shops</a>
-              </div>
-            </div>
 
             <div class="hotel-map-widget">
               <h4>Hotel Map</h4>
@@ -1383,55 +1445,56 @@
           <span class="panel-badge">LIVE</span>
         </div>
         <div class="panel-body dashboard-content">
+          
           <div class="column-five">
-  <div class="search-box">
-    <input type="text" placeholder="Ask Anything...">
-  </div>
+            <div class="search-box">
+              <input type="text" placeholder="Ask Anything...">
+            </div>
 
-  <div class="markets">
-    <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Dow Jones: 38,200 (+0.45%)</a></div>
-    <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Nasdaq: 15,100 (-0.12%)</a></div>
-    <div class="tile"><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil WTI: $82.40 (+1.02%)</a></div>
-    <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">BTC: $68,240 (+2.31%)</a></div>
-    <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">ETH: $3,540 (+1.07%)</a></div>
-  </div>
+            <div class="markets">
+              <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Dow Jones: 38,200 (+0.45%)</a></div>
+              <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Nasdaq: 15,100 (-0.12%)</a></div>
+              <div class="tile"><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil WTI: $82.40 (+1.02%)</a></div>
+              <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">BTC: $68,240 (+2.31%)</a></div>
+              <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">ETH: $3,540 (+1.07%)</a></div>
+            </div>
 
-  <div class="news-feed">
-    <h3>Yahoo Finance</h3>
-    <ul>
-      <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Markets open higher as tech leads gains</a></li>
-      <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Investors eye inflation signals</a></li>
-    </ul>
-    <h3>CNBC</h3>
-    <ul>
-      <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Travel demand remains firm</a></li>
-      <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil prices climb on supply concerns</a></li>
-    </ul>
-  </div>
+            <div class="news-feed custom-news-feed">
+              <h3>Yahoo Finance</h3>
+              <ul>
+                <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Markets open higher as tech leads gains</a></li>
+                <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Investors eye inflation signals</a></li>
+              </ul>
+              <h3>CNBC</h3>
+              <ul>
+                <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Travel demand remains firm</a></li>
+                <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil prices climb on supply concerns</a></li>
+              </ul>
+            </div>
 
-  <div class="weather">
-    <p>Kingston: 28°C, Partly Cloudy</p>
-    <p>Sun: 30°C / 24°C</p>
-    <p>Mon: 29°C / 23°C</p>
-    <p>Tue: 31°C / 25°C</p>
-  </div>
+            <div class="weather">
+              <p>Kingston: 28°C, Partly Cloudy</p>
+              <p>Sun: 30°C / 24°C</p>
+              <p>Mon: 29°C / 23°C</p>
+              <p>Tue: 31°C / 25°C</p>
+            </div>
 
-  <div class="platform-logos">
-    <a href="https://finance.yahoo.com" target="_blank" rel="noopener" aria-label="Yahoo Finance"><div class="logo-tile">Y</div></a>
-    <a href="https://www.bloomberg.com" target="_blank" rel="noopener" aria-label="Bloomberg"><div class="logo-tile">B</div></a>
-    <a href="https://www.cnbc.com" target="_blank" rel="noopener" aria-label="CNBC"><div class="logo-tile">C</div></a>
-    <a href="https://coinmarketcap.com" target="_blank" rel="noopener" aria-label="CoinMarketCap"><div class="logo-tile">₿</div></a>
-    <a href="https://weather.com" target="_blank" rel="noopener" aria-label="Weather"><div class="logo-tile">☁</div></a>
+            <div class="platform-logos custom-platform-logos">
+              <a href="https://finance.yahoo.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">Y</div><div class="logo-name">Yahoo</div></a>
+              <a href="https://www.bloomberg.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">B</div><div class="logo-name">Bloomberg</div></a>
+              <a href="https://www.cnbc.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">C</div><div class="logo-name">CNBC</div></a>
+              <a href="https://coinmarketcap.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">₿</div><div class="logo-name">CMC</div></a>
+              <a href="https://weather.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">☁</div><div class="logo-name">Weather</div></a>
+              <a href="https://www.facebook.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">f</div><div class="logo-name">Facebook</div></a>
+              <a href="https://www.instagram.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">📷</div><div class="logo-name">Instagram</div></a>
+              <a href="https://x.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">𝕏</div><div class="logo-name">X</div></a>
+              <a href="https://www.reddit.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">🔴</div><div class="logo-name">Reddit</div></a>
+              <a href="https://www.tiktok.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">♪</div><div class="logo-name">TikTok</div></a>
+              <a href="https://telegram.org" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">✈</div><div class="logo-name">Telegram</div></a>
+              <a href="https://truthsocial.com" target="_blank" rel="noopener" class="logo-link"><div class="logo-tile">🇺🇸</div><div class="logo-name">Truth</div></a>
+            </div>
+          </div>
 
-    <a href="https://www.facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><div class="logo-tile">f</div></a>
-    <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><div class="logo-tile">📷</div></a>
-    <a href="https://x.com" target="_blank" rel="noopener" aria-label="X"><div class="logo-tile">𝕏</div></a>
-    <a href="https://www.reddit.com" target="_blank" rel="noopener" aria-label="Reddit"><div class="logo-tile">🔴</div></a>
-    <a href="https://www.tiktok.com" target="_blank" rel="noopener" aria-label="TikTok"><div class="logo-tile">♪</div></a>
-    <a href="https://telegram.org" target="_blank" rel="noopener" aria-label="Telegram"><div class="logo-tile">✈</div></a>
-    <a href="https://truthsocial.com" target="_blank" rel="noopener" aria-label="Truth Social"><div class="logo-tile">🇺🇸</div></a>
-  </div>
-</div>
         </div>
       </div>
     </aside>
@@ -1527,18 +1590,18 @@ function rotatePartnerBanner() {
 
 
 const VIDEO_POOL = [
-  { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M' },
-  { platform: 'TikTok', title: 'Quick Travel Tips', desc: 'Budget hacks', type: 'tiktok', id: '@travelguy/video/7234567890', views: '1.8M' },
-  { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', id: 'jNQXAC9IVRw', views: '890K' },
-  { platform: 'Instagram', title: 'Adventure Stories', desc: 'Epic journeys', type: 'instagram', id: 'p/CdE5FgH', views: '1.5M' },
-  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', id: '9bZkp7q19f0', views: '1.2M' },
-  { platform: 'Reddit', title: 'Amazing Life Hacks', desc: 'Community stories', type: 'reddit', id: 'r/travel/comments/abc123', views: '950K' },
-  { platform: 'TikTok', title: 'Viral Trends', desc: 'This week\'s hot', type: 'tiktok', id: '@trends/video/7345678901', views: '3.2M' },
-  { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', id: '90509568', views: '345K' },
-  { platform: 'Instagram', title: 'Dream Destinations', desc: 'Bucket list', type: 'instagram', id: 'p/CeF6GhI', views: '2.1M' },
-  { platform: 'Reddit', title: 'Hidden Gems', desc: 'Local favorites', type: 'reddit', id: 'r/travel/comments/def456', views: '720K' },
-  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', id: '0ml4GHJfh-I', views: '1.8M' },
-  { platform: 'TikTok', title: 'Summer Vibes', desc: 'Feel good content', type: 'tiktok', id: '@vibes/video/7456789012', views: '2.7M' },
+  { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M', previewUrl: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+  { platform: 'TikTok', title: 'Quick Travel Tips', desc: 'Budget hacks', type: 'tiktok', id: '@travelguy/video/7234567890', views: '1.8M', previewUrl: 'https://via.placeholder.com/640x360/000000/ffffff?text=TikTok+Trending', url: 'https://www.tiktok.com/@travelguy/video/7234567890' },
+  { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', id: 'jNQXAC9IVRw', views: '890K', previewUrl: 'https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=jNQXAC9IVRw' },
+  { platform: 'Instagram', title: 'Adventure Stories', desc: 'Epic journeys', type: 'instagram', id: 'p/CdE5FgH', views: '1.5M', previewUrl: 'https://via.placeholder.com/640x360/111111/ffffff?text=Instagram+Reel', url: 'https://www.instagram.com/p/CdE5FgH' },
+  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', id: '9bZkp7q19f0', views: '1.2M', previewUrl: 'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=9bZkp7q19f0' },
+  { platform: 'Reddit', title: 'Amazing Life Hacks', desc: 'Community stories', type: 'reddit', id: 'r/travel/comments/abc123', views: '950K', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit+Viral', url: 'https://reddit.com/r/travel/comments/abc123' },
+  { platform: 'TikTok', title: 'Viral Trends', desc: "This week's hot", type: 'tiktok', id: '@trends/video/7345678901', views: '3.2M', previewUrl: 'https://via.placeholder.com/640x360/000000/ffffff?text=TikTok+Viral', url: 'https://www.tiktok.com/@trends/video/7345678901' },
+  { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', id: 'M7lc1UVf-VE', views: '345K', previewUrl: 'https://img.youtube.com/vi/M7lc1UVf-VE/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=M7lc1UVf-VE' },
+  { platform: 'Instagram', title: 'Dream Destinations', desc: 'Bucket list', type: 'instagram', id: 'p/CeF6GhI', views: '2.1M', previewUrl: 'https://via.placeholder.com/640x360/111111/ffffff?text=Instagram+Travel', url: 'https://www.instagram.com/p/CeF6GhI' },
+  { platform: 'Reddit', title: 'Hidden Gems', desc: 'Local favorites', type: 'reddit', id: 'r/travel/comments/def456', views: '720K', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit+Hidden+Gems', url: 'https://reddit.com/r/travel/comments/def456' },
+  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', id: '0ml4GHJfh-I', views: '1.8M', previewUrl: 'https://img.youtube.com/vi/0ml4GHJfh-I/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=0ml4GHJfh-I' },
+  { platform: 'TikTok', title: 'Summer Vibes', desc: 'Feel good content', type: 'tiktok', id: '@vibes/video/7456789012', views: '2.7M', previewUrl: 'https://via.placeholder.com/640x360/000000/ffffff?text=TikTok+Summer', url: 'https://www.tiktok.com/@vibes/video/7456789012' }
 ];
 
 function getEmbedIcon(item) {
@@ -1547,76 +1610,104 @@ function getEmbedIcon(item) {
 }
 
 function getVideoUrl(item) {
-  const urls = {
-    'youtube': 'https://www.youtube.com/watch?v=' + item.id,
-    'tiktok': 'https://www.tiktok.com/' + item.id,
-    'instagram': 'https://www.instagram.com/' + item.id,
-    'reddit': 'https://reddit.com/' + item.id
-  };
+  return item.url || '#';
+};
   return urls[item.type] || '#';
 }
+
+
+function getPreviewImage(item) {
+  return item.previewUrl || 'https://via.placeholder.com/640x360?text=Video';
+}
+
+function nextVideo(excludedPlatforms = [], usedSet = new Set()) {
+  const candidates = VIDEO_POOL.filter(item => !excludedPlatforms.includes(item.platform) && !usedSet.has(item.url));
+  if (candidates.length) {
+    const choice = candidates[Math.floor(Math.random() * candidates.length)];
+    usedSet.add(choice.url);
+    return choice;
+  }
+  const fallback = VIDEO_POOL[Math.floor(Math.random() * VIDEO_POOL.length)];
+  usedSet.add(fallback.url);
+  return fallback;
+}
+
+const usedVideos = new Set();
 
 function buildPromoCard(item) {
   const card = document.createElement('div');
   card.className = 'promo-card';
-  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
-  const grad = gradients[Math.floor(Math.random() * gradients.length)];
-  const icon = getEmbedIcon(item);
-  
+
   const thumb = document.createElement('div');
-  thumb.className = 'promo-thumb ' + grad;
-  thumb.innerHTML = '<div class="embed-placeholder">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><span class="promo-new-badge">' + item.platform + '</span>';
-  
+  thumb.className = 'promo-thumb';
+  thumb.innerHTML = `
+    <img src="${getPreviewImage(item)}" alt="${item.title}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.src='https://via.placeholder.com/640x360?text=Preview+Unavailable'">
+    <span class="promo-new-badge">${item.platform}</span>
+  `;
+
   const body = document.createElement('div');
   body.className = 'promo-body';
   body.innerHTML = '<div class="promo-kicker">' + item.platform + '</div><div class="promo-title">' + item.title + '</div><div class="promo-desc">' + item.desc + '</div><div class="promo-meta">👁 ' + item.views + '</div>';
-  
+
   card.appendChild(thumb);
   card.appendChild(body);
   card.style.cursor = 'pointer';
-  card.addEventListener('click', function() {
-    window.location.href = getVideoUrl(item);
+  card.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.open(getVideoUrl(item), '_blank', 'noopener');
   });
-  
+
   return card;
 }
 
 function buildHeroCard(item) {
   const card = document.createElement('div');
   card.className = 'hero-card';
-  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
-  const grad = gradients[Math.floor(Math.random() * gradients.length)];
-  const icon = getEmbedIcon(item);
-  
+
   const thumb = document.createElement('div');
-  thumb.className = 'hero-thumb ' + grad;
-  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
-  
+  thumb.className = 'hero-thumb';
+  thumb.innerHTML = `
+    <img src="${getPreviewImage(item)}" alt="${item.title}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.src='https://via.placeholder.com/960x540?text=Preview+Unavailable'">
+    <div class="overlay-grad"></div>
+    <div class="hero-badge">${item.platform}</div>
+    <div class="hero-info"><h3>${item.title}</h3></div>
+  `;
+
   const actions = document.createElement('div');
   actions.className = 'hero-actions';
   actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
-  
+
   card.appendChild(thumb);
   card.appendChild(actions);
   card.style.cursor = 'pointer';
-  card.addEventListener('click', function() {
-    window.location.href = getVideoUrl(item);
+  card.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.open(getVideoUrl(item), '_blank', 'noopener');
   });
-  
+
   return card;
 }
 
 
 (function seed() {
-  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
-  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[1]));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2]));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[3]));
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[4]));
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[5]));
+  const promoA = nextVideo([], usedVideos);
+  const promoB = nextVideo([promoA.platform], usedVideos);
+  const heroA = nextVideo([promoA.platform, promoB.platform], usedVideos);
+  const heroB = nextVideo([promoA.platform, promoB.platform, heroA.platform], usedVideos);
+  const widgetA = nextVideo([promoA.platform, promoB.platform, heroA.platform, heroB.platform], usedVideos);
+  const widgetB = nextVideo([promoA.platform, promoB.platform, heroA.platform, heroB.platform, widgetA.platform], usedVideos);
+
+  document.getElementById('promoFeed').appendChild(buildPromoCard(promoA));
+  document.getElementById('promoFeed').appendChild(buildPromoCard(promoB));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(heroA));
+  document.getElementById('heroFeed').appendChild(buildHeroCard(heroB));
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(widgetA));
+  document.getElementById('widgetFeed').appendChild(buildPromoCard(widgetB));
 })();
 
-let promoIdx = 2, heroIdx = 4, widgetIdx = 2;
+let promoIdx = Math.floor(Math.random() * VIDEO_POOL.length);
+let heroIdx = Math.floor(Math.random() * VIDEO_POOL.length);
+let widgetIdx = Math.floor(Math.random() * VIDEO_POOL.length);
 
 function makeObserver(sentinelId, feedId, builder, getIdxFunc, setIdxFunc) {
   const sentinel = document.getElementById(sentinelId);
@@ -1683,19 +1774,19 @@ function setupInfiniteScroll(containerId, loadFn) {
 }
 
 function loadMorePromos() {
-  const item = VIDEO_POOL[promoIdx % VIDEO_POOL.length];
+  const item = nextVideo([], usedVideos);
   document.getElementById('promoFeed').appendChild(buildPromoCard(item));
   promoIdx += 1;
 }
 
 function loadMoreHero() {
-  const item = VIDEO_POOL[heroIdx % VIDEO_POOL.length];
+  const item = nextVideo([], usedVideos);
   document.getElementById('heroFeed').appendChild(buildHeroCard(item));
   heroIdx += 1;
 }
 
 function loadMoreWidgets() {
-  const item = VIDEO_POOL[widgetIdx % VIDEO_POOL.length];
+  const item = nextVideo([], usedVideos);
   document.getElementById('widgetFeed').appendChild(buildPromoCard(item));
   widgetIdx += 1;
 }
@@ -1731,8 +1822,8 @@ function setupPreview(selector) {
 setupInfiniteScroll('promoFeed', loadMorePromos);
 setupInfiniteScroll('heroFeed', loadMoreHero);
 setupInfiniteScroll('widgetFeed', loadMoreWidgets);
-setupPreview('.promo-card');
-setupPreview('.hero-card');
+
+
 
 </script>
 
@@ -1930,6 +2021,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (serviceFilter) serviceFilter.addEventListener('change', applyFilters);
 
   setupAccordion();
+
+  document.querySelectorAll('.partner-cat-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.parentElement.classList.toggle('open');
+    });
+  });
+
   applyFilters();
   updateMap();
   loadTravelAlerts(regionFilter?.value || 'all');
@@ -1996,6 +2094,36 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSystemPanel();
   setupNotes();
 });
+</script>
+
+
+<script>
+const bannerPartners = [
+  { name: "Trivago US", link: "https://awin1.com/cread.php?awinmid=XXXXX&awinaffid=2834806", sub: "Hotels & Travel Deals" },
+  { name: "Tiqets", link: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806", sub: "Tickets & Attractions" },
+  { name: "Kiwi Flights", link: "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806", sub: "Flights & Travel" },
+  { name: "Holiday Taxis", link: "https://holidaytaxis.tpo.lv/oHwpbrFt", sub: "Airport Transfers" }
+];
+
+let bannerIndex = 0;
+
+function rotateBanner() {
+  const bannerMessage = document.getElementById("bannerMessage");
+  const bannerSub = document.getElementById("bannerSub");
+  const bannerLink = document.getElementById("bannerLink");
+
+  const partner = bannerPartners[bannerIndex];
+  if (!partner) return;
+
+  bannerMessage.textContent = partner.name;
+  bannerSub.textContent = partner.sub;
+  bannerLink.href = partner.link;
+
+  bannerIndex = (bannerIndex + 1) % bannerPartners.length;
+}
+
+rotateBanner();
+setInterval(rotateBanner, 15000);
 </script>
 
 </body>
