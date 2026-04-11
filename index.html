@@ -3,6 +3,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1081,6 +1083,105 @@
   text-align: center;
 }
 
+
+/* ===== Column Five replacement ===== */
+.column-five {
+  font-family: Arial, sans-serif !important;
+  background: #f9f9f9 !important;
+  padding: 15px !important;
+  border-radius: 8px !important;
+  color: #222 !important;
+}
+.column-five a { color: inherit; text-decoration: none; }
+.search-box input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: box-shadow 0.3s ease;
+  background: #fff;
+  color: #111;
+}
+.search-box input:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 150, 255, 0.5);
+}
+.markets {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.tile {
+  flex: 1 1 45%;
+  margin: 5px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 13px;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.12);
+}
+.news-feed {
+  margin-top: 20px;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+.news-feed h3 {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #111;
+}
+.news-feed ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+.news-feed li {
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+.news-feed li a:hover,
+.tile a:hover { text-decoration: underline; }
+.weather {
+  margin-top: 20px;
+  font-size: 13px;
+  background: #eef6ff;
+  padding: 10px;
+  border-radius: 6px;
+  color: #1d2a3a;
+}
+.weather p { margin: 3px 0; }
+.platform-logos {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 0;
+}
+.platform-logos a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.platform-logos .logo-tile {
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  margin: 6px;
+  transition: transform 0.2s ease;
+  font-size: 14px !important;
+  border-radius: 6px !important;
+}
+.platform-logos .logo-tile:hover {
+  transform: scale(1.1);
+}
+
 </style>
 </head>
 <body>
@@ -1283,52 +1384,54 @@
         </div>
         <div class="panel-body dashboard-content">
           <div class="column-five">
-            <h3>Utilities Hub</h3>
+  <div class="search-box">
+    <input type="text" placeholder="Ask Anything...">
+  </div>
 
-            <div class="finance-panel">
-              <h4>Finance</h4>
-              <ul id="finance-list">
-                <li>Loading symbols...</li>
-              </ul>
-            </div>
+  <div class="markets">
+    <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Dow Jones: 38,200 (+0.45%)</a></div>
+    <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Nasdaq: 15,100 (-0.12%)</a></div>
+    <div class="tile"><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil WTI: $82.40 (+1.02%)</a></div>
+    <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">BTC: $68,240 (+2.31%)</a></div>
+    <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">ETH: $3,540 (+1.07%)</a></div>
+  </div>
 
-            <div class="news-feed">
-              <h4>Live Headlines</h4>
-              <ul id="news-list">
-                <li>Loading news...</li>
-              </ul>
-            </div>
+  <div class="news-feed">
+    <h3>Yahoo Finance</h3>
+    <ul>
+      <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Markets open higher as tech leads gains</a></li>
+      <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Investors eye inflation signals</a></li>
+    </ul>
+    <h3>CNBC</h3>
+    <ul>
+      <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Travel demand remains firm</a></li>
+      <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil prices climb on supply concerns</a></li>
+    </ul>
+  </div>
 
-            <div class="system-panel">
-              <h4>System Status</h4>
-              <p>Temperature: <span id="temp">--</span></p>
-              <p>Mode: <span id="mode">--</span></p>
-              <p>Volatility: <span id="volatility">--</span></p>
-            </div>
+  <div class="weather">
+    <p>Kingston: 28°C, Partly Cloudy</p>
+    <p>Sun: 30°C / 24°C</p>
+    <p>Mon: 29°C / 23°C</p>
+    <p>Tue: 31°C / 25°C</p>
+  </div>
 
-            <div class="quick-notes">
-              <h4>Quick Notes</h4>
-              <textarea id="notes" placeholder="Write notes here..."></textarea>
-            </div>
+  <div class="platform-logos">
+    <a href="https://finance.yahoo.com" target="_blank" rel="noopener" aria-label="Yahoo Finance"><div class="logo-tile">Y</div></a>
+    <a href="https://www.bloomberg.com" target="_blank" rel="noopener" aria-label="Bloomberg"><div class="logo-tile">B</div></a>
+    <a href="https://www.cnbc.com" target="_blank" rel="noopener" aria-label="CNBC"><div class="logo-tile">C</div></a>
+    <a href="https://coinmarketcap.com" target="_blank" rel="noopener" aria-label="CoinMarketCap"><div class="logo-tile">₿</div></a>
+    <a href="https://weather.com" target="_blank" rel="noopener" aria-label="Weather"><div class="logo-tile">☁</div></a>
 
-            <div class="platform-logos">
-              <h4>Platforms</h4>
-              <div class="logos-grid">
-                <div><div class="logo-tile">f</div><div class="logo-name">Facebook</div></div>
-                <div><div class="logo-tile">▶</div><div class="logo-name">YouTube</div></div>
-                <div><div class="logo-tile">📷</div><div class="logo-name">Instagram</div></div>
-                <div><div class="logo-tile">♪</div><div class="logo-name">TikTok</div></div>
-                <div><div class="logo-tile">🔴</div><div class="logo-name">Reddit</div></div>
-                <div><div class="logo-tile">💬</div><div class="logo-name">WhatsApp</div></div>
-                <div><div class="logo-tile">💭</div><div class="logo-name">Messenger</div></div>
-                <div><div class="logo-tile">🔗</div><div class="logo-name">WeChat</div></div>
-                <div><div class="logo-tile">𝕏</div><div class="logo-name">X</div></div>
-                <div><div class="logo-tile">👻</div><div class="logo-name">Snapchat</div></div>
-                <div><div class="logo-tile">in</div><div class="logo-name">LinkedIn</div></div>
-                <div><div class="logo-tile">🇺🇸</div><div class="logo-name">Truth Social</div></div>
-              </div>
-            </div>
-          </div>
+    <a href="https://www.facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><div class="logo-tile">f</div></a>
+    <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><div class="logo-tile">📷</div></a>
+    <a href="https://x.com" target="_blank" rel="noopener" aria-label="X"><div class="logo-tile">𝕏</div></a>
+    <a href="https://www.reddit.com" target="_blank" rel="noopener" aria-label="Reddit"><div class="logo-tile">🔴</div></a>
+    <a href="https://www.tiktok.com" target="_blank" rel="noopener" aria-label="TikTok"><div class="logo-tile">♪</div></a>
+    <a href="https://telegram.org" target="_blank" rel="noopener" aria-label="Telegram"><div class="logo-tile">✈</div></a>
+    <a href="https://truthsocial.com" target="_blank" rel="noopener" aria-label="Truth Social"><div class="logo-tile">🇺🇸</div></a>
+  </div>
+</div>
         </div>
       </div>
     </aside>
