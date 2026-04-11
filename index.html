@@ -1107,6 +1107,31 @@
   font-size: 13px;
 }
 .tile a { color: #111; text-decoration: none; }
+.tv-widget {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+.market-links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.market-link {
+  display: block;
+  text-align: center;
+  background: #fff;
+  color: #111;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid #ddd;
+}
+.market-link:hover { background: #f4f4f4; }
 .custom-news-feed { margin-top: 20px; }
 .custom-news-feed h3 { margin-bottom: 5px; font-size: 14px; }
 .custom-news-feed ul { list-style: none; padding: 0; }
@@ -1454,11 +1479,18 @@
             </div>
 
             <div class="markets">
-              <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Dow Jones: 38,200 (+0.45%)</a></div>
-              <div class="tile"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Nasdaq: 15,100 (-0.12%)</a></div>
-              <div class="tile"><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil WTI: $82.40 (+1.02%)</a></div>
-              <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">BTC: $68,240 (+2.31%)</a></div>
-              <div class="tile"><a href="https://coinmarketcap.com" target="_blank" rel="noopener">ETH: $3,540 (+1.07%)</a></div>
+              <div class="tv-widget">
+                <div class="tradingview-widget-container">
+                  <div id="tv-market-widget"></div>
+                </div>
+              </div>
+              <div class="market-links">
+                <a href="https://www.tradingview.com/symbols/DJI/" target="_blank" rel="noopener" class="market-link">Live Dow Jones</a>
+                <a href="https://www.tradingview.com/symbols/NASDAQ-IXIC/" target="_blank" rel="noopener" class="market-link">Live Nasdaq</a>
+                <a href="https://www.tradingview.com/symbols/TVC-USOIL/" target="_blank" rel="noopener" class="market-link">Live WTI Oil</a>
+                <a href="https://www.tradingview.com/symbols/BTCUSD/" target="_blank" rel="noopener" class="market-link">Live BTC</a>
+                <a href="https://www.tradingview.com/symbols/ETHUSD/" target="_blank" rel="noopener" class="market-link">Live ETH</a>
+              </div>
             </div>
 
             <div class="news-feed custom-news-feed">
@@ -1595,12 +1627,12 @@ function rotatePartnerBanner() {
 const VIDEO_POOL = [
   { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', views: '2.1M', previewUrl: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
   { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', views: '890K', previewUrl: 'https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=jNQXAC9IVRw' },
-  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', views: '1.2M', previewUrl: 'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=9bZkp7q19f0' },
   { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', views: '345K', previewUrl: 'https://img.youtube.com/vi/M7lc1UVf-VE/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=M7lc1UVf-VE' },
-  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', views: '1.8M', previewUrl: 'https://img.youtube.com/vi/0ml4GHJfh-I/hqdefault.jpg', url: 'https://www.youtube.com/watch?v=0ml4GHJfh-I' },
+  { platform: 'TikTok', title: 'Travel Clips', desc: 'Open on TikTok', type: 'tiktok', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/101010/ffffff?text=TikTok+Travel', url: 'https://www.tiktok.com/tag/travel' },
   { platform: 'Reddit', title: 'Trending on Reddit', desc: 'Hot posts from r/videos', type: 'reddit', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit+Hot', url: 'https://www.reddit.com/r/videos/' },
-  { platform: 'Reddit', title: 'Interesting As F***', desc: 'Viral picks', type: 'reddit', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Interesting', url: 'https://www.reddit.com/r/interestingasfuck/' },
-  { platform: 'Reddit', title: 'Next Level', desc: 'Top community clips', type: 'reddit', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Next+Level', url: 'https://www.reddit.com/r/nextfuckinglevel/' }
+  { platform: 'Vimeo', title: 'Creative Showcase', desc: 'Open on Vimeo', type: 'vimeo', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/1ab7ea/ffffff?text=Vimeo+Staff+Picks', url: 'https://vimeo.com/watch' },
+  { platform: 'Dailymotion', title: 'Featured Clips', desc: 'Open on Dailymotion', type: 'dailymotion', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/0066ff/ffffff?text=Dailymotion', url: 'https://www.dailymotion.com/us' },
+  { platform: 'LinkedIn', title: 'Business Video Posts', desc: 'Open on LinkedIn Video', type: 'linkedin', views: 'LIVE', previewUrl: 'https://via.placeholder.com/640x360/0a66c2/ffffff?text=LinkedIn+Video', url: 'https://www.linkedin.com/video/' }
 ];
 
 function getVideoUrl(item) {
@@ -1695,18 +1727,33 @@ function seedVideoColumns() {
   heroFeed.appendChild(buildHeroCard(heroB));
 }
 
-async function loadLiveReddit(subreddit = 'videos') {
+const redditState = {
+  subreddit: 'videos',
+  after: null,
+  loading: false,
+  subs: ['videos', 'interestingasfuck', 'nextfuckinglevel']
+};
+
+async function loadLiveReddit(mode = 'replace') {
   const widgetFeed = document.getElementById('widgetFeed');
-  if (!widgetFeed) return;
+  if (!widgetFeed || redditState.loading) return;
+  redditState.loading = true;
+
+  if (mode === 'replace') {
+    widgetFeed.innerHTML = '<div class="promo-card"><div class="promo-body"><div class="promo-kicker">Reddit</div><div class="promo-title">Loading live Reddit…</div></div></div>';
+  }
+
   try {
-    const res = await fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=6`, { headers: { 'Accept': 'application/json' } });
+    const subreddit = redditState.subreddit;
+    const afterPart = redditState.after ? `&after=${redditState.after}` : '';
+    const res = await fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=2${afterPart}`, { headers: { 'Accept': 'application/json' } });
     if (!res.ok) throw new Error('Reddit request failed');
     const data = await res.json();
-    const posts = (data?.data?.children || [])
-      .map(x => x.data)
-      .filter(post => post && post.permalink && post.title);
+    redditState.after = data?.data?.after || null;
+    const posts = (data?.data?.children || []).map(x => x.data).filter(post => post && post.permalink && post.title);
 
-    widgetFeed.innerHTML = '';
+    if (mode === 'replace') widgetFeed.innerHTML = '';
+
     let added = 0;
     for (const post of posts) {
       const thumb = typeof post.thumbnail === 'string' && /^https?:/i.test(post.thumbnail)
@@ -1723,29 +1770,42 @@ async function loadLiveReddit(subreddit = 'videos') {
       };
       widgetFeed.appendChild(buildPromoCard(item));
       added += 1;
-      if (added >= 6) break;
+      if (added >= 2) break;
     }
-    if (!added) throw new Error('No usable Reddit posts');
+
+    if (!added && mode === 'replace') {
+      throw new Error('No usable Reddit posts');
+    }
+
+    if (!redditState.after) {
+      redditState.subreddit = redditState.subs[Math.floor(Math.random() * redditState.subs.length)];
+      redditState.after = null;
+    }
   } catch (err) {
-    widgetFeed.innerHTML = '';
-    ['videos', 'interestingasfuck', 'nextfuckinglevel'].forEach((sub, i) => {
-      const item = {
-        platform: 'Reddit',
-        title: i === 0 ? 'Trending Videos' : (i === 1 ? 'Interesting As F***' : 'Next Level'),
-        desc: `Open r/${sub}`,
-        type: 'reddit',
-        views: 'LIVE',
-        previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit',
-        url: `https://www.reddit.com/r/${sub}/`
-      };
-      widgetFeed.appendChild(buildPromoCard(item));
-    });
+    if (mode === 'replace') {
+      widgetFeed.innerHTML = '';
+      ['videos', 'interestingasfuck'].forEach((sub) => {
+        const item = {
+          platform: 'Reddit',
+          title: `Open r/${sub}`,
+          desc: 'Fallback community link',
+          type: 'reddit',
+          views: 'LIVE',
+          previewUrl: 'https://via.placeholder.com/640x360/ff4500/ffffff?text=Reddit',
+          url: `https://www.reddit.com/r/${sub}/`
+        };
+        widgetFeed.appendChild(buildPromoCard(item));
+      });
+    }
+  } finally {
+    redditState.loading = false;
   }
 }
 
 (function seed() {
   seedVideoColumns();
-  loadLiveReddit('videos');
+  loadLiveReddit('replace');
+  initMarketWidget();
 })();
 
 let promoIdx = 0;
@@ -1753,19 +1813,19 @@ let heroIdx = 0;
 let widgetIdx = 0;
 
 function loadMorePromos() {
-  const item = nextVideo(['Reddit'], usedVideos);
+  const item = nextVideo([], usedVideos);
   document.getElementById('promoFeed').appendChild(buildPromoCard(item));
   promoIdx += 1;
 }
 
 function loadMoreHero() {
-  const item = nextVideo(['Reddit'], usedVideos);
+  const item = nextVideo([], usedVideos);
   document.getElementById('heroFeed').appendChild(buildHeroCard(item));
   heroIdx += 1;
 }
 
 function loadMoreWidgets() {
-  loadLiveReddit(['videos','interestingasfuck','nextfuckinglevel'][Math.floor(Math.random()*3)]);
+  loadLiveReddit('append');
   widgetIdx += 1;
 }
 
@@ -1778,7 +1838,7 @@ function setupInfiniteScroll(containerId, loadFn) {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 120) {
         loadFn();
       }
       ticking = false;
@@ -1786,12 +1846,46 @@ function setupInfiniteScroll(containerId, loadFn) {
   });
 }
 
-function openPreviewFromCard(card) {
-  if (!card || card.tagName === 'A') return;
-}
-
-function setupPreview(selector) {
-  return;
+function initMarketWidget() {
+  const container = document.getElementById('tv-market-widget');
+  if (!container || document.getElementById('tv-market-widget-script')) return;
+  const script = document.createElement('script');
+  script.id = 'tv-market-widget-script';
+  script.type = 'text/javascript';
+  script.async = true;
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
+  script.innerHTML = JSON.stringify({
+    colorTheme: 'light',
+    dateRange: '12M',
+    showChart: false,
+    locale: 'en',
+    largeChartUrl: '',
+    isTransparent: true,
+    showSymbolLogo: false,
+    showFloatingTooltip: false,
+    width: '100%',
+    height: 360,
+    plotLineColorGrowing: 'rgba(41, 98, 255, 1)',
+    plotLineColorFalling: 'rgba(41, 98, 255, 1)',
+    gridLineColor: 'rgba(240, 243, 250, 0)',
+    scaleFontColor: 'rgba(106, 109, 120, 1)',
+    belowLineFillColorGrowing: 'rgba(41, 98, 255, 0.12)',
+    belowLineFillColorFalling: 'rgba(41, 98, 255, 0.12)',
+    belowLineFillColorGrowingBottom: 'rgba(41, 98, 255, 0)',
+    belowLineFillColorFallingBottom: 'rgba(41, 98, 255, 0)',
+    symbolActiveColor: 'rgba(41, 98, 255, 0.12)',
+    tabs: [{
+      title: 'Markets',
+      symbols: [
+        { s: 'DJI', d: 'Dow Jones' },
+        { s: 'NASDAQ:IXIC', d: 'Nasdaq' },
+        { s: 'TVC:USOIL', d: 'WTI Oil' },
+        { s: 'BITSTAMP:BTCUSD', d: 'BTC/USD' },
+        { s: 'BITSTAMP:ETHUSD', d: 'ETH/USD' }
+      ]
+    }]
+  });
+  container.appendChild(script);
 }
 
 setupInfiniteScroll('promoFeed', loadMorePromos);
@@ -1818,76 +1912,6 @@ if (localStorage.getItem('sb_theme') === 'light') {
   document.body.classList.add('light-theme');
   document.getElementById('themeBtn').textContent = '🌙 Dark';
 }
-
-
-// Enhanced infinite scroll + preview overlay
-function setupInfiniteScroll(containerId, loadFn) {
-  const container = document.getElementById(containerId);
-  if (!container || typeof loadFn !== 'function') return;
-
-  let ticking = false;
-  container.addEventListener('scroll', () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
-        loadFn();
-      }
-      ticking = false;
-    });
-  });
-}
-
-function loadMorePromos() {
-  const item = nextVideo([], usedVideos);
-  document.getElementById('promoFeed').appendChild(buildPromoCard(item));
-  promoIdx += 1;
-}
-
-function loadMoreHero() {
-  const item = nextVideo([], usedVideos);
-  document.getElementById('heroFeed').appendChild(buildHeroCard(item));
-  heroIdx += 1;
-}
-
-function loadMoreWidgets() {
-  const item = nextVideo([], usedVideos);
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(item));
-  widgetIdx += 1;
-}
-
-function openPreviewFromCard(card) {
-  if (!card) return;
-  const preview = document.createElement('div');
-  preview.className = 'preview-overlay';
-  preview.innerHTML = `
-    <div class="preview-content">
-      <button class="close-btn" aria-label="Close preview">✖</button>
-      <div class="preview-card-wrap">${card.outerHTML}</div>
-    </div>
-  `;
-  document.body.appendChild(preview);
-
-  const close = () => preview.remove();
-  preview.querySelector('.close-btn').addEventListener('click', close);
-  preview.addEventListener('click', (e) => {
-    if (e.target === preview) close();
-  });
-}
-
-function setupPreview(selector) {
-  document.addEventListener('click', (e) => {
-    const card = e.target.closest(selector);
-    if (!card) return;
-    if (e.target.closest('a, button')) return;
-    openPreviewFromCard(card);
-  });
-}
-
-setupInfiniteScroll('promoFeed', loadMorePromos);
-setupInfiniteScroll('heroFeed', loadMoreHero);
-setupInfiniteScroll('widgetFeed', loadMoreWidgets);
-
 
 
 </script>
