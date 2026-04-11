@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -809,203 +810,275 @@
 }
 
 
-/* ===== Final permanent 5-column grid ===== */
-.sb-dashboard-grid {
-  display: grid !important;
-  grid-template-columns: repeat(5, minmax(0, 1fr)) !important; /* ALWAYS 5 columns */
-  gap: 12px !important;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.sb-dashboard-grid > .sb-column {
-  min-width: 0;          /* prevents shrinking */
-  overflow: hidden;      /* prevents bleed */
-  box-sizing: border-box;
-}
-
-/* normalize all top-level columns inside the permanent grid */
-.sb-dashboard-grid > .col-partners,
-.sb-dashboard-grid > .col-promos,
-.sb-dashboard-grid > .col-hero,
-.sb-dashboard-grid > .col-widgets,
-.sb-dashboard-grid > .col-dashboard {
-  min-width: 0;
-}
-
-/* keep promo/hero/widgets behaving inside equal grid */
-.sb-dashboard-grid > .col-promos,
-.sb-dashboard-grid > .col-hero,
-.sb-dashboard-grid > .col-widgets,
-.sb-dashboard-grid > .col-dashboard {
-  align-self: stretch !important;
-  height: calc(100vh - 150px) !important;
-  max-height: calc(100vh - 150px) !important;
-  overflow: hidden !important;
-}
-
-.sb-dashboard-grid > .col-promos .panel,
-.sb-dashboard-grid > .col-hero .panel,
-.sb-dashboard-grid > .col-widgets .panel,
-.sb-dashboard-grid > .col-dashboard .panel {
-  height: 100% !important;
-  max-height: none !important;
-}
-
-.sb-dashboard-grid > .col-promos .promo-feed,
-.sb-dashboard-grid > .col-widgets .promo-feed,
-.sb-dashboard-grid > .col-hero .hero-feed {
-  flex: 1 1 auto !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  max-height: none !important;
-  min-height: 0 !important;
-  padding-right: 4px !important;
-}
-
-/* ===== Column 5 upgraded control panel ===== */
-.sb-dashboard-grid > .col-dashboard {
-  align-self: stretch !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-}
-
-.sb-dashboard-grid > .col-dashboard .panel {
+/* ===== Column One modern rail ===== */
+.column-one {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 10px;
+  font-family: serif;
 }
-
-.sb-dashboard-grid > .col-dashboard .panel-body.dashboard-content {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  gap: 12px;
-}
-
-.sb-column5 {
-  height: 100%;
-  display: grid;
-  grid-template-rows: auto auto auto 1fr;
-  gap: 12px;
-}
-
-.sb-col5-header {
-  font-size: .68rem;
-  font-weight: 900;
-  letter-spacing: .10em;
-  color: var(--cyan);
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border2);
-  padding-bottom: 8px;
-}
-
-.sb-col5-top {
+.filters {
+  margin-bottom: 12px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.sb-col5-left {
-  display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
+  font-family: serif;
 }
-
-.sb-weather-icon {
-  font-size: 14px;
-  line-height: 1;
+.filters label { font-size: 13px; margin-right: 2px; }
+.filters select {
+  padding: 4px 6px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
 }
-
-.sb-weather-temp {
-  font-size: 12px;
-  line-height: 1;
-}
-
-.sb-col5-right {
-  display: flex;
-  align-items: center;
-}
-
-.sb-lofi-btn {
-  border: 1px solid var(--border2);
-  background: var(--surface2);
-  color: var(--text);
-  font-size: 11px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  cursor: pointer;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.sb-lofi-btn:hover {
-  border-color: var(--cyan);
-  color: var(--cyan);
-}
-
-.sb-col5-center {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.sb-social {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  font-size: 10px;
-  text-transform: lowercase;
-  text-decoration: none;
-  color: var(--muted);
-  border-radius: 6px;
-  border: 1px solid var(--border2);
-  background: var(--surface2);
-}
-
-.sb-social:hover {
-  border-color: var(--cyan);
-  color: var(--cyan);
-  background: rgba(0,255,204,.05);
-}
-
-.sb-mini-block {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: rgba(255,255,255,.02);
+.filters select:focus { outline: none; border-color: #0066cc; }
+.accordion { margin-bottom: 8px; }
+.accordion-btn {
+  width: 100%;
+  text-align: left;
   padding: 10px 12px;
+  font-size: 14px;
+  font-family: serif;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.accordion-btn:hover { background: #eaeaea; }
+.accordion-btn.active { background: #ddd; }
+.accordion-btn.primary {
+  background: #e0e0e0;
+  font-weight: bold;
+  border-left: 4px solid #333;
+  padding-left: 10px;
+}
+.accordion-btn.primary:hover { background: #d6d6d6; }
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 10px;
+}
+.accordion-content a {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  color: #333;
+  text-decoration: none;
+  font-family: serif;
+  font-size: 13px;
+  padding: 4px 2px;
+}
+.accordion-content a:hover {
+  color: #0066cc;
+  background: #f0f0f0;
+  border-radius: 4px;
+  padding-left: 4px;
+}
+.accordion-content .icon {
+  margin-right: 6px;
+  font-size: 16px;
+}
+.hotel-map-widget,
+.travel-alerts,
+.favorites,
+.recommendations,
+.affiliate-highlights,
+.booking-shortcuts {
+  margin: 10px 0;
+  padding: 10px;
+  font-family: serif;
+  background: #f9f9f9;
+  border-left: 4px solid #333;
+  border-radius: 6px;
+}
+.hotel-map-widget h4,
+.travel-alerts h4,
+.favorites h4,
+.recommendations h4,
+.affiliate-highlights h4,
+.booking-shortcuts h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+.hotel-map-widget iframe { border-radius: 6px; }
+.travel-alerts ul,
+.favorites ul,
+.recommendations ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.travel-alerts li,
+.favorites li,
+.recommendations li {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #555;
+}
+.favorites li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.favorites button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #999;
+}
+.favorites button:hover { color: #333; }
+#highlight-banner { font-size: 13px; color: #555; line-height: 1.5; }
+#highlight-banner a { color: #333; text-decoration: none; }
+#highlight-banner a:hover { color: #0066cc; }
+.shortcut-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.shortcut-buttons button {
+  margin: 0;
+  padding: 6px 12px;
+  font-family: serif;
+  font-size: 13px;
+  background: #e0e0e0;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.shortcut-buttons button:hover { background: #d6d6d6; }
+
+
+/* Stronger partner names for readability */
+.column-one .accordion-content a {
+  display: block;
+  margin: 4px 0;
+  color: #222;
+  font-weight: 600;
+  text-decoration: none;
+}
+.column-one .accordion-content a:hover {
+  color: #000;
 }
 
-.sb-mini-title {
-  font-size: .66rem;
+/* Column Five utilities hub */
+.column-five {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: inherit;
+}
+.column-five h3 {
+  font-size: .9rem;
+  margin: 0 0 2px;
+  color: var(--text);
+}
+.finance-panel,
+.news-feed,
+.system-panel,
+.quick-notes,
+.platform-logos {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+}
+.finance-panel h4,
+.news-feed h4,
+.system-panel h4,
+.quick-notes h4,
+.platform-logos h4 {
+  margin: 0 0 8px;
+  font-size: .75rem;
+  font-weight: 900;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--cyan);
-  font-weight: 900;
-  margin-bottom: 8px;
 }
+.finance-panel ul,
+.news-feed ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.finance-panel li,
+.news-feed li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  font-size: .72rem;
+}
+.finance-panel li:last-child,
+.news-feed li:last-child {
+  border-bottom: none;
+}
+.finance-panel .symbol,
+.news-feed .headline-source {
+  font-weight: 800;
+  color: var(--yellow);
+}
+.finance-panel .price {
+  color: var(--cyan);
+  font-weight: 800;
+}
+.finance-panel .change.up { color: var(--green); font-weight: 800; }
+.finance-panel .change.down { color: var(--red); font-weight: 800; }
 
-.sb-mini-line {
-  font-size: .76rem;
+.system-panel p {
+  margin: 4px 0;
+  font-size: .72rem;
+  color: var(--muted);
+}
+.system-panel span {
   color: var(--text);
-  margin-bottom: 4px;
+  font-weight: 800;
 }
 
-.sb-mini-line:last-child {
-  margin-bottom: 0;
+.quick-notes textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 10px;
+  font: inherit;
+  font-size: .75rem;
+  outline: none;
+}
+.quick-notes textarea:focus {
+  border-color: var(--cyan);
 }
 
-@media (max-width: 900px) {
-  .sb-dashboard-grid {
-    grid-template-columns: 1fr !important;
-  }
+.platform-logos .logos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  justify-items: center;
+}
+.platform-logos .logo-tile {
+  width: 100%;
+  min-height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 1.35rem;
+}
+.platform-logos .logo-name {
+  margin-top: 4px;
+  font-size: .62rem;
+  color: var(--muted);
+  text-align: center;
 }
 
 </style>
@@ -1044,143 +1117,122 @@
 </div>
 
 <main class="shell">
-  <div id="partner-banner" class="mall-banner" aria-live="polite"></div>
-  <div class="dashboard sb-dashboard-grid">
+  <div class="dashboard">
 
-    <aside class="sb-column col-partners">
+    
+<aside class="col-partners">
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">💰 Affiliates</span>
-          <span class="panel-badge">58+</span>
+          <span class="panel-title">🧭 Column One</span>
+          <span class="panel-badge">TOOLS</span>
         </div>
         <div class="panel-body">
-          <input class="partner-search" type="search" placeholder="🔍 Search…" id="partnerSearch" />
-          <div class="partner-feed" id="partnerFeed">
-            <div class="partner-cat open" id="cat-rental">
-              <div class="partner-cat-header" onclick="toggleCat('cat-rental')">
-                <span><span class="cat-icon">🚗</span>Rental Cars</span>
-                <span class="cat-count">7</span>
-                <span class="chevron">▶</span>
-              </div>
-              <div class="partner-items">
-                <div class="partner-item"><a href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" rel="noopener" onclick="trackClick('GetRentacar')"><span class="p-icon">🚙</span><span class="p-name">GetRentacar</span><span class="p-tag">CAR</span></a></div>
-                <div class="partner-item"><a href="https://autoeurope.tpo.lv/t84AzZbO" target="_blank" rel="noopener" onclick="trackClick('AutoEurope')"><span class="p-icon">🏎️</span><span class="p-name">AutoEurope</span><span class="p-tag">RENT</span></a></div>
-                <div class="partner-item"><a href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener" onclick="trackClick('LocalRent')"><span class="p-icon">🅿️</span><span class="p-name">LocalRent</span><span class="p-tag">LOCAL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Allycar')"><span class="p-icon">🚗</span><span class="p-name">Allycar</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Carmel')"><span class="p-icon">🚕</span><span class="p-name">Carmel Car</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('JumboCar')"><span class="p-icon">🏎️</span><span class="p-name">Jumbo Car CR</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=10777&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Europcar AU NZ')"><span class="p-icon">🚗</span><span class="p-name">Europcar AU NZ</span><span class="p-tag">RENT</span></a></div>
+          <div class="column-one">
+            <div class="filters">
+              <label for="region">Region:</label>
+              <select id="region">
+                <option value="all">All</option>
+                <option value="us">US</option>
+                <option value="eu">Europe</option>
+                <option value="asia">Asia</option>
+              </select>
+
+              <label for="service">Service:</label>
+              <select id="service">
+                <option value="all">All</option>
+                <option value="travel">Travel</option>
+                <option value="hotels">Hotels</option>
+                <option value="services">Services</option>
+                <option value="connectivity">Connectivity</option>
+              </select>
+            </div>
+
+            <p id="noResults" style="display:none; font-size:13px;">No results found.</p>
+
+            <div class="accordion travel us">
+              <button class="accordion-btn primary">✈️ Travel</button>
+              <div class="accordion-content">
+                <a href="https://www.expedia.com" target="_blank" rel="noopener"><span class="icon">✈️</span>Expedia</a>
+                <a href="https://www.tripadvisor.com" target="_blank" rel="noopener"><span class="icon">🌍</span>TripAdvisor</a>
+                <a href="https://www.kayak.com" target="_blank" rel="noopener"><span class="icon">🔍</span>Kayak</a>
+                <a href="https://www.skyscanner.com" target="_blank" rel="noopener"><span class="icon">🛫</span>Skyscanner</a>
               </div>
             </div>
 
-            <div class="partner-cat" id="cat-hotels">
-              <div class="partner-cat-header" onclick="toggleCat('cat-hotels')">
-                <span><span class="cat-icon">🏨</span>Hotels</span>
-                <span class="cat-count">13</span>
-                <span class="chevron">▶</span>
-              </div>
-              <div class="partner-items">
-                <div class="partner-item"><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener" onclick="trackClick('Booking')"><span class="p-icon">🏨</span><span class="p-name">Booking.com</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener" onclick="trackClick('EconomyBookings')"><span class="p-icon">💰</span><span class="p-name">Economy Book</span><span class="p-tag">BUDGET</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('KingKoil')"><span class="p-icon">🛏️</span><span class="p-name">King Koil</span><span class="p-tag">BED</span></a></div>
-                <div class="partner-item"><a href="https://hotels.tpo.lv/rHr4mbOu" target="_blank" rel="noopener" onclick="trackClick('Hotels.com')"><span class="p-icon">🏨</span><span class="p-name">Hotels.com</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://agoda.tpo.lv/UEhQ1dwR" target="_blank" rel="noopener" onclick="trackClick('Agoda')"><span class="p-icon">🏨</span><span class="p-name">Agoda</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105929&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago AR')"><span class="p-icon">🏨</span><span class="p-name">Trivago AR</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105937&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago BR')"><span class="p-icon">🏨</span><span class="p-name">Trivago BR</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105935&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago CO')"><span class="p-icon">🏨</span><span class="p-name">Trivago CO</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105923&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago DE')"><span class="p-icon">🏨</span><span class="p-name">Trivago DE</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105931&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago MX')"><span class="p-icon">🏨</span><span class="p-name">Trivago MX</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66032&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago NZ')"><span class="p-icon">🏨</span><span class="p-name">Trivago NZ</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=105927&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago PE')"><span class="p-icon">🏨</span><span class="p-name">Trivago PE</span><span class="p-tag">HOTEL</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=66034&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Trivago USA')"><span class="p-icon">🏨</span><span class="p-name">Trivago USA</span><span class="p-tag">HOTEL</span></a></div>
+            <div class="accordion hotels eu">
+              <button class="accordion-btn primary">🏨 Hotels</button>
+              <div class="accordion-content">
+                <a href="https://www.booking.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Booking.com</a>
+                <a href="https://www.agoda.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Agoda</a>
+                <a href="https://www.trivago.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Trivago</a>
+                <a href="https://www.hotels.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Hotels.com</a>
               </div>
             </div>
 
-            <div class="partner-cat" id="cat-insurance">
-              <div class="partner-cat-header" onclick="toggleCat('cat-insurance')">
-                <span><span class="cat-icon">🛡️</span>Insurance</span>
-                <span class="cat-count">2</span>
-                <span class="chevron">▶</span>
-              </div>
-              <div class="partner-items">
-                <div class="partner-item"><a href="https://compensair.tpo.lv/wxDDCITG" target="_blank" rel="noopener" onclick="trackClick('CompensAir')"><span class="p-icon">💼</span><span class="p-name">CompensAir</span><span class="p-tag">CLAIM</span></a></div>
-                <div class="partner-item"><a href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener" onclick="trackClick('AirHelp')"><span class="p-icon">🆘</span><span class="p-name">AirHelp</span><span class="p-tag">CLAIM</span></a></div>
+            <div class="accordion services us">
+              <button class="accordion-btn primary">🛡️ Services</button>
+              <div class="accordion-content">
+                <a href="#" data-favorite="Insurance"><span class="icon">🛡️</span>Insurance</a>
+                <a href="#" data-favorite="Utilities"><span class="icon">⚡</span>Utilities</a>
+                <a href="#" data-favorite="Payment Platforms"><span class="icon">💳</span>Payment Platforms</a>
               </div>
             </div>
 
-            <div class="partner-cat" id="cat-travel">
-              <div class="partner-cat-header" onclick="toggleCat('cat-travel')">
-                <span><span class="cat-icon">✈️</span>Travel</span>
-                <span class="cat-count">16</span>
-                <span class="chevron">▶</span>
-              </div>
-              <div class="partner-items">
-                <div class="partner-item hot"><a href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener" onclick="trackClick('Aviasales')"><span class="p-icon">🔍</span><span class="p-name">Aviasales</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href="https://kiwi.tpo.lv/qKPZ1inz" target="_blank" rel="noopener" onclick="trackClick('Kiwi')"><span class="p-icon">🥝</span><span class="p-name">Kiwi.com</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item hot"><a href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener" onclick="trackClick('Klook')"><span class="p-icon">🎫</span><span class="p-name">Klook</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" rel="noopener" onclick="trackClick('Intui')"><span class="p-icon">🎭</span><span class="p-name">Intui.travel</span><span class="p-tag">LOCAL</span></a></div>
-                <div class="partner-item"><a href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener" onclick="trackClick('WeGoTrip')"><span class="p-icon">🗺️</span><span class="p-name">WeGoTrip</span><span class="p-tag">GUIDE</span></a></div>
-                <div class="partner-item"><a href="https://eatwith.tpo.lv/BfAnpZNb" target="_blank" rel="noopener" onclick="trackClick('EatWith')"><span class="p-icon">🍽️</span><span class="p-name">Eat With</span><span class="p-tag">FOOD</span></a></div>
-                <div class="partner-item"><a href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener" onclick="trackClick('GoCity')"><span class="p-icon">🏙️</span><span class="p-name">GoCity</span><span class="p-tag">PASS</span></a></div>
-                <div class="partner-item"><a href="https://ektatraveling.tpo.lv/XWbZbj8S" target="_blank" rel="noopener" onclick="trackClick('EKTA')"><span class="p-icon">🌍</span><span class="p-name">EKTA Traveling</span><span class="p-tag">EXP</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('GoEspana')"><span class="p-icon">🇪🇸</span><span class="p-name">Go! España</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Go2Africa')"><span class="p-icon">🦁</span><span class="p-name">Go2Africa</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://bigbustours.tpo.lv/grT1QWXA" target="_blank" rel="noopener" onclick="trackClick('BigBus')"><span class="p-icon">🚐</span><span class="p-name">Big Bus Tours</span><span class="p-tag">TOURS</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Tiqets')"><span class="p-icon">🎟️</span><span class="p-name">Tiqets</span><span class="p-tag">AWIN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19859&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi CA')"><span class="p-icon">✈️</span><span class="p-name">Kiwi CA</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=20563&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi MX')"><span class="p-icon">✈️</span><span class="p-name">Kiwi MX</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=19856&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Kiwi US')"><span class="p-icon">✈️</span><span class="p-name">Kiwi US</span><span class="p-tag">FLIGHT</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=29767&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Extranomical Tours (US)')"><span class="p-icon">🗺️</span><span class="p-name">Extranomical Tours (US)</span><span class="p-tag">TOURS</span></a></div>
+            <div class="accordion connectivity us eu asia">
+              <button class="accordion-btn">📶 Connectivity</button>
+              <div class="accordion-content">
+                <a href="https://zoom.us" target="_blank" rel="noopener"><span class="icon">💻</span>Zoom</a>
+                <a href="https://slack.com" target="_blank" rel="noopener"><span class="icon">💬</span>Slack</a>
+                <a href="https://www.whatsapp.com" target="_blank" rel="noopener"><span class="icon">📱</span>WhatsApp</a>
               </div>
             </div>
 
-            <div class="partner-cat" id="cat-services">
-              <div class="partner-cat-header" onclick="toggleCat('cat-services')">
-                <span><span class="cat-icon">🔧</span>Services</span>
-                <span class="cat-count">10</span>
-                <span class="chevron">▶</span>
-              </div>
-              <div class="partner-items">
-                <div class="partner-item"><a href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" rel="noopener" onclick="trackClick('KiwiTaxi')"><span class="p-icon">🥝</span><span class="p-name">KiwiTaxi</span><span class="p-tag">TAXI</span></a></div>
-                <div class="partner-item"><a href="https://gettransfer.tpo.lv/Pb4p9ljm" target="_blank" rel="noopener" onclick="trackClick('GetTransfer')"><span class="p-icon">🚐</span><span class="p-name">GetTransfer</span><span class="p-tag">RIDE</span></a></div>
-                <div class="partner-item"><a href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" rel="noopener" onclick="trackClick('HolidayTaxis')"><span class="p-icon">🚖</span><span class="p-name">Holiday Taxis</span><span class="p-tag">TAXI</span></a></div>
-                <div class="partner-item"><a href="https://tpo.lv/XAJOoobr" target="_blank" rel="noopener" onclick="trackClick('WelcomePickups')"><span class="p-icon">🛫</span><span class="p-name">Welcome Pickups</span><span class="p-tag">AIRPORT</span></a></div>
-                <div class="partner-item"><a href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" rel="noopener" onclick="trackClick('BusBud')"><span class="p-icon">🚌</span><span class="p-name">BusBud</span><span class="p-tag">BUS</span></a></div>
-                <div class="partner-item"><a href="https://bikesbooking.tpo.lv/B3zIKanS" target="_blank" rel="noopener" onclick="trackClick('BikesBooking')"><span class="p-icon">🚴</span><span class="p-name">BikesBooking</span><span class="p-tag">BIKES</span></a></div>
-                <div class="partner-item"><a href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener" onclick="trackClick('RadicalStorage')"><span class="p-icon">🏪</span><span class="p-name">Radical Storage</span><span class="p-tag">STORAGE</span></a></div>
-                <div class="partner-item"><a href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener" onclick="trackClick('QEEQ')"><span class="p-icon">📦</span><span class="p-name">QEEQ</span><span class="p-tag">LUGGAGE</span></a></div>
-                <div class="partner-item"><a href="https://searadar.tpo.lv/TO4A5eBZ" target="_blank" rel="noopener" onclick="trackClick('SeaRadar')"><span class="p-icon">📡</span><span class="p-name">SeaRadar</span><span class="p-tag">TRACK</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Luxy')"><span class="p-icon">🚗</span><span class="p-name">Luxy App</span><span class="p-tag">RIDE</span></a></div>
+            <div class="accordion misc us eu asia">
+              <button class="accordion-btn">➕ More</button>
+              <div class="accordion-content">
+                <a href="#" data-favorite="Hair Products"><span class="icon">🛍️</span>Hair Products</a>
+                <a href="#" data-favorite="Logo Design"><span class="icon">🎨</span>Logo Design</a>
+                <a href="#" data-favorite="Misc Shops"><span class="icon">🛒</span>Misc Shops</a>
               </div>
             </div>
 
-            <div class="partner-cat" id="cat-connectivity">
-              <div class="partner-cat-header" onclick="toggleCat('cat-connectivity')">
-                <span><span class="cat-icon">📱</span>Connectivity</span>
-                <span class="cat-count">6</span>
-                <span class="chevron">▶</span>
-              </div>
-              <div class="partner-items">
-                <div class="partner-item hot"><a href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener" onclick="trackClick('Airalo')"><span class="p-icon">✈️</span><span class="p-name">Airalo</span><span class="p-tag">HOT</span></a></div>
-                <div class="partner-item"><a href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener" onclick="trackClick('DrimSim')"><span class="p-icon">💬</span><span class="p-name">DrimSim</span><span class="p-tag">SIM</span></a></div>
-                <div class="partner-item"><a href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener" onclick="trackClick('Yesim')"><span class="p-icon">🌐</span><span class="p-name">Yesim</span><span class="p-tag">eSIM</span></a></div>
-                <div class="partner-item"><a href="https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629" target="_blank" rel="noopener" onclick="trackClick('Saily')"><span class="p-icon">📡</span><span class="p-name">Saily</span><span class="p-tag">DATA</span></a></div>
-                <div class="partner-item"><a href="https://nordvpn.tpo.lv/q1aN4Xru" target="_blank" rel="noopener" onclick="trackClick('NordVPN')"><span class="p-icon">🔒</span><span class="p-name">NordVPN</span><span class="p-tag">VPN</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Evisa')"><span class="p-icon">📝</span><span class="p-name">Evisa</span><span class="p-tag">VISA</span></a></div>
-              </div>
+            <div class="hotel-map-widget">
+              <h4>Hotel Map</h4>
+              <iframe
+                src="https://www.google.com/maps?q=hotels&output=embed"
+                width="100%" height="250" style="border:0;" loading="lazy"></iframe>
             </div>
 
-            <div class="partner-cat" id="cat-other">
-              <div class="partner-cat-header" onclick="toggleCat('cat-other')">
-                <span><span class="cat-icon">🎁</span>Other</span>
-                <span class="cat-count">4</span>
-                <span class="chevron">▶</span>
-              </div>
-              <div class="partner-items">
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=40342&awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('ALLPOWERS')"><span class="p-icon">🔋</span><span class="p-name">ALLPOWERS</span><span class="p-tag">GEAR</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109230&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Tsarbomba')"><span class="p-icon">⌚</span><span class="p-name">Tsarbomba</span><span class="p-tag">SHOP</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=50899&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('Xuchang Aixiu Hair Products Co., Ltd.')"><span class="p-icon">💇</span><span class="p-name">Xuchang Aixiu Hair Products Co., Ltd.</span><span class="p-tag">SHOP</span></a></div>
-                <div class="partner-item"><a href="https://www.awin1.com/cread.php?awinmid=109444&amp;awinaffid=2834806" target="_blank" rel="noopener" onclick="trackClick('LogoNerds.com')"><span class="p-icon">🎨</span><span class="p-name">LogoNerds.com</span><span class="p-tag">DESIGN</span></a></div>
+            <div class="travel-alerts">
+              <h4>Travel Alerts</h4>
+              <ul id="alerts-list">
+                <li>Loading alerts...</li>
+              </ul>
+            </div>
+
+            <div class="favorites">
+              <h4>Saved Favorites</h4>
+              <ul id="favorites-list"></ul>
+            </div>
+
+            <div class="recommendations">
+              <h4>Recommended Hotels</h4>
+              <ul id="recommendations-list">
+                <li>Loading recommendations...</li>
+              </ul>
+            </div>
+
+            <div class="affiliate-highlights">
+              <h4>Featured Deals</h4>
+              <div id="highlight-banner">Loading highlights...</div>
+            </div>
+
+            <div class="booking-shortcuts">
+              <h4>Quick Actions</h4>
+              <div class="shortcut-buttons">
+                <button type="button" data-action="flight">✈️ Book Flight</button>
+                <button type="button" data-action="hotel">🏨 Book Hotel</button>
+                <button type="button" data-action="compare">🔍 Compare Prices</button>
               </div>
             </div>
           </div>
@@ -1188,7 +1240,8 @@
       </div>
     </aside>
 
-    <section class="sb-column col-promos">
+
+    <section class="col-promos">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">▶ Popular Videos</span>
@@ -1199,7 +1252,7 @@
       </div>
     </section>
 
-    <section class="sb-column col-hero">
+    <section class="col-hero">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">🔥 Trending Now</span>
@@ -1210,7 +1263,7 @@
       </div>
     </section>
 
-    <section class="sb-column col-widgets">
+    <section class="col-widgets">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">▶ Trending</span>
@@ -1221,51 +1274,59 @@
       </div>
     </section>
 
-    <aside class="sb-column col-dashboard">
+    
+    <aside class="col-dashboard">
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">💰 Finance</span>
+          <span class="panel-title">🧰 Column Five</span>
+          <span class="panel-badge">LIVE</span>
         </div>
         <div class="panel-body dashboard-content">
-          <div class="sb-column5">
-            <div class="sb-col5-header">System Panel</div>
+          <div class="column-five">
+            <h3>Utilities Hub</h3>
 
-            <div class="sb-col5-top">
-              <div class="sb-col5-left">
-                <span class="sb-weather-icon">☀</span>
-                <span class="sb-weather-temp">72°</span>
+            <div class="finance-panel">
+              <h4>Finance</h4>
+              <ul id="finance-list">
+                <li>Loading symbols...</li>
+              </ul>
+            </div>
+
+            <div class="news-feed">
+              <h4>Live Headlines</h4>
+              <ul id="news-list">
+                <li>Loading news...</li>
+              </ul>
+            </div>
+
+            <div class="system-panel">
+              <h4>System Status</h4>
+              <p>Temperature: <span id="temp">--</span></p>
+              <p>Mode: <span id="mode">--</span></p>
+              <p>Volatility: <span id="volatility">--</span></p>
+            </div>
+
+            <div class="quick-notes">
+              <h4>Quick Notes</h4>
+              <textarea id="notes" placeholder="Write notes here..."></textarea>
+            </div>
+
+            <div class="platform-logos">
+              <h4>Platforms</h4>
+              <div class="logos-grid">
+                <div><div class="logo-tile">f</div><div class="logo-name">Facebook</div></div>
+                <div><div class="logo-tile">▶</div><div class="logo-name">YouTube</div></div>
+                <div><div class="logo-tile">📷</div><div class="logo-name">Instagram</div></div>
+                <div><div class="logo-tile">♪</div><div class="logo-name">TikTok</div></div>
+                <div><div class="logo-tile">🔴</div><div class="logo-name">Reddit</div></div>
+                <div><div class="logo-tile">💬</div><div class="logo-name">WhatsApp</div></div>
+                <div><div class="logo-tile">💭</div><div class="logo-name">Messenger</div></div>
+                <div><div class="logo-tile">🔗</div><div class="logo-name">WeChat</div></div>
+                <div><div class="logo-tile">𝕏</div><div class="logo-name">X</div></div>
+                <div><div class="logo-tile">👻</div><div class="logo-name">Snapchat</div></div>
+                <div><div class="logo-tile">in</div><div class="logo-name">LinkedIn</div></div>
+                <div><div class="logo-tile">🇺🇸</div><div class="logo-name">Truth Social</div></div>
               </div>
-
-              <div class="sb-col5-right">
-                <button class="sb-lofi-btn" type="button" onclick="window.open('https://www.youtube.com/results?search_query=lofi+instrumental', '_blank')">
-                  🎧 Lo‑Fi
-                </button>
-              </div>
-            </div>
-
-            <div class="sb-col5-center">
-              <a href="https://facebook.com" target="_blank" rel="noopener" class="sb-social" aria-label="Facebook">fb</a>
-              <a href="https://wa.me" target="_blank" rel="noopener" class="sb-social" aria-label="WhatsApp">wa</a>
-              <a href="https://instagram.com" target="_blank" rel="noopener" class="sb-social" aria-label="Instagram">ig</a>
-              <a href="https://youtube.com" target="_blank" rel="noopener" class="sb-social" aria-label="YouTube">yt</a>
-              <a href="https://tiktok.com" target="_blank" rel="noopener" class="sb-social" aria-label="TikTok">tt</a>
-              <a href="https://telegram.org" target="_blank" rel="noopener" class="sb-social" aria-label="Telegram">tg</a>
-              <a href="https://twitter.com" target="_blank" rel="noopener" class="sb-social" aria-label="Twitter / X">tw</a>
-              <a href="https://snapchat.com" target="_blank" rel="noopener" class="sb-social" aria-label="Snapchat">sc</a>
-            </div>
-
-            <div class="sb-mini-block">
-              <div class="sb-mini-title">Market Status</div>
-              <div class="sb-mini-line">US session: Open</div>
-              <div class="sb-mini-line">BTC: +2.4%</div>
-              <div class="sb-mini-line">Volatility: Moderate</div>
-            </div>
-
-            <div class="sb-mini-block">
-              <div class="sb-mini-title">Quick Notes</div>
-              <div class="sb-mini-line">3 new partner clicks</div>
-              <div class="sb-mini-line">Banner rotation active</div>
-              <div class="sb-mini-line">Feeds loading normally</div>
             </div>
           </div>
         </div>
@@ -1442,8 +1503,6 @@ function buildHeroCard(item) {
   return card;
 }
 
-rotatePartnerBanner();
-setInterval(rotatePartnerBanner, 12000);
 
 (function seed() {
   document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
@@ -1479,13 +1538,16 @@ function toggleCat(id) {
   document.getElementById(id).classList.toggle('open');
 }
 
-document.getElementById('partnerSearch').addEventListener('input', function() {
-  const q = this.value.toLowerCase();
-  document.querySelectorAll('.partner-item').forEach(function(el) {
-    const name = el.querySelector('.p-name');
-    el.style.display = name && name.textContent.toLowerCase().includes(q) ? '' : 'none';
+const _partnerSearch = document.getElementById('partnerSearch');
+if (_partnerSearch) {
+  _partnerSearch.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('.partner-item').forEach(function(el) {
+      const name = el.querySelector('.p-name');
+      el.style.display = name && name.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
   });
-});
+}
 
 document.getElementById('themeBtn').addEventListener('click', function() {
   const on = document.body.classList.toggle('light-theme');
@@ -1570,5 +1632,268 @@ setupPreview('.promo-card');
 setupPreview('.hero-card');
 
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const regionFilter = document.getElementById('region');
+  const serviceFilter = document.getElementById('service');
+  const mapFrame = document.querySelector('.hotel-map-widget iframe');
+  const alertsList = document.getElementById('alerts-list');
+  const recommendationsList = document.getElementById('recommendations-list');
+  const favoritesList = document.getElementById('favorites-list');
+  const highlightBanner = document.getElementById('highlight-banner');
+  const noResults = document.getElementById('noResults');
+
+  function setupAccordion() {
+    const buttons = document.querySelectorAll('.column-one .accordion-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        document.querySelectorAll('.column-one .accordion-content').forEach(c => {
+          if (c !== content) c.style.maxHeight = null;
+        });
+        document.querySelectorAll('.column-one .accordion-btn').forEach(b => {
+          if (b !== btn) b.classList.remove('active');
+        });
+
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+          btn.classList.remove('active');
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+          btn.classList.add('active');
+        }
+      });
+    });
+  }
+
+  function applyFilters() {
+    if (!regionFilter || !serviceFilter) return;
+    const region = regionFilter.value;
+    const service = serviceFilter.value;
+    let visibleCount = 0;
+
+    document.querySelectorAll('.column-one .accordion').forEach(acc => {
+      const matchesRegion = region === 'all' || acc.classList.contains(region);
+      const matchesService = service === 'all' || acc.classList.contains(service);
+      const show = matchesRegion && matchesService;
+      acc.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
+    });
+
+    if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  function updateMap() {
+    if (!regionFilter || !mapFrame) return;
+    const region = regionFilter.value;
+    const regionMap = { us: 'New York', eu: 'Paris', asia: 'Tokyo' };
+    let query = 'hotels';
+    if (region !== 'all') query += ' near ' + regionMap[region];
+    mapFrame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(query) + '&output=embed';
+  }
+
+  function renderAlerts(alerts) {
+    if (!alertsList) return;
+    alertsList.innerHTML = alerts.slice(0, 5).map(a => `<li>⚠️ ${a}</li>`).join('');
+  }
+
+  let alertsCache = null;
+  function loadTravelAlerts(region = 'all') {
+    const allAlerts = {
+      us: [
+        'Flight delays expected in US Northeast due to storms.',
+        'Airport congestion reported in Chicago.'
+      ],
+      eu: [
+        'EU advisory: rail strikes in France.',
+        'Weather disruptions in Germany.'
+      ],
+      asia: [
+        'Monsoon season affecting coastal travel.',
+        'Flight reroutes in Southeast Asia.'
+      ],
+      all: [
+        'Global: fuel price increases impacting flights.',
+        'International travel demand rising.'
+      ]
+    };
+    let alerts = [];
+    if (region === 'all') {
+      alerts = [...allAlerts.all, ...allAlerts.us, ...allAlerts.eu, ...allAlerts.asia];
+    } else {
+      alerts = allAlerts[region] || [];
+    }
+    alertsCache = alerts;
+    renderAlerts(alerts);
+  }
+
+  function loadRecommendations(region = 'all') {
+    if (!recommendationsList) return;
+    const data = {
+      us: ['Hilton NYC', 'Marriott Times Square', 'Hyatt Brooklyn'],
+      eu: ['Hotel Paris Centre', 'Rome Grand Hotel', 'Berlin Plaza'],
+      asia: ['Tokyo Stay', 'Bangkok Suites', 'Singapore Grand'],
+      all: ['Top-rated global hotels', 'Best deals this week']
+    };
+    let items = region === 'all' ? data.all : (data[region] || []);
+    recommendationsList.innerHTML = items.map(h => `<li>🏨 ${h}</li>`).join('');
+  }
+
+  function getFavorites() {
+    try { return JSON.parse(localStorage.getItem('favorites') || '[]'); }
+    catch (e) { return []; }
+  }
+  function saveFavorites(favs) {
+    localStorage.setItem('favorites', JSON.stringify(favs));
+  }
+  function renderFavorites() {
+    if (!favoritesList) return;
+    const favs = getFavorites();
+    if (!favs.length) {
+      favoritesList.innerHTML = '<li>No favorites yet</li>';
+      return;
+    }
+    favoritesList.innerHTML = favs.map((f, i) => `
+      <li><span>${f.name}</span><button type="button" data-index="${i}">✕</button></li>
+    `).join('');
+  }
+  if (favoritesList) {
+    favoritesList.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        const index = Number(e.target.dataset.index);
+        const favs = getFavorites();
+        favs.splice(index, 1);
+        saveFavorites(favs);
+        renderFavorites();
+      }
+    });
+  }
+  window.addFavorite = function(name, url) {
+    const favs = getFavorites();
+    if (!favs.find(f => f.name === name)) {
+      favs.push({ name, url });
+      saveFavorites(favs);
+      renderFavorites();
+    }
+  };
+
+  document.querySelectorAll('.column-one .accordion-content a').forEach(link => {
+    link.addEventListener('dblclick', (e) => {
+      const name = link.textContent.trim();
+      const url = link.getAttribute('href') || '#';
+      window.addFavorite(name, url);
+    });
+  });
+
+  function setupHighlights() {
+    if (!highlightBanner) return;
+    const deals = [
+      { text: '✈️ Expedia: Save on last-minute flights', url: 'https://www.expedia.com' },
+      { text: '🏨 Booking.com: Top hotel deals this week', url: 'https://www.booking.com' },
+      { text: '🛡️ Insurance: New seasonal discounts', url: '#' }
+    ];
+    let index = 0;
+    function renderHighlight() {
+      const deal = deals[index];
+      highlightBanner.innerHTML = `<a href="${deal.url}" target="_blank" rel="noopener">${deal.text}</a>`;
+      index = (index + 1) % deals.length;
+    }
+    renderHighlight();
+    setInterval(renderHighlight, 5000);
+  }
+
+  function setupShortcuts() {
+    document.querySelectorAll('.shortcut-buttons button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        if (action === 'flight') {
+          window.open('https://www.google.com/search?q=book+flight', '_blank');
+        } else if (action === 'hotel') {
+          window.open('https://www.google.com/search?q=book+hotel', '_blank');
+        } else if (action === 'compare') {
+          window.open('https://www.google.com/search?q=compare+hotel+prices', '_blank');
+        }
+      });
+    });
+  }
+
+  if (regionFilter) regionFilter.addEventListener('change', () => {
+    applyFilters();
+    updateMap();
+    loadTravelAlerts(regionFilter.value);
+    loadRecommendations(regionFilter.value);
+  });
+  if (serviceFilter) serviceFilter.addEventListener('change', applyFilters);
+
+  setupAccordion();
+  applyFilters();
+  updateMap();
+  loadTravelAlerts(regionFilter?.value || 'all');
+  loadRecommendations(regionFilter?.value || 'all');
+  renderFavorites();
+
+  function loadFinancePanel() {
+    const financeList = document.getElementById('finance-list');
+    if (!financeList) return;
+    const financeData = [
+      { symbol: 'AAPL', price: '$189.42', change: '+1.14%', dir: 'up' },
+      { symbol: 'TSLA', price: '$171.83', change: '-0.82%', dir: 'down' },
+      { symbol: 'BTC', price: '$68,240', change: '+2.31%', dir: 'up' },
+      { symbol: 'ETH', price: '$3,540', change: '+1.07%', dir: 'up' }
+    ];
+    financeList.innerHTML = financeData.map(item => `
+      <li>
+        <span class="symbol">${item.symbol}</span>
+        <span class="price">${item.price}</span>
+        <span class="change ${item.dir}">${item.change}</span>
+      </li>
+    `).join('');
+  }
+
+  function loadNewsFeed() {
+    const newsList = document.getElementById('news-list');
+    if (!newsList) return;
+    const headlines = [
+      { source: 'Reuters', title: 'Markets open higher as tech leads gains' },
+      { source: 'Bloomberg', title: 'Bitcoin holds momentum after strong week' },
+      { source: 'CNBC', title: 'Travel demand remains firm into peak season' },
+      { source: 'WSJ', title: 'Investors watch inflation and rate signals' }
+    ];
+    newsList.innerHTML = headlines.map(item => `
+      <li>
+        <span class="headline-source">${item.source}</span>
+        <span>${item.title}</span>
+      </li>
+    `).join('');
+  }
+
+  function loadSystemPanel() {
+    const temp = document.getElementById('temp');
+    const mode = document.getElementById('mode');
+    const volatility = document.getElementById('volatility');
+    if (temp) temp.textContent = '22°C';
+    if (mode) mode.textContent = 'Operational';
+    if (volatility) volatility.textContent = 'Moderate';
+  }
+
+  function setupNotes() {
+    const notes = document.getElementById('notes');
+    if (!notes) return;
+    notes.value = localStorage.getItem('column_five_notes') || '';
+    notes.addEventListener('input', () => {
+      localStorage.setItem('column_five_notes', notes.value);
+    });
+  }
+
+  setupHighlights();
+  setupShortcuts();
+  loadFinancePanel();
+  loadNewsFeed();
+  loadSystemPanel();
+  setupNotes();
+});
+</script>
+
 </body>
 </html>
