@@ -7,6 +7,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1197,6 +1199,32 @@
   opacity: 0.8;
 }
 
+
+.language-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 8px;
+  flex-wrap: wrap;
+}
+.lang-btn {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 800;
+  transition: var(--transition);
+}
+.lang-btn:hover { color: var(--text); border-color: var(--cyan); }
+.lang-btn.active { background: var(--cyan); color: #00110c; border-color: var(--cyan); }
+@media (max-width: 900px) {
+  .topbar-inner { height: auto; padding: 12px 0; align-items: flex-start; }
+  .topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
+  .language-toggle { width: 100%; justify-content: flex-end; margin-left: 0; }
+}
+
 </style>
 </head>
 <body>
@@ -1213,11 +1241,18 @@
   <div class="topbar-inner">
     <div class="brand">
       <div class="brand-logo">🛰</div>
-      <span class="brand-name">SignalBoostAi</span>
+      <span class="brand-name" id="brandTitle">SignalBoostAi</span>
     </div>
     <div class="topbar-actions">
       <button class="pill-btn active" id="liveBtn">🔴 LIVE</button>
       <button class="pill-btn" id="themeBtn">☀️ Light</button>
+      <div class="language-toggle" id="languageToggle">
+        <button class="lang-btn active" data-lang="en" type="button">EN</button>
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <button class="lang-btn" data-lang="pt" type="button">PT</button>
+        <button class="lang-btn" data-lang="fr" type="button">FR</button>
+        <button class="lang-btn" data-lang="de" type="button">DE</button>
+      </div>
       <a href="../" class="old-link">← Classic</a>
     </div>
   </div>
@@ -1247,13 +1282,13 @@
 <aside class="col-partners">
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">🧭 Column One</span>
+          <span class="panel-title" id="columnOneTitle">🧭 Column One</span>
           <span class="panel-badge">TOOLS</span>
         </div>
         <div class="panel-body">
           <div class="column-one">
             <div class="filters">
-              <label for="region">Region:</label>
+              <label for="region" id="regionLabel">Region:</label>
               <select id="region">
                 <option value="all">All</option>
                 <option value="us">US</option>
@@ -1261,7 +1296,7 @@
                 <option value="asia">Asia</option>
               </select>
 
-              <label for="service">Service:</label>
+              <label for="service" id="serviceLabel">Service:</label>
               <select id="service">
                 <option value="all">All</option>
                 <option value="travel">Travel</option>
@@ -1394,7 +1429,7 @@
             </div>
 
             <div class="travel-alerts">
-              <h4>Travel Alerts</h4>
+              <h4 id="travelAlertsTitle">Travel Alerts</h4>
               <ul id="alerts-list">
                 <li>Loading alerts...</li>
               </ul>
@@ -1406,19 +1441,19 @@
             </div>
 
             <div class="recommendations">
-              <h4>Recommended Hotels</h4>
+              <h4 id="recommendedHotelsTitle">Recommended Hotels</h4>
               <ul id="recommendations-list">
                 <li>Loading recommendations...</li>
               </ul>
             </div>
 
             <div class="affiliate-highlights">
-              <h4>Featured Deals</h4>
+              <h4 id="featuredDealsTitle">Featured Deals</h4>
               <div id="highlight-banner">Loading highlights...</div>
             </div>
 
             <div class="booking-shortcuts">
-              <h4>Quick Actions</h4>
+              <h4 id="quickActionsTitle">Quick Actions</h4>
               <div class="shortcut-buttons">
                 <button type="button" data-action="flight">✈️ Book Flight</button>
                 <button type="button" data-action="hotel">🏨 Book Hotel</button>
@@ -1468,7 +1503,7 @@
     <aside class="col-dashboard">
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">🧰 Column Five</span>
+          <span class="panel-title" id="columnFiveTitle">🧰 Column Five</span>
           <span class="panel-badge">LIVE</span>
         </div>
         <div class="panel-body dashboard-content">
@@ -2186,29 +2221,187 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
+
 <script>
-const bannerPartners = [
+const mergedTranslations = {
+  en: {
+    brand: 'SignalBoostAi',
+    live: '🔴 LIVE',
+    light: '☀️ Light',
+    classic: '← Classic',
+    col1: '🧭 Column One',
+    col5: '🧰 Column Five',
+    region: 'Region:',
+    service: 'Service:',
+    travelAlerts: 'Travel Alerts',
+    recommendedHotels: 'Recommended Hotels',
+    featuredDeals: 'Featured Deals',
+    quickActions: 'Quick Actions',
+    banners: {
+      'Trivago US': { name: 'Trivago US', sub: 'Hotels & Travel Deals' },
+      'Tiqets': { name: 'Tiqets', sub: 'Tickets & Attractions' },
+      'Kiwi Flights': { name: 'Kiwi Flights', sub: 'Flights & Travel' },
+      'Holiday Taxis': { name: 'Holiday Taxis', sub: 'Airport Transfers' }
+    }
+  },
+  es: {
+    brand: 'SignalBoostAi',
+    live: '🔴 EN VIVO',
+    light: '☀️ Claro',
+    classic: '← Clásico',
+    col1: '🧭 Columna Uno',
+    col5: '🧰 Columna Cinco',
+    region: 'Región:',
+    service: 'Servicio:',
+    travelAlerts: 'Alertas de viaje',
+    recommendedHotels: 'Hoteles recomendados',
+    featuredDeals: 'Ofertas destacadas',
+    quickActions: 'Acciones rápidas',
+    banners: {
+      'Trivago US': { name: 'Trivago US', sub: 'Hoteles y ofertas de viaje' },
+      'Tiqets': { name: 'Tiqets', sub: 'Entradas y atracciones' },
+      'Kiwi Flights': { name: 'Vuelos Kiwi', sub: 'Vuelos y viajes' },
+      'Holiday Taxis': { name: 'Holiday Taxis', sub: 'Traslados al aeropuerto' }
+    }
+  },
+  pt: {
+    brand: 'SignalBoostAi',
+    live: '🔴 AO VIVO',
+    light: '☀️ Claro',
+    classic: '← Clássico',
+    col1: '🧭 Coluna Um',
+    col5: '🧰 Coluna Cinco',
+    region: 'Região:',
+    service: 'Serviço:',
+    travelAlerts: 'Alertas de viagem',
+    recommendedHotels: 'Hotéis recomendados',
+    featuredDeals: 'Ofertas em destaque',
+    quickActions: 'Ações rápidas',
+    banners: {
+      'Trivago US': { name: 'Trivago US', sub: 'Hotéis e ofertas de viagem' },
+      'Tiqets': { name: 'Tiqets', sub: 'Ingressos e atrações' },
+      'Kiwi Flights': { name: 'Voos Kiwi', sub: 'Voos e viagens' },
+      'Holiday Taxis': { name: 'Holiday Taxis', sub: 'Traslados do aeroporto' }
+    }
+  },
+  fr: {
+    brand: 'SignalBoostAi',
+    live: '🔴 EN DIRECT',
+    light: '☀️ Clair',
+    classic: '← Classique',
+    col1: '🧭 Colonne Un',
+    col5: '🧰 Colonne Cinq',
+    region: 'Région :',
+    service: 'Service :',
+    travelAlerts: 'Alertes voyage',
+    recommendedHotels: 'Hôtels recommandés',
+    featuredDeals: 'Offres en vedette',
+    quickActions: 'Actions rapides',
+    banners: {
+      'Trivago US': { name: 'Trivago US', sub: 'Hôtels et offres de voyage' },
+      'Tiqets': { name: 'Tiqets', sub: 'Billets et attractions' },
+      'Kiwi Flights': { name: 'Vols Kiwi', sub: 'Vols et voyages' },
+      'Holiday Taxis': { name: 'Holiday Taxis', sub: 'Transferts aéroport' }
+    }
+  },
+  de: {
+    brand: 'SignalBoostAi',
+    live: '🔴 LIVE',
+    light: '☀️ Hell',
+    classic: '← Klassisch',
+    col1: '🧭 Spalte Eins',
+    col5: '🧰 Spalte Fünf',
+    region: 'Region:',
+    service: 'Service:',
+    travelAlerts: 'Reisewarnungen',
+    recommendedHotels: 'Empfohlene Hotels',
+    featuredDeals: 'Top-Angebote',
+    quickActions: 'Schnellaktionen',
+    banners: {
+      'Trivago US': { name: 'Trivago US', sub: 'Hotels und Reiseangebote' },
+      'Tiqets': { name: 'Tiqets', sub: 'Tickets und Attraktionen' },
+      'Kiwi Flights': { name: 'Kiwi Flüge', sub: 'Flüge und Reisen' },
+      'Holiday Taxis': { name: 'Holiday Taxis', sub: 'Flughafentransfers' }
+    }
+  }
+};
+
+window.currentLanguage = 'en';
+window.applyMergedLanguage = function(lang) {
+  const t = mergedTranslations[lang] || mergedTranslations.en;
+  window.currentLanguage = lang;
+  const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  setText('brandTitle', t.brand);
+  setText('liveBtn', t.live);
+  setText('themeBtn', t.light);
+  setText('columnOneTitle', t.col1);
+  setText('columnFiveTitle', t.col5);
+  setText('regionLabel', t.region);
+  setText('serviceLabel', t.service);
+  setText('travelAlertsTitle', t.travelAlerts);
+  setText('recommendedHotelsTitle', t.recommendedHotels);
+  setText('featuredDealsTitle', t.featuredDeals);
+  setText('quickActionsTitle', t.quickActions);
+  const classicLink = document.querySelector('.old-link');
+  if (classicLink) classicLink.textContent = t.classic;
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  if (typeof window.rotateBanner === 'function') {
+    const nextIndex = (window.bannerIndex - 1 + window.bannerPartners.length) % window.bannerPartners.length;
+    const currentPartner = window.bannerPartners[nextIndex];
+    const mapped = t.banners[currentPartner?.name];
+    if (mapped) {
+      const msg = document.getElementById('bannerMessage');
+      const sub = document.getElementById('bannerSub');
+      if (msg) msg.textContent = mapped.name;
+      if (sub) sub.textContent = mapped.sub;
+    }
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyMergedLanguage(btn.dataset.lang));
+  });
+  const region = document.getElementById('region');
+  if (region) {
+    region.addEventListener('change', () => {
+      const map = { us: 'en', eu: 'fr', asia: 'en', all: window.currentLanguage || 'en' };
+      const targetLang = map[region.value];
+      if (targetLang && targetLang !== window.currentLanguage) applyMergedLanguage(targetLang);
+    });
+  }
+  const browserLang = ((navigator.language || 'en').slice(0, 2)).toLowerCase();
+  if (mergedTranslations[browserLang]) applyMergedLanguage(browserLang);
+});
+</script>
+
+<script>
+window.bannerPartners = [
   { name: "Trivago US", link: "https://awin1.com/cread.php?awinmid=XXXXX&awinaffid=2834806", sub: "Hotels & Travel Deals" },
   { name: "Tiqets", link: "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806", sub: "Tickets & Attractions" },
   { name: "Kiwi Flights", link: "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806", sub: "Flights & Travel" },
   { name: "Holiday Taxis", link: "https://holidaytaxis.tpo.lv/oHwpbrFt", sub: "Airport Transfers" }
 ];
 
-let bannerIndex = 0;
+window.bannerIndex = 0;
 
 function rotateBanner() {
   const bannerMessage = document.getElementById("bannerMessage");
   const bannerSub = document.getElementById("bannerSub");
   const bannerLink = document.getElementById("bannerLink");
 
-  const partner = bannerPartners[bannerIndex];
+  const partner = window.bannerPartners[window.bannerIndex];
   if (!partner) return;
 
-  bannerMessage.textContent = partner.name;
-  bannerSub.textContent = partner.sub;
   bannerLink.href = partner.link;
 
-  bannerIndex = (bannerIndex + 1) % bannerPartners.length;
+  const localized = (mergedTranslations[window.currentLanguage] || mergedTranslations.en).banners[partner.name];
+  bannerMessage.textContent = localized ? localized.name : partner.name;
+  bannerSub.textContent = localized ? localized.sub : partner.sub;
+
+  window.bannerIndex = (window.bannerIndex + 1) % window.bannerPartners.length;
 }
 
 rotateBanner();
