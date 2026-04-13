@@ -3,6 +3,9 @@
 // Recent priority, videos only, normalized output
 
 import fetch from "node-fetch";
+import express from "express";
+
+const router = express.Router();
 
 // -----------------------------
 // 1. REDDIT (recent videos)
@@ -14,7 +17,7 @@ async function fetchRedditRecent() {
     "onebag",
     "cheaptravel",
     "travelhacks",
-    "earthporn",
+    "EarthPorn",
     "CityPorn"
   ];
 
@@ -124,9 +127,9 @@ async function fetchInstagramRecent() {
 }
 
 // -----------------------------
-// 4. MAIN ROUTE
+// 4. MAIN ROUTE (Express)
 // -----------------------------
-export default async function handler(req, res) {
+router.get("/", async (req, res) => {
   const page = Number(req.query.page || 0);
   const pageSize = 10;
 
@@ -151,4 +154,6 @@ export default async function handler(req, res) {
     console.error("Hybrid feed error:", err);
     res.status(500).json({ error: "Hybrid feed failed" });
   }
-}
+});
+
+export default router;
