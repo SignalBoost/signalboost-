@@ -1,3 +1,7 @@
+// /api/hybrid-feed.js
+// Dynamic Hybrid Feed (Reddit + YouTube + Instagram)
+// Recent priority, videos only, normalized output
+
 const express = require("express");
 const fetch = require("node-fetch");
 const router = express.Router();
