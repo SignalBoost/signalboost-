@@ -1,156 +1,266 @@
-// /api/hybrid-feed.js
-// Dynamic Hybrid Feed (Reddit + YouTube + Instagram)
-// Recent priority, videos only, normalized output
+// ===============================
+// HYBRID VIDEO FEED
+// signalboostapp.com
+// ===============================
 
-const express = require("express");
-const fetch = require("node-fetch");
-const router = express.Router();
+const magnetoColumn = document.getElementById('magnetoColumn');
+const magnetoFeed = document.getElementById('magnetoFeed');
+const magnetoLoader = document.getElementById('magnetoLoader');
 
-// -----------------------------
-// 1. REDDIT (recent videos)
-// -----------------------------
-async function fetchRedditRecent() {
-  const subs = [
-    "travel",
-    "solotravel",
-    "onebag",
-    "cheaptravel",
-    "travelhacks",
-    "EarthPorn",
-    "CityPorn"
-  ];
+let loading = false;
+let page = 0;
+let hasMore = true;
 
-  const results = [];
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
-  for (const sub of subs) {
-    try {
-      const url = `https://www.reddit.com/r/${sub}/new.json?limit=20`;
-      const res = await fetch(url, {
-        headers: { "User-Agent": "SignalBoost/1.0" }
-      });
-      const json = await res.json();
+function clearPlaceholderCards() {
+  if (!magnetoFeed) return;
+  const existingCards = magnetoFeed.querySelectorAll('.magneto-card, .magneto-empty');
+  existingCards.forEach(card => card.remove());
+}
 
-      json.data.children.forEach(post => {
-        const p = post.data;
-        if (!p.media || !p.media.reddit_video) return;
+function renderFallbackState(title, text) {
+  if (!magnetoFeed || !magnetoLoader) return;
 
-        results.push({
-          platform: "reddit",
-          title: p.title,
-          thumbnail: p.thumbnail,
-          embedHtml: `
-            <blockquote class="reddit-card">
-              <a href="https://reddit.com${p.permalink}"></a>
-            </blockquote>
-            <script async src="//embed.redditmedia.com/widgets/platform.js"></script>
-          `,
-          url: `https://reddit.com${p.permalink}`,
-          timestamp: p.created_utc * 1000
-        });
-      });
-    } catch (err) {
-      console.error("Reddit error:", err);
+  clearPlaceholderCards();
+
+  const empty = document.createElement('article');
+  empty.className = 'magneto-empty';
+  empty.innerHTML = `
+    <div>
+      <div class="magneto-empty-title">${escapeHtml(title)}</div>
+      <div class="magneto-empty-text">${escapeHtml(text)}</div>
+    </div>
+  `;
+
+  magnetoFeed.insertBefore(empty, magnetoLoader);
+}
+
+async function fetchHybridVideos(pageNumber) {
+  // IMPORTANT:
+  // Change BASE_URL only if your API lives on another domain/subdomain.
+  // If the JS runs on signalboostapp.com and the API is also there,
+  // this can stay exactly like this.
+  const BASE_URL = 'https://www.signalboostapp.com';
+
+  const url = `${BASE_URL}/api/hybrid-feed?type=video&sort=recent&page=${pageNumber}`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json'
     }
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`Hybrid feed request failed (${res.status}) ${body.slice(0, 140)}`);
   }
 
-  return results;
+  const data = await res.json();
+
+  // Support multiple backend response shapes
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.items)) return data.items;
+  if (Array.isArray(data?.results)) return data.results;
+
+  console.warn('Unexpected hybrid feed format:', data);
+  return [];
 }
 
-// -----------------------------
-// 2. YOUTUBE (recent videos)
-// -----------------------------
-async function fetchYouTubeRecent() {
-  const API_KEY = process.env.YT_KEY;
-  if (!API_KEY) return [];
+function createVideoCard(item) {
+  const card = document.createElement('article');
+  card.className = 'card card-clickable magneto-card';
 
-  const query = "travel OR cheap flights OR travel hacks OR travel deals";
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&order=date&q=${encodeURIComponent(
-    query
-  )}&key=${API_KEY}&maxResults=20`;
+  const safeThumb = item?.thumbnail ? String(item.thumbnail).replace(/'/g, '%27') : '';
+  const safeTitle = escapeHtml(item?.title || 'Untitled video');
+  const safePlatform = item?.platform ? escapeHtml(item.platform) : '';
+  const safeUrl = item?.url ? String(item.url) : '';
+  const badgeText = item?.badge ? escapeHtml(item.badge) : 'Recent';
+  const embedHtml = typeof item?.embedHtml === 'string' ? item.embedHtml.trim() : '';
+  const hasEmbed = Boolean(embedHtml);
 
+  if (safeUrl && !hasEmbed) {
+    card.addEventListener('click', () => {
+      window.open(safeUrl, '_blank', 'noopener');
+    });
+  }
+
+  const platformHtml = safePlatform ? `<span>${safePlatform}</span>` : '<span></span>';
+
+  const thumbHtml = safeThumb
+    ? `<div class="magneto-thumb" style="background-image:url('${safeThumb}'); background-size:cover; background-position:center;"></div>`
+    : '';
+
+  const titleHtml = safeUrl
+    ? `<a class="magneto-title" href="${safeUrl}" target="_blank" rel="noopener">${safeTitle}</a>`
+    : `<div class="magneto-title">${safeTitle}</div>`;
+
+  const embedBlock = hasEmbed
+    ? `<div class="magneto-embed">${embedHtml}</div>`
+    : '';
+
+  card.innerHTML = `
+    ${thumbHtml}
+    ${titleHtml}
+    <div class="magneto-meta">
+      ${platformHtml}
+      <span class="magneto-badge">${badgeText}</span>
+    </div>
+    ${embedBlock}
+  `;
+
+  hydrateEmbedProviders(card);
+  return card;
+}
+
+function loadExternalScriptOnce(src, checkFn) {
+  if (typeof checkFn === 'function' && checkFn()) {
+    return Promise.resolve();
+  }
+
+  const existing = document.querySelector(`script[src="${src}"]`);
+  if (existing) {
+    return new Promise(resolve => {
+      if (typeof checkFn !== 'function' || checkFn()) {
+        resolve();
+        return;
+      }
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => resolve(), { once: true });
+    });
+  }
+
+  return new Promise(resolve => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => resolve();
+    document.body.appendChild(script);
+  });
+}
+
+async function hydrateEmbedProviders(scope = document) {
   try {
-    const res = await fetch(url);
-    const json = await res.json();
+    if (scope.querySelector('.tiktok-embed')) {
+      await loadExternalScriptOnce(
+        'https://www.tiktok.com/embed.js',
+        () => Boolean(window.tiktokEmbed)
+      );
 
-    return json.items.map(v => ({
-      platform: "youtube",
-      title: v.snippet.title,
-      thumbnail: v.snippet.thumbnails.high.url,
-      embedHtml: `
-        <iframe width="100%" height="315"
-          src="https://www.youtube.com/embed/${v.id.videoId}"
-          frameborder="0" allowfullscreen>
-        </iframe>
-      `,
-      url: `https://youtube.com/watch?v=${v.id.videoId}`,
-      timestamp: new Date(v.snippet.publishedAt).getTime()
-    }));
-  } catch (err) {
-    console.error("YouTube error:", err);
-    return [];
+      if (window.tiktokEmbed && typeof window.tiktokEmbed.load === 'function') {
+        window.tiktokEmbed.load();
+      }
+    }
+
+    if (scope.querySelector('.instagram-media, blockquote.instagram-media')) {
+      await loadExternalScriptOnce(
+        'https://www.instagram.com/embed.js',
+        () => Boolean(window.instgrm)
+      );
+
+      if (window.instgrm?.Embeds?.process) {
+        window.instgrm.Embeds.process();
+      }
+    }
+
+    if (scope.querySelector('.twitter-tweet, blockquote.twitter-tweet')) {
+      await loadExternalScriptOnce(
+        'https://platform.twitter.com/widgets.js',
+        () => Boolean(window.twttr)
+      );
+
+      if (window.twttr?.widgets?.load) {
+        window.twttr.widgets.load(scope);
+      }
+    }
+
+    // YouTube iframe embeds do not need extra hydration
+  } catch (error) {
+    console.error('Embed hydration error:', error);
   }
 }
 
-// -----------------------------
-// 3. INSTAGRAM (recent reels)
-// -----------------------------
-async function fetchInstagramRecent() {
-  const TOKEN = process.env.IG_TOKEN;
-  const USER_ID = process.env.IG_USER_ID;
+async function loadMoreHybridCards() {
+  if (!magnetoFeed || !magnetoLoader) return;
+  if (loading || !hasMore) return;
 
-  if (!TOKEN || !USER_ID) return [];
-
-  const url = `https://graph.facebook.com/v19.0/${USER_ID}/media?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${TOKEN}`;
+  loading = true;
+  magnetoLoader.style.display = '';
+  magnetoLoader.textContent = 'Loading…';
 
   try {
-    const res = await fetch(url);
-    const json = await res.json();
+    const items = await fetchHybridVideos(page);
 
-    return json.data
-      .filter(m => m.media_type === "VIDEO")
-      .map(m => ({
-        platform: "instagram",
-        title: m.caption || "Instagram Reel",
-        thumbnail: m.media_url,
-        embedHtml: `
-          <blockquote class="instagram-media" data-instgrm-permalink="${m.permalink}"></blockquote>
-          <script async src="//www.instagram.com/embed.js"></script>
-        `,
-        url: m.permalink,
-        timestamp: new Date(m.timestamp).getTime()
-      }));
+    if (!items || items.length === 0) {
+      hasMore = false;
+
+      if (page === 0) {
+        renderFallbackState(
+          'No videos yet',
+          'No embeddable hybrid videos were returned by the feed.'
+        );
+      }
+
+      magnetoLoader.textContent = 'No more videos.';
+      return;
+    }
+
+    if (page === 0) {
+      clearPlaceholderCards();
+    }
+
+    items.forEach(item => {
+      const card = createVideoCard(item);
+      magnetoFeed.insertBefore(card, magnetoLoader);
+    });
+
+    await hydrateEmbedProviders(magnetoFeed);
+
+    page += 1;
+    magnetoLoader.textContent = 'Scroll to load more…';
   } catch (err) {
-    console.error("Instagram error:", err);
-    return [];
+    console.error('Hybrid feed error:', err);
+
+    if (page === 0) {
+      renderFallbackState(
+        'Hybrid feed unavailable',
+        'The page is ready, but /api/hybrid-feed is not returning usable embedded video data yet.'
+      );
+      magnetoLoader.style.display = 'none';
+      return;
+    }
+
+    magnetoLoader.textContent = 'Error loading feed.';
+  } finally {
+    loading = false;
   }
 }
 
-// -----------------------------
-// 4. MAIN ROUTE
-// -----------------------------
-router.get("/", async (req, res) => {
-  const page = Number(req.query.page || 0);
-  const pageSize = 10;
-
-  try {
-    const [reddit, youtube, instagram] = await Promise.all([
-      fetchRedditRecent(),
-      fetchYouTubeRecent(),
-      fetchInstagramRecent()
-    ]);
-
-    let feed = [...reddit, ...youtube, ...instagram];
-
-    feed.sort((a, b) => b.timestamp - a.timestamp);
-
-    const start = page * pageSize;
-    const end = start + pageSize;
-
-    res.status(200).json(feed.slice(start, end));
-  } catch (err) {
-    console.error("Hybrid feed error:", err);
-    res.status(500).json({ error: "Hybrid feed failed" });
+function initHybridFeed() {
+  if (!magnetoColumn || !magnetoFeed || !magnetoLoader) {
+    console.warn('Hybrid feed elements not found on page.');
+    return;
   }
-});
 
-module.exports = router;
+  magnetoColumn.addEventListener('scroll', () => {
+    const { scrollTop, scrollHeight, clientHeight } = magnetoColumn;
+
+    if (scrollTop + clientHeight >= scrollHeight - 80) {
+      loadMoreHybridCards();
+    }
+  });
+
+  hydrateEmbedProviders(document);
+  loadMoreHybridCards();
+}
+
+document.addEventListener('DOMContentLoaded', initHybridFeed);
