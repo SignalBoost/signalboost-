@@ -1,28 +1,23 @@
 const express = require('express');
-const cors = require('cors');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Allow browser requests
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Accept']
-}));
-
-app.use(express.json());
+const router = express.Router();
 
 // ===============================
-// HYBRID FEED API
+// GET /api/hybrid-feed
 // ===============================
-app.get('/api/hybrid-feed', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const type = req.query.type || 'video';
     const sort = req.query.sort || 'recent';
     const page = Number(req.query.page || 0);
 
-    // Replace this with your real hybrid source aggregation logic
+    if (type !== 'video') {
+      return res.status(200).json([]);
+    }
+
+    // ===============================
+    // TEMP SAMPLE DATA
+    // Replace this later with your real hybrid source aggregation
+    // ===============================
     const items = [
       {
         title: 'Jamaica Travel Guide',
@@ -54,26 +49,20 @@ app.get('/api/hybrid-feed', async (req, res) => {
       }
     ];
 
-    if (type !== 'video') {
-      return res.json([]);
-    }
-
-    // Simulate paging
+    // simple paging
     const pageSize = 10;
     const start = page * pageSize;
     const pagedItems = items.slice(start, start + pageSize);
 
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(pagedItems);
+    return res.status(200).json(pagedItems);
   } catch (error) {
-    console.error('Hybrid feed API error:', error);
-    res.status(500).json({
+    console.error('Hybrid feed route error:', error);
+
+    return res.status(500).json({
       error: 'Hybrid feed failed',
       message: error.message
     });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+module.exports = router;
