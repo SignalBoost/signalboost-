@@ -1,10 +1,5 @@
-// /api/hybrid-feed.js
-// Dynamic Hybrid Feed (Reddit + YouTube + Instagram)
-// Recent priority, videos only, normalized output
-
-import fetch from "node-fetch";
-import express from "express";
-
+const express = require("express");
+const fetch = require("node-fetch");
 const router = express.Router();
 
 // -----------------------------
@@ -127,7 +122,7 @@ async function fetchInstagramRecent() {
 }
 
 // -----------------------------
-// 4. MAIN ROUTE (Express)
+// 4. MAIN ROUTE
 // -----------------------------
 router.get("/", async (req, res) => {
   const page = Number(req.query.page || 0);
@@ -142,10 +137,8 @@ router.get("/", async (req, res) => {
 
     let feed = [...reddit, ...youtube, ...instagram];
 
-    // Sort by timestamp (recent priority)
     feed.sort((a, b) => b.timestamp - a.timestamp);
 
-    // Pagination
     const start = page * pageSize;
     const end = start + pageSize;
 
@@ -156,4 +149,4 @@ router.get("/", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
