@@ -8,6 +8,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -515,6 +517,52 @@
     .g4 { background: linear-gradient(135deg,#28100a,#6e1a1a); }
     .g5 { background: linear-gradient(135deg,#1a1a0a,#5c5c0a); }
 
+    .entrance-featured-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .entrance-featured-card {
+      background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      min-height: 86px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+    .entrance-featured-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+    }
+    .entrance-featured-platform {
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .entrance-featured-title {
+      font-size: .86rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+    .entrance-featured-meta {
+      font-size: .68rem;
+      color: var(--muted);
+    }
+
+
+    body.classic-theme {
+      --bg: #fffbe6; --bg2: #f8f1d0;
+      --surface: #fff7df; --surface2: #f2e7c0;
+      --border: rgba(80,60,20,.12); --border2: rgba(80,60,20,.22);
+      --text: #2c2412; --muted: #6b5f42;
+    }
     body.light-theme {
       --bg: #f5f5fa; --bg2: #ebebf2;
       --surface: #ffffff; --surface2: #f0f0f5;
@@ -1198,11 +1246,57 @@
   opacity: 0.8;
 }
 
+
+
+    .mall-header-addon {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      padding: 10px 20px 14px;
+    }
+    .mall-header-inner { max-width: 1920px; margin: 0 auto; display: grid; gap: 10px; }
+    .mall-tagline {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      font-size: .85rem; color: var(--muted);
+    }
+    .mall-tagline strong { color: var(--text); }
+    .category-bar, .region-switcher, .media-carousel {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;
+    }
+    .category-btn, .region-btn, .media-item {
+      border: 1px solid var(--border2); background: var(--surface2); color: var(--text);
+      border-radius: 999px; padding: 8px 12px; font-size: .76rem; font-weight: 700;
+      white-space: nowrap;
+    }
+    .category-btn.active, .region-btn.active {
+      background: var(--pink); border-color: var(--pink); color: #fff;
+    }
+    .media-item {
+      border-radius: 12px; background: linear-gradient(135deg, rgba(255,0,79,.16), rgba(0,255,204,.10));
+    }
+    .partner-tile-grid {
+      display: none; grid-template-columns: repeat(auto-fit, minmax(110px,1fr)); gap: 8px; margin-top: 10px;
+    }
+    .partner-tile-grid.active { display: grid; }
+    .partner-tile {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center;
+    }
+    .partner-logo {
+      width: 34px; height: 34px; margin: 0 auto 8px; border-radius: 10px; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--pink), var(--cyan)); color: #000; font-weight: 900;
+    }
+    .partner-name { font-size: .76rem; font-weight: 700; }
+    .mall-footer {
+      max-width: 1920px; margin: 18px auto 0; padding: 18px 20px 28px; color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+    .mall-footer-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
+    .mall-footer a:hover { color: var(--cyan); }
+
 </style>
 </head>
 <body>
 
-<div class="mall-banner" id="mallBanner">
+<div class="mall-banner" id="mallBanner"><div id="partner-banner"></div>
   <a href="#" id="bannerLink" target="_blank" rel="noopener">
     <span class="mall-banner-message" id="bannerMessage">Loading…</span>
     <span class="mall-banner-sub" id="bannerSub">Please wait</span>
@@ -1219,6 +1313,7 @@
     <div class="topbar-actions">
       <button class="pill-btn active" id="liveBtn">🔴 LIVE</button>
       <button class="pill-btn" id="themeBtn">☀️ Light</button>
+      <button class="pill-btn" id="classicBtn">📜 Classic</button>
       <a href="../" class="old-link">← Classic</a>
     </div>
   </div>
@@ -1240,6 +1335,37 @@
     <a href="https://truthsocial.com" target="_blank" rel="noopener" class="platform-btn" title="Truth Social"><span class="icon">🇺🇸</span>Truth</a>
   </div>
 </div>
+
+<section class="mall-header-addon">
+  <div class="mall-header-inner">
+    <div class="mall-tagline">
+      <strong>SignalBoost Mall Entrance</strong>
+      <span>Your digital shopping mall entrance with category browse, region switching, and media discovery.</span>
+    </div>
+    <nav class="category-bar" id="categoryBar">
+      <button class="category-btn active" data-category="all">All</button>
+      <button class="category-btn" data-category="travel">Travel</button>
+      <button class="category-btn" data-category="fashion">Fashion</button>
+      <button class="category-btn" data-category="tech">Tech</button>
+      <button class="category-btn" data-category="entertainment">Entertainment</button>
+      <button class="category-btn" data-category="food">Food</button>
+    </nav>
+    <div class="region-switcher" id="regionSwitcher">
+      <button class="region-btn active" data-region="all">Global</button>
+      <button class="region-btn" data-region="us">USA</button>
+      <button class="region-btn" data-region="eu">Europe</button>
+      <button class="region-btn" data-region="asia">Asia</button>
+      <button class="region-btn" data-region="jm">Jamaica</button>
+    </div>
+    <div class="media-carousel">
+      <div class="media-item">🎬 TikTok — Top Jamaican Getaways</div>
+      <div class="media-item">📺 YouTube — Dunn’s River Falls</div>
+      <div class="media-item">📸 Instagram — Adventure Awaits!</div>
+      <div class="media-item">🧳 Travel Deals — Fresh partner offers</div>
+    </div>
+    <div class="entrance-featured-row" id="entranceFeatured"></div>
+  </div>
+</section>
 
 <main class="shell">
   <div class="dashboard">
@@ -1273,6 +1399,14 @@
             </div>
 
             <p id="noResults" style="display:none; font-size:13px;">No results found.</p>
+
+            <div class="partner-tile-grid" id="categoryPanel">
+              <div class="partner-tile"><div class="partner-logo">T</div><div class="partner-name">Trivago</div></div>
+              <div class="partner-tile"><div class="partner-logo">K</div><div class="partner-name">Kiwi</div></div>
+              <div class="partner-tile"><div class="partner-logo">T</div><div class="partner-name">Tiqets</div></div>
+              <div class="partner-tile"><div class="partner-logo">A</div><div class="partner-name">Airalo</div></div>
+              <div class="partner-tile"><div class="partner-logo">N</div><div class="partner-name">NordVPN</div></div>
+            </div>
 
             <div class="partner-feed" id="affiliateHub">
 
@@ -1479,6 +1613,11 @@
               <input type="text" placeholder="Ask Anything...">
             </div>
 
+            <div class="finance-panel">
+              <h4>Markets Snapshot</h4>
+              <ul id="finance-list"></ul>
+            </div>
+
             <div class="markets">
               <div class="tv-widget">
                 <div class="tradingview-widget-container">
@@ -1495,23 +1634,24 @@
             </div>
 
             <div class="news-feed custom-news-feed">
-              <h3>Yahoo Finance</h3>
-              <ul>
-                <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Markets open higher as tech leads gains</a></li>
-                <li><a href="https://finance.yahoo.com" target="_blank" rel="noopener">Investors eye inflation signals</a></li>
-              </ul>
-              <h3>CNBC</h3>
-              <ul>
-                <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Travel demand remains firm</a></li>
-                <li><a href="https://www.cnbc.com" target="_blank" rel="noopener">Oil prices climb on supply concerns</a></li>
-              </ul>
+              <h4>News Feed</h4>
+              <ul id="news-list"></ul>
             </div>
 
-            <div class="weather">
-              <p>Kingston: 28°C, Partly Cloudy</p>
-              <p>Sun: 30°C / 24°C</p>
-              <p>Mon: 29°C / 23°C</p>
-              <p>Tue: 31°C / 25°C</p>
+            <div class="system-panel">
+              <h4>System Pulse</h4>
+              <p>Temperature: <span id="temp">--</span></p>
+              <p>Mode: <span id="mode">--</span></p>
+              <p>Volatility: <span id="volatility">--</span></p>
+            </div>
+
+            <div class="weather" id="weatherColumn">
+              <p>Loading weather...</p>
+            </div>
+
+            <div class="quick-notes">
+              <h4>Quick Notes</h4>
+              <textarea id="notes" placeholder="Write notes here..."></textarea>
             </div>
 
             <div class="platform-logos custom-platform-logos">
@@ -1535,6 +1675,16 @@
     </aside>
   </div>
 </main>
+
+<footer class="mall-footer">
+  <div class="mall-footer-links">
+    <a href="#">About SignalBoost</a>
+    <a href="#">Partner With Us</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Contact</a>
+  </div>
+  <div>© <span id="footerYear"></span> SignalBoost Mall — All Rights Reserved</div>
+</footer>
 
 <script>
 const clickTracker = {};
@@ -2214,6 +2364,174 @@ function rotateBanner() {
 
 rotateBanner();
 setInterval(rotateBanner, 15000);
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const year = document.getElementById('footerYear');
+  if (year) year.textContent = new Date().getFullYear();
+
+  const categoryButtons = document.querySelectorAll('#categoryBar .category-btn');
+  const regionButtons = document.querySelectorAll('#regionSwitcher .region-btn');
+  const categoryPanel = document.getElementById('categoryPanel');
+  const regionSelect = document.getElementById('region');
+
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const category = btn.dataset.category;
+      if (categoryPanel) {
+        categoryPanel.classList.toggle('active', category !== 'all');
+        categoryPanel.querySelectorAll('.partner-tile').forEach(tile => {
+          const text = tile.textContent.toLowerCase();
+          const show = category === 'all' ||
+            (category === 'travel' && /trivago|kiwi|tiqets|airalo|nordvpn/.test(text)) ||
+            (category === 'tech' && /nordvpn/.test(text)) ||
+            (category === 'fashion' && /trivago/.test(text) === false) ||
+            (category === 'entertainment') ||
+            (category === 'food');
+          tile.style.display = show ? '' : 'none';
+        });
+      }
+    });
+  });
+
+  const regionMap = { all: 'all', us: 'us', eu: 'eu', asia: 'asia', jm: 'all' };
+  regionButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      regionButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (regionSelect) {
+        regionSelect.value = regionMap[btn.dataset.region] || 'all';
+        regionSelect.dispatchEvent(new Event('change'));
+      }
+    });
+  });
+});
+</script>
+
+<script>
+(function() {
+  const entranceFeaturedData = [
+    { platform: 'TikTok', title: 'Top Jamaican Getaways', region: 'Jamaica', category: 'Travel' },
+    { platform: 'YouTube', title: 'Dunn’s River Falls', region: 'Jamaica', category: 'Travel' },
+    { platform: 'Instagram', title: 'Adventure Awaits!', region: 'Global', category: 'Travel' },
+    { platform: 'Travel Deals', title: 'Fresh partner offers', region: 'Global', category: 'Food' },
+    { platform: 'Latin America', title: 'Carnival Specials', region: 'Latin America', category: 'Entertainment' },
+    { platform: 'Europe', title: 'Paris Fashion Week Highlights', region: 'Europe', category: 'Fashion' },
+    { platform: 'USA', title: 'NYC Tech Expo', region: 'USA', category: 'Tech' },
+    { platform: 'USA', title: 'California Surf Trends', region: 'USA', category: 'Travel' }
+  ];
+
+  function renderEntranceFeatured(region = 'Global', category = 'All') {
+    const target = document.getElementById('entranceFeatured');
+    if (!target) return;
+    let items = entranceFeaturedData.slice();
+    if (region !== 'Global' && region !== 'all') items = items.filter(item => item.region === region);
+    if (category !== 'All' && category !== 'all') items = items.filter(item => item.category.toLowerCase() === category.toLowerCase());
+    if (!items.length) items = entranceFeaturedData.slice(0, 4);
+    target.innerHTML = items.map(item => `
+      <div class="entrance-featured-card">
+        <div class="entrance-featured-platform">${item.platform}</div>
+        <div class="entrance-featured-title">${item.title}</div>
+        <div class="entrance-featured-meta">${item.region} • ${item.category}</div>
+      </div>
+    `).join('');
+  }
+
+  window.renderEntranceFeatured = renderEntranceFeatured;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderEntranceFeatured();
+
+    const classicBtn = document.getElementById('classicBtn');
+    if (classicBtn) {
+      classicBtn.addEventListener('click', () => {
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('classic-theme');
+        classicBtn.classList.add('active');
+        const themeBtn = document.getElementById('themeBtn');
+        if (themeBtn) themeBtn.classList.remove('active');
+      });
+    }
+
+    const categoryButtons = document.querySelectorAll('#categoryBar .category-btn');
+    const regionButtons = document.querySelectorAll('#regionSwitcher .region-btn');
+
+    function currentCategory() {
+      const active = document.querySelector('#categoryBar .category-btn.active');
+      return active ? active.dataset.category : 'all';
+    }
+    function currentRegion() {
+      const active = document.querySelector('#regionSwitcher .region-btn.active');
+      const map = { all: 'Global', us: 'USA', eu: 'Europe', asia: 'Asia', jm: 'Jamaica' };
+      return active ? (map[active.dataset.region] || 'Global') : 'Global';
+    }
+
+    categoryButtons.forEach(btn => btn.addEventListener('click', () => {
+      setTimeout(() => renderEntranceFeatured(currentRegion(), currentCategory()), 0);
+    }));
+    regionButtons.forEach(btn => btn.addEventListener('click', () => {
+      setTimeout(() => renderEntranceFeatured(currentRegion(), currentCategory()), 0);
+    }));
+  });
+})();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const weatherColumn = document.getElementById('weatherColumn');
+  if (!weatherColumn) return;
+
+  function renderWeather(city, temp, desc) {
+    weatherColumn.innerHTML = `
+      <p><strong>Weather in ${city}</strong></p>
+      <p>${Math.round(temp)}°C, ${desc}</p>
+    `;
+  }
+
+  function fallbackWeather() {
+    getWeather(17.971, -76.793);
+  }
+
+  function getWeather(lat, lon) {
+    const apiKey = "YOUR_API_KEY";
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+
+    if (!apiKey || apiKey === 'YOUR_API_KEY') {
+      weatherColumn.innerHTML = `
+        <p><strong>Weather in Kingston</strong></p>
+        <p>Add your OpenWeather API key to enable live weather.</p>
+      `;
+      return;
+    }
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (!data || !data.main || !data.weather || !data.weather[0]) throw new Error('Invalid weather response');
+        renderWeather(data.name, data.main.temp, data.weather[0].description);
+      })
+      .catch(err => {
+        console.error(err);
+        weatherColumn.innerHTML = `
+          <p><strong>Weather unavailable</strong></p>
+          <p>Please try again later.</p>
+        `;
+      });
+  }
+
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      position => getWeather(position.coords.latitude, position.coords.longitude),
+      fallbackWeather
+    );
+  } else {
+    fallbackWeather();
+  }
+});
 </script>
 
 </body>
