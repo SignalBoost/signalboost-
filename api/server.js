@@ -1,23 +1,46 @@
+// ===============================
+// SignalBoost — Main Server File
+// ===============================
+
 const express = require('express');
+const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
 
-// Routes
+// ===============================
+// STATIC SITE (index.html, css, js)
+// ===============================
+app.use(express.static(path.join(__dirname)));
+
+// ===============================
+// API ROUTES
+// ===============================
+
+// Existing routes
 const feedRoutes = require('./api/feed');
 const businessRoutes = require('./api/business');
 
+// NEW hybrid feed route
+const hybridFeedRoutes = require('./api/hybrid-feed');
+
+// Register routes
 app.use('/api/feed', feedRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/hybrid-feed', hybridFeedRoutes);
 
-// Root endpoint
+// ===============================
+// ROOT ENDPOINT
+// ===============================
 app.get('/', (req, res) => {
-  res.send('SignalBoost API is running...');
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start server
+// ===============================
+// START SERVER
+// ===============================
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`SignalBoost server running at http://localhost:${port}`);
 });
