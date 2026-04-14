@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SignalBoost — Your Digital Shopping Mall</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --card-bg: #f7f7f7;
+      --border: #e0e0e0;
+      --accent: #d4af37;
+      --accent-soft: rgba(212, 175, 55, 0.12);
+      --header-bg: rgba(255, 255, 255, 0.9);
+      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.04);
+    }
+
+    body.dark {
+      --bg: #0b0b0f;
+      --text: #f5f5f7;
+      --card-bg: #15151b;
+      --border: #2a2a33;
+      --accent: #d4af37;
+      --accent-soft: rgba(212, 175, 55, 0.18);
+      --header-bg: rgba(11, 11, 15, 0.9);
+      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: var(--header-bg);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      z-index: 1000;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--accent);
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .header-center {
+      display: flex;
+      gap: 8px;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .header-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .header-pill:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-toggle {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    main {
+      padding: 90px 20px 20px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr) 260px;
+      gap: 18px;
+      align-items: start;
+      height: calc(100vh - 110px);
+      overflow: hidden;
+    }
+
+    @media (max-width: 1100px) {
+      .grid-3 {
+        grid-template-columns: 280px minmax(0, 1fr);
+      }
+      .column-3 {
+        display: none;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .column-1 {
+        order: 2;
+      }
+      .column-2 {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 6px;
+        scroll-behavior: smooth;
+        overscroll-behavior: contain;
+      }
+
+      /* Ensure side columns also scroll independently */
+      .column-1, .column-3 {
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+      }
+    }
+    }
+
+    /* Ensure side columns also scroll independently */
+    .column-1, .column-3 {
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+    }
+
+    #magnetoFeed {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .video-card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+    }
+
+    .video-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 12px;
+      color: var(--text);
+    }
+
+    .video-card .video-embed {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-card iframe,
+    .video-card blockquote,
+    .video-card video,
+    .video-card embed {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .video-card a.video-link,
+    .video-card a {
+      display: block;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0077cc;
+      text-decoration: none;
+      border-top: 1px solid #eee;
+    }
+
+    .video-card a.video-link:hover,
+    .video-card a:hover {
+      background: #f9f9f9;
+    }
+
+    #magnetoLoader {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .magneto-empty {
+      grid-column: 1 / -1;
+      display: grid;
+      place-items: center;
+      min-height: 220px;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow-soft);
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .magneto-empty-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .magneto-empty-text {
+      font-size: 0.85rem;
+      opacity: 0.75;
+    }
+
+    #logoWall {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    #logoWall a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 72px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      box-shadow: var(--shadow-soft);
+      transition: border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+    }
+
+    #logoWall a:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    #logoWall img {
+      width: 80px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .animate {
+      animation: spinBounce 0.6s ease;
+    }
+
+    @keyframes spinBounce {
+      0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
+      50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+      100% { transform: scale(1) rotate(360deg); opacity: 1; }
+    }
+
+    .shake {
+      animation: bowlShake 0.6s ease;
+    }
+
+    @keyframes bowlShake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    #volumeSlider {
+      width: 150px;
+      accent-color: #ff6f61;
+    }
+
+    #muteButton,
+    #shuffleButton {
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #muteButton:hover,
+    #shuffleButton:hover {
+      transform: scale(1.05);
+    }
+
+    #partnerColumn {
+      padding: 16px;
+    }
+
+    .fruit-bowl {
+      position: relative;
+      width: 100%;
+      min-height: 400px;
+      background: radial-gradient(circle at center, #ffcc00, #ff6f61, #00c4ff);
+      border-radius: 50%;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .loop-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .loop {
+      width: var(--loop-size, 50px);
+      height: var(--loop-size, 50px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      background: var(--loop-bg, linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff));
+      transition: transform 0.2s ease;
+      overflow: hidden;
+      text-align: center;
+      padding: 4px;
+      transform: rotate(var(--loop-rotate, 0deg));
+    }
+
+    .loop:hover {
+      transform: scale(1.2);
+    }
+
+    .loop img {
+      max-width: 70%;
+      max-height: 70%;
+      border-radius: 50%;
+      object-fit: contain;
+      display: block;
+    }
+</style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div class="brand-title">SignalBoost</div>
+      <div class="brand-subtitle">Your Digital Shopping Mall</div>
+    </div>
+
+    <div class="header-center">
+      <div class="header-pill" data-target="cat-flights">Flights</div>
+      <div class="header-pill" data-target="cat-hotels">Hotels &amp; Meta</div>
+      <div class="header-pill" data-target="cat-sim">SIM &amp; eSIM</div>
+      <div class="header-pill" data-target="cat-cars">Cars &amp; Transfers</div>
+      <div class="header-pill" data-target="cat-activities">Activities</div>
+      <div class="header-pill" data-target="cat-services">Travel Services</div>
+      <div class="header-pill" data-target="cat-vpn">Digital</div>
+      <div class="header-pill" data-target="cat-other">Other &amp; Shopping</div>
+    </div>
+
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">🌞</span>
+        <span id="themeLabel">Light</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div id="rotatingBanner" class="banner">
+      <a id="bannerLink" href="#" target="_blank" rel="noopener">
+        <span id="bannerText"></span>
+      </a>
+    </div>
+
+    <section class="grid-3">
+      <div class="column column-1" id="column1" style="height:100%; overflow-y:auto; overflow-x:hidden; overscroll-behavior: contain;">
+        <div class="category-block open" id="cat-flights">
+          <div class="category-header">
+            <div class="category-name">Flights &amp; Travel Meta</div>
+            <div>
+              <span class="category-tag">High Intent</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Kiwi CA</span>
+                    <span class="partner-meta">Flights</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Kiwi US</span>
+                    <span class="partner-meta">Flights</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener">
+                    <span class="partner-name">Aviasales</span>
+                    <span class="partner-meta">Flights Meta</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block" id="cat-hotels">
+          <div class="category-header">
+            <div class="category-name">Hotels &amp; Meta</div>
+            <div>
+              <span class="category-tag">Stays</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Trivago AR</span>
+                    <span class="partner-meta">Meta</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Trivago BR</span>
+                    <span class="partner-meta">Meta</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Trivago MX</span>
+                    <span class="partner-meta">Meta</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block" id="cat-sim">
+          <div class="category-header">
+            <div class="category-name">SIM &amp; eSIM</div>
+            <div>
+              <span class="category-tag">Connectivity</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener">
+                    <span class="partner-name">Yesim</span>
+                    <span class="partner-meta">eSIM</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener">
+                    <span class="partner-name">Airalo</span>
+                    <span class="partner-meta">eSIM</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener">
+                    <span class="partner-name">Drimsim</span>
+                    <span class="partner-meta">SIM/eSIM</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block" id="cat-cars">
+          <div class="category-header">
+            <div class="category-name">Cars &amp; Transfers</div>
+            <div>
+              <span class="category-tag">Ground Mobility</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener">
+                    <span class="partner-name">Localrent</span>
+                    <span class="partner-meta">Car Rental</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener">
+                    <span class="partner-name">EconomyBookings</span>
+                    <span class="partner-meta">Car Rental</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener">
+                    <span class="partner-name">QEEQ</span>
+                    <span class="partner-meta">Car Rental</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block" id="cat-activities">
+          <div class="category-header">
+            <div class="category-name">Activities &amp; Experiences</div>
+            <div>
+              <span class="category-tag">Experiences</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener">
+                    <span class="partner-name">Klook</span>
+                    <span class="partner-meta">Tours &amp; Activities</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener">
+                    <span class="partner-name">WeGoTrip</span>
+                    <span class="partner-meta">Tours</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block" id="cat-services">
+          <div class="category-header">
+            <div class="category-name">Travel Services</div>
+            <div>
+              <span class="category-tag">Support</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener">
+                    <span class="partner-name">Radical Storage</span>
+                    <span class="partner-meta">Luggage Storage</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener">
+                    <span class="partner-name">AirHelp</span>
+                    <span class="partner-meta">Flight Compensation</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block" id="cat-vpn">
+          <div class="category-header">
+            <div class="category-name">Digital &amp; Tools</div>
+            <div>
+              <span class="category-tag">Digital</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">PearlMountain</span>
+                    <span class="partner-meta">Digital Tools</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block" id="cat-other">
+          <div class="category-header">
+            <div class="category-name">Other &amp; Shopping</div>
+            <div>
+              <span class="category-tag">Misc</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Tsarbomba</span>
+                    <span class="partner-meta">Watches</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column column-2" id="magnetoColumn">
+        <div id="magnetoFeed">
+          <div id="magnetoLoader">Loading…</div>
+        </div>
+      </div>
+
+      <div class="column column-3" id="partnerColumn" style="height:100%; overflow-y:auto; overflow-x:hidden; overscroll-behavior: contain;">
+        <div id="fruitBowl" class="fruit-bowl">
+          <button id="shuffleButton">🍭 Refresh Mix</button>
+          <audio id="shuffleSound" src="/sounds/bowl-shake.mp3" preload="auto"></audio>
+          <div class="audio-controls">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+            <button id="muteButton">🔇 Mute</button>
+          </div>
+          <div id="loopContainer" class="loop-container"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeLabel = document.getElementById('themeLabel');
+
+    function applyTheme(dark) {
+      if (dark) {
+        document.body.classList.add('dark');
+        themeIcon.textContent = '🌙';
+        themeLabel.textContent = 'Dark';
+      } else {
+        document.body.classList.remove('dark');
+        themeIcon.textContent = '🌞';
+        themeLabel.textContent = 'Light';
+      }
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = !document.body.classList.contains('dark');
+      applyTheme(isDark);
+    });
+
+    const categoryBlocks = Array.from(document.querySelectorAll('.category-block'));
+
+    function openCategory(block, scroll = true) {
+      categoryBlocks.forEach(b => {
+        if (b !== block) b.classList.remove('open');
+      });
+
+      const alreadyOpen = block.classList.contains('open');
+      if (!alreadyOpen) {
+        block.classList.add('open');
+        if (scroll) {
+          const headerOffset = 80;
+          const rect = block.getBoundingClientRect();
+          const absoluteY = window.scrollY + rect.top - headerOffset;
+          window.scrollTo({ top: absoluteY, behavior: 'smooth' });
+        }
+      }
+    }
+
+    categoryBlocks.forEach(block => {
+      const header = block.querySelector('.category-header');
+      header.addEventListener('click', () => {
+        const isOpen = block.classList.contains('open');
+        if (isOpen) {
+          block.classList.remove('open');
+        } else {
+          openCategory(block, true);
+        }
+      });
+    });
+
+    const headerPills = document.querySelectorAll('.header-pill');
+    headerPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const targetId = pill.getAttribute('data-target');
+        const targetBlock = document.getElementById(targetId);
+        if (targetBlock) openCategory(targetBlock, true);
+      });
+    });
+
+    const bannerData = [
+      { text: 'Kiwi.com – Find cheap flights', url: 'https://www.kiwi.com' },
+      { text: 'Trivago – Compare hotel prices', url: 'https://www.trivago.com' },
+      { text: 'Airalo – eSIM for travelers', url: 'https://www.airalo.com' },
+      { text: 'Localrent – Local car rentals', url: 'https://www.localrent.com' },
+      { text: 'Klook – Tours & activities', url: 'https://www.klook.com' },
+      { text: 'WeGoTrip – Audio tours', url: 'https://www.wegotrip.com' }
+    ];
+
+    let bannerIndex = 0;
+
+    function rotateBanner() {
+      const banner = document.getElementById('rotatingBanner');
+      const text = document.getElementById('bannerText');
+      const link = document.getElementById('bannerLink');
+
+      banner.style.opacity = 0;
+
+      setTimeout(() => {
+        text.textContent = bannerData[bannerIndex].text;
+        link.href = bannerData[bannerIndex].url;
+        banner.style.opacity = 1;
+        bannerIndex = (bannerIndex + 1) % bannerData.length;
+      }, 400);
+    }
+
+    rotateBanner();
+    setInterval(rotateBanner, 15000);
+
+    // ===============================
+    // COLUMN 2 — HYBRID VIDEO FEED
+    // ===============================
+
+    const magnetoColumn = document.getElementById('magnetoColumn');
+    const magnetoFeed = document.getElementById('magnetoFeed');
+    const magnetoLoader = document.getElementById('magnetoLoader');
+
+    let feedLoading = false;
+    let feedPage = 0;
+    let hasMore = true;
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function clearPlaceholderCards() {
+      if (!magnetoFeed) return;
+      const existingCards = magnetoFeed.querySelectorAll('.magneto-card, .magneto-empty');
+      existingCards.forEach(card => card.remove());
+    }
+
+    function renderFallbackState(title, text, details = '') {
+      if (!magnetoFeed || !magnetoLoader) return;
+
+      clearPlaceholderCards();
+
+      const empty = document.createElement('article');
+      empty.className = 'magneto-empty';
+      empty.innerHTML = `
+        <div>
+          <div class="magneto-empty-title">${escapeHtml(title)}</div>
+          <div class="magneto-empty-text">${escapeHtml(text)}</div>
+          ${details ? `<div class="magneto-empty-text" style="margin-top:8px;font-size:0.75rem;opacity:0.9;word-break:break-word;">${escapeHtml(details)}</div>` : ''}
+        </div>
+      `;
+
+      magnetoFeed.insertBefore(empty, magnetoLoader);
+    }
+
+    async function fetchHybridVideos(pageNumber) {
+      const isPreviewHost = /oaiusercontent\.com$/i.test(window.location.hostname);
+
+      if (isPreviewHost) {
+        throw new Error('Canvas preview cannot reliably fetch https://www.signalboostapp.com/api/hybrid-feed from this environment. Upload the packaged files to your own server/domain to test the live hybrid feed.');
+      }
+
+      const BASE_URL = window.location.origin;
+      const url = `${BASE_URL}/api/hybrid-feed?type=video&sort=recent&page=${pageNumber}`;
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error(`Request: ${url} | Status: ${res.status} | Body: ${body.slice(0, 200)}`);
+      }
+
+      const data = await res.json();
+
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data?.items)) return data.items;
+      if (Array.isArray(data?.results)) return data.results;
+
+      throw new Error(`Request: ${url} | Unexpected JSON shape: ${JSON.stringify(data).slice(0, 200)}`);
+    }
+
+    function createVideoCard(item) {
+      const card = document.createElement('article');
+      card.className = 'card card-clickable magneto-card video-card';
+
+      const safeThumb = item?.thumbnail ? String(item.thumbnail).replace(/'/g, '%27') : '';
+      const safeTitle = escapeHtml(item?.title || 'Untitled video');
+      const safePlatform = item?.platform ? escapeHtml(item.platform) : '';
+      const safeUrl = item?.url ? String(item.url) : '';
+      const badgeText = item?.badge ? escapeHtml(item.badge) : 'Recent';
+      const embedHtml = typeof item?.embedHtml === 'string' ? item.embedHtml.trim() : '';
+      const hasEmbed = Boolean(embedHtml);
+
+      if (safeUrl && !hasEmbed) {
+        card.addEventListener('click', () => {
+          window.open(safeUrl, '_blank', 'noopener');
+        });
+      }
+
+      const titleHtml = `<h3>${safeTitle}</h3>`;
+      const embedBlock = hasEmbed
+        ? `<div class="video-embed magneto-embed">${embedHtml}</div>`
+        : `<div class="video-embed magneto-thumb" style="background-image:url('${safeThumb}'); background-size:cover; background-position:center;"></div>`;
+      const linkBlock = safeUrl
+        ? `<a class="video-link" href="${safeUrl}" target="_blank" rel="noopener">Open video${safePlatform ? ` • ${safePlatform}` : ''} • ${badgeText}</a>`
+        : '';
+      const metaBlock = !safeUrl
+        ? `<div class="magneto-meta"><span>${safePlatform}</span><span class="magneto-badge">${badgeText}</span></div>`
+        : '';
+
+      card.innerHTML = `
+        ${embedBlock}
+        ${titleHtml}
+        ${metaBlock}
+        ${linkBlock}
+      `;
+
+      hydrateEmbedProviders(card);
+      return card;
+    }
+
+    function loadExternalScriptOnce(src, checkFn) {
+      if (typeof checkFn === 'function' && checkFn()) {
+        return Promise.resolve();
+      }
+
+      const existing = document.querySelector(`script[src="${src}"]`);
+      if (existing) {
+        return new Promise(resolve => {
+          if (typeof checkFn !== 'function' || checkFn()) {
+            resolve();
+            return;
+          }
+          existing.addEventListener('load', () => resolve(), { once: true });
+          existing.addEventListener('error', () => resolve(), { once: true });
+        });
+      }
+
+      return new Promise(resolve => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => resolve();
+        document.body.appendChild(script);
+      });
+    }
+
+    async function hydrateEmbedProviders(scope = document) {
+      try {
+        if (scope.querySelector('.tiktok-embed')) {
+          await loadExternalScriptOnce(
+            'https://www.tiktok.com/embed.js',
+            () => Boolean(window.tiktokEmbed)
+          );
+          if (window.tiktokEmbed && typeof window.tiktokEmbed.load === 'function') {
+            window.tiktokEmbed.load();
+          }
+        }
+
+        if (scope.querySelector('.instagram-media, blockquote.instagram-media')) {
+          await loadExternalScriptOnce(
+            'https://www.instagram.com/embed.js',
+            () => Boolean(window.instgrm)
+          );
+          if (window.instgrm?.Embeds?.process) {
+            window.instgrm.Embeds.process();
+          }
+        }
+
+        if (scope.querySelector('.twitter-tweet, blockquote.twitter-tweet')) {
+          await loadExternalScriptOnce(
+            'https://platform.twitter.com/widgets.js',
+            () => Boolean(window.twttr)
+          );
+          if (window.twttr?.widgets?.load) {
+            window.twttr.widgets.load(scope);
+          }
+        }
+      } catch (error) {
+        console.error('Embed hydration error:', error);
+      }
+    }
+
+    async function loadMoreHybridCards() {
+      if (!magnetoFeed || !magnetoLoader) return;
+      if (feedLoading || !hasMore) return;
+
+      feedLoading = true;
+      magnetoLoader.style.display = '';
+      magnetoLoader.textContent = 'Loading…';
+
+      try {
+        const items = await fetchHybridVideos(feedPage);
+
+        if (!items || items.length === 0) {
+          hasMore = false;
+
+          if (feedPage === 0) {
+            renderFallbackState(
+              'No videos yet',
+              'No embeddable hybrid videos were returned by the feed.'
+            );
+          }
+
+          magnetoLoader.textContent = 'No more videos.';
+          return;
+        }
+
+        if (feedPage === 0) {
+          clearPlaceholderCards();
+        }
+
+        items.forEach(item => {
+          const card = createVideoCard(item);
+          magnetoFeed.appendChild(card);
+        });
+
+        await hydrateEmbedProviders(magnetoFeed);
+
+        feedPage += 1;
+        magnetoLoader.textContent = 'Scroll for more…';
+      } catch (err) {
+        console.error('Hybrid feed error:', err);
+        renderFallbackState(
+          'Hybrid feed unavailable',
+          'The hybrid feed request failed.',
+          err?.message || 'Unknown error'
+        );
+        magnetoLoader.style.display = 'none';
+      } finally {
+        feedLoading = false;
+      }
+    }
+
+    function initHybridFeed() {
+      if (!magnetoColumn || !magnetoFeed || !magnetoLoader) {
+        console.warn('Hybrid feed elements not found on page.');
+        return;
+      }
+
+      // Initial load
+      loadMoreHybridCards();
+
+      // Use IntersectionObserver for smoother infinite scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            loadMoreHybridCards();
+          }
+        });
+      }, {
+        root: magnetoColumn,
+        rootMargin: '0px',
+        threshold: 0.1
+      });
+
+      observer.observe(magnetoLoader);
+    }
+
+    initHybridFeed();
+  
+    // =========================
+    // COLUMN 3 — SHUFFLE LOGIC
+    // =========================
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    const sound = document.getElementById("shuffleSound");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const muteButton = document.getElementById("muteButton");
+
+    if (sound && volumeSlider) {
+      sound.volume = volumeSlider.value;
+
+      volumeSlider.addEventListener("input", () => {
+        sound.volume = volumeSlider.value;
+      });
+
+      muteButton.addEventListener("click", () => {
+        if (sound.muted) {
+          sound.muted = false;
+          muteButton.textContent = "🔇 Mute";
+        } else {
+          sound.muted = true;
+          muteButton.textContent = "🔊 Unmute";
+        }
+      });
+    }
+
+    const column3Data = [
+      { name: 'Kiwi', logo: 'assets/logos/kiwi.png', type: 'logo', url: 'https://kiwi.com' },
+      { name: 'Booking.com', logo: 'assets/logos/booking.png', type: 'logo', url: 'https://booking.com' },
+      { name: 'Airbnb', logo: 'assets/logos/airbnb.png', type: 'logo', url: 'https://airbnb.com' },
+      { name: 'Skyscanner', logo: 'assets/logos/skyscanner.png', type: 'logo', url: 'https://skyscanner.com' },
+      { name: 'Expedia', logo: 'assets/logos/expedia.png', type: 'logo', url: 'https://expedia.com' },
+      { name: 'Facebook', logo: 'assets/logos/facebook.png', type: 'logo', url: 'https://facebook.com' },
+      { name: 'Instagram', logo: 'assets/logos/instagram.png', type: 'logo', url: 'https://instagram.com' },
+      { name: 'X/Twitter', logo: 'assets/logos/twitter.png', type: 'logo', url: 'https://x.com' },
+      { name: 'YouTube', logo: 'assets/logos/youtube.png', type: 'logo', url: 'https://youtube.com' },
+      { name: 'LinkedIn', logo: 'assets/logos/linkedin.png', type: 'logo', url: 'https://linkedin.com' },
+      { name: 'Reddit', logo: 'assets/logos/reddit.png', type: 'logo', url: 'https://reddit.com' },
+      { name: 'Discord', logo: 'assets/logos/discord.png', type: 'logo', url: 'https://discord.com' },
+      { name: 'Truth Social', logo: 'assets/logos/truth.png', type: 'logo', url: 'https://truthsocial.com' },
+      { name: 'Amazon', logo: 'assets/logos/amazon.png', type: 'logo', url: 'https://amazon.com' },
+      { name: 'TikTok', logo: null, type: 'text', url: 'https://tiktok.com' },
+      { name: 'Pinterest', logo: null, type: 'text', url: 'https://pinterest.com' },
+      { name: 'Snapchat', logo: null, type: 'text', url: 'https://snapchat.com' },
+      { name: 'WhatsApp', logo: null, type: 'text', url: 'https://whatsapp.com' },
+      { name: 'Telegram', logo: null, type: 'text', url: 'https://telegram.org' },
+      { name: 'WeChat', logo: null, type: 'text', url: 'https://wechat.com' },
+      { name: 'Threads', logo: null, type: 'text', url: 'https://threads.net' }
+    ];
+
+    function renderFruitBowl(items) {
+      const container = document.getElementById('loopContainer');
+      const bowl = document.getElementById('fruitBowl');
+      if (!container || !bowl) return;
+
+      container.innerHTML = '';
+      const shuffledItems = shuffleArray([...items]);
+      const gradients = [
+        'linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff)',
+        'linear-gradient(135deg, #7c3aed, #ec4899, #f59e0b)',
+        'linear-gradient(135deg, #10b981, #06b6d4, #3b82f6)',
+        'linear-gradient(135deg, #f97316, #ef4444, #eab308)',
+        'linear-gradient(135deg, #22c55e, #84cc16, #14b8a6)'
+      ];
+
+      shuffledItems.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'loop animate';
+
+        const randomSize = 46 + Math.floor(Math.random() * 32);
+        const randomRotate = -10 + Math.floor(Math.random() * 21);
+        const randomBg = gradients[Math.floor(Math.random() * gradients.length)];
+
+        el.style.setProperty('--loop-size', `${randomSize}px`);
+        el.style.setProperty('--loop-rotate', `${randomRotate}deg`);
+
+        if (item.logo) {
+          const img = document.createElement('img');
+          img.src = item.logo;
+          img.alt = item.name;
+          img.loading = 'lazy';
+          el.style.setProperty('--loop-bg', '#ffffff');
+          el.appendChild(img);
+        } else {
+          el.textContent = item.name;
+          el.style.setProperty('--loop-bg', randomBg);
+        }
+
+        if (item.url) {
+          el.addEventListener('click', () => {
+            window.open(item.url, '_blank', 'noopener');
+          });
+        }
+
+        container.appendChild(el);
+      });
+
+      setTimeout(() => {
+        container.querySelectorAll('.animate').forEach(el => {
+          el.classList.remove('animate');
+        });
+      }, 600);
+
+      bowl.classList.add('shake');
+      setTimeout(() => bowl.classList.remove('shake'), 600);
+
+      if (sound && !sound.muted) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+      }
+    }
+
+    document.getElementById('shuffleButton')?.addEventListener('click', () => {
+      renderFruitBowl(column3Data);
+    });
+
+    // =========================
+    // COLUMN 1 — REFINED CLICK HANDLER
+    // =========================
+
+    // Only prevent collapse when clicking the link itself
+    document.querySelectorAll("#column1 .partner-link").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    renderFruitBowl(column3Data);
+
+  </script>
+</body>
+</html>
