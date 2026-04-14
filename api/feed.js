@@ -9,26 +9,26 @@ export default async function handler(req, res) {
       });
     }
 
-    const [youtubeItems, redditItems] = await Promise.all([
+    const [youtubeItems, redditItems, instagramItems] = await Promise.all([
       fetchYouTube(q, apiKey),
-      fetchRedditRSS(q)
+      fetchRedditRSS(q),
+      fetchInstagramMock(q) // 👈 placeholder for now
     ]);
 
-    const items = [...youtubeItems, ...redditItems].sort((a, b) => {
-      const da = new Date(a.publishedAt || 0).getTime();
-      const db = new Date(b.publishedAt || 0).getTime();
-      return db - da;
-    });
-
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+    const items = [
+      ...youtubeItems,
+      ...redditItems,
+      ...instagramItems
+    ].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
     return res.status(200).json({
       query: q,
       count: items.length,
       items
     });
+
   } catch (error) {
-    console.error("API /api/feed error:", error);
+    console.error("Feed error:", error);
 
     return res.status(500).json({
       error: "Feed failed",
@@ -38,142 +38,111 @@ export default async function handler(req, res) {
 }
 
 async function fetchYouTube(q, apiKey) {
-  const ytUrl =
+  const url =
     `https://www.googleapis.com/youtube/v3/search` +
-    `?key=${encodeURIComponent(apiKey)}` +
+    `?key=${apiKey}` +
     `&part=snippet` +
     `&q=${encodeURIComponent(q)}` +
-    `&maxResults=10` +
+    `&maxResults=8` +
     `&type=video` +
     `&order=date`;
 
-  const ytRes = await fetch(ytUrl);
+  const res = await fetch(url);
+  const data = await res.json();
 
-  if (!ytRes.ok) {
-    const text = await ytRes.text();
-    throw new Error(`YouTube API error ${ytRes.status}: ${text}`);
-  }
-
-  const ytData = await ytRes.json();
-
-  return (ytData.items || [])
-    .filter(item => item?.id?.videoId && item?.snippet)
-    .map(item => ({
-      id: `youtube_${item.id.videoId}`,
-      title: decodeHtml(item.snippet.title || "Untitled video"),
-      description: decodeHtml(item.snippet.description || ""),
-      author: item.snippet.channelTitle || "YouTube",
-      platform: "youtube",
-      url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
-      thumbnail:
-        item.snippet?.thumbnails?.medium?.url ||
-        item.snippet?.thumbnails?.high?.url ||
-        item.snippet?.thumbnails?.default?.url ||
-        "",
-      publishedAt: item.snippet.publishedAt || new Date().toISOString()
-    }));
+  return (data.items || []).map(item => ({
+    id: `youtube_${item.id.videoId}`,
+    title: item.snippet.title,
+    description: item.snippet.description,
+    author: item.snippet.channelTitle,
+    platform: "youtube",
+    url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+    thumbnail: item.snippet.thumbnails.medium.url,
+    publishedAt: item.snippet.publishedAt
+  }));
 }
 
 async function fetchRedditRSS(q) {
   try {
-    const redditUrl = `https://www.reddit.com/search.rss?q=${encodeURIComponent(q)}&sort=new`;
+    const url = `https://www.reddit.com/search.rss?q=${encodeURIComponent(q)}`;
 
-    const redditRes = await fetch(redditUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 SignalBoostApp/1.0",
-        "Accept": "application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8"
-      }
-    });
+    const res = await fetch(url);
+    const xml = await res.text();
 
-    if (!redditRes.ok) {
-      console.error("Reddit RSS error:", redditRes.status);
-      return [];
-    }
-
-    const xml = await redditRes.text();
     const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)];
 
-    return entries.slice(0, 10).map((match, index) => {
+    return entries.slice(0, 8).map((match, i) => {
       const entry = match[1];
 
-      const title = extractTag(entry, "title");
-      const published = extractTag(entry, "updated") || extractTag(entry, "published");
-      const author = extractAuthorName(entry);
-      const url = extractLink(entry);
-      const description = stripHtml(decodeHtml(extractTag(entry, "content")));
+      const title = extract(entry, "title");
+      const link = extractLink(entry);
+      const date = extract(entry, "updated");
 
       return {
-        id: `reddit_${index}_${safeId(title || url || index)}`,
-        title: decodeHtml(title || "Untitled Reddit post"),
-        description: truncate(description, 240),
-        author: author || "Reddit",
+        id: `reddit_${i}`,
+        title: decode(title),
+        description: "",
+        author: "Reddit",
         platform: "reddit",
-        url: url || "https://www.reddit.com",
+        url: link,
         thumbnail: "",
-        publishedAt: published || new Date().toISOString()
+        publishedAt: date || new Date().toISOString()
       };
     });
-  } catch (error) {
-    console.error("Reddit RSS fetch failed:", error);
+
+  } catch {
     return [];
   }
 }
 
-function extractTag(xml, tagName) {
-  const regex = new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)<\\/${tagName}>`, "i");
-  const match = xml.match(regex);
-  return match ? match[1].trim() : "";
+/* ========================= */
+/* INSTAGRAM (MOCK FOR NOW) */
+/* ========================= */
+
+async function fetchInstagramMock(q) {
+  return [
+    {
+      id: "instagram_1",
+      title: "🌴 Travel vibes from Instagram",
+      description: `Popular travel content about "${q}"`,
+      author: "insta_travel",
+      platform: "instagram",
+      url: "https://www.instagram.com/",
+      thumbnail: "",
+      publishedAt: new Date().toISOString()
+    },
+    {
+      id: "instagram_2",
+      title: "📸 Explore destinations",
+      description: "Top trending places shared on Instagram",
+      author: "explore_world",
+      platform: "instagram",
+      url: "https://www.instagram.com/",
+      thumbnail: "",
+      publishedAt: new Date().toISOString()
+    }
+  ];
 }
 
-function extractAuthorName(xml) {
-  const authorBlock = xml.match(/<author>([\s\S]*?)<\/author>/i);
-  if (!authorBlock) return "";
-  const nameMatch = authorBlock[1].match(/<name>([\s\S]*?)<\/name>/i);
-  return nameMatch ? decodeHtml(nameMatch[1].trim()) : "";
+/* ========================= */
+/* HELPERS */
+/* ========================= */
+
+function extract(xml, tag) {
+  const m = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`));
+  return m ? m[1] : "";
 }
 
 function extractLink(xml) {
-  const linkMatch = xml.match(/<link[^>]+href="([^"]+)"/i);
-  return linkMatch ? decodeHtml(linkMatch[1]) : "";
+  const m = xml.match(/<link[^>]+href="([^"]+)"/);
+  return m ? m[1] : "";
 }
 
-function stripHtml(value) {
-  if (!value) return "";
-  return value
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function truncate(value, maxLength) {
-  if (!value) return "";
-  if (value.length <= maxLength) return value;
-  return value.slice(0, maxLength - 1).trim() + "…";
-}
-
-function safeId(value) {
-  return String(value)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .slice(0, 40);
-}
-
-function decodeHtml(value) {
-  if (!value) return "";
-  return value
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'")
+function decode(str) {
+  return str
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
-    .replace(/&#x27;/g, "'")
-    .replace(/&#x2F;/g, "/")
-    .replace(/&#(\d+);/g, (_, code) => {
-      const n = Number(code);
-      return Number.isNaN(n) ? _ : String.fromCharCode(n);
-    });
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"');
 }
