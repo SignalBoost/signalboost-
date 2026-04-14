@@ -1,58 +1,44 @@
-// ===============================
-// SignalBoost — Main Server File
-// ===============================
+// ======================================
+// MAIN EXPRESS BACKEND SERVER
+// ======================================
 
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
+const express = require("express");
+const path = require("path");
+const cors = require("cors");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// ===============================
-// MIDDLEWARE
-// ===============================
-app.use(express.json());
+// Middleware
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ===============================
-// STATIC SITE (index.html, css, js)
-// ===============================
-app.use(express.static(path.join(__dirname)));
+// Static frontend
+app.use(express.static(path.join(__dirname, "public")));
 
 // ===============================
 // API ROUTES
 // ===============================
-const feedRoutes = require('./api/feed');
-const businessRoutes = require('./api/business');
-const hybridFeedRoutes = require('./api/hybrid-feed');
-const partnerRoutes = require('./api/partners');
 
-app.use('/api/feed', feedRoutes);
-app.use('/api/business', businessRoutes);
-app.use('/api/hybrid-feed', hybridFeedRoutes);
-app.use('/api/partners', partnerRoutes);
+// Column 2 Feed Server
+const feedServer = require("./server/feedServer");
+app.use("/api", feedServer);
 
-// ===============================
-// HEALTH CHECK
-// ===============================
-app.get('/api/health', (req, res) => {
-  res.json({
-    ok: true,
-    message: 'SignalBoost server is running'
-  });
-});
+// Partners / Business API
+const partnersServer = require("./server/partnersServer");
+app.use("/api", partnersServer);
 
 // ===============================
-// ROOT
+// FALLBACK ROUTE (SPA support)
 // ===============================
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // ===============================
 // START SERVER
 // ===============================
-app.listen(port, () => {
-  console.log(`SignalBoost server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
