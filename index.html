@@ -424,7 +424,7 @@
     /* ========================= */
     async function loadPartners() {
       try {
-        const response = await fetch("/data/partners.json");
+        const response = await fetch("data/partners.json");
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
