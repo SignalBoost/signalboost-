@@ -18,13 +18,14 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: #0d1117;
-      color: #fff;
+      color: #ffffff;
     }
 
     .app {
       display: grid;
       grid-template-columns: 300px 1fr 300px;
       height: 100vh;
+      min-height: 0;
     }
 
     .column {
@@ -44,7 +45,8 @@
 
     .column-1-header {
       padding: 12px 16px;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 18px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
@@ -58,33 +60,65 @@
       margin-bottom: 10px;
     }
 
+    .category details {
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
     .category summary {
       cursor: pointer;
-      padding: 8px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 6px;
-      margin-bottom: 6px;
+      padding: 10px 12px;
+      list-style: none;
+      font-weight: 600;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
       user-select: none;
+    }
+
+    .category summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .category summary::before {
+      content: "▶";
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 10px;
+      transform: translateY(-1px);
+    }
+
+    .category details[open] summary::before {
+      content: "▼";
     }
 
     .category ul {
       list-style: none;
-      padding-left: 12px;
-      margin: 8px 0 16px;
+      margin: 0;
+      padding: 8px 12px 10px;
     }
 
     .category li {
-      margin-bottom: 8px;
+      margin: 8px 0;
     }
 
     .category a {
-      color: #fff;
+      color: #ffffff;
       text-decoration: none;
       font-size: 14px;
+      opacity: 0.9;
     }
 
     .category a:hover {
       text-decoration: underline;
+      opacity: 1;
+    }
+
+    .column-1-message {
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      padding: 8px 0;
     }
 
     /* ========================= */
@@ -94,7 +128,6 @@
       background: #0d1117;
       border-right: 1px solid rgba(255,255,255,0.08);
       overflow: hidden;
-      min-height: 0;
     }
 
     #magnetoColumn.feed-wrapper {
@@ -117,9 +150,36 @@
     }
 
     .feed-header {
-      margin: 0;
+      margin: 0 0 12px;
       font-size: 24px;
       font-weight: 700;
+    }
+
+    .feed-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .feed-filters button {
+      background: #161b22;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #ffffff;
+      padding: 7px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: 0.15s ease;
+    }
+
+    .feed-filters button:hover {
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .feed-filters button.active {
+      border-color: #58a6ff;
+      color: #58a6ff;
     }
 
     .feed-container {
@@ -158,6 +218,7 @@
       margin: 0 0 8px;
       font-size: 18px;
       line-height: 1.3;
+      word-break: break-word;
     }
 
     .feed-content p {
@@ -165,12 +226,14 @@
       color: rgba(255,255,255,0.82);
       line-height: 1.5;
       font-size: 14px;
+      word-break: break-word;
     }
 
     .feed-meta {
       font-size: 12px;
       color: rgba(255,255,255,0.6);
       margin-bottom: 10px;
+      line-height: 1.5;
     }
 
     .feed-platform {
@@ -178,10 +241,31 @@
       font-size: 11px;
       padding: 4px 8px;
       border-radius: 999px;
-      background: rgba(88,166,255,0.15);
-      color: #8cc2ff;
       margin-right: 6px;
       text-transform: capitalize;
+      background: rgba(255,255,255,0.08);
+      color: #dddddd;
+      vertical-align: middle;
+    }
+
+    .feed-platform.youtube {
+      background: rgba(255, 0, 0, 0.15);
+      color: #ff6b6b;
+    }
+
+    .feed-platform.reddit {
+      background: rgba(255, 69, 0, 0.15);
+      color: #ff4500;
+    }
+
+    .feed-platform.instagram {
+      background: rgba(255, 0, 150, 0.15);
+      color: #ff4fa3;
+    }
+
+    .feed-platform.facebook {
+      background: rgba(24, 119, 242, 0.15);
+      color: #66a3ff;
     }
 
     .feed-link {
@@ -225,24 +309,22 @@
 
     .column-3 h2 {
       margin-top: 0;
+      margin-bottom: 12px;
     }
 
-    .fruit-bowl-card {
+    .column-3-card {
       background: #161b22;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
       padding: 16px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.5;
+      font-size: 14px;
     }
 
-    .fruit-bowl-card ul {
-      margin: 0;
-      padding-left: 18px;
-    }
-
-    .fruit-bowl-card li {
-      margin-bottom: 8px;
-    }
-
+    /* ========================= */
+    /* RESPONSIVE */
+    /* ========================= */
     @media (max-width: 1100px) {
       .app {
         grid-template-columns: 260px 1fr;
@@ -286,6 +368,14 @@
       <div id="magnetoColumn" class="feed-wrapper">
         <div class="feed-topbar">
           <h2 class="feed-header">Hybrid Feed</h2>
+
+          <div class="feed-filters" id="feedFilters">
+            <button data-filter="all" class="active">All</button>
+            <button data-filter="youtube">YouTube</button>
+            <button data-filter="reddit">Reddit</button>
+            <button data-filter="instagram">Instagram</button>
+            <button data-filter="facebook">Facebook</button>
+          </div>
         </div>
 
         <div id="feedContainer" class="feed-container"></div>
@@ -296,14 +386,9 @@
 
     <!-- COLUMN 3 -->
     <div class="column column-3">
-      <h2>Fruit Bowl</h2>
-      <div class="fruit-bowl-card">
-        <ul>
-          <li>Apples</li>
-          <li>Bananas</li>
-          <li>Oranges</li>
-          <li>Grapes</li>
-        </ul>
+      <h2>Column 3</h2>
+      <div class="column-3-card">
+        This area is ready for saved items, trending topics, AI summaries, or platform analytics.
       </div>
     </div>
 
@@ -311,40 +396,71 @@
 
   <script>
     /* ========================= */
+    /* HELPERS */
+    /* ========================= */
+    function escapeHtml(value) {
+      if (value == null) return "";
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "";
+      const d = new Date(dateString);
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toLocaleString();
+    }
+
+    /* ========================= */
     /* COLUMN 1: PARTNERS */
     /* ========================= */
     async function loadPartners() {
       try {
-        const response = await fetch('/data/partners.json');
+        const response = await fetch("/data/partners.json");
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
+
         const data = await response.json();
-        return data.partners || [];
+        return Array.isArray(data.partners) ? data.partners : [];
       } catch (err) {
-        console.error('Error loading partners:', err);
+        console.error("Error loading partners:", err);
         return [];
       }
     }
 
     async function renderColumn1() {
+      const container = document.getElementById("column1-partners");
       const partners = await loadPartners();
-      const container = document.getElementById('column1-partners');
+
+      if (!partners.length) {
+        container.innerHTML = '<div class="column-1-message">No partners found.</div>';
+        return;
+      }
+
       const categories = {};
 
       partners.forEach(partner => {
-        const category = partner.category || 'Other';
+        const category = partner.category || "Other";
         if (!categories[category]) {
           categories[category] = [];
         }
         categories[category].push(partner);
       });
 
-      container.innerHTML = '';
+      container.innerHTML = "";
 
       Object.keys(categories).forEach(category => {
-        const section = document.createElement('div');
-        section.className = 'category';
+        const section = document.createElement("div");
+        section.className = "category";
 
         section.innerHTML = `
           <details>
@@ -352,11 +468,11 @@
             <ul>
               ${categories[category].map(partner => `
                 <li>
-                  <a href="${escapeAttribute(partner.url || '#')}" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(partner.name || 'Untitled')}
+                  <a href="${escapeAttribute(partner.url || "#")}" target="_blank" rel="noopener noreferrer">
+                    ${escapeHtml(partner.name || "Untitled")}
                   </a>
                 </li>
-              `).join('')}
+              `).join("")}
             </ul>
           </details>
         `;
@@ -366,44 +482,24 @@
     }
 
     /* ========================= */
-    /* HELPERS */
-    /* ========================= */
-    function escapeHtml(value) {
-      if (value == null) return '';
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function escapeAttribute(value) {
-      return escapeHtml(value);
-    }
-
-    function formatDate(dateString) {
-      if (!dateString) return '';
-      const d = new Date(dateString);
-      if (Number.isNaN(d.getTime())) return '';
-      return d.toLocaleString();
-    }
-
-    /* ========================= */
     /* COLUMN 2: FEED */
     /* ========================= */
-    const feedContainer = document.getElementById('feedContainer');
-    const feedLoader = document.getElementById('feedLoader');
-    const feedSentinel = document.getElementById('feedSentinel');
-    const magnetoColumn = document.getElementById('magnetoColumn');
+    const feedContainer = document.getElementById("feedContainer");
+    const feedLoader = document.getElementById("feedLoader");
+    const feedSentinel = document.getElementById("feedSentinel");
+    const magnetoColumn = document.getElementById("magnetoColumn");
+    const feedFilters = document.getElementById("feedFilters");
 
     let allFeedItems = [];
+    let visibleFeedItems = [];
     let currentIndex = 0;
     let isLoading = false;
+    let activeFilter = "all";
     const pageSize = 6;
 
     async function loadHybridFeed() {
-      const response = await fetch('/api/feed');
+      const response = await fetch("/api/feed?q=travel");
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
@@ -416,15 +512,15 @@
     }
 
     function createFeedCard(item) {
-      const article = document.createElement('article');
-      article.className = 'feed-card';
+      const article = document.createElement("article");
+      article.className = "feed-card";
 
-      const title = escapeHtml(item.title || 'Untitled');
-      const description = escapeHtml(item.description || '');
-      const author = escapeHtml(item.author || '');
-      const platform = escapeHtml(item.platform || 'source');
-      const url = escapeAttribute(item.url || '#');
-      const thumbnail = escapeAttribute(item.thumbnail || '');
+      const title = escapeHtml(item.title || "Untitled");
+      const description = escapeHtml(item.description || "");
+      const author = escapeHtml(item.author || "");
+      const platform = escapeHtml(item.platform || "source");
+      const url = escapeAttribute(item.url || "#");
+      const thumbnail = escapeAttribute(item.thumbnail || "");
       const publishedAt = formatDate(item.publishedAt);
 
       article.innerHTML = `
@@ -434,12 +530,12 @@
         <div class="feed-content">
           <h3>${title}</h3>
           <div class="feed-meta">
-            <span class="feed-platform">${platform}</span>
-            ${author ? author : ''}
-            ${(author && publishedAt) ? ' • ' : ''}
+            <span class="feed-platform ${platform}">${platform}</span>
+            ${author ? author : ""}
+            ${(author && publishedAt) ? " • " : ""}
             ${publishedAt}
           </div>
-          ${description ? `<p>${description}</p>` : ''}
+          ${description ? `<p>${description}</p>` : ""}
           <a class="feed-link" href="${url}" target="_blank" rel="noopener noreferrer">Open post</a>
         </div>
       `;
@@ -451,8 +547,26 @@
       feedContainer.innerHTML = `<div class="feed-message">${escapeHtml(message)}</div>`;
     }
 
+    function applyFilter() {
+      visibleFeedItems = activeFilter === "all"
+        ? [...allFeedItems]
+        : allFeedItems.filter(item => item.platform === activeFilter);
+
+      currentIndex = 0;
+      feedContainer.innerHTML = "";
+      observer.disconnect();
+
+      if (!visibleFeedItems.length) {
+        showFeedMessage(activeFilter === "all" ? "No feed items found." : `No ${activeFilter} items found.`);
+        return;
+      }
+
+      renderFeedBatch();
+      observer.observe(feedSentinel);
+    }
+
     function renderFeedBatch() {
-      const nextItems = allFeedItems.slice(currentIndex, currentIndex + pageSize);
+      const nextItems = visibleFeedItems.slice(currentIndex, currentIndex + pageSize);
 
       nextItems.forEach(item => {
         feedContainer.appendChild(createFeedCard(item));
@@ -460,23 +574,23 @@
 
       currentIndex += pageSize;
 
-      if (currentIndex >= allFeedItems.length) {
+      if (currentIndex >= visibleFeedItems.length) {
         observer.disconnect();
-        feedLoader.style.display = 'none';
+        feedLoader.style.display = "none";
       }
     }
 
     async function loadMoreFeedItems() {
       if (isLoading) return;
-      if (currentIndex >= allFeedItems.length) return;
+      if (currentIndex >= visibleFeedItems.length) return;
 
       isLoading = true;
-      feedLoader.style.display = 'block';
+      feedLoader.style.display = "block";
 
       try {
         renderFeedBatch();
       } finally {
-        feedLoader.style.display = 'none';
+        feedLoader.style.display = "none";
         isLoading = false;
       }
     }
@@ -486,23 +600,34 @@
         allFeedItems = await loadHybridFeed();
 
         allFeedItems.sort((a, b) => {
-          const da = new Date(a.publishedAt || 0).getTime();
-          const db = new Date(b.publishedAt || 0).getTime();
-          return db - da;
+          return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
         });
 
         if (!allFeedItems.length) {
-          showFeedMessage('No feed items found.');
+          showFeedMessage("No feed items found.");
           return;
         }
 
-        renderFeedBatch();
-        observer.observe(feedSentinel);
+        applyFilter();
       } catch (err) {
-        console.error('Feed load failed:', err);
-        showFeedMessage('Could not load feed.');
+        console.error("Feed load failed:", err);
+        showFeedMessage("Could not load feed.");
       }
     }
+
+    feedFilters.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-filter]");
+      if (!button) return;
+
+      activeFilter = button.dataset.filter;
+
+      feedFilters.querySelectorAll("button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      applyFilter();
+    });
 
     const observer = new IntersectionObserver(
       entries => {
