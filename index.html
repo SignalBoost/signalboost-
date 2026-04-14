@@ -10,6 +10,10 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -23,9 +27,6 @@
       height: 100vh;
     }
 
-    /* ========================= */
-    /* COLUMN BASE */
-    /* ========================= */
     .column {
       display: flex;
       flex-direction: column;
@@ -53,12 +54,17 @@
       padding: 12px;
     }
 
+    .category {
+      margin-bottom: 10px;
+    }
+
     .category summary {
       cursor: pointer;
       padding: 8px;
       background: rgba(255,255,255,0.05);
       border-radius: 6px;
       margin-bottom: 6px;
+      user-select: none;
     }
 
     .category ul {
@@ -87,19 +93,31 @@
     .column-2 {
       background: #0d1117;
       border-right: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
       min-height: 0;
     }
 
-    .feed-wrapper {
+    #magnetoColumn.feed-wrapper {
       display: flex;
       flex-direction: column;
+      flex: 1;
+      min-height: 0;
       height: 100%;
       overflow-y: auto;
       padding: 20px;
     }
 
+    .feed-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #0d1117;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
     .feed-header {
-      margin: 0 0 16px;
+      margin: 0;
       font-size: 24px;
       font-weight: 700;
     }
@@ -108,34 +126,88 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      min-height: 0;
     }
 
     .feed-card {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 14px;
       background: #161b22;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      padding: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .feed-card h3 {
+    .feed-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+
+    .feed-thumb {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #0b0f14;
+      display: block;
+    }
+
+    .feed-content h3 {
       margin: 0 0 8px;
       font-size: 18px;
+      line-height: 1.3;
     }
 
-    .feed-card p {
-      margin: 0;
+    .feed-content p {
+      margin: 0 0 10px;
       color: rgba(255,255,255,0.82);
       line-height: 1.5;
       font-size: 14px;
     }
 
+    .feed-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 10px;
+    }
+
+    .feed-platform {
+      display: inline-block;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(88,166,255,0.15);
+      color: #8cc2ff;
+      margin-right: 6px;
+      text-transform: capitalize;
+    }
+
+    .feed-link {
+      display: inline-block;
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .feed-link:hover {
+      text-decoration: underline;
+    }
+
     .feed-loader {
       text-align: center;
-      padding: 20px;
+      padding: 18px 0;
       color: rgba(255,255,255,0.65);
       font-size: 14px;
       display: none;
+    }
+
+    .feed-message {
+      text-align: center;
+      padding: 18px 0;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
     }
 
     #feedSentinel {
@@ -189,10 +261,17 @@
       .column-1 {
         display: none;
       }
+
+      .feed-card {
+        grid-template-columns: 1fr;
+      }
+
+      .feed-thumb {
+        height: 180px;
+      }
     }
   </style>
 </head>
-
 <body>
   <div class="app">
 
@@ -205,15 +284,12 @@
     <!-- COLUMN 2 -->
     <div class="column column-2">
       <div id="magnetoColumn" class="feed-wrapper">
-        <h2 class="feed-header">Feed</h2>
+        <div class="feed-topbar">
+          <h2 class="feed-header">Hybrid Feed</h2>
+        </div>
 
-        <!-- FEED CONTAINER (JS injects cards here) -->
         <div id="feedContainer" class="feed-container"></div>
-
-        <!-- LOADER (visible while loading more items) -->
-        <div id="feedLoader" class="feed-loader">Loading…</div>
-
-        <!-- SENTINEL (infinite scroll trigger) -->
+        <div id="feedLoader" class="feed-loader">Loading...</div>
         <div id="feedSentinel"></div>
       </div>
     </div>
@@ -234,47 +310,53 @@
   </div>
 
   <script>
+    /* ========================= */
+    /* COLUMN 1: PARTNERS */
+    /* ========================= */
     async function loadPartners() {
       try {
         const response = await fetch('/data/partners.json');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
         const data = await response.json();
         return data.partners || [];
       } catch (err) {
-        console.error("Error loading partners:", err);
+        console.error('Error loading partners:', err);
         return [];
       }
     }
 
     async function renderColumn1() {
       const partners = await loadPartners();
-      const container = document.getElementById("column1-partners");
-
+      const container = document.getElementById('column1-partners');
       const categories = {};
 
-      partners.forEach(p => {
-        if (!categories[p.category]) {
-          categories[p.category] = [];
+      partners.forEach(partner => {
+        const category = partner.category || 'Other';
+        if (!categories[category]) {
+          categories[category] = [];
         }
-        categories[p.category].push(p);
+        categories[category].push(partner);
       });
 
-      container.innerHTML = "";
+      container.innerHTML = '';
 
       Object.keys(categories).forEach(category => {
-        const section = document.createElement("div");
-        section.className = "category";
+        const section = document.createElement('div');
+        section.className = 'category';
 
         section.innerHTML = `
           <details>
-            <summary>${category}</summary>
+            <summary>${escapeHtml(category)}</summary>
             <ul>
-              ${categories[category].map(p => `
+              ${categories[category].map(partner => `
                 <li>
-                  <a href="${p.url}" target="_blank" rel="noopener noreferrer">
-                    ${p.name}
+                  <a href="${escapeAttribute(partner.url || '#')}" target="_blank" rel="noopener noreferrer">
+                    ${escapeHtml(partner.name || 'Untitled')}
                   </a>
                 </li>
-              `).join("")}
+              `).join('')}
             </ul>
           </details>
         `;
@@ -283,65 +365,162 @@
       });
     }
 
-    // -----------------------------------
-    // Demo feed data + infinite scroll
-    // Replace this with your real API/data
-    // -----------------------------------
-    let feedPage = 0;
-    let isLoading = false;
-    const feedContainer = document.getElementById("feedContainer");
-    const feedLoader = document.getElementById("feedLoader");
-    const feedSentinel = document.getElementById("feedSentinel");
-
-    function generateMockFeedItems(page, count = 6) {
-      return Array.from({ length: count }, (_, i) => ({
-        title: `Feed Item #${page * count + i + 1}`,
-        body: `This is a sample feed card for the infinite scroll area in Column 2. Replace this with your real content source.`
-      }));
+    /* ========================= */
+    /* HELPERS */
+    /* ========================= */
+    function escapeHtml(value) {
+      if (value == null) return '';
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
-    function renderFeedItems(items) {
-      items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "feed-card";
-        card.innerHTML = `
-          <h3>${item.title}</h3>
-          <p>${item.body}</p>
-        `;
-        feedContainer.appendChild(card);
+    function escapeAttribute(value) {
+      return escapeHtml(value);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const d = new Date(dateString);
+      if (Number.isNaN(d.getTime())) return '';
+      return d.toLocaleString();
+    }
+
+    /* ========================= */
+    /* COLUMN 2: FEED */
+    /* ========================= */
+    const feedContainer = document.getElementById('feedContainer');
+    const feedLoader = document.getElementById('feedLoader');
+    const feedSentinel = document.getElementById('feedSentinel');
+    const magnetoColumn = document.getElementById('magnetoColumn');
+
+    let allFeedItems = [];
+    let currentIndex = 0;
+    let isLoading = false;
+    const pageSize = 6;
+
+    async function loadHybridFeed() {
+      const response = await fetch('/api/feed');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.items)) return data.items;
+      return [];
+    }
+
+    function createFeedCard(item) {
+      const article = document.createElement('article');
+      article.className = 'feed-card';
+
+      const title = escapeHtml(item.title || 'Untitled');
+      const description = escapeHtml(item.description || '');
+      const author = escapeHtml(item.author || '');
+      const platform = escapeHtml(item.platform || 'source');
+      const url = escapeAttribute(item.url || '#');
+      const thumbnail = escapeAttribute(item.thumbnail || '');
+      const publishedAt = formatDate(item.publishedAt);
+
+      article.innerHTML = `
+        ${thumbnail
+          ? `<img class="feed-thumb" src="${thumbnail}" alt="${title}" loading="lazy">`
+          : `<div class="feed-thumb"></div>`}
+        <div class="feed-content">
+          <h3>${title}</h3>
+          <div class="feed-meta">
+            <span class="feed-platform">${platform}</span>
+            ${author ? author : ''}
+            ${(author && publishedAt) ? ' • ' : ''}
+            ${publishedAt}
+          </div>
+          ${description ? `<p>${description}</p>` : ''}
+          <a class="feed-link" href="${url}" target="_blank" rel="noopener noreferrer">Open post</a>
+        </div>
+      `;
+
+      return article;
+    }
+
+    function showFeedMessage(message) {
+      feedContainer.innerHTML = `<div class="feed-message">${escapeHtml(message)}</div>`;
+    }
+
+    function renderFeedBatch() {
+      const nextItems = allFeedItems.slice(currentIndex, currentIndex + pageSize);
+
+      nextItems.forEach(item => {
+        feedContainer.appendChild(createFeedCard(item));
       });
+
+      currentIndex += pageSize;
+
+      if (currentIndex >= allFeedItems.length) {
+        observer.disconnect();
+        feedLoader.style.display = 'none';
+      }
     }
 
     async function loadMoreFeedItems() {
       if (isLoading) return;
+      if (currentIndex >= allFeedItems.length) return;
+
       isLoading = true;
-      feedLoader.style.display = "block";
+      feedLoader.style.display = 'block';
 
       try {
-        await new Promise(resolve => setTimeout(resolve, 500)); // simulate fetch delay
-        const items = generateMockFeedItems(feedPage, 6);
-        renderFeedItems(items);
-        feedPage++;
-      } catch (err) {
-        console.error("Error loading feed:", err);
+        renderFeedBatch();
       } finally {
-        feedLoader.style.display = "none";
+        feedLoader.style.display = 'none';
         isLoading = false;
       }
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        loadMoreFeedItems();
-      }
-    }, {
-      root: document.getElementById("magnetoColumn"),
-      threshold: 0.1
-    });
+    async function initFeed() {
+      try {
+        allFeedItems = await loadHybridFeed();
 
+        allFeedItems.sort((a, b) => {
+          const da = new Date(a.publishedAt || 0).getTime();
+          const db = new Date(b.publishedAt || 0).getTime();
+          return db - da;
+        });
+
+        if (!allFeedItems.length) {
+          showFeedMessage('No feed items found.');
+          return;
+        }
+
+        renderFeedBatch();
+        observer.observe(feedSentinel);
+      } catch (err) {
+        console.error('Feed load failed:', err);
+        showFeedMessage('Could not load feed.');
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          loadMoreFeedItems();
+        }
+      },
+      {
+        root: magnetoColumn,
+        threshold: 0.1
+      }
+    );
+
+    /* ========================= */
+    /* INIT */
+    /* ========================= */
     renderColumn1();
-    loadMoreFeedItems();
-    observer.observe(feedSentinel);
+    initFeed();
   </script>
 </body>
 </html>
