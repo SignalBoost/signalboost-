@@ -2,804 +2,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>SignalBoost — Your Digital Shopping Mall</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignalBoost</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0d1117;
+  color: #fff;
+}
 
-    :root {
-      --bg: #ffffff;
-      --text: #111111;
-      --muted: #666b76;
-      --card-bg: #f7f7f7;
-      --border: #e0e0e0;
-      --accent: #d4af37;
-      --accent-soft: rgba(212, 175, 55, 0.12);
-      --header-bg: rgba(255, 255, 255, 0.9);
-      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.04);
-      --banner-bg: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(17,17,17,0.03));
-    }
+.app {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  height: 100vh;
+}
 
-    body.dark {
-      --bg: #0b0b0f;
-      --text: #f5f5f7;
-      --muted: #a4a8b3;
-      --card-bg: #15151b;
-      --border: #2a2a33;
-      --accent: #d4af37;
-      --accent-soft: rgba(212, 175, 55, 0.18);
-      --header-bg: rgba(11, 11, 15, 0.9);
-      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.6);
-      --banner-bg: linear-gradient(135deg, rgba(212,175,55,0.16), rgba(255,255,255,0.04));
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.25s ease, color 0.25s ease;
-      overflow: hidden;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 0 20px;
-      background: var(--header-bg);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-      z-index: 1000;
-    }
-
-    .header-left {
-      display: flex;
-      flex-direction: column;
-      min-width: 180px;
-    }
-
-    .brand-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      color: var(--accent);
-    }
-
-    .brand-subtitle {
-      font-size: 0.8rem;
-      opacity: 0.85;
-    }
-
-    .header-center {
-      display: flex;
-      gap: 8px;
-      font-size: 0.8rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      flex: 1;
-    }
-
-    .header-pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
-    }
-
-    .header-pill:hover {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 110px;
-      justify-content: flex-end;
-    }
-
-    .theme-toggle {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      cursor: pointer;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
-      color: var(--text);
-    }
-
-    .theme-toggle:hover {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    main {
-      padding: 86px 16px 16px;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .banner {
-      height: 54px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      padding: 0 18px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--banner-bg);
-      box-shadow: var(--shadow-soft);
-      transition: opacity 0.35s ease;
-      text-align: center;
-    }
-
-    .banner a {
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 320px minmax(0, 1fr) 280px;
-      gap: 18px;
-      align-items: start;
-      height: calc(100vh - 172px);
-      overflow: hidden;
-    }
-
-    .column {
-      min-height: 0;
-      height: 100%;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: var(--card-bg);
-      box-shadow: var(--shadow-soft);
-      overflow: hidden;
-    }
-
-    .column-1,
-    .column-2,
-    .column-3 {
-      overflow-y: auto;
-      overflow-x: hidden;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
-    }
-
-    @media (max-width: 1180px) {
-      .grid-3 {
-        grid-template-columns: 290px minmax(0, 1fr);
-      }
-
-      .column-3 {
-        display: none;
-      }
-    }
-
-    @media (max-width: 860px) {
-      body {
-        overflow: auto;
-      }
-
-      header {
-        position: sticky;
-        height: auto;
-        padding: 14px 16px;
-        align-items: flex-start;
-        flex-wrap: wrap;
-      }
-
-      main {
-        height: auto;
-        overflow: visible;
-        padding-top: 16px;
-      }
-
-      .grid-3 {
-        grid-template-columns: minmax(0, 1fr);
-        height: auto;
-      }
-
-      .column {
-        min-height: 300px;
-        height: auto;
-      }
-
-      .column-1,
-      .column-2,
-      .column-3 {
-        overflow: visible;
-      }
-
-      .column-1 {
-        order: 2;
-      }
-
-      .column-2 {
-        order: 1;
-      }
-    }
-
-
-    /* Column 1 */
-    .column-1 {
-      width: 280px;
-      background: var(--card-bg);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .column-1-header {
-      padding: 14px 16px;
-      font-size: 16px;
-      font-weight: 700;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-      background: var(--bg);
-    }
-
-    .column-1-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 20px;
-    }
-
-    .category {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .category-header {
-      padding: 10px 16px;
-      cursor: pointer;
-      background: var(--bg);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      transition: background 0.2s ease;
-    }
-
-    .category-header:hover {
-      background: var(--accent-soft);
-    }
-
-    .category-title {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .category-arrow {
-      transition: transform 0.2s ease;
-      display: inline-block;
-      opacity: 0.8;
-    }
-
-    .category-body {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.25s ease;
-      background: color-mix(in srgb, var(--bg) 78%, var(--card-bg) 22%);
-    }
-
-    .category-body.open {
-      max-height: 500px;
-    }
-
-    .category-body.open + .category-header .category-arrow {
-      transform: rotate(180deg);
-    }
-
-    .partner-item {
-      padding: 8px 20px;
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      transition: background 0.18s ease;
-    }
-
-    .partner-item:hover {
-      background: var(--accent-soft);
-    }
-
-    .partner-sub {
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    /* Column 2 */
-    .column-2 {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      background: radial-gradient(circle at top, #151a24, #05070a);
-      overflow: hidden;
-    }
-
-    .feed-container {
-      width: 100%;
-      max-width: 720px;
-      padding: 16px 0;
-      overflow-y: auto;
-      scrollbar-width: thin;
-    }
-
-/* Hide scrollbar */
-.feed-container::-webkit-scrollbar { display: none; }
-.feed-container { scrollbar-width: none; -ms-overflow-style: none; }
-
-    .feed-container::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .feed-container::-webkit-scrollbar-thumb {
-      background: #444;
-      border-radius: 4px;
-    }
-
-    .video-card {
-      background: #10131a;
-      color: #fff;
-      border-radius: 16px;
-      padding: 16px;
-      margin: 0 16px 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      border: none;
-    }
-
-    .video-meta {
-      font-size: 11px;
-      opacity: 0.7;
-      margin-bottom: 6px;
-    }
-
-    .video-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .video-frame {
-      width: 100%;
-      height: 420px;
-      border-radius: 12px;
-      background: #000;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #777;
-      font-size: 13px;
-    }
-
-    .video-footer {
-      font-size: 12px;
-      opacity: 0.8;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    /* Column 3 — Dynamic Partner Cluster */
-#column3 {
-  width: 100%;
-  height: 100%;
+/* ========================= */
+/* COLUMN BASE */
+/* ========================= */
+.column {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   overflow: hidden;
-  position: relative;
-  background: radial-gradient(circle at top, #151a24, #05070a);
 }
 
-#partnerCluster {
-  width: 65%;
-  height: 65%;
-  position: relative;
-  transform-origin: center;
+/* ========================= */
+/* COLUMN 1 */
+/* ========================= */
+.column-1 {
+  background: #05070a;
 }
 
-.loop {
-  width: 60px;
-  height: 60px;
-  background: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
+.column-1-header {
+  padding: 12px 16px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.column-1-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.category summary {
   cursor: pointer;
-  transition: transform 0.6s ease, box-shadow 1.2s ease;
-  box-shadow: 0 0 0 rgba(255,255,255,0);
+  padding: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  margin-bottom: 6px;
 }
 
-.loop img {
-  width: 70%;
-  height: 70%;
-  object-fit: contain;
+.category ul {
+  list-style: none;
+  padding-left: 12px;
 }
 
-.loop:hover {
-  transform: scale(1.15);
+.category a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.category a:hover {
+  text-decoration: underline;
+}
+
+/* ========================= */
+/* COLUMN 2 */
+/* ========================= */
+.column-2 {
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* ========================= */
+/* COLUMN 3 */
+/* ========================= */
+.column-3 {
+  overflow-y: auto;
+  padding: 20px;
 }
 </style>
 </head>
+
 <body>
-  <header>
-    <div class="header-left">
-      <div class="brand-title">SignalBoost</div>
-      <div class="brand-subtitle">Your Digital Shopping Mall</div>
-    </div>
 
-    <div class="header-center">
-      <div class="header-pill" data-target="cat-flights">Flights</div>
-      <div class="header-pill" data-target="cat-hotels">Hotels &amp; Meta</div>
-      <div class="header-pill" data-target="cat-sim">SIM &amp; eSIM</div>
-      <div class="header-pill" data-target="cat-cars">Cars &amp; Transfers</div>
-      <div class="header-pill" data-target="cat-activities">Activities</div>
-      <div class="header-pill" data-target="cat-services">Travel Services</div>
-      <div class="header-pill" data-target="cat-vpn">Digital</div>
-      <div class="header-pill" data-target="cat-other">Other &amp; Shopping</div>
-    </div>
+<div class="app">
 
-    <div class="header-right">
-      <button class="theme-toggle" id="themeToggle" type="button">
-        <span id="themeIcon">🌞</span>
-        <span id="themeLabel">Light</span>
-      </button>
-    </div>
-  </header>
+  <!-- COLUMN 1 -->
+  <div class="column column-1">
+    <div class="column-1-header">Partners</div>
+    <div id="column1-partners" class="column-1-scroll"></div>
+  </div>
 
-  <main>
-    <div id="rotatingBanner" class="banner">
-      <a id="bannerLink" href="#" target="_blank" rel="noopener">
-        <span id="bannerText"></span>
-      </a>
-    </div>
+  <!-- COLUMN 2 -->
+  <div class="column column-2">
+    <h2>Column 2 (Feed)</h2>
+  </div>
 
-    <section class="grid-3">
+  <!-- COLUMN 3 -->
+  <div class="column column-3">
+    <h2>Column 3 (Fruit Bowl)</h2>
+  </div>
 
-      <div class="column column-1" id="column1">
-        <div class="column-1-header">Partners</div>
-        <div id="column1Scroll" class="column-1-scroll"></div>
-      </div>
-
-      <div class="column column-2" id="magnetoColumn">
-        <div id="feedContainer" class="feed-container"></div>
-      </div>
-
-      <div class="column column-3" id="column3">
-  <div id="partnerCluster"></div>
 </div>
-</section>
-  </main>
 
-  <script>
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const themeLabel = document.getElementById('themeLabel');
+<script>
+async function loadPartners() {
+  try {
+    const response = await fetch('/data/partners.json');
+    const data = await response.json();
+    return data.partners || [];
+  } catch (err) {
+    console.error("Error loading partners:", err);
+    return [];
+  }
+}
 
-    function applyTheme(dark) {
-      if (dark) {
-        document.body.classList.add('dark');
-        themeIcon.textContent = '🌙';
-        themeLabel.textContent = 'Dark';
-      } else {
-        document.body.classList.remove('dark');
-        themeIcon.textContent = '🌞';
-        themeLabel.textContent = 'Light';
-      }
+async function renderColumn1() {
+  const partners = await loadPartners();
+  const container = document.getElementById("column1-partners");
+
+  const categories = {};
+
+  partners.forEach(p => {
+    if (!categories[p.category]) {
+      categories[p.category] = [];
     }
+    categories[p.category].push(p);
+  });
 
-    themeToggle.addEventListener('click', () => {
-      const isDark = !document.body.classList.contains('dark');
-      applyTheme(isDark);
-    });
+  container.innerHTML = "";
 
+  Object.keys(categories).forEach(category => {
+    const section = document.createElement("div");
+    section.className = "category";
 
-    const partnerCategories = [
-      {
-        key: 'cat-flights',
-        name: 'Flights & Meta Search',
-        partners: [
-          { name: 'Aviasales', url: 'https://aviasales.tpo.lv/VoWXgFFm' },
-          { name: 'Kiwi.com', url: 'https://booking.tpo.lv/enwsEbCs' },
-          { name: 'Trivago', url: 'https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806' },
-          { name: 'Lastminute', url: 'https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806' }
-        ]
-      },
-      {
-        key: 'cat-hotels',
-        name: 'Hotels & Stays',
-        partners: [
-          { name: 'Booking.com', url: 'https://booking.tpo.lv/enwsEbCs' },
-          { name: 'Airbnb', url: 'https://www.airbnb.com' },
-          { name: 'Expedia', url: 'https://www.expedia.com' },
-          { name: 'Radical Storage', url: 'https://radicalstorage.tpo.lv/tna4hnly' }
-        ]
-      },
-      {
-        key: 'cat-cars',
-        name: 'Transfers & Transport',
-        partners: [
-          { name: 'Kiwitaxi', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo' },
-          { name: 'GetTransfer', url: 'https://gettransfer.tpo.lv/Pb4p9ljm' },
-          { name: 'Intui Travel', url: 'https://intui.tpo.lv/Rrx5VuN3' },
-          { name: 'Holiday Taxis', url: 'https://holidaytaxis.tpo.lv/oHwpbrFt' },
-          { name: 'Carmel Limo', url: 'https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806' }
-        ]
-      },
-      {
-        key: 'cat-cars',
-        name: 'Car Rentals',
-        partners: [
-          { name: 'AutoEurope', url: 'https://autoeurope.tpo.lv/t84AzZbO' },
-          { name: 'EconomyBookings', url: 'https://economybookings.tpo.lv/jSFMPEPA' },
-          { name: 'QEEQ', url: 'https://qeeq.tpo.lv/jklB4Pbm' },
-          { name: 'Localrent', url: 'https://localrent.tpo.lv/XS0CqdMP' },
-          { name: 'GetRentacar', url: 'https://getrentacar.tpo.lv/OR2TWduQ' }
-        ]
-      },
-      {
-        key: 'cat-sim',
-        name: 'SIM & eSIM',
-        partners: [
-          { name: 'Airalo', url: 'https://airalo.tpo.lv/eXjKLiuw' },
-          { name: 'Drimsim', url: 'https://drimsim.tpo.lv/PGwr6JTr' },
-          { name: 'Saily', url: 'https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com' },
-          { name: 'Yesim', url: 'https://yesim.tpo.lv/3vIzBQts' }
-        ]
-      },
-      {
-        key: 'cat-activities',
-        name: 'Tours & Activities',
-        partners: [
-          { name: 'Klook', url: 'https://klook.tpo.lv/pTp1NljF' },
-          { name: 'WeGoTrip', url: 'https://wegotrip.tpo.lv/kKIF0gIW' },
-          { name: 'BigBusTours', url: 'https://bigbustours.tpo.lv/grT1QWXA' },
-          { name: 'EatWith', url: 'https://eatwith.tpo.lv/BfAnpZNb' },
-          { name: 'GoCity', url: 'https://gocity.tpo.lv/Des5Cgov' }
-        ]
-      },
-      {
-        key: 'cat-services',
-        name: 'Insurance & Claims',
-        partners: [
-          { name: 'AirHelp', url: 'https://airhelp.tpo.lv/EPrGDSO3' },
-          { name: 'Compensair', url: 'https://compensair.tpo.lv/wxDDCITG' },
-          { name: 'EKTA', url: 'https://ektatraveling.tpo.lv/XWbZbj8S' }
-        ]
-      }
-    ];
+    section.innerHTML = `
+      <details>
+        <summary>${category}</summary>
+        <ul>
+          ${categories[category].map(p => `
+            <li>
+              <a href="${p.url}" target="_blank">
+                ${p.name}
+              </a>
+            </li>
+          `).join("")}
+        </ul>
+      </details>
+    `;
 
-    function renderColumn1() {
-      const container = document.getElementById('column1Scroll');
-      if (!container) return;
-      container.innerHTML = '';
+    container.appendChild(section);
+  });
+}
 
-      partnerCategories.forEach((cat, index) => {
-        const catDiv = document.createElement('div');
-        catDiv.className = 'category';
-        catDiv.id = `${cat.key}-${index}`;
+renderColumn1();
+</script>
 
-        const header = document.createElement('div');
-        header.className = 'category-header';
-        header.innerHTML = `
-          <span class="category-title">${cat.name}</span>
-          <span class="category-arrow">▾</span>
-        `;
-
-        const body = document.createElement('div');
-        body.className = 'category-body';
-        if (index === 0) body.classList.add('open');
-
-        cat.partners.forEach((p) => {
-          const item = document.createElement('div');
-          item.className = 'partner-item';
-          item.innerHTML = `<span>${p.name}</span>`;
-          item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.open(p.url, '_blank', 'noopener');
-          });
-          body.appendChild(item);
-        });
-
-        const arrow = header.querySelector('.category-arrow');
-        if (index === 0 && arrow) arrow.style.transform = 'rotate(180deg)';
-
-        header.addEventListener('click', () => {
-          container.querySelectorAll('.category-body').forEach((b) => {
-            if (b !== body) b.classList.remove('open');
-          });
-          container.querySelectorAll('.category-arrow').forEach((a) => {
-            if (a !== arrow) a.style.transform = 'rotate(0deg)';
-          });
-
-          body.classList.toggle('open');
-          if (arrow) {
-            arrow.style.transform = body.classList.contains('open')
-              ? 'rotate(180deg)'
-              : 'rotate(0deg)';
-          }
-
-          if (body.classList.contains('open') && window.innerWidth > 860) {
-            catDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-
-        catDiv.appendChild(header);
-        catDiv.appendChild(body);
-        container.appendChild(catDiv);
-      });
-    }
-
-    renderColumn1();
-
-    const headerPills = document.querySelectorAll('.header-pill');
-    headerPills.forEach((pill) => {
-      pill.addEventListener('click', () => {
-        const targetKey = pill.getAttribute('data-target');
-        const targetCategory = Array.from(document.querySelectorAll('#column1Scroll .category')).find((el) =>
-          el.id.startsWith(`${targetKey}-`)
-        );
-
-        if (!targetCategory) return;
-
-        const body = targetCategory.querySelector('.category-body');
-        const arrow = targetCategory.querySelector('.category-arrow');
-
-        document.querySelectorAll('#column1Scroll .category-body').forEach((b) => {
-          if (b !== body) b.classList.remove('open');
-        });
-        document.querySelectorAll('#column1Scroll .category-arrow').forEach((a) => {
-          if (a !== arrow) a.style.transform = 'rotate(0deg)';
-        });
-
-        body.classList.add('open');
-        if (arrow) arrow.style.transform = 'rotate(180deg)';
-        targetCategory.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-
-
-    const bannerData = [
-      { text: 'Kiwi.com – Find cheap flights', url: 'https://www.kiwi.com' },
-      { text: 'Trivago – Compare hotel prices', url: 'https://www.trivago.com' },
-      { text: 'Airalo – eSIM for travelers', url: 'https://www.airalo.com' },
-      { text: 'Localrent – Local car rentals', url: 'https://www.localrent.com' },
-      { text: 'Klook – Tours & activities', url: 'https://www.klook.com' },
-      { text: 'WeGoTrip – Audio tours', url: 'https://www.wegotrip.com' }
-    ];
-
-    let bannerIndex = 0;
-
-    function rotateBanner() {
-      const banner = document.getElementById('rotatingBanner');
-      const text = document.getElementById('bannerText');
-      const link = document.getElementById('bannerLink');
-
-      banner.style.opacity = 0;
-
-      setTimeout(() => {
-        text.textContent = bannerData[bannerIndex].text;
-        link.href = bannerData[bannerIndex].url;
-        banner.style.opacity = 1;
-        bannerIndex = (bannerIndex + 1) % bannerData.length;
-      }, 250);
-    }
-
-    rotateBanner();
-    setInterval(rotateBanner, 15000);
-
-    // ===============================
-    // COLUMN 2 — HYBRID VIDEO FEED
-    // ===============================
-
-    const feedContainer = document.getElementById("feedContainer");
-    let feedPage = 0;
-    let isLoading = false;
-
-    const hybridSources = [
-      "TikTok",
-      "Instagram",
-      "YouTube",
-      "Reddit",
-      "X/Twitter"
-    ];
-
-    function mockHybridFeed(page) {
-      const items = [];
-      for (let i = 0; i < 5; i++) {
-        const source = hybridSources[Math.floor(Math.random() * hybridSources.length)];
-        items.push({
-          id: `item_${page}_${i}`,
-          title: `${source} Video #${page * 5 + i + 1}`,
-          source,
-          publishedAt: new Date().toISOString(),
-          description: "Hybrid feed demo card. Replace with real API.",
-        });
-      }
-      return new Promise(resolve => {
-        setTimeout(() => resolve(items), 400);
-      });
-    }
-
-    async function loadMoreFeed() {
-      if (!feedContainer || isLoading) return;
-      isLoading = true;
-
-      const items = await mockHybridFeed(feedPage);
-
-      items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "video-card";
-        card.innerHTML = `
-          <div class="video-meta">${item.source} • ${new Date(item.publishedAt).toLocaleString()}</div>
-          <div class="video-title">${item.title}</div>
-          <div class="video-frame">[ ${item.source} embed placeholder ]</div>
-          <div class="video-footer">
-            <span>${item.description}</span>
-            <span>ID: ${item.id}</span>
-          </div>
-        `;
-        feedContainer.appendChild(card);
-      });
-
-      feedPage++;
-      isLoading = false;
-    }
-
-    if (feedContainer) {
-      feedContainer.addEventListener("scroll", () => {
-        const nearBottom =
-          feedContainer.scrollTop + feedContainer.clientHeight >= feedContainer.scrollHeight - 80;
-
-        if (nearBottom) {
-          loadMoreFeed();
-        }
-      });
-
-      loadMoreFeed();
-    }
-
-    </script>
-  <script src="/js/partners.js"></script>
-  <script src="/js/column3-effects.js"></script>
 </body>
 </html>
