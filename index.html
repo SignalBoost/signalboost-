@@ -1,168 +1,347 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SignalBoost</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalBoost</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0d1117;
-  color: #fff;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-.app {
-  display: grid;
-  grid-template-columns: 300px 1fr 300px;
-  height: 100vh;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #fff;
+    }
 
-/* ========================= */
-/* COLUMN BASE */
-/* ========================= */
-.column {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+    .app {
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      height: 100vh;
+    }
 
-/* ========================= */
-/* COLUMN 1 */
-/* ========================= */
-.column-1 {
-  background: #05070a;
-}
+    /* ========================= */
+    /* COLUMN BASE */
+    /* ========================= */
+    .column {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 0;
+    }
 
-.column-1-header {
-  padding: 12px 16px;
-  font-weight: 600;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
+    /* ========================= */
+    /* COLUMN 1 */
+    /* ========================= */
+    .column-1 {
+      background: #05070a;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
 
-.column-1-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
-}
+    .column-1-header {
+      padding: 12px 16px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
 
-.category summary {
-  cursor: pointer;
-  padding: 8px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 6px;
-  margin-bottom: 6px;
-}
+    .column-1-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
 
-.category ul {
-  list-style: none;
-  padding-left: 12px;
-}
+    .category summary {
+      cursor: pointer;
+      padding: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
 
-.category a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-}
+    .category ul {
+      list-style: none;
+      padding-left: 12px;
+      margin: 8px 0 16px;
+    }
 
-.category a:hover {
-  text-decoration: underline;
-}
+    .category li {
+      margin-bottom: 8px;
+    }
 
-/* ========================= */
-/* COLUMN 2 */
-/* ========================= */
-.column-2 {
-  overflow-y: auto;
-  padding: 20px;
-}
+    .category a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+    }
 
-/* ========================= */
-/* COLUMN 3 */
-/* ========================= */
-.column-3 {
-  overflow-y: auto;
-  padding: 20px;
-}
-</style>
+    .category a:hover {
+      text-decoration: underline;
+    }
+
+    /* ========================= */
+    /* COLUMN 2 */
+    /* ========================= */
+    .column-2 {
+      background: #0d1117;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      min-height: 0;
+    }
+
+    .feed-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .feed-header {
+      margin: 0 0 16px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .feed-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feed-card {
+      background: #161b22;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+
+    .feed-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .feed-card p {
+      margin: 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .feed-loader {
+      text-align: center;
+      padding: 20px;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      display: none;
+    }
+
+    #feedSentinel {
+      height: 1px;
+    }
+
+    /* ========================= */
+    /* COLUMN 3 */
+    /* ========================= */
+    .column-3 {
+      background: #0f141b;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .column-3 h2 {
+      margin-top: 0;
+    }
+
+    .fruit-bowl-card {
+      background: #161b22;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .fruit-bowl-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .fruit-bowl-card li {
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 260px 1fr;
+      }
+
+      .column-3 {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .column-1 {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="app">
 
-<div class="app">
+    <!-- COLUMN 1 -->
+    <div class="column column-1">
+      <div class="column-1-header">Partners</div>
+      <div id="column1-partners" class="column-1-scroll"></div>
+    </div>
 
-  <!-- COLUMN 1 -->
-  <div class="column column-1">
-    <div class="column-1-header">Partners</div>
-    <div id="column1-partners" class="column-1-scroll"></div>
-  </div>
+    <!-- COLUMN 2 -->
+    <div class="column column-2">
+      <div id="magnetoColumn" class="feed-wrapper">
+        <h2 class="feed-header">Feed</h2>
 
-  <!-- COLUMN 2 -->
-  <div class="column column-2">
-    <h2>Column 2 (Feed)</h2>
-  </div>
+        <!-- FEED CONTAINER (JS injects cards here) -->
+        <div id="feedContainer" class="feed-container"></div>
 
-  <!-- COLUMN 3 -->
-  <div class="column column-3">
-    <h2>Column 3 (Fruit Bowl)</h2>
-  </div>
+        <!-- LOADER (visible while loading more items) -->
+        <div id="feedLoader" class="feed-loader">Loading…</div>
 
-</div>
+        <!-- SENTINEL (infinite scroll trigger) -->
+        <div id="feedSentinel"></div>
+      </div>
+    </div>
 
-<script>
-async function loadPartners() {
-  try {
-    const response = await fetch('/data/partners.json');
-    const data = await response.json();
-    return data.partners || [];
-  } catch (err) {
-    console.error("Error loading partners:", err);
-    return [];
-  }
-}
-
-async function renderColumn1() {
-  const partners = await loadPartners();
-  const container = document.getElementById("column1-partners");
-
-  const categories = {};
-
-  partners.forEach(p => {
-    if (!categories[p.category]) {
-      categories[p.category] = [];
-    }
-    categories[p.category].push(p);
-  });
-
-  container.innerHTML = "";
-
-  Object.keys(categories).forEach(category => {
-    const section = document.createElement("div");
-    section.className = "category";
-
-    section.innerHTML = `
-      <details>
-        <summary>${category}</summary>
+    <!-- COLUMN 3 -->
+    <div class="column column-3">
+      <h2>Fruit Bowl</h2>
+      <div class="fruit-bowl-card">
         <ul>
-          ${categories[category].map(p => `
-            <li>
-              <a href="${p.url}" target="_blank">
-                ${p.name}
-              </a>
-            </li>
-          `).join("")}
+          <li>Apples</li>
+          <li>Bananas</li>
+          <li>Oranges</li>
+          <li>Grapes</li>
         </ul>
-      </details>
-    `;
+      </div>
+    </div>
 
-    container.appendChild(section);
-  });
-}
+  </div>
 
-renderColumn1();
-</script>
+  <script>
+    async function loadPartners() {
+      try {
+        const response = await fetch('/data/partners.json');
+        const data = await response.json();
+        return data.partners || [];
+      } catch (err) {
+        console.error("Error loading partners:", err);
+        return [];
+      }
+    }
 
+    async function renderColumn1() {
+      const partners = await loadPartners();
+      const container = document.getElementById("column1-partners");
+
+      const categories = {};
+
+      partners.forEach(p => {
+        if (!categories[p.category]) {
+          categories[p.category] = [];
+        }
+        categories[p.category].push(p);
+      });
+
+      container.innerHTML = "";
+
+      Object.keys(categories).forEach(category => {
+        const section = document.createElement("div");
+        section.className = "category";
+
+        section.innerHTML = `
+          <details>
+            <summary>${category}</summary>
+            <ul>
+              ${categories[category].map(p => `
+                <li>
+                  <a href="${p.url}" target="_blank" rel="noopener noreferrer">
+                    ${p.name}
+                  </a>
+                </li>
+              `).join("")}
+            </ul>
+          </details>
+        `;
+
+        container.appendChild(section);
+      });
+    }
+
+    // -----------------------------------
+    // Demo feed data + infinite scroll
+    // Replace this with your real API/data
+    // -----------------------------------
+    let feedPage = 0;
+    let isLoading = false;
+    const feedContainer = document.getElementById("feedContainer");
+    const feedLoader = document.getElementById("feedLoader");
+    const feedSentinel = document.getElementById("feedSentinel");
+
+    function generateMockFeedItems(page, count = 6) {
+      return Array.from({ length: count }, (_, i) => ({
+        title: `Feed Item #${page * count + i + 1}`,
+        body: `This is a sample feed card for the infinite scroll area in Column 2. Replace this with your real content source.`
+      }));
+    }
+
+    function renderFeedItems(items) {
+      items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "feed-card";
+        card.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.body}</p>
+        `;
+        feedContainer.appendChild(card);
+      });
+    }
+
+    async function loadMoreFeedItems() {
+      if (isLoading) return;
+      isLoading = true;
+      feedLoader.style.display = "block";
+
+      try {
+        await new Promise(resolve => setTimeout(resolve, 500)); // simulate fetch delay
+        const items = generateMockFeedItems(feedPage, 6);
+        renderFeedItems(items);
+        feedPage++;
+      } catch (err) {
+        console.error("Error loading feed:", err);
+      } finally {
+        feedLoader.style.display = "none";
+        isLoading = false;
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadMoreFeedItems();
+      }
+    }, {
+      root: document.getElementById("magnetoColumn"),
+      threshold: 0.1
+    });
+
+    renderColumn1();
+    loadMoreFeedItems();
+    observer.observe(feedSentinel);
+  </script>
 </body>
 </html>
