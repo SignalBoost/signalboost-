@@ -1034,7 +1034,305 @@
 .finance-panel,
 .news-feed,
 .system-panel,
-.
+.quick-notes,
+.platform-logos {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+}
+.finance-panel h4,
+.news-feed h4,
+.system-panel h4,
+.quick-notes h4,
+.platform-logos h4 {
+  margin: 0 0 8px;
+  font-size: .75rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.finance-panel ul,
+.news-feed ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.finance-panel li,
+.news-feed li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  font-size: .72rem;
+}
+.finance-panel li:last-child,
+.news-feed li:last-child {
+  border-bottom: none;
+}
+.finance-panel .symbol,
+.news-feed .headline-source {
+  font-weight: 800;
+  color: var(--yellow);
+}
+.finance-panel .price {
+  color: var(--cyan);
+  font-weight: 800;
+}
+.finance-panel .change.up { color: var(--green); font-weight: 800; }
+.finance-panel .change.down { color: var(--red); font-weight: 800; }
+
+.system-panel p {
+  margin: 4px 0;
+  font-size: .72rem;
+  color: var(--muted);
+}
+.system-panel span {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.quick-notes textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 10px;
+  font: inherit;
+  font-size: .75rem;
+  outline: none;
+}
+.quick-notes textarea:focus {
+  border-color: var(--cyan);
+}
+
+.platform-logos .logos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  justify-items: center;
+}
+.platform-logos .logo-tile {
+  width: 100%;
+  min-height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 1.35rem;
+}
+.platform-logos .logo-name {
+  margin-top: 4px;
+  font-size: .62rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+
+/* Column Five user version */
+.search-box input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: box-shadow 0.3s ease;
+}
+.search-box input:focus { box-shadow: 0 0 8px rgba(0, 150, 255, 0.5); }
+.markets { display: flex; flex-wrap: wrap; margin-top: 15px; }
+.tile {
+  flex: 1 1 45%;
+  margin: 5px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 13px;
+}
+.tile a { color: #111; text-decoration: none; }
+.tv-widget {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+.market-links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.market-link {
+  display: block;
+  text-align: center;
+  background: #fff;
+  color: #111;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid #ddd;
+}
+.market-link:hover { background: #f4f4f4; }
+.custom-news-feed { margin-top: 20px; }
+.custom-news-feed h3 { margin-bottom: 5px; font-size: 14px; }
+.custom-news-feed ul { list-style: none; padding: 0; }
+.custom-news-feed li { margin-bottom: 5px; font-size: 13px; }
+.custom-news-feed a { color: var(--text); text-decoration: none; }
+.weather {
+  margin-top: 20px;
+  font-size: 13px;
+  background: #eef6ff;
+  color: #111;
+  padding: 10px;
+  border-radius: 6px;
+}
+.custom-platform-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 8px;
+}
+.custom-platform-logos .logo-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 54px;
+  text-decoration: none;
+}
+.custom-platform-logos .logo-tile {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  margin: 6px;
+  transition: transform 0.2s ease;
+  font-size: 16px;
+}
+.custom-platform-logos .logo-link:hover .logo-tile { transform: scale(1.1); }
+
+
+.partner-feed { margin: 10px 0 12px; }
+.partner-cat.open .partner-items { display: flex; }
+
+
+/* Rotating Affiliate Banner */
+.mall-banner {
+  background: linear-gradient(90deg, #ff004f, #ff7a00);
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid #222;
+}
+.mall-banner a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+}
+.mall-banner-message {
+  display: block;
+  font-size: 14px;
+}
+.mall-banner-sub {
+  display: block;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+
+
+    .mall-header-addon {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      padding: 10px 20px 14px;
+    }
+    .mall-header-inner { max-width: 1920px; margin: 0 auto; display: grid; gap: 10px; }
+    .mall-tagline {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      font-size: .85rem; color: var(--muted);
+    }
+    .mall-tagline strong { color: var(--text); }
+    .category-bar, .region-switcher, .media-carousel {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;
+    }
+    .category-btn, .region-btn, .media-item {
+      border: 1px solid var(--border2); background: var(--surface2); color: var(--text);
+      border-radius: 999px; padding: 8px 12px; font-size: .76rem; font-weight: 700;
+      white-space: nowrap;
+    }
+    .category-btn.active, .region-btn.active {
+      background: var(--pink); border-color: var(--pink); color: #fff;
+    }
+    .media-item {
+      border-radius: 12px; background: linear-gradient(135deg, rgba(255,0,79,.16), rgba(0,255,204,.10));
+    }
+    .partner-tile-grid {
+      display: none; grid-template-columns: repeat(auto-fit, minmax(110px,1fr)); gap: 8px; margin-top: 10px;
+    }
+    .partner-tile-grid.active { display: grid; }
+    .partner-tile {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center;
+    }
+    .partner-logo {
+      width: 34px; height: 34px; margin: 0 auto 8px; border-radius: 10px; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--pink), var(--cyan)); color: #000; font-weight: 900;
+    }
+    .partner-name { font-size: .76rem; font-weight: 700; }
+    .mall-footer {
+      max-width: 1920px; margin: 18px auto 0; padding: 18px 20px 28px; color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+    .mall-footer-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
+    .mall-footer a:hover { color: var(--cyan); }
+
+</style>
+</head>
+<body>
+
+<div class="mall-banner" id="mallBanner"><div id="partner-banner"></div>
+  <a href="#" id="bannerLink" target="_blank" rel="noopener">
+    <span class="mall-banner-message" id="bannerMessage">Loading…</span>
+    <span class="mall-banner-sub" id="bannerSub">Please wait</span>
+  </a>
+</div>
+
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-logo">🛰</div>
+      <span class="brand-name">SignalBoostAi</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="pill-btn active" id="liveBtn">🔴 LIVE</button>
+      <button class="pill-btn" id="themeBtn">☀️ Light</button>
+      <button class="pill-btn" id="classicBtn">📜 Classic</button>
+      <a href="../" class="old-link">← Classic</a>
+    </div>
+  </div>
+</header>
+
+<div class="social-bar">
+  <div class="social-platforms">
+    <a href="https://facebook.com" target="_blank" rel="noopener" class="platform-btn" title="Facebook"><span class="icon">f</span>Facebook</a>
+    <a href="https://youtube.com" target="_blank" rel="noopener" class="platform-btn" title="YouTube"><span class="icon">▶</span>YouTube</a>
+    <a href="https://instagram.com" target="_blank" rel="noopener" class="platform-btn" title="Instagram"><span class="icon">📷</span>Instagram</a>
+    <a href="https://tiktok.com" target="_blank" rel="noopener" class="platform-btn" title="TikTok"><span class="icon">♪</span>TikTok</a>
+    <a href="https://reddit.com" target="_blank" rel="noopener" class="platform-btn" title="Reddit"><span class="icon">🔴</span>Reddit</a>
+    <a href="https://wa.me" target="_blank" rel="noopener" class="platform-btn" title="WhatsApp"><span class="icon">💬</span>WhatsApp</a>
+    <a href="https://messenger.com" target="_blank" rel="noopener" class="platform-btn" title="Messenger"><span class="icon">💭</span>Messenger</a>
+    <a href="https://wechat.com" target="_blank" rel="noopener" class="platform-btn" title="WeChat"><span class="icon">🔗</span>WeChat</a>
+    <a href="https://x.com" target="_blank" rel="noopener" class="platform-btn" title="X"><span class="icon">𝕏</span>X</a>
+    <a href="https://snapchat.com" target="_blank" rel="noopener" class="platform-btn" title="Snapchat"><span class="icon">👻</span>Snapchat</a>
+    <a href="https://linkedin.com" target="_blank" rel="noopener" class="platform-btn" title="LinkedIn"><span class="icon">in</span>LinkedIn</a>
+    <a href="https://truthsocial.com" target="_blank" rel="noopener" class="platform-btn" title="Truth Social"><span class="icon">🇺🇸</span>Truth</a>
   </div>
 </div>
 
@@ -1044,9 +1342,28 @@
       <strong>SignalBoost Mall Entrance</strong>
       <span>Your digital shopping mall entrance with category browse, region switching, and media discovery.</span>
     </div>
-   
+    <nav class="category-bar" id="categoryBar">
+      <button class="category-btn active" data-category="all">All</button>
+      <button class="category-btn" data-category="travel">Travel</button>
+      <button class="category-btn" data-category="fashion">Fashion</button>
+      <button class="category-btn" data-category="tech">Tech</button>
+      <button class="category-btn" data-category="entertainment">Entertainment</button>
+      <button class="category-btn" data-category="food">Food</button>
+    </nav>
+    <div class="region-switcher" id="regionSwitcher">
+      <button class="region-btn active" data-region="all">Global</button>
+      <button class="region-btn" data-region="us">USA</button>
+      <button class="region-btn" data-region="eu">Europe</button>
+      <button class="region-btn" data-region="asia">Asia</button>
+      <button class="region-btn" data-region="jm">Jamaica</button>
     </div>
-    
+    <div class="media-carousel">
+      <div class="media-item">🎬 TikTok — Top Jamaican Getaways</div>
+      <div class="media-item">📺 YouTube — Dunn’s River Falls</div>
+      <div class="media-item">📸 Instagram — Adventure Awaits!</div>
+      <div class="media-item">🧳 Travel Deals — Fresh partner offers</div>
+    </div>
+    <div class="entrance-featured-row" id="entranceFeatured"></div>
   </div>
 </section>
 
@@ -2098,8 +2415,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 (function() {
   const entranceFeaturedData = [
-    { platform: 'TikTok', title: 'Top Global Getaways', region: 'Global', category: 'Travel' },
-    { platform: 'YouTube', title: 'Dunn’s River Falls', region: 'Global', category: 'Travel' },
+    { platform: 'TikTok', title: 'Top Jamaican Getaways', region: 'Jamaica', category: 'Travel' },
+    { platform: 'YouTube', title: 'Dunn’s River Falls', region: 'Jamaica', category: 'Travel' },
     { platform: 'Instagram', title: 'Adventure Awaits!', region: 'Global', category: 'Travel' },
     { platform: 'Travel Deals', title: 'Fresh partner offers', region: 'Global', category: 'Food' },
     { platform: 'Latin America', title: 'Carnival Specials', region: 'Latin America', category: 'Entertainment' },
