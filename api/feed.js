@@ -1,45 +1,65 @@
+// ===============================
+// HYBRID FEED SERVER (COLUMN 2)
+// ===============================
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const axios = require('axios');
 
-router.get('/', async (req, res) => {
-  try {
-    // Example YouTube call
-    const ytRes = await axios.get(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=business&type=video&maxResults=5&key=${process.env.YOUTUBE_KEY}`
-    );
-    const ytVideos = ytRes.data.items.map(v => ({
-      source: "youtube",
-      title: v.snippet.title,
-      thumbnail: v.snippet.thumbnails.medium.url,
-      channel: v.snippet.channelTitle
-    }));
-
-    // Example Instagram call
-    const igRes = await axios.get(
-      `https://graph.instagram.com/me/media?fields=id,caption,media_url,like_count&access_token=${process.env.INSTAGRAM_TOKEN}`
-    );
-    const igPosts = igRes.data.data.map(p => ({
-      source: "instagram",
-      title: p.caption,
-      thumbnail: p.media_url,
-      likes: p.like_count
-    }));
-
-    // TikTok-style mock
-    const tkVideos = [{
-      source: "tiktok-style",
-      title: "Travel & Business Insight",
-      thumbnail: "travel-business-thumb.jpg",
-      stats: { views: "2.1K", comments: "50" }
-    }];
-
-    res.json([...ytVideos, ...igPosts, ...tkVideos]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Feed unavailable" });
+// Mock feed items (replace with real sources later)
+const mockFeed = [
+  {
+    id: 1,
+    title: "Sample Feed Item #1",
+    text: "This is a sample feed card for the infinite scroll area in Column 2.",
+    type: "text"
+  },
+  {
+    id: 2,
+    title: "Sample Feed Item #2",
+    text: "This is a sample feed card for the infinite scroll area in Column 2.",
+    type: "text"
+  },
+  {
+    id: 3,
+    title: "Sample Feed Item #3",
+    text: "This is a sample feed card for the infinite scroll area in Column 2.",
+    type: "text"
+  },
+  {
+    id: 4,
+    title: "Sample Feed Item #4",
+    text: "This is a sample feed card for the infinite scroll area in Column 2.",
+    type: "text"
+  },
+  {
+    id: 5,
+    title: "Sample Feed Item #5",
+    text: "This is a sample feed card for the infinite scroll area in Column 2.",
+    type: "text"
+  },
+  {
+    id: 6,
+    title: "Sample Feed Item #6",
+    text: "This is a sample feed card for the infinite scroll area in Column 2.",
+    type: "text"
   }
+];
+
+// Pagination logic
+router.get("/feed", (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 6;
+
+  const start = (page - 1) * limit;
+  const end = start + limit;
+
+  const items = mockFeed.slice(start, end);
+
+  res.json({
+    page,
+    hasMore: end < mockFeed.length,
+    items
+  });
 });
 
 module.exports = router;
