@@ -1,65 +1,44 @@
-// ===============================
-// HYBRID FEED SERVER (COLUMN 2)
-// ===============================
+export default function handler(req, res) {
+  try {
+    const mockFeed = [
+      {
+        id: 1,
+        title: "Sample Feed Item #1",
+        description: "This is a sample feed card for Column 2.",
+        author: "SignalBoost",
+        platform: "internal",
+        url: "https://www.signalboostapp.com",
+        thumbnail: "",
+        publishedAt: new Date().toISOString()
+      },
+      {
+        id: 2,
+        title: "Sample Feed Item #2",
+        description: "This is another sample feed item.",
+        author: "SignalBoost",
+        platform: "internal",
+        url: "https://www.signalboostapp.com",
+        thumbnail: "",
+        publishedAt: new Date().toISOString()
+      },
+      {
+        id: 3,
+        title: "Sample Feed Item #3",
+        description: "Your hybrid feed endpoint is now working.",
+        author: "SignalBoost",
+        platform: "internal",
+        url: "https://www.signalboostapp.com",
+        thumbnail: "",
+        publishedAt: new Date().toISOString()
+      }
+    ];
 
-const express = require("express");
-const router = express.Router();
-
-// Mock feed items (replace with real sources later)
-const mockFeed = [
-  {
-    id: 1,
-    title: "Sample Feed Item #1",
-    text: "This is a sample feed card for the infinite scroll area in Column 2.",
-    type: "text"
-  },
-  {
-    id: 2,
-    title: "Sample Feed Item #2",
-    text: "This is a sample feed card for the infinite scroll area in Column 2.",
-    type: "text"
-  },
-  {
-    id: 3,
-    title: "Sample Feed Item #3",
-    text: "This is a sample feed card for the infinite scroll area in Column 2.",
-    type: "text"
-  },
-  {
-    id: 4,
-    title: "Sample Feed Item #4",
-    text: "This is a sample feed card for the infinite scroll area in Column 2.",
-    type: "text"
-  },
-  {
-    id: 5,
-    title: "Sample Feed Item #5",
-    text: "This is a sample feed card for the infinite scroll area in Column 2.",
-    type: "text"
-  },
-  {
-    id: 6,
-    title: "Sample Feed Item #6",
-    text: "This is a sample feed card for the infinite scroll area in Column 2.",
-    type: "text"
+    res.status(200).json({ items: mockFeed });
+  } catch (error) {
+    console.error("API /api/feed error:", error);
+    res.status(500).json({
+      error: "Feed failed",
+      message: error.message
+    });
   }
-];
-
-// Pagination logic
-router.get("/feed", (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = 6;
-
-  const start = (page - 1) * limit;
-  const end = start + limit;
-
-  const items = mockFeed.slice(start, end);
-
-  res.json({
-    page,
-    hasMore: end < mockFeed.length,
-    items
-  });
-});
-
-module.exports = router;
+}
