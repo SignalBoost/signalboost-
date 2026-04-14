@@ -75,39 +75,49 @@ async function fetchYouTube(q, apiKey) {
 }
 
 async function fetchReddit(q) {
-  const redditUrl = `https://www.reddit.com/search.json?q=${encodeURIComponent(q)}&limit=10&sort=new`;
+  try {
+    const redditUrl =
+      `https://www.reddit.com/search.json` +
+      `?q=${encodeURIComponent(q)}` +
+      `&limit=10` +
+      `&sort=new`;
 
-  const redditRes = await fetch(redditUrl, {
-    headers: {
-      "User-Agent": "SignalBoostApp/1.0"
+    const redditRes = await fetch(redditUrl, {
+      headers: {
+        "User-Agent": "SignalBoostApp/1.0 (by u/SignalBoostApp)",
+        "Accept": "application/json"
+      }
+    });
+
+    if (!redditRes.ok) {
+      console.error("Reddit API error:", redditRes.status);
+      return [];
     }
-  });
 
-  if (!redditRes.ok) {
-    const text = await redditRes.text();
-    throw new Error(`Reddit API error ${redditRes.status}: ${text}`);
+    const redditData = await redditRes.json();
+
+    return ((redditData.data && redditData.data.children) || [])
+      .map(child => child.data)
+      .filter(post => post && post.id)
+      .map(post => ({
+        id: `reddit_${post.id}`,
+        title: post.title || "Untitled post",
+        description: post.selftext || "",
+        author: post.author ? `u/${post.author}` : "Reddit",
+        platform: "reddit",
+        url: post.permalink
+          ? `https://www.reddit.com${post.permalink}`
+          : "https://www.reddit.com",
+        thumbnail:
+          typeof post.thumbnail === "string" && post.thumbnail.startsWith("http")
+            ? post.thumbnail
+            : "",
+        publishedAt: post.created_utc
+          ? new Date(post.created_utc * 1000).toISOString()
+          : new Date().toISOString()
+      }));
+  } catch (error) {
+    console.error("Reddit fetch failed:", error);
+    return [];
   }
-
-  const redditData = await redditRes.json();
-
-  return ((redditData.data && redditData.data.children) || [])
-    .map(child => child.data)
-    .filter(post => post && post.id)
-    .map(post => ({
-      id: `reddit_${post.id}`,
-      title: post.title || "Untitled post",
-      description: post.selftext || "",
-      author: post.author ? `u/${post.author}` : "Reddit",
-      platform: "reddit",
-      url: post.permalink
-        ? `https://www.reddit.com${post.permalink}`
-        : "https://www.reddit.com",
-      thumbnail:
-        typeof post.thumbnail === "string" && post.thumbnail.startsWith("http")
-          ? post.thumbnail
-          : "",
-      publishedAt: post.created_utc
-        ? new Date(post.created_utc * 1000).toISOString()
-        : new Date().toISOString()
-    }));
 }
