@@ -359,6 +359,10 @@
       scrollbar-width: thin;
     }
 
+/* Hide scrollbar */
+.feed-container::-webkit-scrollbar { display: none; }
+.feed-container { scrollbar-width: none; -ms-overflow-style: none; }
+
     .feed-container::-webkit-scrollbar {
       width: 8px;
     }
@@ -412,117 +416,49 @@
       gap: 12px;
     }
 
-    /* Column 3 */
-    #partnerColumn {
-      padding: 16px;
-    }
+    /* Column 3 — Dynamic Partner Cluster */
+#column3 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  background: radial-gradient(circle at top, #151a24, #05070a);
+}
 
-    .fruit-bowl {
-      position: relative;
-      width: 100%;
-      min-height: 100%;
-      background: radial-gradient(circle at center, #ffcc00, #ff6f61, #00c4ff);
-      border-radius: 26px;
-      padding: 16px;
-      overflow: hidden;
-    }
+#partnerCluster {
+  width: 65%;
+  height: 65%;
+  position: relative;
+  transform-origin: center;
+}
 
-    .audio-controls {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
+.loop {
+  width: 60px;
+  height: 60px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  cursor: pointer;
+  transition: transform 0.6s ease, box-shadow 1.2s ease;
+  box-shadow: 0 0 0 rgba(255,255,255,0);
+}
 
-    #volumeSlider {
-      width: 150px;
-      accent-color: #ff6f61;
-    }
+.loop img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
 
-    #muteButton,
-    #shuffleButton {
-      padding: 8px 12px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-      background: linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-    }
-
-    #muteButton:hover,
-    #shuffleButton:hover {
-      transform: scale(1.04);
-    }
-
-    .loop-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .loop {
-      width: var(--loop-size, 50px);
-      height: var(--loop-size, 50px);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: bold;
-      color: #fff;
-      cursor: pointer;
-      background: var(--loop-bg, linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff));
-      transition: transform 0.2s ease;
-      overflow: hidden;
-      text-align: center;
-      padding: 4px;
-      transform: rotate(var(--loop-rotate, 0deg));
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
-    }
-
-    .loop:hover {
-      transform: scale(1.15);
-    }
-
-    .loop img {
-      max-width: 70%;
-      max-height: 70%;
-      border-radius: 50%;
-      object-fit: contain;
-      display: block;
-    }
-
-    .animate {
-      animation: spinBounce 0.6s ease;
-    }
-
-    @keyframes spinBounce {
-      0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
-      50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
-      100% { transform: scale(1) rotate(360deg); opacity: 1; }
-    }
-
-    .shake {
-      animation: bowlShake 0.6s ease;
-    }
-
-    @keyframes bowlShake {
-      0% { transform: translateX(0); }
-      20% { transform: translateX(-10px); }
-      40% { transform: translateX(10px); }
-      60% { transform: translateX(-10px); }
-      80% { transform: translateX(10px); }
-      100% { transform: translateX(0); }
-    }
-  </style>
+.loop:hover {
+  transform: scale(1.15);
+}
+</style>
 </head>
 <body>
   <header>
@@ -568,18 +504,10 @@
         <div id="feedContainer" class="feed-container"></div>
       </div>
 
-      <div class="column column-3" id="partnerColumn">
-        <div id="fruitBowl" class="fruit-bowl">
-          <button id="shuffleButton" type="button">🍭 Refresh Mix</button>
-          <audio id="shuffleSound" src="/sounds/bowl-shake.mp3" preload="auto"></audio>
-          <div class="audio-controls">
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
-            <button id="muteButton" type="button">🔇 Mute</button>
-          </div>
-          <div id="loopContainer" class="loop-container"></div>
-        </div>
-      </div>
-    </section>
+      <div class="column column-3" id="column3">
+  <div id="partnerCluster"></div>
+</div>
+</section>
   </main>
 
   <script>
@@ -870,132 +798,8 @@
       loadMoreFeed();
     }
 
-    // =========================
-    // COLUMN 3 — SHUFFLE LOGIC
-    // =========================
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    const sound = document.getElementById('shuffleSound');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const muteButton = document.getElementById('muteButton');
-
-    if (sound && volumeSlider) {
-      sound.volume = volumeSlider.value;
-
-      volumeSlider.addEventListener('input', () => {
-        sound.volume = volumeSlider.value;
-      });
-
-      muteButton.addEventListener('click', () => {
-        if (sound.muted) {
-          sound.muted = false;
-          muteButton.textContent = '🔇 Mute';
-        } else {
-          sound.muted = true;
-          muteButton.textContent = '🔊 Unmute';
-        }
-      });
-    }
-
-    const column3Data = [
-      { name: 'Kiwi', logo: 'assets/logos/kiwi.png', type: 'logo', url: 'https://kiwi.com' },
-      { name: 'Booking.com', logo: 'assets/logos/booking.png', type: 'logo', url: 'https://booking.com' },
-      { name: 'Airbnb', logo: 'assets/logos/airbnb.png', type: 'logo', url: 'https://airbnb.com' },
-      { name: 'Skyscanner', logo: 'assets/logos/skyscanner.png', type: 'logo', url: 'https://skyscanner.com' },
-      { name: 'Expedia', logo: 'assets/logos/expedia.png', type: 'logo', url: 'https://expedia.com' },
-      { name: 'Facebook', logo: 'assets/logos/facebook.png', type: 'logo', url: 'https://facebook.com' },
-      { name: 'Instagram', logo: 'assets/logos/instagram.png', type: 'logo', url: 'https://instagram.com' },
-      { name: 'X/Twitter', logo: 'assets/logos/twitter.png', type: 'logo', url: 'https://x.com' },
-      { name: 'YouTube', logo: 'assets/logos/youtube.png', type: 'logo', url: 'https://youtube.com' },
-      { name: 'LinkedIn', logo: 'assets/logos/linkedin.png', type: 'logo', url: 'https://linkedin.com' },
-      { name: 'Reddit', logo: 'assets/logos/reddit.png', type: 'logo', url: 'https://reddit.com' },
-      { name: 'Discord', logo: 'assets/logos/discord.png', type: 'logo', url: 'https://discord.com' },
-      { name: 'Truth Social', logo: 'assets/logos/truth.png', type: 'logo', url: 'https://truthsocial.com' },
-      { name: 'Amazon', logo: 'assets/logos/amazon.png', type: 'logo', url: 'https://amazon.com' },
-      { name: 'TikTok', logo: null, type: 'text', url: 'https://tiktok.com' },
-      { name: 'Pinterest', logo: null, type: 'text', url: 'https://pinterest.com' },
-      { name: 'Snapchat', logo: null, type: 'text', url: 'https://snapchat.com' },
-      { name: 'WhatsApp', logo: null, type: 'text', url: 'https://whatsapp.com' },
-      { name: 'Telegram', logo: null, type: 'text', url: 'https://telegram.org' },
-      { name: 'WeChat', logo: null, type: 'text', url: 'https://wechat.com' },
-      { name: 'Threads', logo: null, type: 'text', url: 'https://threads.net' }
-    ];
-
-    function renderFruitBowl(items) {
-      const container = document.getElementById('loopContainer');
-      const bowl = document.getElementById('fruitBowl');
-      if (!container || !bowl) return;
-
-      container.innerHTML = '';
-      const shuffledItems = shuffleArray([...items]);
-      const gradients = [
-        'linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff)',
-        'linear-gradient(135deg, #7c3aed, #ec4899, #f59e0b)',
-        'linear-gradient(135deg, #10b981, #06b6d4, #3b82f6)',
-        'linear-gradient(135deg, #f97316, #ef4444, #eab308)',
-        'linear-gradient(135deg, #22c55e, #84cc16, #14b8a6)'
-      ];
-
-      shuffledItems.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'loop animate';
-
-        const randomSize = 46 + Math.floor(Math.random() * 32);
-        const randomRotate = -10 + Math.floor(Math.random() * 21);
-        const randomBg = gradients[Math.floor(Math.random() * gradients.length)];
-
-        el.style.setProperty('--loop-size', `${randomSize}px`);
-        el.style.setProperty('--loop-rotate', `${randomRotate}deg`);
-
-        if (item.logo) {
-          const img = document.createElement('img');
-          img.src = item.logo;
-          img.alt = item.name;
-          img.loading = 'lazy';
-          el.style.setProperty('--loop-bg', '#ffffff');
-          el.appendChild(img);
-        } else {
-          el.textContent = item.name;
-          el.style.setProperty('--loop-bg', randomBg);
-        }
-
-        if (item.url) {
-          el.addEventListener('click', () => {
-            window.open(item.url, '_blank', 'noopener');
-          });
-        }
-
-        container.appendChild(el);
-      });
-
-      setTimeout(() => {
-        container.querySelectorAll('.animate').forEach(el => {
-          el.classList.remove('animate');
-        });
-      }, 600);
-
-      bowl.classList.add('shake');
-      setTimeout(() => bowl.classList.remove('shake'), 600);
-
-      if (sound && !sound.muted) {
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-      }
-    }
-
-    document.getElementById('shuffleButton')?.addEventListener('click', () => {
-      renderFruitBowl(column3Data);
-    });
-
-    renderFruitBowl(column3Data);
-  </script>
+    </script>
   <script src="/js/partners.js"></script>
+  <script src="/js/column3-effects.js"></script>
 </body>
 </html>
