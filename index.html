@@ -1,1896 +1,1206 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>SignalBoost — Your Digital Shopping Mall</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoostAi — Dashboard</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:       #0a0a0a;
-      --bg2:      #050505;
-      --surface:  #111117;
-      --surface2: #18181f;
-      --border:   rgba(255,255,255,.07);
-      --border2:  rgba(255,255,255,.12);
-      --text:     #f0f0f5;
-      --muted:    #7a7a90;
-      --pink:     #ff004f;
-      --cyan:     #00ffcc;
-      --yellow:   #ffe234;
-      --green:    #00ff41;
-      --red:      #ff3333;
-      --radius:   18px;
-      --radius-sm:10px;
-      --shadow:   0 4px 24px rgba(0,0,0,.55);
-      --shadow-lg:0 8px 40px rgba(0,0,0,.7);
-      --transition:.18s ease;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg2);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.5;
-      overflow-x: hidden;
-    }
-    a { text-decoration: none; color: inherit; }
-    button { font-family: inherit; cursor: pointer; }
-    
-    ::-webkit-scrollbar { width: 2px; height: 2px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 99px; }
 
-    .topbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(5,5,5,.95);
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --card-bg: #f7f7f7;
+      --border: #e0e0e0;
+      --accent: #d4af37;
+      --accent-soft: rgba(212, 175, 55, 0.12);
+      --header-bg: rgba(255, 255, 255, 0.9);
+      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.04);
+    }
+
+    body.dark {
+      --bg: #0b0b0f;
+      --text: #f5f5f7;
+      --card-bg: #15151b;
+      --border: #2a2a33;
+      --accent: #d4af37;
+      --accent-soft: rgba(212, 175, 55, 0.18);
+      --header-bg: rgba(11, 11, 15, 0.9);
+      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: var(--header-bg);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 0 20px;
+      box-shadow: var(--shadow-soft);
+      z-index: 1000;
     }
-    .topbar-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 20px; height: 80px; max-width: 1920px; margin: 0 auto;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 14px;
-      font-weight: 900; font-size: 1.3rem; letter-spacing: -.02em;
-    }
-    .brand-logo {
-      width: 48px; height: 48px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--pink), var(--cyan));
-      display: grid; place-items: center; font-size: 1.2rem; font-weight: 900;
-      color: #000; flex-shrink: 0;
-      animation: logoPulse 3s ease-in-out infinite;
-    }
-    @keyframes logoPulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(255,0,79,.4); }
-      50% { box-shadow: 0 0 0 12px rgba(255,0,79,0); }
-    }
-    .brand-name { background: linear-gradient(90deg,var(--pink),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .topbar-actions { display: flex; align-items: center; gap: 12px; }
-    .pill-btn {
-      background: var(--surface); border: 1px solid var(--border2);
-      color: var(--muted); padding: 8px 16px; border-radius: 99px;
-      font-size: .9rem; font-weight: 700; transition: var(--transition);
-    }
-    .pill-btn:hover { color: var(--text); border-color: var(--cyan); }
-    .pill-btn.active { background: var(--pink); color: #fff; border-color: var(--pink); }
-    .old-link { color: var(--muted); font-size: .8rem; transition: var(--transition); }
-    .old-link:hover { color: var(--cyan); }
 
-    .social-bar {
-      background: rgba(5,5,5,.9);
-      border-bottom: 1px solid var(--border);
-      padding: 8px 20px;
-      overflow-x: auto;
-      overflow-y: hidden;
+    .header-left {
+      display: flex;
+      flex-direction: column;
     }
-    .social-platforms {
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--accent);
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .header-center {
       display: flex;
       gap: 8px;
-      align-items: center;
-      max-width: 1920px;
-      margin: 0 auto;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    .platform-btn {
+
+    .header-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .header-pill:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-toggle {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      cursor: pointer;
+      font-size: 0.8rem;
       display: flex;
       align-items: center;
       gap: 6px;
-      height: 36px;
-      padding: 0 12px;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius-sm);
-      color: var(--muted);
-      font-size: .75rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .platform-btn:hover {
-      border-color: var(--cyan);
-      color: var(--cyan);
-      transform: translateY(-2px);
-    }
-    .platform-btn .icon { font-size: .9rem; }
-
-    .shell {
-      max-width: 1920px; margin: 0 auto;
-      padding: 16px 16px 32px;
-      min-height: calc(100vh - 140px);
+      transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
     }
 
-    .dashboard {
+    .theme-toggle:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    main {
+      padding: 90px 20px 20px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .grid-3 {
       display: grid;
-      grid-template-columns: 200px 240px 1fr 240px 200px;
-      gap: 14px;
-      align-items: stretch;
-      min-height: calc(100vh - 150px);
+      grid-template-columns: 320px minmax(0, 1fr) 260px;
+      gap: 18px;
+      align-items: start;
+      height: calc(100vh - 110px);
+      overflow: hidden;
     }
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+    @media (max-width: 1100px) {
+      .grid-3 {
+        grid-template-columns: 280px minmax(0, 1fr);
+      }
+      .column-3 {
+        display: none;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .column-1 {
+        order: 2;
+      }
+      .column-2 {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 6px;
+        scroll-behavior: smooth;
+        overscroll-behavior: contain;
+      }
+
+      /* Ensure side columns also scroll independently */
+      .column-1, .column-3 {
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+      }
+    }
+    }
+
+    /* Ensure side columns also scroll independently */
+    .column-1, .column-3 {
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+    }
+
+    #magnetoFeed {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .video-card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      border: 1px solid var(--border);
+    }
+
+    .video-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 12px;
+      color: var(--text);
+    }
+
+    .video-card .video-embed {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-card iframe,
+    .video-card blockquote,
+    .video-card video,
+    .video-card embed {
+      width: 100%;
       height: 100%;
-    }
-    .panel-header {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px; padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .panel-title {
-      font-size: .72rem; font-weight: 900; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--cyan);
-    }
-    .panel-badge {
-      background: var(--pink); color: #fff;
-      font-size: .65rem; font-weight: 900;
-      padding: 2px 7px; border-radius: 99px;
-    }
-    .panel-body { 
-      padding: 12px; flex: 1; overflow-y: auto; overflow-x: hidden;
-      display: flex; flex-direction: column;
+      border: none;
+      display: block;
     }
 
-    .col-partners {
-      position: sticky;
-      top: 140px;
-      height: calc(100vh - 180px);
-      align-self: start;
-    }
-    .col-partners .panel {
-      max-height: calc(100vh - 180px);
-      overflow: hidden;
-    }
-    .col-partners .panel-body {
+    .video-card a.video-link,
+    .video-card a {
+      display: block;
       padding: 12px;
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-    .partner-search {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      color: var(--text); padding: 8px 12px; border-radius: var(--radius-sm);
-      font-size: .82rem; outline: none; margin-bottom: 12px;
-      transition: var(--transition); flex-shrink: 0;
-    }
-    .partner-search:focus { border-color: var(--cyan); }
-    .partner-feed {
-      flex: 1; overflow-y: auto; overflow-x: hidden;
-      display: flex; flex-direction: column; gap: 3px;
-    }
-    .partner-cat { }
-    .partner-cat-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 12px; border-radius: var(--radius-sm);
-      background: var(--surface2); cursor: pointer;
-      user-select: none; transition: var(--transition);
-      font-size: .76rem; font-weight: 800;
-      flex-shrink: 0; margin-bottom: 3px;
-    }
-    .partner-cat-header:hover { background: rgba(0,255,204,.08); }
-    .partner-cat-header .cat-icon { font-size: .95rem; margin-right: 6px; }
-    .partner-cat-header .cat-count {
-      font-size: .6rem; color: var(--muted); margin-left: auto; margin-right: 8px;
-    }
-    .partner-cat-header .chevron {
-      color: var(--muted); font-size: .65rem;
-      transition: transform .2s ease;
-    }
-    .partner-cat.open .chevron { transform: rotate(90deg); }
-    .partner-items {
-      display: none; padding-left: 8px;
-      flex-direction: column; gap: 2px;
-      margin-bottom: 3px;
-    }
-    .partner-cat.open .partner-items { display: flex; }
-    .partner-item {
-      display: flex; align-items: center; gap: 8px;
-      padding: 6px 8px; border-radius: var(--radius-sm);
-      font-size: .75rem; cursor: pointer; transition: var(--transition);
-      position: relative; border-left: 2px solid var(--border);
-    }
-    .partner-item:hover {
-      background: rgba(0,255,204,.06);
-      color: var(--cyan);
-      border-left-color: var(--cyan);
-    }
-    .partner-item a {
-      display: flex; align-items: center; gap: 8px; color: inherit; flex: 1;
-    }
-    .partner-item .p-icon {
-      width: 22px; height: 22px; border-radius: 4px;
-      background: var(--surface2); display: grid; place-items: center;
-      font-size: .8rem; flex-shrink: 0;
-    }
-    .partner-item .p-name { font-weight: 600; flex: 1; }
-    .partner-item .p-tag {
-      font-size: .6rem; font-weight: 900; text-transform: uppercase;
-      color: var(--cyan); opacity: .6;
-    }
-    .partner-item.hot .p-tag { color: var(--pink); opacity: 1; }
-
-    .col-promos { align-self: stretch; }
-    .promo-feed {
-      display: grid; gap: 12px;
-      overflow-y: auto; overflow-x: hidden;
-      padding-right: 2px;
-      flex: 1;
-    }
-    .promo-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-      transition: var(--transition); cursor: pointer;
-    }
-    .promo-card:hover {
-      border-color: var(--border2);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-    .promo-thumb {
-      width: 100%; height: 130px;
-      display: grid; place-items: center;
-      font-size: 2.4rem; position: relative; overflow: hidden;
-      background: linear-gradient(135deg,#1a0a2e,#3d1155);
-    }
-    .promo-thumb::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .promo-new-badge {
-      position: absolute; top: 8px; right: 8px; z-index: 2;
-      background: var(--pink); color: #fff;
-      font-size: .62rem; font-weight: 900; padding: 3px 8px;
-      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
-    }
-    .promo-body { padding: 12px 14px 14px; }
-    .promo-kicker {
-      font-size: .65rem; font-weight: 900; text-transform: uppercase;
-      letter-spacing: .12em; color: var(--cyan); margin-bottom: 4px;
-    }
-    .promo-title { font-size: .92rem; font-weight: 800; margin-bottom: 4px; }
-    .promo-desc { font-size: .78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
-    .promo-meta { font-size: .7rem; color: var(--muted); }
-
-    .col-hero {
-      position: sticky;
-      top: 140px;
-      height: calc(100vh - 180px);
-      overflow-y: auto;
-      overflow-x: hidden;
-      align-self: start;
-    }
-    .col-hero .panel {
-      max-height: calc(100vh - 180px);
-    }
-    .hero-feed {
-      display: grid; gap: 14px;
-      overflow-y: auto; overflow-x: hidden;
-      flex: 1;
-      grid-auto-rows: max-content;
-    }
-    .hero-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-      transition: var(--transition); cursor: pointer;
-    }
-    .hero-card:hover {
-      border-color: var(--pink);
-      transform: translateY(-2px);
-      box-shadow: 0 0 24px rgba(255,0,79,.18), var(--shadow-lg);
-    }
-    .hero-thumb {
-      width: 100%; height: 380px;
-      display: grid; place-items: center;
-      font-size: 4rem; position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg,#0a1628,#1a3a6e);
-    }
-    .hero-thumb .overlay-grad {
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.85));
-      pointer-events: none;
-    }
-    .hero-thumb .hero-badge {
-      position: absolute; top: 12px; left: 12px; z-index: 2;
-      background: var(--pink); color: #fff;
-      font-size: .65rem; font-weight: 900; padding: 4px 10px;
-      border-radius: 99px; text-transform: uppercase; letter-spacing: .1em;
-    }
-    .hero-thumb .hero-info {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      z-index: 2; padding: 14px;
-    }
-    .hero-thumb .hero-info h3 {
-      font-size: 1.05rem; font-weight: 900; line-height: 1.25;
-    }
-    .hero-actions {
-      display: flex; gap: 10px; padding: 12px 14px;
-      align-items: center;
-    }
-    .hero-action-btn {
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--muted); padding: 6px 12px;
-      border-radius: 99px; font-size: .75rem; font-weight: 700;
-      transition: var(--transition);
-    }
-    .hero-action-btn.primary {
-      background: var(--pink); color: #fff; border-color: var(--pink);
-    }
-    .hero-stats { margin-left: auto; font-size: .72rem; color: var(--muted); }
-
-    .col-widgets { align-self: stretch; }
-    
-    .col-dashboard { 
-      align-self: stretch; 
-      display: flex; 
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .col-dashboard .panel { 
-      flex: 1;
-      overflow: hidden;
-    }
-    .dashboard-content {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    .weather-widget {
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px;
       text-align: center;
-      flex-shrink: 0;
-    }
-    .weather-widget .weather-icon { font-size: 2rem; }
-    .weather-widget .weather-temp { 
-      font-size: 1.6rem; 
-      font-weight: 900; 
-      color: var(--cyan);
-      margin: 4px 0;
-    }
-    .weather-widget .weather-desc { 
-      font-size: .7rem; 
-      color: var(--muted); 
+      font-size: 14px;
+      font-weight: 500;
+      color: #0077cc;
+      text-decoration: none;
+      border-top: 1px solid #eee;
     }
 
-    .stock-ticker {
-      background: linear-gradient(135deg, #1a0a0a, #2a1a1a);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 8px;
-      flex-shrink: 0;
+    .video-card a.video-link:hover,
+    .video-card a:hover {
+      background: #f9f9f9;
     }
-    .ticker-header {
-      font-size: .62rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: var(--cyan);
-      margin-bottom: 6px;
+
+    #magnetoLoader {
+      grid-column: 1 / -1;
       text-align: center;
-      letter-spacing: .08em;
+      padding: 12px;
+      font-size: 14px;
+      color: #666;
     }
-    .ticker-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 0;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-      font-size: .65rem;
-    }
-    .ticker-item:last-child { border-bottom: none; }
-    .ticker-symbol { font-weight: 800; color: var(--yellow); }
-    .ticker-price { color: var(--cyan); font-weight: 800; }
-    .ticker-change { font-weight: 700; font-size: .6rem; }
-    .ticker-change.up { color: var(--green); }
-    .ticker-change.down { color: var(--red); }
 
-    .financial-news {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 8px;
-      background: rgba(0,255,204,.03);
-    }
-    .news-header {
-      font-size: .62rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: var(--cyan);
-      margin-bottom: 6px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-      letter-spacing: .08em;
-    }
-    .news-item {
-      margin-bottom: 6px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-    }
-    .news-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-    .news-title {
-      font-size: .65rem;
-      font-weight: 800;
-      line-height: 1.3;
-      margin-bottom: 2px;
-    }
-    .news-meta {
-      font-size: .55rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-    }
-    .news-source { font-weight: 700; color: var(--yellow); }
-
-    .load-sentinel { height: 40px; display: grid; place-items: center; flex-shrink: 0; }
-    .spinner {
-      width: 22px; height: 22px; border-radius: 50%;
-      border: 2px solid var(--border2); border-top-color: var(--cyan);
-      animation: spin .7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .embed-placeholder {
+    .magneto-empty {
+      grid-column: 1 / -1;
       display: grid;
       place-items: center;
+      min-height: 220px;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow-soft);
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .magneto-empty-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .magneto-empty-text {
+      font-size: 0.85rem;
+      opacity: 0.75;
+    }
+
+    #logoWall {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    #logoWall a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg,#1a0a2e,#3d1155);
+      min-height: 72px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      box-shadow: var(--shadow-soft);
+      transition: border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+    }
+
+    #logoWall a:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    #logoWall img {
+      width: 80px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .animate {
+      animation: spinBounce 0.6s ease;
+    }
+
+    @keyframes spinBounce {
+      0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
+      50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+      100% { transform: scale(1) rotate(360deg); opacity: 1; }
+    }
+
+    .shake {
+      animation: bowlShake 0.6s ease;
+    }
+
+    @keyframes bowlShake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    #volumeSlider {
+      width: 150px;
+      accent-color: #ff6f61;
+    }
+
+    #muteButton,
+    #shuffleButton {
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 700;
       color: #fff;
-      font-size: 3rem;
+      background: linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #muteButton:hover,
+    #shuffleButton:hover {
+      transform: scale(1.05);
+    }
+
+    #partnerColumn {
+      padding: 16px;
+    }
+
+    .fruit-bowl {
       position: relative;
-    }
-    .embed-placeholder:hover {
-      filter: brightness(1.2);
-    }
-    .embed-label {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0,0,0,.8);
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: .7rem;
-      color: #fff;
-      z-index: 10;
+      width: 100%;
+      min-height: 400px;
+      background: radial-gradient(circle at center, #ffcc00, #ff6f61, #00c4ff);
+      border-radius: 50%;
+      padding: 20px;
+      overflow: hidden;
     }
 
-    .g1 { background: linear-gradient(135deg,#1a0a2e,#3d1155); }
-    .g2 { background: linear-gradient(135deg,#0a1628,#1a3a6e); }
-    .g3 { background: linear-gradient(135deg,#0a2018,#0e5c3a); }
-    .g4 { background: linear-gradient(135deg,#28100a,#6e1a1a); }
-    .g5 { background: linear-gradient(135deg,#1a1a0a,#5c5c0a); }
-
-    body.light-theme {
-      --bg: #f5f5fa; --bg2: #ebebf2;
-      --surface: #ffffff; --surface2: #f0f0f5;
-      --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.14);
-      --text: #0a0a14; --muted: #606080;
-      background: var(--bg2);
+    .loop-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
     }
 
-    @media (max-width: 900px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-        min-height: auto;
-      }
-      .col-partners, .col-promos, .col-hero, .col-widgets, .col-dashboard {
-        position: static;
-        height: auto;
-        max-height: none;
-        overflow-y: visible;
-      }
-      .hero-thumb { height: 300px; }
-    }
-  
-    .mall-banner {
-      position: relative;
+    .loop {
+      width: var(--loop-size, 50px);
+      height: var(--loop-size, 50px);
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-height: 54px;
-      margin: 0 0 14px;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: linear-gradient(90deg, rgba(255,0,79,.10), rgba(0,255,204,.08));
-      box-shadow: var(--shadow);
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      background: var(--loop-bg, linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff));
+      transition: transform 0.2s ease;
       overflow: hidden;
+      text-align: center;
+      padding: 4px;
+      transform: rotate(var(--loop-rotate, 0deg));
     }
-    .mall-banner::before {
-      content: '✨ Featured Partner';
-      flex-shrink: 0;
-      font-size: .68rem;
-      font-weight: 900;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--yellow);
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.18);
-      border: 1px solid var(--border);
+
+    .loop:hover {
+      transform: scale(1.2);
     }
-    .mall-banner a {
-      color: inherit;
-      text-decoration: none;
+
+    .loop img {
+      max-width: 70%;
+      max-height: 70%;
+      border-radius: 50%;
+      object-fit: contain;
       display: block;
-      width: 100%;
     }
-    .mall-banner-message {
-      display: block;
-      font-size: .9rem;
-      font-weight: 800;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .mall-banner-sub {
-      display: block;
-      margin-top: 2px;
-      font-size: .73rem;
-      color: var(--muted);
-    }
-    .mall-banner a:hover .mall-banner-message {
-      text-decoration: underline;
-      text-decoration-color: var(--cyan);
-    }
-
-  
-
-/* ===== Immersive layout + preview overlay ===== */
-.col-hero .hero-card {
-  height: 90vh;
-  min-height: 500px;
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.col-promos .promo-card,
-.col-widgets .promo-card {
-  aspect-ratio: 16 / 9;
-  min-height: 180px;
-  cursor: pointer;
-  transition: transform .3s ease, box-shadow .3s ease;
-}
-
-.col-promos .promo-card:hover,
-.col-widgets .promo-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-}
-
-.col-promos,
-.col-hero,
-.col-widgets {
-  overflow-y: auto;
-  max-height: calc(100vh - 140px);
-  scroll-behavior: smooth;
-}
-
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  padding: 24px;
-}
-.preview-content {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 20px;
-  max-width: 80%;
-  max-height: 80%;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: var(--shadow-lg);
-}
-.close-btn {
-  background: var(--pink);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  padding: 6px 10px;
-  cursor: pointer;
-  float: right;
-  margin-bottom: 10px;
-}
-.preview-card-wrap {
-  clear: both;
-}
-
-
-
-/* ===== Force immersive card sizing to actually apply ===== */
-.col-promos .promo-feed,
-.col-widgets .promo-feed,
-.col-hero .hero-feed {
-  overflow-y: auto;
-  max-height: calc(100vh - 220px);
-  scroll-behavior: smooth;
-}
-
-.col-promos .promo-card,
-.col-widgets .promo-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.col-promos .promo-thumb,
-.col-widgets .promo-thumb {
-  height: auto;
-  aspect-ratio: 16 / 9;
-  flex-shrink: 0;
-}
-
-.col-promos .promo-body,
-.col-widgets .promo-body {
-  flex: 1;
-}
-
-.col-hero .hero-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 80vh;
-  height: 80vh;
-}
-
-.col-hero .hero-thumb {
-  height: 100%;
-  min-height: 0;
-  flex: 1;
-}
-
-.col-hero .hero-actions {
-  flex-shrink: 0;
-}
-
-
-/* ===== STRONG VISUAL OVERRIDE FOR COLS 2, 3, 4 ===== */
-.dashboard {
-  grid-template-columns: 200px 300px 1.2fr 300px 200px !important;
-}
-
-.col-promos,
-.col-hero,
-.col-widgets {
-  align-self: stretch !important;
-  height: calc(100vh - 150px) !important;
-  max-height: calc(100vh - 150px) !important;
-  overflow: hidden !important;
-}
-
-.col-promos .panel,
-.col-hero .panel,
-.col-widgets .panel {
-  height: 100% !important;
-  max-height: none !important;
-}
-
-.col-promos .promo-feed,
-.col-widgets .promo-feed,
-.col-hero .hero-feed {
-  flex: 1 1 auto !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  max-height: none !important;
-  min-height: 0 !important;
-  padding-right: 4px !important;
-}
-
-.col-promos .promo-card,
-.col-widgets .promo-card {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 0 !important;
-  border-radius: 18px !important;
-  overflow: hidden !important;
-}
-
-.col-promos .promo-thumb,
-.col-widgets .promo-thumb {
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  aspect-ratio: 16 / 9 !important;
-  flex: 0 0 auto !important;
-}
-
-.col-promos .promo-body,
-.col-widgets .promo-body {
-  padding: 10px 12px 12px !important;
-}
-
-.col-promos .promo-title,
-.col-widgets .promo-title {
-  font-size: .86rem !important;
-}
-
-.col-promos .promo-desc,
-.col-widgets .promo-desc {
-  font-size: .72rem !important;
-  margin-bottom: 6px !important;
-}
-
-.col-hero .hero-card {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 78vh !important;
-  min-height: 78vh !important;
-  border-radius: 18px !important;
-  overflow: hidden !important;
-}
-
-.col-hero .hero-thumb {
-  flex: 1 1 auto !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-}
-
-.col-hero .hero-actions {
-  flex: 0 0 auto !important;
-  padding: 10px 14px !important;
-}
-
-@media (max-width: 1400px) {
-  .dashboard {
-    grid-template-columns: 200px 260px 1fr 260px 200px !important;
-  }
-}
-
-@media (max-width: 900px) {
-  .dashboard {
-    grid-template-columns: 1fr !important;
-  }
-  .col-promos,
-  .col-hero,
-  .col-widgets {
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-  .col-hero .hero-card {
-    height: auto !important;
-    min-height: 520px !important;
-  }
-}
-
-
-/* ===== Column One modern rail ===== */
-.column-one {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-family: serif;
-}
-.filters {
-  margin-bottom: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  font-family: serif;
-}
-.filters label { font-size: 13px; margin-right: 2px; }
-.filters select {
-  padding: 4px 6px;
-  font-size: 13px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: #fff;
-}
-.filters select:focus { outline: none; border-color: #0066cc; }
-.accordion { margin-bottom: 8px; }
-.accordion-btn {
-  width: 100%;
-  text-align: left;
-  padding: 10px 12px;
-  font-size: 14px;
-  font-family: serif;
-  background: #f4f4f4;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.accordion-btn:hover { background: #eaeaea; }
-.accordion-btn.active { background: #ddd; }
-.accordion-btn.primary {
-  background: #e0e0e0;
-  font-weight: bold;
-  border-left: 4px solid #333;
-  padding-left: 10px;
-}
-.accordion-btn.primary:hover { background: #d6d6d6; }
-.accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  padding-left: 10px;
-}
-.accordion-content a {
-  display: flex;
-  align-items: center;
-  margin: 4px 0;
-  color: #333;
-  text-decoration: none;
-  font-family: serif;
-  font-size: 13px;
-  padding: 4px 2px;
-}
-.accordion-content a:hover {
-  color: #0066cc;
-  background: #f0f0f0;
-  border-radius: 4px;
-  padding-left: 4px;
-}
-.accordion-content .icon {
-  margin-right: 6px;
-  font-size: 16px;
-}
-.hotel-map-widget,
-.travel-alerts,
-.favorites,
-.recommendations,
-.affiliate-highlights,
-.booking-shortcuts {
-  margin: 10px 0;
-  padding: 10px;
-  font-family: serif;
-  background: #f9f9f9;
-  border-left: 4px solid #333;
-  border-radius: 6px;
-}
-.hotel-map-widget h4,
-.travel-alerts h4,
-.favorites h4,
-.recommendations h4,
-.affiliate-highlights h4,
-.booking-shortcuts h4 {
-  margin: 0 0 8px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-}
-.hotel-map-widget iframe { border-radius: 6px; }
-.travel-alerts ul,
-.favorites ul,
-.recommendations ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.travel-alerts li,
-.favorites li,
-.recommendations li {
-  margin: 4px 0;
-  font-size: 13px;
-  color: #555;
-}
-.favorites li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.favorites button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  color: #999;
-}
-.favorites button:hover { color: #333; }
-#highlight-banner { font-size: 13px; color: #555; line-height: 1.5; }
-#highlight-banner a { color: #333; text-decoration: none; }
-#highlight-banner a:hover { color: #0066cc; }
-.shortcut-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-.shortcut-buttons button {
-  margin: 0;
-  padding: 6px 12px;
-  font-family: serif;
-  font-size: 13px;
-  background: #e0e0e0;
-  border: 1px solid #333;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.shortcut-buttons button:hover { background: #d6d6d6; }
-
-
-/* Stronger partner names for readability */
-.column-one .accordion-content a {
-  display: block;
-  margin: 4px 0;
-  color: #222;
-  font-weight: 600;
-  text-decoration: none;
-}
-.column-one .accordion-content a:hover {
-  color: #000;
-}
-
-/* Column Five utilities hub */
-.column-five {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-family: inherit;
-}
-.column-five h3 {
-  font-size: .9rem;
-  margin: 0 0 2px;
-  color: var(--text);
-}
-.finance-panel,
-.news-feed,
-.system-panel,
-.quick-notes,
-.platform-logos {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px;
-}
-.finance-panel h4,
-.news-feed h4,
-.system-panel h4,
-.quick-notes h4,
-.platform-logos h4 {
-  margin: 0 0 8px;
-  font-size: .75rem;
-  font-weight: 900;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--cyan);
-}
-.finance-panel ul,
-.news-feed ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.finance-panel li,
-.news-feed li {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  font-size: .72rem;
-}
-.finance-panel li:last-child,
-.news-feed li:last-child {
-  border-bottom: none;
-}
-.finance-panel .symbol,
-.news-feed .headline-source {
-  font-weight: 800;
-  color: var(--yellow);
-}
-.finance-panel .price {
-  color: var(--cyan);
-  font-weight: 800;
-}
-.finance-panel .change.up { color: var(--green); font-weight: 800; }
-.finance-panel .change.down { color: var(--red); font-weight: 800; }
-
-.system-panel p {
-  margin: 4px 0;
-  font-size: .72rem;
-  color: var(--muted);
-}
-.system-panel span {
-  color: var(--text);
-  font-weight: 800;
-}
-
-.quick-notes textarea {
-  width: 100%;
-  min-height: 110px;
-  resize: vertical;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 10px;
-  font: inherit;
-  font-size: .75rem;
-  outline: none;
-}
-.quick-notes textarea:focus {
-  border-color: var(--cyan);
-}
-
-.platform-logos .logos-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  justify-items: center;
-}
-.platform-logos .logo-tile {
-  width: 100%;
-  min-height: 60px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  font-size: 1.35rem;
-}
-.platform-logos .logo-name {
-  margin-top: 4px;
-  font-size: .62rem;
-  color: var(--muted);
-  text-align: center;
-}
-
 </style>
 </head>
 <body>
-
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-logo">🛰</div>
-      <span class="brand-name">SignalBoostAi</span>
+  <header>
+    <div class="header-left">
+      <div class="brand-title">SignalBoost</div>
+      <div class="brand-subtitle">Your Digital Shopping Mall</div>
     </div>
-    <div class="topbar-actions">
-      <button class="pill-btn active" id="liveBtn">🔴 LIVE</button>
-      <button class="pill-btn" id="themeBtn">☀️ Light</button>
-      <a href="../" class="old-link">← Classic</a>
+
+    <div class="header-center">
+      <div class="header-pill" data-target="cat-flights">Flights</div>
+      <div class="header-pill" data-target="cat-hotels">Hotels &amp; Meta</div>
+      <div class="header-pill" data-target="cat-sim">SIM &amp; eSIM</div>
+      <div class="header-pill" data-target="cat-cars">Cars &amp; Transfers</div>
+      <div class="header-pill" data-target="cat-activities">Activities</div>
+      <div class="header-pill" data-target="cat-services">Travel Services</div>
+      <div class="header-pill" data-target="cat-vpn">Digital</div>
+      <div class="header-pill" data-target="cat-other">Other &amp; Shopping</div>
     </div>
-  </div>
-</header>
 
-<div class="social-bar">
-  <div class="social-platforms">
-    <a href="https://facebook.com" target="_blank" rel="noopener" class="platform-btn" title="Facebook"><span class="icon">f</span>Facebook</a>
-    <a href="https://youtube.com" target="_blank" rel="noopener" class="platform-btn" title="YouTube"><span class="icon">▶</span>YouTube</a>
-    <a href="https://instagram.com" target="_blank" rel="noopener" class="platform-btn" title="Instagram"><span class="icon">📷</span>Instagram</a>
-    <a href="https://tiktok.com" target="_blank" rel="noopener" class="platform-btn" title="TikTok"><span class="icon">♪</span>TikTok</a>
-    <a href="https://reddit.com" target="_blank" rel="noopener" class="platform-btn" title="Reddit"><span class="icon">🔴</span>Reddit</a>
-    <a href="https://wa.me" target="_blank" rel="noopener" class="platform-btn" title="WhatsApp"><span class="icon">💬</span>WhatsApp</a>
-    <a href="https://messenger.com" target="_blank" rel="noopener" class="platform-btn" title="Messenger"><span class="icon">💭</span>Messenger</a>
-    <a href="https://wechat.com" target="_blank" rel="noopener" class="platform-btn" title="WeChat"><span class="icon">🔗</span>WeChat</a>
-    <a href="https://x.com" target="_blank" rel="noopener" class="platform-btn" title="X"><span class="icon">𝕏</span>X</a>
-    <a href="https://snapchat.com" target="_blank" rel="noopener" class="platform-btn" title="Snapchat"><span class="icon">👻</span>Snapchat</a>
-    <a href="https://linkedin.com" target="_blank" rel="noopener" class="platform-btn" title="LinkedIn"><span class="icon">in</span>LinkedIn</a>
-    <a href="https://truthsocial.com" target="_blank" rel="noopener" class="platform-btn" title="Truth Social"><span class="icon">🇺🇸</span>Truth</a>
-  </div>
-</div>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">🌞</span>
+        <span id="themeLabel">Light</span>
+      </button>
+    </div>
+  </header>
 
-<main class="shell">
-  <div class="dashboard">
+  <main>
+    <div id="rotatingBanner" class="banner">
+      <a id="bannerLink" href="#" target="_blank" rel="noopener">
+        <span id="bannerText"></span>
+      </a>
+    </div>
 
-    
-<aside class="col-partners">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">🧭 Column One</span>
-          <span class="panel-badge">TOOLS</span>
+    <section class="grid-3">
+      <div class="column column-1" id="column1" style="height:100%; overflow-y:auto; overflow-x:hidden; overscroll-behavior: contain;">
+        <div class="category-block open" id="cat-flights">
+          <div class="category-header">
+            <div class="category-name">Flights &amp; Travel Meta</div>
+            <div>
+              <span class="category-tag">High Intent</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Kiwi CA</span>
+                    <span class="partner-meta">Flights</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Kiwi US</span>
+                    <span class="partner-meta">Flights</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener">
+                    <span class="partner-name">Aviasales</span>
+                    <span class="partner-meta">Flights Meta</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="panel-body">
-          <div class="column-one">
-            <div class="filters">
-              <label for="region">Region:</label>
-              <select id="region">
-                <option value="all">All</option>
-                <option value="us">US</option>
-                <option value="eu">Europe</option>
-                <option value="asia">Asia</option>
-              </select>
 
-              <label for="service">Service:</label>
-              <select id="service">
-                <option value="all">All</option>
-                <option value="travel">Travel</option>
-                <option value="hotels">Hotels</option>
-                <option value="services">Services</option>
-                <option value="connectivity">Connectivity</option>
-              </select>
+        <div class="category-block" id="cat-hotels">
+          <div class="category-header">
+            <div class="category-name">Hotels &amp; Meta</div>
+            <div>
+              <span class="category-tag">Stays</span>
+              <span class="category-arrow">▾</span>
             </div>
-
-            <p id="noResults" style="display:none; font-size:13px;">No results found.</p>
-
-            <div class="accordion travel us">
-              <button class="accordion-btn primary">✈️ Travel</button>
-              <div class="accordion-content">
-                <a href="https://www.expedia.com" target="_blank" rel="noopener"><span class="icon">✈️</span>Expedia</a>
-                <a href="https://www.tripadvisor.com" target="_blank" rel="noopener"><span class="icon">🌍</span>TripAdvisor</a>
-                <a href="https://www.kayak.com" target="_blank" rel="noopener"><span class="icon">🔍</span>Kayak</a>
-                <a href="https://www.skyscanner.com" target="_blank" rel="noopener"><span class="icon">🛫</span>Skyscanner</a>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Trivago AR</span>
+                    <span class="partner-meta">Meta</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Trivago BR</span>
+                    <span class="partner-meta">Meta</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Trivago MX</span>
+                    <span class="partner-meta">Meta</span>
+                  </a>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="accordion hotels eu">
-              <button class="accordion-btn primary">🏨 Hotels</button>
-              <div class="accordion-content">
-                <a href="https://www.booking.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Booking.com</a>
-                <a href="https://www.agoda.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Agoda</a>
-                <a href="https://www.trivago.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Trivago</a>
-                <a href="https://www.hotels.com" target="_blank" rel="noopener"><span class="icon">🏨</span>Hotels.com</a>
+        <div class="category-block" id="cat-sim">
+          <div class="category-header">
+            <div class="category-name">SIM &amp; eSIM</div>
+            <div>
+              <span class="category-tag">Connectivity</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener">
+                    <span class="partner-name">Yesim</span>
+                    <span class="partner-meta">eSIM</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener">
+                    <span class="partner-name">Airalo</span>
+                    <span class="partner-meta">eSIM</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener">
+                    <span class="partner-name">Drimsim</span>
+                    <span class="partner-meta">SIM/eSIM</span>
+                  </a>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="accordion services us">
-              <button class="accordion-btn primary">🛡️ Services</button>
-              <div class="accordion-content">
-                <a href="#" data-favorite="Insurance"><span class="icon">🛡️</span>Insurance</a>
-                <a href="#" data-favorite="Utilities"><span class="icon">⚡</span>Utilities</a>
-                <a href="#" data-favorite="Payment Platforms"><span class="icon">💳</span>Payment Platforms</a>
+        <div class="category-block" id="cat-cars">
+          <div class="category-header">
+            <div class="category-name">Cars &amp; Transfers</div>
+            <div>
+              <span class="category-tag">Ground Mobility</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener">
+                    <span class="partner-name">Localrent</span>
+                    <span class="partner-meta">Car Rental</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener">
+                    <span class="partner-name">EconomyBookings</span>
+                    <span class="partner-meta">Car Rental</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener">
+                    <span class="partner-name">QEEQ</span>
+                    <span class="partner-meta">Car Rental</span>
+                  </a>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="accordion connectivity us eu asia">
-              <button class="accordion-btn">📶 Connectivity</button>
-              <div class="accordion-content">
-                <a href="https://zoom.us" target="_blank" rel="noopener"><span class="icon">💻</span>Zoom</a>
-                <a href="https://slack.com" target="_blank" rel="noopener"><span class="icon">💬</span>Slack</a>
-                <a href="https://www.whatsapp.com" target="_blank" rel="noopener"><span class="icon">📱</span>WhatsApp</a>
+        <div class="category-block" id="cat-activities">
+          <div class="category-header">
+            <div class="category-name">Activities &amp; Experiences</div>
+            <div>
+              <span class="category-tag">Experiences</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener">
+                    <span class="partner-name">Klook</span>
+                    <span class="partner-meta">Tours &amp; Activities</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener">
+                    <span class="partner-name">WeGoTrip</span>
+                    <span class="partner-meta">Tours</span>
+                  </a>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="accordion misc us eu asia">
-              <button class="accordion-btn">➕ More</button>
-              <div class="accordion-content">
-                <a href="#" data-favorite="Hair Products"><span class="icon">🛍️</span>Hair Products</a>
-                <a href="#" data-favorite="Logo Design"><span class="icon">🎨</span>Logo Design</a>
-                <a href="#" data-favorite="Misc Shops"><span class="icon">🛒</span>Misc Shops</a>
+        <div class="category-block" id="cat-services">
+          <div class="category-header">
+            <div class="category-name">Travel Services</div>
+            <div>
+              <span class="category-tag">Support</span>
+              <span class="category-arrow">▾</span>
+            </div>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener">
+                    <span class="partner-name">Radical Storage</span>
+                    <span class="partner-meta">Luggage Storage</span>
+                  </a>
+                </div>
+                <div class="partner-item">
+                  <a class="partner-link" href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener">
+                    <span class="partner-name">AirHelp</span>
+                    <span class="partner-meta">Flight Compensation</span>
+                  </a>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="hotel-map-widget">
-              <h4>Hotel Map</h4>
-              <iframe
-                src="https://www.google.com/maps?q=hotels&output=embed"
-                width="100%" height="250" style="border:0;" loading="lazy"></iframe>
+        <div class="category-block" id="cat-vpn">
+          <div class="category-header">
+            <div class="category-name">Digital &amp; Tools</div>
+            <div>
+              <span class="category-tag">Digital</span>
+              <span class="category-arrow">▾</span>
             </div>
-
-            <div class="travel-alerts">
-              <h4>Travel Alerts</h4>
-              <ul id="alerts-list">
-                <li>Loading alerts...</li>
-              </ul>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">PearlMountain</span>
+                    <span class="partner-meta">Digital Tools</span>
+                  </a>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
 
-            <div class="favorites">
-              <h4>Saved Favorites</h4>
-              <ul id="favorites-list"></ul>
+        <div class="category-block" id="cat-other">
+          <div class="category-header">
+            <div class="category-name">Other &amp; Shopping</div>
+            <div>
+              <span class="category-tag">Misc</span>
+              <span class="category-arrow">▾</span>
             </div>
-
-            <div class="recommendations">
-              <h4>Recommended Hotels</h4>
-              <ul id="recommendations-list">
-                <li>Loading recommendations...</li>
-              </ul>
-            </div>
-
-            <div class="affiliate-highlights">
-              <h4>Featured Deals</h4>
-              <div id="highlight-banner">Loading highlights...</div>
-            </div>
-
-            <div class="booking-shortcuts">
-              <h4>Quick Actions</h4>
-              <div class="shortcut-buttons">
-                <button type="button" data-action="flight">✈️ Book Flight</button>
-                <button type="button" data-action="hotel">🏨 Book Hotel</button>
-                <button type="button" data-action="compare">🔍 Compare Prices</button>
+          </div>
+          <div class="category-body">
+            <div class="category-body-inner">
+              <div class="partner-list">
+                <div class="partner-item">
+                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806" target="_blank" rel="noopener">
+                    <span class="partner-name">Tsarbomba</span>
+                    <span class="partner-meta">Watches</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </aside>
 
-
-    <section class="col-promos">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">▶ Popular Videos</span>
-          <span class="panel-badge">LIVE</span>
+      <div class="column column-2" id="magnetoColumn">
+        <div id="magnetoFeed">
+          <div id="magnetoLoader">Loading…</div>
         </div>
-        <div class="promo-feed" id="promoFeed"></div>
-        <div class="load-sentinel" id="promoSentinel"><div class="spinner"></div></div>
       </div>
-    </section>
 
-    <section class="col-hero">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">🔥 Trending Now</span>
-          <span class="panel-badge">HOT</span>
-        </div>
-        <div class="hero-feed" id="heroFeed"></div>
-        <div class="load-sentinel" id="heroSentinel"><div class="spinner"></div></div>
-      </div>
-    </section>
-
-    <section class="col-widgets">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">▶ Trending</span>
-          <span class="panel-badge">NEW</span>
-        </div>
-        <div class="promo-feed" id="widgetFeed"></div>
-        <div class="load-sentinel" id="widgetSentinel"><div class="spinner"></div></div>
-      </div>
-    </section>
-
-    
-    <aside class="col-dashboard">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">🧰 Column Five</span>
-          <span class="panel-badge">LIVE</span>
-        </div>
-        <div class="panel-body dashboard-content">
-          <div class="column-five">
-            <h3>Utilities Hub</h3>
-
-            <div class="finance-panel">
-              <h4>Finance</h4>
-              <ul id="finance-list">
-                <li>Loading symbols...</li>
-              </ul>
-            </div>
-
-            <div class="news-feed">
-              <h4>Live Headlines</h4>
-              <ul id="news-list">
-                <li>Loading news...</li>
-              </ul>
-            </div>
-
-            <div class="system-panel">
-              <h4>System Status</h4>
-              <p>Temperature: <span id="temp">--</span></p>
-              <p>Mode: <span id="mode">--</span></p>
-              <p>Volatility: <span id="volatility">--</span></p>
-            </div>
-
-            <div class="quick-notes">
-              <h4>Quick Notes</h4>
-              <textarea id="notes" placeholder="Write notes here..."></textarea>
-            </div>
-
-            <div class="platform-logos">
-              <h4>Platforms</h4>
-              <div class="logos-grid">
-                <div><div class="logo-tile">f</div><div class="logo-name">Facebook</div></div>
-                <div><div class="logo-tile">▶</div><div class="logo-name">YouTube</div></div>
-                <div><div class="logo-tile">📷</div><div class="logo-name">Instagram</div></div>
-                <div><div class="logo-tile">♪</div><div class="logo-name">TikTok</div></div>
-                <div><div class="logo-tile">🔴</div><div class="logo-name">Reddit</div></div>
-                <div><div class="logo-tile">💬</div><div class="logo-name">WhatsApp</div></div>
-                <div><div class="logo-tile">💭</div><div class="logo-name">Messenger</div></div>
-                <div><div class="logo-tile">🔗</div><div class="logo-name">WeChat</div></div>
-                <div><div class="logo-tile">𝕏</div><div class="logo-name">X</div></div>
-                <div><div class="logo-tile">👻</div><div class="logo-name">Snapchat</div></div>
-                <div><div class="logo-tile">in</div><div class="logo-name">LinkedIn</div></div>
-                <div><div class="logo-tile">🇺🇸</div><div class="logo-name">Truth Social</div></div>
-              </div>
-            </div>
+      <div class="column column-3" id="partnerColumn" style="height:100%; overflow-y:auto; overflow-x:hidden; overscroll-behavior: contain;">
+        <div id="fruitBowl" class="fruit-bowl">
+          <button id="shuffleButton">🍭 Refresh Mix</button>
+          <audio id="shuffleSound" src="/sounds/bowl-shake.mp3" preload="auto"></audio>
+          <div class="audio-controls">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+            <button id="muteButton">🔇 Mute</button>
           </div>
+          <div id="loopContainer" class="loop-container"></div>
         </div>
       </div>
-    </aside>
-  </div>
-</main>
+    </section>
+  </main>
 
-<script>
-const clickTracker = {};
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeLabel = document.getElementById('themeLabel');
 
-function trackClick(partner) {
-  clickTracker[partner] = (clickTracker[partner] || 0) + 1;
-  localStorage.setItem('affiliate_clicks', JSON.stringify(clickTracker));
-}
-
-const saved = localStorage.getItem('affiliate_clicks');
-if (saved) Object.assign(clickTracker, JSON.parse(saved));
-
-function getAffiliatePartners() {
-  return Array.from(document.querySelectorAll('.partner-item a')).map((link) => {
-    const nameEl = link.querySelector('.p-name');
-    const tagEl = link.querySelector('.p-tag');
-    const iconEl = link.querySelector('.p-icon');
-    const categoryEl = link.closest('.partner-cat')?.querySelector('.partner-cat-header span');
-    const categoryText = categoryEl ? categoryEl.textContent.replace(/^[^\w]+/, '').trim() : 'Affiliate';
-    const rawName = nameEl ? nameEl.textContent.trim() : 'Partner';
-    const partnerKey = rawName;
-    const clicks = clickTracker[partnerKey] || 0;
-    return {
-      partner: partnerKey,
-      name: rawName,
-      tag: tagEl ? tagEl.textContent.trim() : 'DEAL',
-      icon: iconEl ? iconEl.textContent.trim() : '✨',
-      link: link.href,
-      category: categoryText,
-      clicks
-    };
-  }).filter((item, idx, arr) => item.link && arr.findIndex(x => x.partner === item.partner) == idx);
-}
-
-function buildBannerMessage(item, mode) {
-  if (mode === 'top') {
-    return `${item.icon} ${item.name}: trending with ${item.clicks} click${item.clicks === 1 ? '' : 's'} — open ${item.category} deal`;
-  }
-  if (mode === 'fresh') {
-    return `${item.icon} ${item.name}: featured ${item.category.toLowerCase()} pick right now`;
-  }
-  return `${item.icon} ${item.name}: explore this ${item.tag.toLowerCase()} partner offer`;
-}
-
-function getSmartBannerPool() {
-  const partners = getAffiliatePartners();
-  const sortedByClicks = [...partners].sort((a, b) => (b.clicks - a.clicks) || a.name.localeCompare(b.name));
-  const topClicked = sortedByClicks.filter(item => item.clicks > 0).slice(0, 4).map(item => ({ ...item, mode: 'top' }));
-  const featuredFallback = partners.filter(item => !topClicked.some(top => top.partner === item.partner));
-  const curated = featuredFallback.filter(item => ['HOT', 'HOTEL', 'FLIGHT', 'RENT', 'eSIM', 'DATA', 'TOURS', 'PASS'].includes(item.tag)).slice(0, 8);
-  const remaining = featuredFallback.filter(item => !curated.some(cur => cur.partner === item.partner)).slice(0, 8);
-  return [...topClicked, ...curated.map(item => ({ ...item, mode: 'fresh' })), ...remaining.map(item => ({ ...item, mode: 'standard' }))];
-}
-
-let currentBannerIndex = 0;
-let partnerBannerPool = [];
-
-function rotatePartnerBanner() {
-  const bannerEl = document.getElementById('partner-banner');
-  if (!bannerEl) return;
-
-  if (!partnerBannerPool.length) {
-    partnerBannerPool = getSmartBannerPool();
-  }
-  if (!partnerBannerPool.length) {
-    bannerEl.innerHTML = '<span class="mall-banner-message">No partner banners available.</span>';
-    return;
-  }
-
-  const banner = partnerBannerPool[currentBannerIndex % partnerBannerPool.length];
-  bannerEl.innerHTML = `
-    <a href="${banner.link}" target="_blank" rel="noopener" id="banner-link">
-      <span class="mall-banner-message">${buildBannerMessage(banner, banner.mode)}</span>
-      <span class="mall-banner-sub">${banner.category} • ${banner.tag} • ${banner.clicks > 0 ? 'Top clicked partner' : 'Featured rotation'}</span>
-    </a>
-  `;
-
-  const linkEl = document.getElementById('banner-link');
-  if (linkEl) {
-    linkEl.addEventListener('click', () => {
-      trackClick(banner.partner);
-      partnerBannerPool = [];
-    }, { once: true });
-  }
-
-  currentBannerIndex = (currentBannerIndex + 1) % Math.max(partnerBannerPool.length, 1);
-}
-
-
-const VIDEO_POOL = [
-  { platform: 'YouTube', title: 'Best Travel Destinations 2024', desc: 'Top 10 places', type: 'youtube', id: 'dQw4w9WgXcQ', views: '2.1M' },
-  { platform: 'TikTok', title: 'Quick Travel Tips', desc: 'Budget hacks', type: 'tiktok', id: '@travelguy/video/7234567890', views: '1.8M' },
-  { platform: 'YouTube', title: 'Web Development Guide', desc: 'Complete guide', type: 'youtube', id: 'jNQXAC9IVRw', views: '890K' },
-  { platform: 'Instagram', title: 'Adventure Stories', desc: 'Epic journeys', type: 'instagram', id: 'p/CdE5FgH', views: '1.5M' },
-  { platform: 'YouTube', title: 'Crypto Trading', desc: 'Technical analysis', type: 'youtube', id: '9bZkp7q19f0', views: '1.2M' },
-  { platform: 'Reddit', title: 'Amazing Life Hacks', desc: 'Community stories', type: 'reddit', id: 'r/travel/comments/abc123', views: '950K' },
-  { platform: 'TikTok', title: 'Viral Trends', desc: 'This week\'s hot', type: 'tiktok', id: '@trends/video/7345678901', views: '3.2M' },
-  { platform: 'YouTube', title: 'Design Masterclass', desc: 'Visual content', type: 'youtube', id: '90509568', views: '345K' },
-  { platform: 'Instagram', title: 'Dream Destinations', desc: 'Bucket list', type: 'instagram', id: 'p/CeF6GhI', views: '2.1M' },
-  { platform: 'Reddit', title: 'Hidden Gems', desc: 'Local favorites', type: 'reddit', id: 'r/travel/comments/def456', views: '720K' },
-  { platform: 'YouTube', title: 'Meal Prep Ideas', desc: 'Quick recipes', type: 'youtube', id: '0ml4GHJfh-I', views: '1.8M' },
-  { platform: 'TikTok', title: 'Summer Vibes', desc: 'Feel good content', type: 'tiktok', id: '@vibes/video/7456789012', views: '2.7M' },
-];
-
-function getEmbedIcon(item) {
-  const icons = { 'youtube': '▶️', 'tiktok': '♪', 'instagram': '📷', 'reddit': '🔴' };
-  return icons[item.type] || '🎬';
-}
-
-function getVideoUrl(item) {
-  const urls = {
-    'youtube': 'https://www.youtube.com/watch?v=' + item.id,
-    'tiktok': 'https://www.tiktok.com/' + item.id,
-    'instagram': 'https://www.instagram.com/' + item.id,
-    'reddit': 'https://reddit.com/' + item.id
-  };
-  return urls[item.type] || '#';
-}
-
-function buildPromoCard(item) {
-  const card = document.createElement('div');
-  card.className = 'promo-card';
-  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
-  const grad = gradients[Math.floor(Math.random() * gradients.length)];
-  const icon = getEmbedIcon(item);
-  
-  const thumb = document.createElement('div');
-  thumb.className = 'promo-thumb ' + grad;
-  thumb.innerHTML = '<div class="embed-placeholder">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><span class="promo-new-badge">' + item.platform + '</span>';
-  
-  const body = document.createElement('div');
-  body.className = 'promo-body';
-  body.innerHTML = '<div class="promo-kicker">' + item.platform + '</div><div class="promo-title">' + item.title + '</div><div class="promo-desc">' + item.desc + '</div><div class="promo-meta">👁 ' + item.views + '</div>';
-  
-  card.appendChild(thumb);
-  card.appendChild(body);
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function() {
-    window.location.href = getVideoUrl(item);
-  });
-  
-  return card;
-}
-
-function buildHeroCard(item) {
-  const card = document.createElement('div');
-  card.className = 'hero-card';
-  const gradients = ['g1', 'g2', 'g3', 'g4', 'g5'];
-  const grad = gradients[Math.floor(Math.random() * gradients.length)];
-  const icon = getEmbedIcon(item);
-  
-  const thumb = document.createElement('div');
-  thumb.className = 'hero-thumb ' + grad;
-  thumb.innerHTML = '<div class="embed-placeholder" style="font-size:5rem;">' + icon + '<span class="embed-label">' + item.platform + ' - Click to watch</span></div><div class="overlay-grad"></div><div class="hero-badge">' + item.platform + '</div><div class="hero-info"><h3>' + item.title + '</h3></div>';
-  
-  const actions = document.createElement('div');
-  actions.className = 'hero-actions';
-  actions.innerHTML = '<button class="hero-action-btn primary">▶ Watch</button><span class="hero-stats">👁 ' + item.views + '</span>';
-  
-  card.appendChild(thumb);
-  card.appendChild(actions);
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function() {
-    window.location.href = getVideoUrl(item);
-  });
-  
-  return card;
-}
-
-
-(function seed() {
-  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[0]));
-  document.getElementById('promoFeed').appendChild(buildPromoCard(VIDEO_POOL[1]));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[2]));
-  document.getElementById('heroFeed').appendChild(buildHeroCard(VIDEO_POOL[3]));
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[4]));
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(VIDEO_POOL[5]));
-})();
-
-let promoIdx = 2, heroIdx = 4, widgetIdx = 2;
-
-function makeObserver(sentinelId, feedId, builder, getIdxFunc, setIdxFunc) {
-  const sentinel = document.getElementById(sentinelId);
-  const feed = document.getElementById(feedId);
-  
-  const obs = new IntersectionObserver(function(entries) {
-    if (!entries[0].isIntersecting) return;
-    const currentIdx = getIdxFunc();
-    const item = VIDEO_POOL[currentIdx % VIDEO_POOL.length];
-    feed.appendChild(builder(item));
-    setIdxFunc(currentIdx + 1);
-  }, { rootMargin: '300px' });
-  
-  obs.observe(sentinel);
-}
-
-makeObserver('promoSentinel', 'promoFeed', buildPromoCard, function() { return promoIdx; }, function(val) { promoIdx = val; });
-makeObserver('heroSentinel', 'heroFeed', buildHeroCard, function() { return heroIdx; }, function(val) { heroIdx = val; });
-makeObserver('widgetSentinel', 'widgetFeed', buildPromoCard, function() { return widgetIdx; }, function(val) { widgetIdx = val; });
-
-function toggleCat(id) {
-  document.getElementById(id).classList.toggle('open');
-}
-
-const _partnerSearch = document.getElementById('partnerSearch');
-if (_partnerSearch) {
-  _partnerSearch.addEventListener('input', function() {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll('.partner-item').forEach(function(el) {
-      const name = el.querySelector('.p-name');
-      el.style.display = name && name.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-  });
-}
-
-document.getElementById('themeBtn').addEventListener('click', function() {
-  const on = document.body.classList.toggle('light-theme');
-  this.textContent = on ? '🌙 Dark' : '☀️ Light';
-  localStorage.setItem('sb_theme', on ? 'light' : 'dark');
-});
-
-if (localStorage.getItem('sb_theme') === 'light') {
-  document.body.classList.add('light-theme');
-  document.getElementById('themeBtn').textContent = '🌙 Dark';
-}
-
-
-// Enhanced infinite scroll + preview overlay
-function setupInfiniteScroll(containerId, loadFn) {
-  const container = document.getElementById(containerId);
-  if (!container || typeof loadFn !== 'function') return;
-
-  let ticking = false;
-  container.addEventListener('scroll', () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
-        loadFn();
+    function applyTheme(dark) {
+      if (dark) {
+        document.body.classList.add('dark');
+        themeIcon.textContent = '🌙';
+        themeLabel.textContent = 'Dark';
+      } else {
+        document.body.classList.remove('dark');
+        themeIcon.textContent = '🌞';
+        themeLabel.textContent = 'Light';
       }
-      ticking = false;
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = !document.body.classList.contains('dark');
+      applyTheme(isDark);
     });
-  });
-}
 
-function loadMorePromos() {
-  const item = VIDEO_POOL[promoIdx % VIDEO_POOL.length];
-  document.getElementById('promoFeed').appendChild(buildPromoCard(item));
-  promoIdx += 1;
-}
+    const categoryBlocks = Array.from(document.querySelectorAll('.category-block'));
 
-function loadMoreHero() {
-  const item = VIDEO_POOL[heroIdx % VIDEO_POOL.length];
-  document.getElementById('heroFeed').appendChild(buildHeroCard(item));
-  heroIdx += 1;
-}
+    function openCategory(block, scroll = true) {
+      categoryBlocks.forEach(b => {
+        if (b !== block) b.classList.remove('open');
+      });
 
-function loadMoreWidgets() {
-  const item = VIDEO_POOL[widgetIdx % VIDEO_POOL.length];
-  document.getElementById('widgetFeed').appendChild(buildPromoCard(item));
-  widgetIdx += 1;
-}
+      const alreadyOpen = block.classList.contains('open');
+      if (!alreadyOpen) {
+        block.classList.add('open');
+        if (scroll) {
+          const headerOffset = 80;
+          const rect = block.getBoundingClientRect();
+          const absoluteY = window.scrollY + rect.top - headerOffset;
+          window.scrollTo({ top: absoluteY, behavior: 'smooth' });
+        }
+      }
+    }
 
-function openPreviewFromCard(card) {
-  if (!card) return;
-  const preview = document.createElement('div');
-  preview.className = 'preview-overlay';
-  preview.innerHTML = `
-    <div class="preview-content">
-      <button class="close-btn" aria-label="Close preview">✖</button>
-      <div class="preview-card-wrap">${card.outerHTML}</div>
-    </div>
-  `;
-  document.body.appendChild(preview);
-
-  const close = () => preview.remove();
-  preview.querySelector('.close-btn').addEventListener('click', close);
-  preview.addEventListener('click', (e) => {
-    if (e.target === preview) close();
-  });
-}
-
-function setupPreview(selector) {
-  document.addEventListener('click', (e) => {
-    const card = e.target.closest(selector);
-    if (!card) return;
-    if (e.target.closest('a, button')) return;
-    openPreviewFromCard(card);
-  });
-}
-
-setupInfiniteScroll('promoFeed', loadMorePromos);
-setupInfiniteScroll('heroFeed', loadMoreHero);
-setupInfiniteScroll('widgetFeed', loadMoreWidgets);
-setupPreview('.promo-card');
-setupPreview('.hero-card');
-
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const regionFilter = document.getElementById('region');
-  const serviceFilter = document.getElementById('service');
-  const mapFrame = document.querySelector('.hotel-map-widget iframe');
-  const alertsList = document.getElementById('alerts-list');
-  const recommendationsList = document.getElementById('recommendations-list');
-  const favoritesList = document.getElementById('favorites-list');
-  const highlightBanner = document.getElementById('highlight-banner');
-  const noResults = document.getElementById('noResults');
-
-  function setupAccordion() {
-    const buttons = document.querySelectorAll('.column-one .accordion-btn');
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const content = btn.nextElementSibling;
-        document.querySelectorAll('.column-one .accordion-content').forEach(c => {
-          if (c !== content) c.style.maxHeight = null;
-        });
-        document.querySelectorAll('.column-one .accordion-btn').forEach(b => {
-          if (b !== btn) b.classList.remove('active');
-        });
-
-        if (content.style.maxHeight) {
-          content.style.maxHeight = null;
-          btn.classList.remove('active');
+    categoryBlocks.forEach(block => {
+      const header = block.querySelector('.category-header');
+      header.addEventListener('click', () => {
+        const isOpen = block.classList.contains('open');
+        if (isOpen) {
+          block.classList.remove('open');
         } else {
-          content.style.maxHeight = content.scrollHeight + "px";
-          btn.classList.add('active');
+          openCategory(block, true);
         }
       });
     });
-  }
 
-  function applyFilters() {
-    if (!regionFilter || !serviceFilter) return;
-    const region = regionFilter.value;
-    const service = serviceFilter.value;
-    let visibleCount = 0;
-
-    document.querySelectorAll('.column-one .accordion').forEach(acc => {
-      const matchesRegion = region === 'all' || acc.classList.contains(region);
-      const matchesService = service === 'all' || acc.classList.contains(service);
-      const show = matchesRegion && matchesService;
-      acc.style.display = show ? '' : 'none';
-      if (show) visibleCount++;
+    const headerPills = document.querySelectorAll('.header-pill');
+    headerPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const targetId = pill.getAttribute('data-target');
+        const targetBlock = document.getElementById(targetId);
+        if (targetBlock) openCategory(targetBlock, true);
+      });
     });
 
-    if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-  }
+    const bannerData = [
+      { text: 'Kiwi.com – Find cheap flights', url: 'https://www.kiwi.com' },
+      { text: 'Trivago – Compare hotel prices', url: 'https://www.trivago.com' },
+      { text: 'Airalo – eSIM for travelers', url: 'https://www.airalo.com' },
+      { text: 'Localrent – Local car rentals', url: 'https://www.localrent.com' },
+      { text: 'Klook – Tours & activities', url: 'https://www.klook.com' },
+      { text: 'WeGoTrip – Audio tours', url: 'https://www.wegotrip.com' }
+    ];
 
-  function updateMap() {
-    if (!regionFilter || !mapFrame) return;
-    const region = regionFilter.value;
-    const regionMap = { us: 'New York', eu: 'Paris', asia: 'Tokyo' };
-    let query = 'hotels';
-    if (region !== 'all') query += ' near ' + regionMap[region];
-    mapFrame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(query) + '&output=embed';
-  }
+    let bannerIndex = 0;
 
-  function renderAlerts(alerts) {
-    if (!alertsList) return;
-    alertsList.innerHTML = alerts.slice(0, 5).map(a => `<li>⚠️ ${a}</li>`).join('');
-  }
+    function rotateBanner() {
+      const banner = document.getElementById('rotatingBanner');
+      const text = document.getElementById('bannerText');
+      const link = document.getElementById('bannerLink');
 
-  let alertsCache = null;
-  function loadTravelAlerts(region = 'all') {
-    const allAlerts = {
-      us: [
-        'Flight delays expected in US Northeast due to storms.',
-        'Airport congestion reported in Chicago.'
-      ],
-      eu: [
-        'EU advisory: rail strikes in France.',
-        'Weather disruptions in Germany.'
-      ],
-      asia: [
-        'Monsoon season affecting coastal travel.',
-        'Flight reroutes in Southeast Asia.'
-      ],
-      all: [
-        'Global: fuel price increases impacting flights.',
-        'International travel demand rising.'
-      ]
-    };
-    let alerts = [];
-    if (region === 'all') {
-      alerts = [...allAlerts.all, ...allAlerts.us, ...allAlerts.eu, ...allAlerts.asia];
-    } else {
-      alerts = allAlerts[region] || [];
+      banner.style.opacity = 0;
+
+      setTimeout(() => {
+        text.textContent = bannerData[bannerIndex].text;
+        link.href = bannerData[bannerIndex].url;
+        banner.style.opacity = 1;
+        bannerIndex = (bannerIndex + 1) % bannerData.length;
+      }, 400);
     }
-    alertsCache = alerts;
-    renderAlerts(alerts);
-  }
 
-  function loadRecommendations(region = 'all') {
-    if (!recommendationsList) return;
-    const data = {
-      us: ['Hilton NYC', 'Marriott Times Square', 'Hyatt Brooklyn'],
-      eu: ['Hotel Paris Centre', 'Rome Grand Hotel', 'Berlin Plaza'],
-      asia: ['Tokyo Stay', 'Bangkok Suites', 'Singapore Grand'],
-      all: ['Top-rated global hotels', 'Best deals this week']
-    };
-    let items = region === 'all' ? data.all : (data[region] || []);
-    recommendationsList.innerHTML = items.map(h => `<li>🏨 ${h}</li>`).join('');
-  }
+    rotateBanner();
+    setInterval(rotateBanner, 15000);
 
-  function getFavorites() {
-    try { return JSON.parse(localStorage.getItem('favorites') || '[]'); }
-    catch (e) { return []; }
-  }
-  function saveFavorites(favs) {
-    localStorage.setItem('favorites', JSON.stringify(favs));
-  }
-  function renderFavorites() {
-    if (!favoritesList) return;
-    const favs = getFavorites();
-    if (!favs.length) {
-      favoritesList.innerHTML = '<li>No favorites yet</li>';
-      return;
+    // ===============================
+    // COLUMN 2 — HYBRID VIDEO FEED
+    // ===============================
+
+    const magnetoColumn = document.getElementById('magnetoColumn');
+    const magnetoFeed = document.getElementById('magnetoFeed');
+    const magnetoLoader = document.getElementById('magnetoLoader');
+
+    let feedLoading = false;
+    let feedPage = 0;
+    let hasMore = true;
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
-    favoritesList.innerHTML = favs.map((f, i) => `
-      <li><span>${f.name}</span><button type="button" data-index="${i}">✕</button></li>
-    `).join('');
-  }
-  if (favoritesList) {
-    favoritesList.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON') {
-        const index = Number(e.target.dataset.index);
-        const favs = getFavorites();
-        favs.splice(index, 1);
-        saveFavorites(favs);
-        renderFavorites();
+
+    function clearPlaceholderCards() {
+      if (!magnetoFeed) return;
+      const existingCards = magnetoFeed.querySelectorAll('.magneto-card, .magneto-empty');
+      existingCards.forEach(card => card.remove());
+    }
+
+    function renderFallbackState(title, text, details = '') {
+      if (!magnetoFeed || !magnetoLoader) return;
+
+      clearPlaceholderCards();
+
+      const empty = document.createElement('article');
+      empty.className = 'magneto-empty';
+      empty.innerHTML = `
+        <div>
+          <div class="magneto-empty-title">${escapeHtml(title)}</div>
+          <div class="magneto-empty-text">${escapeHtml(text)}</div>
+          ${details ? `<div class="magneto-empty-text" style="margin-top:8px;font-size:0.75rem;opacity:0.9;word-break:break-word;">${escapeHtml(details)}</div>` : ''}
+        </div>
+      `;
+
+      magnetoFeed.insertBefore(empty, magnetoLoader);
+    }
+
+    async function fetchHybridVideos(pageNumber) {
+      const isPreviewHost = /oaiusercontent\.com$/i.test(window.location.hostname);
+
+      if (isPreviewHost) {
+        throw new Error('Canvas preview cannot reliably fetch https://www.signalboostapp.com/api/hybrid-feed from this environment. Upload the packaged files to your own server/domain to test the live hybrid feed.');
       }
-    });
-  }
-  window.addFavorite = function(name, url) {
-    const favs = getFavorites();
-    if (!favs.find(f => f.name === name)) {
-      favs.push({ name, url });
-      saveFavorites(favs);
-      renderFavorites();
-    }
-  };
 
-  document.querySelectorAll('.column-one .accordion-content a').forEach(link => {
-    link.addEventListener('dblclick', (e) => {
-      const name = link.textContent.trim();
-      const url = link.getAttribute('href') || '#';
-      window.addFavorite(name, url);
-    });
-  });
+      const BASE_URL = window.location.origin;
+      const url = `${BASE_URL}/api/hybrid-feed?type=video&sort=recent&page=${pageNumber}`;
 
-  function setupHighlights() {
-    if (!highlightBanner) return;
-    const deals = [
-      { text: '✈️ Expedia: Save on last-minute flights', url: 'https://www.expedia.com' },
-      { text: '🏨 Booking.com: Top hotel deals this week', url: 'https://www.booking.com' },
-      { text: '🛡️ Insurance: New seasonal discounts', url: '#' }
-    ];
-    let index = 0;
-    function renderHighlight() {
-      const deal = deals[index];
-      highlightBanner.innerHTML = `<a href="${deal.url}" target="_blank" rel="noopener">${deal.text}</a>`;
-      index = (index + 1) % deals.length;
-    }
-    renderHighlight();
-    setInterval(renderHighlight, 5000);
-  }
-
-  function setupShortcuts() {
-    document.querySelectorAll('.shortcut-buttons button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const action = btn.dataset.action;
-        if (action === 'flight') {
-          window.open('https://www.google.com/search?q=book+flight', '_blank');
-        } else if (action === 'hotel') {
-          window.open('https://www.google.com/search?q=book+hotel', '_blank');
-        } else if (action === 'compare') {
-          window.open('https://www.google.com/search?q=compare+hotel+prices', '_blank');
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
         }
       });
-    });
-  }
 
-  if (regionFilter) regionFilter.addEventListener('change', () => {
-    applyFilters();
-    updateMap();
-    loadTravelAlerts(regionFilter.value);
-    loadRecommendations(regionFilter.value);
-  });
-  if (serviceFilter) serviceFilter.addEventListener('change', applyFilters);
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error(`Request: ${url} | Status: ${res.status} | Body: ${body.slice(0, 200)}`);
+      }
 
-  setupAccordion();
-  applyFilters();
-  updateMap();
-  loadTravelAlerts(regionFilter?.value || 'all');
-  loadRecommendations(regionFilter?.value || 'all');
-  renderFavorites();
+      const data = await res.json();
 
-  function loadFinancePanel() {
-    const financeList = document.getElementById('finance-list');
-    if (!financeList) return;
-    const financeData = [
-      { symbol: 'AAPL', price: '$189.42', change: '+1.14%', dir: 'up' },
-      { symbol: 'TSLA', price: '$171.83', change: '-0.82%', dir: 'down' },
-      { symbol: 'BTC', price: '$68,240', change: '+2.31%', dir: 'up' },
-      { symbol: 'ETH', price: '$3,540', change: '+1.07%', dir: 'up' }
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data?.items)) return data.items;
+      if (Array.isArray(data?.results)) return data.results;
+
+      throw new Error(`Request: ${url} | Unexpected JSON shape: ${JSON.stringify(data).slice(0, 200)}`);
+    }
+
+    function createVideoCard(item) {
+      const card = document.createElement('article');
+      card.className = 'card card-clickable magneto-card video-card';
+
+      const safeThumb = item?.thumbnail ? String(item.thumbnail).replace(/'/g, '%27') : '';
+      const safeTitle = escapeHtml(item?.title || 'Untitled video');
+      const safePlatform = item?.platform ? escapeHtml(item.platform) : '';
+      const safeUrl = item?.url ? String(item.url) : '';
+      const badgeText = item?.badge ? escapeHtml(item.badge) : 'Recent';
+      const embedHtml = typeof item?.embedHtml === 'string' ? item.embedHtml.trim() : '';
+      const hasEmbed = Boolean(embedHtml);
+
+      if (safeUrl && !hasEmbed) {
+        card.addEventListener('click', () => {
+          window.open(safeUrl, '_blank', 'noopener');
+        });
+      }
+
+      const titleHtml = `<h3>${safeTitle}</h3>`;
+      const embedBlock = hasEmbed
+        ? `<div class="video-embed magneto-embed">${embedHtml}</div>`
+        : `<div class="video-embed magneto-thumb" style="background-image:url('${safeThumb}'); background-size:cover; background-position:center;"></div>`;
+      const linkBlock = safeUrl
+        ? `<a class="video-link" href="${safeUrl}" target="_blank" rel="noopener">Open video${safePlatform ? ` • ${safePlatform}` : ''} • ${badgeText}</a>`
+        : '';
+      const metaBlock = !safeUrl
+        ? `<div class="magneto-meta"><span>${safePlatform}</span><span class="magneto-badge">${badgeText}</span></div>`
+        : '';
+
+      card.innerHTML = `
+        ${embedBlock}
+        ${titleHtml}
+        ${metaBlock}
+        ${linkBlock}
+      `;
+
+      hydrateEmbedProviders(card);
+      return card;
+    }
+
+    function loadExternalScriptOnce(src, checkFn) {
+      if (typeof checkFn === 'function' && checkFn()) {
+        return Promise.resolve();
+      }
+
+      const existing = document.querySelector(`script[src="${src}"]`);
+      if (existing) {
+        return new Promise(resolve => {
+          if (typeof checkFn !== 'function' || checkFn()) {
+            resolve();
+            return;
+          }
+          existing.addEventListener('load', () => resolve(), { once: true });
+          existing.addEventListener('error', () => resolve(), { once: true });
+        });
+      }
+
+      return new Promise(resolve => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => resolve();
+        document.body.appendChild(script);
+      });
+    }
+
+    async function hydrateEmbedProviders(scope = document) {
+      try {
+        if (scope.querySelector('.tiktok-embed')) {
+          await loadExternalScriptOnce(
+            'https://www.tiktok.com/embed.js',
+            () => Boolean(window.tiktokEmbed)
+          );
+          if (window.tiktokEmbed && typeof window.tiktokEmbed.load === 'function') {
+            window.tiktokEmbed.load();
+          }
+        }
+
+        if (scope.querySelector('.instagram-media, blockquote.instagram-media')) {
+          await loadExternalScriptOnce(
+            'https://www.instagram.com/embed.js',
+            () => Boolean(window.instgrm)
+          );
+          if (window.instgrm?.Embeds?.process) {
+            window.instgrm.Embeds.process();
+          }
+        }
+
+        if (scope.querySelector('.twitter-tweet, blockquote.twitter-tweet')) {
+          await loadExternalScriptOnce(
+            'https://platform.twitter.com/widgets.js',
+            () => Boolean(window.twttr)
+          );
+          if (window.twttr?.widgets?.load) {
+            window.twttr.widgets.load(scope);
+          }
+        }
+      } catch (error) {
+        console.error('Embed hydration error:', error);
+      }
+    }
+
+    async function loadMoreHybridCards() {
+      if (!magnetoFeed || !magnetoLoader) return;
+      if (feedLoading || !hasMore) return;
+
+      feedLoading = true;
+      magnetoLoader.style.display = '';
+      magnetoLoader.textContent = 'Loading…';
+
+      try {
+        const items = await fetchHybridVideos(feedPage);
+
+        if (!items || items.length === 0) {
+          hasMore = false;
+
+          if (feedPage === 0) {
+            renderFallbackState(
+              'No videos yet',
+              'No embeddable hybrid videos were returned by the feed.'
+            );
+          }
+
+          magnetoLoader.textContent = 'No more videos.';
+          return;
+        }
+
+        if (feedPage === 0) {
+          clearPlaceholderCards();
+        }
+
+        items.forEach(item => {
+          const card = createVideoCard(item);
+          magnetoFeed.appendChild(card);
+        });
+
+        await hydrateEmbedProviders(magnetoFeed);
+
+        feedPage += 1;
+        magnetoLoader.textContent = 'Scroll for more…';
+      } catch (err) {
+        console.error('Hybrid feed error:', err);
+        renderFallbackState(
+          'Hybrid feed unavailable',
+          'The hybrid feed request failed.',
+          err?.message || 'Unknown error'
+        );
+        magnetoLoader.style.display = 'none';
+      } finally {
+        feedLoading = false;
+      }
+    }
+
+    function initHybridFeed() {
+      if (!magnetoColumn || !magnetoFeed || !magnetoLoader) {
+        console.warn('Hybrid feed elements not found on page.');
+        return;
+      }
+
+      // Initial load
+      loadMoreHybridCards();
+
+      // Use IntersectionObserver for smoother infinite scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            loadMoreHybridCards();
+          }
+        });
+      }, {
+        root: magnetoColumn,
+        rootMargin: '0px',
+        threshold: 0.1
+      });
+
+      observer.observe(magnetoLoader);
+    }
+
+    initHybridFeed();
+  
+    // =========================
+    // COLUMN 3 — SHUFFLE LOGIC
+    // =========================
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    const sound = document.getElementById("shuffleSound");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const muteButton = document.getElementById("muteButton");
+
+    if (sound && volumeSlider) {
+      sound.volume = volumeSlider.value;
+
+      volumeSlider.addEventListener("input", () => {
+        sound.volume = volumeSlider.value;
+      });
+
+      muteButton.addEventListener("click", () => {
+        if (sound.muted) {
+          sound.muted = false;
+          muteButton.textContent = "🔇 Mute";
+        } else {
+          sound.muted = true;
+          muteButton.textContent = "🔊 Unmute";
+        }
+      });
+    }
+
+    const column3Data = [
+      { name: 'Kiwi', logo: 'assets/logos/kiwi.png', type: 'logo', url: 'https://kiwi.com' },
+      { name: 'Booking.com', logo: 'assets/logos/booking.png', type: 'logo', url: 'https://booking.com' },
+      { name: 'Airbnb', logo: 'assets/logos/airbnb.png', type: 'logo', url: 'https://airbnb.com' },
+      { name: 'Skyscanner', logo: 'assets/logos/skyscanner.png', type: 'logo', url: 'https://skyscanner.com' },
+      { name: 'Expedia', logo: 'assets/logos/expedia.png', type: 'logo', url: 'https://expedia.com' },
+      { name: 'Facebook', logo: 'assets/logos/facebook.png', type: 'logo', url: 'https://facebook.com' },
+      { name: 'Instagram', logo: 'assets/logos/instagram.png', type: 'logo', url: 'https://instagram.com' },
+      { name: 'X/Twitter', logo: 'assets/logos/twitter.png', type: 'logo', url: 'https://x.com' },
+      { name: 'YouTube', logo: 'assets/logos/youtube.png', type: 'logo', url: 'https://youtube.com' },
+      { name: 'LinkedIn', logo: 'assets/logos/linkedin.png', type: 'logo', url: 'https://linkedin.com' },
+      { name: 'Reddit', logo: 'assets/logos/reddit.png', type: 'logo', url: 'https://reddit.com' },
+      { name: 'Discord', logo: 'assets/logos/discord.png', type: 'logo', url: 'https://discord.com' },
+      { name: 'Truth Social', logo: 'assets/logos/truth.png', type: 'logo', url: 'https://truthsocial.com' },
+      { name: 'Amazon', logo: 'assets/logos/amazon.png', type: 'logo', url: 'https://amazon.com' },
+      { name: 'TikTok', logo: null, type: 'text', url: 'https://tiktok.com' },
+      { name: 'Pinterest', logo: null, type: 'text', url: 'https://pinterest.com' },
+      { name: 'Snapchat', logo: null, type: 'text', url: 'https://snapchat.com' },
+      { name: 'WhatsApp', logo: null, type: 'text', url: 'https://whatsapp.com' },
+      { name: 'Telegram', logo: null, type: 'text', url: 'https://telegram.org' },
+      { name: 'WeChat', logo: null, type: 'text', url: 'https://wechat.com' },
+      { name: 'Threads', logo: null, type: 'text', url: 'https://threads.net' }
     ];
-    financeList.innerHTML = financeData.map(item => `
-      <li>
-        <span class="symbol">${item.symbol}</span>
-        <span class="price">${item.price}</span>
-        <span class="change ${item.dir}">${item.change}</span>
-      </li>
-    `).join('');
-  }
 
-  function loadNewsFeed() {
-    const newsList = document.getElementById('news-list');
-    if (!newsList) return;
-    const headlines = [
-      { source: 'Reuters', title: 'Markets open higher as tech leads gains' },
-      { source: 'Bloomberg', title: 'Bitcoin holds momentum after strong week' },
-      { source: 'CNBC', title: 'Travel demand remains firm into peak season' },
-      { source: 'WSJ', title: 'Investors watch inflation and rate signals' }
-    ];
-    newsList.innerHTML = headlines.map(item => `
-      <li>
-        <span class="headline-source">${item.source}</span>
-        <span>${item.title}</span>
-      </li>
-    `).join('');
-  }
+    function renderFruitBowl(items) {
+      const container = document.getElementById('loopContainer');
+      const bowl = document.getElementById('fruitBowl');
+      if (!container || !bowl) return;
 
-  function loadSystemPanel() {
-    const temp = document.getElementById('temp');
-    const mode = document.getElementById('mode');
-    const volatility = document.getElementById('volatility');
-    if (temp) temp.textContent = '22°C';
-    if (mode) mode.textContent = 'Operational';
-    if (volatility) volatility.textContent = 'Moderate';
-  }
+      container.innerHTML = '';
+      const shuffledItems = shuffleArray([...items]);
+      const gradients = [
+        'linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff)',
+        'linear-gradient(135deg, #7c3aed, #ec4899, #f59e0b)',
+        'linear-gradient(135deg, #10b981, #06b6d4, #3b82f6)',
+        'linear-gradient(135deg, #f97316, #ef4444, #eab308)',
+        'linear-gradient(135deg, #22c55e, #84cc16, #14b8a6)'
+      ];
 
-  function setupNotes() {
-    const notes = document.getElementById('notes');
-    if (!notes) return;
-    notes.value = localStorage.getItem('column_five_notes') || '';
-    notes.addEventListener('input', () => {
-      localStorage.setItem('column_five_notes', notes.value);
+      shuffledItems.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'loop animate';
+
+        const randomSize = 46 + Math.floor(Math.random() * 32);
+        const randomRotate = -10 + Math.floor(Math.random() * 21);
+        const randomBg = gradients[Math.floor(Math.random() * gradients.length)];
+
+        el.style.setProperty('--loop-size', `${randomSize}px`);
+        el.style.setProperty('--loop-rotate', `${randomRotate}deg`);
+
+        if (item.logo) {
+          const img = document.createElement('img');
+          img.src = item.logo;
+          img.alt = item.name;
+          img.loading = 'lazy';
+          el.style.setProperty('--loop-bg', '#ffffff');
+          el.appendChild(img);
+        } else {
+          el.textContent = item.name;
+          el.style.setProperty('--loop-bg', randomBg);
+        }
+
+        if (item.url) {
+          el.addEventListener('click', () => {
+            window.open(item.url, '_blank', 'noopener');
+          });
+        }
+
+        container.appendChild(el);
+      });
+
+      setTimeout(() => {
+        container.querySelectorAll('.animate').forEach(el => {
+          el.classList.remove('animate');
+        });
+      }, 600);
+
+      bowl.classList.add('shake');
+      setTimeout(() => bowl.classList.remove('shake'), 600);
+
+      if (sound && !sound.muted) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+      }
+    }
+
+    document.getElementById('shuffleButton')?.addEventListener('click', () => {
+      renderFruitBowl(column3Data);
     });
-  }
 
-  setupHighlights();
-  setupShortcuts();
-  loadFinancePanel();
-  loadNewsFeed();
-  loadSystemPanel();
-  setupNotes();
-});
-</script>
+    // =========================
+    // COLUMN 1 — REFINED CLICK HANDLER
+    // =========================
 
+    // Only prevent collapse when clicking the link itself
+    document.querySelectorAll("#column1 .partner-link").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    renderFruitBowl(column3Data);
+
+  </script>
 </body>
 </html>
