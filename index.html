@@ -495,114 +495,57 @@
       { category: 'Specialty & Other', name: 'PlusCBD Oil', url: 'https://www.awin1.com/cread.php?awinmid=51813&awinaffid=2834806', color: '#8f7cff', logo: '' }
     ];
 
-    const feedItems = [
+    // =====================================================
+    // COLUMN 2 FEED SOURCES
+    // IMPORTANT:
+    // These must be SOCIAL / CONTENT URLs only.
+    // Do NOT put affiliate partner URLs here.
+    // Examples:
+    //   YouTube channel URL
+    //   Reddit subreddit URL
+    //   Facebook page feed URL or backend proxy target
+    //   Instagram profile/reel source URL (backend best-effort only)
+    // =====================================================
+    const socialFeedInputs = {
+      youtubeLatest: 'https://www.youtube.com/@YOURCHANNEL/videos',
+      youtubePopular: 'https://www.youtube.com/@YOURCHANNEL/videos',
+      redditHot: 'https://www.reddit.com/r/travel/',
+      facebookPage: 'https://www.facebook.com/YOUR_PAGE_NAME',
+      instagramProfile: 'https://www.instagram.com/YOUR_PROFILE/'
+    };
+
+    const promoFallbackItems = [];
+
+    const feedSourceConfigs = [
       {
-        platform: 'deals',
-        title: 'Compare flights with Kiwi.com',
-        description: 'Fast search, global routes, and strong affiliate intent.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:10:00Z',
-        url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806',
-        thumbnail: 'https://via.placeholder.com/720x1280/0f1722/f5c542?text=Kiwi.com+Deals'
+        key: 'youtube',
+        buildUrl: function() {
+          return '/api/feed/youtube?mode=latest&sourceUrl=' + encodeURIComponent(socialFeedInputs.youtubeLatest);
+        }
       },
       {
-        platform: 'facebook',
-        title: 'Travel inspiration card',
-        description: 'Destination and attraction ideas while live social APIs are limited.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:09:00Z',
-        url: 'https://gocity.tpo.lv/Des5Cgov',
-        thumbnail: 'https://via.placeholder.com/720x1280/122017/66d18f?text=Travel+Inspiration'
+        key: 'youtube_popular',
+        buildUrl: function() {
+          return '/api/feed/youtube?mode=popular&sourceUrl=' + encodeURIComponent(socialFeedInputs.youtubePopular);
+        }
       },
       {
-        platform: 'reddit',
-        title: 'Travel tools card',
-        description: 'Useful travel tools and booking shortcuts.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:08:00Z',
-        url: 'https://localrent.tpo.lv/XS0CqdMP',
-        thumbnail: 'https://via.placeholder.com/720x1280/111b28/ff8a45?text=Travel+Tools'
+        key: 'reddit',
+        buildUrl: function() {
+          return '/api/feed/reddit?mode=hot&sourceUrl=' + encodeURIComponent(socialFeedInputs.redditHot);
+        }
       },
       {
-        platform: 'deals',
-        title: 'eSIM deals with Airalo',
-        description: 'Connectivity card for monetized browsing.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:07:00Z',
-        url: 'https://airalo.tpo.lv/eXjKLiuw',
-        thumbnail: 'https://via.placeholder.com/720x1280/201228/c17dff?text=Airalo+eSIM'
+        key: 'facebook',
+        buildUrl: function() {
+          return '/api/feed/facebook?sourceUrl=' + encodeURIComponent(socialFeedInputs.facebookPage);
+        }
       },
       {
-        platform: 'facebook',
-        title: 'Insurance and claims',
-        description: 'Flight disruption and travel protection options.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:06:00Z',
-        url: 'https://airhelp.tpo.lv/EPrGDSO3',
-        thumbnail: 'https://via.placeholder.com/720x1280/2a1515/ff6b6b?text=Insurance'
-      },
-      {
-        platform: 'reddit',
-        title: 'Storage and services',
-        description: 'Useful travel support tools and add-ons.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:05:00Z',
-        url: 'https://radicalstorage.tpo.lv/tna4hnly',
-        thumbnail: 'https://via.placeholder.com/720x1280/2a2612/ffd966?text=Storage+%26+Services'
-      },
-      {
-        platform: 'deals',
-        title: 'Transfers and taxis',
-        description: 'Airport transfer and taxi partner shortcuts.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:04:00Z',
-        url: 'https://kiwitaxi.tpo.lv/DVaqmgKo',
-        thumbnail: 'https://via.placeholder.com/720x1280/10203a/4da6ff?text=Transfers'
-      },
-      {
-        platform: 'facebook',
-        title: 'Tours and attraction passes',
-        description: 'City cards and attraction bundles.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T09:03:00Z',
-        url: 'https://klook.tpo.lv/pTp1NljF',
-        thumbnail: 'https://via.placeholder.com/720x1280/0f2218/6cd98b?text=Tours+%26+Activities'
-      },
-      {
-        platform: 'youtube',
-        title: 'YouTube Music Example',
-        description: 'Primary live-style video card.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-14T09:02:00Z',
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-      },
-      {
-        platform: 'youtube',
-        title: 'YouTube Pop Example',
-        description: 'Second video card for variety.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-14T09:01:00Z',
-        url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
-        embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
-      },
-      {
-        platform: 'youtube',
-        title: 'YouTube Global Example',
-        description: 'Third video card in the stream.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-14T09:00:00Z',
-        url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
-        embedUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk'
-      },
-      {
-        platform: 'deals',
-        title: 'Hotel and meta-search card',
-        description: 'Regional Trivago and Kiwi entry points for monetized browsing.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-14T08:59:00Z',
-        url: 'https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806',
-        thumbnail: 'https://via.placeholder.com/720x1280/10231f/4dd2c0?text=Flights+%26+Meta+Search'
+        key: 'instagram',
+        buildUrl: function() {
+          return '/api/feed/instagram?sourceUrl=' + encodeURIComponent(socialFeedInputs.instagramProfile);
+        }
       }
     ];
 
@@ -753,12 +696,75 @@
       return '';
     }
 
+    function normalizeFeedItem(item, fallbackPlatform) {
+      const platform = normalizePlatform(item.platform || fallbackPlatform || 'deals');
+      return {
+        platform,
+        title: item.title || item.name || 'Untitled',
+        description: item.description || item.summary || item.caption || '',
+        author: item.author || item.source || 'SignalBoost',
+        publishedAt: item.publishedAt || item.date || item.pubDate || new Date().toISOString(),
+        url: item.url || item.link || '#',
+        embedUrl: item.embedUrl || item.embed || '',
+        thumbnail: item.thumbnail || item.image || item.poster || ''
+      };
+    }
+
+    async function fetchDynamicFeed() {
+      const results = await Promise.allSettled(feedSourceConfigs.map(function(source) {
+        const requestUrl = source.buildUrl();
+        return fetch(requestUrl, { headers: { Accept: 'application/json' } })
+          .then(function(res) {
+            if (!res.ok) throw new Error(requestUrl + ' -> ' + res.status);
+            return res.json();
+          })
+          .then(function(data) {
+            const items = Array.isArray(data) ? data : (data.items || data.results || data.entries || []);
+            return items.map(function(item) { return normalizeFeedItem(item, source.key); });
+          });
+      }));
+
+      const live = [];
+      results.forEach(function(result, index) {
+        if (result.status === 'fulfilled') {
+          live.push.apply(live, result.value);
+        } else {
+          console.warn('Feed source failed:', feedSourceConfigs[index].key, result.reason);
+        }
+      });
+
+      return live;
+    }
+
+    function buildDynamicFeed(liveItems) {
+      const youtube = liveItems.filter(function(item) {
+        const p = normalizePlatform(item.platform);
+        return p === 'youtube' || p === 'youtube_popular';
+      });
+      const others = liveItems.filter(function(item) {
+        const p = normalizePlatform(item.platform);
+        return p !== 'youtube' && p !== 'youtube_popular';
+      });
+
+      const output = [];
+      let ytIndex = 0;
+      let otherIndex = 0;
+
+      while (output.length < 30 && (otherIndex < others.length || ytIndex < youtube.length)) {
+        if (otherIndex < others.length) output.push(others[otherIndex++]);
+        if (output.length >= 30) break;
+        if (ytIndex < youtube.length) output.push(youtube[ytIndex++]);
+      }
+
+      return output;
+    }
+
     function createMediaMarkup(item) {
       const platform = normalizePlatform(item.platform);
       const title = escapeHtml(item.title || 'Untitled');
       const monetized = monetizeUrl(item.url, { partner: item.title, source: 'feed_card' });
 
-      if (platform === 'youtube') {
+      if (platform === 'youtube' || platform === 'youtube_popular') {
         const embed = item.embedUrl || getYouTubeEmbed(item.url || '');
         if (embed) {
           return '<div class="media-box">' +
@@ -794,7 +800,20 @@
 
     renderPartners(fallbackPartners);
     renderBrandGrid(fallbackPartners);
-    renderFeed(feedItems);
+
+    fetchDynamicFeed()
+      .then(function(liveItems) {
+        const finalFeed = buildDynamicFeed(liveItems);
+        if (!finalFeed.length) {
+          feedContainer.innerHTML = '<div class="feed-card"><div class="feed-content"><h3>No live social videos yet</h3><p>Add real YouTube / Reddit / Facebook source URLs in <code>socialFeedInputs</code> and make sure the backend feed endpoints are returning items.</p></div></div>';
+          return;
+        }
+        renderFeed(finalFeed);
+      })
+      .catch(function(err) {
+        console.error('Dynamic feed failed.', err);
+        feedContainer.innerHTML = '<div class="feed-card"><div class="feed-content"><h3>Feed unavailable</h3><p>The social feed endpoints are not returning content yet.</p></div></div>';
+      });
 
     const search = document.getElementById('partnerSearch');
     search.addEventListener('input', function() {
