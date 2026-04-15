@@ -768,29 +768,84 @@
       const output = [];
       let liveIndex = 0;
       let fallbackIndex = 0;
+      let youtubeRun = 0;
 
       while (output.length < limit && (liveIndex < live.length || fallbackIndex < fallbackPool.length)) {
-        if (liveIndex < live.length) {
-          output.push(live[liveIndex++]);
+        const nextLive = liveIndex < live.length ? live[liveIndex] : null;
+        const nextLivePlatform = nextLive ? normalizePlatform(nextLive.platform) : '';
+
+        if (nextLive && nextLivePlatform === 'youtube' && youtubeRun >= 1 && fallbackIndex < fallbackPool.length) {
+          output.push(fallbackPool[fallbackIndex++]);
+          youtubeRun = 0;
+          continue;
         }
+
+        if (nextLive) {
+          output.push(live[liveIndex++]);
+          youtubeRun = nextLivePlatform === 'youtube' ? youtubeRun + 1 : 0;
+        }
+
         if (output.length >= limit) break;
+
         if (fallbackIndex < fallbackPool.length) {
           output.push(fallbackPool[fallbackIndex++]);
+          youtubeRun = 0;
         }
       }
 
       return dedupeFeedItems(output);
     }
 
+    function enforceYoutubeCap(items, maxYouTubeInRow) {
+      const youtube = [];
+      const nonYoutube = [];
+
+      items.forEach(function(item) {
+        if (normalizePlatform(item.platform) === 'youtube') {
+          youtube.push(item);
+        } else {
+          nonYoutube.push(item);
+        }
+      });
+
+      if (!youtube.length || !nonYoutube.length) return items;
+
+      const output = [];
+      let ytIndex = 0;
+      let otherIndex = 0;
+      let youtubeRun = 0;
+
+      while (ytIndex < youtube.length || otherIndex < nonYoutube.length) {
+        if (ytIndex < youtube.length && youtubeRun < maxYouTubeInRow) {
+          output.push(youtube[ytIndex++]);
+          youtubeRun += 1;
+        }
+
+        if (otherIndex < nonYoutube.length) {
+          output.push(nonYoutube[otherIndex++]);
+          youtubeRun = 0;
+        } else if (ytIndex < youtube.length && youtubeRun >= maxYouTubeInRow) {
+          // No non-youtube left; append remaining youtube.
+          output.push(youtube[ytIndex++]);
+        }
+      }
+
+      return output;
+    }
+
     const demoFeedItems = buildDemoFeed(fallbackItems, 4);
 
-    const sourceConfigs = [
-      { key: 'youtube', url: '/api/feed/youtube' },
-      { key: 'reddit', url: '/api/feed/reddit' },
-      { key: 'instagram', url: '/api/feed/instagram' },
-      { key: 'facebook', url: '/api/feed/facebook' },
-      { key: 'tiktok', url: '/api/feed/tiktok' }
-    ];
+    // NOTE:
+// Instagram + TikTok removed intentionally
+// They do NOT work without APIs
+
+const sourceConfigs = SOURCES (Option A)
+// Only platforms that reliably work without tokens
+const sourceConfigs = [
+  { key: 'youtube', url: '/api/feed/youtube' },
+  { key: 'reddit', url: '/api/feed/reddit' },
+  { key: 'facebook', url: '/api/feed/facebook' }
+];
 
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
@@ -1263,13 +1318,31 @@
       const fallbackNormalized = demoFeedItems.map(normalizeFeedItem);
 
       if (onlyYoutubeLive && uniqueLive.length) {
-        const mixedYoutube = mixNonYoutubeFallback(uniqueLive, fallbackNormalized, 60);
-        setDebug('Sources → ' + debugParts.join(' | ') + ' | mixed non-youtube fallback: ' + mixedYoutube.length);
-        return mixedYoutube;
+        // HARD FIX: inject real non-youtube placeholders so UI is not YouTube-only
+        const forcedMix = [];
+        const nonYoutubeFallback = fallbackNormalized.filter(function(item) {
+          return normalizePlatform(item.platform) !== 'youtube';
+        });
+
+        let ytIndex = 0;
+        let fbIndex = 0;
+
+        while (forcedMix.length < 60 && (ytIndex < uniqueLive.length || fbIndex < nonYoutubeFallback.length)) {
+          if (ytIndex < uniqueLive.length) {
+            forcedMix.push(uniqueLive[ytIndex++]);
+          }
+
+          if (fbIndex < nonYoutubeFallback.length) {
+            forcedMix.push(nonYoutubeFallback[fbIndex++]);
+          }
+        }
+
+        setDebug('FORCED MIX (YouTube fallback fix): ' + forcedMix.length);
+        return forcedMix;
       }
 
       const fallbackUnique = interleaveByPlatform(dedupeFeedItems(fallbackNormalized), 60);
-      const mixedFallback = interleaveByPlatform(dedupeFeedItems(uniqueLive.concat(fallbackUnique)), 60);
+      const mixedFallback = enforceYoutubeCap(interleaveByPlatform(dedupeFeedItems(uniqueLive.concat(fallbackUnique)), 60), 1);
       setDebug('Sources → ' + debugParts.join(' | ') + ' | unique mixed: ' + mixedFallback.length);
       return mixedFallback;
     }
