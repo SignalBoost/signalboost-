@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -35,7 +36,9 @@
       overflow: hidden;
     }
 
-    /* COLUMN 1 */
+    /* =========================
+       COLUMN 1
+    ========================= */
     .column-1 {
       background: #05070a;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -118,7 +121,9 @@
       padding: 8px 4px;
     }
 
-    /* COLUMN 2 */
+    /* =========================
+       COLUMN 2
+    ========================= */
     .column-2 {
       background: #0d1117;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -307,7 +312,9 @@
       height: 1px;
     }
 
-    /* COLUMN 3 */
+    /* =========================
+       COLUMN 3
+    ========================= */
     .column-3 {
       background: #0f141b;
       overflow-y: auto;
@@ -337,7 +344,9 @@
       margin: 8px 0;
     }
 
-    /* RESPONSIVE */
+    /* =========================
+       RESPONSIVE
+    ========================= */
     @media (max-width: 1100px) {
       .app {
         grid-template-columns: 260px 1fr;
@@ -373,11 +382,14 @@
 </head>
 <body>
   <div class="app">
+
+    <!-- COLUMN 1 -->
     <div class="column column-1">
       <div class="column-1-header">Partners</div>
       <div id="column1-partners" class="column-1-scroll"></div>
     </div>
 
+    <!-- COLUMN 2 -->
     <div class="column column-2">
       <div id="magnetoColumn" class="feed-wrapper">
         <div class="feed-topbar">
@@ -400,6 +412,7 @@
       </div>
     </div>
 
+    <!-- COLUMN 3 -->
     <div class="column column-3">
       <h2>Column 3</h2>
       <div class="column-3-card">
@@ -411,6 +424,7 @@
         </ul>
       </div>
     </div>
+
   </div>
 
   <script>
@@ -491,9 +505,7 @@
       const separator = url.includes("?") ? "&" : "?";
       const response = await fetch(`${url}${separator}v=${Date.now()}`, {
         cache: "no-store",
-        headers: {
-          "Accept": "application/json"
-        }
+        headers: { "Accept": "application/json" }
       });
 
       if (!response.ok) {
@@ -503,6 +515,9 @@
       return response.json();
     }
 
+    /* =========================
+       COLUMN 1
+    ========================= */
     async function loadPartners() {
       const data = await fetchJson("/data/partners.json");
       return Array.isArray(data.partners) ? data.partners : [];
@@ -558,6 +573,9 @@
       }
     }
 
+    /* =========================
+       COLUMN 2
+    ========================= */
     const feedContainer = document.getElementById("feedContainer");
     const feedLoader = document.getElementById("feedLoader");
     const feedSentinel = document.getElementById("feedSentinel");
@@ -595,7 +613,7 @@
     }
 
     async function loadHybridFeed() {
-      const data = await fetchJson("/api/feed?q=travel");
+      const data = await fetchJson("/api/feed");
       return normalizeFeedData(data).map(normalizeFeedItem);
     }
 
@@ -722,7 +740,7 @@
 
         if (!allFeedItems.length) {
           setDebug("Feed loaded but returned zero items");
-          showFeedMessage("Could not load feed data.");
+          showFeedMessage("No feed items found.");
           return;
         }
 
@@ -761,6 +779,9 @@
       }
     );
 
+    /* =========================
+       INIT
+    ========================= */
     renderColumn1();
     initFeed();
   </script>
