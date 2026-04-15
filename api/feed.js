@@ -1,57 +1,62 @@
-const axios = require("axios");
+// ─────────────────────────────────────────────────────────────
+// REDDIT HOT FEED (Place this at the TOP of api/feed.js)
+// ─────────────────────────────────────────────────────────────
 
-module.exports = async (req, res) => {
+const REDDIT_SUBS = [
+  "travel",
+  "solotravel",
+  "digitalnomad",
+  "technology",
+  "programming",
+  "personalfinance",
+  "investing"
+];
+
+async function fetchRedditHot(sub) {
   try {
-    const apiKey = process.env.YT_API_KEY || process.env.YOUTUBE_API_KEY;
+    const url = `https://www.reddit.com/r/${sub}/hot.json?limit=10`;
 
-    if (!apiKey) {
-      return res.status(500).json({
-        success: false,
-        items: [],
-        error: "Missing YouTube API key"
-      });
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "SignalBoost/1.0",
+        "Accept": "application/json"
+      }
+    });
+
+    if (!res.ok) {
+      console.warn(`Reddit ${sub} returned HTTP ${res.status}`);
+      return [];
     }
 
-    const yt = await axios.get(
-      "https://www.googleapis.com/youtube/v3/videos",
-      {
-        params: {
-          part: "snippet,statistics",
-          chart: "mostPopular",
-          maxResults: 10,
-          regionCode: "US",
-          key: apiKey
-        }
-      }
-    );
+    const data = await res.json();
+    const posts = data?.data?.children || [];
 
-    const items = yt.data.items.map(v => ({
-      id: v.id,
-      title: v.snippet.title,
-      text: v.snippet.description,
-      source: "YouTube",
-      link: `https://www.youtube.com/watch?v=${v.id}`,
-      publishedAt: v.snippet.publishedAt,
-      thumb:
-        v.snippet.thumbnails?.maxres?.url ||
-        v.snippet.thumbnails?.high?.url ||
-        v.snippet.thumbnails?.medium?.url ||
-        v.snippet.thumbnails?.default?.url ||
-        null
-    }));
+    return posts
+      .map(p => {
+        const d = p.data;
+        if (!d) return null;
 
-    res.json({
-      success: true,
-      items
-    });
+        const link =
+          d.url_overridden_by_dest ||
+          `https://www.reddit.com${d.permalink}`;
+
+        return {
+          id: `reddit-${d.id}`,
+          title: d.title,
+          text: d.selftext || "",
+          source: `r/${sub}`,
+          link,
+          publishedAt: new Date(d.created_utc * 1000).toISOString(),
+          thumb:
+            d.thumbnail && d.thumbnail.startsWith("http")
+              ? d.thumbnail
+              : null
+        };
+      })
+      .filter(Boolean);
 
   } catch (err) {
-    console.error("YouTube API error:", err.message);
-
-    res.status(500).json({
-      success: false,
-      items: [],
-      error: "Failed to load YouTube trending"
-    });
+    console.error("Reddit error:", err.message);
+    return [];
   }
-};
+}
