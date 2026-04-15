@@ -373,7 +373,6 @@
 </head>
 <body>
   <div class="app">
-
     <div class="column column-1">
       <div class="column-1-header">Partners</div>
       <div id="column1-partners" class="column-1-scroll"></div>
@@ -412,7 +411,6 @@
         </ul>
       </div>
     </div>
-
   </div>
 
   <script>
@@ -466,8 +464,6 @@
           if (parsed.pathname.startsWith("/embed/")) {
             return parsed.pathname.split("/embed/")[1].split("/")[0];
           }
-
-          return null;
         }
 
         if (hostname.includes("youtu.be")) {
@@ -492,7 +488,8 @@
     }
 
     async function fetchJson(url) {
-      const response = await fetch(url + "?v=" + Date.now(), {
+      const separator = url.includes("?") ? "&" : "?";
+      const response = await fetch(`${url}${separator}v=${Date.now()}`, {
         cache: "no-store",
         headers: {
           "Accept": "application/json"
@@ -586,13 +583,11 @@
     }
 
     function normalizeFeedItem(item) {
-      const platform = normalizePlatform(item.platform || item.type || item.source || "");
-
       return {
         title: item.title || item.name || item.request || "Untitled",
         description: item.description || item.summary || item.text || "",
-        author: item.author || item.by || item.sourceName || "",
-        platform: platform || "source",
+        author: item.author || item.by || item.sourceName || item.source || "",
+        platform: normalizePlatform(item.platform || item.type || item.source || "source"),
         url: item.url || item.link || item.href || "#",
         thumbnail: item.thumbnail || item.image || item.imageUrl || "",
         publishedAt: item.publishedAt || item.date || item.createdAt || item.timestamp || ""
@@ -600,7 +595,7 @@
     }
 
     async function loadHybridFeed() {
-      const data = await fetchJson("/data/requests.json");
+      const data = await fetchJson("/api/feed?q=travel");
       return normalizeFeedData(data).map(normalizeFeedItem);
     }
 
@@ -689,7 +684,7 @@
       if (!visibleFeedItems.length) {
         showFeedMessage(
           activeFilter === "all"
-            ? "Could not load feed data."
+            ? "No feed items found."
             : `No ${activeFilter} items found.`
         );
         return;
@@ -726,15 +721,16 @@
         });
 
         if (!allFeedItems.length) {
-          setDebug("requests.json loaded, but it is empty or has no usable items");
+          setDebug("Feed loaded but returned zero items");
           showFeedMessage("Could not load feed data.");
           return;
         }
 
-        setDebug(`requests.json loaded: ${allFeedItems.length} items`);
+        setDebug(`Feed loaded: ${allFeedItems.length} items`);
         applyFilter();
       } catch (err) {
-        setDebug("Feed failed:\n" + err.message);
+        console.error("Feed failed:", err);
+        setDebug(`Feed failed: ${err.message}`);
         showFeedMessage("Could not load feed data.");
       }
     }
