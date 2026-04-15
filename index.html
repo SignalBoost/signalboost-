@@ -1407,8 +1407,9 @@
     async function initFeed() {
       try {
         allFeedItems = await loadHybridFeed();
-        allFeedItems.sort(function(a, b) {
-          return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
+
+        allFeedItems = allFeedItems.map(function(item, index) {
+          return Object.assign({}, item, { _feedOrder: index });
         });
 
         if (!allFeedItems.length) {
