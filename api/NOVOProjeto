@@ -10,14 +10,18 @@
     }
 
     html, body {
+      margin: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #ffffff;
+    }
+
+    body {
       overflow: hidden;
     }
 
-    
-
     .app {
-      position: relative;
-      z-index: 1;
       display: grid;
       grid-template-columns: 280px minmax(520px, 1fr) 280px;
       height: 100vh;
@@ -34,6 +38,7 @@
     }
 
     .column-1 {
+      padding-top:132px;
       background: #0f141b;
       border-right: 1px solid rgba(255,255,255,0.06);
     }
@@ -47,6 +52,13 @@
       top: 0;
       background: #0f141b;
       z-index: 5;
+      text-align: center;
+    }
+
+    .column-1-search-wrap {
+      padding: 8px 12px 0 12px;
+      display: flex;
+      justify-content: center;
     }
 
     .column-1-search {
@@ -57,6 +69,7 @@
       color: #ffffff;
       font-size: 13px;
       width: 100%;
+      max-width: 232px;
       outline: none;
     }
 
@@ -69,11 +82,15 @@
       overflow-y: auto;
       padding: 12px;
       scrollbar-width: none;
-      
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .category {
       margin-bottom: 10px;
+      width: 100%;
+      max-width: 244px;
     }
 
     .category details {
@@ -129,7 +146,6 @@
 
     .category a:hover {
       text-decoration: underline;
-      opacity: 1;
     }
 
     .column-1-empty {
@@ -153,25 +169,6 @@
       padding: 24px 16px 40px;
       align-items: center;
       scrollbar-width: none;
-      
-    }
-
-    
-
-    .feed-header {
-      margin: 0 0 12px 0;
-      font-size: 24px;
-      font-weight: 700;
-    }
-
-    
-
-    .debug-box {
-      margin-top: 10px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.65);
-      white-space: pre-wrap;
-      line-height: 1.4;
     }
 
     .feed-container {
@@ -189,17 +186,12 @@
       flex-direction: column;
       gap: 12px;
       width: 100%;
-      min-height: auto;
       background: #161b22;
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 16px;
       padding: 14px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      align-items: stretch;
-      justify-content: space-between;
+      transition: box-shadow 0.15s ease;
     }
-
-    
 
     .feed-card:hover {
       box-shadow: 0 8px 24px rgba(0,0,0,0.22);
@@ -216,8 +208,6 @@
       display: block;
     }
 
-    
-
     .media-box iframe,
     .media-box video,
     .media-box img {
@@ -226,12 +216,6 @@
       object-fit: cover;
       border: 0;
       display: block;
-    }
-
-    iframe.feed-thumb {
-      aspect-ratio: 16 / 9;
-      height: auto;
-      min-height: 100px;
     }
 
     .fallback {
@@ -309,6 +293,11 @@
       color: #66a3ff;
     }
 
+    .feed-platform.tiktok {
+      background: rgba(255,255,255,0.12);
+      color: #ffffff;
+    }
+
     .feed-link,
     .fallback a {
       display: inline-block;
@@ -349,65 +338,58 @@
       min-width: 0;
       width: 100%;
       scrollbar-width: none;
-      
     }
 
-    /* unified scrollbar styling */
-    /* hide scrollbars but keep scroll */
     *::-webkit-scrollbar {
       width: 0px;
       height: 0px;
-    }
-
-    *::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    *::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.12);
-      border-radius: 8px;
-    }
-
-    *::-webkit-scrollbar-thumb:hover {
-      background: rgba(255,255,255,0.22);
     }
 
     .column-3 h2 {
       margin: 0 0 16px 0;
       font-size: 18px;
       font-weight: 700;
+      text-align: center;
     }
 
-    .column-3-card {
-      background: #121820;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 14px;
-      padding: 16px;
-      color: rgba(255,255,255,0.88);
-      box-shadow: none;
-    }
-
-    .column-3-card ul {
-      margin: 0;
-      padding-left: 18px;
-    }
-
-    .column-3-card li {
-      margin: 8px 0;
+    .brand-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 236px;
+      margin: 0 auto;
     }
 
     .brand-tile {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #161b22;
-      border: 1px solid rgba(255,255,255,0.06);
+      gap: 8px;
+      background: linear-gradient(145deg, #161b22, #0f141b);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
-      height: 84px;
+      min-height: 92px;
       padding: 12px;
       text-decoration: none;
       overflow: hidden;
-      transition: border-color 0.15s ease, transform 0.15s ease;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .brand-tile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 60%);
+      pointer-events: none;
+    }
+
+    .brand-tile:hover {
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
 
     .brand-tile:hover {
@@ -416,19 +398,20 @@
     }
 
     .brand-tile img {
-      max-width: 100%;
-      max-height: 42px;
+      width: 28px;
+      height: 28px;
       object-fit: contain;
       display: block;
-      filter: brightness(0.98);
+      flex-shrink: 0;
     }
 
     .brand-tile span {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: #ffffff;
       text-align: center;
       line-height: 1.2;
+      display: block;
     }
 
     @media (max-width: 1200px) {
@@ -492,17 +475,24 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <div style="position:fixed;top:0;left:0;width:280px;background:#0f141b;border-right:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 16px;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+    <div>
+      <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);">Your Digital Shopping Mall</div>
+    </div>
+    <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806&partner=Kiwi%20US&source=header_featured" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured deal</div>
+      <div style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Compare flights on Kiwi.com</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Fast search • global routes</div>
+    </a>
+    <div style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted travel brands and monetized outbound offers.</div>
+  </div>
+  <div class="app" style="margin-top:0;">
     <div class="column column-1">
-      <div class="column-1-header">
-        Navigation
-      </div>
-
-      <!-- search -->
-      <div style="padding:8px 12px 0 12px;">
+      <div class="column-1-header">Navigation</div>
+      <div class="column-1-search-wrap">
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Search partners..." />
       </div>
-
       <div id="partnersRail" class="column-1-scroll"></div>
     </div>
 
@@ -516,19 +506,18 @@
 
     <div class="column column-3">
       <h2>Top Brands</h2>
-
-      <div id="brandGrid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;"></div>
+      <div id="brandGrid" class="brand-grid"></div>
     </div>
   </div>
+
   <script>
     const fallbackPartners = [
+      // FULL PARTNER SET (expanded from your uploaded list)
       { category: 'Transfers & Transport', name: 'Kiwitaxi', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', color: '#4da6ff' },
       { category: 'Transfers & Transport', name: 'Welcome Pickups', url: 'https://tpo.lv/XAJOoobr', color: '#4da6ff' },
       { category: 'Transfers & Transport', name: 'Intui.travel', url: 'https://intui.tpo.lv/Rrx5VuN3', color: '#4da6ff' },
       { category: 'Transfers & Transport', name: 'HolidayTaxis', url: 'https://holidaytaxis.tpo.lv/oHwpbrFt', color: '#4da6ff' },
       { category: 'Transfers & Transport', name: 'GetTransfer.com', url: 'https://gettransfer.tpo.lv/Pb4p9ljm', color: '#4da6ff' },
-      { category: 'Transfers & Transport', name: 'Carmel Car & Limousine', url: 'https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806', color: '#4da6ff' },
-      { category: 'Transfers & Transport', name: 'Allycar', url: 'https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806', color: '#4da6ff' },
       { category: 'Transfers & Transport', name: 'Busbud', url: 'https://busbud.tpo.lv/h4C6YPFZ', color: '#4da6ff' },
 
       { category: 'Car Rentals', name: 'Localrent.com', url: 'https://localrent.tpo.lv/XS0CqdMP', color: '#ffb84d' },
@@ -536,37 +525,22 @@
       { category: 'Car Rentals', name: 'QEEQ', url: 'https://qeeq.tpo.lv/jklB4Pbm', color: '#ffb84d' },
       { category: 'Car Rentals', name: 'GetRentacar.com', url: 'https://getrentacar.tpo.lv/OR2TWduQ', color: '#ffb84d' },
       { category: 'Car Rentals', name: 'BikesBooking.com', url: 'https://bikesbooking.tpo.lv/B3zIKanS', color: '#ffb84d' },
-      { category: 'Car Rentals', name: 'Jumbo Car Costa Rica', url: 'https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806', color: '#ffb84d' },
-      { category: 'Car Rentals', name: 'Auto Europe', url: 'https://autoeurope.tpo.lv/t84AzZbO', color: '#ffb84d' },
-      { category: 'Car Rentals', name: 'Europcar AU NZ', url: 'https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806', color: '#ffb84d' },
 
       { category: 'SIM & Connectivity', name: 'Airalo', url: 'https://airalo.tpo.lv/eXjKLiuw', color: '#c17dff' },
       { category: 'SIM & Connectivity', name: 'Drimsim', url: 'https://drimsim.tpo.lv/PGwr6JTr', color: '#c17dff' },
       { category: 'SIM & Connectivity', name: 'Yesim', url: 'https://yesim.tpo.lv/3vIzBQts', color: '#c17dff' },
-      { category: 'SIM & Connectivity', name: 'BitJoy eSIM', url: 'https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806', color: '#c17dff' },
       { category: 'SIM & Connectivity', name: 'Saily', url: 'https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629', color: '#c17dff' },
-      { category: 'SIM & Connectivity', name: 'NordVPN', url: 'https://booking.tpo.lv/enwsEbCs', color: '#c17dff' },
 
       { category: 'Tours & Activities', name: 'Klook', url: 'https://klook.tpo.lv/pTp1NljF', color: '#6cd98b' },
       { category: 'Tours & Activities', name: 'WeGoTrip', url: 'https://wegotrip.tpo.lv/kKIF0gIW', color: '#6cd98b' },
       { category: 'Tours & Activities', name: 'GoCity', url: 'https://gocity.tpo.lv/Des5Cgov', color: '#6cd98b' },
       { category: 'Tours & Activities', name: 'Tiqets', url: 'https://tiqets.com', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'Go! Go! España', url: 'https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'Go2Africa', url: 'https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'Eatwith', url: 'https://eatwith.tpo.lv/BfAnpZNb', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'Big Bus Tours', url: 'https://bigbustours.tpo.lv/grT1QWXA', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'SamBoat US', url: 'https://www.awin1.com/cread.php?awinmid=32679&awinaffid=2834806', color: '#6cd98b' },
-
-      { category: 'Insurance & Claims', name: 'EKTA Insurance', url: 'https://ektatraveling.tpo.lv/XWbZbj8S', color: '#ff6b6b' },
-      { category: 'Insurance & Claims', name: 'AirHelp', url: 'https://airhelp.tpo.lv/EPrGDSO3', color: '#ff6b6b' },
-      { category: 'Insurance & Claims', name: 'Compensair', url: 'https://compensair.tpo.lv/wxDDCITG', color: '#ff6b6b' },
-      { category: 'Insurance & Claims', name: 'Medjet', url: 'https://www.awin1.com/cread.php?awinmid=20001&awinaffid=2834806', color: '#ff6b6b' },
+      { category: 'Tours & Activities', name: 'EatWith', url: 'https://eatwith.tpo.lv/BfAnpZNb', color: '#6cd98b' },
+      { category: 'Tours & Activities', name: 'BigBusTours', url: 'https://bigbustours.tpo.lv/grT1QWXA', color: '#6cd98b' },
 
       { category: 'Flights & Meta Search', name: 'Aviasales', url: 'https://aviasales.tpo.lv/VoWXgFFm', color: '#4dd2c0' },
       { category: 'Flights & Meta Search', name: 'Kiwi.com', url: 'https://booking.tpo.lv/enwsEbCs', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Kiwi CA', url: 'https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Kiwi MX', url: 'https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Kiwi US', url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806', color: '#4dd2c0' },
+      { category: 'Flights & Meta Search', name: 'Trivago USA', url: 'https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806', color: '#4dd2c0' },
       { category: 'Flights & Meta Search', name: 'Trivago AR', url: 'https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806', color: '#4dd2c0' },
       { category: 'Flights & Meta Search', name: 'Trivago BR', url: 'https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806', color: '#4dd2c0' },
       { category: 'Flights & Meta Search', name: 'Trivago CO', url: 'https://www.awin1.com/cread.php?awinmid=105935&awinaffid=2834806', color: '#4dd2c0' },
@@ -574,39 +548,76 @@
       { category: 'Flights & Meta Search', name: 'Trivago MX', url: 'https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806', color: '#4dd2c0' },
       { category: 'Flights & Meta Search', name: 'Trivago NZ', url: 'https://www.awin1.com/cread.php?awinmid=66032&awinaffid=2834806', color: '#4dd2c0' },
       { category: 'Flights & Meta Search', name: 'Trivago PE', url: 'https://www.awin1.com/cread.php?awinmid=105927&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago USA', url: 'https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806', color: '#4dd2c0' },
-
-      { category: 'Storage & Services', name: 'Radical Storage', url: 'https://radicalstorage.tpo.lv/tna4hnly', color: '#ffd966' },
-      { category: 'Storage & Services', name: 'Searadar', url: 'https://searadar.tpo.lv/TO4A5eBZ', color: '#ffd966' },
-      { category: 'Storage & Services', name: 'The Builder Market', url: 'https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806', color: '#ffd966' },
-      { category: 'Storage & Services', name: 'PearlMountain Limited', url: 'https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806', color: '#ffd966' },
-      { category: 'Storage & Services', name: 'Evisa', url: 'https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806', color: '#ffd966' },
-      { category: 'Storage & Services', name: 'pdfFiller', url: 'https://www.awin1.com/cread.php?awinmid=94003&awinaffid=2834806', color: '#ffd966' },
-      { category: 'Storage & Services', name: 'Online Check Writer', url: 'https://www.awin1.com/cread.php?awinmid=24005&awinaffid=2834806', color: '#ffd966' },
-
-      { category: 'Other Partners', name: 'Desire Experience (US)', url: 'https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'Temptation Experience (US)', url: 'https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'King Koil', url: 'https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'Blackhawk Network Canada', url: 'https://www.awin1.com/cread.php?awinmid=91359&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'Giftlab', url: 'https://www.awin1.com/cread.php?awinmid=95201&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'Relax the Back (US)', url: 'https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'TechPals', url: 'https://www.awin1.com/cread.php?awinmid=116661&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'Tsarbomba', url: 'https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'LogoNerds.com', url: 'https://www.awin1.com/cread.php?awinmid=109444&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'Luxy app', url: 'https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806', color: '#8f9fb3' },
-      { category: 'Other Partners', name: 'ALLPOWERS (US & CA)', url: 'https://www.awin1.com/cread.php?awinmid=113610&awinaffid=2834806', color: '#8f9fb3' }
+      { category: 'Flights & Meta Search', name: 'Kiwi CA', url: 'https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806', color: '#4dd2c0' },
+      { category: 'Flights & Meta Search', name: 'Kiwi MX', url: 'https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806', color: '#4dd2c0' },
+      { category: 'Flights & Meta Search', name: 'Kiwi US', url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806', color: '#4dd2c0' }
     ];
+
+    const partnerLogoOverrides = {
+      'Trivago USA': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago AR': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago BR': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago CO': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago DE': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago MX': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago NZ': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago PE': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Kiwitaxi': 'https://kiwitaxi.com/img/logo.svg',
+      'Klook': 'https://res.klook.com/image/upload/v163/logo/klook-logo.svg',
+      'GoCity': 'https://gocity.com/themes/custom/gocity/logo.svg',
+      'Busbud': 'https://busbud.com/images/logo.svg',
+      'Tiqets': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets US': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets UK': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets IT': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets FR': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets DE': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Kiwi.com': 'https://images.kiwi.com/common/kiwicom-logo.svg',
+      'Kiwi CA': 'https://images.kiwi.com/common/kiwicom-logo.svg',
+      'Kiwi MX': 'https://images.kiwi.com/common/kiwicom-logo.svg',
+      'Kiwi US': 'https://images.kiwi.com/common/kiwicom-logo.svg',
+      'Airalo': 'https://assets.airalo.com/images/airalo-logo.svg',
+      'Aviasales': 'https://static.aviasales.com/brand/aviasales-logo.svg',
+      'Welcome Pickups': 'https://www.welcomepickups.com/wp-content/themes/welcome/img/logo.svg',
+      'Localrent.com': 'https://localrent.com/static/img/logo.svg',
+      'BigBusTours': 'https://www.bigbustours.com/favicon.ico',
+      'Intui.travel': 'https://intui.travel/favicon.ico',
+      'GetTransfer.com': 'https://gettransfer.com/favicon.ico',
+      'Drimsim': 'https://drimsim.com/favicon.ico',
+      'Yesim': 'https://yesim.app/favicon.ico',
+      'Saily': 'https://saily.com/favicon.ico'
+    };
 
     const fallbackItems = [
       {
         platform: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        title: 'YouTube Example',
+        title: 'YouTube Music Example',
         description: 'Embedded YouTube content rendered with iframe support.',
         author: 'Demo Source',
         publishedAt: '2026-04-14T09:00:00Z',
         thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
+      },
+      {
+        platform: 'youtube',
+        embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ',
+        url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
+        title: 'YouTube Pop Example',
+        description: 'Second YouTube sample so the feed does not repeat one video card.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-13T09:00:00Z',
+        thumbnail: 'https://img.youtube.com/vi/3JZ_D3ELwOQ/hqdefault.jpg'
+      },
+      {
+        platform: 'youtube',
+        embedUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk',
+        url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
+        title: 'YouTube Global Example',
+        description: 'Third YouTube sample for variety in fallback mode.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-12T09:00:00Z',
+        thumbnail: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg'
       },
       {
         platform: 'reddit',
@@ -616,7 +627,7 @@
         description: 'Reddit falls back to a thumbnail when no direct MP4 is available.',
         author: 'Demo Source',
         publishedAt: '2026-04-13T11:30:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=Reddit'
+        thumbnail: 'https://via.placeholder.com/640x960?text=Reddit+Clip'
       },
       {
         platform: 'instagram',
@@ -626,7 +637,7 @@
         description: 'Instagram falls back safely when no valid embed URL is present.',
         author: 'Demo Source',
         publishedAt: '2026-04-12T14:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=Instagram'
+        thumbnail: 'https://via.placeholder.com/640x960?text=Instagram+Reel'
       },
       {
         platform: 'facebook',
@@ -636,7 +647,7 @@
         description: 'Facebook falls back safely when no valid embed URL is present.',
         author: 'Demo Source',
         publishedAt: '2026-04-11T16:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=Facebook'
+        thumbnail: 'https://via.placeholder.com/640x960?text=Facebook+Video'
       },
       {
         platform: 'tiktok',
@@ -645,7 +656,34 @@
         description: 'TikTok content can be merged into the same feed with a thumbnail fallback.',
         author: 'Demo Source',
         publishedAt: '2026-04-10T18:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=TikTok'
+        thumbnail: 'https://via.placeholder.com/640x960?text=TikTok+Style'
+      },
+      {
+        platform: 'unknown',
+        url: 'https://example.com/travel',
+        title: 'Travel Promo Example',
+        description: 'A generic promo card used only when APIs do not return enough items.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-09T18:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x960?text=Travel+Promo'
+      },
+      {
+        platform: 'unknown',
+        url: 'https://example.com/deals',
+        title: 'Deals Example',
+        description: 'A generic deal card for feed variety in fallback mode.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-08T18:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x960?text=Deals'
+      },
+      {
+        platform: 'unknown',
+        url: 'https://example.com/guides',
+        title: 'Guide Example',
+        description: 'A generic guide card for feed variety in fallback mode.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-07T18:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x960?text=Guides'
       }
     ];
 
@@ -658,13 +696,93 @@
           baseDate.setMinutes(baseDate.getMinutes() - (round * seedItems.length + index) * 7);
           copy.publishedAt = baseDate.toISOString();
           copy.title = item.title + ' #' + (round + 1);
+          copy.url = (item.url || '#') + (item.url && item.url.includes('?') ? '&' : '?') + 'demo=' + (round + 1) + '-' + index;
           output.push(copy);
         });
       }
       return output;
     }
 
-    const demoFeedItems = buildDemoFeed(fallbackItems, 12);
+    function dedupeFeedItems(items) {
+      const seen = new Set();
+      return items.filter(function(item) {
+        const platform = normalizePlatform(item.platform || '');
+        const embed = item.embedUrl || '';
+        const video = item.videoUrl || '';
+        const thumb = item.thumbnail || '';
+        const resolvedYouTube = platform === 'youtube'
+          ? (embed || getYouTubeEmbedUrl(item.url || '') || '')
+          : '';
+
+        const key = [
+          platform,
+          resolvedYouTube,
+          video,
+          thumb
+        ].join('|').toLowerCase();
+
+        if (!key.replace(/\|/g, '')) return true;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function interleaveByPlatform(items, limit) {
+      const buckets = new Map();
+      items.forEach(function(item) {
+        const key = normalizePlatform(item.platform || 'unknown');
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(item);
+      });
+
+      const order = Array.from(buckets.keys());
+      const output = [];
+      let added = true;
+
+      while (added && output.length < limit) {
+        added = false;
+        order.forEach(function(key) {
+          const bucket = buckets.get(key);
+          if (bucket && bucket.length && output.length < limit) {
+            output.push(bucket.shift());
+            added = true;
+          }
+        });
+      }
+
+      return output;
+    }
+
+    function mixNonYoutubeFallback(liveItems, fallbackItems, limit) {
+      const live = interleaveByPlatform(dedupeFeedItems(liveItems), limit);
+      const fallbackPool = interleaveByPlatform(
+        dedupeFeedItems(
+          fallbackItems.filter(function(item) {
+            return normalizePlatform(item.platform) !== 'youtube';
+          })
+        ),
+        limit
+      );
+
+      const output = [];
+      let liveIndex = 0;
+      let fallbackIndex = 0;
+
+      while (output.length < limit && (liveIndex < live.length || fallbackIndex < fallbackPool.length)) {
+        if (liveIndex < live.length) {
+          output.push(live[liveIndex++]);
+        }
+        if (output.length >= limit) break;
+        if (fallbackIndex < fallbackPool.length) {
+          output.push(fallbackPool[fallbackIndex++]);
+        }
+      }
+
+      return dedupeFeedItems(output);
+    }
+
+    const demoFeedItems = buildDemoFeed(fallbackItems, 4);
 
     const sourceConfigs = [
       { key: 'youtube', url: '/api/feed/youtube' },
@@ -673,6 +791,21 @@
       { key: 'facebook', url: '/api/feed/facebook' },
       { key: 'tiktok', url: '/api/feed/tiktok' }
     ];
+
+    const partnersRail = document.getElementById('partnersRail');
+    const brandGrid = document.getElementById('brandGrid');
+    const feedContainer = document.getElementById('feedContainer');
+    const feedLoader = document.getElementById('feedLoader');
+    const feedSentinel = document.getElementById('feedSentinel');
+    const magnetoColumn = document.getElementById('magnetoColumn');
+
+    let allFeedItems = [];
+    let visibleFeedItems = [];
+    let currentIndex = 0;
+    let isLoading = false;
+    const pageSize = 12;
+    let observer = null;
+    let playbackObserver = null;
 
     function escapeHtml(value) {
       if (value == null) return '';
@@ -759,45 +892,37 @@
       });
     }
 
-    async function loadPartners() {
-      try {
-        const data = await fetchJson('/data/partners.json');
+    function monetizeUrl(url, meta) {
+      if (!isValidHttpUrl(url)) return '#';
 
-        if (Array.isArray(data?.categories) && data.categories.length) {
-          return data.categories.map(function(category) {
-            return {
-              name: category.name || 'Other Partners',
-              color: category.color || '#8f9fb3',
-              partners: dedupePartners(Array.isArray(category.partners) ? category.partners : [])
-            };
-          }).filter(function(category) {
-            return category.partners.length > 0;
-          });
-        }
+      const host = window.location.hostname || '';
+      const protocol = window.location.protocol || '';
+      const isPreview =
+        protocol === 'file:' ||
+        host === 'localhost' ||
+        host === '127.0.0.1' ||
+        host.endsWith('.oausercontent.com') ||
+        host.includes('sandbox');
 
-        const flatPartners = Array.isArray(data) ? data : data.partners;
-        if (Array.isArray(flatPartners) && flatPartners.length) {
-          const grouped = {};
-          dedupePartners(flatPartners).forEach(function(partner) {
-            const category = partner.category || 'Other Partners';
-            if (!grouped[category]) {
-              grouped[category] = {
-                name: category,
-                color: partner.color || '#8f9fb3',
-                partners: []
-              };
-            }
-            grouped[category].partners.push({
-              name: partner.name,
-              url: partner.url
-            });
-          });
-          return Object.values(grouped);
-        }
-      } catch (err) {
-        console.warn('Partners fetch failed, using fallback partners.', err);
+      if (isPreview) {
+        return url;
       }
 
+      const params = new URLSearchParams();
+      params.set('url', url);
+
+      if (meta && meta.partner) {
+        params.set('partner', meta.partner);
+      }
+
+      if (meta && meta.source) {
+        params.set('source', meta.source);
+      }
+
+      return '/api/out?' + params.toString();
+    }
+
+    function buildGroupedFallbackPartners() {
       const groupedFallback = {};
       dedupePartners(fallbackPartners).forEach(function(partner) {
         const category = partner.category || 'Other Partners';
@@ -810,10 +935,119 @@
         }
         groupedFallback[category].partners.push({
           name: partner.name,
-          url: partner.url
+          url: partner.url,
+          logo: partner.logo || partnerLogoOverrides[partner.name] || ''
         });
       });
       return Object.values(groupedFallback);
+    }
+
+    async function loadPartners() {
+      const fallbackGrouped = buildGroupedFallbackPartners();
+
+      try {
+        const data = await fetchJson('/data/partners.json');
+
+        if (Array.isArray(data?.categories) && data.categories.length) {
+          const byName = new Map();
+          fallbackGrouped.forEach(function(category) {
+            byName.set(category.name, {
+              name: category.name,
+              color: category.color,
+              partners: category.partners.slice()
+            });
+          });
+
+          data.categories.forEach(function(category) {
+            const categoryName = category.name || 'Other Partners';
+            const base = byName.get(categoryName) || {
+              name: categoryName,
+              color: category.color || '#8f9fb3',
+              partners: []
+            };
+
+            const existing = new Map(base.partners.map(function(p) {
+              return [String(p.name).toLowerCase(), p];
+            }));
+
+            (Array.isArray(category.partners) ? category.partners : []).forEach(function(partner) {
+              const key = String(partner.name || '').toLowerCase();
+              if (!key || !partner.url) return;
+              existing.set(key, {
+                name: partner.name,
+                url: partner.url,
+                logo: partner.logo || partnerLogoOverrides[partner.name] || existing.get(key)?.logo || ''
+              });
+            });
+
+            base.color = category.color || base.color || '#8f9fb3';
+            base.partners = Array.from(existing.values());
+            byName.set(categoryName, base);
+          });
+
+          return Array.from(byName.values()).filter(function(category) {
+            return category.partners.length > 0;
+          });
+        }
+
+        const flatPartners = Array.isArray(data) ? data : data.partners;
+        if (Array.isArray(flatPartners) && flatPartners.length) {
+          const byName = new Map();
+          fallbackGrouped.forEach(function(category) {
+            byName.set(category.name, {
+              name: category.name,
+              color: category.color,
+              partners: category.partners.slice()
+            });
+          });
+
+          dedupePartners(flatPartners).forEach(function(partner) {
+            const category = partner.category || 'Other Partners';
+            const base = byName.get(category) || {
+              name: category,
+              color: partner.color || '#8f9fb3',
+              partners: []
+            };
+
+            const idx = base.partners.findIndex(function(p) {
+              return String(p.name).toLowerCase() === String(partner.name).toLowerCase();
+            });
+
+            const mergedPartner = {
+              name: partner.name,
+              url: partner.url,
+              logo: partner.logo || partnerLogoOverrides[partner.name] || ''
+            };
+
+            if (idx >= 0) {
+              base.partners[idx] = Object.assign({}, base.partners[idx], mergedPartner);
+            } else {
+              base.partners.push(mergedPartner);
+            }
+
+            base.color = partner.color || base.color || '#8f9fb3';
+            byName.set(category, base);
+          });
+
+          return Array.from(byName.values()).filter(function(category) {
+            return category.partners.length > 0;
+          });
+        }
+      } catch (err) {
+        console.warn('Partners fetch failed, using fallback partners.', err);
+      }
+
+      return fallbackGrouped;
+    }
+
+    function hexToRgb(hex) {
+      const clean = String(hex || '').replace('#', '');
+      if (clean.length !== 6) return '143,159,179';
+      const bigint = parseInt(clean, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return r + ',' + g + ',' + b;
     }
 
     function renderPartners(categoriesData) {
@@ -847,39 +1081,99 @@
         const color = category.color || '#8f9fb3';
         return '<div class="category">' +
           '<details' + (index === 0 ? ' open' : '') + '>' +
-            '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(category.name || 'Other Partners') + '</summary>' +
-            '<ul>' + (Array.isArray(category.partners) ? category.partners : []).map(function(partner) {
-              return '<li><a href="' + escapeHtml(monetizeUrl(partner.url)) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
-            }).join('') + '</ul>' +
+          '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(category.name || 'Other Partners') + '</summary>' +
+          '<ul>' + (Array.isArray(category.partners) ? category.partners : []).map(function(partner) {
+            return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
+          }).join('') + '</ul>' +
           '</details>' +
-        '</div>';
+          '</div>';
       }).join('');
     }
 
-    function hexToRgb(hex) {
-      const clean = String(hex || '').replace('#', '');
-      if (clean.length !== 6) return '143,159,179';
-      const bigint = parseInt(clean, 16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return r + ',' + g + ',' + b;
+    function renderBrandGrid(categories) {
+      if (!brandGrid) return;
+
+      const priority = [
+        'Trivago USA',
+        'Trivago AR',
+        'Trivago BR',
+        'Trivago CO',
+        'Trivago DE',
+        'Trivago MX',
+        'Trivago NZ',
+        'Trivago PE',
+        'Kiwi.com',
+        'Kiwi CA',
+        'Kiwi MX',
+        'Kiwi US',
+        'Kiwitaxi',
+        'Airalo',
+        'Klook',
+        'Tiqets US',
+        'Tiqets UK',
+        'Tiqets IT',
+        'Tiqets FR',
+        'Tiqets DE',
+        'Aviasales',
+        'GoCity',
+        'Welcome Pickups',
+        'Busbud',
+        'Localrent.com'
+      ];
+
+      const flat = [];
+      categories.forEach(function(c) {
+        (c.partners || []).forEach(function(p) {
+          flat.push({ name: p.name, url: p.url, logo: p.logo || partnerLogoOverrides[p.name] || '', category: c.name || '' });
+        });
+      });
+
+      const selected = [];
+
+      priority.forEach(function(name) {
+        flat.filter(function(p) { return p.name === name; }).forEach(function(match) {
+          if (!selected.some(function(s) { return s.name === match.name && s.url === match.url; })) {
+            selected.push(match);
+          }
+        });
+      });
+
+      flat.forEach(function(p) {
+        if (selected.length >= 24) return;
+        if ((p.logo || /trivago|kiwi|tiqets/i.test(p.name)) && !selected.some(function(s) { return s.name === p.name && s.url === p.url; })) {
+          selected.push(p);
+        }
+      });
+
+      if (!selected.length) {
+        brandGrid.innerHTML = '<div class="column-1-empty">No brand assets found.</div>';
+        return;
+      }
+
+      brandGrid.innerHTML = selected.map(function(p) {
+        const colorMap = {
+          'Flights & Meta Search': 'rgba(77,210,192,0.15)',
+          'Transfers & Transport': 'rgba(77,166,255,0.15)',
+          'Tours & Activities': 'rgba(108,217,139,0.15)',
+          'SIM & Connectivity': 'rgba(193,125,255,0.15)',
+          'Car Rentals': 'rgba(255,184,77,0.15)'
+        };
+
+        const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
+        const borderColor = bgColor.replace('0.15','0.35');
+        const href = monetizeUrl(p.url, { partner: p.name, source: 'column3' });
+        if (p.logo) {
+          return '<a class="brand-tile" style="background:'+bgColor+';border:1px solid '+borderColor+';" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
+            '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" onerror="this.style.display=\'none\'; this.closest(\'.brand-tile\').classList.add(\'logo-failed\');">' +
+            '<span>' + escapeHtml(p.name) + '</span>' +
+            '</a>';
+        }
+
+        return '<a class="brand-tile" style="background:'+bgColor+';border:1px solid '+borderColor+';" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
+          '<span>' + escapeHtml(p.name) + '</span>' +
+          '</a>';
+      }).join('');
     }
-
-    const partnersRail = document.getElementById('partnersRail');
-    const brandGrid = document.getElementById('brandGrid');
-    const feedContainer = document.getElementById('feedContainer');
-    const feedLoader = document.getElementById('feedLoader');
-    const feedSentinel = document.getElementById('feedSentinel');
-    const magnetoColumn = document.getElementById('magnetoColumn');
-
-    let allFeedItems = [];
-    let visibleFeedItems = [];
-    let currentIndex = 0;
-    let isLoading = false;
-    const pageSize = 12;
-    let observer = null;
-    let playbackObserver = null;
 
     function normalizeFeedData(data) {
       if (Array.isArray(data)) return data;
@@ -931,7 +1225,7 @@
         return fetchJson(source.url);
       }));
 
-      const merged = [];
+      let merged = [];
       const debugParts = [];
 
       settled.forEach(function(result, index) {
@@ -955,13 +1249,29 @@
         }
       });
 
-      if (merged.length) {
-        setDebug('Sources → ' + debugParts.join(' | '));
-        return merged;
+      const uniqueLive = interleaveByPlatform(dedupeFeedItems(merged), 60);
+      const livePlatforms = Array.from(new Set(uniqueLive.map(function(item) {
+        return normalizePlatform(item.platform || 'unknown');
+      }).filter(Boolean)));
+      const onlyYoutubeLive = livePlatforms.length === 1 && livePlatforms[0] === 'youtube';
+
+      if (uniqueLive.length >= 12 && !onlyYoutubeLive) {
+        setDebug('Sources → ' + debugParts.join(' | ') + ' | unique live: ' + uniqueLive.length);
+        return uniqueLive;
       }
 
-      setDebug('Sources unavailable, using demo feed');
-      return demoFeedItems.map(normalizeFeedItem);
+      const fallbackNormalized = demoFeedItems.map(normalizeFeedItem);
+
+      if (onlyYoutubeLive && uniqueLive.length) {
+        const mixedYoutube = mixNonYoutubeFallback(uniqueLive, fallbackNormalized, 60);
+        setDebug('Sources → ' + debugParts.join(' | ') + ' | mixed non-youtube fallback: ' + mixedYoutube.length);
+        return mixedYoutube;
+      }
+
+      const fallbackUnique = interleaveByPlatform(dedupeFeedItems(fallbackNormalized), 60);
+      const mixedFallback = interleaveByPlatform(dedupeFeedItems(uniqueLive.concat(fallbackUnique)), 60);
+      setDebug('Sources → ' + debugParts.join(' | ') + ' | unique mixed: ' + mixedFallback.length);
+      return mixedFallback;
     }
 
     function createMediaMarkup(item) {
@@ -988,31 +1298,10 @@
       return '<div class="fallback">' +
         '<img src="' + safeThumbnail + '" alt="' + title + '" loading="lazy">' +
         '<div>' +
-          '<div style="margin-bottom:8px;color:rgba(255,255,255,0.78);">Preview unavailable for this source.</div>' +
-          '<a href="' + escapeHtml(openUrl) + '" target="_blank" rel="noopener noreferrer">Open Link</a>' +
+        '<div style="margin-bottom:8px;color:rgba(255,255,255,0.78);">Preview unavailable for this source.</div>' +
+        '<a href="' + escapeHtml(openUrl) + '" target="_blank" rel="noopener noreferrer">Open Link</a>' +
         '</div>' +
         '</div>';
-    }
-
-    function monetizeUrl(url) {
-      if (!isValidHttpUrl(url)) return '#';
-
-      const host = window.location.hostname || '';
-      const protocol = window.location.protocol || '';
-      const isPreview =
-        protocol === 'file:' ||
-        host === 'localhost' ||
-        host === '127.0.0.1' ||
-        host.endsWith('.oausercontent.com') ||
-        host.includes('sandbox');
-
-      // In preview/local, bypass /out so links still work.
-      if (isPreview) {
-        return url;
-      }
-
-      // On live server, route every click through the monetization redirect.
-      return '/out?url=' + encodeURIComponent(url);
     }
 
     function createFeedCard(item) {
@@ -1025,21 +1314,21 @@
       const platformRaw = item.platform || 'unknown';
       const platform = normalizePlatform(platformRaw);
       const rawUrl = isValidHttpUrl(item.url) ? item.url : '#';
-      const monetizedUrl = monetizeUrl(rawUrl);
+      const monetizedUrl = monetizeUrl(rawUrl, { partner: title, source: 'feed_card' });
       const publishedAt = formatDate(item.publishedAt);
 
       article.innerHTML =
         createMediaMarkup(item) +
         '<div class="feed-content">' +
-          '<h3>' + title + '</h3>' +
-          '<div class="feed-meta">' +
-            '<span class="feed-platform ' + platform + '">' + escapeHtml(platformRaw) + '</span>' +
-            (author ? author : '') +
-            ((author && publishedAt) ? ' • ' : '') +
-            publishedAt +
-          '</div>' +
-          (description ? '<p>' + description + '</p>' : '') +
-          '<a class="feed-link" href="' + escapeHtml(monetizedUrl) + '" target="_blank" rel="noopener noreferrer">Open post</a>' +
+        '<h3>' + title + '</h3>' +
+        '<div class="feed-meta">' +
+        '<span class="feed-platform ' + platform + '">' + escapeHtml(platformRaw) + '</span>' +
+        (author ? author : '') +
+        ((author && publishedAt) ? ' • ' : '') +
+        publishedAt +
+        '</div>' +
+        (description ? '<p>' + description + '</p>' : '') +
+        '<a class="feed-link" href="' + escapeHtml(monetizedUrl) + '" target="_blank" rel="noopener noreferrer">Open post</a>' +
         '</div>';
 
       article.style.cursor = 'pointer';
@@ -1168,123 +1457,30 @@
       threshold: [0.6]
     });
 
-    // Use DuckDuckGo logo proxy (much more reliable than Clearbit)
-const brandLogoMap = {
-  'Trivago USA': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-  'Trivago AR': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-  'Trivago BR': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-  'Trivago CO': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-  'Trivago DE': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-  'Trivago MX': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-  'Trivago NZ': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-  'Trivago PE': 'https://icons.duckduckgo.com/ip3/trivago.com.ico',
-
-  'Kiwi.com': 'https://icons.duckduckgo.com/ip3/kiwi.com.ico',
-  'Kiwi CA': 'https://icons.duckduckgo.com/ip3/kiwi.com.ico',
-  'Kiwi MX': 'https://icons.duckduckgo.com/ip3/kiwi.com.ico',
-  'Kiwi US': 'https://icons.duckduckgo.com/ip3/kiwi.com.ico',
-
-  'Kiwitaxi': 'https://icons.duckduckgo.com/ip3/kiwitaxi.com.ico',
-  'Airalo': 'https://icons.duckduckgo.com/ip3/airalo.com.ico',
-  'Klook': 'https://icons.duckduckgo.com/ip3/klook.com.ico',
-
-  'Tiqets': 'https://icons.duckduckgo.com/ip3/tiqets.com.ico',
-  'Tiqets DE': 'https://icons.duckduckgo.com/ip3/tiqets.com.ico',
-  'Tiqets FR': 'https://icons.duckduckgo.com/ip3/tiqets.com.ico',
-  'Tiqets IT': 'https://icons.duckduckgo.com/ip3/tiqets.com.ico',
-  'Tiqets UK': 'https://icons.duckduckgo.com/ip3/tiqets.com.ico',
-  'Tiqets US': 'https://icons.duckduckgo.com/ip3/tiqets.com.ico',
-
-  'Aviasales': 'https://icons.duckduckgo.com/ip3/aviasales.com.ico',
-  'GoCity': 'https://icons.duckduckgo.com/ip3/gocity.com.ico',
-  'Welcome Pickups': 'https://icons.duckduckgo.com/ip3/welcomepickups.com.ico',
-  'Busbud': 'https://icons.duckduckgo.com/ip3/busbud.com.ico',
-  'Localrent.com': 'https://icons.duckduckgo.com/ip3/localrent.com.ico'
-};
-
-    function renderBrandGrid(categories) {
-      if (!brandGrid) return;
-
-      const priority = [
-        'Trivago USA',
-        'Kiwi.com',
-        'Kiwitaxi',
-        'Airalo',
-        'Klook',
-        'Tiqets US',
-        'Aviasales',
-        'GoCity',
-        'Welcome Pickups',
-        'Busbud'
-      ];
-
-      const flat = [];
-      categories.forEach(function(c) {
-        (c.partners || []).forEach(function(p) {
-          flat.push({ name: p.name, url: p.url });
-        });
-      });
-
-      const selected = [];
-      priority.forEach(function(name) {
-        const match = flat.find(function(p) { return p.name === name; });
-        if (match && !selected.some(function(s) { return s.name === match.name; })) {
-          selected.push(match);
-        }
-      });
-
-      flat.forEach(function(p) {
-        if (selected.length >= 12) return;
-        const known = brandLogoMap[p.name] || Object.keys(brandLogoMap).find(function(key) {
-          return p.name.toLowerCase().includes(key.toLowerCase());
-        });
-        if (known && !selected.some(function(s) { return s.name === p.name; })) {
-          selected.push(p);
-        }
-      });
-
-      brandGrid.innerHTML = selected.map(function(p) {
-        const exactLogo = brandLogoMap[p.name];
-        const fuzzyKey = Object.keys(brandLogoMap).find(function(key) {
-          return p.name.toLowerCase().includes(key.toLowerCase());
-        });
-        const logo = exactLogo || (fuzzyKey ? brandLogoMap[fuzzyKey] : '');
-        const href = monetizeUrl(p.url);
-
-        if (logo) {
-          return '<a class="brand-tile" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
-            '<img src="' + escapeHtml(logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';">' +
-            '<span style="display:none;">' + escapeHtml(p.name) + '</span>' +
-          '</a>';
-        }
-
-        return '<a class="brand-tile" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
-          '<span>' + escapeHtml(p.name) + '</span>' +
-        '</a>';
-      }).join('');
-    }
-
-    loadPartners().then(function(data){
+    loadPartners().then(function(data) {
       renderBrandGrid(data);
       renderPartners(data);
 
       const search = document.getElementById('partnerSearch');
       if (search) {
-        search.addEventListener('input', function(){
+        search.addEventListener('input', function() {
           const q = search.value.toLowerCase();
-          const filtered = data.map(function(cat){
+          const filtered = data.map(function(cat) {
             return {
               name: cat.name,
               color: cat.color,
-              partners: cat.partners.filter(function(p){
+              partners: cat.partners.filter(function(p) {
                 return p.name.toLowerCase().includes(q);
               })
             };
+          }).filter(function(cat) {
+            return cat.partners.length > 0;
           });
           renderPartners(filtered);
         });
       }
     });
+
     observer.observe(feedSentinel);
     initFeed();
   </script>
