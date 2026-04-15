@@ -480,7 +480,7 @@
       <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
       <div style="font-size:12px;color:rgba(255,255,255,0.6);">Your Digital Shopping Mall</div>
     </div>
-    <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
+    <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806&partner=Kiwi%20US&source=header_featured" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
       <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured deal</div>
       <div style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Compare flights on Kiwi.com</div>
       <div style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Fast search • global routes</div>
@@ -765,7 +765,7 @@
       });
     }
 
-    function monetizeUrl(url) {
+    function monetizeUrl(url, meta) {
       if (!isValidHttpUrl(url)) return '#';
 
       const host = window.location.hostname || '';
@@ -781,7 +781,18 @@
         return url;
       }
 
-      return '/api/out?url=' + encodeURIComponent(url);
+      const params = new URLSearchParams();
+      params.set('url', url);
+
+      if (meta && meta.partner) {
+        params.set('partner', meta.partner);
+      }
+
+      if (meta && meta.source) {
+        params.set('source', meta.source);
+      }
+
+      return '/api/out?' + params.toString();
     }
 
     function buildGroupedFallbackPartners() {
@@ -945,7 +956,7 @@
           '<details' + (index === 0 ? ' open' : '') + '>' +
           '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(category.name || 'Other Partners') + '</summary>' +
           '<ul>' + (Array.isArray(category.partners) ? category.partners : []).map(function(partner) {
-            return '<li><a href="' + escapeHtml(monetizeUrl(partner.url)) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
+            return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
           }).join('') + '</ul>' +
           '</details>' +
           '</div>';
@@ -1023,7 +1034,7 @@
 
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15','0.35');
-        const href = monetizeUrl(p.url);
+        const href = monetizeUrl(p.url, { partner: p.name, source: 'column3' });
         if (p.logo) {
           return '<a class="brand-tile" style="background:'+bgColor+';border:1px solid '+borderColor+';" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
             '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" onerror="this.style.display=\'none\'; this.closest(\'.brand-tile\').classList.add(\'logo-failed\');">' +
@@ -1160,7 +1171,7 @@
       const platformRaw = item.platform || 'unknown';
       const platform = normalizePlatform(platformRaw);
       const rawUrl = isValidHttpUrl(item.url) ? item.url : '#';
-      const monetizedUrl = monetizeUrl(rawUrl);
+      const monetizedUrl = monetizeUrl(rawUrl, { partner: title, source: 'feed_card' });
       const publishedAt = formatDate(item.publishedAt);
 
       article.innerHTML =
