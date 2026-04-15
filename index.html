@@ -38,6 +38,7 @@
     }
 
     .column-1 {
+      padding-top:132px;
       background: #0f141b;
       border-right: 1px solid rgba(255,255,255,0.06);
     }
@@ -51,10 +52,13 @@
       top: 0;
       background: #0f141b;
       z-index: 5;
+      text-align: center;
     }
 
     .column-1-search-wrap {
       padding: 8px 12px 0 12px;
+      display: flex;
+      justify-content: center;
     }
 
     .column-1-search {
@@ -65,6 +69,7 @@
       color: #ffffff;
       font-size: 13px;
       width: 100%;
+      max-width: 232px;
       outline: none;
     }
 
@@ -77,10 +82,15 @@
       overflow-y: auto;
       padding: 12px;
       scrollbar-width: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .category {
       margin-bottom: 10px;
+      width: 100%;
+      max-width: 244px;
     }
 
     .category details {
@@ -339,12 +349,16 @@
       margin: 0 0 16px 0;
       font-size: 18px;
       font-weight: 700;
+      text-align: center;
     }
 
     .brand-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
+      width: 100%;
+      max-width: 236px;
+      margin: 0 auto;
     }
 
     .brand-tile {
@@ -446,7 +460,19 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <div style="position:fixed;top:0;left:0;width:280px;background:#0f141b;border-right:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 16px;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+    <div>
+      <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);">Your Digital Shopping Mall</div>
+    </div>
+    <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured deal</div>
+      <div style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Compare flights on Kiwi.com</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Fast search • global routes</div>
+    </a>
+    <div style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted travel brands and monetized outbound offers.</div>
+  </div>
+  <div class="app" style="margin-top:0;">
     <div class="column column-1">
       <div class="column-1-header">Navigation</div>
       <div class="column-1-search-wrap">
@@ -514,18 +540,37 @@
 
     const partnerLogoOverrides = {
       'Trivago USA': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago AR': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago BR': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago CO': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago DE': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago MX': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago NZ': 'https://img.trvcdn.net/logo/trivago-us.svg',
+      'Trivago PE': 'https://img.trvcdn.net/logo/trivago-us.svg',
       'Kiwitaxi': 'https://kiwitaxi.com/img/logo.svg',
       'Klook': 'https://res.klook.com/image/upload/v163/logo/klook-logo.svg',
       'GoCity': 'https://gocity.com/themes/custom/gocity/logo.svg',
       'Busbud': 'https://busbud.com/images/logo.svg',
       'Tiqets': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
       'Tiqets US': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets UK': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets IT': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets FR': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
+      'Tiqets DE': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
       'Kiwi.com': 'https://images.kiwi.com/common/kiwicom-logo.svg',
       'Kiwi CA': 'https://images.kiwi.com/common/kiwicom-logo.svg',
+      'Kiwi MX': 'https://images.kiwi.com/common/kiwicom-logo.svg',
+      'Kiwi US': 'https://images.kiwi.com/common/kiwicom-logo.svg',
       'Airalo': 'https://assets.airalo.com/images/airalo-logo.svg',
       'Aviasales': 'https://static.aviasales.com/brand/aviasales-logo.svg',
       'Welcome Pickups': 'https://www.welcomepickups.com/wp-content/themes/welcome/img/logo.svg',
-      'Localrent.com': 'https://localrent.com/static/img/logo.svg'
+      'Localrent.com': 'https://localrent.com/static/img/logo.svg',
+      'BigBusTours': 'https://www.bigbustours.com/favicon.ico',
+      'Intui.travel': 'https://intui.travel/favicon.ico',
+      'GetTransfer.com': 'https://gettransfer.com/favicon.ico',
+      'Drimsim': 'https://drimsim.com/favicon.ico',
+      'Yesim': 'https://yesim.app/favicon.ico',
+      'Saily': 'https://saily.com/favicon.ico'
     };
 
     const fallbackItems = [
