@@ -446,20 +446,11 @@
         thumbnail: 'https://via.placeholder.com/720x1280/0f1722/f5c542?text=Kiwi.com+Deals'
       },
       {
-        platform: 'youtube',
-        title: 'YouTube Music Example',
-        description: 'Primary live-style video card.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-14T09:00:00Z',
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-      },
-      {
         platform: 'facebook',
         title: 'Travel inspiration card',
-        description: 'Fallback content card while secondary feeds are limited.',
+        description: 'Destination and attraction ideas while live social APIs are limited.',
         author: 'SignalBoost',
-        publishedAt: '2026-04-12T14:00:00Z',
+        publishedAt: '2026-04-14T08:54:00Z',
         url: 'https://gocity.tpo.lv/Des5Cgov',
         thumbnail: 'https://via.placeholder.com/720x1280/122017/66d18f?text=Travel+Inspiration'
       },
@@ -468,52 +459,61 @@
         title: 'Travel tools card',
         description: 'Useful travel tools and booking shortcuts.',
         author: 'SignalBoost',
-        publishedAt: '2026-04-14T08:50:00Z',
+        publishedAt: '2026-04-14T08:53:00Z',
         url: 'https://localrent.tpo.lv/XS0CqdMP',
         thumbnail: 'https://via.placeholder.com/720x1280/111b28/ff8a45?text=Travel+Tools'
-      },
-      {
-        platform: 'youtube',
-        title: 'YouTube Pop Example',
-        description: 'Second video card for variety.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-13T09:00:00Z',
-        url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
-        embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
       },
       {
         platform: 'deals',
         title: 'eSIM deals with Airalo',
         description: 'Connectivity card for monetized browsing.',
         author: 'SignalBoost',
-        publishedAt: '2026-04-12T13:50:00Z',
+        publishedAt: '2026-04-14T08:52:00Z',
         url: 'https://airalo.tpo.lv/eXjKLiuw',
         thumbnail: 'https://via.placeholder.com/720x1280/201228/c17dff?text=Airalo+eSIM'
-      },
-      {
-        platform: 'reddit',
-        title: 'Storage and services',
-        description: 'Useful travel support tools and add-ons.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-11T16:00:00Z',
-        url: 'https://radicalstorage.tpo.lv/tna4hnly',
-        thumbnail: 'https://via.placeholder.com/720x1280/2a2612/ffd966?text=Storage+%26+Services'
       },
       {
         platform: 'facebook',
         title: 'Insurance and claims',
         description: 'Flight disruption and travel protection options.',
         author: 'SignalBoost',
-        publishedAt: '2026-04-11T17:30:00Z',
+        publishedAt: '2026-04-14T08:51:00Z',
         url: 'https://airhelp.tpo.lv/EPrGDSO3',
         thumbnail: 'https://via.placeholder.com/720x1280/2a1515/ff6b6b?text=Insurance'
+      },
+      {
+        platform: 'reddit',
+        title: 'Storage and services',
+        description: 'Useful travel support tools and add-ons.',
+        author: 'SignalBoost',
+        publishedAt: '2026-04-14T08:50:00Z',
+        url: 'https://radicalstorage.tpo.lv/tna4hnly',
+        thumbnail: 'https://via.placeholder.com/720x1280/2a2612/ffd966?text=Storage+%26+Services'
+      },
+      {
+        platform: 'youtube',
+        title: 'YouTube Music Example',
+        description: 'Primary live-style video card.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-14T08:49:00Z',
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+      },
+      {
+        platform: 'youtube',
+        title: 'YouTube Pop Example',
+        description: 'Second video card for variety.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-14T08:48:00Z',
+        url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
+        embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
       },
       {
         platform: 'youtube',
         title: 'YouTube Global Example',
         description: 'Third video card in the stream.',
         author: 'Demo Source',
-        publishedAt: '2026-04-12T09:00:00Z',
+        publishedAt: '2026-04-14T08:47:00Z',
         url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
         embedUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk'
       },
@@ -522,7 +522,7 @@
         title: 'Transfers and taxis',
         description: 'Airport transfer and taxi partner shortcuts.',
         author: 'SignalBoost',
-        publishedAt: '2026-04-11T18:00:00Z',
+        publishedAt: '2026-04-14T08:46:00Z',
         url: 'https://kiwitaxi.tpo.lv/DVaqmgKo',
         thumbnail: 'https://via.placeholder.com/720x1280/10203a/4da6ff?text=Transfers'
       }
@@ -602,7 +602,7 @@
 
     function renderPartners(items) {
       const grouped = groupPartners(items);
-      const order = ['Transfers & Transport', 'Car Rentals', 'SIM & Connectivity', 'Tours & Activities', 'Flights & Meta Search'];
+      const order = ['Transfers & Transport', 'Car Rentals', 'SIM & Connectivity', 'Tours & Activities', 'Insurance & Claims', 'Flights & Meta Search', 'Storage & Services'];
       partnersRail.innerHTML = order.filter(function(name) { return grouped[name]?.length; }).map(function(categoryName, index) {
         const color = grouped[categoryName][0].color;
         return '<div class="category">' +
