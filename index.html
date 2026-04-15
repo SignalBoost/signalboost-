@@ -3,31 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unified Social Video Renderer</title>
+  <title>SignalBoost</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     html, body {
       margin: 0;
       height: 100%;
       font-family: Arial, sans-serif;
       background: #0d1117;
-      color: #ffffff;
+      color: #fff;
     }
-
-    body {
-      overflow: hidden;
-    }
+    body { overflow: hidden; }
 
     .app {
       display: grid;
       grid-template-columns: 280px minmax(520px, 1fr) 280px;
       height: 100vh;
       min-height: 0;
-      gap: 0;
-      padding: 0;
     }
 
     .column {
@@ -38,7 +30,7 @@
     }
 
     .column-1 {
-      padding-top:132px;
+      padding-top: 132px;
       background: #0f141b;
       border-right: 1px solid rgba(255,255,255,0.06);
     }
@@ -48,43 +40,39 @@
       font-size: 16px;
       font-weight: 700;
       border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      background: #0f141b;
       position: sticky;
       top: 0;
-      background: #0f141b;
       z-index: 5;
-      text-align: center;
     }
 
     .column-1-search-wrap {
-      padding: 8px 12px 0 12px;
+      padding: 8px 12px 0;
       display: flex;
       justify-content: center;
     }
 
     .column-1-search {
+      width: 100%;
+      max-width: 232px;
       padding: 8px 12px;
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 999px;
       background: #0d1117;
-      color: #ffffff;
+      color: #fff;
       font-size: 13px;
-      width: 100%;
-      max-width: 232px;
       outline: none;
-    }
-
-    .column-1-search::placeholder {
-      color: rgba(255,255,255,0.45);
     }
 
     .column-1-scroll {
       flex: 1;
       overflow-y: auto;
       padding: 12px;
-      scrollbar-width: none;
       display: flex;
       flex-direction: column;
       align-items: center;
+      scrollbar-width: none;
     }
 
     .category {
@@ -102,19 +90,15 @@
     .category summary {
       cursor: pointer;
       padding: 11px 12px;
-      border-radius: 10px;
       user-select: none;
       font-weight: 700;
       list-style: none;
-      color: #ffffff;
+      color: #fff;
     }
 
-    .category summary::-webkit-details-marker {
-      display: none;
-    }
-
+    .category summary::-webkit-details-marker { display: none; }
     .category summary::before {
-      content: "▶";
+      content: '▶';
       display: inline-block;
       width: 14px;
       margin-right: 6px;
@@ -122,44 +106,18 @@
       transform: translateY(-1px);
       color: rgba(255,255,255,0.9);
     }
-
-    .category details[open] summary::before {
-      content: "▼";
-    }
-
-    .category ul {
-      list-style: none;
-      margin: 0;
-      padding: 10px 10px 4px 10px;
-    }
-
-    .category li {
-      margin: 7px 0;
-    }
-
-    .category a {
-      color: rgba(255,255,255,0.92);
-      text-decoration: none;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .category a:hover {
-      text-decoration: underline;
-    }
-
-    .column-1-empty {
-      font-size: 14px;
-      color: rgba(255,255,255,0.65);
-      padding: 8px 4px;
-    }
+    .category details[open] summary::before { content: '▼'; }
+    .category ul { list-style: none; margin: 0; padding: 10px 10px 4px; }
+    .category li { margin: 7px 0; }
+    .category a { color: rgba(255,255,255,0.92); text-decoration: none; font-size: 14px; }
+    .category a:hover { text-decoration: underline; }
 
     .column-2 {
       background: #0d1117;
       min-width: 0;
     }
 
-    #magnetoColumn.feed-wrapper {
+    #magnetoColumn {
       display: flex;
       flex-direction: column;
       flex: 1;
@@ -175,7 +133,6 @@
       display: flex;
       flex-direction: column;
       gap: 18px;
-      min-height: 0;
       width: 100%;
       max-width: 560px;
       margin: 0 auto;
@@ -190,11 +147,6 @@
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 16px;
       padding: 14px;
-      transition: box-shadow 0.15s ease;
-    }
-
-    .feed-card:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.22);
     }
 
     .media-box {
@@ -205,12 +157,9 @@
       border-radius: 14px;
       overflow: hidden;
       background: #0b0f14;
-      display: block;
     }
 
-    .media-box iframe,
-    .media-box video,
-    .media-box img {
+    .media-box iframe, .media-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -218,32 +167,10 @@
       display: block;
     }
 
-    .fallback {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 14px;
-      width: 100%;
-      min-height: 220px;
-      padding: 16px;
-      border-radius: 14px;
-      background: #0b0f14;
-      justify-content: center;
-    }
-
-    .fallback img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 12px;
-      flex-shrink: 0;
-    }
-
     .feed-content h3 {
       margin: 0 0 8px 0;
       font-size: 18px;
       line-height: 1.3;
-      word-break: break-word;
     }
 
     .feed-content p {
@@ -251,7 +178,6 @@
       color: rgba(255,255,255,0.82);
       line-height: 1.5;
       font-size: 14px;
-      word-break: break-word;
     }
 
     .feed-meta {
@@ -269,80 +195,29 @@
       margin-right: 6px;
       text-transform: capitalize;
       background: rgba(255,255,255,0.08);
-      color: #dddddd;
+      color: #ddd;
       vertical-align: middle;
     }
 
-    .feed-platform.youtube {
-      background: rgba(255, 0, 0, 0.15);
-      color: #ff6b6b;
-    }
+    .feed-platform.youtube { background: rgba(255,0,0,0.15); color: #ff6b6b; }
+    .feed-platform.reddit { background: rgba(255,69,0,0.15); color: #ff4500; }
+    .feed-platform.facebook { background: rgba(24,119,242,0.15); color: #66a3ff; }
+    .feed-platform.deals { background: rgba(245,197,66,0.15); color: #f5c542; }
 
-    .feed-platform.reddit {
-      background: rgba(255, 69, 0, 0.15);
-      color: #ff4500;
-    }
-
-    .feed-platform.instagram {
-      background: rgba(255, 0, 150, 0.15);
-      color: #ff4fa3;
-    }
-
-    .feed-platform.facebook {
-      background: rgba(24, 119, 242, 0.15);
-      color: #66a3ff;
-    }
-
-    .feed-platform.tiktok {
-      background: rgba(255,255,255,0.12);
-      color: #ffffff;
-    }
-
-    .feed-link,
-    .fallback a {
+    .feed-link {
       display: inline-block;
       color: #58a6ff;
       text-decoration: none;
       font-size: 14px;
     }
-
-    .feed-link:hover,
-    .fallback a:hover {
-      text-decoration: underline;
-    }
-
-    .feed-loader {
-      text-align: center;
-      padding: 18px 0;
-      color: rgba(255,255,255,0.65);
-      font-size: 14px;
-      display: none;
-    }
-
-    .feed-message {
-      text-align: center;
-      padding: 18px 0;
-      color: rgba(255,255,255,0.65);
-      font-size: 14px;
-    }
-
-    #feedSentinel {
-      height: 1px;
-    }
+    .feed-link:hover { text-decoration: underline; }
 
     .column-3 {
       background: #0f141b;
       border-left: 1px solid rgba(255,255,255,0.06);
       overflow-y: auto;
       padding: 20px;
-      min-width: 0;
-      width: 100%;
       scrollbar-width: none;
-    }
-
-    *::-webkit-scrollbar {
-      width: 0px;
-      height: 0px;
     }
 
     .column-3 h2 {
@@ -367,8 +242,6 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: linear-gradient(145deg, #161b22, #0f141b);
-      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
       min-height: 92px;
       padding: 12px;
@@ -376,25 +249,12 @@
       overflow: hidden;
       transition: all 0.2s ease;
       position: relative;
-    }
-
-    .brand-tile::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 60%);
-      pointer-events: none;
+      color: #fff;
     }
 
     .brand-tile:hover {
-      border-color: rgba(255,255,255,0.2);
-      transform: translateY(-2px) scale(1.02);
+      transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-
-    .brand-tile:hover {
-      border-color: rgba(255,255,255,0.14);
-      transform: translateY(-1px);
     }
 
     .brand-tile img {
@@ -402,75 +262,28 @@
       height: 28px;
       object-fit: contain;
       display: block;
-      flex-shrink: 0;
     }
 
     .brand-tile span {
       font-size: 12px;
       font-weight: 700;
-      color: #ffffff;
       text-align: center;
       line-height: 1.2;
-      display: block;
     }
 
-    @media (max-width: 1200px) {
-      .app {
-        grid-template-columns: 260px minmax(0, 1fr) 260px;
-      }
-
-      .feed-container {
-        max-width: 500px;
-      }
-    }
+    *::-webkit-scrollbar { width: 0; height: 0; }
 
     @media (max-width: 960px) {
-      .app {
-        grid-template-columns: 240px minmax(0, 1fr);
-      }
-
-      .column-3 {
-        display: none;
-      }
+      .app { grid-template-columns: 240px minmax(0, 1fr); }
+      .column-3 { display: none; }
     }
 
     @media (max-width: 768px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-
-      .column-1 {
-        display: none;
-      }
-
-      #magnetoColumn.feed-wrapper {
-        padding: 12px 12px 24px;
-      }
-
-      .feed-container {
-        max-width: 100%;
-        gap: 14px;
-      }
-
-      .feed-card {
-        padding: 12px;
-        border-radius: 14px;
-      }
-
-      .media-box {
-        min-height: 360px;
-        max-height: 70vh;
-        border-radius: 12px;
-      }
-
-      .fallback {
-        min-height: 180px;
-        padding: 14px;
-      }
-
-      .fallback img {
-        height: 180px;
-      }
+      .app { grid-template-columns: 1fr; }
+      .column-1 { display: none; }
+      #magnetoColumn { padding: 12px 12px 24px; }
+      .feed-container { max-width: 100%; }
+      .media-box { min-height: 360px; max-height: 70vh; }
     }
   </style>
 </head>
@@ -487,7 +300,8 @@
     </a>
     <div style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted travel brands and monetized outbound offers.</div>
   </div>
-  <div class="app" style="margin-top:0;">
+
+  <div class="app">
     <div class="column column-1">
       <div class="column-1-header">Navigation</div>
       <div class="column-1-search-wrap">
@@ -497,10 +311,8 @@
     </div>
 
     <div class="column column-2">
-      <div id="magnetoColumn" class="feed-wrapper">
+      <div id="magnetoColumn">
         <div id="feedContainer" class="feed-container"></div>
-        <div id="feedLoader" class="feed-loader">Loading...</div>
-        <div id="feedSentinel"></div>
       </div>
     </div>
 
@@ -512,359 +324,116 @@
 
   <script>
     const fallbackPartners = [
-      // FULL PARTNER SET (expanded from your uploaded list)
-      { category: 'Transfers & Transport', name: 'Kiwitaxi', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', color: '#4da6ff' },
-      { category: 'Transfers & Transport', name: 'Welcome Pickups', url: 'https://tpo.lv/XAJOoobr', color: '#4da6ff' },
-      { category: 'Transfers & Transport', name: 'Intui.travel', url: 'https://intui.tpo.lv/Rrx5VuN3', color: '#4da6ff' },
-      { category: 'Transfers & Transport', name: 'HolidayTaxis', url: 'https://holidaytaxis.tpo.lv/oHwpbrFt', color: '#4da6ff' },
-      { category: 'Transfers & Transport', name: 'GetTransfer.com', url: 'https://gettransfer.tpo.lv/Pb4p9ljm', color: '#4da6ff' },
-      { category: 'Transfers & Transport', name: 'Busbud', url: 'https://busbud.tpo.lv/h4C6YPFZ', color: '#4da6ff' },
+      { category: 'Transfers & Transport', name: 'Kiwitaxi', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', color: '#4da6ff', logo: 'https://kiwitaxi.com/img/logo.svg' },
+      { category: 'Transfers & Transport', name: 'Welcome Pickups', url: 'https://tpo.lv/XAJOoobr', color: '#4da6ff', logo: 'https://www.welcomepickups.com/wp-content/themes/welcome/img/logo.svg' },
+      { category: 'Transfers & Transport', name: 'Intui.travel', url: 'https://intui.tpo.lv/Rrx5VuN3', color: '#4da6ff', logo: 'https://intui.travel/favicon.ico' },
+      { category: 'Transfers & Transport', name: 'GetTransfer.com', url: 'https://gettransfer.tpo.lv/Pb4p9ljm', color: '#4da6ff', logo: 'https://gettransfer.com/favicon.ico' },
+      { category: 'Transfers & Transport', name: 'Busbud', url: 'https://busbud.tpo.lv/h4C6YPFZ', color: '#4da6ff', logo: 'https://busbud.com/images/logo.svg' },
 
-      { category: 'Car Rentals', name: 'Localrent.com', url: 'https://localrent.tpo.lv/XS0CqdMP', color: '#ffb84d' },
-      { category: 'Car Rentals', name: 'Economybookings.com', url: 'https://economybookings.tpo.lv/jSFMPEPA', color: '#ffb84d' },
-      { category: 'Car Rentals', name: 'QEEQ', url: 'https://qeeq.tpo.lv/jklB4Pbm', color: '#ffb84d' },
-      { category: 'Car Rentals', name: 'GetRentacar.com', url: 'https://getrentacar.tpo.lv/OR2TWduQ', color: '#ffb84d' },
-      { category: 'Car Rentals', name: 'BikesBooking.com', url: 'https://bikesbooking.tpo.lv/B3zIKanS', color: '#ffb84d' },
+      { category: 'Car Rentals', name: 'Localrent.com', url: 'https://localrent.tpo.lv/XS0CqdMP', color: '#ffb84d', logo: 'https://localrent.com/static/img/logo.svg' },
+      { category: 'Car Rentals', name: 'Economybookings.com', url: 'https://economybookings.tpo.lv/jSFMPEPA', color: '#ffb84d', logo: '' },
+      { category: 'Car Rentals', name: 'QEEQ', url: 'https://qeeq.tpo.lv/jklB4Pbm', color: '#ffb84d', logo: '' },
+      { category: 'Car Rentals', name: 'GetRentacar.com', url: 'https://getrentacar.tpo.lv/OR2TWduQ', color: '#ffb84d', logo: '' },
 
-      { category: 'SIM & Connectivity', name: 'Airalo', url: 'https://airalo.tpo.lv/eXjKLiuw', color: '#c17dff' },
-      { category: 'SIM & Connectivity', name: 'Drimsim', url: 'https://drimsim.tpo.lv/PGwr6JTr', color: '#c17dff' },
-      { category: 'SIM & Connectivity', name: 'Yesim', url: 'https://yesim.tpo.lv/3vIzBQts', color: '#c17dff' },
-      { category: 'SIM & Connectivity', name: 'Saily', url: 'https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629', color: '#c17dff' },
+      { category: 'SIM & Connectivity', name: 'Airalo', url: 'https://airalo.tpo.lv/eXjKLiuw', color: '#c17dff', logo: 'https://assets.airalo.com/images/airalo-logo.svg' },
+      { category: 'SIM & Connectivity', name: 'Drimsim', url: 'https://drimsim.tpo.lv/PGwr6JTr', color: '#c17dff', logo: 'https://drimsim.com/favicon.ico' },
+      { category: 'SIM & Connectivity', name: 'Yesim', url: 'https://yesim.tpo.lv/3vIzBQts', color: '#c17dff', logo: 'https://yesim.app/favicon.ico' },
+      { category: 'SIM & Connectivity', name: 'Saily', url: 'https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629', color: '#c17dff', logo: 'https://saily.com/favicon.ico' },
 
-      { category: 'Tours & Activities', name: 'Klook', url: 'https://klook.tpo.lv/pTp1NljF', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'WeGoTrip', url: 'https://wegotrip.tpo.lv/kKIF0gIW', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'GoCity', url: 'https://gocity.tpo.lv/Des5Cgov', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'Tiqets', url: 'https://tiqets.com', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'EatWith', url: 'https://eatwith.tpo.lv/BfAnpZNb', color: '#6cd98b' },
-      { category: 'Tours & Activities', name: 'BigBusTours', url: 'https://bigbustours.tpo.lv/grT1QWXA', color: '#6cd98b' },
+      { category: 'Tours & Activities', name: 'Klook', url: 'https://klook.tpo.lv/pTp1NljF', color: '#6cd98b', logo: 'https://res.klook.com/image/upload/v163/logo/klook-logo.svg' },
+      { category: 'Tours & Activities', name: 'WeGoTrip', url: 'https://wegotrip.tpo.lv/kKIF0gIW', color: '#6cd98b', logo: '' },
+      { category: 'Tours & Activities', name: 'GoCity', url: 'https://gocity.tpo.lv/Des5Cgov', color: '#6cd98b', logo: 'https://gocity.com/themes/custom/gocity/logo.svg' },
+      { category: 'Tours & Activities', name: 'Tiqets US', url: 'https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806', color: '#6cd98b', logo: 'https://cdn.tiqets.com/assets/tiqets-logo.svg' },
 
-      { category: 'Flights & Meta Search', name: 'Aviasales', url: 'https://aviasales.tpo.lv/VoWXgFFm', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Kiwi.com', url: 'https://booking.tpo.lv/enwsEbCs', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago USA', url: 'https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago AR', url: 'https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago BR', url: 'https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago CO', url: 'https://www.awin1.com/cread.php?awinmid=105935&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago DE', url: 'https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago MX', url: 'https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago NZ', url: 'https://www.awin1.com/cread.php?awinmid=66032&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Trivago PE', url: 'https://www.awin1.com/cread.php?awinmid=105927&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Kiwi CA', url: 'https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Kiwi MX', url: 'https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806', color: '#4dd2c0' },
-      { category: 'Flights & Meta Search', name: 'Kiwi US', url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806', color: '#4dd2c0' }
+      { category: 'Flights & Meta Search', name: 'Aviasales', url: 'https://aviasales.tpo.lv/VoWXgFFm', color: '#4dd2c0', logo: 'https://static.aviasales.com/brand/aviasales-logo.svg' },
+      { category: 'Flights & Meta Search', name: 'Kiwi.com', url: 'https://booking.tpo.lv/enwsEbCs', color: '#4dd2c0', logo: 'https://images.kiwi.com/common/kiwicom-logo.svg' },
+      { category: 'Flights & Meta Search', name: 'Kiwi US', url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806', color: '#4dd2c0', logo: 'https://images.kiwi.com/common/kiwicom-logo.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago USA', url: 'https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago BR', url: 'https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago DE', url: 'https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' }
     ];
 
-    const partnerLogoOverrides = {
-      'Trivago USA': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Trivago AR': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Trivago BR': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Trivago CO': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Trivago DE': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Trivago MX': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Trivago NZ': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Trivago PE': 'https://img.trvcdn.net/logo/trivago-us.svg',
-      'Kiwitaxi': 'https://kiwitaxi.com/img/logo.svg',
-      'Klook': 'https://res.klook.com/image/upload/v163/logo/klook-logo.svg',
-      'GoCity': 'https://gocity.com/themes/custom/gocity/logo.svg',
-      'Busbud': 'https://busbud.com/images/logo.svg',
-      'Tiqets': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
-      'Tiqets US': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
-      'Tiqets UK': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
-      'Tiqets IT': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
-      'Tiqets FR': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
-      'Tiqets DE': 'https://cdn.tiqets.com/assets/tiqets-logo.svg',
-      'Kiwi.com': 'https://images.kiwi.com/common/kiwicom-logo.svg',
-      'Kiwi CA': 'https://images.kiwi.com/common/kiwicom-logo.svg',
-      'Kiwi MX': 'https://images.kiwi.com/common/kiwicom-logo.svg',
-      'Kiwi US': 'https://images.kiwi.com/common/kiwicom-logo.svg',
-      'Airalo': 'https://assets.airalo.com/images/airalo-logo.svg',
-      'Aviasales': 'https://static.aviasales.com/brand/aviasales-logo.svg',
-      'Welcome Pickups': 'https://www.welcomepickups.com/wp-content/themes/welcome/img/logo.svg',
-      'Localrent.com': 'https://localrent.com/static/img/logo.svg',
-      'BigBusTours': 'https://www.bigbustours.com/favicon.ico',
-      'Intui.travel': 'https://intui.travel/favicon.ico',
-      'GetTransfer.com': 'https://gettransfer.com/favicon.ico',
-      'Drimsim': 'https://drimsim.com/favicon.ico',
-      'Yesim': 'https://yesim.app/favicon.ico',
-      'Saily': 'https://saily.com/favicon.ico'
-    };
-
-    const fallbackItems = [
+    const feedItems = [
       {
         platform: 'youtube',
-        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         title: 'YouTube Music Example',
-        description: 'Embedded YouTube content rendered with iframe support.',
+        description: 'Primary live-style video card.',
         author: 'Demo Source',
         publishedAt: '2026-04-14T09:00:00Z',
-        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+      },
+      {
+        platform: 'deals',
+        title: 'Compare flights with Kiwi.com',
+        description: 'Fast search, global routes, and strong affiliate intent.',
+        author: 'SignalBoost',
+        publishedAt: '2026-04-14T08:00:00Z',
+        url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806',
+        thumbnail: 'https://via.placeholder.com/720x1280?text=Kiwi.com+Deals'
       },
       {
         platform: 'youtube',
-        embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ',
-        url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
         title: 'YouTube Pop Example',
-        description: 'Second YouTube sample so the feed does not repeat one video card.',
+        description: 'Second video card for variety.',
         author: 'Demo Source',
         publishedAt: '2026-04-13T09:00:00Z',
-        thumbnail: 'https://img.youtube.com/vi/3JZ_D3ELwOQ/hqdefault.jpg'
-      },
-      {
-        platform: 'youtube',
-        embedUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk',
-        url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
-        title: 'YouTube Global Example',
-        description: 'Third YouTube sample for variety in fallback mode.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-12T09:00:00Z',
-        thumbnail: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg'
-      },
-      {
-        platform: 'reddit',
-        videoUrl: '',
-        url: 'https://www.reddit.com/',
-        title: 'Reddit Example',
-        description: 'Reddit falls back to a thumbnail when no direct MP4 is available.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-13T11:30:00Z',
-        thumbnail: 'https://via.placeholder.com/640x960?text=Reddit+Clip'
-      },
-      {
-        platform: 'instagram',
-        embedUrl: '',
-        url: 'https://www.instagram.com/',
-        title: 'Instagram Example',
-        description: 'Instagram falls back safely when no valid embed URL is present.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-12T14:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x960?text=Instagram+Reel'
+        url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
+        embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
       },
       {
         platform: 'facebook',
-        embedUrl: '',
-        url: 'https://www.facebook.com/',
-        title: 'Facebook Example',
-        description: 'Facebook falls back safely when no valid embed URL is present.',
+        title: 'Travel inspiration card',
+        description: 'Fallback content card while secondary feeds are limited.',
+        author: 'SignalBoost',
+        publishedAt: '2026-04-12T14:00:00Z',
+        url: 'https://gocity.tpo.lv/Des5Cgov',
+        thumbnail: 'https://via.placeholder.com/720x1280?text=Travel+Inspiration'
+      },
+      {
+        platform: 'youtube',
+        title: 'YouTube Global Example',
+        description: 'Third video card in the stream.',
         author: 'Demo Source',
+        publishedAt: '2026-04-12T09:00:00Z',
+        url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
+        embedUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk'
+      },
+      {
+        platform: 'reddit',
+        title: 'Travel tools card',
+        description: 'Useful travel tools and booking shortcuts.',
+        author: 'SignalBoost',
         publishedAt: '2026-04-11T16:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x960?text=Facebook+Video'
+        url: 'https://localrent.tpo.lv/XS0CqdMP',
+        thumbnail: 'https://via.placeholder.com/720x1280?text=Travel+Tools'
       },
       {
-        platform: 'tiktok',
-        url: 'https://www.tiktok.com/',
-        title: 'TikTok Example',
-        description: 'TikTok content can be merged into the same feed with a thumbnail fallback.',
-        author: 'Demo Source',
+        platform: 'deals',
+        title: 'eSIM deals with Airalo',
+        description: 'Connectivity card for monetized browsing.',
+        author: 'SignalBoost',
         publishedAt: '2026-04-10T18:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x960?text=TikTok+Style'
+        url: 'https://airalo.tpo.lv/eXjKLiuw',
+        thumbnail: 'https://via.placeholder.com/720x1280?text=Airalo+eSIM'
       },
       {
-        platform: 'unknown',
-        url: 'https://example.com/travel',
-        title: 'Travel Promo Example',
-        description: 'A generic promo card used only when APIs do not return enough items.',
-        author: 'Demo Source',
+        platform: 'deals',
+        title: 'Transfers and taxis',
+        description: 'Airport transfer and taxi partner shortcuts.',
+        author: 'SignalBoost',
         publishedAt: '2026-04-09T18:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x960?text=Travel+Promo'
-      },
-      {
-        platform: 'unknown',
-        url: 'https://example.com/deals',
-        title: 'Deals Example',
-        description: 'A generic deal card for feed variety in fallback mode.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-08T18:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x960?text=Deals'
-      },
-      {
-        platform: 'unknown',
-        url: 'https://example.com/guides',
-        title: 'Guide Example',
-        description: 'A generic guide card for feed variety in fallback mode.',
-        author: 'Demo Source',
-        publishedAt: '2026-04-07T18:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x960?text=Guides'
+        url: 'https://kiwitaxi.tpo.lv/DVaqmgKo',
+        thumbnail: 'https://via.placeholder.com/720x1280?text=Transfers'
       }
     ];
-
-    function buildDemoFeed(seedItems, repeats) {
-      const output = [];
-      for (let round = 0; round < repeats; round += 1) {
-        seedItems.forEach(function(item, index) {
-          const copy = Object.assign({}, item);
-          const baseDate = new Date(item.publishedAt || Date.now());
-          baseDate.setMinutes(baseDate.getMinutes() - (round * seedItems.length + index) * 7);
-          copy.publishedAt = baseDate.toISOString();
-          copy.title = item.title + ' #' + (round + 1);
-          copy.url = (item.url || '#') + (item.url && item.url.includes('?') ? '&' : '?') + 'demo=' + (round + 1) + '-' + index;
-          output.push(copy);
-        });
-      }
-      return output;
-    }
-
-    function dedupeFeedItems(items) {
-      const seen = new Set();
-      return items.filter(function(item) {
-        const platform = normalizePlatform(item.platform || '');
-        const embed = item.embedUrl || '';
-        const video = item.videoUrl || '';
-        const thumb = item.thumbnail || '';
-        const resolvedYouTube = platform === 'youtube'
-          ? (embed || getYouTubeEmbedUrl(item.url || '') || '')
-          : '';
-
-        const key = [
-          platform,
-          resolvedYouTube,
-          video,
-          thumb
-        ].join('|').toLowerCase();
-
-        if (!key.replace(/\|/g, '')) return true;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-    }
-
-    function interleaveByPlatform(items, limit) {
-      const buckets = new Map();
-      items.forEach(function(item) {
-        const key = normalizePlatform(item.platform || 'unknown');
-        if (!buckets.has(key)) buckets.set(key, []);
-        buckets.get(key).push(item);
-      });
-
-      const order = Array.from(buckets.keys());
-      const output = [];
-      let added = true;
-
-      while (added && output.length < limit) {
-        added = false;
-        order.forEach(function(key) {
-          const bucket = buckets.get(key);
-          if (bucket && bucket.length && output.length < limit) {
-            output.push(bucket.shift());
-            added = true;
-          }
-        });
-      }
-
-      return output;
-    }
-
-    function mixNonYoutubeFallback(liveItems, fallbackItems, limit) {
-      const live = interleaveByPlatform(dedupeFeedItems(liveItems), limit);
-      const fallbackPool = interleaveByPlatform(
-        dedupeFeedItems(
-          fallbackItems.filter(function(item) {
-            return normalizePlatform(item.platform) !== 'youtube';
-          })
-        ),
-        limit
-      );
-
-      const output = [];
-      let liveIndex = 0;
-      let fallbackIndex = 0;
-      let youtubeRun = 0;
-
-      while (output.length < limit && (liveIndex < live.length || fallbackIndex < fallbackPool.length)) {
-        const nextLive = liveIndex < live.length ? live[liveIndex] : null;
-        const nextLivePlatform = nextLive ? normalizePlatform(nextLive.platform) : '';
-
-        if (nextLive && nextLivePlatform === 'youtube' && youtubeRun >= 1 && fallbackIndex < fallbackPool.length) {
-          output.push(fallbackPool[fallbackIndex++]);
-          youtubeRun = 0;
-          continue;
-        }
-
-        if (nextLive) {
-          output.push(live[liveIndex++]);
-          youtubeRun = nextLivePlatform === 'youtube' ? youtubeRun + 1 : 0;
-        }
-
-        if (output.length >= limit) break;
-
-        if (fallbackIndex < fallbackPool.length) {
-          output.push(fallbackPool[fallbackIndex++]);
-          youtubeRun = 0;
-        }
-      }
-
-      return dedupeFeedItems(output);
-    }
-
-    function enforceYoutubeCap(items, maxYouTubeInRow) {
-      const youtube = [];
-      const nonYoutube = [];
-
-      items.forEach(function(item) {
-        if (normalizePlatform(item.platform) === 'youtube') {
-          youtube.push(item);
-        } else {
-          nonYoutube.push(item);
-        }
-      });
-
-      if (!youtube.length || !nonYoutube.length) return items;
-
-      const output = [];
-      let ytIndex = 0;
-      let otherIndex = 0;
-      let youtubeRun = 0;
-
-      while (ytIndex < youtube.length || otherIndex < nonYoutube.length) {
-        if (ytIndex < youtube.length && youtubeRun < maxYouTubeInRow) {
-          output.push(youtube[ytIndex++]);
-          youtubeRun += 1;
-        }
-
-        if (otherIndex < nonYoutube.length) {
-          output.push(nonYoutube[otherIndex++]);
-          youtubeRun = 0;
-        } else if (ytIndex < youtube.length && youtubeRun >= maxYouTubeInRow) {
-          // No non-youtube left; append remaining youtube.
-          output.push(youtube[ytIndex++]);
-        }
-      }
-
-      return output;
-    }
-
-    const demoFeedItems = buildDemoFeed(fallbackItems, 4);
-
-    // NOTE:
-// Instagram + TikTok removed intentionally
-// They do NOT work without APIs
-
-const sourceConfigs = SOURCES (Option A)
-// Only platforms that reliably work without tokens
-const sourceConfigs = [
-  { key: 'youtube', url: '/api/feed/youtube' },
-  { key: 'reddit', url: '/api/feed/reddit' },
-  { key: 'facebook', url: '/api/feed/facebook' }
-];
 
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
     const feedContainer = document.getElementById('feedContainer');
-    const feedLoader = document.getElementById('feedLoader');
-    const feedSentinel = document.getElementById('feedSentinel');
-    const magnetoColumn = document.getElementById('magnetoColumn');
-
-    let allFeedItems = [];
-    let visibleFeedItems = [];
-    let currentIndex = 0;
-    let isLoading = false;
-    const pageSize = 12;
-    let observer = null;
-    let playbackObserver = null;
 
     function escapeHtml(value) {
-      if (value == null) return '';
-      return String(value)
+      return String(value ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -873,7 +442,6 @@ const sourceConfigs = [
     }
 
     function formatDate(dateString) {
-      if (!dateString) return '';
       const d = new Date(dateString);
       if (Number.isNaN(d.getTime())) return '';
       return d.toLocaleString();
@@ -883,10 +451,6 @@ const sourceConfigs = [
       return String(value || '').trim().toLowerCase();
     }
 
-    function setDebug(message) {
-      console.log(message);
-    }
-
     function isValidHttpUrl(value) {
       try {
         const url = new URL(value, window.location.origin);
@@ -894,57 +458,6 @@ const sourceConfigs = [
       } catch {
         return false;
       }
-    }
-
-    function getYouTubeVideoId(url) {
-      try {
-        const parsed = new URL(url, window.location.origin);
-        const hostname = parsed.hostname.toLowerCase();
-
-        if (hostname.includes('youtube.com')) {
-          if (parsed.pathname === '/watch') return parsed.searchParams.get('v');
-          if (parsed.pathname.startsWith('/shorts/')) return parsed.pathname.split('/shorts/')[1].split('/')[0];
-          if (parsed.pathname.startsWith('/embed/')) return parsed.pathname.split('/embed/')[1].split('/')[0];
-        }
-
-        if (hostname.includes('youtu.be')) {
-          const path = parsed.pathname.replace(/^\/+/, '');
-          return path ? path.split('/')[0] : null;
-        }
-      } catch (err) {
-        console.error('Invalid YouTube URL:', url, err);
-      }
-
-      return null;
-    }
-
-    function getYouTubeEmbedUrl(url) {
-      const videoId = getYouTubeVideoId(url);
-      return videoId ? 'https://www.youtube.com/embed/' + videoId : null;
-    }
-
-    async function fetchJson(url) {
-      const separator = url.includes('?') ? '&' : '?';
-      const response = await fetch(url + separator + 'v=' + Date.now(), {
-        cache: 'no-store',
-        headers: { Accept: 'application/json' }
-      });
-
-      if (!response.ok) {
-        throw new Error(url + ' -> HTTP ' + response.status);
-      }
-
-      return response.json();
-    }
-
-    function dedupePartners(items) {
-      const seen = new Set();
-      return items.filter(function(item) {
-        const key = (item.name || '').toLowerCase().trim() + '|' + (item.url || '').trim();
-        if (!item.name || !item.url || seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
     }
 
     function monetizeUrl(url, meta) {
@@ -959,140 +472,13 @@ const sourceConfigs = [
         host.endsWith('.oausercontent.com') ||
         host.includes('sandbox');
 
-      if (isPreview) {
-        return url;
-      }
+      if (isPreview) return url;
 
       const params = new URLSearchParams();
       params.set('url', url);
-
-      if (meta && meta.partner) {
-        params.set('partner', meta.partner);
-      }
-
-      if (meta && meta.source) {
-        params.set('source', meta.source);
-      }
-
+      if (meta?.partner) params.set('partner', meta.partner);
+      if (meta?.source) params.set('source', meta.source);
       return '/api/out?' + params.toString();
-    }
-
-    function buildGroupedFallbackPartners() {
-      const groupedFallback = {};
-      dedupePartners(fallbackPartners).forEach(function(partner) {
-        const category = partner.category || 'Other Partners';
-        if (!groupedFallback[category]) {
-          groupedFallback[category] = {
-            name: category,
-            color: partner.color || '#8f9fb3',
-            partners: []
-          };
-        }
-        groupedFallback[category].partners.push({
-          name: partner.name,
-          url: partner.url,
-          logo: partner.logo || partnerLogoOverrides[partner.name] || ''
-        });
-      });
-      return Object.values(groupedFallback);
-    }
-
-    async function loadPartners() {
-      const fallbackGrouped = buildGroupedFallbackPartners();
-
-      try {
-        const data = await fetchJson('/data/partners.json');
-
-        if (Array.isArray(data?.categories) && data.categories.length) {
-          const byName = new Map();
-          fallbackGrouped.forEach(function(category) {
-            byName.set(category.name, {
-              name: category.name,
-              color: category.color,
-              partners: category.partners.slice()
-            });
-          });
-
-          data.categories.forEach(function(category) {
-            const categoryName = category.name || 'Other Partners';
-            const base = byName.get(categoryName) || {
-              name: categoryName,
-              color: category.color || '#8f9fb3',
-              partners: []
-            };
-
-            const existing = new Map(base.partners.map(function(p) {
-              return [String(p.name).toLowerCase(), p];
-            }));
-
-            (Array.isArray(category.partners) ? category.partners : []).forEach(function(partner) {
-              const key = String(partner.name || '').toLowerCase();
-              if (!key || !partner.url) return;
-              existing.set(key, {
-                name: partner.name,
-                url: partner.url,
-                logo: partner.logo || partnerLogoOverrides[partner.name] || existing.get(key)?.logo || ''
-              });
-            });
-
-            base.color = category.color || base.color || '#8f9fb3';
-            base.partners = Array.from(existing.values());
-            byName.set(categoryName, base);
-          });
-
-          return Array.from(byName.values()).filter(function(category) {
-            return category.partners.length > 0;
-          });
-        }
-
-        const flatPartners = Array.isArray(data) ? data : data.partners;
-        if (Array.isArray(flatPartners) && flatPartners.length) {
-          const byName = new Map();
-          fallbackGrouped.forEach(function(category) {
-            byName.set(category.name, {
-              name: category.name,
-              color: category.color,
-              partners: category.partners.slice()
-            });
-          });
-
-          dedupePartners(flatPartners).forEach(function(partner) {
-            const category = partner.category || 'Other Partners';
-            const base = byName.get(category) || {
-              name: category,
-              color: partner.color || '#8f9fb3',
-              partners: []
-            };
-
-            const idx = base.partners.findIndex(function(p) {
-              return String(p.name).toLowerCase() === String(partner.name).toLowerCase();
-            });
-
-            const mergedPartner = {
-              name: partner.name,
-              url: partner.url,
-              logo: partner.logo || partnerLogoOverrides[partner.name] || ''
-            };
-
-            if (idx >= 0) {
-              base.partners[idx] = Object.assign({}, base.partners[idx], mergedPartner);
-            } else {
-              base.partners.push(mergedPartner);
-            }
-
-            base.color = partner.color || base.color || '#8f9fb3';
-            byName.set(category, base);
-          });
-
-          return Array.from(byName.values()).filter(function(category) {
-            return category.partners.length > 0;
-          });
-        }
-      } catch (err) {
-        console.warn('Partners fetch failed, using fallback partners.', err);
-      }
-
-      return fallbackGrouped;
     }
 
     function hexToRgb(hex) {
@@ -1105,39 +491,24 @@ const sourceConfigs = [
       return r + ',' + g + ',' + b;
     }
 
-    function renderPartners(categoriesData) {
-      if (!partnersRail) return;
-      if (!Array.isArray(categoriesData) || !categoriesData.length) {
-        partnersRail.innerHTML = '<div class="column-1-empty">No partners found.</div>';
-        return;
-      }
-
-      const order = [
-        'Transfers & Transport',
-        'Car Rentals',
-        'SIM & Connectivity',
-        'Tours & Activities',
-        'Insurance & Claims',
-        'Flights & Meta Search',
-        'Storage & Services',
-        'Other Partners'
-      ];
-
-      const categories = categoriesData.slice().sort(function(a, b) {
-        const ai = order.indexOf(a.name);
-        const bi = order.indexOf(b.name);
-        if (ai === -1 && bi === -1) return String(a.name).localeCompare(String(b.name));
-        if (ai === -1) return 1;
-        if (bi === -1) return -1;
-        return ai - bi;
+    function groupPartners(items) {
+      const grouped = {};
+      items.forEach(function(partner) {
+        if (!grouped[partner.category]) grouped[partner.category] = [];
+        grouped[partner.category].push(partner);
       });
+      return grouped;
+    }
 
-      partnersRail.innerHTML = categories.map(function(category, index) {
-        const color = category.color || '#8f9fb3';
+    function renderPartners(items) {
+      const grouped = groupPartners(items);
+      const order = ['Transfers & Transport', 'Car Rentals', 'SIM & Connectivity', 'Tours & Activities', 'Flights & Meta Search'];
+      partnersRail.innerHTML = order.filter(function(name) { return grouped[name]?.length; }).map(function(categoryName, index) {
+        const color = grouped[categoryName][0].color;
         return '<div class="category">' +
           '<details' + (index === 0 ? ' open' : '') + '>' +
-          '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(category.name || 'Other Partners') + '</summary>' +
-          '<ul>' + (Array.isArray(category.partners) ? category.partners : []).map(function(partner) {
+          '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(categoryName) + '</summary>' +
+          '<ul>' + grouped[categoryName].map(function(partner) {
             return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
           }).join('') + '</ul>' +
           '</details>' +
@@ -1145,418 +516,64 @@ const sourceConfigs = [
       }).join('');
     }
 
-    function renderBrandGrid(categories) {
-      if (!brandGrid) return;
+    function renderBrandGrid(items) {
+      const colorMap = {
+        'Flights & Meta Search': 'rgba(77,210,192,0.15)',
+        'Transfers & Transport': 'rgba(77,166,255,0.15)',
+        'Tours & Activities': 'rgba(108,217,139,0.15)',
+        'SIM & Connectivity': 'rgba(193,125,255,0.15)',
+        'Car Rentals': 'rgba(255,184,77,0.15)'
+      };
 
-      const priority = [
-        'Trivago USA',
-        'Trivago AR',
-        'Trivago BR',
-        'Trivago CO',
-        'Trivago DE',
-        'Trivago MX',
-        'Trivago NZ',
-        'Trivago PE',
-        'Kiwi.com',
-        'Kiwi CA',
-        'Kiwi MX',
-        'Kiwi US',
-        'Kiwitaxi',
-        'Airalo',
-        'Klook',
-        'Tiqets US',
-        'Tiqets UK',
-        'Tiqets IT',
-        'Tiqets FR',
-        'Tiqets DE',
-        'Aviasales',
-        'GoCity',
-        'Welcome Pickups',
-        'Busbud',
-        'Localrent.com'
-      ];
-
-      const flat = [];
-      categories.forEach(function(c) {
-        (c.partners || []).forEach(function(p) {
-          flat.push({ name: p.name, url: p.url, logo: p.logo || partnerLogoOverrides[p.name] || '', category: c.name || '' });
-        });
-      });
-
-      const selected = [];
-
-      priority.forEach(function(name) {
-        flat.filter(function(p) { return p.name === name; }).forEach(function(match) {
-          if (!selected.some(function(s) { return s.name === match.name && s.url === match.url; })) {
-            selected.push(match);
-          }
-        });
-      });
-
-      flat.forEach(function(p) {
-        if (selected.length >= 24) return;
-        if ((p.logo || /trivago|kiwi|tiqets/i.test(p.name)) && !selected.some(function(s) { return s.name === p.name && s.url === p.url; })) {
-          selected.push(p);
-        }
-      });
-
-      if (!selected.length) {
-        brandGrid.innerHTML = '<div class="column-1-empty">No brand assets found.</div>';
-        return;
-      }
-
+      const selected = items.slice(0, 16);
       brandGrid.innerHTML = selected.map(function(p) {
-        const colorMap = {
-          'Flights & Meta Search': 'rgba(77,210,192,0.15)',
-          'Transfers & Transport': 'rgba(77,166,255,0.15)',
-          'Tours & Activities': 'rgba(108,217,139,0.15)',
-          'SIM & Connectivity': 'rgba(193,125,255,0.15)',
-          'Car Rentals': 'rgba(255,184,77,0.15)'
-        };
-
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
-        const borderColor = bgColor.replace('0.15','0.35');
-        const href = monetizeUrl(p.url, { partner: p.name, source: 'column3' });
-        if (p.logo) {
-          return '<a class="brand-tile" style="background:'+bgColor+';border:1px solid '+borderColor+';" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
-            '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" onerror="this.style.display=\'none\'; this.closest(\'.brand-tile\').classList.add(\'logo-failed\');">' +
-            '<span>' + escapeHtml(p.name) + '</span>' +
-            '</a>';
-        }
-
-        return '<a class="brand-tile" style="background:'+bgColor+';border:1px solid '+borderColor+';" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
+        const borderColor = bgColor.replace('0.15', '0.35');
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3' })) + '" target="_blank" rel="noopener noreferrer">' +
+          (p.logo ? '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.style.display=\'none\';">' : '') +
           '<span>' + escapeHtml(p.name) + '</span>' +
           '</a>';
       }).join('');
     }
 
-    function normalizeFeedData(data) {
-      if (Array.isArray(data)) return data;
-      if (Array.isArray(data.items)) return data.items;
-      if (Array.isArray(data.requests)) return data.requests;
-      if (Array.isArray(data.feed)) return data.feed;
-      if (Array.isArray(data.posts)) return data.posts;
-      if (Array.isArray(data.results)) return data.results;
-      return [];
-    }
-
-    function normalizeFeedItem(item) {
-      const redditVideoUrl =
-        item.videoUrl ||
-        item.video ||
-        item.mp4 ||
-        item.secure_media?.reddit_video?.fallback_url ||
-        item.media?.reddit_video?.fallback_url ||
-        item.reddit_video?.fallback_url ||
-        '';
-
-      const derivedThumbnail =
-        item.thumbnail ||
-        item.image ||
-        item.imageUrl ||
-        item.preview?.images?.[0]?.source?.url ||
-        item.preview?.reddit_video_preview?.fallback_url ||
-        item.poster ||
-        '';
-
-      const derivedEmbedUrl = item.embedUrl || item.embed || item.embed_url || '';
-      const derivedUrl = item.url || item.link || item.href || item.permalink || '#';
-
-      return {
-        title: item.title || item.name || item.request || 'Untitled',
-        description: item.description || item.summary || item.text || item.caption || '',
-        author: item.author || item.by || item.sourceName || item.source || item.username || '',
-        platform: normalizePlatform(item.platform || item.type || item.source || 'unknown'),
-        url: derivedUrl,
-        embedUrl: derivedEmbedUrl,
-        videoUrl: redditVideoUrl,
-        thumbnail: derivedThumbnail,
-        publishedAt: item.publishedAt || item.date || item.createdAt || item.timestamp || item.created_utc || ''
-      };
-    }
-
-    async function loadHybridFeed() {
-      const settled = await Promise.allSettled(sourceConfigs.map(function(source) {
-        return fetchJson(source.url);
-      }));
-
-      let merged = [];
-      const debugParts = [];
-
-      settled.forEach(function(result, index) {
-        const source = sourceConfigs[index];
-
-        if (result.status === 'fulfilled') {
-          const items = normalizeFeedData(result.value).map(function(item) {
-            const normalized = normalizeFeedItem(item);
-            if (!normalized.platform || normalized.platform === 'unknown') {
-              normalized.platform = source.key;
-            }
-            if ((!normalized.videoUrl || !isValidHttpUrl(normalized.videoUrl)) && source.key === 'youtube') {
-              normalized.embedUrl = normalized.embedUrl || getYouTubeEmbedUrl(normalized.url || '');
-            }
-            return normalized;
-          });
-          merged.push.apply(merged, items);
-          debugParts.push(source.key + ': ' + items.length);
-        } else {
-          debugParts.push(source.key + ': failed');
-        }
-      });
-
-      const uniqueLive = interleaveByPlatform(dedupeFeedItems(merged), 60);
-      const livePlatforms = Array.from(new Set(uniqueLive.map(function(item) {
-        return normalizePlatform(item.platform || 'unknown');
-      }).filter(Boolean)));
-      const onlyYoutubeLive = livePlatforms.length === 1 && livePlatforms[0] === 'youtube';
-
-      if (uniqueLive.length >= 12 && !onlyYoutubeLive) {
-        setDebug('Sources → ' + debugParts.join(' | ') + ' | unique live: ' + uniqueLive.length);
-        return uniqueLive;
-      }
-
-      const fallbackNormalized = demoFeedItems.map(normalizeFeedItem);
-
-      if (onlyYoutubeLive && uniqueLive.length) {
-        // HARD FIX: inject real non-youtube placeholders so UI is not YouTube-only
-        const forcedMix = [];
-        const nonYoutubeFallback = fallbackNormalized.filter(function(item) {
-          return normalizePlatform(item.platform) !== 'youtube';
-        });
-
-        let ytIndex = 0;
-        let fbIndex = 0;
-
-        while (forcedMix.length < 60 && (ytIndex < uniqueLive.length || fbIndex < nonYoutubeFallback.length)) {
-          if (ytIndex < uniqueLive.length) {
-            forcedMix.push(uniqueLive[ytIndex++]);
-          }
-
-          if (fbIndex < nonYoutubeFallback.length) {
-            forcedMix.push(nonYoutubeFallback[fbIndex++]);
-          }
-        }
-
-        setDebug('FORCED MIX (YouTube fallback fix): ' + forcedMix.length);
-        return forcedMix;
-      }
-
-      const fallbackUnique = interleaveByPlatform(dedupeFeedItems(fallbackNormalized), 60);
-      const mixedFallback = enforceYoutubeCap(interleaveByPlatform(dedupeFeedItems(uniqueLive.concat(fallbackUnique)), 60), 1);
-      setDebug('Sources → ' + debugParts.join(' | ') + ' | unique mixed: ' + mixedFallback.length);
-      return mixedFallback;
-    }
-
     function createMediaMarkup(item) {
       const platform = normalizePlatform(item.platform);
       const title = escapeHtml(item.title || 'Untitled');
-      const safeThumbnail = escapeHtml(item.thumbnail || 'https://via.placeholder.com/300x200');
-      const openUrl = isValidHttpUrl(item.url) ? item.url : '#';
-      const embedUrl = item.embedUrl && isValidHttpUrl(item.embedUrl) ? item.embedUrl : '';
-      const videoUrl = item.videoUrl && isValidHttpUrl(item.videoUrl) ? item.videoUrl : '';
-      const youtubeEmbed = platform === 'youtube' ? (embedUrl || getYouTubeEmbedUrl(openUrl)) : '';
+      const monetized = monetizeUrl(item.url, { partner: item.title, source: 'feed_card' });
 
-      if (videoUrl) {
-        return '<div class="media-box"><video muted controls preload="metadata" playsinline poster="' + safeThumbnail + '"><source src="' + escapeHtml(videoUrl) + '" type="video/mp4">Your browser does not support HTML5 video.</video></div>';
+      if (platform === 'youtube' && item.embedUrl) {
+        return '<div class="media-box"><iframe src="' + escapeHtml(item.embedUrl) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
       }
 
-      if (platform === 'youtube' && youtubeEmbed) {
-        return '<div class="media-box"><iframe src="' + escapeHtml(youtubeEmbed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
-      }
-
-      if ((platform === 'facebook' || platform === 'instagram' || platform === 'tiktok') && embedUrl) {
-        return '<div class="media-box"><iframe src="' + escapeHtml(embedUrl) + '" title="' + title + '" loading="lazy" allowfullscreen></iframe></div>';
-      }
-
-      return '<div class="fallback">' +
-        '<img src="' + safeThumbnail + '" alt="' + title + '" loading="lazy">' +
-        '<div>' +
-        '<div style="margin-bottom:8px;color:rgba(255,255,255,0.78);">Preview unavailable for this source.</div>' +
-        '<a href="' + escapeHtml(openUrl) + '" target="_blank" rel="noopener noreferrer">Open Link</a>' +
-        '</div>' +
-        '</div>';
+      return '<div class="media-box"><a href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer"><img src="' + escapeHtml(item.thumbnail || 'https://via.placeholder.com/720x1280?text=SignalBoost') + '" alt="' + title + '" loading="lazy"></a></div>';
     }
 
-    function createFeedCard(item) {
-      const article = document.createElement('article');
-      article.className = 'feed-card';
-
-      const title = escapeHtml(item.title || 'Untitled');
-      const description = escapeHtml(item.description || '');
-      const author = escapeHtml(item.author || '');
-      const platformRaw = item.platform || 'unknown';
-      const platform = normalizePlatform(platformRaw);
-      const rawUrl = isValidHttpUrl(item.url) ? item.url : '#';
-      const monetizedUrl = monetizeUrl(rawUrl, { partner: title, source: 'feed_card' });
-      const publishedAt = formatDate(item.publishedAt);
-
-      article.innerHTML =
-        createMediaMarkup(item) +
-        '<div class="feed-content">' +
-        '<h3>' + title + '</h3>' +
-        '<div class="feed-meta">' +
-        '<span class="feed-platform ' + platform + '">' + escapeHtml(platformRaw) + '</span>' +
-        (author ? author : '') +
-        ((author && publishedAt) ? ' • ' : '') +
-        publishedAt +
-        '</div>' +
-        (description ? '<p>' + description + '</p>' : '') +
-        '<a class="feed-link" href="' + escapeHtml(monetizedUrl) + '" target="_blank" rel="noopener noreferrer">Open post</a>' +
-        '</div>';
-
-      article.style.cursor = 'pointer';
-      article.addEventListener('click', function(e) {
-        if (e.target.closest('a')) return;
-        window.open(monetizedUrl, '_blank');
-      });
-
-      return article;
+    function renderFeed(items) {
+      feedContainer.innerHTML = items.map(function(item) {
+        const monetized = monetizeUrl(item.url, { partner: item.title, source: 'feed_card' });
+        return '<article class="feed-card">' +
+          createMediaMarkup(item) +
+          '<div class="feed-content">' +
+          '<h3>' + escapeHtml(item.title) + '</h3>' +
+          '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(normalizePlatform(item.platform)) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>' +
+          '<p>' + escapeHtml(item.description || '') + '</p>' +
+          '<a class="feed-link" href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer">Open post</a>' +
+          '</div>' +
+          '</article>';
+      }).join('');
     }
 
-    function showFeedMessage(message) {
-      feedContainer.innerHTML = '<div class="feed-message">' + escapeHtml(message) + '</div>';
-    }
+    renderPartners(fallbackPartners);
+    renderBrandGrid(fallbackPartners.filter(function(p) { return p.logo; }));
+    renderFeed(feedItems);
 
-    function observePlayback() {
-      if (!playbackObserver) return;
-
-      feedContainer.querySelectorAll('video').forEach(function(video) {
-        if (video.dataset.autoplayBound === 'true') return;
-        video.dataset.autoplayBound = 'true';
-        playbackObserver.observe(video);
-      });
-    }
-
-    function renderFeedBatch() {
-      const nextItems = visibleFeedItems.slice(currentIndex, currentIndex + pageSize);
-
-      nextItems.forEach(function(item) {
-        feedContainer.appendChild(createFeedCard(item));
-      });
-
-      observePlayback();
-      currentIndex += nextItems.length;
-
-      if (currentIndex >= visibleFeedItems.length) {
-        if (observer) observer.disconnect();
-        feedLoader.style.display = 'none';
-      }
-    }
-
-    function applyFeed() {
-      visibleFeedItems = allFeedItems.slice();
-      currentIndex = 0;
-      feedContainer.innerHTML = '';
-
-      if (observer) observer.disconnect();
-
-      if (!visibleFeedItems.length) {
-        showFeedMessage('No feed items found.');
-        return;
-      }
-
-      renderFeedBatch();
-
-      if (observer && currentIndex < visibleFeedItems.length) {
-        observer.observe(feedSentinel);
-      }
-    }
-
-    async function loadMoreFeedItems() {
-      if (isLoading) return;
-      if (currentIndex >= visibleFeedItems.length) return;
-
-      isLoading = true;
-      feedLoader.style.display = 'block';
-
-      try {
-        renderFeedBatch();
-      } finally {
-        feedLoader.style.display = 'none';
-        isLoading = false;
-      }
-    }
-
-    async function initFeed() {
-      try {
-        allFeedItems = await loadHybridFeed();
-
-        allFeedItems = allFeedItems.map(function(item, index) {
-          return Object.assign({}, item, { _feedOrder: index });
-        });
-
-        if (!allFeedItems.length) {
-          setDebug('Feed loaded but returned zero items');
-          showFeedMessage('Could not load feed data.');
-          return;
-        }
-
-        setDebug('Feed loaded: ' + allFeedItems.length + ' items');
-        applyFeed();
-      } catch (err) {
-        console.error('Feed failed:', err);
-        setDebug('Feed failed: ' + err.message);
-        showFeedMessage('Could not load feed data.');
-      }
-    }
-
-    observer = new IntersectionObserver(function(entries) {
-      if (entries[0] && entries[0].isIntersecting) {
-        loadMoreFeedItems();
-      }
-    }, {
-      root: magnetoColumn,
-      threshold: 0.1
+    const search = document.getElementById('partnerSearch');
+    search.addEventListener('input', function() {
+      const q = search.value.toLowerCase();
+      renderPartners(fallbackPartners.filter(function(p) {
+        return p.name.toLowerCase().includes(q);
+      }));
     });
-
-    playbackObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        const video = entry.target;
-        if (!(video instanceof HTMLVideoElement)) return;
-
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-          feedContainer.querySelectorAll('video').forEach(function(other) {
-            if (other !== video) other.pause();
-          });
-          const playPromise = video.play();
-          if (playPromise && typeof playPromise.catch === 'function') {
-            playPromise.catch(function() {});
-          }
-        } else {
-          video.pause();
-        }
-      });
-    }, {
-      root: magnetoColumn,
-      threshold: [0.6]
-    });
-
-    loadPartners().then(function(data) {
-      renderBrandGrid(data);
-      renderPartners(data);
-
-      const search = document.getElementById('partnerSearch');
-      if (search) {
-        search.addEventListener('input', function() {
-          const q = search.value.toLowerCase();
-          const filtered = data.map(function(cat) {
-            return {
-              name: cat.name,
-              color: cat.color,
-              partners: cat.partners.filter(function(p) {
-                return p.name.toLowerCase().includes(q);
-              })
-            };
-          }).filter(function(cat) {
-            return cat.partners.length > 0;
-          });
-          renderPartners(filtered);
-        });
-      }
-    });
-
-    observer.observe(feedSentinel);
-    initFeed();
   </script>
 </body>
 </html>
