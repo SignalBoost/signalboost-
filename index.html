@@ -706,22 +706,55 @@
     function dedupeFeedItems(items) {
       const seen = new Set();
       return items.filter(function(item) {
+        const platform = normalizePlatform(item.platform || '');
+        const embed = item.embedUrl || '';
+        const video = item.videoUrl || '';
+        const thumb = item.thumbnail || '';
+        const resolvedYouTube = platform === 'youtube'
+          ? (embed || getYouTubeEmbedUrl(item.url || '') || '')
+          : '';
+
         const key = [
-          item.platform || '',
-          item.embedUrl || '',
-          item.videoUrl || '',
-          item.thumbnail || '',
-          item.url || '',
-          item.title || ''
+          platform,
+          resolvedYouTube,
+          video,
+          thumb
         ].join('|').toLowerCase();
 
+        if (!key.replace(/\|/g, '')) return true;
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       });
     }
 
-    const demoFeedItems = buildDemoFeed(fallbackItems, 12);
+    function interleaveByPlatform(items, limit) {
+      const buckets = new Map();
+      items.forEach(function(item) {
+        const key = normalizePlatform(item.platform || 'unknown');
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(item);
+      });
+
+      const order = Array.from(buckets.keys());
+      const output = [];
+      let added = true;
+
+      while (added && output.length < limit) {
+        added = false;
+        order.forEach(function(key) {
+          const bucket = buckets.get(key);
+          if (bucket && bucket.length && output.length < limit) {
+            output.push(bucket.shift());
+            added = true;
+          }
+        });
+      }
+
+      return output;
+    }
+
+    const demoFeedItems = buildDemoFeed(fallbackItems, 4);
 
     const sourceConfigs = [
       { key: 'youtube', url: '/api/feed/youtube' },
@@ -1188,15 +1221,16 @@
         }
       });
 
-      merged = dedupeFeedItems(merged);
+      merged = interleaveByPlatform(dedupeFeedItems(merged), 60);
 
       if (merged.length >= 12) {
-        setDebug('Sources → ' + debugParts.join(' | '));
+        setDebug('Sources → ' + debugParts.join(' | ') + ' | unique live: ' + merged.length);
         return merged;
       }
 
-      const mixedFallback = dedupeFeedItems(merged.concat(demoFeedItems.map(normalizeFeedItem)));
-      setDebug('Sources → ' + debugParts.join(' | ') + ' | fallback mixed: ' + mixedFallback.length);
+      const fallbackUnique = interleaveByPlatform(dedupeFeedItems(demoFeedItems.map(normalizeFeedItem)), 60);
+      const mixedFallback = interleaveByPlatform(dedupeFeedItems(merged.concat(fallbackUnique)), 60);
+      setDebug('Sources → ' + debugParts.join(' | ') + ' | unique mixed: ' + mixedFallback.length);
       return mixedFallback;
     }
 
