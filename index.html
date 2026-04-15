@@ -167,6 +167,51 @@
       display: block;
     }
 
+    .promo-media {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .promo-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 18px;
+      background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0.18) 45%, rgba(0,0,0,0.05));
+    }
+
+    .promo-kicker {
+      display: inline-block;
+      width: fit-content;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+
+    .promo-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.08;
+      margin-bottom: 8px;
+      max-width: 80%;
+    }
+
+    .promo-subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      max-width: 85%;
+      line-height: 1.4;
+    }
+
     .feed-content h3 {
       margin: 0 0 8px 0;
       font-size: 18px;
@@ -392,6 +437,15 @@
 
     const feedItems = [
       {
+        platform: 'deals',
+        title: 'Compare flights with Kiwi.com',
+        description: 'Fast search, global routes, and strong affiliate intent.',
+        author: 'SignalBoost',
+        publishedAt: '2026-04-14T08:55:00Z',
+        url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806',
+        thumbnail: 'https://via.placeholder.com/720x1280/0f1722/f5c542?text=Kiwi.com+Deals'
+      },
+      {
         platform: 'youtube',
         title: 'YouTube Music Example',
         description: 'Primary live-style video card.',
@@ -401,13 +455,13 @@
         embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
       },
       {
-        platform: 'deals',
-        title: 'Compare flights with Kiwi.com',
-        description: 'Fast search, global routes, and strong affiliate intent.',
+        platform: 'facebook',
+        title: 'Travel inspiration card',
+        description: 'Fallback content card while secondary feeds are limited.',
         author: 'SignalBoost',
-        publishedAt: '2026-04-14T08:55:00Z',
-        url: 'https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806',
-        thumbnail: 'https://via.placeholder.com/720x1280/0f1722/f5c542?text=Kiwi.com+Deals'
+        publishedAt: '2026-04-12T14:00:00Z',
+        url: 'https://gocity.tpo.lv/Des5Cgov',
+        thumbnail: 'https://via.placeholder.com/720x1280/122017/66d18f?text=Travel+Inspiration'
       },
       {
         platform: 'reddit',
@@ -428,15 +482,6 @@
         embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
       },
       {
-        platform: 'facebook',
-        title: 'Travel inspiration card',
-        description: 'Fallback content card while secondary feeds are limited.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-12T14:00:00Z',
-        url: 'https://gocity.tpo.lv/Des5Cgov',
-        thumbnail: 'https://via.placeholder.com/720x1280/122017/66d18f?text=Travel+Inspiration'
-      },
-      {
         platform: 'deals',
         title: 'eSIM deals with Airalo',
         description: 'Connectivity card for monetized browsing.',
@@ -444,6 +489,24 @@
         publishedAt: '2026-04-12T13:50:00Z',
         url: 'https://airalo.tpo.lv/eXjKLiuw',
         thumbnail: 'https://via.placeholder.com/720x1280/201228/c17dff?text=Airalo+eSIM'
+      },
+      {
+        platform: 'reddit',
+        title: 'Storage and services',
+        description: 'Useful travel support tools and add-ons.',
+        author: 'SignalBoost',
+        publishedAt: '2026-04-11T16:00:00Z',
+        url: 'https://radicalstorage.tpo.lv/tna4hnly',
+        thumbnail: 'https://via.placeholder.com/720x1280/2a2612/ffd966?text=Storage+%26+Services'
+      },
+      {
+        platform: 'facebook',
+        title: 'Insurance and claims',
+        description: 'Flight disruption and travel protection options.',
+        author: 'SignalBoost',
+        publishedAt: '2026-04-11T17:30:00Z',
+        url: 'https://airhelp.tpo.lv/EPrGDSO3',
+        thumbnail: 'https://via.placeholder.com/720x1280/2a1515/ff6b6b?text=Insurance'
       },
       {
         platform: 'youtube',
@@ -462,24 +525,6 @@
         publishedAt: '2026-04-11T18:00:00Z',
         url: 'https://kiwitaxi.tpo.lv/DVaqmgKo',
         thumbnail: 'https://via.placeholder.com/720x1280/10203a/4da6ff?text=Transfers'
-      },
-      {
-        platform: 'facebook',
-        title: 'Insurance and claims',
-        description: 'Flight disruption and travel protection options.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-11T17:30:00Z',
-        url: 'https://airhelp.tpo.lv/EPrGDSO3',
-        thumbnail: 'https://via.placeholder.com/720x1280/2a1515/ff6b6b?text=Insurance'
-      },
-      {
-        platform: 'reddit',
-        title: 'Storage and services',
-        description: 'Useful travel support tools and add-ons.',
-        author: 'SignalBoost',
-        publishedAt: '2026-04-11T16:00:00Z',
-        url: 'https://radicalstorage.tpo.lv/tna4hnly',
-        thumbnail: 'https://via.placeholder.com/720x1280/2a2612/ffd966?text=Storage+%26+Services'
       }
     ];
 
@@ -619,7 +664,14 @@
         return '<div class="media-box"><iframe src="' + escapeHtml(item.embedUrl) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
       }
 
-      return '<div class="media-box"><a href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer"><img src="' + escapeHtml(item.thumbnail || 'https://via.placeholder.com/720x1280?text=SignalBoost') + '" alt="' + title + '" loading="lazy"></a></div>';
+      return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer">' +
+        '<img src="' + escapeHtml(item.thumbnail || 'https://via.placeholder.com/720x1280?text=SignalBoost') + '" alt="' + title + '" loading="lazy">' +
+        '<div class="promo-overlay">' +
+        '<div class="promo-kicker">' + escapeHtml(item.platform || 'promo') + '</div>' +
+        '<div class="promo-title">' + title + '</div>' +
+        '<div class="promo-subtitle">' + escapeHtml(item.description || '') + '</div>' +
+        '</div>' +
+        '</a></div>';
     }
 
     function renderFeed(items) {
