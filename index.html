@@ -754,6 +754,34 @@
       return output;
     }
 
+    function mixNonYoutubeFallback(liveItems, fallbackItems, limit) {
+      const live = interleaveByPlatform(dedupeFeedItems(liveItems), limit);
+      const fallbackPool = interleaveByPlatform(
+        dedupeFeedItems(
+          fallbackItems.filter(function(item) {
+            return normalizePlatform(item.platform) !== 'youtube';
+          })
+        ),
+        limit
+      );
+
+      const output = [];
+      let liveIndex = 0;
+      let fallbackIndex = 0;
+
+      while (output.length < limit && (liveIndex < live.length || fallbackIndex < fallbackPool.length)) {
+        if (liveIndex < live.length) {
+          output.push(live[liveIndex++]);
+        }
+        if (output.length >= limit) break;
+        if (fallbackIndex < fallbackPool.length) {
+          output.push(fallbackPool[fallbackIndex++]);
+        }
+      }
+
+      return dedupeFeedItems(output);
+    }
+
     const demoFeedItems = buildDemoFeed(fallbackItems, 4);
 
     const sourceConfigs = [
@@ -1221,15 +1249,27 @@
         }
       });
 
-      merged = interleaveByPlatform(dedupeFeedItems(merged), 60);
+      const uniqueLive = interleaveByPlatform(dedupeFeedItems(merged), 60);
+      const livePlatforms = Array.from(new Set(uniqueLive.map(function(item) {
+        return normalizePlatform(item.platform || 'unknown');
+      }).filter(Boolean)));
+      const onlyYoutubeLive = livePlatforms.length === 1 && livePlatforms[0] === 'youtube';
 
-      if (merged.length >= 12) {
-        setDebug('Sources → ' + debugParts.join(' | ') + ' | unique live: ' + merged.length);
-        return merged;
+      if (uniqueLive.length >= 12 && !onlyYoutubeLive) {
+        setDebug('Sources → ' + debugParts.join(' | ') + ' | unique live: ' + uniqueLive.length);
+        return uniqueLive;
       }
 
-      const fallbackUnique = interleaveByPlatform(dedupeFeedItems(demoFeedItems.map(normalizeFeedItem)), 60);
-      const mixedFallback = interleaveByPlatform(dedupeFeedItems(merged.concat(fallbackUnique)), 60);
+      const fallbackNormalized = demoFeedItems.map(normalizeFeedItem);
+
+      if (onlyYoutubeLive && uniqueLive.length) {
+        const mixedYoutube = mixNonYoutubeFallback(uniqueLive, fallbackNormalized, 60);
+        setDebug('Sources → ' + debugParts.join(' | ') + ' | mixed non-youtube fallback: ' + mixedYoutube.length);
+        return mixedYoutube;
+      }
+
+      const fallbackUnique = interleaveByPlatform(dedupeFeedItems(fallbackNormalized), 60);
+      const mixedFallback = interleaveByPlatform(dedupeFeedItems(uniqueLive.concat(fallbackUnique)), 60);
       setDebug('Sources → ' + debugParts.join(' | ') + ' | unique mixed: ' + mixedFallback.length);
       return mixedFallback;
     }
