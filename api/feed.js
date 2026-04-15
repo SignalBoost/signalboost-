@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-// REDDIT HOT FEED (Top of file)
+// REDDIT HOT FEED
 // ─────────────────────────────────────────────────────────────
 
 const REDDIT_SUBS = [
@@ -62,26 +62,75 @@ async function fetchRedditHot(sub) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// TIKTOK TRENDING (Live)  ← RIGHT AFTER REDDIT
+// ─────────────────────────────────────────────────────────────
+
+async function fetchTikTokTrending() {
+  try {
+    const url =
+      "https://www.tiktok.com/api/discover/item_list/?aid=1988&count=20";
+
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+        "Accept": "application/json"
+      }
+    });
+
+    if (!res.ok) {
+      console.warn("TikTok returned HTTP", res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    const items = data?.itemList || [];
+
+    return items.map(v => ({
+      id: `tiktok-${v.id}`,
+      title: v.desc || "TikTok video",
+      text: v.desc || "",
+      source: "TikTok",
+      link: `https://www.tiktok.com/@${v.author?.uniqueId}/video/${v.id}`,
+      publishedAt: v.createTime
+        ? new Date(v.createTime * 1000).toISOString()
+        : null,
+      thumb:
+        v.video?.cover ||
+        v.video?.originCover ||
+        v.video?.dynamicCover ||
+        null
+    }));
+  } catch (err) {
+    console.error("TikTok error:", err.message);
+    return [];
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
 // YOUTUBE TRENDING
 // ─────────────────────────────────────────────────────────────
 
 const axios = require("axios");
 
 // ─────────────────────────────────────────────────────────────
-// MAIN FEED HANDLER (Reddit + YouTube)
+// MAIN FEED HANDLER (Reddit + TikTok + YouTube)
 // ─────────────────────────────────────────────────────────────
 
 module.exports = async (req, res) => {
   try {
     const apiKey = process.env.YT_API_KEY || process.env.YOUTUBE_API_KEY;
 
-    // 1. Fetch Reddit Hot (parallel)
+    // 1. Reddit Hot (parallel)
     const redditResults = await Promise.all(
       REDDIT_SUBS.map(fetchRedditHot)
     );
     const redditItems = redditResults.flat();
 
-    // 2. Fetch YouTube Trending
+    // 2. TikTok Trending
+    const tiktokItems = await fetchTikTokTrending();
+
+    // 3. YouTube Trending
     let ytItems = [];
     if (apiKey) {
       const yt = await axios.get(
@@ -115,8 +164,8 @@ module.exports = async (req, res) => {
       console.warn("No YouTube API key found — skipping YouTube trending");
     }
 
-    // 3. Merge + sort newest first
-    const items = [...ytItems, ...redditItems].sort(
+    // 4. Merge all platforms + sort newest first
+    const items = [...ytItems, ...redditItems, ...tiktokItems].sort(
       (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
     );
 
