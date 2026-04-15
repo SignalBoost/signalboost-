@@ -1,8 +1,16 @@
-import axios from "axios";
+const axios = require("axios");
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
-    const YT_API_KEY = process.env.YT_API_KEY;
+    const apiKey = process.env.YT_API_KEY || process.env.YOUTUBE_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        items: [],
+        error: "Missing YouTube API key"
+      });
+    }
 
     const yt = await axios.get(
       "https://www.googleapis.com/youtube/v3/videos",
@@ -12,7 +20,7 @@ export default async function handler(req, res) {
           chart: "mostPopular",
           maxResults: 10,
           regionCode: "US",
-          key: YT_API_KEY
+          key: apiKey
         }
       }
     );
@@ -23,10 +31,16 @@ export default async function handler(req, res) {
       text: v.snippet.description,
       source: "YouTube",
       link: `https://www.youtube.com/watch?v=${v.id}`,
-      publishedAt: v.snippet.publishedAt
+      publishedAt: v.snippet.publishedAt,
+      thumb:
+        v.snippet.thumbnails?.maxres?.url ||
+        v.snippet.thumbnails?.high?.url ||
+        v.snippet.thumbnails?.medium?.url ||
+        v.snippet.thumbnails?.default?.url ||
+        null
     }));
 
-    res.status(200).json({
+    res.json({
       success: true,
       items
     });
@@ -40,4 +54,4 @@ export default async function handler(req, res) {
       error: "Failed to load YouTube trending"
     });
   }
-}
+};
