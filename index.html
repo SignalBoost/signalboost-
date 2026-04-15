@@ -196,6 +196,7 @@
       border-radius: 12px;
       padding: 14px;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
+      align-items: start;
     }
 
     .feed-card:hover {
@@ -210,6 +211,13 @@
       border-radius: 10px;
       background: #0b0f14;
       display: block;
+      border: 0;
+    }
+
+    iframe.feed-thumb {
+      aspect-ratio: 16 / 9;
+      height: auto;
+      min-height: 100px;
     }
 
     .feed-content h3 {
@@ -357,6 +365,10 @@
       .feed-thumb {
         height: 180px;
       }
+
+      iframe.feed-thumb {
+        height: 220px;
+      }
     }
   </style>
 </head>
@@ -430,15 +442,43 @@
       return d.toLocaleString();
     }
 
+    function normalizePlatform(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function getYouTubeEmbedUrl(url) {
+      try {
+        const parsed = new URL(url);
+
+        if (parsed.hostname.includes("youtube.com")) {
+          const videoId = parsed.searchParams.get("v");
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+
+        if (parsed.hostname.includes("youtu.be")) {
+          const videoId = parsed.pathname.replace("/", "");
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+      } catch (err) {
+        console.error("Invalid YouTube URL:", url, err);
+      }
+
+      return null;
+    }
+
     /* =========================
        COLUMN 1: PARTNERS
     ========================= */
     async function loadPartners() {
       try {
-        const response = await fetch("/data/partners.json");
+        const response = await fetch("/data/partners.json", {
+          headers: { "Accept": "application/json" }
+        });
+
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
+
         const data = await response.json();
         return Array.isArray(data.partners) ? data.partners : [];
       } catch (err) {
@@ -508,9 +548,13 @@
     const pageSize = 6;
 
     async function loadHybridFeed() {
-      const response = await fetch("/api/feed?q=travel");
+      const response = await fetch("/api/feed?q=travel", {
+        headers: { "Accept": "application/json" }
+      });
 
       if (!response.ok) {
+        const raw = await response.text().catch(() => "");
+        console.error("Feed API error:", response.status, raw);
         throw new Error(`HTTP ${response.status}`);
       }
 
@@ -528,25 +572,41 @@
       const title = escapeHtml(item.title || "Untitled");
       const description = escapeHtml(item.description || "");
       const author = escapeHtml(item.author || "");
-      const platform = escapeHtml(item.platform || "source");
-      const url = escapeAttribute(item.url || "#");
+      const platformRaw = item.platform || "source";
+      const platform = normalizePlatform(platformRaw);
+      const url = item.url || "#";
+      const safeUrl = escapeAttribute(url);
       const thumbnail = escapeAttribute(item.thumbnail || "");
       const publishedAt = formatDate(item.publishedAt);
 
+      const embedUrl = platform === "youtube" ? getYouTubeEmbedUrl(url) : null;
+
       article.innerHTML = `
-        ${thumbnail
-          ? `<img class="feed-thumb" src="${thumbnail}" alt="${title}" loading="lazy">`
-          : `<div class="feed-thumb"></div>`}
+        ${
+          embedUrl
+            ? `<iframe
+                class="feed-thumb"
+                src="${escapeAttribute(embedUrl)}"
+                title="${title}"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>`
+            : thumbnail
+              ? `<img class="feed-thumb" src="${thumbnail}" alt="${title}" loading="lazy">`
+              : `<div class="feed-thumb"></div>`
+        }
+
         <div class="feed-content">
           <h3>${title}</h3>
           <div class="feed-meta">
-            <span class="feed-platform ${platform}">${platform}</span>
+            <span class="feed-platform ${platform}">${escapeHtml(platformRaw)}</span>
             ${author ? author : ""}
             ${(author && publishedAt) ? " • " : ""}
             ${publishedAt}
           </div>
           ${description ? `<p>${description}</p>` : ""}
-          <a class="feed-link" href="${url}" target="_blank" rel="noopener noreferrer">Open post</a>
+          <a class="feed-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Open post</a>
         </div>
       `;
 
@@ -560,11 +620,14 @@
     function applyFilter() {
       visibleFeedItems = activeFilter === "all"
         ? [...allFeedItems]
-        : allFeedItems.filter(item => item.platform === activeFilter);
+        : allFeedItems.filter(item => normalizePlatform(item.platform) === activeFilter);
 
       currentIndex = 0;
       feedContainer.innerHTML = "";
-      observer.disconnect();
+
+      if (observer) {
+        observer.disconnect();
+      }
 
       if (!visibleFeedItems.length) {
         showFeedMessage(activeFilter === "all" ? "No feed items found." : `No ${activeFilter} items found.`);
@@ -572,7 +635,10 @@
       }
 
       renderFeedBatch();
-      observer.observe(feedSentinel);
+
+      if (currentIndex < visibleFeedItems.length && observer) {
+        observer.observe(feedSentinel);
+      }
     }
 
     function renderFeedBatch() {
@@ -582,10 +648,10 @@
         feedContainer.appendChild(createFeedCard(item));
       });
 
-      currentIndex += pageSize;
+      currentIndex += nextItems.length;
 
       if (currentIndex >= visibleFeedItems.length) {
-        observer.disconnect();
+        if (observer) observer.disconnect();
         feedLoader.style.display = "none";
       }
     }
@@ -641,7 +707,7 @@
 
     const observer = new IntersectionObserver(
       entries => {
-        if (entries[0].isIntersecting) {
+        if (entries[0] && entries[0].isIntersecting) {
           loadMoreFeedItems();
         }
       },
