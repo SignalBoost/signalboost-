@@ -593,11 +593,31 @@
         platform: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        title: 'YouTube Example',
+        title: 'YouTube Music Example',
         description: 'Embedded YouTube content rendered with iframe support.',
         author: 'Demo Source',
         publishedAt: '2026-04-14T09:00:00Z',
         thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
+      },
+      {
+        platform: 'youtube',
+        embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ',
+        url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
+        title: 'YouTube Pop Example',
+        description: 'Second YouTube sample so the feed does not repeat one video card.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-13T09:00:00Z',
+        thumbnail: 'https://img.youtube.com/vi/3JZ_D3ELwOQ/hqdefault.jpg'
+      },
+      {
+        platform: 'youtube',
+        embedUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk',
+        url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
+        title: 'YouTube Global Example',
+        description: 'Third YouTube sample for variety in fallback mode.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-12T09:00:00Z',
+        thumbnail: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg'
       },
       {
         platform: 'reddit',
@@ -607,7 +627,7 @@
         description: 'Reddit falls back to a thumbnail when no direct MP4 is available.',
         author: 'Demo Source',
         publishedAt: '2026-04-13T11:30:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=Reddit'
+        thumbnail: 'https://via.placeholder.com/640x960?text=Reddit+Clip'
       },
       {
         platform: 'instagram',
@@ -617,7 +637,7 @@
         description: 'Instagram falls back safely when no valid embed URL is present.',
         author: 'Demo Source',
         publishedAt: '2026-04-12T14:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=Instagram'
+        thumbnail: 'https://via.placeholder.com/640x960?text=Instagram+Reel'
       },
       {
         platform: 'facebook',
@@ -627,7 +647,7 @@
         description: 'Facebook falls back safely when no valid embed URL is present.',
         author: 'Demo Source',
         publishedAt: '2026-04-11T16:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=Facebook'
+        thumbnail: 'https://via.placeholder.com/640x960?text=Facebook+Video'
       },
       {
         platform: 'tiktok',
@@ -636,7 +656,34 @@
         description: 'TikTok content can be merged into the same feed with a thumbnail fallback.',
         author: 'Demo Source',
         publishedAt: '2026-04-10T18:00:00Z',
-        thumbnail: 'https://via.placeholder.com/640x360?text=TikTok'
+        thumbnail: 'https://via.placeholder.com/640x960?text=TikTok+Style'
+      },
+      {
+        platform: 'unknown',
+        url: 'https://example.com/travel',
+        title: 'Travel Promo Example',
+        description: 'A generic promo card used only when APIs do not return enough items.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-09T18:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x960?text=Travel+Promo'
+      },
+      {
+        platform: 'unknown',
+        url: 'https://example.com/deals',
+        title: 'Deals Example',
+        description: 'A generic deal card for feed variety in fallback mode.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-08T18:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x960?text=Deals'
+      },
+      {
+        platform: 'unknown',
+        url: 'https://example.com/guides',
+        title: 'Guide Example',
+        description: 'A generic guide card for feed variety in fallback mode.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-07T18:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x960?text=Guides'
       }
     ];
 
@@ -649,10 +696,29 @@
           baseDate.setMinutes(baseDate.getMinutes() - (round * seedItems.length + index) * 7);
           copy.publishedAt = baseDate.toISOString();
           copy.title = item.title + ' #' + (round + 1);
+          copy.url = (item.url || '#') + (item.url && item.url.includes('?') ? '&' : '?') + 'demo=' + (round + 1) + '-' + index;
           output.push(copy);
         });
       }
       return output;
+    }
+
+    function dedupeFeedItems(items) {
+      const seen = new Set();
+      return items.filter(function(item) {
+        const key = [
+          item.platform || '',
+          item.embedUrl || '',
+          item.videoUrl || '',
+          item.thumbnail || '',
+          item.url || '',
+          item.title || ''
+        ].join('|').toLowerCase();
+
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
     }
 
     const demoFeedItems = buildDemoFeed(fallbackItems, 12);
@@ -1098,7 +1164,7 @@
         return fetchJson(source.url);
       }));
 
-      const merged = [];
+      let merged = [];
       const debugParts = [];
 
       settled.forEach(function(result, index) {
@@ -1122,13 +1188,16 @@
         }
       });
 
-      if (merged.length) {
+      merged = dedupeFeedItems(merged);
+
+      if (merged.length >= 12) {
         setDebug('Sources → ' + debugParts.join(' | '));
         return merged;
       }
 
-      setDebug('Sources unavailable, using demo feed');
-      return demoFeedItems.map(normalizeFeedItem);
+      const mixedFallback = dedupeFeedItems(merged.concat(demoFeedItems.map(normalizeFeedItem)));
+      setDebug('Sources → ' + debugParts.join(' | ') + ' | fallback mixed: ' + mixedFallback.length);
+      return mixedFallback;
     }
 
     function createMediaMarkup(item) {
