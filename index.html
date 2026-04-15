@@ -2,1205 +2,1084 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SignalBoost — Your Digital Shopping Mall</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <title>Unified Social Video Renderer</title>
   <style>
     * {
-      margin: 0;
-      padding: 0;
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    :root {
-      --bg: #ffffff;
-      --text: #111111;
-      --card-bg: #f7f7f7;
-      --border: #e0e0e0;
-      --accent: #d4af37;
-      --accent-soft: rgba(212, 175, 55, 0.12);
-      --header-bg: rgba(255, 255, 255, 0.9);
-      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.04);
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #ffffff;
     }
 
-    body.dark {
-      --bg: #0b0b0f;
-      --text: #f5f5f7;
-      --card-bg: #15151b;
-      --border: #2a2a33;
-      --accent: #d4af37;
-      --accent-soft: rgba(212, 175, 55, 0.18);
-      --header-bg: rgba(11, 11, 15, 0.9);
-      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.6);
+    
+
+    .app {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      height: 100vh;
+      min-height: 0;
+      gap: 12px;
+      padding: 12px;
     }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.25s ease, color 0.25s ease;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      background: var(--header-bg);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-      z-index: 1000;
-    }
-
-    .header-left {
+    .column {
       display: flex;
       flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
     }
 
-    .brand-title {
-      font-size: 1.2rem;
+    .column-1 {
+      background: #11161d;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .column-1-header {
+      padding: 14px 16px;
+      font-size: 16px;
       font-weight: 700;
-      letter-spacing: 0.03em;
-      color: var(--accent);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    .brand-subtitle {
-      font-size: 0.8rem;
-      opacity: 0.8;
+    .column-1-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
     }
 
-    .header-center {
+    .category {
+      margin-bottom: 10px;
+    }
+
+    .category details {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .category summary {
+      cursor: pointer;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      user-select: none;
+      font-weight: 600;
+      list-style: none;
+    }
+
+    .category summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .category summary::before {
+      content: "▶";
+      display: inline-block;
+      width: 14px;
+      margin-right: 6px;
+      font-size: 10px;
+      transform: translateY(-1px);
+    }
+
+    .category details[open] summary::before {
+      content: "▼";
+    }
+
+    .category ul {
+      list-style: none;
+      margin: 0;
+      padding: 8px 8px 2px 8px;
+    }
+
+    .category li {
+      margin: 6px 0;
+    }
+
+    .category a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .category a:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
+
+    .column-1-empty {
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      padding: 8px 4px;
+    }
+
+    .column-2 {
+      background: #0d1117;
+    }
+
+    #magnetoColumn.feed-wrapper {
       display: flex;
-      gap: 8px;
-      font-size: 0.8rem;
-      flex-wrap: wrap;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      overflow-y: auto;
+      padding: 16px 24px 32px;
+      align-items: center;
+      
+    }
+
+    
+
+    .feed-header {
+      margin: 0 0 12px 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    
+
+    .debug-box {
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+
+    .feed-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .feed-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      min-height: auto;
+      background: linear-gradient(180deg, rgba(22,27,34,0.96) 0%, rgba(18,23,30,0.96) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 12px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      align-items: stretch;
+      justify-content: space-between;
+    }
+
+    /* Slightly tighter stacking after first card */
+    .feed-card + .feed-card {
+      margin-top: -6px;
+    }
+
+    .feed-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+
+    .media-box {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      min-height: 520px;
+      max-height: none;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #0b0f14;
+      display: block;
+    }
+
+    /* Hybrid hero rhythm */
+    .feed-card .media-box {
+      min-height: 520px;
+    }
+
+    .feed-card:nth-child(5n+1) .media-box {
+      min-height: 640px;
+    }
+
+    .media-box iframe,
+    .media-box video,
+    .media-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 0;
+      display: block;
+    }
+
+    iframe.feed-thumb {
+      aspect-ratio: 16 / 9;
+      height: auto;
+      min-height: 100px;
+    }
+
+    .fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      width: 100%;
+      min-height: 320px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #0b0f14;
       justify-content: center;
     }
 
-    .header-pill {
-      padding: 4px 10px;
+    .fallback img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 14px;
+      flex-shrink: 0;
+    }
+
+    .feed-content h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .feed-content p {
+      margin: 0 0 10px 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.5;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .feed-meta {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .feed-platform {
+      display: inline-block;
+      font-size: 11px;
+      padding: 4px 8px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+      margin-right: 6px;
+      text-transform: capitalize;
+      background: rgba(255,255,255,0.08);
+      color: #dddddd;
+      vertical-align: middle;
     }
 
-    .header-pill:hover {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      transform: translateY(-1px);
+    .feed-platform.youtube {
+      background: rgba(255, 0, 0, 0.15);
+      color: #ff6b6b;
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .feed-platform.reddit {
+      background: rgba(255, 69, 0, 0.15);
+      color: #ff4500;
     }
 
-    .theme-toggle {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      cursor: pointer;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+    .feed-platform.instagram {
+      background: rgba(255, 0, 150, 0.15);
+      color: #ff4fa3;
     }
 
-    .theme-toggle:hover {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      transform: translateY(-1px);
+    .feed-platform.facebook {
+      background: rgba(24, 119, 242, 0.15);
+      color: #66a3ff;
     }
 
-    main {
-      padding: 90px 20px 20px;
-      height: 100vh;
-      overflow: hidden;
+    .feed-link,
+    .fallback a {
+      display: inline-block;
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 14px;
     }
 
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 320px minmax(0, 1fr) 260px;
-      gap: 18px;
-      align-items: start;
-      height: calc(100vh - 110px);
-      overflow: hidden;
+    .feed-link:hover,
+    .fallback a:hover {
+      text-decoration: underline;
+    }
+
+    .feed-loader {
+      text-align: center;
+      padding: 18px 0;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+      display: none;
+    }
+
+    .feed-message {
+      text-align: center;
+      padding: 18px 0;
+      color: rgba(255,255,255,0.65);
+      font-size: 14px;
+    }
+
+    #feedSentinel {
+      height: 1px;
+    }
+
+    .column-3 {
+      background: #11161d;
+      border-left: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .column-3 h2 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .column-3-card {
+      background: linear-gradient(180deg, rgba(22,27,34,0.92) 0%, rgba(18,23,30,0.92) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      color: rgba(255,255,255,0.88);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+    }
+
+    .column-3-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .column-3-card li {
+      margin: 8px 0;
     }
 
     @media (max-width: 1100px) {
-      .grid-3 {
-        grid-template-columns: 280px minmax(0, 1fr);
+      .app {
+        grid-template-columns: 260px 1fr;
       }
+
       .column-3 {
         display: none;
       }
     }
 
-    @media (max-width: 800px) {
-      .grid-3 {
-        grid-template-columns: minmax(0, 1fr);
+    @media (max-width: 768px) {
+      .app {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0;
       }
-      .column-1 {
-        order: 2;
-      }
+
       .column-2 {
-        height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding-right: 6px;
-        scroll-behavior: smooth;
-        overscroll-behavior: contain;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        border-top: 0;
       }
 
-      /* Ensure side columns also scroll independently */
-      .column-1, .column-3 {
-        overflow-y: auto;
-        overflow-x: hidden;
-        overscroll-behavior: contain;
+      .column-1 {
+        display: none;
+      }
+
+      #magnetoColumn.feed-wrapper {
+        padding: 8px 8px 20px;
+        scroll-padding-top: 8px;
+      }
+
+      .feed-topbar {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .feed-container {
+        max-width: 100%;
+        gap: 12px;
+      }
+
+      .feed-card {
+        min-height: calc(100vh - 70px);
+        padding: 10px;
+        border-radius: 16px;
+      }
+
+      .media-box {
+        min-height: 68vh;
+        max-height: 74vh;
+        border-radius: 14px;
+      }
+
+      .fallback {
+        min-height: 68vh;
+        padding: 14px;
+      }
+
+      .fallback img {
+        width: 100%;
+        height: 220px;
       }
     }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 260px 1fr;
+      }
+
+      .column-3 {
+        display: none;
+      }
     }
 
-    /* Ensure side columns also scroll independently */
-    .column-1, .column-3 {
-      overflow-y: auto;
-      overflow-x: hidden;
-      overscroll-behavior: contain;
-    }
+    @media (max-width: 768px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
 
-    #magnetoFeed {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
+      .column-1 {
+        display: none;
+      }
 
-    .video-card {
-      background: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--border);
-    }
+      #magnetoColumn.feed-wrapper {
+        padding: 8px 8px 20px;
+        scroll-padding-top: 8px;
+      }
 
-    .video-card h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 12px;
-      color: var(--text);
-    }
+      .feed-topbar {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 10px;
+      }
 
-    .video-card .video-embed {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+      .feed-container {
+        max-width: 100%;
+        gap: 12px;
+      }
 
-    .video-card iframe,
-    .video-card blockquote,
-    .video-card video,
-    .video-card embed {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
+      .feed-card {
+        min-height: calc(100vh - 70px);
+        padding: 10px;
+        border-radius: 16px;
+      }
 
-    .video-card a.video-link,
-    .video-card a {
-      display: block;
-      padding: 12px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 500;
-      color: #0077cc;
-      text-decoration: none;
-      border-top: 1px solid #eee;
-    }
+      .media-box {
+        min-height: 68vh;
+        max-height: 74vh;
+        border-radius: 14px;
+      }
 
-    .video-card a.video-link:hover,
-    .video-card a:hover {
-      background: #f9f9f9;
-    }
+      .fallback {
+        min-height: 68vh;
+        padding: 14px;
+      }
 
-    #magnetoLoader {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 12px;
-      font-size: 14px;
-      color: #666;
+      .fallback img {
+        width: 100%;
+        height: 220px;
+      }
     }
-
-    .magneto-empty {
-      grid-column: 1 / -1;
-      display: grid;
-      place-items: center;
-      min-height: 220px;
-      text-align: center;
-      border: 1px dashed var(--border);
-      border-radius: 12px;
-      background: var(--card-bg);
-      box-shadow: var(--shadow-soft);
-      padding: 20px;
-      margin-bottom: 12px;
-    }
-
-    .magneto-empty-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .magneto-empty-text {
-      font-size: 0.85rem;
-      opacity: 0.75;
-    }
-
-    #logoWall {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 20px;
-      padding: 20px;
-      align-items: center;
-      justify-items: center;
-    }
-
-    #logoWall a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      min-height: 72px;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      box-shadow: var(--shadow-soft);
-      transition: border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
-    }
-
-    #logoWall a:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
-    }
-
-    #logoWall img {
-      width: 80px;
-      max-width: 100%;
-      height: auto;
-      display: block;
-      object-fit: contain;
-    }
-
-    .animate {
-      animation: spinBounce 0.6s ease;
-    }
-
-    @keyframes spinBounce {
-      0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
-      50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
-      100% { transform: scale(1) rotate(360deg); opacity: 1; }
-    }
-
-    .shake {
-      animation: bowlShake 0.6s ease;
-    }
-
-    @keyframes bowlShake {
-      0% { transform: translateX(0); }
-      20% { transform: translateX(-10px); }
-      40% { transform: translateX(10px); }
-      60% { transform: translateX(-10px); }
-      80% { transform: translateX(10px); }
-      100% { transform: translateX(0); }
-    }
-
-    .audio-controls {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-
-    #volumeSlider {
-      width: 150px;
-      accent-color: #ff6f61;
-    }
-
-    #muteButton,
-    #shuffleButton {
-      padding: 6px 12px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-      background: linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    #muteButton:hover,
-    #shuffleButton:hover {
-      transform: scale(1.05);
-    }
-
-    #partnerColumn {
-      padding: 16px;
-    }
-
-    .fruit-bowl {
-      position: relative;
-      width: 100%;
-      min-height: 400px;
-      background: radial-gradient(circle at center, #ffcc00, #ff6f61, #00c4ff);
-      border-radius: 50%;
-      padding: 20px;
-      overflow: hidden;
-    }
-
-    .loop-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .loop {
-      width: var(--loop-size, 50px);
-      height: var(--loop-size, 50px);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: bold;
-      color: #fff;
-      cursor: pointer;
-      background: var(--loop-bg, linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff));
-      transition: transform 0.2s ease;
-      overflow: hidden;
-      text-align: center;
-      padding: 4px;
-      transform: rotate(var(--loop-rotate, 0deg));
-    }
-
-    .loop:hover {
-      transform: scale(1.2);
-    }
-
-    .loop img {
-      max-width: 70%;
-      max-height: 70%;
-      border-radius: 50%;
-      object-fit: contain;
-      display: block;
-    }
-</style>
+  </style>
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <div class="brand-title">SignalBoost</div>
-      <div class="brand-subtitle">Your Digital Shopping Mall</div>
-    </div>
+  <div class="app">
+    <div class="column column-1">
+      <div class="column-1-header">Navigation</div>
 
-    <div class="header-center">
-      <div class="header-pill" data-target="cat-flights">Flights</div>
-      <div class="header-pill" data-target="cat-hotels">Hotels &amp; Meta</div>
-      <div class="header-pill" data-target="cat-sim">SIM &amp; eSIM</div>
-      <div class="header-pill" data-target="cat-cars">Cars &amp; Transfers</div>
-      <div class="header-pill" data-target="cat-activities">Activities</div>
-      <div class="header-pill" data-target="cat-services">Travel Services</div>
-      <div class="header-pill" data-target="cat-vpn">Digital</div>
-      <div class="header-pill" data-target="cat-other">Other &amp; Shopping</div>
-    </div>
-
-    <div class="header-right">
-      <button class="theme-toggle" id="themeToggle">
-        <span id="themeIcon">🌞</span>
-        <span id="themeLabel">Light</span>
-      </button>
-    </div>
-  </header>
-
-  <main>
-    <div id="rotatingBanner" class="banner">
-      <a id="bannerLink" href="#" target="_blank" rel="noopener">
-        <span id="bannerText"></span>
-      </a>
-    </div>
-
-    <section class="grid-3">
-      <div class="column column-1" id="column1" style="height:100%; overflow-y:auto; overflow-x:hidden; overscroll-behavior: contain;">
-        <div class="category-block open" id="cat-flights">
-          <div class="category-header">
-            <div class="category-name">Flights &amp; Travel Meta</div>
-            <div>
-              <span class="category-tag">High Intent</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806" target="_blank" rel="noopener">
-                    <span class="partner-name">Kiwi CA</span>
-                    <span class="partner-meta">Flights</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806" target="_blank" rel="noopener">
-                    <span class="partner-name">Kiwi US</span>
-                    <span class="partner-meta">Flights</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener">
-                    <span class="partner-name">Aviasales</span>
-                    <span class="partner-meta">Flights Meta</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="column-1-scroll">
+        <div class="category">
+          <details open>
+            <summary>Flights & Transport</summary>
+            <ul>
+              <li><a href="https://aviasales.tpo.lv/VoWXgFFm" target="_blank" rel="noopener noreferrer">Aviasales</a></li>
+              <li><a href="https://busbud.tpo.lv/h4C6YPFZ" target="_blank" rel="noopener noreferrer">Busbud</a></li>
+              <li><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener noreferrer">Kiwi.com</a></li>
+              <li><a href="https://holidaytaxis.tpo.lv/oHwpbrFt" target="_blank" rel="noopener noreferrer">HolidayTaxis</a></li>
+              <li><a href="https://intui.tpo.lv/Rrx5VuN3" target="_blank" rel="noopener noreferrer">Intui.travel</a></li>
+              <li><a href="https://kiwitaxi.tpo.lv/DVaqmgKo" target="_blank" rel="noopener noreferrer">Kiwitaxi</a></li>
+              <li><a href="https://gettransfer.tpo.lv/Pb4p9ljm" target="_blank" rel="noopener noreferrer">GetTransfer.com</a></li>
+              <li><a href="https://tpo.lv/XAJOoobr" target="_blank" rel="noopener noreferrer">Welcome Pickups</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Carmel Car &amp; Limousine</a></li>
+            </ul>
+          </details>
         </div>
 
-        <div class="category-block" id="cat-hotels">
-          <div class="category-header">
-            <div class="category-name">Hotels &amp; Meta</div>
-            <div>
-              <span class="category-tag">Stays</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806" target="_blank" rel="noopener">
-                    <span class="partner-name">Trivago AR</span>
-                    <span class="partner-meta">Meta</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806" target="_blank" rel="noopener">
-                    <span class="partner-name">Trivago BR</span>
-                    <span class="partner-meta">Meta</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806" target="_blank" rel="noopener">
-                    <span class="partner-name">Trivago MX</span>
-                    <span class="partner-meta">Meta</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="category">
+          <details>
+            <summary>Car Rentals & Mobility</summary>
+            <ul>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Allycar</a></li>
+              <li><a href="https://bikesbooking.tpo.lv/B3zIKanS" target="_blank" rel="noopener noreferrer">BikesBooking.com</a></li>
+              <li><a href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener noreferrer">Economybookings.com</a></li>
+              <li><a href="https://getrentacar.tpo.lv/OR2TWduQ" target="_blank" rel="noopener noreferrer">GetRentacar.com</a></li>
+              <li><a href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener noreferrer">Localrent.com</a></li>
+              <li><a href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener noreferrer">QEEQ</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Jumbo Car Costa Rica (US)</a></li>
+            </ul>
+          </details>
         </div>
 
-        <div class="category-block" id="cat-sim">
-          <div class="category-header">
-            <div class="category-name">SIM &amp; eSIM</div>
-            <div>
-              <span class="category-tag">Connectivity</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener">
-                    <span class="partner-name">Yesim</span>
-                    <span class="partner-meta">eSIM</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener">
-                    <span class="partner-name">Airalo</span>
-                    <span class="partner-meta">eSIM</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener">
-                    <span class="partner-name">Drimsim</span>
-                    <span class="partner-meta">SIM/eSIM</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="category">
+          <details>
+            <summary>Insurance, eSIM & Protection</summary>
+            <ul>
+              <li><a href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener noreferrer">AirHelp</a></li>
+              <li><a href="https://compensair.tpo.lv/wxDDCITG" target="_blank" rel="noopener noreferrer">Compensair</a></li>
+              <li><a href="https://ektatraveling.tpo.lv/XWbZbj8S" target="_blank" rel="noopener noreferrer">EKTA Insurance</a></li>
+              <li><a href="https://drimsim.tpo.lv/PGwr6JTr" target="_blank" rel="noopener noreferrer">Drimsim</a></li>
+              <li><a href="https://saily.com" target="_blank" rel="noopener noreferrer">Saily</a></li>
+              <li><a href="https://yesim.tpo.lv/3vIzBQts" target="_blank" rel="noopener noreferrer">Yesim</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806" target="_blank" rel="noopener noreferrer">The BitJoy eSIM (US)</a></li>
+              <li><a href="https://booking.tpo.lv/enwsEbCs" target="_blank" rel="noopener noreferrer">NordVPN</a></li>
+            </ul>
+          </details>
         </div>
 
-        <div class="category-block" id="cat-cars">
-          <div class="category-header">
-            <div class="category-name">Cars &amp; Transfers</div>
-            <div>
-              <span class="category-tag">Ground Mobility</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://localrent.tpo.lv/XS0CqdMP" target="_blank" rel="noopener">
-                    <span class="partner-name">Localrent</span>
-                    <span class="partner-meta">Car Rental</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://economybookings.tpo.lv/jSFMPEPA" target="_blank" rel="noopener">
-                    <span class="partner-name">EconomyBookings</span>
-                    <span class="partner-meta">Car Rental</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://qeeq.tpo.lv/jklB4Pbm" target="_blank" rel="noopener">
-                    <span class="partner-name">QEEQ</span>
-                    <span class="partner-meta">Car Rental</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="category">
+          <details>
+            <summary>Tours, Tickets & Experiences</summary>
+            <ul>
+              <li><a href="https://gocity.tpo.lv/Des5Cgov" target="_blank" rel="noopener noreferrer">GoCity</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go! Go! España</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Go2Africa (US)</a></li>
+              <li><a href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener noreferrer">Klook</a></li>
+              <li><a href="https://tiqets.com" target="_blank" rel="noopener noreferrer">Tiqets (DE / FR / IT / UK / US)</a></li>
+              <li><a href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener noreferrer">WeGoTrip</a></li>
+              <li><a href="https://searadar.tpo.lv/TO4A5eBZ" target="_blank" rel="noopener noreferrer">Searadar</a></li>
+            </ul>
+          </details>
         </div>
 
-        <div class="category-block" id="cat-activities">
-          <div class="category-header">
-            <div class="category-name">Activities &amp; Experiences</div>
-            <div>
-              <span class="category-tag">Experiences</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://klook.tpo.lv/pTp1NljF" target="_blank" rel="noopener">
-                    <span class="partner-name">Klook</span>
-                    <span class="partner-meta">Tours &amp; Activities</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://wegotrip.tpo.lv/kKIF0gIW" target="_blank" rel="noopener">
-                    <span class="partner-name">WeGoTrip</span>
-                    <span class="partner-meta">Tours</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="category">
+          <details>
+            <summary>Hotels, Storage & Travel Tools</summary>
+            <ul>
+              <li><a href="https://airalo.tpo.lv/eXjKLiuw" target="_blank" rel="noopener noreferrer">Airalo</a></li>
+              <li><a href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener noreferrer">Radical Storage</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Evisa</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Lastminute SE</a></li>
+              <li><a href="https://pearlmountain.tpo.lv" target="_blank" rel="noopener noreferrer">PearlMountain Limited</a></li>
+            </ul>
+          </details>
         </div>
 
-        <div class="category-block" id="cat-services">
-          <div class="category-header">
-            <div class="category-name">Travel Services</div>
-            <div>
-              <span class="category-tag">Support</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://radicalstorage.tpo.lv/tna4hnly" target="_blank" rel="noopener">
-                    <span class="partner-name">Radical Storage</span>
-                    <span class="partner-meta">Luggage Storage</span>
-                  </a>
-                </div>
-                <div class="partner-item">
-                  <a class="partner-link" href="https://airhelp.tpo.lv/EPrGDSO3" target="_blank" rel="noopener">
-                    <span class="partner-name">AirHelp</span>
-                    <span class="partner-meta">Flight Compensation</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="category-block" id="cat-vpn">
-          <div class="category-header">
-            <div class="category-name">Digital &amp; Tools</div>
-            <div>
-              <span class="category-tag">Digital</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806" target="_blank" rel="noopener">
-                    <span class="partner-name">PearlMountain</span>
-                    <span class="partner-meta">Digital Tools</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="category-block" id="cat-other">
-          <div class="category-header">
-            <div class="category-name">Other &amp; Shopping</div>
-            <div>
-              <span class="category-tag">Misc</span>
-              <span class="category-arrow">▾</span>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-body-inner">
-              <div class="partner-list">
-                <div class="partner-item">
-                  <a class="partner-link" href="https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806" target="_blank" rel="noopener">
-                    <span class="partner-name">Tsarbomba</span>
-                    <span class="partner-meta">Watches</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="category">
+          <details>
+            <summary>Specialty & Other</summary>
+            <ul>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806" target="_blank" rel="noopener noreferrer">Desire Experience (US)</a></li>
+              <li><a href="https://temptation.tpo.lv" target="_blank" rel="noopener noreferrer">Temptation Experience (US)</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806" target="_blank" rel="noopener noreferrer">The Builder Market (US)</a></li>
+              <li><a href="https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806" target="_blank" rel="noopener noreferrer">King Koil</a></li>
+            </ul>
+          </details>
         </div>
       </div>
+    </div>
 
-      <div class="column column-2" id="magnetoColumn">
-        <div id="magnetoFeed">
-          <div id="magnetoLoader">Loading…</div>
+    <div class="column column-2">
+      <div id="magnetoColumn" class="feed-wrapper">
+        
         </div>
+
+        <div id="feedContainer" class="feed-container"></div>
+        <div id="feedLoader" class="feed-loader">Loading...</div>
+        <div id="feedSentinel"></div>
+      </div>
+    </div>
+
+    <div class="column column-3">
+      <h2>Insights</h2>
+
+      <div class="column-3-card">
+        <strong>🔥 Trending</strong>
+        <ul>
+          <li>AI tools & automation</li>
+          <li>Travel hacks 2026</li>
+          <li>Remote work lifestyle</li>
+        </ul>
       </div>
 
-      <div class="column column-3" id="partnerColumn" style="height:100%; overflow-y:auto; overflow-x:hidden; overscroll-behavior: contain;">
-        <div id="fruitBowl" class="fruit-bowl">
-          <button id="shuffleButton">🍭 Refresh Mix</button>
-          <audio id="shuffleSound" src="/sounds/bowl-shake.mp3" preload="auto"></audio>
-          <div class="audio-controls">
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
-            <button id="muteButton">🔇 Mute</button>
-          </div>
-          <div id="loopContainer" class="loop-container"></div>
-        </div>
+      <div class="column-3-card" style="margin-top:16px;">
+        <strong>💾 Saved</strong>
+        <ul>
+          <li>Your bookmarked videos</li>
+          <li>Watch later</li>
+          <li>Favorites</li>
+        </ul>
       </div>
-    </section>
-  </main>
+
+      <div class="column-3-card" style="margin-top:16px;">
+        <strong>📊 Feed Insights</strong>
+        <ul>
+          <li>Top platform: YouTube</li>
+          <li>Most active time: Evening</li>
+          <li>Videos watched: 24</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
 
   <script>
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const themeLabel = document.getElementById('themeLabel');
-
-    function applyTheme(dark) {
-      if (dark) {
-        document.body.classList.add('dark');
-        themeIcon.textContent = '🌙';
-        themeLabel.textContent = 'Dark';
-      } else {
-        document.body.classList.remove('dark');
-        themeIcon.textContent = '🌞';
-        themeLabel.textContent = 'Light';
+        const fallbackItems = [
+      {
+        platform: 'youtube',
+        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        title: 'YouTube Example',
+        description: 'Embedded YouTube content rendered with iframe support.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-14T09:00:00Z',
+        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
+      },
+      {
+        platform: 'reddit',
+        videoUrl: '',
+        url: 'https://www.reddit.com/',
+        title: 'Reddit Example',
+        description: 'Reddit falls back to a thumbnail when no direct MP4 is available.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-13T11:30:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=Reddit'
+      },
+      {
+        platform: 'instagram',
+        embedUrl: '',
+        url: 'https://www.instagram.com/',
+        title: 'Instagram Example',
+        description: 'Instagram falls back safely when no valid embed URL is present.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-12T14:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=Instagram'
+      },
+      {
+        platform: 'facebook',
+        embedUrl: '',
+        url: 'https://www.facebook.com/',
+        title: 'Facebook Example',
+        description: 'Facebook falls back safely when no valid embed URL is present.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-11T16:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=Facebook'
+      },
+      {
+        platform: 'tiktok',
+        url: 'https://www.tiktok.com/',
+        title: 'TikTok Example',
+        description: 'TikTok content can be merged into the same feed with a thumbnail fallback.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-10T18:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=TikTok'
       }
-    }
-
-    themeToggle.addEventListener('click', () => {
-      const isDark = !document.body.classList.contains('dark');
-      applyTheme(isDark);
-    });
-
-    const categoryBlocks = Array.from(document.querySelectorAll('.category-block'));
-
-    function openCategory(block, scroll = true) {
-      categoryBlocks.forEach(b => {
-        if (b !== block) b.classList.remove('open');
-      });
-
-      const alreadyOpen = block.classList.contains('open');
-      if (!alreadyOpen) {
-        block.classList.add('open');
-        if (scroll) {
-          const headerOffset = 80;
-          const rect = block.getBoundingClientRect();
-          const absoluteY = window.scrollY + rect.top - headerOffset;
-          window.scrollTo({ top: absoluteY, behavior: 'smooth' });
-        }
-      }
-    }
-
-    categoryBlocks.forEach(block => {
-      const header = block.querySelector('.category-header');
-      header.addEventListener('click', () => {
-        const isOpen = block.classList.contains('open');
-        if (isOpen) {
-          block.classList.remove('open');
-        } else {
-          openCategory(block, true);
-        }
-      });
-    });
-
-    const headerPills = document.querySelectorAll('.header-pill');
-    headerPills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        const targetId = pill.getAttribute('data-target');
-        const targetBlock = document.getElementById(targetId);
-        if (targetBlock) openCategory(targetBlock, true);
-      });
-    });
-
-    const bannerData = [
-      { text: 'Kiwi.com – Find cheap flights', url: 'https://www.kiwi.com' },
-      { text: 'Trivago – Compare hotel prices', url: 'https://www.trivago.com' },
-      { text: 'Airalo – eSIM for travelers', url: 'https://www.airalo.com' },
-      { text: 'Localrent – Local car rentals', url: 'https://www.localrent.com' },
-      { text: 'Klook – Tours & activities', url: 'https://www.klook.com' },
-      { text: 'WeGoTrip – Audio tours', url: 'https://www.wegotrip.com' }
     ];
 
-    let bannerIndex = 0;
-
-    function rotateBanner() {
-      const banner = document.getElementById('rotatingBanner');
-      const text = document.getElementById('bannerText');
-      const link = document.getElementById('bannerLink');
-
-      banner.style.opacity = 0;
-
-      setTimeout(() => {
-        text.textContent = bannerData[bannerIndex].text;
-        link.href = bannerData[bannerIndex].url;
-        banner.style.opacity = 1;
-        bannerIndex = (bannerIndex + 1) % bannerData.length;
-      }, 400);
+    function buildDemoFeed(seedItems, repeats) {
+      const output = [];
+      for (let round = 0; round < repeats; round += 1) {
+        seedItems.forEach(function(item, index) {
+          const copy = Object.assign({}, item);
+          const baseDate = new Date(item.publishedAt || Date.now());
+          baseDate.setMinutes(baseDate.getMinutes() - (round * seedItems.length + index) * 7);
+          copy.publishedAt = baseDate.toISOString();
+          copy.title = item.title + ' #' + (round + 1);
+          output.push(copy);
+        });
+      }
+      return output;
     }
 
-    rotateBanner();
-    setInterval(rotateBanner, 15000);
+    const demoFeedItems = buildDemoFeed(fallbackItems, 12);
 
-    // ===============================
-    // COLUMN 2 — HYBRID VIDEO FEED
-    // ===============================
-
-    const magnetoColumn = document.getElementById('magnetoColumn');
-    const magnetoFeed = document.getElementById('magnetoFeed');
-    const magnetoLoader = document.getElementById('magnetoLoader');
-
-    let feedLoading = false;
-    let feedPage = 0;
-    let hasMore = true;
+    const sourceConfigs = [
+      { key: 'youtube', url: '/api/feed/youtube' },
+      { key: 'reddit', url: '/api/feed/reddit' },
+      { key: 'instagram', url: '/api/feed/instagram' },
+      { key: 'facebook', url: '/api/feed/facebook' },
+      { key: 'tiktok', url: '/api/feed/tiktok' }
+    ];
 
     function escapeHtml(value) {
-      return String(value ?? '')
+      if (value == null) return '';
+      return String(value)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
+        .replace(/\"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
 
-    function clearPlaceholderCards() {
-      if (!magnetoFeed) return;
-      const existingCards = magnetoFeed.querySelectorAll('.magneto-card, .magneto-empty');
-      existingCards.forEach(card => card.remove());
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const d = new Date(dateString);
+      if (Number.isNaN(d.getTime())) return '';
+      return d.toLocaleString();
     }
 
-    function renderFallbackState(title, text, details = '') {
-      if (!magnetoFeed || !magnetoLoader) return;
-
-      clearPlaceholderCards();
-
-      const empty = document.createElement('article');
-      empty.className = 'magneto-empty';
-      empty.innerHTML = `
-        <div>
-          <div class="magneto-empty-title">${escapeHtml(title)}</div>
-          <div class="magneto-empty-text">${escapeHtml(text)}</div>
-          ${details ? `<div class="magneto-empty-text" style="margin-top:8px;font-size:0.75rem;opacity:0.9;word-break:break-word;">${escapeHtml(details)}</div>` : ''}
-        </div>
-      `;
-
-      magnetoFeed.insertBefore(empty, magnetoLoader);
+    function normalizePlatform(value) {
+      return String(value || '').trim().toLowerCase();
     }
 
-    async function fetchHybridVideos(pageNumber) {
-      const isPreviewHost = /oaiusercontent\.com$/i.test(window.location.hostname);
-
-      if (isPreviewHost) {
-        throw new Error('Canvas preview cannot reliably fetch https://www.signalboostapp.com/api/hybrid-feed from this environment. Upload the packaged files to your own server/domain to test the live hybrid feed.');
-      }
-
-      const BASE_URL = window.location.origin;
-      const url = `${BASE_URL}/api/hybrid-feed?type=video&sort=recent&page=${pageNumber}`;
-
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (!res.ok) {
-        const body = await res.text().catch(() => '');
-        throw new Error(`Request: ${url} | Status: ${res.status} | Body: ${body.slice(0, 200)}`);
-      }
-
-      const data = await res.json();
-
-      if (Array.isArray(data)) return data;
-      if (Array.isArray(data?.items)) return data.items;
-      if (Array.isArray(data?.results)) return data.results;
-
-      throw new Error(`Request: ${url} | Unexpected JSON shape: ${JSON.stringify(data).slice(0, 200)}`);
+    function setDebug(message) {
+      const debugBox = document.getElementById('debugBox');
+      if (debugBox) debugBox.textContent = message;
+      console.log(message);
     }
 
-    function createVideoCard(item) {
-      const card = document.createElement('article');
-      card.className = 'card card-clickable magneto-card video-card';
-
-      const safeThumb = item?.thumbnail ? String(item.thumbnail).replace(/'/g, '%27') : '';
-      const safeTitle = escapeHtml(item?.title || 'Untitled video');
-      const safePlatform = item?.platform ? escapeHtml(item.platform) : '';
-      const safeUrl = item?.url ? String(item.url) : '';
-      const badgeText = item?.badge ? escapeHtml(item.badge) : 'Recent';
-      const embedHtml = typeof item?.embedHtml === 'string' ? item.embedHtml.trim() : '';
-      const hasEmbed = Boolean(embedHtml);
-
-      if (safeUrl && !hasEmbed) {
-        card.addEventListener('click', () => {
-          window.open(safeUrl, '_blank', 'noopener');
-        });
-      }
-
-      const titleHtml = `<h3>${safeTitle}</h3>`;
-      const embedBlock = hasEmbed
-        ? `<div class="video-embed magneto-embed">${embedHtml}</div>`
-        : `<div class="video-embed magneto-thumb" style="background-image:url('${safeThumb}'); background-size:cover; background-position:center;"></div>`;
-      const linkBlock = safeUrl
-        ? `<a class="video-link" href="${safeUrl}" target="_blank" rel="noopener">Open video${safePlatform ? ` • ${safePlatform}` : ''} • ${badgeText}</a>`
-        : '';
-      const metaBlock = !safeUrl
-        ? `<div class="magneto-meta"><span>${safePlatform}</span><span class="magneto-badge">${badgeText}</span></div>`
-        : '';
-
-      card.innerHTML = `
-        ${embedBlock}
-        ${titleHtml}
-        ${metaBlock}
-        ${linkBlock}
-      `;
-
-      hydrateEmbedProviders(card);
-      return card;
-    }
-
-    function loadExternalScriptOnce(src, checkFn) {
-      if (typeof checkFn === 'function' && checkFn()) {
-        return Promise.resolve();
-      }
-
-      const existing = document.querySelector(`script[src="${src}"]`);
-      if (existing) {
-        return new Promise(resolve => {
-          if (typeof checkFn !== 'function' || checkFn()) {
-            resolve();
-            return;
-          }
-          existing.addEventListener('load', () => resolve(), { once: true });
-          existing.addEventListener('error', () => resolve(), { once: true });
-        });
-      }
-
-      return new Promise(resolve => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = () => resolve();
-        document.body.appendChild(script);
-      });
-    }
-
-    async function hydrateEmbedProviders(scope = document) {
+    function isValidHttpUrl(value) {
       try {
-        if (scope.querySelector('.tiktok-embed')) {
-          await loadExternalScriptOnce(
-            'https://www.tiktok.com/embed.js',
-            () => Boolean(window.tiktokEmbed)
-          );
-          if (window.tiktokEmbed && typeof window.tiktokEmbed.load === 'function') {
-            window.tiktokEmbed.load();
-          }
-        }
-
-        if (scope.querySelector('.instagram-media, blockquote.instagram-media')) {
-          await loadExternalScriptOnce(
-            'https://www.instagram.com/embed.js',
-            () => Boolean(window.instgrm)
-          );
-          if (window.instgrm?.Embeds?.process) {
-            window.instgrm.Embeds.process();
-          }
-        }
-
-        if (scope.querySelector('.twitter-tweet, blockquote.twitter-tweet')) {
-          await loadExternalScriptOnce(
-            'https://platform.twitter.com/widgets.js',
-            () => Boolean(window.twttr)
-          );
-          if (window.twttr?.widgets?.load) {
-            window.twttr.widgets.load(scope);
-          }
-        }
-      } catch (error) {
-        console.error('Embed hydration error:', error);
+        const url = new URL(value, window.location.origin);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch {
+        return false;
       }
     }
 
-    async function loadMoreHybridCards() {
-      if (!magnetoFeed || !magnetoLoader) return;
-      if (feedLoading || !hasMore) return;
-
-      feedLoading = true;
-      magnetoLoader.style.display = '';
-      magnetoLoader.textContent = 'Loading…';
-
+    function getYouTubeVideoId(url) {
       try {
-        const items = await fetchHybridVideos(feedPage);
+        const parsed = new URL(url, window.location.origin);
+        const hostname = parsed.hostname.toLowerCase();
 
-        if (!items || items.length === 0) {
-          hasMore = false;
-
-          if (feedPage === 0) {
-            renderFallbackState(
-              'No videos yet',
-              'No embeddable hybrid videos were returned by the feed.'
-            );
-          }
-
-          magnetoLoader.textContent = 'No more videos.';
-          return;
+        if (hostname.includes('youtube.com')) {
+          if (parsed.pathname === '/watch') return parsed.searchParams.get('v');
+          if (parsed.pathname.startsWith('/shorts/')) return parsed.pathname.split('/shorts/')[1].split('/')[0];
+          if (parsed.pathname.startsWith('/embed/')) return parsed.pathname.split('/embed/')[1].split('/')[0];
         }
 
-        if (feedPage === 0) {
-          clearPlaceholderCards();
+        if (hostname.includes('youtu.be')) {
+          const path = parsed.pathname.replace(/^\/+/, '');
+          return path ? path.split('/')[0] : null;
         }
-
-        items.forEach(item => {
-          const card = createVideoCard(item);
-          magnetoFeed.appendChild(card);
-        });
-
-        await hydrateEmbedProviders(magnetoFeed);
-
-        feedPage += 1;
-        magnetoLoader.textContent = 'Scroll for more…';
       } catch (err) {
-        console.error('Hybrid feed error:', err);
-        renderFallbackState(
-          'Hybrid feed unavailable',
-          'The hybrid feed request failed.',
-          err?.message || 'Unknown error'
-        );
-        magnetoLoader.style.display = 'none';
-      } finally {
-        feedLoading = false;
+        console.error('Invalid YouTube URL:', url, err);
+      }
+
+      return null;
+    }
+
+    function getYouTubeEmbedUrl(url) {
+      const videoId = getYouTubeVideoId(url);
+      return videoId ? 'https://www.youtube.com/embed/' + videoId : null;
+    }
+
+    async function fetchJson(url) {
+      const separator = url.includes('?') ? '&' : '?';
+      const response = await fetch(url + separator + 'v=' + Date.now(), {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(url + ' -> HTTP ' + response.status);
+      }
+
+      return response.json();
+    }
+
+    const feedContainer = document.getElementById('feedContainer');
+    const feedLoader = document.getElementById('feedLoader');
+    const feedSentinel = document.getElementById('feedSentinel');
+    const magnetoColumn = document.getElementById('magnetoColumn');
+    
+    let allFeedItems = [];
+    let visibleFeedItems = [];
+    let currentIndex = 0;
+    let isLoading = false;
+    let activeFilter = 'all';
+    const pageSize = 12;
+    let observer = null;
+    let playbackObserver = null;
+
+    function normalizeFeedData(data) {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.items)) return data.items;
+      if (Array.isArray(data.requests)) return data.requests;
+      if (Array.isArray(data.feed)) return data.feed;
+      if (Array.isArray(data.posts)) return data.posts;
+      if (Array.isArray(data.results)) return data.results;
+      return [];
+    }
+
+    function normalizeFeedItem(item) {
+      const redditVideoUrl =
+        item.videoUrl ||
+        item.video ||
+        item.mp4 ||
+        item.secure_media?.reddit_video?.fallback_url ||
+        item.media?.reddit_video?.fallback_url ||
+        item.reddit_video?.fallback_url ||
+        '';
+
+      const derivedThumbnail =
+        item.thumbnail ||
+        item.image ||
+        item.imageUrl ||
+        item.preview?.images?.[0]?.source?.url ||
+        item.preview?.reddit_video_preview?.fallback_url ||
+        item.poster ||
+        '';
+
+      const derivedEmbedUrl = item.embedUrl || item.embed || item.embed_url || '';
+      const derivedUrl = item.url || item.link || item.href || item.permalink || '#';
+
+      return {
+        title: item.title || item.name || item.request || 'Untitled',
+        description: item.description || item.summary || item.text || item.caption || '',
+        author: item.author || item.by || item.sourceName || item.source || item.username || '',
+        platform: normalizePlatform(item.platform || item.type || item.source || 'unknown'),
+        url: derivedUrl,
+        embedUrl: derivedEmbedUrl,
+        videoUrl: redditVideoUrl,
+        thumbnail: derivedThumbnail,
+        publishedAt: item.publishedAt || item.date || item.createdAt || item.timestamp || item.created_utc || ''
+      };
+    }
+
+    async function loadHybridFeed() {
+      const settled = await Promise.allSettled(sourceConfigs.map(function(source) {
+        return fetchJson(source.url);
+      }));
+
+      const merged = [];
+      const debugParts = [];
+
+      settled.forEach(function(result, index) {
+        const source = sourceConfigs[index];
+
+        if (result.status === 'fulfilled') {
+          const items = normalizeFeedData(result.value).map(function(item) {
+            const normalized = normalizeFeedItem(item);
+            if (!normalized.platform || normalized.platform === 'unknown') {
+              normalized.platform = source.key;
+            }
+            if ((!normalized.videoUrl || !isValidHttpUrl(normalized.videoUrl)) && source.key === 'youtube') {
+              normalized.embedUrl = normalized.embedUrl || getYouTubeEmbedUrl(normalized.url || '');
+            }
+            return normalized;
+          });
+          merged.push.apply(merged, items);
+          debugParts.push(source.key + ': ' + items.length);
+        } else {
+          debugParts.push(source.key + ': failed');
+        }
+      });
+
+      if (merged.length) {
+        setDebug('Sources → ' + debugParts.join(' | '));
+        return merged;
+      }
+
+      setDebug('Sources unavailable, using demo feed');
+      return demoFeedItems.map(normalizeFeedItem);
+    }
+
+    function createMediaMarkup(item) {
+      const platform = normalizePlatform(item.platform);
+      const title = escapeHtml(item.title || 'Untitled');
+      const safeThumbnail = escapeHtml(item.thumbnail || 'https://via.placeholder.com/300x200');
+      const openUrl = isValidHttpUrl(item.url) ? item.url : '#';
+      const embedUrl = item.embedUrl && isValidHttpUrl(item.embedUrl) ? item.embedUrl : '';
+      const videoUrl = item.videoUrl && isValidHttpUrl(item.videoUrl) ? item.videoUrl : '';
+      const youtubeEmbed = platform === 'youtube' ? (embedUrl || getYouTubeEmbedUrl(openUrl)) : '';
+
+      if (videoUrl) {
+        return '<div class="media-box"><video muted controls preload="metadata" playsinline poster="' + safeThumbnail + '"><source src="' + escapeHtml(videoUrl) + '" type="video/mp4">Your browser does not support HTML5 video.</video></div>';
+      }
+
+      if (platform === 'youtube' && youtubeEmbed) {
+        return '<div class="media-box"><iframe src="' + escapeHtml(youtubeEmbed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+      }
+
+      if ((platform === 'facebook' || platform === 'instagram' || platform === 'tiktok') && embedUrl) {
+        return '<div class="media-box"><iframe src="' + escapeHtml(embedUrl) + '" title="' + title + '" loading="lazy" allowfullscreen></iframe></div>';
+      }
+
+      return '<div class="fallback">' +
+        '<img src="' + safeThumbnail + '" alt="' + title + '" loading="lazy">' +
+        '<div>' +
+          '<div style="margin-bottom:8px;color:rgba(255,255,255,0.78);">Preview unavailable for this source.</div>' +
+          '<a href="' + escapeHtml(openUrl) + '" target="_blank" rel="noopener noreferrer">Open Link</a>' +
+        '</div>' +
+        '</div>';
+    }
+
+    function monetizeUrl(url) {
+      if (!isValidHttpUrl(url)) return '#';
+      // wrap outbound links with tracking / affiliate redirect
+      return '/out?url=' + encodeURIComponent(url);
+    }
+
+    function createFeedCard(item) {
+      const article = document.createElement('article');
+      article.className = 'feed-card';
+
+      const title = escapeHtml(item.title || 'Untitled');
+      const description = escapeHtml(item.description || '');
+      const author = escapeHtml(item.author || '');
+      const platformRaw = item.platform || 'unknown';
+      const platform = normalizePlatform(platformRaw);
+      const rawUrl = isValidHttpUrl(item.url) ? item.url : '#';
+      const monetizedUrl = monetizeUrl(rawUrl);
+      const publishedAt = formatDate(item.publishedAt);
+
+      article.innerHTML =
+        createMediaMarkup(item) +
+        '<div class="feed-content">' +
+          '<h3>' + title + '</h3>' +
+          '<div class="feed-meta">' +
+            '<span class="feed-platform ' + platform + '">' + escapeHtml(platformRaw) + '</span>' +
+            (author ? author : '') +
+            ((author && publishedAt) ? ' • ' : '') +
+            publishedAt +
+          '</div>' +
+          (description ? '<p>' + description + '</p>' : '') +
+          '<a class="feed-link" href="' + escapeHtml(monetizedUrl) + '" target="_blank" rel="noopener noreferrer">Open post</a>' +
+        '</div>';
+
+      // make entire card clickable (high CTR)
+      article.style.cursor = 'pointer';
+      article.addEventListener('click', function(e) {
+        // prevent double navigation if clicking actual link
+        if (e.target.tagName.toLowerCase() === 'a') return;
+        window.open(monetizedUrl, '_blank');
+      });
+
+      return article;
+    }
+
+    function showFeedMessage(message) {
+      feedContainer.innerHTML = '<div class="feed-message">' + escapeHtml(message) + '</div>';
+    }
+
+    
+
+    function observePlayback() {
+      if (!playbackObserver) return;
+
+      feedContainer.querySelectorAll('video').forEach(function(video) {
+        if (video.dataset.autoplayBound === 'true') return;
+        video.dataset.autoplayBound = 'true';
+        playbackObserver.observe(video);
+      });
+    }
+
+    function renderFeedBatch() {
+      const nextItems = visibleFeedItems.slice(currentIndex, currentIndex + pageSize);
+
+      nextItems.forEach(function(item) {
+        feedContainer.appendChild(createFeedCard(item));
+      });
+
+      observePlayback();
+      currentIndex += nextItems.length;
+
+      if (currentIndex >= visibleFeedItems.length) {
+        if (observer) observer.disconnect();
+        feedLoader.style.display = 'none';
       }
     }
 
-    function initHybridFeed() {
-      if (!magnetoColumn || !magnetoFeed || !magnetoLoader) {
-        console.warn('Hybrid feed elements not found on page.');
+    function applyFilter() {
+      visibleFeedItems = allFeedItems.slice();
+
+      currentIndex = 0;
+      feedContainer.innerHTML = '';
+
+      if (observer) observer.disconnect();
+
+      if (!visibleFeedItems.length) {
+        showFeedMessage(activeFilter === 'all' ? 'No feed items found.' : 'No ' + activeFilter + ' items found.');
         return;
       }
 
-      // Initial load
-      loadMoreHybridCards();
+      renderFeedBatch();
 
-      // Use IntersectionObserver for smoother infinite scroll
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            loadMoreHybridCards();
-          }
-        });
-      }, {
-        root: magnetoColumn,
-        rootMargin: '0px',
-        threshold: 0.1
-      });
-
-      observer.observe(magnetoLoader);
-    }
-
-    initHybridFeed();
-  
-    // =========================
-    // COLUMN 3 — SHUFFLE LOGIC
-    // =========================
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+      if (observer && currentIndex < visibleFeedItems.length) {
+        observer.observe(feedSentinel);
       }
-      return array;
     }
 
-    const sound = document.getElementById("shuffleSound");
-    const volumeSlider = document.getElementById("volumeSlider");
-    const muteButton = document.getElementById("muteButton");
+    async function loadMoreFeedItems() {
+      if (isLoading) return;
+      if (currentIndex >= visibleFeedItems.length) return;
 
-    if (sound && volumeSlider) {
-      sound.volume = volumeSlider.value;
+      isLoading = true;
+      feedLoader.style.display = 'block';
 
-      volumeSlider.addEventListener("input", () => {
-        sound.volume = volumeSlider.value;
-      });
-
-      muteButton.addEventListener("click", () => {
-        if (sound.muted) {
-          sound.muted = false;
-          muteButton.textContent = "🔇 Mute";
-        } else {
-          sound.muted = true;
-          muteButton.textContent = "🔊 Unmute";
-        }
-      });
+      try {
+        renderFeedBatch();
+      } finally {
+        feedLoader.style.display = 'none';
+        isLoading = false;
+      }
     }
 
-    const column3Data = [
-      { name: 'Kiwi', logo: 'assets/logos/kiwi.png', type: 'logo', url: 'https://kiwi.com' },
-      { name: 'Booking.com', logo: 'assets/logos/booking.png', type: 'logo', url: 'https://booking.com' },
-      { name: 'Airbnb', logo: 'assets/logos/airbnb.png', type: 'logo', url: 'https://airbnb.com' },
-      { name: 'Skyscanner', logo: 'assets/logos/skyscanner.png', type: 'logo', url: 'https://skyscanner.com' },
-      { name: 'Expedia', logo: 'assets/logos/expedia.png', type: 'logo', url: 'https://expedia.com' },
-      { name: 'Facebook', logo: 'assets/logos/facebook.png', type: 'logo', url: 'https://facebook.com' },
-      { name: 'Instagram', logo: 'assets/logos/instagram.png', type: 'logo', url: 'https://instagram.com' },
-      { name: 'X/Twitter', logo: 'assets/logos/twitter.png', type: 'logo', url: 'https://x.com' },
-      { name: 'YouTube', logo: 'assets/logos/youtube.png', type: 'logo', url: 'https://youtube.com' },
-      { name: 'LinkedIn', logo: 'assets/logos/linkedin.png', type: 'logo', url: 'https://linkedin.com' },
-      { name: 'Reddit', logo: 'assets/logos/reddit.png', type: 'logo', url: 'https://reddit.com' },
-      { name: 'Discord', logo: 'assets/logos/discord.png', type: 'logo', url: 'https://discord.com' },
-      { name: 'Truth Social', logo: 'assets/logos/truth.png', type: 'logo', url: 'https://truthsocial.com' },
-      { name: 'Amazon', logo: 'assets/logos/amazon.png', type: 'logo', url: 'https://amazon.com' },
-      { name: 'TikTok', logo: null, type: 'text', url: 'https://tiktok.com' },
-      { name: 'Pinterest', logo: null, type: 'text', url: 'https://pinterest.com' },
-      { name: 'Snapchat', logo: null, type: 'text', url: 'https://snapchat.com' },
-      { name: 'WhatsApp', logo: null, type: 'text', url: 'https://whatsapp.com' },
-      { name: 'Telegram', logo: null, type: 'text', url: 'https://telegram.org' },
-      { name: 'WeChat', logo: null, type: 'text', url: 'https://wechat.com' },
-      { name: 'Threads', logo: null, type: 'text', url: 'https://threads.net' }
-    ];
+    async function initFeed() {
+      try {
+        allFeedItems = await loadHybridFeed();
+        allFeedItems.sort(function(a, b) {
+          return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
+        });
 
-    function renderFruitBowl(items) {
-      const container = document.getElementById('loopContainer');
-      const bowl = document.getElementById('fruitBowl');
-      if (!container || !bowl) return;
-
-      container.innerHTML = '';
-      const shuffledItems = shuffleArray([...items]);
-      const gradients = [
-        'linear-gradient(135deg, #ff6f61, #ffcc00, #00c4ff)',
-        'linear-gradient(135deg, #7c3aed, #ec4899, #f59e0b)',
-        'linear-gradient(135deg, #10b981, #06b6d4, #3b82f6)',
-        'linear-gradient(135deg, #f97316, #ef4444, #eab308)',
-        'linear-gradient(135deg, #22c55e, #84cc16, #14b8a6)'
-      ];
-
-      shuffledItems.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'loop animate';
-
-        const randomSize = 46 + Math.floor(Math.random() * 32);
-        const randomRotate = -10 + Math.floor(Math.random() * 21);
-        const randomBg = gradients[Math.floor(Math.random() * gradients.length)];
-
-        el.style.setProperty('--loop-size', `${randomSize}px`);
-        el.style.setProperty('--loop-rotate', `${randomRotate}deg`);
-
-        if (item.logo) {
-          const img = document.createElement('img');
-          img.src = item.logo;
-          img.alt = item.name;
-          img.loading = 'lazy';
-          el.style.setProperty('--loop-bg', '#ffffff');
-          el.appendChild(img);
-        } else {
-          el.textContent = item.name;
-          el.style.setProperty('--loop-bg', randomBg);
+        if (!allFeedItems.length) {
+          setDebug('Feed loaded but returned zero items');
+          showFeedMessage('Could not load feed data.');
+          return;
         }
 
-        if (item.url) {
-          el.addEventListener('click', () => {
-            window.open(item.url, '_blank', 'noopener');
+        setDebug('Feed loaded: ' + allFeedItems.length + ' items');
+        applyFilter();
+      } catch (err) {
+        console.error('Feed failed:', err);
+        setDebug('Feed failed: ' + err.message);
+        showFeedMessage('Could not load feed data.');
+      }
+    }
+
+    
+
+    observer = new IntersectionObserver(function(entries) {
+      if (entries[0] && entries[0].isIntersecting) {
+        loadMoreFeedItems();
+      }
+    }, {
+      root: magnetoColumn,
+      threshold: 0.1
+    });
+
+    playbackObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        const video = entry.target;
+        if (!(video instanceof HTMLVideoElement)) return;
+
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+          feedContainer.querySelectorAll('video').forEach(function(other) {
+            if (other !== video) other.pause();
           });
+          const playPromise = video.play();
+          if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(function() {});
+          }
+        } else {
+          video.pause();
         }
-
-        container.appendChild(el);
       });
-
-      setTimeout(() => {
-        container.querySelectorAll('.animate').forEach(el => {
-          el.classList.remove('animate');
-        });
-      }, 600);
-
-      bowl.classList.add('shake');
-      setTimeout(() => bowl.classList.remove('shake'), 600);
-
-      if (sound && !sound.muted) {
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-      }
-    }
-
-    document.getElementById('shuffleButton')?.addEventListener('click', () => {
-      renderFruitBowl(column3Data);
+    }, {
+      root: magnetoColumn,
+      threshold: [0.6]
     });
 
-    // =========================
-    // COLUMN 1 — REFINED CLICK HANDLER
-    // =========================
+    // ensure observer starts
+    observer.observe(feedSentinel);
 
-    // Only prevent collapse when clicking the link itself
-    document.querySelectorAll("#column1 .partner-link").forEach(link => {
-      link.addEventListener("click", (e) => {
-        e.stopPropagation();
-      });
-    });
-
-    renderFruitBowl(column3Data);
-
+    initFeed();
   </script>
 </body>
 </html>
