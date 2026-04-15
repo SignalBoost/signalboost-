@@ -6,23 +6,13 @@ module.exports = (req, res) => {
     const items = [
       {
         id: "yt1",
-        title: "Top 10 Things To Do in Lisbon",
-        description: "Best places to visit in Lisbon.",
+        title: "Rick Astley - Waiting On You (Official Video)",
+        description: "Official video.",
         platform: "youtube",
-        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+        url: "https://www.youtube.com/watch?v=ghb6eDopW8I",
+        thumbnail: "https://img.youtube.com/vi/ghb6eDopW8I/hqdefault.jpg",
         publishedAt: "2026-04-14T12:00:00Z",
-        author: "SignalBoost Travel"
-      },
-      {
-        id: "yt2",
-        title: "Weekend in Rome Travel Guide",
-        description: "48 hours in Rome travel tips.",
-        platform: "youtube",
-        url: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
-        thumbnail: "https://img.youtube.com/vi/3JZ_D3ELwOQ/hqdefault.jpg",
-        publishedAt: "2026-04-13T10:00:00Z",
-        author: "City Breaks"
+        author: "Rick Astley"
       },
       {
         id: "rd1",
@@ -33,26 +23,6 @@ module.exports = (req, res) => {
         thumbnail: "",
         publishedAt: "2026-04-12T15:00:00Z",
         author: "r/travel"
-      },
-      {
-        id: "ig1",
-        title: "Hidden Beaches",
-        description: "Instagram travel inspiration.",
-        platform: "instagram",
-        url: "https://www.instagram.com/",
-        thumbnail: "",
-        publishedAt: "2026-04-11T18:00:00Z",
-        author: "BeachExplorer"
-      },
-      {
-        id: "fb1",
-        title: "Family Travel Deals",
-        description: "Facebook travel deals.",
-        platform: "facebook",
-        url: "https://www.facebook.com/",
-        thumbnail: "",
-        publishedAt: "2026-04-10T09:00:00Z",
-        author: "Travel Deals"
       }
     ];
 
