@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unified Social Video Renderer</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
@@ -17,22 +15,20 @@
       color: #ffffff;
     }
 
-    body {
-      overflow: hidden;
-    }
+    body { overflow: hidden; }
 
     .app {
       display: grid;
-      grid-template-columns: 300px 1fr 300px;
+      grid-template-columns: 280px 1fr 280px;
       height: 100vh;
       min-height: 0;
     }
 
     .column {
-      display: flex;
-      flex-direction: column;
       min-height: 0;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .column-1 {
@@ -55,79 +51,41 @@
 
     .category {
       margin-bottom: 10px;
-    }
-
-    .category details {
-      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
       overflow: hidden;
     }
 
-    .category summary {
-      cursor: pointer;
+    .category-title {
       padding: 10px 12px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      user-select: none;
       font-weight: 600;
-      list-style: none;
-    }
-
-    .category summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .category summary::before {
-      content: "▶";
-      display: inline-block;
-      width: 14px;
-      margin-right: 6px;
-      font-size: 10px;
-      transform: translateY(-1px);
-    }
-
-    .category details[open] summary::before {
-      content: "▼";
+      background: rgba(255,255,255,0.05);
     }
 
     .category ul {
       list-style: none;
       margin: 0;
-      padding: 8px 8px 2px 8px;
+      padding: 8px 12px 12px;
     }
 
-    .category li {
-      margin: 6px 0;
-    }
+    .category li { margin: 8px 0; }
 
     .category a {
       color: #ffffff;
       text-decoration: none;
-      font-size: 14px;
       opacity: 0.9;
     }
 
-    .category a:hover {
-      text-decoration: underline;
-      opacity: 1;
-    }
-
-    .column-1-empty {
-      font-size: 14px;
-      color: rgba(255,255,255,0.65);
-      padding: 8px 4px;
-    }
+    .category a:hover { text-decoration: underline; }
 
     .column-2 {
       background: #0d1117;
       border-right: 1px solid rgba(255,255,255,0.08);
     }
 
-    #magnetoColumn.feed-wrapper {
-      display: flex;
-      flex-direction: column;
+    .feed-wrapper {
       flex: 1;
       min-height: 0;
-      height: 100%;
       overflow-y: auto;
       padding: 20px;
     }
@@ -142,7 +100,7 @@
     }
 
     .feed-header {
-      margin: 0 0 12px 0;
+      margin: 0 0 12px;
       font-size: 24px;
       font-weight: 700;
     }
@@ -156,16 +114,11 @@
     .feed-filters button {
       background: #161b22;
       color: #ffffff;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 999px;
       padding: 8px 12px;
       cursor: pointer;
       font-size: 13px;
-      transition: 0.15s ease;
-    }
-
-    .feed-filters button:hover {
-      border-color: rgba(255,255,255,0.22);
     }
 
     .feed-filters button.active {
@@ -173,75 +126,67 @@
       color: #58a6ff;
     }
 
+    .feed-filters button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
     .debug-box {
       margin-top: 10px;
       font-size: 12px;
       color: rgba(255,255,255,0.65);
       white-space: pre-wrap;
-      line-height: 1.4;
     }
 
     .feed-container {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      min-height: 0;
     }
 
     .feed-card {
       display: grid;
-      grid-template-columns: minmax(220px, 340px) 1fr;
+      grid-template-columns: minmax(220px, 320px) 1fr;
       gap: 14px;
       background: #161b22;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
       padding: 14px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
       align-items: start;
     }
 
-    .feed-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-    }
-
-    .feed-media,
     .feed-media iframe,
     .feed-media video,
     .feed-media img,
-    .feed-thumb {
+    .fallback {
       width: 100%;
-      max-width: 100%;
       height: 220px;
       border: none;
       border-radius: 10px;
       background: #0b0f14;
-      object-fit: cover;
       display: block;
+      object-fit: cover;
     }
 
     .fallback {
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(255,255,255,0.03);
-      border-radius: 10px;
-      padding: 10px;
-      min-height: 220px;
+      padding: 12px;
     }
 
     .fallback img {
       width: 140px;
       height: 100px;
-      object-fit: cover;
       border-radius: 8px;
+      object-fit: cover;
       flex-shrink: 0;
     }
 
-    .fallback a {
+    .fallback a,
+    .feed-link {
       color: #58a6ff;
       text-decoration: none;
-      word-break: break-all;
     }
 
     .fallback a:hover,
@@ -250,18 +195,16 @@
     }
 
     .feed-content h3 {
-      margin: 0 0 8px 0;
+      margin: 0 0 8px;
       font-size: 18px;
       line-height: 1.3;
-      word-break: break-word;
     }
 
     .feed-content p {
-      margin: 0 0 10px 0;
+      margin: 0 0 10px;
       color: rgba(255,255,255,0.82);
       line-height: 1.5;
       font-size: 14px;
-      word-break: break-word;
     }
 
     .feed-meta {
@@ -283,62 +226,25 @@
       vertical-align: middle;
     }
 
-    .feed-platform.youtube {
-      background: rgba(255, 0, 0, 0.15);
-      color: #ff6b6b;
-    }
+    .feed-platform.youtube { background: rgba(255,0,0,0.15); color: #ff6b6b; }
+    .feed-platform.reddit { background: rgba(255,69,0,0.15); color: #ff4500; }
+    .feed-platform.instagram { background: rgba(255,0,150,0.15); color: #ff4fa3; }
+    .feed-platform.facebook { background: rgba(24,119,242,0.15); color: #66a3ff; }
 
-    .feed-platform.reddit {
-      background: rgba(255, 69, 0, 0.15);
-      color: #ff4500;
-    }
-
-    .feed-platform.instagram {
-      background: rgba(255, 0, 150, 0.15);
-      color: #ff4fa3;
-    }
-
-    .feed-platform.facebook {
-      background: rgba(24, 119, 242, 0.15);
-      color: #66a3ff;
-    }
-
-    .feed-link {
-      display: inline-block;
-      color: #58a6ff;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .feed-loader {
-      text-align: center;
-      padding: 18px 0;
-      color: rgba(255,255,255,0.65);
-      font-size: 14px;
-      display: none;
-    }
-
-    .feed-message {
+    .feed-message, .feed-loader {
       text-align: center;
       padding: 18px 0;
       color: rgba(255,255,255,0.65);
       font-size: 14px;
     }
 
-    #feedSentinel {
-      height: 1px;
-    }
+    .feed-loader { display: none; }
+    #feedSentinel { height: 1px; }
 
     .column-3 {
       background: #0f141b;
       overflow-y: auto;
       padding: 20px;
-    }
-
-    .column-3 h2 {
-      margin: 0 0 16px 0;
-      font-size: 18px;
-      font-weight: 700;
     }
 
     .column-3-card {
@@ -354,68 +260,38 @@
       padding-left: 18px;
     }
 
-    .column-3-card li {
-      margin: 8px 0;
-    }
+    .column-3-card li { margin: 8px 0; }
 
     @media (max-width: 1100px) {
-      .app {
-        grid-template-columns: 260px 1fr;
-      }
-
-      .column-3 {
-        display: none;
-      }
+      .app { grid-template-columns: 240px 1fr; }
+      .column-3 { display: none; }
     }
 
     @media (max-width: 768px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-
-      .column-1 {
-        display: none;
-      }
-
-      .feed-card {
-        grid-template-columns: 1fr;
-      }
-
-      .feed-media,
+      .app { grid-template-columns: 1fr; }
+      .column-1 { display: none; }
+      .feed-card { grid-template-columns: 1fr; }
       .feed-media iframe,
       .feed-media video,
       .feed-media img,
-      .feed-thumb,
-      .fallback {
-        height: auto;
-        min-height: 200px;
-      }
-
-      .fallback {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .fallback img {
-        width: 100%;
-        height: 180px;
-      }
+      .fallback { height: auto; min-height: 200px; }
+      .fallback { flex-direction: column; align-items: flex-start; }
+      .fallback img { width: 100%; height: 180px; }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="column column-1">
+    <aside class="column column-1">
       <div class="column-1-header">Partners</div>
-      <div id="column1-partners" class="column-1-scroll"></div>
-    </div>
+      <div id="partners" class="column-1-scroll"></div>
+    </aside>
 
-    <div class="column column-2">
-      <div id="magnetoColumn" class="feed-wrapper">
+    <main class="column column-2">
+      <div id="feedScroll" class="feed-wrapper">
         <div class="feed-topbar">
           <h1 class="feed-header">Unified Social Video Renderer</h1>
-
-          <div class="feed-filters" id="feedFilters">
+          <div id="filters" class="feed-filters">
             <button data-filter="all" class="active">All</button>
             <button data-filter="youtube">YouTube</button>
             <button data-filter="reddit">Reddit</button>
@@ -423,18 +299,17 @@
             <button data-filter="facebook">Facebook</button>
             <button data-filter="unknown">Fallback</button>
           </div>
-
-          <div id="debugBox" class="debug-box">Waiting for data...</div>
+          <div id="debugBox" class="debug-box">Ready.</div>
         </div>
 
-        <div id="feedContainer" class="feed-container"></div>
-        <div id="feedLoader" class="feed-loader">Loading...</div>
+        <div id="feed" class="feed-container"></div>
+        <div id="loader" class="feed-loader">Loading...</div>
         <div id="feedSentinel"></div>
       </div>
-    </div>
+    </main>
 
-    <div class="column column-3">
-      <h2>Column 3</h2>
+    <aside class="column column-3">
+      <h2 style="margin-top:0;">Column 3</h2>
       <div class="column-3-card">
         <ul>
           <li>Saved posts</li>
@@ -443,437 +318,277 @@
           <li>Insights</li>
         </ul>
       </div>
-    </div>
+    </aside>
   </div>
 
   <script>
-    const fallbackItems = [
+    const partners = [
+      { name: 'OpenAI', url: 'https://openai.com', category: 'AI' },
+      { name: 'YouTube', url: 'https://youtube.com', category: 'Social' },
+      { name: 'Instagram', url: 'https://instagram.com', category: 'Social' },
+      { name: 'Facebook', url: 'https://facebook.com', category: 'Social' },
+      { name: 'Reddit', url: 'https://reddit.com', category: 'Social' }
+    ];
+
+    const items = [
       {
-        platform: "youtube",
-        embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        title: "YouTube Example",
-        description: "Embedded YouTube content rendered with iframe support.",
-        author: "Demo Source",
-        publishedAt: "2026-04-14T09:00:00Z"
+        platform: 'youtube',
+        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        title: 'YouTube Example',
+        description: 'Embedded YouTube content rendered with iframe support.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-14T09:00:00Z',
+        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
       },
       {
-        platform: "facebook",
-        embedUrl: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebookapp%2Fvideos%2F10153231379946729%2F",
-        url: "https://www.facebook.com/facebookapp/videos/10153231379946729/",
-        title: "Facebook Example",
-        description: "Facebook videos can render in iframe when a plugin embed URL is available.",
-        author: "Demo Source",
-        publishedAt: "2026-04-13T18:00:00Z"
+        platform: 'reddit',
+        videoUrl: '',
+        url: 'https://www.reddit.com/',
+        title: 'Reddit Example',
+        description: 'Reddit falls back to a thumbnail when no direct MP4 is available.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-13T11:30:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=Reddit'
       },
       {
-        platform: "instagram",
-        embedUrl: "https://www.instagram.com/p/CuE2WNQs6vH/embed",
-        url: "https://www.instagram.com/p/CuE2WNQs6vH/",
-        title: "Instagram Example",
-        description: "Instagram posts can render in iframe when an embed URL is available.",
-        author: "Demo Source",
-        publishedAt: "2026-04-12T14:00:00Z"
+        platform: 'instagram',
+        embedUrl: '',
+        url: 'https://www.instagram.com/',
+        title: 'Instagram Example',
+        description: 'Instagram falls back safely when no valid embed URL is present.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-12T14:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=Instagram'
       },
       {
-        platform: "reddit",
-        videoUrl: "https://v.redd.it/example/video.mp4",
-        title: "Reddit Video Example",
-        description: "Direct MP4 playback through the HTML5 video tag.",
-        author: "Demo Source",
-        publishedAt: "2026-04-11T12:00:00Z",
-        url: "https://www.reddit.com/"
+        platform: 'facebook',
+        embedUrl: '',
+        url: 'https://www.facebook.com/',
+        title: 'Facebook Example',
+        description: 'Facebook falls back safely when no valid embed URL is present.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-11T16:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=Facebook'
       },
       {
-        platform: "unknown",
-        thumbnail: "https://via.placeholder.com/300x200",
-        url: "https://example.com",
-        title: "Fallback Example",
-        description: "If no supported video source exists, a thumbnail and external link are shown.",
-        author: "Demo Source",
-        publishedAt: "2026-04-10T09:00:00Z"
+        platform: 'unknown',
+        url: 'https://example.com',
+        title: 'Fallback Example',
+        description: 'If no supported media is available, a simple preview and link are shown.',
+        author: 'Demo Source',
+        publishedAt: '2026-04-10T09:00:00Z',
+        thumbnail: 'https://via.placeholder.com/640x360?text=Fallback'
       }
     ];
 
     function escapeHtml(value) {
-      if (value == null) return "";
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
-
-    function escapeAttribute(value) {
-      return escapeHtml(value);
-    }
-
-    function formatDate(dateString) {
-      if (!dateString) return "";
-      const d = new Date(dateString);
-      if (Number.isNaN(d.getTime())) return "";
-      return d.toLocaleString();
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     function normalizePlatform(value) {
-      return String(value || "").trim().toLowerCase();
+      return String(value || 'unknown').trim().toLowerCase();
     }
 
-    function setDebug(message) {
-      const debugBox = document.getElementById("debugBox");
-      if (debugBox) debugBox.textContent = message;
-      console.log(message);
+    function formatDate(value) {
+      const d = new Date(value);
+      return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
+    }
+
+    function isValidHttpUrl(value) {
+      try {
+        const u = new URL(value);
+        return u.protocol === 'http:' || u.protocol === 'https:';
+      } catch {
+        return false;
+      }
     }
 
     function getYouTubeVideoId(url) {
       try {
-        const parsed = new URL(url, window.location.origin);
+        const parsed = new URL(url);
         const hostname = parsed.hostname.toLowerCase();
 
-        if (hostname.includes("youtube.com")) {
-          if (parsed.pathname === "/watch") return parsed.searchParams.get("v");
-          if (parsed.pathname.startsWith("/shorts/")) return parsed.pathname.split("/shorts/")[1].split("/")[0];
-          if (parsed.pathname.startsWith("/embed/")) return parsed.pathname.split("/embed/")[1].split("/")[0];
+        if (hostname.includes('youtube.com')) {
+          if (parsed.pathname === '/watch') return parsed.searchParams.get('v');
+          if (parsed.pathname.startsWith('/shorts/')) return parsed.pathname.split('/shorts/')[1].split('/')[0];
+          if (parsed.pathname.startsWith('/embed/')) return parsed.pathname.split('/embed/')[1].split('/')[0];
         }
 
-        if (hostname.includes("youtu.be")) {
-          const path = parsed.pathname.replace(/^\/+/, "");
-          return path ? path.split("/")[0] : null;
+        if (hostname.includes('youtu.be')) {
+          return parsed.pathname.replace(/^\//, '').split('/')[0] || null;
         }
-      } catch (err) {
-        console.error("Invalid YouTube URL:", url, err);
-      }
-
+      } catch {}
       return null;
     }
 
     function getYouTubeEmbedUrl(url) {
-      const videoId = getYouTubeVideoId(url);
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+      const id = getYouTubeVideoId(url);
+      return id ? 'https://www.youtube.com/embed/' + id : null;
     }
 
-    function getYouTubeWatchUrl(url) {
-      const videoId = getYouTubeVideoId(url);
-      return videoId ? `https://www.youtube.com/watch?v=${videoId}` : null;
-    }
+    function renderPartners() {
+      const container = document.getElementById('partners');
+      const grouped = {};
 
-    async function fetchJson(url) {
-      const separator = url.includes("?") ? "&" : "?";
-      const response = await fetch(`${url}${separator}v=${Date.now()}`, {
-        cache: "no-store",
-        headers: { Accept: "application/json" }
+      partners.forEach(function(partner) {
+        const category = partner.category || 'Other';
+        if (!grouped[category]) grouped[category] = [];
+        grouped[category].push(partner);
       });
 
-      if (!response.ok) {
-        throw new Error(`${url} -> HTTP ${response.status}`);
-      }
-
-      return response.json();
+      container.innerHTML = Object.keys(grouped).map(function(category) {
+        return '<div class="category">' +
+          '<div class="category-title">' + escapeHtml(category) + '</div>' +
+          '<ul>' +
+          grouped[category].map(function(partner) {
+            return '<li><a href="' + escapeHtml(partner.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
+          }).join('') +
+          '</ul>' +
+          '</div>';
+      }).join('');
     }
 
-    async function loadPartners() {
-      try {
-        const data = await fetchJson("/data/partners.json");
-        return Array.isArray(data.partners) ? data.partners : [];
-      } catch (err) {
-        console.warn("Partners fetch failed, using local fallback.", err);
-        return [
-          { name: "OpenAI", url: "https://openai.com", category: "AI" },
-          { name: "YouTube", url: "https://youtube.com", category: "Social" },
-          { name: "Reddit", url: "https://reddit.com", category: "Social" },
-          { name: "Meta", url: "https://about.meta.com", category: "Social" }
-        ];
-      }
+    const feedEl = document.getElementById('feed');
+    const loaderEl = document.getElementById('loader');
+    const debugBox = document.getElementById('debugBox');
+    const filtersEl = document.getElementById('filters');
+    const sentinelEl = document.getElementById('feedSentinel');
+    const feedScrollEl = document.getElementById('feedScroll');
+
+    let activeFilter = 'all';
+    let filteredItems = [];
+    let currentIndex = 0;
+    const pageSize = 4;
+    let observer;
+
+    function setDebug(text) {
+      debugBox.textContent = text;
     }
 
-    async function renderColumn1() {
-      const container = document.getElementById("column1-partners");
+    function createMedia(item) {
+      const platform = normalizePlatform(item.platform);
+      const title = escapeHtml(item.title || 'Untitled');
+      const thumbnail = escapeHtml(item.thumbnail || 'https://via.placeholder.com/640x360?text=Preview');
+      const url = isValidHttpUrl(item.url) ? item.url : '#';
+      const embedUrl = isValidHttpUrl(item.embedUrl) ? item.embedUrl : '';
+      const videoUrl = isValidHttpUrl(item.videoUrl) ? item.videoUrl : '';
+      const youtubeEmbed = platform === 'youtube' ? (embedUrl || getYouTubeEmbedUrl(url)) : '';
 
-      try {
-        const partners = await loadPartners();
+      if (platform === 'youtube' && youtubeEmbed) {
+        return '<div class="feed-media"><iframe src="' + escapeHtml(youtubeEmbed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
+      }
 
-        if (!partners.length) {
-          container.innerHTML = '<div class="column-1-empty">No partners found.</div>';
+      if ((platform === 'facebook' || platform === 'instagram') && embedUrl) {
+        return '<div class="feed-media"><iframe src="' + escapeHtml(embedUrl) + '" title="' + title + '" loading="lazy" allowfullscreen></iframe></div>';
+      }
+
+      if (videoUrl) {
+        return '<div class="feed-media"><video controls preload="metadata" playsinline><source src="' + escapeHtml(videoUrl) + '" type="video/mp4">Your browser does not support HTML5 video.</video></div>';
+      }
+
+      return '<div class="fallback">' +
+        '<img src="' + thumbnail + '" alt="' + title + '" loading="lazy">' +
+        '<div><div style="margin-bottom:8px;color:rgba(255,255,255,0.78);">Preview unavailable for this source.</div>' +
+        '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">Open Link</a></div>' +
+        '</div>';
+    }
+
+    function createCard(item) {
+      const platform = normalizePlatform(item.platform);
+      const publishedAt = formatDate(item.publishedAt);
+      const url = isValidHttpUrl(item.url) ? item.url : '#';
+
+      return '<article class="feed-card">' +
+        createMedia(item) +
+        '<div class="feed-content">' +
+        '<h3>' + escapeHtml(item.title || 'Untitled') + '</h3>' +
+        '<div class="feed-meta">' +
+        '<span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform || 'unknown') + '</span>' +
+        escapeHtml(item.author || '') +
+        ((item.author && publishedAt) ? ' • ' : '') +
+        escapeHtml(publishedAt) +
+        '</div>' +
+        '<p>' + escapeHtml(item.description || '') + '</p>' +
+        '<a class="feed-link" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">Open post</a>' +
+        '</div>' +
+        '</article>';
+    }
+
+    function updateFilterButtons() {
+      const available = new Set(items.map(function(item) { return normalizePlatform(item.platform); }));
+      Array.from(filtersEl.querySelectorAll('button[data-filter]')).forEach(function(button) {
+        const value = button.getAttribute('data-filter');
+        if (value === 'all') {
+          button.disabled = false;
           return;
         }
-
-        const categories = {};
-        partners.forEach(partner => {
-          const category = partner.category || "Other";
-          if (!categories[category]) categories[category] = [];
-          categories[category].push(partner);
-        });
-
-        container.innerHTML = "";
-
-        Object.keys(categories).forEach(category => {
-          const section = document.createElement("div");
-          section.className = "category";
-          section.innerHTML = `
-            <details open>
-              <summary>${escapeHtml(category)}</summary>
-              <ul>
-                ${categories[category].map(partner => `
-                  <li>
-                    <a href="${escapeAttribute(partner.url || "#")}" target="_blank" rel="noopener noreferrer">
-                      ${escapeHtml(partner.name || "Untitled")}
-                    </a>
-                  </li>
-                `).join("")}
-              </ul>
-            </details>
-          `;
-          container.appendChild(section);
-        });
-      } catch (err) {
-        container.innerHTML = '<div class="column-1-empty">No partners found.</div>';
-        console.error("Partners failed:", err);
-      }
-    }
-
-    const feedContainer = document.getElementById("feedContainer");
-    const feedLoader = document.getElementById("feedLoader");
-    const feedSentinel = document.getElementById("feedSentinel");
-    const magnetoColumn = document.getElementById("magnetoColumn");
-    const feedFilters = document.getElementById("feedFilters");
-
-    let allFeedItems = [];
-    let visibleFeedItems = [];
-    let currentIndex = 0;
-    let isLoading = false;
-    let activeFilter = "all";
-    const pageSize = 6;
-    let observer = null;
-
-    function normalizeFeedData(data) {
-      if (Array.isArray(data)) return data;
-      if (Array.isArray(data.items)) return data.items;
-      if (Array.isArray(data.requests)) return data.requests;
-      if (Array.isArray(data.feed)) return data.feed;
-      if (Array.isArray(data.posts)) return data.posts;
-      if (Array.isArray(data.results)) return data.results;
-      return [];
-    }
-
-    function normalizeFeedItem(item) {
-      return {
-        title: item.title || item.name || item.request || "Untitled",
-        description: item.description || item.summary || item.text || "",
-        author: item.author || item.by || item.sourceName || item.source || "",
-        platform: normalizePlatform(item.platform || item.type || item.source || "unknown"),
-        url: item.url || item.link || item.href || "#",
-        embedUrl: item.embedUrl || item.embed || "",
-        videoUrl: item.videoUrl || item.video || item.mp4 || "",
-        thumbnail: item.thumbnail || item.image || item.imageUrl || "",
-        publishedAt: item.publishedAt || item.date || item.createdAt || item.timestamp || ""
-      };
-    }
-
-    async function loadHybridFeed() {
-      try {
-        const data = await fetchJson("/api/feed?q=travel");
-        const normalized = normalizeFeedData(data).map(normalizeFeedItem);
-        if (normalized.length) return normalized;
-      } catch (err) {
-        console.warn("Feed fetch failed, using fallback items.", err);
-      }
-      return fallbackItems.map(normalizeFeedItem);
-    }
-
-    function createMediaMarkup(item) {
-      const platform = normalizePlatform(item.platform);
-      const title = escapeHtml(item.title || "Untitled");
-      const safeThumbnail = escapeAttribute(item.thumbnail || "https://via.placeholder.com/300x200");
-      const safeUrl = escapeAttribute(item.url || "#");
-      const safeEmbedUrl = escapeAttribute(item.embedUrl || "");
-      const safeVideoUrl = escapeAttribute(item.videoUrl || "");
-
-      const youtubeEmbed = platform === "youtube"
-        ? (item.embedUrl || getYouTubeEmbedUrl(item.url || ""))
-        : null;
-
-      if (platform === "youtube" && youtubeEmbed) {
-        return `
-          <div class="feed-media">
-            <iframe
-              src="${escapeAttribute(youtubeEmbed)}"
-              title="${title}"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-        `;
-      }
-
-      if ((platform === "facebook" || platform === "instagram") && safeEmbedUrl) {
-        return `
-          <div class="feed-media">
-            <iframe
-              src="${safeEmbedUrl}"
-              title="${title}"
-              loading="lazy"
-              allowfullscreen
-            ></iframe>
-          </div>
-        `;
-      }
-
-      if (safeVideoUrl) {
-        return `
-          <div class="feed-media">
-            <video controls preload="metadata">
-              <source src="${safeVideoUrl}" type="video/mp4">
-              Your browser does not support HTML5 video.
-            </video>
-          </div>
-        `;
-      }
-
-      if (item.thumbnail) {
-        return `
-          <div class="feed-media">
-            <img class="feed-thumb" src="${safeThumbnail}" alt="${title}" loading="lazy">
-          </div>
-        `;
-      }
-
-      return `
-        <div class="fallback">
-          <img src="${safeThumbnail}" alt="${title}">
-          <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">Open Link</a>
-        </div>
-      `;
-    }
-
-    function createFeedCard(item) {
-      const article = document.createElement("article");
-      article.className = "feed-card";
-
-      const title = escapeHtml(item.title || "Untitled");
-      const description = escapeHtml(item.description || "");
-      const author = escapeHtml(item.author || "");
-      const platformRaw = item.platform || "unknown";
-      const platform = normalizePlatform(platformRaw);
-      const safeRawUrl = escapeAttribute(item.url || "#");
-      const publishedAt = formatDate(item.publishedAt);
-      const watchUrl = platform === "youtube" ? (getYouTubeWatchUrl(item.url || "") || safeRawUrl) : safeRawUrl;
-
-      article.innerHTML = `
-        ${createMediaMarkup(item)}
-        <div class="feed-content">
-          <h3>${title}</h3>
-          <div class="feed-meta">
-            <span class="feed-platform ${platform}">${escapeHtml(platformRaw)}</span>
-            ${author ? author : ""}
-            ${(author && publishedAt) ? " • " : ""}
-            ${publishedAt}
-          </div>
-          ${description ? `<p>${description}</p>` : ""}
-          <a class="feed-link" href="${watchUrl}" target="_blank" rel="noopener noreferrer">Open post</a>
-        </div>
-      `;
-
-      return article;
-    }
-
-    function showFeedMessage(message) {
-      feedContainer.innerHTML = `<div class="feed-message">${escapeHtml(message)}</div>`;
-    }
-
-    function renderFeedBatch() {
-      const nextItems = visibleFeedItems.slice(currentIndex, currentIndex + pageSize);
-      nextItems.forEach(item => feedContainer.appendChild(createFeedCard(item)));
-      currentIndex += nextItems.length;
-
-      if (currentIndex >= visibleFeedItems.length) {
-        if (observer) observer.disconnect();
-        feedLoader.style.display = "none";
-      }
+        button.disabled = !available.has(value);
+      });
     }
 
     function applyFilter() {
-      visibleFeedItems = activeFilter === "all"
-        ? [...allFeedItems]
-        : allFeedItems.filter(item => normalizePlatform(item.platform) === activeFilter);
+      filteredItems = activeFilter === 'all'
+        ? items.slice()
+        : items.filter(function(item) { return normalizePlatform(item.platform) === activeFilter; });
 
       currentIndex = 0;
-      feedContainer.innerHTML = "";
+      feedEl.innerHTML = '';
 
-      if (observer) observer.disconnect();
-
-      if (!visibleFeedItems.length) {
-        showFeedMessage(activeFilter === "all" ? "No feed items found." : `No ${activeFilter} items found.`);
+      if (!filteredItems.length) {
+        feedEl.innerHTML = '<div class="feed-message">No items found.</div>';
+        setDebug('No feed items for filter: ' + activeFilter);
         return;
       }
 
-      renderFeedBatch();
+      renderNextBatch();
+      setDebug('Loaded ' + filteredItems.length + ' item(s) for filter: ' + activeFilter);
 
-      if (observer && currentIndex < visibleFeedItems.length) {
-        observer.observe(feedSentinel);
+      if (observer) {
+        observer.disconnect();
+        if (currentIndex < filteredItems.length) observer.observe(sentinelEl);
       }
     }
 
-    async function loadMoreFeedItems() {
-      if (isLoading) return;
-      if (currentIndex >= visibleFeedItems.length) return;
-
-      isLoading = true;
-      feedLoader.style.display = "block";
-
-      try {
-        renderFeedBatch();
-      } finally {
-        feedLoader.style.display = "none";
-        isLoading = false;
-      }
+    function renderNextBatch() {
+      const nextItems = filteredItems.slice(currentIndex, currentIndex + pageSize);
+      nextItems.forEach(function(item) {
+        feedEl.insertAdjacentHTML('beforeend', createCard(item));
+      });
+      currentIndex += nextItems.length;
+      loaderEl.style.display = currentIndex < filteredItems.length ? 'block' : 'none';
     }
 
-    async function initFeed() {
-      try {
-        allFeedItems = await loadHybridFeed();
-        allFeedItems.sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
+    filtersEl.addEventListener('click', function(event) {
+      const button = event.target.closest('button[data-filter]');
+      if (!button || button.disabled) return;
 
-        if (!allFeedItems.length) {
-          setDebug("Feed loaded but returned zero items");
-          showFeedMessage("Could not load feed data.");
-          return;
-        }
-
-        setDebug(`Feed loaded: ${allFeedItems.length} items`);
-        applyFilter();
-      } catch (err) {
-        console.error("Feed failed:", err);
-        setDebug(`Feed failed: ${err.message}`);
-        showFeedMessage("Could not load feed data.");
-      }
-    }
-
-    feedFilters.addEventListener("click", event => {
-      const button = event.target.closest("button[data-filter]");
-      if (!button) return;
-
-      activeFilter = button.dataset.filter;
-      feedFilters.querySelectorAll("button").forEach(btn => btn.classList.remove("active"));
-      button.classList.add("active");
+      activeFilter = button.getAttribute('data-filter');
+      Array.from(filtersEl.querySelectorAll('button')).forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      button.classList.add('active');
       applyFilter();
     });
 
-    observer = new IntersectionObserver(
-      entries => {
-        if (entries[0] && entries[0].isIntersecting) {
-          loadMoreFeedItems();
-        }
-      },
-      {
-        root: magnetoColumn,
-        threshold: 0.1
+    observer = new IntersectionObserver(function(entries) {
+      if (entries[0] && entries[0].isIntersecting && currentIndex < filteredItems.length) {
+        renderNextBatch();
       }
-    );
+    }, {
+      root: feedScrollEl,
+      threshold: 0.1
+    });
 
-    renderColumn1();
-    initFeed();
+    renderPartners();
+    updateFilterButtons();
+    applyFilter();
+    observer.observe(sentinelEl);
   </script>
 </body>
 </html>
