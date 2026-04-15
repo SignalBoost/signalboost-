@@ -8,13 +8,6 @@ function safeDecode(value) {
   }
 }
 
-function guessSource(referrer = '') {
-  const r = String(referrer).toLowerCase();
-  if (r.includes('admin')) return 'admin';
-  if (r.includes('column3') || r.includes('top brands')) return 'column3';
-  return 'site';
-}
-
 function guessPartner(targetUrl = '') {
   const url = String(targetUrl).toLowerCase();
 
@@ -58,7 +51,7 @@ export default async function handler(req, res) {
     ts: new Date().toISOString(),
     target,
     partner: partner || guessPartner(target),
-    source: source || guessSource(req.headers.referer || ''),
+    source: source || 'site',
     referrer: req.headers.referer || '',
     ua: req.headers['user-agent'] || '',
     ip:
@@ -78,7 +71,7 @@ export default async function handler(req, res) {
     const day = click.ts.slice(0, 10);
     await kv.incr(`clicks:day:${day}`);
   } catch (err) {
-    console.error('KV log failed', err);
+    console.error('KV log failed:', err);
   }
 
   return res.redirect(target);
