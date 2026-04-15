@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost</title>
-
+  <title>Unified Social Video Renderer</title>
   <style>
     * {
       box-sizing: border-box;
@@ -36,9 +35,6 @@
       overflow: hidden;
     }
 
-    /* =========================
-       COLUMN 1
-    ========================= */
     .column-1 {
       background: #05070a;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -121,9 +117,6 @@
       padding: 8px 4px;
     }
 
-    /* =========================
-       COLUMN 2
-    ========================= */
     .column-2 {
       background: #0d1117;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -197,7 +190,7 @@
 
     .feed-card {
       display: grid;
-      grid-template-columns: 140px 1fr;
+      grid-template-columns: minmax(220px, 340px) 1fr;
       gap: 14px;
       background: #161b22;
       border: 1px solid rgba(255,255,255,0.08);
@@ -212,20 +205,48 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.35);
     }
 
+    .feed-media,
+    .feed-media iframe,
+    .feed-media video,
+    .feed-media img,
     .feed-thumb {
       width: 100%;
-      height: 100px;
-      object-fit: cover;
+      max-width: 100%;
+      height: 220px;
+      border: none;
       border-radius: 10px;
       background: #0b0f14;
+      object-fit: cover;
       display: block;
-      border: 0;
     }
 
-    iframe.feed-thumb {
-      aspect-ratio: 16 / 9;
-      height: auto;
-      min-height: 100px;
+    .fallback {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 220px;
+    }
+
+    .fallback img {
+      width: 140px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .fallback a {
+      color: #58a6ff;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .fallback a:hover,
+    .feed-link:hover {
+      text-decoration: underline;
     }
 
     .feed-content h3 {
@@ -289,10 +310,6 @@
       font-size: 14px;
     }
 
-    .feed-link:hover {
-      text-decoration: underline;
-    }
-
     .feed-loader {
       text-align: center;
       padding: 18px 0;
@@ -312,9 +329,6 @@
       height: 1px;
     }
 
-    /* =========================
-       COLUMN 3
-    ========================= */
     .column-3 {
       background: #0f141b;
       overflow-y: auto;
@@ -344,9 +358,6 @@
       margin: 8px 0;
     }
 
-    /* =========================
-       RESPONSIVE
-    ========================= */
     @media (max-width: 1100px) {
       .app {
         grid-template-columns: 260px 1fr;
@@ -370,30 +381,39 @@
         grid-template-columns: 1fr;
       }
 
-      .feed-thumb {
-        height: 180px;
+      .feed-media,
+      .feed-media iframe,
+      .feed-media video,
+      .feed-media img,
+      .feed-thumb,
+      .fallback {
+        height: auto;
+        min-height: 200px;
       }
 
-      iframe.feed-thumb {
-        height: 220px;
+      .fallback {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .fallback img {
+        width: 100%;
+        height: 180px;
       }
     }
   </style>
 </head>
 <body>
   <div class="app">
-
-    <!-- COLUMN 1 -->
     <div class="column column-1">
       <div class="column-1-header">Partners</div>
       <div id="column1-partners" class="column-1-scroll"></div>
     </div>
 
-    <!-- COLUMN 2 -->
     <div class="column column-2">
       <div id="magnetoColumn" class="feed-wrapper">
         <div class="feed-topbar">
-          <h2 class="feed-header">Hybrid Feed</h2>
+          <h1 class="feed-header">Unified Social Video Renderer</h1>
 
           <div class="feed-filters" id="feedFilters">
             <button data-filter="all" class="active">All</button>
@@ -401,6 +421,7 @@
             <button data-filter="reddit">Reddit</button>
             <button data-filter="instagram">Instagram</button>
             <button data-filter="facebook">Facebook</button>
+            <button data-filter="unknown">Fallback</button>
           </div>
 
           <div id="debugBox" class="debug-box">Waiting for data...</div>
@@ -412,7 +433,6 @@
       </div>
     </div>
 
-    <!-- COLUMN 3 -->
     <div class="column column-3">
       <h2>Column 3</h2>
       <div class="column-3-card">
@@ -424,17 +444,64 @@
         </ul>
       </div>
     </div>
-
   </div>
 
   <script>
+    const fallbackItems = [
+      {
+        platform: "youtube",
+        embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        title: "YouTube Example",
+        description: "Embedded YouTube content rendered with iframe support.",
+        author: "Demo Source",
+        publishedAt: "2026-04-14T09:00:00Z"
+      },
+      {
+        platform: "facebook",
+        embedUrl: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebookapp%2Fvideos%2F10153231379946729%2F",
+        url: "https://www.facebook.com/facebookapp/videos/10153231379946729/",
+        title: "Facebook Example",
+        description: "Facebook videos can render in iframe when a plugin embed URL is available.",
+        author: "Demo Source",
+        publishedAt: "2026-04-13T18:00:00Z"
+      },
+      {
+        platform: "instagram",
+        embedUrl: "https://www.instagram.com/p/CuE2WNQs6vH/embed",
+        url: "https://www.instagram.com/p/CuE2WNQs6vH/",
+        title: "Instagram Example",
+        description: "Instagram posts can render in iframe when an embed URL is available.",
+        author: "Demo Source",
+        publishedAt: "2026-04-12T14:00:00Z"
+      },
+      {
+        platform: "reddit",
+        videoUrl: "https://v.redd.it/example/video.mp4",
+        title: "Reddit Video Example",
+        description: "Direct MP4 playback through the HTML5 video tag.",
+        author: "Demo Source",
+        publishedAt: "2026-04-11T12:00:00Z",
+        url: "https://www.reddit.com/"
+      },
+      {
+        platform: "unknown",
+        thumbnail: "https://via.placeholder.com/300x200",
+        url: "https://example.com",
+        title: "Fallback Example",
+        description: "If no supported video source exists, a thumbnail and external link are shown.",
+        author: "Demo Source",
+        publishedAt: "2026-04-10T09:00:00Z"
+      }
+    ];
+
     function escapeHtml(value) {
       if (value == null) return "";
       return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
+        .replace(/\"/g, "&quot;")
         .replace(/'/g, "&#39;");
     }
 
@@ -455,9 +522,7 @@
 
     function setDebug(message) {
       const debugBox = document.getElementById("debugBox");
-      if (debugBox) {
-        debugBox.textContent = message;
-      }
+      if (debugBox) debugBox.textContent = message;
       console.log(message);
     }
 
@@ -467,17 +532,9 @@
         const hostname = parsed.hostname.toLowerCase();
 
         if (hostname.includes("youtube.com")) {
-          if (parsed.pathname === "/watch") {
-            return parsed.searchParams.get("v");
-          }
-
-          if (parsed.pathname.startsWith("/shorts/")) {
-            return parsed.pathname.split("/shorts/")[1].split("/")[0];
-          }
-
-          if (parsed.pathname.startsWith("/embed/")) {
-            return parsed.pathname.split("/embed/")[1].split("/")[0];
-          }
+          if (parsed.pathname === "/watch") return parsed.searchParams.get("v");
+          if (parsed.pathname.startsWith("/shorts/")) return parsed.pathname.split("/shorts/")[1].split("/")[0];
+          if (parsed.pathname.startsWith("/embed/")) return parsed.pathname.split("/embed/")[1].split("/")[0];
         }
 
         if (hostname.includes("youtu.be")) {
@@ -505,7 +562,7 @@
       const separator = url.includes("?") ? "&" : "?";
       const response = await fetch(`${url}${separator}v=${Date.now()}`, {
         cache: "no-store",
-        headers: { "Accept": "application/json" }
+        headers: { Accept: "application/json" }
       });
 
       if (!response.ok) {
@@ -515,12 +572,19 @@
       return response.json();
     }
 
-    /* =========================
-       COLUMN 1
-    ========================= */
     async function loadPartners() {
-      const data = await fetchJson("/data/partners.json");
-      return Array.isArray(data.partners) ? data.partners : [];
+      try {
+        const data = await fetchJson("/data/partners.json");
+        return Array.isArray(data.partners) ? data.partners : [];
+      } catch (err) {
+        console.warn("Partners fetch failed, using local fallback.", err);
+        return [
+          { name: "OpenAI", url: "https://openai.com", category: "AI" },
+          { name: "YouTube", url: "https://youtube.com", category: "Social" },
+          { name: "Reddit", url: "https://reddit.com", category: "Social" },
+          { name: "Meta", url: "https://about.meta.com", category: "Social" }
+        ];
+      }
     }
 
     async function renderColumn1() {
@@ -535,12 +599,9 @@
         }
 
         const categories = {};
-
         partners.forEach(partner => {
           const category = partner.category || "Other";
-          if (!categories[category]) {
-            categories[category] = [];
-          }
+          if (!categories[category]) categories[category] = [];
           categories[category].push(partner);
         });
 
@@ -549,9 +610,8 @@
         Object.keys(categories).forEach(category => {
           const section = document.createElement("div");
           section.className = "category";
-
           section.innerHTML = `
-            <details>
+            <details open>
               <summary>${escapeHtml(category)}</summary>
               <ul>
                 ${categories[category].map(partner => `
@@ -564,7 +624,6 @@
               </ul>
             </details>
           `;
-
           container.appendChild(section);
         });
       } catch (err) {
@@ -573,9 +632,6 @@
       }
     }
 
-    /* =========================
-       COLUMN 2
-    ========================= */
     const feedContainer = document.getElementById("feedContainer");
     const feedLoader = document.getElementById("feedLoader");
     const feedSentinel = document.getElementById("feedSentinel");
@@ -605,16 +661,90 @@
         title: item.title || item.name || item.request || "Untitled",
         description: item.description || item.summary || item.text || "",
         author: item.author || item.by || item.sourceName || item.source || "",
-        platform: normalizePlatform(item.platform || item.type || item.source || "source"),
+        platform: normalizePlatform(item.platform || item.type || item.source || "unknown"),
         url: item.url || item.link || item.href || "#",
+        embedUrl: item.embedUrl || item.embed || "",
+        videoUrl: item.videoUrl || item.video || item.mp4 || "",
         thumbnail: item.thumbnail || item.image || item.imageUrl || "",
         publishedAt: item.publishedAt || item.date || item.createdAt || item.timestamp || ""
       };
     }
 
     async function loadHybridFeed() {
-      const data = await fetchJson("/api/feed");
-      return normalizeFeedData(data).map(normalizeFeedItem);
+      try {
+        const data = await fetchJson("/api/feed?q=travel");
+        const normalized = normalizeFeedData(data).map(normalizeFeedItem);
+        if (normalized.length) return normalized;
+      } catch (err) {
+        console.warn("Feed fetch failed, using fallback items.", err);
+      }
+      return fallbackItems.map(normalizeFeedItem);
+    }
+
+    function createMediaMarkup(item) {
+      const platform = normalizePlatform(item.platform);
+      const title = escapeHtml(item.title || "Untitled");
+      const safeThumbnail = escapeAttribute(item.thumbnail || "https://via.placeholder.com/300x200");
+      const safeUrl = escapeAttribute(item.url || "#");
+      const safeEmbedUrl = escapeAttribute(item.embedUrl || "");
+      const safeVideoUrl = escapeAttribute(item.videoUrl || "");
+
+      const youtubeEmbed = platform === "youtube"
+        ? (item.embedUrl || getYouTubeEmbedUrl(item.url || ""))
+        : null;
+
+      if (platform === "youtube" && youtubeEmbed) {
+        return `
+          <div class="feed-media">
+            <iframe
+              src="${escapeAttribute(youtubeEmbed)}"
+              title="${title}"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        `;
+      }
+
+      if ((platform === "facebook" || platform === "instagram") && safeEmbedUrl) {
+        return `
+          <div class="feed-media">
+            <iframe
+              src="${safeEmbedUrl}"
+              title="${title}"
+              loading="lazy"
+              allowfullscreen
+            ></iframe>
+          </div>
+        `;
+      }
+
+      if (safeVideoUrl) {
+        return `
+          <div class="feed-media">
+            <video controls preload="metadata">
+              <source src="${safeVideoUrl}" type="video/mp4">
+              Your browser does not support HTML5 video.
+            </video>
+          </div>
+        `;
+      }
+
+      if (item.thumbnail) {
+        return `
+          <div class="feed-media">
+            <img class="feed-thumb" src="${safeThumbnail}" alt="${title}" loading="lazy">
+          </div>
+        `;
+      }
+
+      return `
+        <div class="fallback">
+          <img src="${safeThumbnail}" alt="${title}">
+          <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">Open Link</a>
+        </div>
+      `;
     }
 
     function createFeedCard(item) {
@@ -624,32 +754,14 @@
       const title = escapeHtml(item.title || "Untitled");
       const description = escapeHtml(item.description || "");
       const author = escapeHtml(item.author || "");
-      const platformRaw = item.platform || "source";
+      const platformRaw = item.platform || "unknown";
       const platform = normalizePlatform(platformRaw);
-      const rawUrl = item.url || "#";
-      const safeRawUrl = escapeAttribute(rawUrl);
-      const thumbnail = escapeAttribute(item.thumbnail || "");
+      const safeRawUrl = escapeAttribute(item.url || "#");
       const publishedAt = formatDate(item.publishedAt);
-
-      const embedUrl = platform === "youtube" ? getYouTubeEmbedUrl(rawUrl) : null;
-      const watchUrl = platform === "youtube" ? getYouTubeWatchUrl(rawUrl) : null;
-      const openUrl = watchUrl || safeRawUrl;
+      const watchUrl = platform === "youtube" ? (getYouTubeWatchUrl(item.url || "") || safeRawUrl) : safeRawUrl;
 
       article.innerHTML = `
-        ${
-          embedUrl
-            ? `<iframe
-                class="feed-thumb"
-                src="${escapeAttribute(embedUrl)}"
-                title="${title}"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              ></iframe>`
-            : thumbnail
-              ? `<img class="feed-thumb" src="${thumbnail}" alt="${title}" loading="lazy">`
-              : `<div class="feed-thumb"></div>`
-        }
+        ${createMediaMarkup(item)}
         <div class="feed-content">
           <h3>${title}</h3>
           <div class="feed-meta">
@@ -659,7 +771,7 @@
             ${publishedAt}
           </div>
           ${description ? `<p>${description}</p>` : ""}
-          <a class="feed-link" href="${openUrl}" target="_blank" rel="noopener noreferrer">Open post</a>
+          <a class="feed-link" href="${watchUrl}" target="_blank" rel="noopener noreferrer">Open post</a>
         </div>
       `;
 
@@ -672,17 +784,11 @@
 
     function renderFeedBatch() {
       const nextItems = visibleFeedItems.slice(currentIndex, currentIndex + pageSize);
-
-      nextItems.forEach(item => {
-        feedContainer.appendChild(createFeedCard(item));
-      });
-
+      nextItems.forEach(item => feedContainer.appendChild(createFeedCard(item)));
       currentIndex += nextItems.length;
 
       if (currentIndex >= visibleFeedItems.length) {
-        if (observer) {
-          observer.disconnect();
-        }
+        if (observer) observer.disconnect();
         feedLoader.style.display = "none";
       }
     }
@@ -695,16 +801,10 @@
       currentIndex = 0;
       feedContainer.innerHTML = "";
 
-      if (observer) {
-        observer.disconnect();
-      }
+      if (observer) observer.disconnect();
 
       if (!visibleFeedItems.length) {
-        showFeedMessage(
-          activeFilter === "all"
-            ? "No feed items found."
-            : `No ${activeFilter} items found.`
-        );
+        showFeedMessage(activeFilter === "all" ? "No feed items found." : `No ${activeFilter} items found.`);
         return;
       }
 
@@ -733,14 +833,11 @@
     async function initFeed() {
       try {
         allFeedItems = await loadHybridFeed();
-
-        allFeedItems.sort((a, b) => {
-          return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
-        });
+        allFeedItems.sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
 
         if (!allFeedItems.length) {
           setDebug("Feed loaded but returned zero items");
-          showFeedMessage("No feed items found.");
+          showFeedMessage("Could not load feed data.");
           return;
         }
 
@@ -758,11 +855,7 @@
       if (!button) return;
 
       activeFilter = button.dataset.filter;
-
-      feedFilters.querySelectorAll("button").forEach(btn => {
-        btn.classList.remove("active");
-      });
-
+      feedFilters.querySelectorAll("button").forEach(btn => btn.classList.remove("active"));
       button.classList.add("active");
       applyFilter();
     });
@@ -779,9 +872,6 @@
       }
     );
 
-    /* =========================
-       INIT
-    ========================= */
     renderColumn1();
     initFeed();
   </script>
