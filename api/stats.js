@@ -8,13 +8,15 @@ export default async function handler(req, res) {
     const clicksToday = Number((await kv.get(`clicks:day:${today}`)) || 0);
 
     const recentRaw = (await kv.lrange('clicks:recent', 0, 49)) || [];
-    const recent = recentRaw.map((row) => {
-      try {
-        return typeof row === 'string' ? JSON.parse(row) : row;
-      } catch {
-        return null;
-      }
-    }).filter(Boolean);
+    const recent = recentRaw
+      .map((row) => {
+        try {
+          return typeof row === 'string' ? JSON.parse(row) : row;
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean);
 
     const partnerCounts = {};
     const sourceCounts = {};
@@ -37,7 +39,7 @@ export default async function handler(req, res) {
       recent
     });
   } catch (err) {
-    console.error(err);
+    console.error('Stats API failed:', err);
     res.status(500).json({ error: 'Failed to load stats' });
   }
 }
