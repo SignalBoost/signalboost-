@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html, body {
       margin: 0;
@@ -15,7 +17,9 @@
       color: #ffffff;
     }
 
-    body { overflow: hidden; }
+    body {
+      overflow: hidden;
+    }
 
     .app {
       display: grid;
@@ -31,6 +35,9 @@
       overflow: hidden;
     }
 
+    /* =========================
+       COLUMN 1
+    ========================= */
     .column-1 {
       background: #05070a;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -49,7 +56,9 @@
       padding: 12px;
     }
 
-    .category { margin-bottom: 10px; }
+    .category {
+      margin-bottom: 10px;
+    }
 
     .category details {
       border-radius: 8px;
@@ -66,7 +75,9 @@
       list-style: none;
     }
 
-    .category summary::-webkit-details-marker { display: none; }
+    .category summary::-webkit-details-marker {
+      display: none;
+    }
 
     .category summary::before {
       content: "▶";
@@ -77,7 +88,9 @@
       transform: translateY(-1px);
     }
 
-    .category details[open] summary::before { content: "▼"; }
+    .category details[open] summary::before {
+      content: "▼";
+    }
 
     .category ul {
       list-style: none;
@@ -85,7 +98,9 @@
       padding: 8px 8px 2px 8px;
     }
 
-    .category li { margin: 6px 0; }
+    .category li {
+      margin: 6px 0;
+    }
 
     .category a {
       color: #ffffff;
@@ -105,6 +120,9 @@
       padding: 8px 4px;
     }
 
+    /* =========================
+       COLUMN 2
+    ========================= */
     .column-2 {
       background: #0d1117;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -244,22 +262,22 @@
     }
 
     .feed-platform.youtube {
-      background: rgba(255,0,0,0.15);
+      background: rgba(255, 0, 0, 0.15);
       color: #ff6b6b;
     }
 
     .feed-platform.reddit {
-      background: rgba(255,69,0,0.15);
+      background: rgba(255, 69, 0, 0.15);
       color: #ff4500;
     }
 
     .feed-platform.instagram {
-      background: rgba(255,0,150,0.15);
+      background: rgba(255, 0, 150, 0.15);
       color: #ff4fa3;
     }
 
     .feed-platform.facebook {
-      background: rgba(24,119,242,0.15);
+      background: rgba(24, 119, 242, 0.15);
       color: #66a3ff;
     }
 
@@ -270,7 +288,9 @@
       font-size: 14px;
     }
 
-    .feed-link:hover { text-decoration: underline; }
+    .feed-link:hover {
+      text-decoration: underline;
+    }
 
     .feed-loader {
       text-align: center;
@@ -287,8 +307,13 @@
       font-size: 14px;
     }
 
-    #feedSentinel { height: 1px; }
+    #feedSentinel {
+      height: 1px;
+    }
 
+    /* =========================
+       COLUMN 3
+    ========================= */
     .column-3 {
       background: #0f141b;
       overflow-y: auto;
@@ -314,33 +339,61 @@
       padding-left: 18px;
     }
 
-    .column-3-card li { margin: 8px 0; }
+    .column-3-card li {
+      margin: 8px 0;
+    }
 
+    /* =========================
+       RESPONSIVE
+    ========================= */
     @media (max-width: 1100px) {
-      .app { grid-template-columns: 260px 1fr; }
-      .column-3 { display: none; }
+      .app {
+        grid-template-columns: 260px 1fr;
+      }
+
+      .column-3 {
+        display: none;
+      }
     }
 
     @media (max-width: 768px) {
-      .app { grid-template-columns: 1fr; }
-      .column-1 { display: none; }
-      .feed-card { grid-template-columns: 1fr; }
-      .feed-thumb { height: 180px; }
-      iframe.feed-thumb { height: 220px; }
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .column-1 {
+        display: none;
+      }
+
+      .feed-card {
+        grid-template-columns: 1fr;
+      }
+
+      .feed-thumb {
+        height: 180px;
+      }
+
+      iframe.feed-thumb {
+        height: 220px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
+
+    <!-- COLUMN 1 -->
     <div class="column column-1">
       <div class="column-1-header">Partners</div>
       <div id="column1-partners" class="column-1-scroll"></div>
     </div>
 
+    <!-- COLUMN 2 -->
     <div class="column column-2">
       <div id="magnetoColumn" class="feed-wrapper">
         <div class="feed-topbar">
           <h2 class="feed-header">Hybrid Feed</h2>
+
           <div class="feed-filters" id="feedFilters">
             <button data-filter="all" class="active">All</button>
             <button data-filter="youtube">YouTube</button>
@@ -348,6 +401,7 @@
             <button data-filter="instagram">Instagram</button>
             <button data-filter="facebook">Facebook</button>
           </div>
+
           <div id="debugBox" class="debug-box">Waiting for data...</div>
         </div>
 
@@ -357,6 +411,7 @@
       </div>
     </div>
 
+    <!-- COLUMN 3 -->
     <div class="column column-3">
       <h2>Column 3</h2>
       <div class="column-3-card">
@@ -368,9 +423,13 @@
         </ul>
       </div>
     </div>
+
   </div>
 
   <script>
+    /* =========================
+       HELPERS
+    ========================= */
     function escapeHtml(value) {
       if (value == null) return "";
       return String(value)
@@ -397,7 +456,10 @@
     }
 
     function setDebug(message) {
-      document.getElementById("debugBox").textContent = message;
+      const debugBox = document.getElementById("debugBox");
+      if (debugBox) {
+        debugBox.textContent = message;
+      }
       console.log(message);
     }
 
@@ -407,12 +469,16 @@
 
         if (parsed.hostname.includes("youtube.com")) {
           const videoId = parsed.searchParams.get("v");
-          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+          }
         }
 
         if (parsed.hostname.includes("youtu.be")) {
           const videoId = parsed.pathname.replace("/", "");
-          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+          }
         }
       } catch (err) {
         console.error("Invalid YouTube URL:", url, err);
@@ -422,9 +488,11 @@
     }
 
     async function fetchJson(url) {
-      const response = await fetch(url, {
+      const response = await fetch(url + "?v=" + Date.now(), {
         cache: "no-store",
-        headers: { "Accept": "application/json" }
+        headers: {
+          "Accept": "application/json"
+        }
       });
 
       if (!response.ok) {
@@ -434,73 +502,70 @@
       return response.json();
     }
 
+    /* =========================
+       COLUMN 1: PARTNERS
+    ========================= */
     async function loadPartners() {
-      const urls = [
-        "./api/data/partners.json",
-        "api/data/partners.json"
-      ];
-
-      let errors = [];
-
-      for (const url of urls) {
-        try {
-          const data = await fetchJson(url);
-          if (Array.isArray(data.partners)) {
-            setDebug(`Partners loaded from ${url} (${data.partners.length} items)`);
-            return data.partners;
-          }
-          errors.push(`${url}: JSON loaded but no partners array`);
-        } catch (err) {
-          errors.push(err.message);
-        }
-      }
-
-      setDebug("Partners failed:\n" + errors.join("\n"));
-      return [];
+      const data = await fetchJson("/data/partners.json");
+      return Array.isArray(data.partners) ? data.partners : [];
     }
 
     async function renderColumn1() {
       const container = document.getElementById("column1-partners");
-      const partners = await loadPartners();
 
-      if (!partners.length) {
+      try {
+        const partners = await loadPartners();
+
+        if (!partners.length) {
+          container.innerHTML = '<div class="column-1-empty">No partners found.</div>';
+          setDebug("partners.json loaded, but partners array is empty");
+          return;
+        }
+
+        const categories = {};
+
+        partners.forEach(partner => {
+          const category = partner.category || "Other";
+          if (!categories[category]) {
+            categories[category] = [];
+          }
+          categories[category].push(partner);
+        });
+
+        container.innerHTML = "";
+
+        Object.keys(categories).forEach(category => {
+          const section = document.createElement("div");
+          section.className = "category";
+
+          section.innerHTML = `
+            <details>
+              <summary>${escapeHtml(category)}</summary>
+              <ul>
+                ${categories[category].map(partner => `
+                  <li>
+                    <a href="${escapeAttribute(partner.url || "#")}" target="_blank" rel="noopener noreferrer">
+                      ${escapeHtml(partner.name || "Untitled")}
+                    </a>
+                  </li>
+                `).join("")}
+              </ul>
+            </details>
+          `;
+
+          container.appendChild(section);
+        });
+
+        setDebug(`partners.json loaded: ${partners.length} partners`);
+      } catch (err) {
         container.innerHTML = '<div class="column-1-empty">No partners found.</div>';
-        return;
+        setDebug("Partners failed:\n" + err.message);
       }
-
-      const categories = {};
-
-      partners.forEach(partner => {
-        const category = partner.category || "Other";
-        if (!categories[category]) categories[category] = [];
-        categories[category].push(partner);
-      });
-
-      container.innerHTML = "";
-
-      Object.keys(categories).forEach(category => {
-        const section = document.createElement("div");
-        section.className = "category";
-
-        section.innerHTML = `
-          <details>
-            <summary>${escapeHtml(category)}</summary>
-            <ul>
-              ${categories[category].map(partner => `
-                <li>
-                  <a href="${escapeAttribute(partner.url || "#")}" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(partner.name || "Untitled")}
-                  </a>
-                </li>
-              `).join("")}
-            </ul>
-          </details>
-        `;
-
-        container.appendChild(section);
-      });
     }
 
+    /* =========================
+       COLUMN 2: FEED
+    ========================= */
     const feedContainer = document.getElementById("feedContainer");
     const feedLoader = document.getElementById("feedLoader");
     const feedSentinel = document.getElementById("feedSentinel");
@@ -540,31 +605,8 @@
     }
 
     async function loadHybridFeed() {
-      const urls = [
-        "./api/data/requests.json",
-        "api/data/requests.json"
-      ];
-
-      let errors = [];
-
-      for (const url of urls) {
-        try {
-          const data = await fetchJson(url);
-          const items = normalizeFeedData(data).map(normalizeFeedItem);
-
-          if (items.length) {
-            setDebug(`Feed loaded from ${url} (${items.length} items)`);
-            return items;
-          }
-
-          errors.push(`${url}: JSON loaded but no usable feed array`);
-        } catch (err) {
-          errors.push(err.message);
-        }
-      }
-
-      setDebug("Feed failed:\n" + errors.join("\n"));
-      return [];
+      const data = await fetchJson("/data/requests.json");
+      return normalizeFeedData(data).map(normalizeFeedItem);
     }
 
     function createFeedCard(item) {
@@ -580,7 +622,6 @@
       const safeUrl = escapeAttribute(url);
       const thumbnail = escapeAttribute(item.thumbnail || "");
       const publishedAt = formatDate(item.publishedAt);
-
       const embedUrl = platform === "youtube" ? getYouTubeEmbedUrl(url) : null;
 
       article.innerHTML = `
@@ -598,7 +639,6 @@
               ? `<img class="feed-thumb" src="${thumbnail}" alt="${title}" loading="lazy">`
               : `<div class="feed-thumb"></div>`
         }
-
         <div class="feed-content">
           <h3>${title}</h3>
           <div class="feed-meta">
@@ -629,7 +669,9 @@
       currentIndex += nextItems.length;
 
       if (currentIndex >= visibleFeedItems.length) {
-        if (observer) observer.disconnect();
+        if (observer) {
+          observer.disconnect();
+        }
         feedLoader.style.display = "none";
       }
     }
@@ -642,10 +684,16 @@
       currentIndex = 0;
       feedContainer.innerHTML = "";
 
-      if (observer) observer.disconnect();
+      if (observer) {
+        observer.disconnect();
+      }
 
       if (!visibleFeedItems.length) {
-        showFeedMessage(activeFilter === "all" ? "Could not load feed data." : `No ${activeFilter} items found.`);
+        showFeedMessage(
+          activeFilter === "all"
+            ? "Could not load feed data."
+            : `No ${activeFilter} items found.`
+        );
         return;
       }
 
@@ -680,19 +728,20 @@
         });
 
         if (!allFeedItems.length) {
+          setDebug("requests.json loaded, but it is empty or has no usable items");
           showFeedMessage("Could not load feed data.");
           return;
         }
 
+        setDebug(`requests.json loaded: ${allFeedItems.length} items`);
         applyFilter();
       } catch (err) {
-        console.error("Feed init failed:", err);
-        setDebug("Feed init failed:\n" + err.message);
+        setDebug("Feed failed:\n" + err.message);
         showFeedMessage("Could not load feed data.");
       }
     }
 
-    feedFilters.addEventListener("click", (event) => {
+    feedFilters.addEventListener("click", event => {
       const button = event.target.closest("button[data-filter]");
       if (!button) return;
 
@@ -718,6 +767,9 @@
       }
     );
 
+    /* =========================
+       INIT
+    ========================= */
     renderColumn1();
     initFeed();
   </script>
