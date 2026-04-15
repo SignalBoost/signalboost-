@@ -514,7 +514,35 @@
       instagramProfile: 'https://www.instagram.com/YOUR_PROFILE/'
     };
 
-    const promoFallbackItems = [];
+    const promoFallbackItems = [
+      {
+        platform: 'youtube',
+        title: 'YouTube source not loaded yet',
+        description: 'Connect a real YouTube source in socialFeedInputs and make sure /api/feed/youtube returns items.',
+        author: 'SignalBoost',
+        publishedAt: new Date().toISOString(),
+        url: 'https://www.youtube.com/',
+        thumbnail: 'https://via.placeholder.com/720x1280/1a1a1a/ffffff?text=YouTube+Source'
+      },
+      {
+        platform: 'reddit',
+        title: 'Reddit source not loaded yet',
+        description: 'Add a subreddit source URL and make sure /api/feed/reddit is returning JSON.',
+        author: 'SignalBoost',
+        publishedAt: new Date().toISOString(),
+        url: 'https://www.reddit.com/',
+        thumbnail: 'https://via.placeholder.com/720x1280/111b28/ff8a45?text=Reddit+Source'
+      },
+      {
+        platform: 'facebook',
+        title: 'Facebook source not loaded yet',
+        description: 'Point this to a Facebook page source and make sure /api/feed/facebook is working.',
+        author: 'SignalBoost',
+        publishedAt: new Date().toISOString(),
+        url: 'https://www.facebook.com/',
+        thumbnail: 'https://via.placeholder.com/720x1280/122017/66a3ff?text=Facebook+Source'
+      }
+    ];
 
     const feedSourceConfigs = [
       {
@@ -756,7 +784,7 @@
         if (ytIndex < youtube.length) output.push(youtube[ytIndex++]);
       }
 
-      return output;
+      return output.length ? output : promoFallbackItems.slice();
     }
 
     function createMediaMarkup(item) {
@@ -805,14 +833,14 @@
       .then(function(liveItems) {
         const finalFeed = buildDynamicFeed(liveItems);
         if (!finalFeed.length) {
-          feedContainer.innerHTML = '<div class="feed-card"><div class="feed-content"><h3>No live social videos yet</h3><p>Add real YouTube / Reddit / Facebook source URLs in <code>socialFeedInputs</code> and make sure the backend feed endpoints are returning items.</p></div></div>';
+          renderFeed(promoFallbackItems);
           return;
         }
         renderFeed(finalFeed);
       })
       .catch(function(err) {
         console.error('Dynamic feed failed.', err);
-        feedContainer.innerHTML = '<div class="feed-card"><div class="feed-content"><h3>Feed unavailable</h3><p>The social feed endpoints are not returning content yet.</p></div></div>';
+        renderFeed(promoFallbackItems);
       });
 
     const search = document.getElementById('partnerSearch');
