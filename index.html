@@ -35,9 +35,7 @@
       overflow: hidden;
     }
 
-    /* =========================
-       COLUMN 1
-    ========================= */
+    /* COLUMN 1 */
     .column-1 {
       background: #05070a;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -120,9 +118,7 @@
       padding: 8px 4px;
     }
 
-    /* =========================
-       COLUMN 2
-    ========================= */
+    /* COLUMN 2 */
     .column-2 {
       background: #0d1117;
       border-right: 1px solid rgba(255,255,255,0.08);
@@ -311,9 +307,7 @@
       height: 1px;
     }
 
-    /* =========================
-       COLUMN 3
-    ========================= */
+    /* COLUMN 3 */
     .column-3 {
       background: #0f141b;
       overflow-y: auto;
@@ -343,9 +337,7 @@
       margin: 8px 0;
     }
 
-    /* =========================
-       RESPONSIVE
-    ========================= */
+    /* RESPONSIVE */
     @media (max-width: 1100px) {
       .app {
         grid-template-columns: 260px 1fr;
@@ -382,13 +374,11 @@
 <body>
   <div class="app">
 
-    <!-- COLUMN 1 -->
     <div class="column column-1">
       <div class="column-1-header">Partners</div>
       <div id="column1-partners" class="column-1-scroll"></div>
     </div>
 
-    <!-- COLUMN 2 -->
     <div class="column column-2">
       <div id="magnetoColumn" class="feed-wrapper">
         <div class="feed-topbar">
@@ -411,7 +401,6 @@
       </div>
     </div>
 
-    <!-- COLUMN 3 -->
     <div class="column column-3">
       <h2>Column 3</h2>
       <div class="column-3-card">
@@ -427,9 +416,6 @@
   </div>
 
   <script>
-    /* =========================
-       HELPERS
-    ========================= */
     function escapeHtml(value) {
       if (value == null) return "";
       return String(value)
@@ -463,28 +449,46 @@
       console.log(message);
     }
 
-    function getYouTubeEmbedUrl(url) {
+    function getYouTubeVideoId(url) {
       try {
         const parsed = new URL(url, window.location.origin);
+        const hostname = parsed.hostname.toLowerCase();
 
-        if (parsed.hostname.includes("youtube.com")) {
-          const videoId = parsed.searchParams.get("v");
-          if (videoId) {
-            return `https://www.youtube.com/embed/${videoId}`;
+        if (hostname.includes("youtube.com")) {
+          if (parsed.pathname === "/watch") {
+            return parsed.searchParams.get("v");
           }
+
+          if (parsed.pathname.startsWith("/shorts/")) {
+            return parsed.pathname.split("/shorts/")[1].split("/")[0];
+          }
+
+          if (parsed.pathname.startsWith("/embed/")) {
+            return parsed.pathname.split("/embed/")[1].split("/")[0];
+          }
+
+          return null;
         }
 
-        if (parsed.hostname.includes("youtu.be")) {
-          const videoId = parsed.pathname.replace("/", "");
-          if (videoId) {
-            return `https://www.youtube.com/embed/${videoId}`;
-          }
+        if (hostname.includes("youtu.be")) {
+          const path = parsed.pathname.replace(/^\/+/, "");
+          return path ? path.split("/")[0] : null;
         }
       } catch (err) {
         console.error("Invalid YouTube URL:", url, err);
       }
 
       return null;
+    }
+
+    function getYouTubeEmbedUrl(url) {
+      const videoId = getYouTubeVideoId(url);
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    }
+
+    function getYouTubeWatchUrl(url) {
+      const videoId = getYouTubeVideoId(url);
+      return videoId ? `https://www.youtube.com/watch?v=${videoId}` : null;
     }
 
     async function fetchJson(url) {
@@ -502,9 +506,6 @@
       return response.json();
     }
 
-    /* =========================
-       COLUMN 1: PARTNERS
-    ========================= */
     async function loadPartners() {
       const data = await fetchJson("/data/partners.json");
       return Array.isArray(data.partners) ? data.partners : [];
@@ -518,7 +519,6 @@
 
         if (!partners.length) {
           container.innerHTML = '<div class="column-1-empty">No partners found.</div>';
-          setDebug("partners.json loaded, but partners array is empty");
           return;
         }
 
@@ -555,17 +555,12 @@
 
           container.appendChild(section);
         });
-
-        setDebug(`partners.json loaded: ${partners.length} partners`);
       } catch (err) {
         container.innerHTML = '<div class="column-1-empty">No partners found.</div>';
-        setDebug("Partners failed:\n" + err.message);
+        console.error("Partners failed:", err);
       }
     }
 
-    /* =========================
-       COLUMN 2: FEED
-    ========================= */
     const feedContainer = document.getElementById("feedContainer");
     const feedLoader = document.getElementById("feedLoader");
     const feedSentinel = document.getElementById("feedSentinel");
@@ -618,11 +613,14 @@
       const author = escapeHtml(item.author || "");
       const platformRaw = item.platform || "source";
       const platform = normalizePlatform(platformRaw);
-      const url = item.url || "#";
-      const safeUrl = escapeAttribute(url);
+      const rawUrl = item.url || "#";
+      const safeRawUrl = escapeAttribute(rawUrl);
       const thumbnail = escapeAttribute(item.thumbnail || "");
       const publishedAt = formatDate(item.publishedAt);
-      const embedUrl = platform === "youtube" ? getYouTubeEmbedUrl(url) : null;
+
+      const embedUrl = platform === "youtube" ? getYouTubeEmbedUrl(rawUrl) : null;
+      const watchUrl = platform === "youtube" ? getYouTubeWatchUrl(rawUrl) : null;
+      const openUrl = watchUrl || safeRawUrl;
 
       article.innerHTML = `
         ${
@@ -648,7 +646,7 @@
             ${publishedAt}
           </div>
           ${description ? `<p>${description}</p>` : ""}
-          <a class="feed-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Open post</a>
+          <a class="feed-link" href="${openUrl}" target="_blank" rel="noopener noreferrer">Open post</a>
         </div>
       `;
 
@@ -767,9 +765,6 @@
       }
     );
 
-    /* =========================
-       INIT
-    ========================= */
     renderColumn1();
     initFeed();
   </script>
