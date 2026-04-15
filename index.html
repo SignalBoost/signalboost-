@@ -742,20 +742,29 @@
       return 'https://via.placeholder.com/720x1280/1a1a1a/ffffff?text=YouTube';
     }
 
+    function getYouTubeEmbed(url) {
+      try {
+        const parsed = new URL(url);
+        const videoId = parsed.searchParams.get('v');
+        if (videoId) {
+          return 'https://www.youtube-nocookie.com/embed/' + videoId + '?rel=0&modestbranding=1&playsinline=1';
+        }
+      } catch (e) {}
+      return '';
+    }
+
     function createMediaMarkup(item) {
       const platform = normalizePlatform(item.platform);
       const title = escapeHtml(item.title || 'Untitled');
       const monetized = monetizeUrl(item.url, { partner: item.title, source: 'feed_card' });
 
       if (platform === 'youtube') {
-        const thumb = item.thumbnail || getYouTubeThumb(item.url || '');
-        return '<div class="media-box">' +
-          '<a class="video-thumb-wrap" href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer">' +
-          '<img src="' + escapeHtml(thumb) + '" alt="' + title + '" loading="lazy">' +
-          '<div class="video-topbar">YouTube Video</div>' +
-          '<div class="video-play-badge"><span class="video-play-icon"></span><span>Watch now</span></div>' +
-          '</a>' +
-          '</div>';
+        const embed = item.embedUrl || getYouTubeEmbed(item.url || '');
+        if (embed) {
+          return '<div class="media-box">' +
+            '<iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
+            '</div>';
+        }
       }
 
       return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer">' +
