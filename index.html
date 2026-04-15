@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignalBoost</title>
-
   <style>
     * { box-sizing: border-box; }
 
@@ -162,6 +161,14 @@
       color: #58a6ff;
     }
 
+    .debug-box {
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+
     .feed-container {
       display: flex;
       flex-direction: column;
@@ -237,22 +244,22 @@
     }
 
     .feed-platform.youtube {
-      background: rgba(255, 0, 0, 0.15);
+      background: rgba(255,0,0,0.15);
       color: #ff6b6b;
     }
 
     .feed-platform.reddit {
-      background: rgba(255, 69, 0, 0.15);
+      background: rgba(255,69,0,0.15);
       color: #ff4500;
     }
 
     .feed-platform.instagram {
-      background: rgba(255, 0, 150, 0.15);
+      background: rgba(255,0,150,0.15);
       color: #ff4fa3;
     }
 
     .feed-platform.facebook {
-      background: rgba(24, 119, 242, 0.15);
+      background: rgba(24,119,242,0.15);
       color: #66a3ff;
     }
 
@@ -341,6 +348,7 @@
             <button data-filter="instagram">Instagram</button>
             <button data-filter="facebook">Facebook</button>
           </div>
+          <div id="debugBox" class="debug-box">Waiting for data...</div>
         </div>
 
         <div id="feedContainer" class="feed-container"></div>
@@ -388,6 +396,11 @@
       return String(value || "").trim().toLowerCase();
     }
 
+    function setDebug(message) {
+      document.getElementById("debugBox").textContent = message;
+      console.log(message);
+    }
+
     function getYouTubeEmbedUrl(url) {
       try {
         const parsed = new URL(url, window.location.origin);
@@ -404,11 +417,13 @@
       } catch (err) {
         console.error("Invalid YouTube URL:", url, err);
       }
+
       return null;
     }
 
     async function fetchJson(url) {
       const response = await fetch(url, {
+        cache: "no-store",
         headers: { "Accept": "application/json" }
       });
 
@@ -420,25 +435,27 @@
     }
 
     async function loadPartners() {
-      const candidateUrls = [
-        "/api/data/partners.json",
+      const urls = [
         "./api/data/partners.json",
-        "/data/partners.json",
-        "./data/partners.json"
+        "api/data/partners.json"
       ];
 
-      for (const url of candidateUrls) {
+      let errors = [];
+
+      for (const url of urls) {
         try {
           const data = await fetchJson(url);
           if (Array.isArray(data.partners)) {
-            console.log("Loaded partners from:", url);
+            setDebug(`Partners loaded from ${url} (${data.partners.length} items)`);
             return data.partners;
           }
+          errors.push(`${url}: JSON loaded but no partners array`);
         } catch (err) {
-          console.warn("Partners load failed:", err.message);
+          errors.push(err.message);
         }
       }
 
+      setDebug("Partners failed:\n" + errors.join("\n"));
       return [];
     }
 
@@ -498,27 +515,55 @@
     const pageSize = 6;
     let observer = null;
 
+    function normalizeFeedData(data) {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.items)) return data.items;
+      if (Array.isArray(data.requests)) return data.requests;
+      if (Array.isArray(data.feed)) return data.feed;
+      if (Array.isArray(data.posts)) return data.posts;
+      if (Array.isArray(data.results)) return data.results;
+      return [];
+    }
+
+    function normalizeFeedItem(item) {
+      const platform = normalizePlatform(item.platform || item.type || item.source || "");
+
+      return {
+        title: item.title || item.name || item.request || "Untitled",
+        description: item.description || item.summary || item.text || "",
+        author: item.author || item.by || item.sourceName || "",
+        platform: platform || "source",
+        url: item.url || item.link || item.href || "#",
+        thumbnail: item.thumbnail || item.image || item.imageUrl || "",
+        publishedAt: item.publishedAt || item.date || item.createdAt || item.timestamp || ""
+      };
+    }
+
     async function loadHybridFeed() {
-      const candidateUrls = [
-        "/api/feed?q=travel",
-        "./api/feed?q=travel",
-        "/api/data/requests.json",
-        "./api/data/requests.json"
+      const urls = [
+        "./api/data/requests.json",
+        "api/data/requests.json"
       ];
 
-      for (const url of candidateUrls) {
+      let errors = [];
+
+      for (const url of urls) {
         try {
           const data = await fetchJson(url);
-          console.log("Loaded feed from:", url);
+          const items = normalizeFeedData(data).map(normalizeFeedItem);
 
-          if (Array.isArray(data)) return data;
-          if (Array.isArray(data.items)) return data.items;
-          if (Array.isArray(data.requests)) return data.requests;
+          if (items.length) {
+            setDebug(`Feed loaded from ${url} (${items.length} items)`);
+            return items;
+          }
+
+          errors.push(`${url}: JSON loaded but no usable feed array`);
         } catch (err) {
-          console.warn("Feed load failed:", err.message);
+          errors.push(err.message);
         }
       }
 
+      setDebug("Feed failed:\n" + errors.join("\n"));
       return [];
     }
 
@@ -526,15 +571,15 @@
       const article = document.createElement("article");
       article.className = "feed-card";
 
-      const title = escapeHtml(item.title || item.name || "Untitled");
-      const description = escapeHtml(item.description || item.summary || "");
-      const author = escapeHtml(item.author || item.source || "");
-      const platformRaw = item.platform || item.type || "source";
+      const title = escapeHtml(item.title || "Untitled");
+      const description = escapeHtml(item.description || "");
+      const author = escapeHtml(item.author || "");
+      const platformRaw = item.platform || "source";
       const platform = normalizePlatform(platformRaw);
-      const url = item.url || item.link || "#";
+      const url = item.url || "#";
       const safeUrl = escapeAttribute(url);
-      const thumbnail = escapeAttribute(item.thumbnail || item.image || "");
-      const publishedAt = formatDate(item.publishedAt || item.date || item.createdAt);
+      const thumbnail = escapeAttribute(item.thumbnail || "");
+      const publishedAt = formatDate(item.publishedAt);
 
       const embedUrl = platform === "youtube" ? getYouTubeEmbedUrl(url) : null;
 
@@ -553,6 +598,7 @@
               ? `<img class="feed-thumb" src="${thumbnail}" alt="${title}" loading="lazy">`
               : `<div class="feed-thumb"></div>`
         }
+
         <div class="feed-content">
           <h3>${title}</h3>
           <div class="feed-meta">
@@ -591,7 +637,7 @@
     function applyFilter() {
       visibleFeedItems = activeFilter === "all"
         ? [...allFeedItems]
-        : allFeedItems.filter(item => normalizePlatform(item.platform || item.type) === activeFilter);
+        : allFeedItems.filter(item => normalizePlatform(item.platform) === activeFilter);
 
       currentIndex = 0;
       feedContainer.innerHTML = "";
@@ -599,7 +645,7 @@
       if (observer) observer.disconnect();
 
       if (!visibleFeedItems.length) {
-        showFeedMessage(activeFilter === "all" ? "No feed items found." : `No ${activeFilter} items found.`);
+        showFeedMessage(activeFilter === "all" ? "Could not load feed data." : `No ${activeFilter} items found.`);
         return;
       }
 
@@ -630,7 +676,7 @@
         allFeedItems = await loadHybridFeed();
 
         allFeedItems.sort((a, b) => {
-          return new Date(b.publishedAt || b.date || b.createdAt || 0) - new Date(a.publishedAt || a.date || a.createdAt || 0);
+          return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
         });
 
         if (!allFeedItems.length) {
@@ -641,7 +687,8 @@
         applyFilter();
       } catch (err) {
         console.error("Feed init failed:", err);
-        showFeedMessage("Could not load feed.");
+        setDebug("Feed init failed:\n" + err.message);
+        showFeedMessage("Could not load feed data.");
       }
     }
 
