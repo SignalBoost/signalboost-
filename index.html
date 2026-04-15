@@ -367,14 +367,29 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: #161b22;
-      border: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(145deg, #161b22, #0f141b);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
       min-height: 92px;
       padding: 12px;
       text-decoration: none;
       overflow: hidden;
-      transition: border-color 0.15s ease, transform 0.15s ease;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .brand-tile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 60%);
+      pointer-events: none;
+    }
+
+    .brand-tile:hover {
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
 
     .brand-tile:hover {
@@ -998,15 +1013,25 @@
       }
 
       brandGrid.innerHTML = selected.map(function(p) {
+        const colorMap = {
+          'Flights & Meta Search': 'rgba(77,210,192,0.15)',
+          'Transfers & Transport': 'rgba(77,166,255,0.15)',
+          'Tours & Activities': 'rgba(108,217,139,0.15)',
+          'SIM & Connectivity': 'rgba(193,125,255,0.15)',
+          'Car Rentals': 'rgba(255,184,77,0.15)'
+        };
+
+        const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
+        const borderColor = bgColor.replace('0.15','0.35');
         const href = monetizeUrl(p.url);
         if (p.logo) {
-          return '<a class="brand-tile" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
+          return '<a class="brand-tile" style="background:'+bgColor+';border:1px solid '+borderColor+';" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
             '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" onerror="this.style.display=\'none\'; this.closest(\'.brand-tile\').classList.add(\'logo-failed\');">' +
             '<span>' + escapeHtml(p.name) + '</span>' +
             '</a>';
         }
 
-        return '<a class="brand-tile" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
+        return '<a class="brand-tile" style="background:'+bgColor+';border:1px solid '+borderColor+';" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' +
           '<span>' + escapeHtml(p.name) + '</span>' +
           '</a>';
       }).join('');
