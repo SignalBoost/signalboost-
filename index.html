@@ -159,7 +159,9 @@
       background: #0b0f14;
     }
 
-    .media-box iframe, .media-box img {
+    .media-box iframe,
+    .media-box img,
+    .media-box video {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -171,6 +173,7 @@
       position: relative;
       width: 100%;
       height: 100%;
+      display: block;
     }
 
     .promo-overlay {
@@ -210,52 +213,6 @@
       color: rgba(255,255,255,0.85);
       max-width: 85%;
       line-height: 1.4;
-    }
-
-    .video-thumb-wrap {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .video-play-badge {
-      position: absolute;
-      left: 18px;
-      bottom: 18px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.65);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      backdrop-filter: blur(6px);
-    }
-
-    .video-play-icon {
-      width: 0;
-      height: 0;
-      border-left: 12px solid #fff;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-    }
-
-    .video-topbar {
-      position: absolute;
-      left: 18px;
-      top: 18px;
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,0,0,0.75);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
     }
 
     .feed-content h3 {
@@ -496,26 +453,6 @@
       { category: 'Specialty & Other', name: 'PlusCBD Oil', url: 'https://www.awin1.com/cread.php?awinmid=51813&awinaffid=2834806', color: '#8f7cff', logo: '' }
     ];
 
-    // =====================================================
-    // COLUMN 2 FEED SOURCES
-    // IMPORTANT:
-    // These must be SOCIAL / CONTENT URLs only.
-    // Do NOT put affiliate partner URLs here.
-    // Examples:
-    //   YouTube channel URL
-    //   Reddit subreddit URL
-    //   Facebook page feed URL or backend proxy target
-    //   Instagram profile/reel source URL (backend best-effort only)
-    // =====================================================
-    const socialFeedInputs = {
-      youtubeLatest: 'https://www.youtube.com/@RickAstleyYT/videos',
-      youtubePopular: 'https://www.youtube.com/@RickAstleyYT/videos',
-      redditHot: '',
-      facebookPage: '',
-      instagramProfile: '',
-      tiktokProfile: ''
-    };
-
     const promoFallbackItems = [
       {
         platform: 'youtube',
@@ -558,6 +495,11 @@
       }
     ];
 
+    const FEED_BATCH_SIZE = 6;
+    let allFeedItems = [];
+    let renderedFeedCount = 0;
+    let isRenderingMore = false;
+
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
     const feedContainer = document.getElementById('feedContainer');
@@ -585,7 +527,7 @@
       try {
         const url = new URL(value, window.location.origin);
         return url.protocol === 'http:' || url.protocol === 'https:';
-      } catch {
+      } catch (err) {
         return false;
       }
     }
@@ -606,8 +548,8 @@
 
       const params = new URLSearchParams();
       params.set('url', url);
-      if (meta?.partner) params.set('partner', meta.partner);
-      if (meta?.source) params.set('source', meta.source);
+      if (meta && meta.partner) params.set('partner', meta.partner);
+      if (meta && meta.source) params.set('source', meta.source);
       return '/api/out?' + params.toString();
     }
 
@@ -633,17 +575,20 @@
     function renderPartners(items) {
       const grouped = groupPartners(items);
       const order = ['Transfers & Transport', 'Car Rentals', 'SIM & Connectivity', 'Tours & Activities', 'Insurance & Claims', 'Flights & Meta Search', 'Storage & Services', 'Specialty & Other'];
-      partnersRail.innerHTML = order.filter(function(name) { return grouped[name]?.length; }).map(function(categoryName, index) {
-        const color = grouped[categoryName][0].color;
-        return '<div class="category">' +
-          '<details' + (index === 0 ? ' open' : '') + '>' +
-          '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(categoryName) + '</summary>' +
-          '<ul>' + grouped[categoryName].map(function(partner) {
-            return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
-          }).join('') + '</ul>' +
-          '</details>' +
-          '</div>';
-      }).join('');
+
+      partnersRail.innerHTML = order
+        .filter(function(name) { return grouped[name] && grouped[name].length; })
+        .map(function(categoryName, index) {
+          const color = grouped[categoryName][0].color;
+          return '<div class="category">' +
+            '<details' + (index === 0 ? ' open' : '') + '>' +
+            '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(categoryName) + '</summary>' +
+            '<ul>' + grouped[categoryName].map(function(partner) {
+              return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
+            }).join('') + '</ul>' +
+            '</details>' +
+            '</div>';
+        }).join('');
     }
 
     function renderBrandGrid(items) {
@@ -654,7 +599,8 @@
         'SIM & Connectivity': 'rgba(193,125,255,0.15)',
         'Car Rentals': 'rgba(255,184,77,0.15)',
         'Insurance & Claims': 'rgba(255,107,107,0.15)',
-        'Storage & Services': 'rgba(255,217,102,0.15)'
+        'Storage & Services': 'rgba(255,217,102,0.15)',
+        'Specialty & Other': 'rgba(143,124,255,0.15)'
       };
 
       const priority = [
@@ -666,7 +612,9 @@
       const selected = [];
       priority.forEach(function(name) {
         const match = items.find(function(p) { return p.name === name; });
-        if (match && !selected.some(function(s) { return s.name === match.name; })) selected.push(match);
+        if (match && !selected.some(function(s) { return s.name === match.name; })) {
+          selected.push(match);
+        }
       });
 
       items.forEach(function(p) {
@@ -685,15 +633,6 @@
       }).join('');
     }
 
-    function getYouTubeThumb(url) {
-      try {
-        const parsed = new URL(url);
-        const videoId = parsed.searchParams.get('v');
-        if (videoId) return 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
-      } catch (e) {}
-      return 'https://via.placeholder.com/720x1280/1a1a1a/ffffff?text=YouTube';
-    }
-
     function getYouTubeEmbed(url) {
       try {
         const parsed = new URL(url);
@@ -708,7 +647,7 @@
     function normalizeFeedItem(item, fallbackPlatform) {
       const platform = normalizePlatform(item.platform || fallbackPlatform || 'deals');
       return {
-        platform,
+        platform: platform,
         title: item.title || item.name || 'Untitled',
         description: item.description || item.summary || item.caption || '',
         author: item.author || item.source || 'SignalBoost',
@@ -719,72 +658,33 @@
       };
     }
 
-    async function fetchDynamicFeed() {
-      const results = await Promise.allSettled(feedSourceConfigs.map(function(source) {
-        const requestUrl = source.buildUrl();
-        return fetch(requestUrl, { headers: { Accept: 'application/json' } })
-          .then(function(res) {
-            if (!res.ok) throw new Error(requestUrl + ' -> ' + res.status);
-            return res.json();
-          })
-          .then(function(data) {
-            const items = Array.isArray(data) ? data : (data.items || data.results || data.entries || []);
-            return items.map(function(item) { return normalizeFeedItem(item, source.key); });
-          });
-      }));
-
-      const live = [];
-      results.forEach(function(result, index) {
-        if (result.status === 'fulfilled') {
-          live.push.apply(live, result.value);
-        } else {
-          console.warn('Feed source failed:', feedSourceConfigs[index].key, result.reason);
-        }
-      });
-
-      return live;
-    }
-
-    function buildDynamicFeed(liveItems) {
-      if (!liveItems.length) return promoFallbackItems.slice();
-      return liveItems;
-    }
-
     function createMediaMarkup(item) {
       const platform = normalizePlatform(item.platform);
       const title = escapeHtml(item.title || 'Untitled');
       const monetized = monetizeUrl(item.url, { partner: item.title, source: 'feed_card' });
 
-      // REDDIT VIDEO PLAYER (MP4)
-      if (platform === 'reddit' && item.url && item.url.includes('.mp4')) {
-        return '<div class="media-box">' +
-          '<video src="' + escapeHtml(item.url) + '" controls playsinline style="width:100%;height:100%;object-fit:cover;"></video>' +
-          '</div>';
+      if (platform === 'reddit' && item.url && item.url.indexOf('.mp4') !== -1) {
+        return '<div class="media-box"><video src="' + escapeHtml(item.url) + '" controls playsinline></video></div>';
       }
 
-      // YOUTUBE (fallback or when present)
       if (platform === 'youtube') {
         const embed = item.embedUrl || getYouTubeEmbed(item.url || '');
         if (embed) {
-          return '<div class="media-box">' +
-            '<iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allowfullscreen></iframe>' +
-            '</div>';
+          return '<div class="media-box"><iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
         }
       }
 
-      // FALLBACK CARD
-      return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer">' +
+      return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(monetizeUrl(item.url, { partner: item.title, source: 'feed_card' })) + '" target="_blank" rel="noopener noreferrer">' +
         '<img src="' + escapeHtml(item.thumbnail || 'https://via.placeholder.com/720x1280?text=SignalBoost') + '" alt="' + title + '" loading="lazy">' +
         '<div class="promo-overlay">' +
         '<div class="promo-kicker">' + escapeHtml(item.platform || 'promo') + '</div>' +
         '<div class="promo-title">' + title + '</div>' +
         '<div class="promo-subtitle">' + escapeHtml(item.description || '') + '</div>' +
-        '</div>' +
-        '</a></div>';
+        '</div></a></div>';
     }
 
-    function renderFeed(items) {
-      feedContainer.innerHTML = items.map(function(item) {
+    function appendFeedItems(items) {
+      const html = items.map(function(item) {
         const monetized = monetizeUrl(item.url, { partner: item.title, source: 'feed_card' });
         return '<article class="feed-card">' +
           createMediaMarkup(item) +
@@ -793,35 +693,96 @@
           '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(normalizePlatform(item.platform)) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>' +
           '<p>' + escapeHtml(item.description || '') + '</p>' +
           '<a class="feed-link" href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer">Open post</a>' +
-          '</div>' +
-          '</article>';
+          '</div></article>';
       }).join('');
+
+      feedContainer.insertAdjacentHTML('beforeend', html);
+    }
+
+    function renderMoreFeed() {
+      if (isRenderingMore) return;
+      if (renderedFeedCount >= allFeedItems.length) return;
+
+      isRenderingMore = true;
+      const nextItems = allFeedItems.slice(renderedFeedCount, renderedFeedCount + FEED_BATCH_SIZE);
+      appendFeedItems(nextItems);
+      renderedFeedCount += nextItems.length;
+      isRenderingMore = false;
+    }
+
+    function setupInfiniteScroll() {
+      const scroller = document.getElementById('magnetoColumn');
+      if (!scroller) return;
+
+      scroller.addEventListener('scroll', function() {
+        const remaining = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
+        if (remaining < 900) {
+          renderMoreFeed();
+        }
+      });
+    }
+
+    function renderFeed(items) {
+      feedContainer.innerHTML = '';
+      allFeedItems = items.slice();
+      renderedFeedCount = 0;
+      renderMoreFeed();
+      renderMoreFeed();
+    }
+
+    function buildDynamicFeed(liveItems) {
+      if (!liveItems.length) {
+        const expanded = [];
+        for (let i = 0; i < 20; i += 1) {
+          promoFallbackItems.forEach(function(item, index) {
+            expanded.push(Object.assign({}, item, {
+              title: item.title + ' #' + (i + 1),
+              publishedAt: new Date(Date.now() - ((i * promoFallbackItems.length + index) * 60000)).toISOString()
+            }));
+          });
+        }
+        return expanded;
+      }
+      return liveItems;
+    }
+
+    async function fetchDynamicFeed() {
+      try {
+        const sourceUrl = feedSourceConfigs[0].buildUrl();
+        const response = await fetch(sourceUrl);
+        const data = await response.json();
+        const items = Array.isArray(data) ? data : (data.items || []);
+        return items.map(function(item) {
+          return normalizeFeedItem(item, 'reddit');
+        });
+      } catch (error) {
+        console.error('fetchDynamicFeed error', error);
+        return [];
+      }
     }
 
     renderPartners(fallbackPartners);
     renderBrandGrid(fallbackPartners);
+    setupInfiniteScroll();
 
     fetchDynamicFeed()
       .then(function(liveItems) {
-        const finalFeed = buildDynamicFeed(liveItems);
-        if (!finalFeed.length) {
-          renderFeed(promoFallbackItems);
-          return;
-        }
-        renderFeed(finalFeed);
+        renderFeed(buildDynamicFeed(liveItems));
       })
-      .catch(function(err) {
-        console.error('Dynamic feed failed.', err);
-        renderFeed(promoFallbackItems);
+      .catch(function(error) {
+        console.error('Dynamic feed failed.', error);
+        renderFeed(buildDynamicFeed([]));
       });
 
     const search = document.getElementById('partnerSearch');
-    search.addEventListener('input', function() {
-      const q = search.value.toLowerCase();
-      renderPartners(fallbackPartners.filter(function(p) {
-        return p.name.toLowerCase().includes(q);
-      }));
-    });
+    if (search) {
+      search.addEventListener('input', function() {
+        const q = search.value.toLowerCase();
+        renderPartners(fallbackPartners.filter(function(p) {
+          return p.name.toLowerCase().includes(q);
+        }));
+      });
+    }
   </script>
 </body>
 </html>
