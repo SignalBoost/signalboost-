@@ -11,6 +11,7 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
+      console.error('Reddit HTTP error:', response.status);
       return res.status(200).json({ items: [] });
     }
 
@@ -24,7 +25,6 @@ export default async function handler(req, res) {
         platform: 'reddit',
         title: post.title || '',
         url: post.secure_media.reddit_video.fallback_url,
-        date: (post.created_utc || 0) * 1000,
         publishedAt: post.created_utc
           ? new Date(post.created_utc * 1000).toISOString()
           : new Date().toISOString(),
