@@ -2,32 +2,27 @@ export default async function handler(req, res) {
   const subreddit = String(req.query.subreddit || 'travel').replace(/[^a-zA-Z0-9_]/g, '');
   const limit = Math.min(Math.max(parseInt(req.query.limit || '12', 10), 1), 25);
 
-  const urls = [
-    `https://www.reddit.com/r/${subreddit}/hot.json?limit=${limit}&raw_json=1`,
-    `https://www.reddit.com/r/${subreddit}/new.json?limit=${limit}&raw_json=1`,
-    `https://www.reddit.com/r/${subreddit}/top.json?t=week&limit=${limit}&raw_json=1`
-  ];
+  const redditUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=${limit}&raw_json=1`;
 
   try {
-    const results = await Promise.all(
-      urls.map(async (url) => {
-        const response = await fetch(url, {
-          headers: {
-            'User-Agent': 'SignalBoost/1.0'
-          }
-        });
+    const response = await fetch(redditUrl, {
+      headers: {
+        'User-Agent': 'SignalBoost/1.0'
+      }
+    });
 
-        if (!response.ok) {
-          throw new Error(`Reddit returned ${response.status} for ${url}`);
-        }
+    if (!response.ok) {
+      const body = await response.text();
+      return res.status(response.status).json({
+        items: [],
+        error: `Reddit returned ${response.status}`,
+        details: body.slice(0, 500)
+      });
+    }
 
-        return response.json();
-      })
-    );
+    const data = await response.json();
 
-    const posts = results.flatMap(data => data?.data?.children || []).map(x => x.data);
-
-    const seen = new Set();
+    const posts = (data?.data?.children || []).map(x => x.data);
 
     const items = posts
       .map((post) => {
@@ -37,14 +32,9 @@ export default async function handler(req, res) {
           post?.preview?.reddit_video_preview;
 
         const fallbackUrl = redditVideo?.fallback_url || '';
-
         if (!fallbackUrl || !fallbackUrl.includes('.mp4')) return null;
 
-        const postUrl = post?.permalink
-          ? `https://www.reddit.com${post.permalink}`
-          : '';
-
-        const thumb =
+        const thumbnail =
           typeof post?.thumbnail === 'string' && post.thumbnail.startsWith('http')
             ? post.thumbnail
             : (
@@ -54,32 +44,26 @@ export default async function handler(req, res) {
               );
 
         return {
-          id: post.id || fallbackUrl,
           platform: 'reddit',
           title: post.title || 'Reddit video',
           description: post.selftext ? post.selftext.slice(0, 180) : '',
           author: post.author ? `u/${post.author}` : 'Reddit',
           url: fallbackUrl,
           videoUrl: fallbackUrl,
-          postUrl,
+          postUrl: post.permalink ? `https://www.reddit.com${post.permalink}` : '',
           publishedAt: new Date((post.created_utc || 0) * 1000).toISOString(),
-          thumbnail: thumb
+          thumbnail
         };
       })
       .filter(Boolean)
-      .filter((item) => {
-        if (seen.has(item.id)) return false;
-        seen.add(item.id);
-        return true;
-      })
       .slice(0, limit);
 
-    res.status(200).json({ items });
+    return res.status(200).json({ items });
   } catch (error) {
-    console.error('Reddit API error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       items: [],
-      error: 'Failed to fetch Reddit videos'
+      error: 'Failed to fetch Reddit videos',
+      details: error?.message || String(error)
     });
   }
 }
