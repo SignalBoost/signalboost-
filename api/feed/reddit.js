@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const subreddits = (req.query.subreddits || 'travel,damnthatsinteresting,interestingasfuck')
+  const subreddits = (req.query.subreddits || req.query.subreddit || 'travel')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
@@ -20,6 +20,7 @@ export default async function handler(req, res) {
         });
 
         if (!response.ok) {
+          console.error(`Reddit HTTP error for r/${subreddit}:`, response.status);
           continue;
         }
 
@@ -36,9 +37,9 @@ export default async function handler(req, res) {
               '';
 
             const thumbnail =
-              post.thumbnail && /^https?:\/\//i.test(post.thumbnail)
-                ? post.thumbnail
-                : post.preview?.images?.[0]?.source?.url?.replace(/&amp;/g, '&') || '';
+              (post.thumbnail && /^https?:\/\//i.test(post.thumbnail) && post.thumbnail) ||
+              post.preview?.images?.[0]?.source?.url?.replace(/&amp;/g, '&') ||
+              '';
 
             return {
               platform: 'reddit',
@@ -54,20 +55,17 @@ export default async function handler(req, res) {
           .filter((item) => item.url && item.url.includes('.mp4'));
 
         allItems.push(...items);
-      } catch (subErr) {
-        console.error(`Reddit fetch error for r/${subreddit}:`, subErr);
+      } catch (subError) {
+        console.error(`Reddit fetch error for r/${subreddit}:`, subError);
       }
     }
 
-    const deduped = [];
     const seen = new Set();
-
-    for (const item of allItems) {
-      if (!seen.has(item.url)) {
-        seen.add(item.url);
-        deduped.push(item);
-      }
-    }
+    const deduped = allItems.filter((item) => {
+      if (seen.has(item.url)) return false;
+      seen.add(item.url);
+      return true;
+    });
 
     return res.status(200).json({ items: deduped });
   } catch (error) {
