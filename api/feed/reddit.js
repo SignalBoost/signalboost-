@@ -1,115 +1,77 @@
 export default async function handler(req, res) {
-  const subreddit = String(req.query.subreddit || 'travel').replace(/[^a-zA-Z0-9_]/g, '');
-  const limit = Math.min(Math.max(parseInt(req.query.limit || '12', 10), 1), 25);
+  const subreddits = (req.query.subreddits || 'travel,damnthatsinteresting,interestingasfuck')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 
-  const clientId = process.env.REDDIT_CLIENT_ID;
-  const clientSecret = process.env.REDDIT_CLIENT_SECRET;
-  const redditUsername = process.env.REDDIT_USERNAME || 'your_reddit_username';
-
-  if (!clientId || !clientSecret) {
-    return res.status(500).json({
-      items: [],
-      error: 'Missing Reddit credentials',
-      details: 'Set REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET in your deployment environment.'
-    });
-  }
+  const limitPerSubreddit = Math.min(Number(req.query.limit || 20), 25);
 
   try {
-    // 1) Get OAuth token
-    const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+    const allItems = [];
 
-    const tokenResponse = await fetch('https://www.reddit.com/api/v1/access_token', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${basicAuth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': `web:signalboostapp:v1.0.0 (by /u/${redditUsername})`
-      },
-      body: 'grant_type=client_credentials'
-    });
+    for (const subreddit of subreddits) {
+      const redditUrl = `https://www.reddit.com/r/${encodeURIComponent(subreddit)}/hot.json?limit=${limitPerSubreddit}`;
 
-    if (!tokenResponse.ok) {
-      const body = await tokenResponse.text();
-      return res.status(tokenResponse.status).json({
-        items: [],
-        error: `Token request failed with ${tokenResponse.status}`,
-        details: body.slice(0, 500)
-      });
-    }
+      try {
+        const response = await fetch(redditUrl, {
+          headers: {
+            'User-Agent': 'SignalBoost/1.0'
+          }
+        });
 
-    const tokenData = await tokenResponse.json();
-    const accessToken = tokenData.access_token;
+        if (!response.ok) {
+          continue;
+        }
 
-    if (!accessToken) {
-      return res.status(500).json({
-        items: [],
-        error: 'No access token returned by Reddit',
-        details: JSON.stringify(tokenData).slice(0, 500)
-      });
-    }
+        const data = await response.json();
 
-    // 2) Fetch posts through oauth.reddit.com
-    const apiUrl = `https://oauth.reddit.com/r/${subreddit}/hot?limit=${limit}`;
+        const items = (data?.data?.children || [])
+          .map((child) => child?.data)
+          .filter(Boolean)
+          .map((post) => {
+            const videoUrl =
+              post.secure_media?.reddit_video?.fallback_url ||
+              post.media?.reddit_video?.fallback_url ||
+              post.preview?.reddit_video_preview?.fallback_url ||
+              '';
 
-    const response = await fetch(apiUrl, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'User-Agent': `web:signalboostapp:v1.0.0 (by /u/${redditUsername})`
+            const thumbnail =
+              post.thumbnail && /^https?:\/\//i.test(post.thumbnail)
+                ? post.thumbnail
+                : post.preview?.images?.[0]?.source?.url?.replace(/&amp;/g, '&') || '';
+
+            return {
+              platform: 'reddit',
+              title: post.title || '',
+              url: videoUrl,
+              publishedAt: post.created_utc
+                ? new Date(post.created_utc * 1000).toISOString()
+                : new Date().toISOString(),
+              thumbnail,
+              author: post.author || 'Reddit'
+            };
+          })
+          .filter((item) => item.url && item.url.includes('.mp4'));
+
+        allItems.push(...items);
+      } catch (subErr) {
+        console.error(`Reddit fetch error for r/${subreddit}:`, subErr);
       }
-    });
-
-    if (!response.ok) {
-      const body = await response.text();
-      return res.status(response.status).json({
-        items: [],
-        error: `Reddit API returned ${response.status}`,
-        details: body.slice(0, 500)
-      });
     }
 
-    const data = await response.json();
-    const posts = (data?.data?.children || []).map(x => x.data);
+    const deduped = [];
+    const seen = new Set();
 
-    const items = posts
-      .map((post) => {
-        const redditVideo =
-          post?.secure_media?.reddit_video ||
-          post?.media?.reddit_video ||
-          post?.preview?.reddit_video_preview;
+    for (const item of allItems) {
+      if (!seen.has(item.url)) {
+        seen.add(item.url);
+        deduped.push(item);
+      }
+    }
 
-        const fallbackUrl = redditVideo?.fallback_url || '';
-        if (!fallbackUrl || !fallbackUrl.includes('.mp4')) return null;
-
-        const thumbnail =
-          typeof post?.thumbnail === 'string' && post.thumbnail.startsWith('http')
-            ? post.thumbnail
-            : (
-                post?.preview?.images?.[0]?.source?.url
-                  ? post.preview.images[0].source.url.replace(/&amp;/g, '&')
-                  : null
-              );
-
-        return {
-          platform: 'reddit',
-          title: post.title || 'Reddit video',
-          description: post.selftext ? post.selftext.slice(0, 180) : '',
-          author: post.author ? `u/${post.author}` : 'Reddit',
-          url: fallbackUrl,
-          videoUrl: fallbackUrl,
-          postUrl: post.permalink ? `https://www.reddit.com${post.permalink}` : '',
-          publishedAt: new Date((post.created_utc || 0) * 1000).toISOString(),
-          thumbnail
-        };
-      })
-      .filter(Boolean)
-      .slice(0, limit);
-
-    return res.status(200).json({ items });
+    return res.status(200).json({ items: deduped });
   } catch (error) {
-    return res.status(500).json({
-      items: [],
-      error: 'Failed to fetch Reddit videos',
-      details: error?.message || String(error)
-    });
+    console.error('Reddit route failed:', error);
+    return res.status(200).json({ items: [] });
   }
 }
