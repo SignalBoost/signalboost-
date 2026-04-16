@@ -551,9 +551,9 @@
 
     const feedSourceConfigs = [
       {
-        key: 'youtube',
+        key: 'reddit',
         buildUrl: function() {
-          return '/api/youtube';
+          return '/api/feed/reddit?subreddit=travel&limit=20';
         }
       }
     ];
@@ -755,15 +755,24 @@
       const title = escapeHtml(item.title || 'Untitled');
       const monetized = monetizeUrl(item.url, { partner: item.title, source: 'feed_card' });
 
-      if (platform === 'youtube' || platform === 'youtube_popular') {
+      // REDDIT VIDEO PLAYER (MP4)
+      if (platform === 'reddit' && item.url && item.url.includes('.mp4')) {
+        return '<div class="media-box">' +
+          '<video src="' + escapeHtml(item.url) + '" controls playsinline style="width:100%;height:100%;object-fit:cover;"></video>' +
+          '</div>';
+      }
+
+      // YOUTUBE (fallback or when present)
+      if (platform === 'youtube') {
         const embed = item.embedUrl || getYouTubeEmbed(item.url || '');
         if (embed) {
           return '<div class="media-box">' +
-            '<iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
+            '<iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allowfullscreen></iframe>' +
             '</div>';
         }
       }
 
+      // FALLBACK CARD
       return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(monetized) + '" target="_blank" rel="noopener noreferrer">' +
         '<img src="' + escapeHtml(item.thumbnail || 'https://via.placeholder.com/720x1280?text=SignalBoost') + '" alt="' + title + '" loading="lazy">' +
         '<div class="promo-overlay">' +
