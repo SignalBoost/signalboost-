@@ -294,6 +294,7 @@
     .feed-platform.reddit { background: rgba(255,69,0,0.15); color: #ff4500; }
     .feed-platform.facebook { background: rgba(24,119,242,0.15); color: #66a3ff; }
     .feed-platform.deals { background: rgba(245,197,66,0.15); color: #f5c542; }
+    .feed-platform.tiktok { background: rgba(255,255,255,0.12); color: #ffffff; }
 
     .feed-link {
       display: inline-block;
@@ -507,40 +508,44 @@
     //   Instagram profile/reel source URL (backend best-effort only)
     // =====================================================
     const socialFeedInputs = {
-      youtubeLatest: 'https://www.youtube.com/@YOURCHANNEL/videos',
-      youtubePopular: 'https://www.youtube.com/@YOURCHANNEL/videos',
-      redditHot: 'https://www.reddit.com/r/travel/',
-      facebookPage: 'https://www.facebook.com/YOUR_PAGE_NAME',
-      instagramProfile: 'https://www.instagram.com/YOUR_PROFILE/'
+      youtubeLatest: 'https://www.youtube.com/@RickAstleyYT/videos',
+      youtubePopular: 'https://www.youtube.com/@RickAstleyYT/videos',
+      redditHot: '',
+      facebookPage: '',
+      instagramProfile: '',
+      tiktokProfile: ''
     };
 
     const promoFallbackItems = [
       {
         platform: 'youtube',
-        title: 'YouTube source not loaded yet',
-        description: 'Connect a real YouTube source in socialFeedInputs and make sure /api/feed/youtube returns items.',
+        title: 'Rick Astley - Never Gonna Give You Up',
+        description: 'Reliable YouTube fallback while the dynamic feed is being wired.',
         author: 'SignalBoost',
         publishedAt: new Date().toISOString(),
-        url: 'https://www.youtube.com/',
-        thumbnail: 'https://via.placeholder.com/720x1280/1a1a1a/ffffff?text=YouTube+Source'
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&playsinline=1',
+        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
       },
       {
-        platform: 'reddit',
-        title: 'Reddit source not loaded yet',
-        description: 'Add a subreddit source URL and make sure /api/feed/reddit is returning JSON.',
+        platform: 'youtube',
+        title: 'Mark Ronson ft. Bruno Mars - Uptown Funk',
+        description: 'Second reliable YouTube fallback card.',
         author: 'SignalBoost',
         publishedAt: new Date().toISOString(),
-        url: 'https://www.reddit.com/',
-        thumbnail: 'https://via.placeholder.com/720x1280/111b28/ff8a45?text=Reddit+Source'
+        url: 'https://www.youtube.com/watch?v=OPf0YbXqDm0',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/OPf0YbXqDm0?rel=0&modestbranding=1&playsinline=1',
+        thumbnail: 'https://img.youtube.com/vi/OPf0YbXqDm0/hqdefault.jpg'
       },
       {
-        platform: 'facebook',
-        title: 'Facebook source not loaded yet',
-        description: 'Point this to a Facebook page source and make sure /api/feed/facebook is working.',
+        platform: 'youtube',
+        title: 'Luis Fonsi - Despacito ft. Daddy Yankee',
+        description: 'Third reliable YouTube fallback card.',
         author: 'SignalBoost',
         publishedAt: new Date().toISOString(),
-        url: 'https://www.facebook.com/',
-        thumbnail: 'https://via.placeholder.com/720x1280/122017/66a3ff?text=Facebook+Source'
+        url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/kJQP7kiw5Fk?rel=0&modestbranding=1&playsinline=1',
+        thumbnail: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg'
       }
     ];
 
@@ -548,31 +553,7 @@
       {
         key: 'youtube',
         buildUrl: function() {
-          return '/api/feed/youtube?mode=latest&sourceUrl=' + encodeURIComponent(socialFeedInputs.youtubeLatest);
-        }
-      },
-      {
-        key: 'youtube_popular',
-        buildUrl: function() {
-          return '/api/feed/youtube?mode=popular&sourceUrl=' + encodeURIComponent(socialFeedInputs.youtubePopular);
-        }
-      },
-      {
-        key: 'reddit',
-        buildUrl: function() {
-          return '/api/feed/reddit?mode=hot&sourceUrl=' + encodeURIComponent(socialFeedInputs.redditHot);
-        }
-      },
-      {
-        key: 'facebook',
-        buildUrl: function() {
-          return '/api/feed/facebook?sourceUrl=' + encodeURIComponent(socialFeedInputs.facebookPage);
-        }
-      },
-      {
-        key: 'instagram',
-        buildUrl: function() {
-          return '/api/feed/instagram?sourceUrl=' + encodeURIComponent(socialFeedInputs.instagramProfile);
+          return '/api/youtube';
         }
       }
     ];
@@ -765,26 +746,8 @@
     }
 
     function buildDynamicFeed(liveItems) {
-      const youtube = liveItems.filter(function(item) {
-        const p = normalizePlatform(item.platform);
-        return p === 'youtube' || p === 'youtube_popular';
-      });
-      const others = liveItems.filter(function(item) {
-        const p = normalizePlatform(item.platform);
-        return p !== 'youtube' && p !== 'youtube_popular';
-      });
-
-      const output = [];
-      let ytIndex = 0;
-      let otherIndex = 0;
-
-      while (output.length < 30 && (otherIndex < others.length || ytIndex < youtube.length)) {
-        if (otherIndex < others.length) output.push(others[otherIndex++]);
-        if (output.length >= 30) break;
-        if (ytIndex < youtube.length) output.push(youtube[ytIndex++]);
-      }
-
-      return output.length ? output : promoFallbackItems.slice();
+      if (!liveItems.length) return promoFallbackItems.slice();
+      return liveItems;
     }
 
     function createMediaMarkup(item) {
