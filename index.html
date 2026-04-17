@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost – Discover products, deals and services in one scroll</title>
-  <meta name="description" content="SignalBoost lets you discover products, services, tools and deals in one scroll instead of searching." />
-  <meta name="keywords" content="discover deals, shopping feed, travel deals, services marketplace, scroll shopping" />
+  <title>SignalBoost – Discover products, services and tools in one scroll</title>
+  <meta name="description" content="SignalBoost lets you discover products, services, tools and deals in one scroll—no need to search multiple sites." />
+  <meta name="keywords" content="discover services, product discovery platform, deals, tools marketplace, scroll discovery" />
   <meta name="google-site-verification" content="rYali_68D0WtYK42cslb1hbj3sejZYe3p-UM4FoK_BM" />
   <style>
     * { box-sizing: border-box; }
@@ -343,18 +343,17 @@
   </style>
 </head>
 <body>
-  
   <div style="position:fixed;top:0;left:0;width:280px;background:#0f141b;border-right:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 16px;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
     <div>
       <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
-      <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Anything.</div>
+      <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Services, tools & deals.</div>
     </div>
     <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806&partner=Kiwi%20US&source=header_featured" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
-      <div id="featuredDealLabel" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured deal</div>
-      <div id="featuredDealTitle" style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Discover services on Kiwi.com</div>
-      <div id="featuredDealSubtitle" style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Fast search • global routes</div>
+      <div id="featuredDealLabel" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured</div>
+      <div id="featuredDealTitle" style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Explore offers and services</div>
+      <div id="featuredDealSubtitle" style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Discover more in one place</div>
     </a>
-    <div id="headerFootnote" style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted travel brands and monetized outbound offers.</div>
+    <div id="headerFootnote" style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted platforms and monetized outbound offers.</div>
   </div>
 
   <div class="app">
@@ -369,6 +368,7 @@
     <div class="column column-2">
       <div id="magnetoColumn">
         <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Trending content, deals & services ↓</div>
+        <div id="clickStats" style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;">🔥 Discovery clicks today: <span id="clickCount">0</span></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
@@ -384,30 +384,48 @@
       { category: 'Transfers & Transport', name: 'Kiwitaxi', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', color: '#4da6ff', logo: 'https://kiwitaxi.com/img/logo.svg' },
       { category: 'Transfers & Transport', name: 'Welcome Pickups', url: 'https://tpo.lv/XAJOoobr', color: '#4da6ff', logo: 'https://www.welcomepickups.com/wp-content/themes/welcome/img/logo.svg' },
       { category: 'Transfers & Transport', name: 'Intui.travel', url: 'https://intui.tpo.lv/Rrx5VuN3', color: '#4da6ff', logo: 'https://intui.travel/favicon.ico' },
+      { category: 'Transfers & Transport', name: 'HolidayTaxis', url: 'https://holidaytaxis.tpo.lv/oHwpbrFt', color: '#4da6ff', logo: '' },
+      { category: 'Transfers & Transport', name: 'Busbud', url: 'https://busbud.tpo.lv/h4C6YPFZ', color: '#4da6ff', logo: 'https://www.busbud.com/favicon.ico' },
+
+      { category: 'Car Rentals', name: 'Localrent.com', url: 'https://localrent.tpo.lv/XS0CqdMP', color: '#ffb84d', logo: 'https://localrent.com/static/img/logo.svg' },
+      { category: 'Car Rentals', name: 'Economybookings.com', url: 'https://economybookings.tpo.lv/jSFMPEPA', color: '#ffb84d', logo: '' },
+      { category: 'Car Rentals', name: 'QEEQ', url: 'https://qeeq.tpo.lv/jklB4Pbm', color: '#ffb84d', logo: '' },
+      { category: 'Car Rentals', name: 'GetRentacar.com', url: 'https://getrentacar.tpo.lv/OR2TWduQ', color: '#ffb84d', logo: '' },
+
+      { category: 'SIM & Connectivity', name: 'Airalo', url: 'https://airalo.tpo.lv/eXjKLiuw', color: '#c17dff', logo: 'https://assets.airalo.com/images/airalo-logo.svg' },
+      { category: 'SIM & Connectivity', name: 'Drimsim', url: 'https://drimsim.tpo.lv/PGwr6JTr', color: '#c17dff', logo: 'https://drimsim.com/favicon.ico' },
+      { category: 'SIM & Connectivity', name: 'Yesim', url: 'https://yesim.tpo.lv/3vIzBQts', color: '#c17dff', logo: 'https://yesim.app/favicon.ico' },
+
+      { category: 'Tours & Activities', name: 'Klook', url: 'https://klook.tpo.lv/pTp1NljF', color: '#6cd98b', logo: 'https://res.klook.com/image/upload/v163/logo/klook-logo.svg' },
+      { category: 'Tours & Activities', name: 'GoCity', url: 'https://gocity.tpo.lv/Des5Cgov', color: '#6cd98b', logo: '' },
+      { category: 'Tours & Activities', name: 'BigBusTours', url: 'https://bigbustours.tpo.lv/grT1QWXA', color: '#6cd98b', logo: 'https://www.bigbustours.com/favicon.ico' },
+      { category: 'Tours & Activities', name: 'EatWith', url: 'https://eatwith.tpo.lv/BfAnpZNb', color: '#6cd98b', logo: '' },
+
+      { category: 'Insurance & Claims', name: 'EKTA Insurance', url: 'https://ektatraveling.tpo.lv/XWbZbj8S', color: '#ff6b6b', logo: '' },
+      { category: 'Insurance & Claims', name: 'AirHelp', url: 'https://airhelp.tpo.lv/EPrGDSO3', color: '#ff6b6b', logo: '' },
+      { category: 'Insurance & Claims', name: 'Compensair', url: 'https://compensair.tpo.lv/wxDDCITG', color: '#ff6b6b', logo: '' },
+
+      { category: 'Flights & Meta Search', name: 'Aviasales', url: 'https://aviasales.tpo.lv/VoWXgFFm', color: '#4dd2c0', logo: 'https://static.aviasales.com/brand/aviasales-logo.svg' },
       { category: 'Flights & Meta Search', name: 'Kiwi.com', url: 'https://booking.tpo.lv/enwsEbCs', color: '#4dd2c0', logo: 'https://images.kiwi.com/common/kiwicom-logo.svg' },
       { category: 'Flights & Meta Search', name: 'Trivago USA', url: 'https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago AR', url: 'https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago BR', url: 'https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago CO', url: 'https://www.awin1.com/cread.php?awinmid=105935&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago DE', url: 'https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago MX', url: 'https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago NZ', url: 'https://www.awin1.com/cread.php?awinmid=66032&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+      { category: 'Flights & Meta Search', name: 'Trivago PE', url: 'https://www.awin1.com/cread.php?awinmid=105927&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
+
+      { category: 'Storage & Services', name: 'Radical Storage', url: 'https://radicalstorage.tpo.lv/tna4hnly', color: '#ffd966', logo: '' },
       { category: 'Storage & Services', name: 'Giftlab', url: 'https://www.awin1.com/cread.php?awinmid=95201&awinaffid=2834806', color: '#ffd966', logo: '' },
-      { category: 'Specialty & Other', name: 'Fiverr Affiliates', url: 'https://www.awin1.com/cread.php?awinmid=6288&awinaffid=2834806', color: '#8f7cff', logo: '' }
+      { category: 'Storage & Services', name: 'pdfFiller', url: 'https://www.awin1.com/cread.php?awinmid=94003&awinaffid=2834806', color: '#ffd966', logo: '' },
+
+      { category: 'Specialty & Other', name: 'Fiverr Affiliates', url: 'https://www.awin1.com/cread.php?awinmid=6288&awinaffid=2834806', color: '#8f7cff', logo: '' },
+      { category: 'Specialty & Other', name: 'Evisa', url: 'https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806', color: '#8f7cff', logo: '' },
+      { category: 'Specialty & Other', name: 'TechPals', url: 'https://www.awin1.com/cread.php?awinmid=116661&awinaffid=2834806', color: '#8f7cff', logo: '' }
     ];
 
-    let partnersData = fallbackPartners.slice();
-    let currentRegion = 'global';
-    let currentLanguage = 'en';
-    let localeForcedByUser = false;
-
-    const promoFallbackItems = [];
-
     const hybridVideoPool = [
-      {
-        platform: 'dailymotion',
-        title: 'Dailymotion Feature 2',
-        description: 'Dailymotion platform source',
-        author: 'Dailymotion',
-        publishedAt: new Date(Date.now() - 330000).toISOString(),
-        url: 'https://www.dailymotion.com/video/x8h3t4p',
-        embedUrl: 'https://www.dailymotion.com/embed/video/x8h3t4p',
-        thumbnail: 'https://via.placeholder.com/720x1280/0d2245/66a9ff?text=Dailymotion+2'
-      },
       {
         platform: 'youtube',
         title: 'Rick Astley - Never Gonna Give You Up',
@@ -469,6 +487,16 @@
         thumbnail: 'https://via.placeholder.com/720x1280/10203a/66a9ff?text=Dailymotion'
       },
       {
+        platform: 'dailymotion',
+        title: 'Dailymotion Feature 2',
+        description: 'Dailymotion platform source',
+        author: 'Dailymotion',
+        publishedAt: new Date(Date.now() - 330000).toISOString(),
+        url: 'https://www.dailymotion.com/video/x8h3t4p',
+        embedUrl: 'https://www.dailymotion.com/embed/video/x8h3t4p',
+        thumbnail: 'https://via.placeholder.com/720x1280/0d2245/66a9ff?text=Dailymotion+2'
+      },
+      {
         platform: 'tiktok',
         title: 'TikTok Feature',
         description: 'TikTok platform source preview',
@@ -480,28 +508,19 @@
       }
     ];
 
-    const redditSubreddits = [];
-
-    const feedSourceConfigs = [
-      {
-        key: 'reddit',
-        buildUrl: function() {
-          return '/api/feed/reddit?subreddits=travel,videos,funny&limit=18';
-        }
-      }
-    ];
-
-    const FEED_BATCH_SIZE = 6;
+    let partnersData = fallbackPartners.slice();
+    let currentRegion = 'global';
+    let currentLanguage = 'en';
     let allFeedItems = [];
     let renderedFeedCount = 0;
     let isRenderingMore = false;
+    const FEED_BATCH_SIZE = 6;
 
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
     const feedContainer = document.getElementById('feedContainer');
     const brandGridTitle = document.getElementById('brandGridTitle');
     const regionTagline = document.getElementById('regionTagline');
-    const localeSwitcher = document.getElementById('localeSwitcher');
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -531,6 +550,13 @@
       }
     }
 
+    function updateClickDisplay() {
+      const el = document.getElementById('clickCount');
+      if (!el) return;
+      const count = localStorage.getItem('clickCount') || '0';
+      el.textContent = count;
+    }
+
     function monetizeUrl(url, meta) {
       if (!isValidHttpUrl(url)) return '#';
 
@@ -551,6 +577,17 @@
       if (meta && meta.source) params.set('source', meta.source);
       return '/api/out?' + params.toString();
     }
+
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a[href]');
+      if (!link) return;
+      if (!link.href.includes('/api/out?') && !link.target) return;
+      try {
+        const current = parseInt(localStorage.getItem('clickCount') || '0', 10);
+        localStorage.setItem('clickCount', String(current + 1));
+        updateClickDisplay();
+      } catch (err) {}
+    });
 
     function hexToRgb(hex) {
       const clean = String(hex || '').replace('#', '');
@@ -579,7 +616,7 @@
           'SIM & Connectivity': 'SIM & Connectivity',
           'Tours & Activities': 'Tours & Activities',
           'Insurance & Claims': 'Insurance & Claims',
-          'Flights & Meta Search': 'Flights & Meta Search',
+          'Flights & Meta Search': 'Flights & comparisons',
           'Storage & Services': 'Storage & Services',
           'Specialty & Other': 'Specialty & Other'
         },
@@ -589,7 +626,7 @@
           'SIM & Connectivity': 'SIM y conectividad',
           'Tours & Activities': 'Tours y actividades',
           'Insurance & Claims': 'Seguros y reclamaciones',
-          'Flights & Meta Search': 'Vuelos y metabuscadores',
+          'Flights & Meta Search': 'Vuelos y comparadores',
           'Storage & Services': 'Almacenamiento y servicios',
           'Specialty & Other': 'Especialidades y otros'
         },
@@ -599,7 +636,7 @@
           'SIM & Connectivity': 'SIM e conectividade',
           'Tours & Activities': 'Passeios e atividades',
           'Insurance & Claims': 'Seguro e reembolsos',
-          'Flights & Meta Search': 'Voos e metabusca',
+          'Flights & Meta Search': 'Voos e comparadores',
           'Storage & Services': 'Armazenamento e serviços',
           'Specialty & Other': 'Especialidades e outros'
         },
@@ -609,12 +646,11 @@
           'SIM & Connectivity': 'SIM i łączność',
           'Tours & Activities': 'Wycieczki i atrakcje',
           'Insurance & Claims': 'Ubezpieczenia i roszczenia',
-          'Flights & Meta Search': 'Loty i porównywarki',
+          'Flights & Meta Search': 'Loty i porównania',
           'Storage & Services': 'Przechowywanie i usługi',
           'Specialty & Other': 'Specjalne i inne'
         }
       };
-
       const pack = labels[currentLanguage] || labels.en;
       return pack[categoryName] || categoryName;
     }
@@ -642,36 +678,32 @@
       const configs = {
         global: {
           title: 'Top Brands',
-          tagline: 'Scroll. Discover. Shop.',
-          priority: [
-            'Trivago USA','Trivago AR','Trivago BR','Trivago CO','Trivago DE','Trivago MX','Trivago NZ','Trivago PE',
-            'Kiwi.com','Kiwi CA','Kiwi MX','Kiwi US','Kiwitaxi','Airalo','Klook','Aviasales',
-            'GoCity','Welcome Pickups','Busbud','Localrent.com','Drimsim','Yesim','Tiqets US','Tiqets UK','Fiverr Affiliates'
-          ]
+          tagline: 'Scroll. Discover. Services, tools & deals.',
+          priority: ['Trivago USA','Trivago AR','Trivago BR','Trivago CO','Trivago DE','Trivago MX','Trivago NZ','Trivago PE','Kiwi.com','Kiwi CA','Kiwi MX','Kiwi US','Kiwitaxi','Airalo','Klook','Aviasales','GoCity','Welcome Pickups','Busbud','Localrent.com','Drimsim','Yesim','Tiqets US','Tiqets UK','Fiverr Affiliates']
         },
         mx: {
           title: 'Top Brands for Mexico',
-          tagline: 'Discover products, services and deals for Mexico.',
+          tagline: 'Discover services, tools and deals for Mexico.',
           priority: ['Trivago MX','Kiwi MX','Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Busbud','Aviasales','Fiverr Affiliates','Intui.travel']
         },
         br: {
           title: 'Top Brands for Brazil',
-          tagline: 'Descubra produtos, serviços e ofertas no Brasil.',
+          tagline: 'Descubra serviços, ferramentas e ofertas no Brasil.',
           priority: ['Trivago BR','Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Aviasales','Busbud','Fiverr Affiliates','Drimsim','Yesim']
         },
         es: {
           title: 'Top Brands for Spain',
-          tagline: 'Descubre productos, servicios y ofertas en España.',
+          tagline: 'Descubre servicios, herramientas y ofertas en España.',
           priority: ['Kiwi.com','Trivago DE','Trivago USA','Airalo','Welcome Pickups','Kiwitaxi','Tiqets UK','Tiqets FR','GoCity','Fiverr Affiliates']
         },
         eu: {
           title: 'Top Brands for Europe',
-          tagline: 'Discover products, services and deals across Europe.',
+          tagline: 'Discover services, tools and deals across Europe.',
           priority: ['Kiwi.com','Trivago DE','Trivago NZ','Airalo','Welcome Pickups','Kiwitaxi','Tiqets UK','Tiqets FR','Tiqets IT','GoCity','Fiverr Affiliates']
         },
         pl: {
           title: 'Najlepsze marki dla Polski',
-          tagline: 'Odkrywaj produkty, usługi i oferty dla Polski.',
+          tagline: 'Odkrywaj usługi, narzędzia i oferty w jednym miejscu.',
           priority: ['Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Trivago DE','Trivago USA','Busbud','Aviasales','Fiverr Affiliates','Giftlab']
         }
       };
@@ -691,23 +723,17 @@
       };
 
       const regionConfig = getRegionConfig(currentRegion);
-      if (brandGridTitle) brandGridTitle.textContent = regionConfig.title;
-      if (regionTagline) regionTagline.textContent = regionConfig.tagline;
+      brandGridTitle.textContent = regionConfig.title;
+      regionTagline.textContent = regionConfig.tagline;
 
-      const priority = regionConfig.priority;
       const selected = [];
-
-      priority.forEach(function(name) {
+      regionConfig.priority.forEach(function(name) {
         const match = items.find(function(p) { return p.name === name; });
-        if (match && !selected.some(function(s) { return s.name === match.name; })) {
-          selected.push(match);
-        }
+        if (match && !selected.some(function(s) { return s.name === match.name; })) selected.push(match);
       });
 
       items.forEach(function(p) {
-        if (selected.length < 24 && p.logo && !selected.some(function(s) { return s.name === p.name; })) {
-          selected.push(p);
-        }
+        if (selected.length < 24 && p.logo && !selected.some(function(s) { return s.name === p.name; })) selected.push(p);
       });
 
       brandGrid.innerHTML = selected.map(function(p) {
@@ -724,22 +750,10 @@
       try {
         const parsed = new URL(url);
         let videoId = parsed.searchParams.get('v');
-
-        if (!videoId && parsed.hostname.includes('youtu.be')) {
-          videoId = parsed.pathname.replace(/^\//, '').split('/')[0];
-        }
-
-        if (!videoId && parsed.pathname.includes('/embed/')) {
-          videoId = parsed.pathname.split('/embed/')[1].split('/')[0];
-        }
-
-        if (!videoId && parsed.pathname.includes('/shorts/')) {
-          videoId = parsed.pathname.split('/shorts/')[1].split('/')[0];
-        }
-
-        if (videoId) {
-          return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&playsinline=1';
-        }
+        if (!videoId && parsed.hostname.includes('youtu.be')) videoId = parsed.pathname.replace(/^\//, '').split('/')[0];
+        if (!videoId && parsed.pathname.includes('/embed/')) videoId = parsed.pathname.split('/embed/')[1].split('/')[0];
+        if (!videoId && parsed.pathname.includes('/shorts/')) videoId = parsed.pathname.split('/shorts/')[1].split('/')[0];
+        if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&playsinline=1';
       } catch (e) {}
       return '';
     }
@@ -750,9 +764,8 @@
       const basePostUrl = item.postUrl || item.url || item.link || '#';
       const derivedEmbedUrl = item.embedUrl || item.embed || (platform === 'youtube' ? getYouTubeEmbed(basePostUrl || baseUrl) : '');
       const derivedVideoUrl = item.videoUrl || (platform === 'reddit' ? baseUrl : '');
-
       return {
-        platform: platform,
+        platform,
         title: item.title || item.name || 'Untitled',
         description: item.description || item.summary || item.caption || '',
         author: item.author || item.source || 'SignalBoost',
@@ -770,24 +783,17 @@
       const title = escapeHtml(item.title || 'Untitled');
       const directUrl = isValidHttpUrl(item.postUrl || item.url) ? (item.postUrl || item.url) : '#';
 
-      if (platform === 'reddit' && item.videoUrl && item.videoUrl.indexOf('.mp4') !== -1) {
-        return '<div class="media-box">' +
-          '<video src="' + escapeHtml(item.videoUrl) + '" controls playsinline preload="metadata"></video>' +
-          '</div>';
+      if (platform === 'reddit' && item.videoUrl && item.videoUrl.includes('.mp4')) {
+        return '<div class="media-box"><video src="' + escapeHtml(item.videoUrl) + '" controls playsinline preload="metadata"></video></div>';
       }
 
       if (platform === 'youtube') {
         const embed = item.embedUrl || getYouTubeEmbed(item.postUrl || item.url || '');
-        if (embed) {
-          return '<div class="media-box"><iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
-        }
+        if (embed) return '<div class="media-box"><iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
       }
 
       if (platform === 'vimeo' || platform === 'tiktok' || platform === 'dailymotion') {
-        const embed = item.embedUrl || '';
-        if (embed) {
-          return '<div class="media-box"><iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
-        }
+        if (item.embedUrl) return '<div class="media-box"><iframe src="' + escapeHtml(item.embedUrl) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
       }
 
       return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(directUrl) + '" target="_blank" rel="noopener noreferrer">' +
@@ -799,7 +805,7 @@
         '</div></a></div>';
     }
 
-    function getCTA(lang, platform) {
+    function getCTA(platform) {
       const ctas = {
         en: { explore: 'Explore now', reddit: 'View on Reddit' },
         es: { explore: 'Explorar ahora', reddit: 'Ver en Reddit' },
@@ -810,40 +816,12 @@
       return platform === 'reddit' ? pack.reddit : pack.explore;
     }
 
-    function getKicker(lang, platform) {
+    function getKicker(platform) {
       const map = {
-        en: {
-          youtube: '🔥 Trending Video',
-          vimeo: '🎬 Featured Content',
-          dailymotion: '📺 Popular Clip',
-          tiktok: '📱 Viral Clip',
-          reddit: '💬 Community Pick',
-          default: '✨ Discovery'
-        },
-        es: {
-          youtube: '🔥 Video en tendencia',
-          vimeo: '🎬 Contenido destacado',
-          dailymotion: '📺 Clip popular',
-          tiktok: '📱 Viral',
-          reddit: '💬 Comunidad',
-          default: '✨ Descubre'
-        },
-        pt: {
-          youtube: '🔥 Vídeo em alta',
-          vimeo: '🎬 Conteúdo em destaque',
-          dailymotion: '📺 Clip popular',
-          tiktok: '📱 Viral',
-          reddit: '💬 Comunidade',
-          default: '✨ Descobrir'
-        },
-        pl: {
-          youtube: '🔥 Popularne wideo',
-          vimeo: '🎬 Polecane',
-          dailymotion: '📺 Popularny klip',
-          tiktok: '📱 Viral',
-          reddit: '💬 Społeczność',
-          default: '✨ Odkryj'
-        }
+        en: { youtube: '🔥 Trending Video', vimeo: '🎬 Featured Content', dailymotion: '📺 Popular Clip', tiktok: '📱 Viral Clip', reddit: '💬 Community Pick', default: '✨ Discovery' },
+        es: { youtube: '🔥 Video en tendencia', vimeo: '🎬 Contenido destacado', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidad', default: '✨ Descubre' },
+        pt: { youtube: '🔥 Vídeo em alta', vimeo: '🎬 Conteúdo em destaque', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidade', default: '✨ Descobrir' },
+        pl: { youtube: '🔥 Popularne wideo', vimeo: '🎬 Polecane', dailymotion: '📺 Popularny klip', tiktok: '📱 Viral', reddit: '💬 Społeczność', default: '✨ Odkryj' }
       };
       const pack = map[currentLanguage] || map.en;
       return pack[platform] || pack.default;
@@ -852,32 +830,26 @@
     function appendFeedItems(items) {
       const html = items.map(function(item) {
         const platform = normalizePlatform(item.platform);
-        const primaryUrl = platform === 'reddit'
-          ? (item.postUrl || item.url || '#')
-          : (item.postUrl || item.url || item.videoUrl || '#');
-        const extraNote = platform === 'reddit'
-          ? '<div class="feed-meta">Reddit clips may require opening the Reddit post for full audio.</div>'
-          : '';
+        const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
+        const extraNote = platform === 'reddit' ? '<div class="feed-meta">Reddit clips may require opening the Reddit post for full audio.</div>' : '';
 
         return '<article class="feed-card">' +
           createMediaMarkup(item) +
           '<div class="feed-content">' +
           '<h3>' + escapeHtml(item.title || 'Discover something new') + '</h3>' +
-          '<div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(currentLanguage, platform) + '</div>' +
+          '<div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(platform) + '</div>' +
           '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>' +
           '<p>' + escapeHtml(item.description || '') + '</p>' +
           extraNote +
-          '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA(currentLanguage, platform) + '</a>' +
+          '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA(platform) + '</a>' +
           '</div></article>';
       }).join('');
-
       feedContainer.insertAdjacentHTML('beforeend', html);
     }
 
     function renderMoreFeed() {
       if (isRenderingMore) return;
       if (renderedFeedCount >= allFeedItems.length) return;
-
       isRenderingMore = true;
       const nextItems = allFeedItems.slice(renderedFeedCount, renderedFeedCount + FEED_BATCH_SIZE);
       appendFeedItems(nextItems);
@@ -888,12 +860,9 @@
     function setupInfiniteScroll() {
       const scroller = document.getElementById('magnetoColumn');
       if (!scroller) return;
-
       scroller.addEventListener('scroll', function() {
         const remaining = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
-        if (remaining < 900) {
-          renderMoreFeed();
-        }
+        if (remaining < 900) renderMoreFeed();
       });
     }
 
@@ -903,29 +872,13 @@
       renderedFeedCount = 0;
       renderMoreFeed();
       renderMoreFeed();
-    }
-
-    function shuffleArray(arr) {
-      const copy = arr.slice();
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const tmp = copy[i];
-        copy[i] = copy[j];
-        copy[j] = tmp;
-      }
-      return copy;
+      updateClickDisplay();
     }
 
     function buildDynamicFeed(liveItems) {
       const seen = new Set();
-      const merged = []
-        .concat(liveItems || [])
-        .concat(hybridVideoPool.map(function(item) { return normalizeFeedItem(item, item.platform); }));
-
-      const cleaned = merged
-        .filter(function(item) {
-          return isValidHttpUrl(item.url || item.postUrl || item.videoUrl);
-        })
+      return [].concat(liveItems || []).concat(hybridVideoPool.map(function(item) { return normalizeFeedItem(item, item.platform); }))
+        .filter(function(item) { return isValidHttpUrl(item.url || item.postUrl || item.videoUrl); })
         .filter(function(item) {
           const key = item.videoUrl || item.embedUrl || item.postUrl || item.url || item.title;
           if (!key || seen.has(key)) return false;
@@ -940,80 +893,41 @@
             if (platform === 'tiktok') return 4;
             return 5;
           };
-
           const pa = priority(normalizePlatform(a.platform));
           const pb = priority(normalizePlatform(b.platform));
           if (pa !== pb) return pa - pb;
           return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
         });
-
-      return cleaned;
-    }
-
-    async function fetchRedditSubreddit(subreddit) {
-      try {
-        const url = 'https://www.reddit.com/r/' + encodeURIComponent(subreddit) + '/hot.json?limit=15';
-        const res = await fetch(url);
-        const data = await res.json();
-
-        return (data.data?.children || [])
-          .map(function(x) { return x.data; })
-          .map(function(post) {
-            const redditVideo = post?.secure_media?.reddit_video || post?.media?.reddit_video;
-            if (!redditVideo || !redditVideo.fallback_url) return null;
-
-            return normalizeFeedItem({
-              platform: 'reddit',
-              title: post.title || 'Reddit video',
-              description: post.selftext ? post.selftext.slice(0, 140) : ('Video from r/' + subreddit),
-              author: post.author ? ('u/' + post.author) : 'Reddit',
-              publishedAt: new Date((post.created_utc || 0) * 1000).toISOString(),
-              url: redditVideo.fallback_url,
-              postUrl: post.permalink ? ('https://www.reddit.com' + post.permalink) : redditVideo.fallback_url,
-              videoUrl: redditVideo.fallback_url,
-              thumbnail: post.thumbnail && post.thumbnail.startsWith('http') ? post.thumbnail : ''
-            }, 'reddit');
-          })
-          .filter(Boolean);
-      } catch (error) {
-        console.error('Reddit direct fetch failed for', subreddit, error);
-        return [];
-      }
     }
 
     async function fetchDynamicFeed() {
-  try {
-    const sourceUrl = feedSourceConfigs[0].buildUrl();
-    const response = await fetch(sourceUrl, { headers: { Accept: 'application/json' } });
-    const text = await response.text();
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (parseError) {
-      console.error('Reddit non-JSON response:', text.slice(0, 200));
-      return [];
+      try {
+        const response = await fetch('/api/feed/reddit?subreddits=travel,videos,funny&limit=18', { headers: { Accept: 'application/json' } });
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          console.error('Reddit non-JSON response:', text.slice(0, 200));
+          return [];
+        }
+        const items = Array.isArray(data) ? data : (data.items || []);
+        return items.map(function(item) { return normalizeFeedItem(item, 'reddit'); });
+      } catch (e) {
+        console.error('fetchDynamicFeed error', e);
+        return [];
+      }
     }
-
-    const items = Array.isArray(data) ? data : (data.items || []);
-    return items.map(function(item) {
-      return normalizeFeedItem(item, 'reddit');
-    });
-  } catch (e) {
-    console.error('fetchDynamicFeed error', e);
-    return [];
-  }
-}
 
     function applyLanguageUI() {
       const copy = {
         en: {
           navTitle: 'Navigation',
           partnerPlaceholder: 'Search partners...',
-          feedIntro: 'Trending content, deals & services ↓',
-          featuredDealLabel: 'Featured deal',
-          featuredDealTitle: 'Discover services on Kiwi.com',
-          featuredDealSubtitle: 'Fast search • global routes',
+          feedIntro: 'Discovery stream ↓',
+          featuredDealLabel: 'Featured',
+          featuredDealTitle: 'Explore offers and services',
+          featuredDealSubtitle: 'Discover more in one place',
           headerFootnote: 'Trusted platforms and monetized outbound offers.',
           emptyFeedTitle: 'No new content yet',
           emptyFeedText: 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.'
@@ -1021,10 +935,10 @@
         es: {
           navTitle: 'Navegación',
           partnerPlaceholder: 'Buscar socios...',
-          feedIntro: 'Contenido, ofertas y servicios en tendencia ↓',
-          featuredDealLabel: 'Oferta destacada',
-          featuredDealTitle: 'Descubre servicios en Kiwi.com',
-          featuredDealSubtitle: 'Búsqueda rápida • rutas globales',
+          feedIntro: 'Flujo de descubrimiento ↓',
+          featuredDealLabel: 'Destacado',
+          featuredDealTitle: 'Explora ofertas y servicios',
+          featuredDealSubtitle: 'Descubre más en un solo lugar',
           headerFootnote: 'Plataformas confiables y ofertas monetizadas.',
           emptyFeedTitle: 'Sin contenido nuevo',
           emptyFeedText: 'La columna 2 usa la colección estable de YouTube, Vimeo y Dailymotion.'
@@ -1032,10 +946,10 @@
         pt: {
           navTitle: 'Navegação',
           partnerPlaceholder: 'Buscar parceiros...',
-          feedIntro: 'Conteúdo, ofertas e serviços em alta ↓',
-          featuredDealLabel: 'Oferta em destaque',
-          featuredDealTitle: 'Descubra serviços no Kiwi.com',
-          featuredDealSubtitle: 'Busca rápida • rotas globais',
+          feedIntro: 'Fluxo de descoberta ↓',
+          featuredDealLabel: 'Destaque',
+          featuredDealTitle: 'Explore ofertas e serviços',
+          featuredDealSubtitle: 'Descubra mais em um só lugar',
           headerFootnote: 'Plataformas confiáveis e ofertas monetizadas.',
           emptyFeedTitle: 'Sem novos conteúdos',
           emptyFeedText: 'A coluna 2 usa a coleção estável de YouTube, Vimeo e Dailymotion.'
@@ -1043,10 +957,10 @@
         pl: {
           navTitle: 'Nawigacja',
           partnerPlaceholder: 'Szukaj partnerów...',
-          feedIntro: 'Popularne treści, oferty i usługi ↓',
-          featuredDealLabel: 'Polecana oferta',
-          featuredDealTitle: 'Odkrywaj usługi w Kiwi.com',
-          featuredDealSubtitle: 'Szybkie wyszukiwanie • trasy globalne',
+          feedIntro: 'Strumień odkryć ↓',
+          featuredDealLabel: 'Polecane',
+          featuredDealTitle: 'Odkrywaj oferty i usługi',
+          featuredDealSubtitle: 'Znajdź więcej w jednym miejscu',
           headerFootnote: 'Zaufane platformy i monetyzowane oferty zewnętrzne.',
           emptyFeedTitle: 'Brak nowych materiałów',
           emptyFeedText: 'Kolumna 2 korzysta ze sprawdzonej puli YouTube, Vimeo i Dailymotion.'
@@ -1054,22 +968,13 @@
       };
 
       const langCopy = copy[currentLanguage] || copy.en;
-      const navTitle = document.getElementById('navTitle');
-      const partnerSearch = document.getElementById('partnerSearch');
-      const feedIntro = document.getElementById('feedIntro');
-      const featuredDealLabel = document.getElementById('featuredDealLabel');
-      const featuredDealTitle = document.getElementById('featuredDealTitle');
-      const featuredDealSubtitle = document.getElementById('featuredDealSubtitle');
-      const headerFootnote = document.getElementById('headerFootnote');
-
-      if (navTitle) navTitle.textContent = langCopy.navTitle;
-      if (partnerSearch) partnerSearch.placeholder = langCopy.partnerPlaceholder;
-      if (feedIntro) feedIntro.textContent = langCopy.feedIntro;
-      if (featuredDealLabel) featuredDealLabel.textContent = langCopy.featuredDealLabel;
-      if (featuredDealTitle) featuredDealTitle.textContent = langCopy.featuredDealTitle;
-      if (featuredDealSubtitle) featuredDealSubtitle.textContent = langCopy.featuredDealSubtitle;
-      if (headerFootnote) headerFootnote.textContent = langCopy.headerFootnote;
-
+      document.getElementById('navTitle').textContent = langCopy.navTitle;
+      document.getElementById('partnerSearch').placeholder = langCopy.partnerPlaceholder;
+      document.getElementById('feedIntro').textContent = langCopy.feedIntro;
+      document.getElementById('featuredDealLabel').textContent = langCopy.featuredDealLabel;
+      document.getElementById('featuredDealTitle').textContent = langCopy.featuredDealTitle;
+      document.getElementById('featuredDealSubtitle').textContent = langCopy.featuredDealSubtitle;
+      document.getElementById('headerFootnote').textContent = langCopy.headerFootnote;
       window.__sbEmptyFeedTitle = langCopy.emptyFeedTitle;
       window.__sbEmptyFeedText = langCopy.emptyFeedText;
       document.documentElement.lang = currentLanguage;
@@ -1091,13 +996,11 @@
         currentRegion = 'mx';
         return;
       }
-
       if (langParam === 'pt') {
         currentLanguage = 'pt';
         currentRegion = 'br';
         return;
       }
-
       if (langParam === 'pl') {
         currentLanguage = 'pl';
         currentRegion = 'pl';
@@ -1113,14 +1016,11 @@
         const response = await fetch('/data/partners.json', { cache: 'no-store' });
         if (!response.ok) throw new Error('partners.json ' + response.status);
         const data = await response.json();
-        if (Array.isArray(data) && data.length) {
-          partnersData = data;
-        }
+        if (Array.isArray(data) && data.length) partnersData = data;
       } catch (error) {
         console.error('partners load error', error);
         partnersData = fallbackPartners.slice();
       }
-
       renderPartners(partnersData);
       renderBrandGrid(partnersData);
     }
@@ -1131,9 +1031,7 @@
         renderPartners(partnersData);
         return;
       }
-      renderPartners(partnersData.filter(function(p) {
-        return p.name.toLowerCase().includes(q);
-      }));
+      renderPartners(partnersData.filter(function(p) { return p.name.toLowerCase().includes(q); }));
     });
 
     fetchDynamicFeed()
@@ -1159,6 +1057,7 @@
     applyLanguageUI();
     loadPartnersData();
     setupInfiniteScroll();
+    updateClickDisplay();
   </script>
 </body>
 </html>
