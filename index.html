@@ -506,7 +506,14 @@
       </div>
     </div>
 
-    
+    <div class="column column-3">
+      <h2 id="brandGridTitle">Top Brands</h2>
+      <div id="brandGrid" class="brand-grid"></div>
+
+      <h2 style="margin-top:18px;">Essentials</h2>
+      <div id="amazonGrid" class="brand-grid"></div>
+    </div>
+  </div>
 
   <script>
     const fallbackPartners = [
@@ -647,6 +654,7 @@
 
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
+    const amazonGrid = document.getElementById('amazonGrid');
     const feedContainer = document.getElementById('feedContainer');
     const brandGridTitle = document.getElementById('brandGridTitle');
     const regionTagline = document.getElementById('regionTagline');
@@ -896,6 +904,87 @@
           selected.push(p);
           seenFamilies.add(family);
         }
+      });
+
+      brandGrid.innerHTML = selected.map(function(p) {
+        const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
+        const borderColor = bgColor.replace('0.15', '0.35');
+        const displayName = getBrandDisplayName(p.name);
+        const fallbackText = getBrandFallbackText(displayName);
+        const logoMarkup = p.logo
+          ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
+          : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
+          logoMarkup +
+          '<span>' + escapeHtml(displayName) + '</span>' +
+          '</a>';
+      }).join('');
+
+      renderAmazon();
+    }
+
+    function renderAmazon() {
+      if (!amazonGrid) return;
+
+      const tag = 'signalboos05e-20';
+
+      // Detect dominant intent from visible brands
+      const tiles = brandGrid.querySelectorAll('.brand-tile span');
+      let dominant = 'general';
+      if (tiles.length) {
+        const names = Array.from(tiles).map(n => (n.textContent || '').toLowerCase());
+        if (names.some(n => n.includes('kiwi') || n.includes('trivago') || n.includes('aviasales'))) dominant = 'flights';
+        else if (names.some(n => n.includes('airalo') || n.includes('sim'))) dominant = 'connectivity';
+        else if (names.some(n => n.includes('rent') || n.includes('car'))) dominant = 'cars';
+      }
+
+      const productSets = {
+        flights: [
+          { name: 'Neck Pillow', asin: 'B01IEJHJWK' },
+          { name: 'Travel Adapter', asin: 'B07RX7K9ZJ' },
+          { name: 'Carry-on Backpack', asin: 'B07Z8B9F4T' },
+          { name: 'Luggage Scale', asin: 'B07QK5F9TQ' }
+        ],
+        connectivity: [
+          { name: 'Power Bank', asin: 'B00X5RV14Y' },
+          { name: 'USB-C Cable', asin: 'B07ZV6FHWF' },
+          { name: 'Travel Adapter', asin: 'B07RX7K9ZJ' },
+          { name: 'SIM Tool Kit', asin: 'B08L5QKQ9Q' }
+        ],
+        cars: [
+          { name: 'Phone Car Mount', asin: 'B07FMZ1Z5V' },
+          { name: 'USB Car Charger', asin: 'B01K9MQ8WW' },
+          { name: 'Dash Cam', asin: 'B07RZQ8C6N' },
+          { name: 'Travel Cooler', asin: 'B07S6R3Z7W' }
+        ],
+        general: [
+          { name: 'Travel Adapter', asin: 'B07RX7K9ZJ' },
+          { name: 'Power Bank', asin: 'B00X5RV14Y' },
+          { name: 'Travel Backpack', asin: 'B07Z8B9F4T' },
+          { name: 'Neck Pillow', asin: 'B01IEJHJWK' }
+        ]
+      };
+
+      const chosen = productSets[dominant] || productSets.general;
+
+      amazonGrid.innerHTML = chosen.map(function(p) {
+        const url = 'https://www.amazon.com/dp/' + p.asin + '?tag=' + tag;
+        return '<a class="brand-tile" href="' + escapeHtml(monetizeUrl(url, { partner: 'amazon', source: 'amazon_dynamic' })) + '" target="_blank" rel="noopener noreferrer">' +
+          '<div class="brand-logo-wrap"><img src="https://via.placeholder.com/100?text=' + encodeURIComponent(p.name) + '" loading="lazy"></div>' +
+          '<span>' + escapeHtml(p.name) + '</span>' +
+          '</a>';
+      }).join('');
+    }
+      ];
+
+      amazonGrid.innerHTML = products.map(function(p) {
+        const url = 'https://www.amazon.com/dp/' + p.asin + '?tag=' + tag;
+        return '<a class="brand-tile" href="' + escapeHtml(monetizeUrl(url, { partner: 'amazon', source: 'amazon_us' })) + '" target="_blank" rel="noopener noreferrer">' +
+          '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.img) + '" loading="lazy"></div>' +
+          '<span>' + escapeHtml(p.name) + '</span>' +
+          '</a>';
+      }).join('');
+    }
       });
 
       brandGrid.innerHTML = selected.map(function(p) {
