@@ -827,6 +827,20 @@
       return configs[region] || configs.global;
     }
 
+    function getBrandFamily(name) {
+      const value = String(name || '');
+      if (/^Trivago/i.test(value)) return 'Trivago';
+      if (/^Kiwi/i.test(value)) return 'Kiwi';
+      if (/^Tiqets/i.test(value)) return 'Tiqets';
+      return value;
+    }
+
+    function getBrandDisplayName(name) {
+      const family = getBrandFamily(name);
+      if (family === 'Kiwi') return 'Kiwi.com';
+      return family;
+    }
+
     function renderBrandGrid(items) {
       const colorMap = {
         'Flights & Meta Search': 'rgba(77,210,192,0.15)',
@@ -844,22 +858,33 @@
       regionTagline.textContent = regionConfig.tagline;
 
       const selected = [];
+      const seenFamilies = new Set();
+
       regionConfig.priority.forEach(function(name) {
         const match = items.find(function(p) { return p.name === name; });
-        if (match && !selected.some(function(s) { return s.name === match.name; })) selected.push(match);
+        if (!match) return;
+        const family = getBrandFamily(match.name);
+        if (seenFamilies.has(family)) return;
+        selected.push(match);
+        seenFamilies.add(family);
       });
 
       items.forEach(function(p) {
-        if (selected.length < 24 && p.logo && !selected.some(function(s) { return s.name === p.name; })) selected.push(p);
+        const family = getBrandFamily(p.name);
+        if (selected.length < 16 && !seenFamilies.has(family)) {
+          selected.push(p);
+          seenFamilies.add(family);
+        }
       });
 
       brandGrid.innerHTML = selected.map(function(p) {
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15', '0.35');
         const hasLogo = !!p.logo;
+        const displayName = getBrandDisplayName(p.name);
         return '<a class="brand-tile' + (hasLogo ? ' logo-only' : '') + '" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
-          (hasLogo ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.parentNode.remove(); this.closest(\'a\').classList.remove(\'logo-only\');"></div>' : '') +
-          '<span>' + escapeHtml(p.name) + '</span>' +
+          (hasLogo ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.parentNode.remove(); this.closest(\'a\').classList.remove(\'logo-only\');"></div>' : '') +
+          '<span>' + escapeHtml(displayName) + '</span>' +
           '</a>';
       }).join('');
     }
