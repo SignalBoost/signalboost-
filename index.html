@@ -346,7 +346,7 @@
   <div style="position:fixed;top:0;left:0;width:280px;background:#0f141b;border-right:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 16px;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
     <div>
       <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Shop.</div>
+      <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Shop.</div>
     </div>
     <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806&partner=Kiwi%20US&source=header_featured" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
       <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured deal</div>
@@ -373,7 +373,7 @@
     </div>
 
     <div class="column column-3">
-      <h2>Top Brands</h2>
+      <h2 id="brandGridTitle">Top Brands</h2>
       <div id="brandGrid" class="brand-grid"></div>
     </div>
   </div>
@@ -390,6 +390,8 @@
     ];
 
     let partnersData = fallbackPartners.slice();
+    let currentRegion = 'global';
+    let currentLanguage = 'en';
 
     const promoFallbackItems = [];
 
@@ -495,6 +497,8 @@
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
     const feedContainer = document.getElementById('feedContainer');
+    const brandGridTitle = document.getElementById('brandGridTitle');
+    const regionTagline = document.getElementById('regionTagline');
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -583,6 +587,41 @@
         }).join('');
     }
 
+    function getRegionConfig(region) {
+      const configs = {
+        global: {
+          title: 'Top Brands',
+          tagline: 'Scroll. Discover. Shop.',
+          priority: [
+            'Trivago USA','Trivago AR','Trivago BR','Trivago CO','Trivago DE','Trivago MX','Trivago NZ','Trivago PE',
+            'Kiwi.com','Kiwi CA','Kiwi MX','Kiwi US','Kiwitaxi','Airalo','Klook','Aviasales',
+            'GoCity','Welcome Pickups','Busbud','Localrent.com','Drimsim','Yesim','Tiqets US','Tiqets UK','Fiverr Affiliates'
+          ]
+        },
+        mx: {
+          title: 'Top Brands for Mexico',
+          tagline: 'Discover tools, services and deals for Mexico.',
+          priority: ['Trivago MX','Kiwi MX','Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Busbud','Aviasales','Fiverr Affiliates','Intui.travel']
+        },
+        br: {
+          title: 'Top Brands for Brazil',
+          tagline: 'Descubra serviços, ferramentas e ofertas para o Brasil.',
+          priority: ['Trivago BR','Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Aviasales','Busbud','Fiverr Affiliates','Drimsim','Yesim']
+        },
+        es: {
+          title: 'Top Brands for Spain',
+          tagline: 'Descubre servicios, herramientas y ofertas para España.',
+          priority: ['Kiwi.com','Trivago DE','Trivago USA','Airalo','Welcome Pickups','Kiwitaxi','Tiqets UK','Tiqets FR','GoCity','Fiverr Affiliates']
+        },
+        eu: {
+          title: 'Top Brands for Europe',
+          tagline: 'Discover services, tools and deals across Europe.',
+          priority: ['Kiwi.com','Trivago DE','Trivago NZ','Airalo','Welcome Pickups','Kiwitaxi','Tiqets UK','Tiqets FR','Tiqets IT','GoCity','Fiverr Affiliates']
+        }
+      };
+      return configs[region] || configs.global;
+    }
+
     function renderBrandGrid(items) {
       const colorMap = {
         'Flights & Meta Search': 'rgba(77,210,192,0.15)',
@@ -595,13 +634,13 @@
         'Specialty & Other': 'rgba(143,124,255,0.15)'
       };
 
-      const priority = [
-        'Trivago USA','Trivago AR','Trivago BR','Trivago CO','Trivago DE','Trivago MX','Trivago NZ','Trivago PE',
-        'Kiwi.com','Kiwi CA','Kiwi MX','Kiwi US','Kiwitaxi','Airalo','Klook','Aviasales',
-        'GoCity','Welcome Pickups','Busbud','Localrent.com','Drimsim','Yesim','Tiqets US','Tiqets UK','Fiverr Affiliates'
-      ];
+      const regionConfig = getRegionConfig(currentRegion);
+      if (brandGridTitle) brandGridTitle.textContent = regionConfig.title;
+      if (regionTagline) regionTagline.textContent = regionConfig.tagline;
 
+      const priority = regionConfig.priority;
       const selected = [];
+
       priority.forEach(function(name) {
         const match = items.find(function(p) { return p.name === name; });
         if (match && !selected.some(function(s) { return s.name === match.name; })) {
@@ -618,7 +657,7 @@
       brandGrid.innerHTML = selected.map(function(p) {
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15', '0.35');
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3' })) + '" target="_blank" rel="noopener noreferrer">' +
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
           (p.logo ? '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.style.display=\'none\';">' : '') +
           '<span>' + escapeHtml(p.name) + '</span>' +
           '</a>';
@@ -859,6 +898,53 @@
   }
 }
 
+    function detectRegion() {
+      const params = new URLSearchParams(window.location.search);
+      const regionParam = (params.get('region') || '').toLowerCase();
+      const langParam = (params.get('lang') || '').toLowerCase();
+      const browserLang = (navigator.language || 'en').toLowerCase();
+
+      if (langParam === 'es' || browserLang.startsWith('es-mx')) {
+        currentLanguage = 'es';
+        currentRegion = regionParam || 'mx';
+        return;
+      }
+
+      if (langParam === 'pt' || browserLang.startsWith('pt-br')) {
+        currentLanguage = 'pt';
+        currentRegion = regionParam || 'br';
+        return;
+      }
+
+      if (regionParam) {
+        currentRegion = regionParam;
+        currentLanguage = regionParam === 'mx' || regionParam === 'es' ? 'es' : regionParam === 'br' ? 'pt' : 'en';
+        return;
+      }
+
+      if (browserLang.startsWith('es')) {
+        currentLanguage = 'es';
+        currentRegion = 'es';
+        return;
+      }
+
+      if (browserLang.startsWith('pt')) {
+        currentLanguage = 'pt';
+        currentRegion = 'br';
+        return;
+      }
+
+      const europeLanguages = ['fr', 'de', 'it', 'nl', 'pl', 'sv', 'da', 'no', 'fi'];
+      if (europeLanguages.some(function(code) { return browserLang.startsWith(code); })) {
+        currentLanguage = 'en';
+        currentRegion = 'eu';
+        return;
+      }
+
+      currentLanguage = 'en';
+      currentRegion = 'global';
+    }
+
     async function loadPartnersData() {
       try {
         const response = await fetch('/data/partners.json', { cache: 'no-store' });
@@ -876,6 +962,7 @@
       renderBrandGrid(partnersData);
     }
 
+    detectRegion();
     loadPartnersData();
     setupInfiniteScroll();
 
