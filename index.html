@@ -349,16 +349,16 @@
       <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Shop.</div>
     </div>
     <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806&partner=Kiwi%20US&source=header_featured" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured deal</div>
-      <div style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Compare flights on Kiwi.com</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Fast search • global routes</div>
+      <div id="featuredDealLabel" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured deal</div>
+      <div id="featuredDealTitle" style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Compare flights on Kiwi.com</div>
+      <div id="featuredDealSubtitle" style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Fast search • global routes</div>
     </a>
-    <div style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted travel brands and monetized outbound offers.</div>
+    <div id="headerFootnote" style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted travel brands and monetized outbound offers.</div>
   </div>
 
   <div class="app">
     <div class="column column-1">
-      <div class="column-1-header">Navigation</div>
+      <div id="navTitle" class="column-1-header">Navigation</div>
       <div class="column-1-search-wrap">
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Search partners..." />
       </div>
@@ -367,7 +367,7 @@
 
     <div class="column column-2">
       <div id="magnetoColumn">
-        <div style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Trending content, deals & services ↓</div>
+        <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Trending content, deals & services ↓</div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
@@ -898,6 +898,56 @@
   }
 }
 
+    function applyLanguageUI() {
+      const copy = {
+        en: {
+          navTitle: 'Navigation',
+          partnerPlaceholder: 'Search partners...',
+          feedIntro: 'Trending content, deals & services ↓',
+          featuredDealLabel: 'Featured deal',
+          featuredDealTitle: 'Compare flights on Kiwi.com',
+          featuredDealSubtitle: 'Fast search • global routes',
+          headerFootnote: 'Trusted travel brands and monetized outbound offers.'
+        },
+        es: {
+          navTitle: 'Navegación',
+          partnerPlaceholder: 'Buscar socios...',
+          feedIntro: 'Contenido, ofertas y servicios en tendencia ↓',
+          featuredDealLabel: 'Oferta destacada',
+          featuredDealTitle: 'Compara vuelos en Kiwi.com',
+          featuredDealSubtitle: 'Búsqueda rápida • rutas globales',
+          headerFootnote: 'Marcas de viaje confiables y ofertas monetizadas.'
+        },
+        pt: {
+          navTitle: 'Navegação',
+          partnerPlaceholder: 'Buscar parceiros...',
+          feedIntro: 'Conteúdo, ofertas e serviços em alta ↓',
+          featuredDealLabel: 'Oferta em destaque',
+          featuredDealTitle: 'Compare voos no Kiwi.com',
+          featuredDealSubtitle: 'Busca rápida • rotas globais',
+          headerFootnote: 'Marcas de viagem confiáveis e ofertas monetizadas.'
+        }
+      };
+
+      const langCopy = copy[currentLanguage] || copy.en;
+      const navTitle = document.getElementById('navTitle');
+      const partnerSearch = document.getElementById('partnerSearch');
+      const feedIntro = document.getElementById('feedIntro');
+      const featuredDealLabel = document.getElementById('featuredDealLabel');
+      const featuredDealTitle = document.getElementById('featuredDealTitle');
+      const featuredDealSubtitle = document.getElementById('featuredDealSubtitle');
+      const headerFootnote = document.getElementById('headerFootnote');
+
+      if (navTitle) navTitle.textContent = langCopy.navTitle;
+      if (partnerSearch) partnerSearch.placeholder = langCopy.partnerPlaceholder;
+      if (feedIntro) feedIntro.textContent = langCopy.feedIntro;
+      if (featuredDealLabel) featuredDealLabel.textContent = langCopy.featuredDealLabel;
+      if (featuredDealTitle) featuredDealTitle.textContent = langCopy.featuredDealTitle;
+      if (featuredDealSubtitle) featuredDealSubtitle.textContent = langCopy.featuredDealSubtitle;
+      if (headerFootnote) headerFootnote.textContent = langCopy.headerFootnote;
+      document.documentElement.lang = currentLanguage;
+    }
+
     function detectRegion() {
       const params = new URLSearchParams(window.location.search);
       const regionParam = (params.get('region') || '').toLowerCase();
@@ -963,6 +1013,7 @@
     }
 
     detectRegion();
+    applyLanguageUI();
     loadPartnersData();
     setupInfiniteScroll();
 
