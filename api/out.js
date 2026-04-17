@@ -4,6 +4,13 @@ const ALLOWED_HOSTS = new Set([
   'intui.tpo.lv',
   'holidaytaxis.tpo.lv',
   'busbud.tpo.lv',
+  'bikesbooking.tpo.lv',
+  'wegotrip.tpo.lv',
+  'autoeurope.tpo.lv',
+  'gettransfer.tpo.lv',
+  'searadar.tpo.lv',
+  'radicalstorage.tpo.lv',
+  'aviasales.tpo.lv',
   'localrent.tpo.lv',
   'economybookings.tpo.lv',
   'qeeq.tpo.lv',
@@ -18,38 +25,46 @@ const ALLOWED_HOSTS = new Set([
   'ektatraveling.tpo.lv',
   'airhelp.tpo.lv',
   'compensair.tpo.lv',
-  'aviasales.tpo.lv',
   'booking.tpo.lv',
-  'radicalstorage.tpo.lv',
 
   'www.awin1.com',
   'awin1.com',
   'tp.media'
 ]);
 
-const MAX_PARAM_LEN = 300;
+const MAX_PARAM_LEN = 1200;
 
 function safeString(value) {
+  if (Array.isArray(value)) value = value[0];
   return String(value || '').trim().slice(0, MAX_PARAM_LEN);
 }
 
-function isAllowedRedirect(targetUrl) {
+function parseRedirectUrl(rawUrl) {
   try {
-    const parsed = new URL(targetUrl);
-
-    if (parsed.protocol !== 'https:') {
-      return false;
-    }
-
-    const host = parsed.hostname.toLowerCase();
-    if (ALLOWED_HOSTS.has(host)) {
-      return true;
-    }
-
-    return false;
+    return new URL(rawUrl);
   } catch {
-    return false;
+    return null;
   }
+}
+
+function isAllowedRedirect(parsedUrl) {
+  if (!parsedUrl) return false;
+  if (parsedUrl.protocol !== 'https:') return false;
+  return ALLOWED_HOSTS.has(parsedUrl.hostname.toLowerCase());
+}
+
+function appendTrackingParams(parsedUrl, partner, source) {
+  const host = parsedUrl.hostname.toLowerCase();
+
+  // 🔥 DO NOT touch affiliate tracking links
+  if (host === 'awin1.com' || host === 'www.awin1.com' || host === 'tp.media') {
+    return parsedUrl;
+  }
+
+  if (partner) parsedUrl.searchParams.set('sb_partner', partner);
+  if (source) parsedUrl.searchParams.set('sb_source', source);
+
+  return parsedUrl;
 }
 
 export default function handler(req, res) {
@@ -65,20 +80,14 @@ export default function handler(req, res) {
     return res.status(400).send('Missing redirect URL');
   }
 
-  if (!isAllowedRedirect(rawUrl)) {
+  const parsedUrl = parseRedirectUrl(rawUrl);
+
+  if (!isAllowedRedirect(parsedUrl)) {
     return res.status(400).send('Blocked redirect');
   }
 
   try {
-    const redirectUrl = new URL(rawUrl);
-
-    if (partner) {
-      redirectUrl.searchParams.set('sb_partner', partner);
-    }
-
-    if (source) {
-      redirectUrl.searchParams.set('sb_source', source);
-    }
+    const redirectUrl = appendTrackingParams(parsedUrl, partner, source);
 
     return res.redirect(302, redirectUrl.toString());
   } catch {
