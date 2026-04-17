@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -328,69 +327,6 @@
       margin: 0 auto;
     }
 
-    .brand-grid.compact {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      max-width: 236px;
-    }
-
-    .brand-tile.featured-partner {
-      border: 2px solid #f5c542 !important;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-      transform: scale(1.02);
-    }
-
-    .brand-badge {
-      display: inline-block;
-      margin-top: 2px;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: #f5c542;
-    }
-
-    .brand-controls {
-      display: flex;
-      justify-content: center;
-      margin: 12px auto 0;
-      width: 100%;
-      max-width: 236px;
-    }
-
-    .brand-toggle-btn {
-      width: 100%;
-      border: 1px solid rgba(245,197,66,0.28);
-      background: #161b22;
-      color: #f5c542;
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 10px;
-      padding: 10px 12px;
-      cursor: pointer;
-    }
-
-    .brand-toggle-btn:hover {
-      background: #1b2028;
-    }
-
-    .brand-context {
-      font-size: 11px;
-      color: rgba(255,255,255,0.58);
-      text-align: center;
-      margin: 0 auto 12px;
-      max-width: 236px;
-      line-height: 1.45;
-    }
-
-    .brand-amazon-note {
-      display: block;
-      margin-top: 4px;
-      font-size: 10px;
-      color: rgba(255,255,255,0.72);
-      font-weight: 600;
-    }
-
     .brand-tile {
       display: flex;
       flex-direction: column;
@@ -659,7 +595,10 @@
         align-items: flex-start;
       }
     }
-  </style>
+  
+.amazon-links { margin-top:8px; }
+.feed-link.secondary { display:block; font-size:13px; opacity:0.8; }
+</style>
 </head>
 <body>
   <div class="top-feature">
@@ -694,9 +633,7 @@
 
     <div class="column column-3">
       <h2 id="brandGridTitle">Top Brands</h2>
-      <div id="brandContext" class="brand-context">Featured partners are prioritized for faster decisions and stronger deals.</div>
-      <div id="brandGrid" class="brand-grid compact"></div>
-      <div class="brand-controls"><button id="brandToggleBtn" class="brand-toggle-btn" type="button">Show more deals</button></div>
+      <div id="brandGrid" class="brand-grid"></div>
     </div>
   </div>
 
@@ -860,6 +797,39 @@
       return '/api/out?' + params.toString();
     }
 
+    function setTrackedLinkAttributes(element, rawUrl, meta) {
+      if (!element) return;
+      const trackedUrl = monetizeUrl(rawUrl, meta);
+      element.href = rawUrl || '#';
+      element.setAttribute('data-raw-url', rawUrl || '#');
+      element.setAttribute('data-tracked-url', trackedUrl || '#');
+      if (meta && meta.partner) element.setAttribute('data-partner', meta.partner);
+      if (meta && meta.source) element.setAttribute('data-source', meta.source);
+    }
+
+    async function canUseTrackedUrl(trackedUrl) {
+      if (!trackedUrl || trackedUrl === '#') return false;
+      if (!trackedUrl.startsWith('/api/out?')) return true;
+      try {
+        const response = await fetch(trackedUrl, {
+          method: 'HEAD',
+          redirect: 'manual',
+          cache: 'no-store'
+        });
+        return response.status >= 300 && response.status < 400;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async function openPartnerLink(rawUrl, trackedUrl) {
+      if (!rawUrl || rawUrl === '#') return;
+      const useTracked = await canUseTrackedUrl(trackedUrl);
+      const destination = useTracked ? trackedUrl : rawUrl;
+      incrementClickCount();
+      window.open(destination, '_blank', 'noopener,noreferrer');
+    }
+
     function hexToRgb(hex) {
       const clean = String(hex || '').replace('#', '');
       if (clean.length !== 6) return '143,159,179';
@@ -956,7 +926,7 @@
             '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
             '<ul>' + partners.map(function(partner) {
               const badge = partner.tier === 1 ? ' 🔥' : partner.tier === 2 ? ' ⭐' : '';
-              return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
+              return '<li><a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
             }).join('') + '</ul>' +
             '</details>' +
             '</div>';
@@ -1022,8 +992,7 @@
         .join('') || 'SB';
     }
 
-    
-function renderBrandGrid(items) {
+    function renderBrandGrid(items) {
       const colorMap = {
         'Flights & Meta Search': 'rgba(77,210,192,0.15)',
         'Transfers & Transport': 'rgba(77,166,255,0.15)',
@@ -1032,33 +1001,15 @@ function renderBrandGrid(items) {
         'Car Rentals': 'rgba(255,184,77,0.15)',
         'Insurance & Claims': 'rgba(255,107,107,0.15)',
         'Storage & Services': 'rgba(255,217,102,0.15)',
-        'Specialty & Other': 'rgba(143,124,255,0.15)',
-        'Travel Essentials': 'rgba(245,197,66,0.15)'
+        'Specialty & Other': 'rgba(143,124,255,0.15)'
       };
 
       const regionConfig = getRegionConfig(currentRegion);
       brandGridTitle.textContent = regionConfig.title;
       regionTagline.textContent = regionConfig.tagline;
-      if (brandContext) {
-        brandContext.textContent = showAllBrands
-          ? 'Full partner list loaded from the server. Featured offers stay visually prioritized.'
-          : 'Top partners only. Fewer choices means faster clicks and better conversion.';
-      }
 
       const selected = [];
       const seenFamilies = new Set();
-
-      // Always feature tier 1 first, especially Cozeware.
-      items
-        .filter(function(p) { return (p.tier || 3) === 1; })
-        .sort(function(a, b) { return a.name.localeCompare(b.name); })
-        .forEach(function(p) {
-          const family = getBrandFamily(p.name);
-          if (!seenFamilies.has(family)) {
-            selected.push(p);
-            seenFamilies.add(family);
-          }
-        });
 
       regionConfig.priority.forEach(function(name) {
         const match = items.find(function(p) { return p.name === name; });
@@ -1076,47 +1027,26 @@ function renderBrandGrid(items) {
         })
         .forEach(function(p) {
           const family = getBrandFamily(p.name);
-          if (!seenFamilies.has(family)) {
+          if (selected.length < 16 && !seenFamilies.has(family)) {
             selected.push(p);
             seenFamilies.add(family);
           }
         });
 
-      const visibleCount = showAllBrands ? 16 : 7;
-      const visiblePartners = selected.slice(0, visibleCount);
-
-      if (!showAllBrands) {
-        visiblePartners.push(amazonFallbackPartner);
-      }
-
-      brandGrid.innerHTML = visiblePartners.map(function(p) {
+      brandGrid.innerHTML = selected.map(function(p) {
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15', '0.35');
         const displayName = getBrandDisplayName(p.name);
         const fallbackText = getBrandFallbackText(displayName);
-        const isFeatured = p.name === 'Cozeware' || p.tier === 1;
-        const badge = p.isAmazon
-          ? '<span class="brand-badge">Amazon fallback</span>'
-          : p.name === 'Cozeware'
-            ? '<span class="brand-badge">Featured deal</span>'
-            : p.tier === 2
-              ? '<span class="brand-badge">Top pick</span>'
-              : '';
-        const tileClass = 'brand-tile' + (isFeatured ? ' featured-partner' : '');
+        const badge = p.tier === 1 ? ' 🔥' : p.tier === 2 ? ' ⭐' : '';
         const logoMarkup = p.logo
           ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
           : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
-
-        return '<a class="' + tileClass + '" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" data-partner="' + escapeHtml(p.name) + '" data-source="' + escapeHtml('column3_' + currentRegion) + '" target="_blank" rel="noopener noreferrer">' +
           logoMarkup +
-          '<span>' + escapeHtml(displayName) + '</span>' +
-          badge +
+          '<span>' + escapeHtml(displayName) + badge + '</span>' +
           '</a>';
       }).join('');
-
-      if (brandToggleBtn) {
-        brandToggleBtn.textContent = showAllBrands ? 'Show fewer deals' : 'Show more deals';
-      }
     }
 
     function getYouTubeEmbed(url) {
@@ -1281,17 +1211,21 @@ function renderBrandGrid(items) {
         const platform = normalizePlatform(item.platform);
         const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
         const relatedPartner = getRelatedPartnerForItem(item);
-        const relatedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
+        const relatedTrackedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
         const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
         const title = escapeHtml(item.title || 'Discover something new');
         const description = escapeHtml(item.description || '');
         const meta = '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>';
-        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA() + '</a>';
-        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedUrl) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '';
+        const primaryTrackedUrl = item.isMoneyCard && item.partnerName
+          ? monetizeUrl(primaryUrl, { partner: item.partnerName, source: item.source || 'money_card' })
+          : primaryUrl;
+        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA() + '</a>';
+        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-source="' + escapeHtml('column2_service_' + platform + '_' + currentRegion) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '';
         const moneyClass = item.isMoneyCard ? ' money-card' : '';
         const clickableUrl = escapeHtml(primaryUrl);
+        const clickableTrackedUrl = escapeHtml(primaryTrackedUrl);
 
-        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '">' +
+        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '">' +
           (item.isMoneyCard
             ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority partner' : 'Featured offer') + '</div><h3>' + title + '</h3>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
             : createMediaMarkup(item) + '<div class="feed-content"><h3>' + title + '</h3><div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(platform) + '</div>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
@@ -1502,7 +1436,7 @@ function renderBrandGrid(items) {
       function rotateHeaderDeal() {
         const offer = getOfferFromPartners();
         if (!offer) return;
-        featuredLink.href = monetizeUrl(offer.url, { partner: offer.name, source: 'header_featured' });
+        setTrackedLinkAttributes(featuredLink, offer.url, { partner: offer.name, source: 'header_featured' });
         title.textContent = offer.tier === 1 ? ('🔥 ' + offer.name + ' featured deal') : ('Explore ' + offer.name);
         subtitle.textContent = offer.tier === 1 ? 'Priority partner offer surfaced more often for conversion.' : 'Discover more in one place';
       }
@@ -1519,7 +1453,7 @@ function renderBrandGrid(items) {
       stickyCopy.textContent = offer.tier === 1
         ? ('🔥 Priority offer: ' + offer.name + ' is being pushed right now.')
         : ('💸 Featured deal: tap into ' + offer.name + ' before it rotates.');
-      stickyLink.href = monetizeUrl(offer.url, { partner: offer.name, source: 'sticky' });
+      setTrackedLinkAttributes(stickyLink, offer.url, { partner: offer.name, source: 'sticky' });
       stickyLink.textContent = getCTA();
     }
 
@@ -1535,7 +1469,7 @@ function renderBrandGrid(items) {
       text.textContent = offer.tier === 1
         ? 'This priority partner is receiving extra visibility. Tap now before you keep scrolling.'
         : 'This partner offer is live now. Grab it before it rotates out.';
-      link.href = monetizeUrl(offer.url, { partner: offer.name, source: 'popup' });
+      setTrackedLinkAttributes(link, offer.url, { partner: offer.name, source: 'popup' });
       link.textContent = getCTA();
       popup.style.display = 'flex';
       popupShown = true;
@@ -1545,8 +1479,13 @@ function renderBrandGrid(items) {
       document.addEventListener('click', function(e) {
         const anchor = e.target.closest('a[href]');
         if (anchor) {
-          if (anchor.href.includes('/api/out?') || anchor.target === '_blank') {
-            incrementClickCount();
+          const rawUrl = anchor.getAttribute('data-raw-url') || anchor.getAttribute('href');
+          const trackedUrl = anchor.getAttribute('data-tracked-url') || anchor.getAttribute('href');
+          if (rawUrl && rawUrl !== '#') {
+            e.preventDefault();
+            e.stopPropagation();
+            openPartnerLink(rawUrl, trackedUrl);
+            return;
           }
           e.stopPropagation();
           return;
@@ -1554,10 +1493,10 @@ function renderBrandGrid(items) {
 
         const card = e.target.closest('.feed-card[data-open-url]');
         if (!card) return;
-        const url = card.getAttribute('data-open-url');
-        if (!url || url === '#') return;
-        incrementClickCount();
-        window.open(url, '_blank', 'noopener');
+        const rawUrl = card.getAttribute('data-open-url');
+        const trackedUrl = card.getAttribute('data-open-tracked-url') || rawUrl;
+        if (!rawUrl || rawUrl === '#') return;
+        openPartnerLink(rawUrl, trackedUrl);
       });
 
       document.getElementById('popupClose').addEventListener('click', function() {
