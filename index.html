@@ -353,10 +353,6 @@
       line-height: 1.2;
     }
 
-    
-
-    
-
     .brand-fallback {
       display: inline-flex;
       align-items: center;
@@ -509,9 +505,6 @@
     <div class="column column-3">
       <h2 id="brandGridTitle">Top Brands</h2>
       <div id="brandGrid" class="brand-grid"></div>
-
-      <h2 style="margin-top:18px;">Essentials</h2>
-      <div id="amazonGrid" class="brand-grid"></div>
     </div>
   </div>
 
@@ -654,7 +647,6 @@
 
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
-    const amazonGrid = document.getElementById('amazonGrid');
     const feedContainer = document.getElementById('feedContainer');
     const brandGridTitle = document.getElementById('brandGridTitle');
     const regionTagline = document.getElementById('regionTagline');
@@ -919,88 +911,6 @@
           '<span>' + escapeHtml(displayName) + '</span>' +
           '</a>';
       }).join('');
-
-      renderAmazon();
-    }
-
-    function renderAmazon() {
-      if (!amazonGrid) return;
-
-      const tag = 'signalboos05e-20';
-
-      // Detect dominant intent from visible brands
-      const tiles = brandGrid.querySelectorAll('.brand-tile span');
-      let dominant = 'general';
-      if (tiles.length) {
-        const names = Array.from(tiles).map(n => (n.textContent || '').toLowerCase());
-        if (names.some(n => n.includes('kiwi') || n.includes('trivago') || n.includes('aviasales'))) dominant = 'flights';
-        else if (names.some(n => n.includes('airalo') || n.includes('sim'))) dominant = 'connectivity';
-        else if (names.some(n => n.includes('rent') || n.includes('car'))) dominant = 'cars';
-      }
-
-      const productSets = {
-        flights: [
-          { name: 'Neck Pillow', asin: 'B01IEJHJWK' },
-          { name: 'Travel Adapter', asin: 'B07RX7K9ZJ' },
-          { name: 'Carry-on Backpack', asin: 'B07Z8B9F4T' },
-          { name: 'Luggage Scale', asin: 'B07QK5F9TQ' }
-        ],
-        connectivity: [
-          { name: 'Power Bank', asin: 'B00X5RV14Y' },
-          { name: 'USB-C Cable', asin: 'B07ZV6FHWF' },
-          { name: 'Travel Adapter', asin: 'B07RX7K9ZJ' },
-          { name: 'SIM Tool Kit', asin: 'B08L5QKQ9Q' }
-        ],
-        cars: [
-          { name: 'Phone Car Mount', asin: 'B07FMZ1Z5V' },
-          { name: 'USB Car Charger', asin: 'B01K9MQ8WW' },
-          { name: 'Dash Cam', asin: 'B07RZQ8C6N' },
-          { name: 'Travel Cooler', asin: 'B07S6R3Z7W' }
-        ],
-        general: [
-          { name: 'Travel Adapter', asin: 'B07RX7K9ZJ' },
-          { name: 'Power Bank', asin: 'B00X5RV14Y' },
-          { name: 'Travel Backpack', asin: 'B07Z8B9F4T' },
-          { name: 'Neck Pillow', asin: 'B01IEJHJWK' }
-        ]
-      };
-
-      const chosen = productSets[dominant] || productSets.general;
-
-      amazonGrid.innerHTML = chosen.map(function(p) {
-        const url = 'https://www.amazon.com/dp/' + p.asin + '?tag=' + tag;
-        return '<a class="brand-tile" href="' + escapeHtml(monetizeUrl(url, { partner: 'amazon', source: 'amazon_dynamic' })) + '" target="_blank" rel="noopener noreferrer">' +
-          '<div class="brand-logo-wrap"><img src="https://via.placeholder.com/100?text=' + encodeURIComponent(p.name) + '" loading="lazy"></div>' +
-          '<span>' + escapeHtml(p.name) + '</span>' +
-          '</a>';
-      }).join('');
-    }
-      ];
-
-      amazonGrid.innerHTML = products.map(function(p) {
-        const url = 'https://www.amazon.com/dp/' + p.asin + '?tag=' + tag;
-        return '<a class="brand-tile" href="' + escapeHtml(monetizeUrl(url, { partner: 'amazon', source: 'amazon_us' })) + '" target="_blank" rel="noopener noreferrer">' +
-          '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.img) + '" loading="lazy"></div>' +
-          '<span>' + escapeHtml(p.name) + '</span>' +
-          '</a>';
-      }).join('');
-    }
-      });
-
-      brandGrid.innerHTML = selected.map(function(p) {
-        const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
-        const borderColor = bgColor.replace('0.15', '0.35');
-        const displayName = getBrandDisplayName(p.name);
-        const fallbackText = getBrandFallbackText(displayName);
-        const logoMarkup = p.logo
-          ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
-          : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
-          logoMarkup +
-          '<span>' + escapeHtml(displayName) + '</span>' +
-          '' +
-          '</a>';
-      }).join('');
     }
 
     function getYouTubeEmbed(url) {
@@ -1075,10 +985,10 @@
 
     function getServiceCTA() {
       const labels = {
-        en: 'Find tools & services like this',
-        es: 'Encuentra herramientas y servicios así',
-        pt: 'Encontre ferramentas e serviços assim',
-        pl: 'Znajdź podobne usługi i narzędzia'
+        en: 'Explore related services',
+        es: 'Explorar servicios relacionados',
+        pt: 'Explorar serviços relacionados',
+        pl: 'Odkryj powiązane usługi'
       };
       return labels[currentLanguage] || labels.en;
     }
@@ -1113,4 +1023,249 @@
         en: { youtube: '🔥 Trending Video', vimeo: '🎬 Featured Content', dailymotion: '📺 Popular Clip', tiktok: '📱 Viral Clip', reddit: '💬 Community Pick', default: '✨ Discovery' },
         es: { youtube: '🔥 Video en tendencia', vimeo: '🎬 Contenido destacado', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidad', default: '✨ Descubre' },
         pt: { youtube: '🔥 Vídeo em alta', vimeo: '🎬 Conteúdo em destaque', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidade', default: '✨ Descobrir' },
-        pl: { youtube: '🔥 Popularne wideo', vimeo: '🎬 Polecane', dailymotion: '
+        pl: { youtube: '🔥 Popularne wideo', vimeo: '🎬 Polecane', dailymotion: '📺 Popularny klip', tiktok: '📱 Viral', reddit: '💬 Społeczność', default: '✨ Odkryj' }
+      };
+      const pack = map[currentLanguage] || map.en;
+      return pack[platform] || pack.default;
+    }
+
+    function appendFeedItems(items) {
+      const html = items.map(function(item) {
+        const platform = normalizePlatform(item.platform);
+        const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
+        const extraNote = platform === 'reddit' ? '<div class="feed-meta">Reddit clips may require opening the Reddit post for full audio.</div>' : '';
+        const relatedPartner = getRelatedPartnerForItem(item);
+        const relatedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
+        const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
+
+        return '<article class="feed-card">' +
+          createMediaMarkup(item) +
+          '<div class="feed-content">' +
+          '<h3>' + escapeHtml(item.title || 'Discover something new') + '</h3>' +
+          '<div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(platform) + '</div>' +
+          '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>' +
+          '<p>' + escapeHtml(item.description || '') + '</p>' +
+          extraNote +
+          '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' +
+          '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA(platform) + '</a>' +
+          (relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedUrl) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '') +
+          '</div>' +
+          '</div></article>';
+      }).join('');
+      feedContainer.insertAdjacentHTML('beforeend', html);
+    }
+
+    function renderMoreFeed() {
+      if (isRenderingMore) return;
+      if (renderedFeedCount >= allFeedItems.length) return;
+      isRenderingMore = true;
+      const nextItems = allFeedItems.slice(renderedFeedCount, renderedFeedCount + FEED_BATCH_SIZE);
+      appendFeedItems(nextItems);
+      renderedFeedCount += nextItems.length;
+      isRenderingMore = false;
+    }
+
+    function setupInfiniteScroll() {
+      const scroller = document.getElementById('magnetoColumn');
+      if (!scroller) return;
+      scroller.addEventListener('scroll', function() {
+        const remaining = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
+        if (remaining < 900) renderMoreFeed();
+      });
+    }
+
+    function renderFeed(items) {
+      feedContainer.innerHTML = '';
+      allFeedItems = items.slice();
+      renderedFeedCount = 0;
+      renderMoreFeed();
+      renderMoreFeed();
+      updateClickDisplay();
+    }
+
+    function buildDynamicFeed(liveItems) {
+      const seen = new Set();
+      return [].concat(liveItems || []).concat(hybridVideoPool.map(function(item) { return normalizeFeedItem(item, item.platform); }))
+        .filter(function(item) { return isValidHttpUrl(item.url || item.postUrl || item.videoUrl); })
+        .filter(function(item) {
+          const key = item.videoUrl || item.embedUrl || item.postUrl || item.url || item.title;
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .sort(function(a, b) {
+          const priority = function(platform) {
+            if (platform === 'youtube') return 1;
+            if (platform === 'vimeo') return 2;
+            if (platform === 'dailymotion') return 3;
+            if (platform === 'tiktok') return 4;
+            return 5;
+          };
+          const pa = priority(normalizePlatform(a.platform));
+          const pb = priority(normalizePlatform(b.platform));
+          if (pa !== pb) return pa - pb;
+          return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        });
+    }
+
+    async function fetchDynamicFeed() {
+      try {
+        const response = await fetch('/api/feed/reddit?subreddits=travel,videos,funny&limit=18', { headers: { Accept: 'application/json' } });
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          console.error('Reddit non-JSON response:', text.slice(0, 200));
+          return [];
+        }
+        const items = Array.isArray(data) ? data : (data.items || []);
+        return items.map(function(item) { return normalizeFeedItem(item, 'reddit'); });
+      } catch (e) {
+        console.error('fetchDynamicFeed error', e);
+        return [];
+      }
+    }
+
+    function applyLanguageUI() {
+      const copy = {
+        en: {
+          navTitle: 'Navigation',
+          partnerPlaceholder: 'Search partners...',
+          feedIntro: 'Discovery stream ↓',
+          featuredDealLabel: 'Featured',
+          featuredDealTitle: 'Explore offers and services',
+          featuredDealSubtitle: 'Discover more in one place',
+          headerFootnote: 'Trusted platforms and monetized outbound offers.',
+          emptyFeedTitle: 'No new content yet',
+          emptyFeedText: 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.'
+        },
+        es: {
+          navTitle: 'Navegación',
+          partnerPlaceholder: 'Buscar socios...',
+          feedIntro: 'Flujo de descubrimiento ↓',
+          featuredDealLabel: 'Destacado',
+          featuredDealTitle: 'Explora ofertas y servicios',
+          featuredDealSubtitle: 'Descubre más en un solo lugar',
+          headerFootnote: 'Plataformas confiables y ofertas monetizadas.',
+          emptyFeedTitle: 'Sin contenido nuevo',
+          emptyFeedText: 'La columna 2 usa la colección estable de YouTube, Vimeo y Dailymotion.'
+        },
+        pt: {
+          navTitle: 'Navegação',
+          partnerPlaceholder: 'Buscar parceiros...',
+          feedIntro: 'Fluxo de descoberta ↓',
+          featuredDealLabel: 'Destaque',
+          featuredDealTitle: 'Explore ofertas e serviços',
+          featuredDealSubtitle: 'Descubra mais em um só lugar',
+          headerFootnote: 'Plataformas confiáveis e ofertas monetizadas.',
+          emptyFeedTitle: 'Sem novos conteúdos',
+          emptyFeedText: 'A coluna 2 usa a coleção estável de YouTube, Vimeo e Dailymotion.'
+        },
+        pl: {
+          navTitle: 'Nawigacja',
+          partnerPlaceholder: 'Szukaj partnerów...',
+          feedIntro: 'Strumień odkryć ↓',
+          featuredDealLabel: 'Polecane',
+          featuredDealTitle: 'Odkrywaj oferty i usługi',
+          featuredDealSubtitle: 'Znajdź więcej w jednym miejscu',
+          headerFootnote: 'Zaufane platformy i monetyzowane oferty zewnętrzne.',
+          emptyFeedTitle: 'Brak nowych materiałów',
+          emptyFeedText: 'Kolumna 2 korzysta ze sprawdzonej puli YouTube, Vimeo i Dailymotion.'
+        }
+      };
+
+      const langCopy = copy[currentLanguage] || copy.en;
+      document.getElementById('navTitle').textContent = langCopy.navTitle;
+      document.getElementById('partnerSearch').placeholder = langCopy.partnerPlaceholder;
+      document.getElementById('feedIntro').textContent = langCopy.feedIntro;
+      document.getElementById('featuredDealLabel').textContent = langCopy.featuredDealLabel;
+      document.getElementById('featuredDealTitle').textContent = langCopy.featuredDealTitle;
+      document.getElementById('featuredDealSubtitle').textContent = langCopy.featuredDealSubtitle;
+      document.getElementById('headerFootnote').textContent = langCopy.headerFootnote;
+      window.__sbEmptyFeedTitle = langCopy.emptyFeedTitle;
+      window.__sbEmptyFeedText = langCopy.emptyFeedText;
+      document.documentElement.lang = currentLanguage;
+    }
+
+    function detectRegion() {
+      const params = new URLSearchParams(window.location.search);
+      const regionParam = (params.get('region') || '').toLowerCase();
+      const langParam = (params.get('lang') || '').toLowerCase();
+
+      if (regionParam) {
+        currentRegion = regionParam;
+        currentLanguage = regionParam === 'mx' || regionParam === 'es' ? 'es' : regionParam === 'br' ? 'pt' : regionParam === 'pl' ? 'pl' : 'en';
+        return;
+      }
+
+      if (langParam === 'es') {
+        currentLanguage = 'es';
+        currentRegion = 'mx';
+        return;
+      }
+      if (langParam === 'pt') {
+        currentLanguage = 'pt';
+        currentRegion = 'br';
+        return;
+      }
+      if (langParam === 'pl') {
+        currentLanguage = 'pl';
+        currentRegion = 'pl';
+        return;
+      }
+
+      currentLanguage = 'en';
+      currentRegion = 'global';
+    }
+
+    async function loadPartnersData() {
+      try {
+        const response = await fetch('/data/partners.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('partners.json ' + response.status);
+        const data = await response.json();
+        if (Array.isArray(data) && data.length) partnersData = data;
+      } catch (error) {
+        console.error('partners load error', error);
+        partnersData = fallbackPartners.slice();
+      }
+      renderPartners(partnersData);
+      renderBrandGrid(partnersData);
+    }
+
+    document.getElementById('partnerSearch').addEventListener('input', function() {
+      const q = this.value.trim().toLowerCase();
+      if (!q) {
+        renderPartners(partnersData);
+        return;
+      }
+      renderPartners(partnersData.filter(function(p) { return p.name.toLowerCase().includes(q); }));
+    });
+
+    fetchDynamicFeed()
+      .then(function(liveItems) {
+        const platformItems = buildDynamicFeed(liveItems);
+        if (!platformItems.length) {
+          feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>' + escapeHtml(window.__sbEmptyFeedTitle || 'No new content yet') + '</h3><p>' + escapeHtml(window.__sbEmptyFeedText || 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.') + '</p></div></article>';
+          return;
+        }
+        renderFeed(platformItems);
+      })
+      .catch(function(error) {
+        console.error('Dynamic feed failed.', error);
+        const platformItems = buildDynamicFeed([]);
+        if (platformItems.length) {
+          renderFeed(platformItems);
+          return;
+        }
+        feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>' + escapeHtml(window.__sbEmptyFeedTitle || 'No new content yet') + '</h3><p>' + escapeHtml(window.__sbEmptyFeedText || 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.') + '</p></div></article>';
+      });
+
+    detectRegion();
+    applyLanguageUI();
+    loadPartnersData();
+    setupInfiniteScroll();
+    updateClickDisplay();
+  </script>
+</body>
+</html>
