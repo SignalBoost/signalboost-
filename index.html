@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,6 +18,7 @@
       color: #fff;
     }
     body { overflow: hidden; }
+
     .top-feature {
       position: fixed;
       top: 0;
@@ -144,7 +144,7 @@
       min-height: 0;
       height: 100%;
       overflow-y: auto;
-      padding: 24px 16px 40px;
+      padding: 24px 16px 100px;
       align-items: center;
       scrollbar-width: none;
     }
@@ -167,6 +167,19 @@
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 16px;
       padding: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .feed-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.28);
+      border-color: rgba(245,197,66,0.24);
+    }
+
+    .feed-card.money-card {
+      border: 1px solid rgba(245,197,66,0.35);
+      background: linear-gradient(180deg, rgba(245,197,66,0.08), rgba(255,255,255,0.02));
     }
 
     .media-box {
@@ -237,7 +250,7 @@
 
     .feed-content h3 {
       margin: 0 0 8px 0;
-      font-size: 18px;
+      font-size: 20px;
       line-height: 1.3;
     }
 
@@ -276,13 +289,20 @@
     .feed-platform.vimeo { background: rgba(26,183,234,0.15); color: #87dfff; }
     .feed-platform.dailymotion { background: rgba(0,110,255,0.15); color: #66a9ff; }
 
-    .feed-link {
+    .feed-link,
+    .money-link,
+    .sticky-link,
+    .popup-link {
       display: inline-block;
       color: #58a6ff;
       text-decoration: none;
       font-size: 14px;
+      font-weight: 700;
     }
-    .feed-link:hover { text-decoration: underline; }
+    .feed-link:hover,
+    .money-link:hover,
+    .sticky-link:hover,
+    .popup-link:hover { text-decoration: underline; }
 
     .column-3 {
       background: #0f141b;
@@ -371,102 +391,104 @@
       text-transform: uppercase;
     }
 
-    *::-webkit-scrollbar { width: 0; height: 0; }
-
-    .sticky-bar {
+    #stickyBar {
       position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 40;
-      padding: 10px 16px;
-      background: rgba(13,17,23,0.96);
-      border-top: 1px solid rgba(245,197,66,0.18);
-      backdrop-filter: blur(10px);
-      text-align: center;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      width: min(720px, calc(100% - 24px));
+      background: rgba(15,20,27,0.96);
+      border: 1px solid rgba(245,197,66,0.25);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 60;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
     }
 
-    .sticky-bar a {
+    .sticky-copy {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+    }
+
+    .sticky-link {
       color: #f5c542;
-      text-decoration: none;
-      font-weight: 800;
+      white-space: nowrap;
       font-size: 14px;
     }
 
-    .deal-popup {
+    #dealPopup {
       position: fixed;
       inset: 0;
-      z-index: 50;
+      background: rgba(0,0,0,0.62);
       display: none;
       align-items: center;
       justify-content: center;
+      z-index: 80;
       padding: 20px;
-      background: rgba(0,0,0,0.58);
     }
 
-    .deal-popup.active {
-      display: flex;
-    }
-
-    .deal-popup-card {
-      width: 100%;
-      max-width: 360px;
+    .popup-card {
+      width: min(420px, 100%);
       background: #161b22;
-      border: 1px solid rgba(245,197,66,0.24);
+      border: 1px solid rgba(245,197,66,0.28);
       border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-      text-align: center;
+      padding: 22px;
+      box-shadow: 0 18px 46px rgba(0,0,0,0.42);
     }
 
-    .deal-popup-card h3 {
-      margin: 0 0 10px 0;
-      font-size: 22px;
+    .popup-card h3 {
+      margin: 0 0 8px;
+      font-size: 24px;
       line-height: 1.15;
     }
 
-    .deal-popup-card p {
-      margin: 0 0 16px 0;
+    .popup-card p {
+      margin: 0 0 16px;
       color: rgba(255,255,255,0.78);
       line-height: 1.5;
       font-size: 14px;
     }
 
-    .deal-popup-actions {
+    .popup-actions {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .deal-popup-cta,
-    .deal-popup-close {
-      display: inline-flex;
+      gap: 12px;
       align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
+      flex-wrap: wrap;
     }
 
-    .deal-popup-cta {
-      background: #f5c542;
-      color: #0d1117;
-      border: 0;
+    .popup-link {
+      color: #f5c542;
+      font-size: 15px;
     }
 
-    .deal-popup-close {
-      background: rgba(255,255,255,0.04);
+    .popup-close {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: transparent;
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .feed-card[data-primary-url] {
+      padding: 8px 12px;
+      border-radius: 10px;
       cursor: pointer;
     }
 
+    .priority-pill {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(245,197,66,0.12);
+      color: #f5c542;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    *::-webkit-scrollbar { width: 0; height: 0; }
 
     @media (max-width: 960px) {
       .app { grid-template-columns: 240px minmax(0, 1fr); }
@@ -544,7 +566,7 @@
       #magnetoColumn {
         height: auto;
         overflow: visible;
-        padding: 12px 12px 24px;
+        padding: 12px 12px 110px;
       }
 
       .feed-container {
@@ -565,6 +587,14 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         margin: 0;
       }
+
+      #stickyBar {
+        width: calc(100% - 20px);
+        bottom: 10px;
+        padding: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -574,7 +604,7 @@
       <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
       <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Services, tools & deals.</div>
     </div>
-    <a href="/api/out?url=https%3A%2F%2Fwww.awin1.com%2Fcread.php%3Fawinmid%3D19856%26awinaffid%3D2834806&partner=Kiwi%20US&source=header_featured" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
+    <a id="featuredPartnerLink" href="#" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
       <div id="featuredDealLabel" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured</div>
       <div id="featuredDealTitle" style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Explore offers and services</div>
       <div id="featuredDealSubtitle" style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Discover more in one place</div>
@@ -593,7 +623,7 @@
 
     <div class="column column-2">
       <div id="magnetoColumn">
-        <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Live discovery feed ↓</div>
+        <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Discovery stream ↓</div>
         <div id="clickStats" style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;">🔥 Discovery clicks today: <span id="clickCount">0</span></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
@@ -605,74 +635,38 @@
     </div>
   </div>
 
+  <div id="stickyBar">
+    <div class="sticky-copy" id="stickyCopy">🔥 Limited deal: don’t miss the top partner offer.</div>
+    <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer">🔥 Get the deal now</a>
+  </div>
 
-  <div id="dealPopup" class="deal-popup" aria-hidden="true">
-    <div class="deal-popup-card">
-      <div style="font-size:12px;color:#f5c542;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Limited-Time Offer</div>
-      <h3 id="dealPopupTitle">🔥 Don’t miss this deal</h3>
-      <p id="dealPopupText">A hand-picked partner offer is ready now. Click through before it rotates.</p>
-      <div class="deal-popup-actions">
-        <a id="dealPopupLink" class="deal-popup-cta" href="#" target="_blank" rel="noopener noreferrer">👉 Get the deal now</a>
-        <button id="dealPopupClose" class="deal-popup-close" type="button">Keep browsing</button>
+  <div id="dealPopup">
+    <div class="popup-card">
+      <div class="priority-pill">Limited-time offer</div>
+      <h3 id="popupTitle">Don’t miss this deal</h3>
+      <p id="popupText">Tap below to unlock the featured partner offer before you keep scrolling.</p>
+      <div class="popup-actions">
+        <a id="popupLink" class="popup-link" href="#" target="_blank" rel="noopener noreferrer">👉 Get deal</a>
+        <button id="popupClose" class="popup-close" type="button">Keep scrolling</button>
       </div>
     </div>
   </div>
 
-  <div class="sticky-bar">
-    <a id="stickyOfferLink" href="#" target="_blank" rel="noopener noreferrer">🔥 Limited deal — unlock today’s best offer</a>
-  </div>
-
   <script>
     const fallbackPartners = [
-      { category: 'Transfers & Transport', name: 'Kiwitaxi', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', color: '#4da6ff', logo: 'https://kiwitaxi.com/img/logo.svg' },
-      { category: 'Transfers & Transport', name: 'Welcome Pickups', url: 'https://tpo.lv/XAJOoobr', color: '#4da6ff', logo: 'https://www.welcomepickups.com/wp-content/themes/welcome/img/logo.svg' },
-      { category: 'Transfers & Transport', name: 'Intui.travel', url: 'https://intui.tpo.lv/Rrx5VuN3', color: '#4da6ff', logo: 'https://intui.travel/favicon.ico' },
-      { category: 'Transfers & Transport', name: 'HolidayTaxis', url: 'https://holidaytaxis.tpo.lv/oHwpbrFt', color: '#4da6ff', logo: '' },
-      { category: 'Transfers & Transport', name: 'Busbud', url: 'https://busbud.tpo.lv/h4C6YPFZ', color: '#4da6ff', logo: 'https://www.busbud.com/favicon.ico' },
-
-      { category: 'Car Rentals', name: 'Localrent.com', url: 'https://localrent.tpo.lv/XS0CqdMP', color: '#ffb84d', logo: 'https://localrent.com/static/img/logo.svg' },
-      { category: 'Car Rentals', name: 'Economybookings.com', url: 'https://economybookings.tpo.lv/jSFMPEPA', color: '#ffb84d', logo: '' },
-      { category: 'Car Rentals', name: 'QEEQ', url: 'https://qeeq.tpo.lv/jklB4Pbm', color: '#ffb84d', logo: '' },
-      { category: 'Car Rentals', name: 'GetRentacar.com', url: 'https://getrentacar.tpo.lv/OR2TWduQ', color: '#ffb84d', logo: '' },
-
-      { category: 'SIM & Connectivity', name: 'Airalo', url: 'https://airalo.tpo.lv/eXjKLiuw', color: '#c17dff', logo: 'https://assets.airalo.com/images/airalo-logo.svg' },
-      { category: 'SIM & Connectivity', name: 'Drimsim', url: 'https://drimsim.tpo.lv/PGwr6JTr', color: '#c17dff', logo: 'https://drimsim.com/favicon.ico' },
-      { category: 'SIM & Connectivity', name: 'Yesim', url: 'https://yesim.tpo.lv/3vIzBQts', color: '#c17dff', logo: 'https://yesim.app/favicon.ico' },
-
-      { category: 'Tours & Activities', name: 'Klook', url: 'https://klook.tpo.lv/pTp1NljF', color: '#6cd98b', logo: 'https://res.klook.com/image/upload/v163/logo/klook-logo.svg' },
-      { category: 'Tours & Activities', name: 'GoCity', url: 'https://gocity.tpo.lv/Des5Cgov', color: '#6cd98b', logo: '' },
-      { category: 'Tours & Activities', name: 'BigBusTours', url: 'https://bigbustours.tpo.lv/grT1QWXA', color: '#6cd98b', logo: 'https://www.bigbustours.com/favicon.ico' },
-      { category: 'Tours & Activities', name: 'EatWith', url: 'https://eatwith.tpo.lv/BfAnpZNb', color: '#6cd98b', logo: '' },
-
-      { category: 'Insurance & Claims', name: 'EKTA Insurance', url: 'https://ektatraveling.tpo.lv/XWbZbj8S', color: '#ff6b6b', logo: '' },
-      { category: 'Insurance & Claims', name: 'AirHelp', url: 'https://airhelp.tpo.lv/EPrGDSO3', color: '#ff6b6b', logo: '' },
-      { category: 'Insurance & Claims', name: 'Compensair', url: 'https://compensair.tpo.lv/wxDDCITG', color: '#ff6b6b', logo: '' },
-
-      { category: 'Flights & Meta Search', name: 'Aviasales', url: 'https://aviasales.tpo.lv/VoWXgFFm', color: '#4dd2c0', logo: 'https://static.aviasales.com/brand/aviasales-logo.svg' },
-      { category: 'Flights & Meta Search', name: 'Kiwi.com', url: 'https://booking.tpo.lv/enwsEbCs', color: '#4dd2c0', logo: 'https://images.kiwi.com/common/kiwicom-logo.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago USA', url: 'https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago AR', url: 'https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago BR', url: 'https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago CO', url: 'https://www.awin1.com/cread.php?awinmid=105935&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago DE', url: 'https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago MX', url: 'https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago NZ', url: 'https://www.awin1.com/cread.php?awinmid=66032&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-      { category: 'Flights & Meta Search', name: 'Trivago PE', url: 'https://www.awin1.com/cread.php?awinmid=105927&awinaffid=2834806', color: '#4dd2c0', logo: 'https://img.trvcdn.net/logo/trivago-us.svg' },
-
-      { category: 'Storage & Services', name: 'Radical Storage', url: 'https://radicalstorage.tpo.lv/tna4hnly', color: '#ffd966', logo: '' },
-      { category: 'Storage & Services', name: 'Giftlab', url: 'https://www.awin1.com/cread.php?awinmid=95201&awinaffid=2834806', color: '#ffd966', logo: '' },
-      { category: 'Storage & Services', name: 'pdfFiller', url: 'https://www.awin1.com/cread.php?awinmid=94003&awinaffid=2834806', color: '#ffd966', logo: '' },
-
-      { category: 'Specialty & Other', name: 'Fiverr Affiliates', url: 'https://www.awin1.com/cread.php?awinmid=6288&awinaffid=2834806', color: '#8f7cff', logo: '' },
-      { category: 'Specialty & Other', name: 'Evisa', url: 'https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806', color: '#8f7cff', logo: '' },
-      { category: 'Specialty & Other', name: 'TechPals', url: 'https://www.awin1.com/cread.php?awinmid=116661&awinaffid=2834806', color: '#8f7cff', logo: '' }
+      { name: 'Cozeware', category: 'Storage & Services', url: 'https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806', tier: 1 },
+      { name: 'Airalo', category: 'SIM & Connectivity', url: 'https://airalo.tpo.lv/eXjKLiuw', tier: 2 },
+      { name: 'Kiwi.com', category: 'Flights & Meta Search', url: 'https://booking.tpo.lv/enwsEbCs', tier: 2 },
+      { name: 'Kiwitaxi', category: 'Transfers & Transport', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', tier: 3 },
+      { name: 'Welcome Pickups', category: 'Transfers & Transport', url: 'https://tpo.lv/XAJOoobr', tier: 3 },
+      { name: 'Klook', category: 'Tours & Activities', url: 'https://klook.tpo.lv/pTp1NljF', tier: 3 }
     ];
 
     const hybridVideoPool = [
       {
         platform: 'youtube',
-        title: 'Rick Astley - Never Gonna Give You Up',
-        description: 'YouTube platform source',
+        title: 'Travel smarter before you book',
+        description: 'Quick inspiration for your next trip decision.',
         author: 'YouTube',
         publishedAt: new Date().toISOString(),
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -681,8 +675,8 @@
       },
       {
         platform: 'youtube',
-        title: 'Uptown Funk',
-        description: 'YouTube platform source',
+        title: 'Cheap flights and booking hacks',
+        description: 'Short-form discovery content to keep the feed alive.',
         author: 'YouTube',
         publishedAt: new Date(Date.now() - 60000).toISOString(),
         url: 'https://www.youtube.com/watch?v=OPf0YbXqDm0',
@@ -690,19 +684,9 @@
         thumbnail: 'https://img.youtube.com/vi/OPf0YbXqDm0/hqdefault.jpg'
       },
       {
-        platform: 'youtube',
-        title: 'Despacito',
-        description: 'YouTube platform source',
-        author: 'YouTube',
-        publishedAt: new Date(Date.now() - 120000).toISOString(),
-        url: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
-        embedUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk?rel=0&modestbranding=1&playsinline=1',
-        thumbnail: 'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg'
-      },
-      {
         platform: 'vimeo',
-        title: 'Vimeo Feature',
-        description: 'Vimeo platform source',
+        title: 'Featured travel content',
+        description: 'Browse partner-ready inspiration and jump into offers.',
         author: 'Vimeo',
         publishedAt: new Date(Date.now() - 180000).toISOString(),
         url: 'https://vimeo.com/76979871',
@@ -710,19 +694,9 @@
         thumbnail: 'https://i.vimeocdn.com/video/452001751-640.jpg'
       },
       {
-        platform: 'vimeo',
-        title: 'Vimeo Feature 2',
-        description: 'Vimeo platform source',
-        author: 'Vimeo',
-        publishedAt: new Date(Date.now() - 240000).toISOString(),
-        url: 'https://vimeo.com/22439234',
-        embedUrl: 'https://player.vimeo.com/video/22439234?title=0&byline=0&portrait=0',
-        thumbnail: 'https://i.vimeocdn.com/video/128254312-640.jpg'
-      },
-      {
         platform: 'dailymotion',
-        title: 'Dailymotion Feature',
-        description: 'Dailymotion platform source',
+        title: 'Travel clip highlight',
+        description: 'Short and scrollable content for discovery mode.',
         author: 'Dailymotion',
         publishedAt: new Date(Date.now() - 300000).toISOString(),
         url: 'https://www.dailymotion.com/video/x84sh87',
@@ -730,19 +704,9 @@
         thumbnail: 'https://via.placeholder.com/720x1280/10203a/66a9ff?text=Dailymotion'
       },
       {
-        platform: 'dailymotion',
-        title: 'Dailymotion Feature 2',
-        description: 'Dailymotion platform source',
-        author: 'Dailymotion',
-        publishedAt: new Date(Date.now() - 330000).toISOString(),
-        url: 'https://www.dailymotion.com/video/x8h3t4p',
-        embedUrl: 'https://www.dailymotion.com/embed/video/x8h3t4p',
-        thumbnail: 'https://via.placeholder.com/720x1280/0d2245/66a9ff?text=Dailymotion+2'
-      },
-      {
         platform: 'tiktok',
-        title: 'TikTok Feature',
-        description: 'TikTok platform source preview',
+        title: 'Viral travel savings clip',
+        description: 'A preview slot for your short-form acquisition content.',
         author: 'TikTok',
         publishedAt: new Date(Date.now() - 360000).toISOString(),
         url: 'https://www.tiktok.com/@scout2015/video/6718335390845095173',
@@ -751,55 +715,15 @@
       }
     ];
 
-
-    const OFFERS = [
-      {
-        name: 'Cozeware',
-        category: 'Storage & Services',
-        url: 'https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806',
-        weight: 4,
-        title: '🔥 Cozeware Exclusive Deal',
-        description: 'Unlock a featured partner offer and drive direct response clicks.',
-        thumbnail: 'https://via.placeholder.com/720x1280/1b1f27/f5c542?text=Cozeware+Deal'
-      },
-      {
-        name: 'Fiverr Affiliates',
-        category: 'Specialty & Other',
-        url: 'https://www.awin1.com/cread.php?awinmid=6288&awinaffid=2834806',
-        weight: 3,
-        title: '🔥 Fiverr Offer Spotlight',
-        description: 'Push a high-intent offer with a direct call to action.',
-        thumbnail: 'https://via.placeholder.com/720x1280/1b1f27/f5c542?text=Fiverr+Deal'
-      },
-      {
-        name: 'Airalo',
-        category: 'SIM & Connectivity',
-        url: 'https://airalo.tpo.lv/eXjKLiuw',
-        weight: 3,
-        title: '🔥 Airalo Travel Deal',
-        description: 'Feature a top mobile connectivity offer with stronger conversion intent.',
-        thumbnail: 'https://via.placeholder.com/720x1280/1b1f27/f5c542?text=Airalo+Deal'
-      },
-      {
-        name: 'Kiwi.com',
-        category: 'Flights & Meta Search',
-        url: 'https://booking.tpo.lv/enwsEbCs',
-        weight: 2,
-        title: '🔥 Kiwi.com Featured Offer',
-        description: 'Surface an aggressive travel deal placement inside the feed.',
-        thumbnail: 'https://via.placeholder.com/720x1280/1b1f27/f5c542?text=Kiwi+Deal'
-      }
-    ];
-
-    const moneyCardEvery = 6;
-
     let partnersData = fallbackPartners.slice();
     let currentRegion = 'global';
     let currentLanguage = 'en';
     let allFeedItems = [];
     let renderedFeedCount = 0;
     let isRenderingMore = false;
+    let popupShown = false;
     const FEED_BATCH_SIZE = 6;
+    const FEED_INSERTION_INTERVAL = 6;
 
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
@@ -842,6 +766,14 @@
       el.textContent = count;
     }
 
+    function incrementClickCount() {
+      try {
+        const current = parseInt(localStorage.getItem('clickCount') || '0', 10);
+        localStorage.setItem('clickCount', String(current + 1));
+        updateClickDisplay();
+      } catch (err) {}
+    }
+
     function monetizeUrl(url, meta) {
       if (!isValidHttpUrl(url)) return '#';
 
@@ -863,72 +795,6 @@
       return '/api/out?' + params.toString();
     }
 
-    function getWeightedOffer() {
-      const pool = [];
-      OFFERS.forEach(function(offer) {
-        const weight = Math.max(1, Number(offer.weight) || 1);
-        for (let i = 0; i < weight; i += 1) pool.push(offer);
-      });
-      return pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    function buildMoneyCardItem(sourceLabel) {
-      const offer = getWeightedOffer();
-      return {
-        platform: 'deals',
-        title: offer.title,
-        description: offer.description,
-        author: 'SignalBoost',
-        publishedAt: new Date().toISOString(),
-        url: offer.url,
-        postUrl: offer.url,
-        thumbnail: offer.thumbnail,
-        partnerName: offer.name,
-        sourceLabel: sourceLabel || 'money_card',
-        isMoneyCard: true
-      };
-    }
-
-    function setStickyOffer() {
-      const el = document.getElementById('stickyOfferLink');
-      if (!el) return;
-      const offer = getWeightedOffer();
-      el.href = monetizeUrl(offer.url, { partner: offer.name, source: 'sticky_bar' });
-      el.textContent = '🔥 Limited deal — unlock ' + offer.name + ' now';
-    }
-
-    function showDealPopup() {
-      const popup = document.getElementById('dealPopup');
-      const link = document.getElementById('dealPopupLink');
-      const title = document.getElementById('dealPopupTitle');
-      const text = document.getElementById('dealPopupText');
-      if (!popup || !link || !title || !text) return;
-      const offer = getWeightedOffer();
-      title.textContent = offer.title;
-      text.textContent = offer.description;
-      link.href = monetizeUrl(offer.url, { partner: offer.name, source: 'popup' });
-      popup.classList.add('active');
-      popup.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeDealPopup() {
-      const popup = document.getElementById('dealPopup');
-      if (!popup) return;
-      popup.classList.remove('active');
-      popup.setAttribute('aria-hidden', 'true');
-    }
-
-    document.addEventListener('click', function(e) {
-      const link = e.target.closest('a[href]');
-      if (!link) return;
-      if (!link.href.includes('/api/out?') && !link.target) return;
-      try {
-        const current = parseInt(localStorage.getItem('clickCount') || '0', 10);
-        localStorage.setItem('clickCount', String(current + 1));
-        updateClickDisplay();
-      } catch (err) {}
-    });
-
     function hexToRgb(hex) {
       const clean = String(hex || '').replace('#', '');
       if (clean.length !== 6) return '143,159,179';
@@ -937,6 +803,20 @@
       const g = (bigint >> 8) & 255;
       const b = bigint & 255;
       return r + ',' + g + ',' + b;
+    }
+
+    function getCategoryColor(category) {
+      const map = {
+        'Transfers & Transport': '#4da6ff',
+        'Car Rentals': '#ffb84d',
+        'SIM & Connectivity': '#c17dff',
+        'Tours & Activities': '#6cd98b',
+        'Insurance & Claims': '#ff6b6b',
+        'Flights & Meta Search': '#4dd2c0',
+        'Storage & Services': '#ffd966',
+        'Specialty & Other': '#8f7cff'
+      };
+      return map[category] || '#8f9fb3';
     }
 
     function groupPartners(items) {
@@ -1002,12 +882,16 @@
       partnersRail.innerHTML = order
         .filter(function(name) { return grouped[name] && grouped[name].length; })
         .map(function(categoryName, index) {
-          const color = grouped[categoryName][0].color;
+          const color = getCategoryColor(categoryName);
+          const partners = grouped[categoryName].slice().sort(function(a, b) {
+            return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
+          });
           return '<div class="category">' +
             '<details' + (index === 0 ? ' open' : '') + '>' +
             '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
-            '<ul>' + grouped[categoryName].map(function(partner) {
-              return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
+            '<ul>' + partners.map(function(partner) {
+              const badge = partner.tier === 1 ? ' 🔥' : partner.tier === 2 ? ' ⭐' : '';
+              return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
             }).join('') + '</ul>' +
             '</details>' +
             '</div>';
@@ -1019,32 +903,32 @@
         global: {
           title: 'Top Brands',
           tagline: 'Scroll. Discover. Services, tools & deals.',
-          priority: ['Trivago USA','Trivago AR','Trivago BR','Trivago CO','Trivago DE','Trivago MX','Trivago NZ','Trivago PE','Kiwi.com','Kiwi CA','Kiwi MX','Kiwi US','Kiwitaxi','Airalo','Klook','Aviasales','GoCity','Welcome Pickups','Busbud','Localrent.com','Drimsim','Yesim','Tiqets US','Tiqets UK','Fiverr Affiliates']
+          priority: ['Cozeware','Airalo','Kiwi.com','Kiwitaxi','Welcome Pickups','Klook','Aviasales','Trivago USA','GoCity','Radical Storage']
         },
         mx: {
           title: 'Top Brands for Mexico',
           tagline: 'Discover services, tools and deals for Mexico.',
-          priority: ['Trivago MX','Kiwi MX','Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Busbud','Aviasales','Fiverr Affiliates','Intui.travel']
+          priority: ['Cozeware','Airalo','Kiwi MX','Kiwi.com','Trivago MX','Kiwitaxi','Welcome Pickups','Busbud']
         },
         br: {
           title: 'Top Brands for Brazil',
           tagline: 'Descubra serviços, ferramentas e ofertas no Brasil.',
-          priority: ['Trivago BR','Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Aviasales','Busbud','Fiverr Affiliates','Drimsim','Yesim']
+          priority: ['Cozeware','Airalo','Kiwi.com','Trivago BR','Kiwitaxi','Welcome Pickups','Aviasales']
         },
         es: {
           title: 'Top Brands for Spain',
           tagline: 'Descubre servicios, herramientas y ofertas en España.',
-          priority: ['Kiwi.com','Trivago DE','Trivago USA','Airalo','Welcome Pickups','Kiwitaxi','Tiqets UK','Tiqets FR','GoCity','Fiverr Affiliates']
+          priority: ['Cozeware','Airalo','Kiwi.com','Trivago DE','Tiqets UK','Klook','GoCity']
         },
         eu: {
           title: 'Top Brands for Europe',
           tagline: 'Discover services, tools and deals across Europe.',
-          priority: ['Kiwi.com','Trivago DE','Trivago NZ','Airalo','Welcome Pickups','Kiwitaxi','Tiqets UK','Tiqets FR','Tiqets IT','GoCity','Fiverr Affiliates']
+          priority: ['Cozeware','Airalo','Kiwi.com','Trivago DE','Tiqets DE','Kiwitaxi','Welcome Pickups']
         },
         pl: {
           title: 'Najlepsze marki dla Polski',
           tagline: 'Odkrywaj usługi, narzędzia i oferty w jednym miejscu.',
-          priority: ['Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Trivago DE','Trivago USA','Busbud','Aviasales','Fiverr Affiliates','Giftlab']
+          priority: ['Cozeware','Airalo','Kiwi.com','Kiwitaxi','Welcome Pickups','Busbud','Aviasales']
         }
       };
       return configs[region] || configs.global;
@@ -1065,7 +949,7 @@
     }
 
     function getBrandFallbackText(name) {
-      return String(name || '')
+      return String(name || 'SB')
         .split(' ')
         .filter(Boolean)
         .slice(0, 2)
@@ -1101,25 +985,31 @@
         seenFamilies.add(family);
       });
 
-      items.forEach(function(p) {
-        const family = getBrandFamily(p.name);
-        if (selected.length < 16 && !seenFamilies.has(family)) {
-          selected.push(p);
-          seenFamilies.add(family);
-        }
-      });
+      items
+        .slice()
+        .sort(function(a, b) {
+          return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
+        })
+        .forEach(function(p) {
+          const family = getBrandFamily(p.name);
+          if (selected.length < 16 && !seenFamilies.has(family)) {
+            selected.push(p);
+            seenFamilies.add(family);
+          }
+        });
 
       brandGrid.innerHTML = selected.map(function(p) {
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15', '0.35');
         const displayName = getBrandDisplayName(p.name);
         const fallbackText = getBrandFallbackText(displayName);
+        const badge = p.tier === 1 ? ' 🔥' : p.tier === 2 ? ' ⭐' : '';
         const logoMarkup = p.logo
           ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
           : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
         return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
           logoMarkup +
-          '<span>' + escapeHtml(displayName) + '</span>' +
+          '<span>' + escapeHtml(displayName) + badge + '</span>' +
           '</a>';
       }).join('');
     }
@@ -1152,7 +1042,8 @@
         postUrl: basePostUrl,
         embedUrl: derivedEmbedUrl,
         videoUrl: derivedVideoUrl,
-        thumbnail: item.thumbnail || item.image || item.poster || ''
+        thumbnail: item.thumbnail || item.image || item.poster || '',
+        category: item.category || ''
       };
     }
 
@@ -1183,36 +1074,46 @@
         '</div></a></div>';
     }
 
-    function getCTA(platform) {
-      const ctas = {
-        en: { explore: '🔥 Get the deal now', reddit: '🔥 View and unlock offer' },
-        es: { explore: '🔥 Consigue la oferta', reddit: '🔥 Ver y desbloquear oferta' },
-        pt: { explore: '🔥 Garanta a oferta', reddit: '🔥 Ver e desbloquear oferta' },
-        pl: { explore: '🔥 Odbierz ofertę', reddit: '🔥 Zobacz i odblokuj ofertę' }
-      };
-      const pack = ctas[currentLanguage] || ctas.en;
-      return platform === 'reddit' ? pack.reddit : pack.explore;
-    }
-
-    function getServiceCTA() {
+    function getCTA() {
       const labels = {
-        en: '💸 Unlock related offer',
-        es: '💸 Desbloquear oferta relacionada',
-        pt: '💸 Desbloquear oferta relacionada',
-        pl: '💸 Odblokuj powiązaną ofertę'
+        en: '🔥 Get the deal now',
+        es: '🔥 Consigue la oferta',
+        pt: '🔥 Aproveite a oferta',
+        pl: '🔥 Zgarnij ofertę'
       };
       return labels[currentLanguage] || labels.en;
     }
 
+    function getServiceCTA() {
+      const labels = {
+        en: '💸 Explore related services',
+        es: '💸 Explorar servicios relacionados',
+        pt: '💸 Explorar serviços relacionados',
+        pl: '💸 Odkryj powiązane usługi'
+      };
+      return labels[currentLanguage] || labels.en;
+    }
+
+    function getOfferFromPartners() {
+      if (!partnersData || !partnersData.length) return null;
+
+      const tier1 = partnersData.filter(function(p) { return Number(p.tier || 3) === 1; });
+      const tier2 = partnersData.filter(function(p) { return Number(p.tier || 3) === 2; });
+      const tier3 = partnersData.filter(function(p) { return Number(p.tier || 3) === 3; });
+      const roll = Math.random();
+
+      if (roll < 0.6 && tier1.length) {
+        return tier1[Math.floor(Math.random() * tier1.length)];
+      }
+      if (roll < 0.85 && tier2.length) {
+        return tier2[Math.floor(Math.random() * tier2.length)];
+      }
+      const pool = tier3.length ? tier3 : (tier2.length ? tier2 : tier1);
+      return pool[Math.floor(Math.random() * pool.length)] || null;
+    }
+
     function getRelatedPartnerForItem(item) {
       const platform = normalizePlatform(item.platform);
-      const regionConfig = getRegionConfig(currentRegion);
-      const regionPartners = regionConfig.priority
-        .map(function(name) {
-          return partnersData.find(function(p) { return p.name === name; });
-        })
-        .filter(Boolean);
-
       const preferredCategories =
         platform === 'youtube' || platform === 'vimeo' || platform === 'dailymotion' || platform === 'tiktok'
           ? ['Tours & Activities', 'Storage & Services', 'SIM & Connectivity', 'Flights & Meta Search']
@@ -1221,48 +1122,75 @@
             : ['Storage & Services', 'Specialty & Other', 'Flights & Meta Search'];
 
       for (const category of preferredCategories) {
-        const match = regionPartners.find(function(partner) { return partner.category === category; }) ||
-          partnersData.find(function(partner) { return partner.category === category; });
-        if (match) return match;
+        const categoryPool = partnersData.filter(function(partner) { return partner.category === category; });
+        if (!categoryPool.length) continue;
+        categoryPool.sort(function(a, b) { return (a.tier || 3) - (b.tier || 3); });
+        return categoryPool[0];
       }
 
-      return regionPartners[0] || partnersData[0] || null;
+      return getOfferFromPartners();
     }
 
     function getKicker(platform) {
       const map = {
-        en: { youtube: '🔥 Trending Video', vimeo: '🎬 Featured Content', dailymotion: '📺 Popular Clip', tiktok: '📱 Viral Clip', reddit: '💬 Community Pick', default: '✨ Discovery' },
-        es: { youtube: '🔥 Video en tendencia', vimeo: '🎬 Contenido destacado', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidad', default: '✨ Descubre' },
-        pt: { youtube: '🔥 Vídeo em alta', vimeo: '🎬 Conteúdo em destaque', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidade', default: '✨ Descobrir' },
-        pl: { youtube: '🔥 Popularne wideo', vimeo: '🎬 Polecane', dailymotion: '📺 Popularny klip', tiktok: '📱 Viral', reddit: '💬 Społeczność', default: '✨ Odkryj' }
+        en: { youtube: '🔥 Trending Video', vimeo: '🎬 Featured Content', dailymotion: '📺 Popular Clip', tiktok: '📱 Viral Clip', reddit: '💬 Community Pick', deals: '💸 Priority Offer', default: '✨ Discovery' },
+        es: { youtube: '🔥 Video en tendencia', vimeo: '🎬 Contenido destacado', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidad', deals: '💸 Oferta prioritaria', default: '✨ Descubre' },
+        pt: { youtube: '🔥 Vídeo em alta', vimeo: '🎬 Conteúdo em destaque', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidade', deals: '💸 Oferta prioritária', default: '✨ Descobrir' },
+        pl: { youtube: '🔥 Popularne wideo', vimeo: '🎬 Polecane', dailymotion: '📺 Popularny klip', tiktok: '📱 Viral', reddit: '💬 Społeczność', deals: '💸 Oferta priorytetowa', default: '✨ Odkryj' }
       };
       const pack = map[currentLanguage] || map.en;
       return pack[platform] || pack.default;
+    }
+
+    function createMoneyCardItem() {
+      const offer = getOfferFromPartners();
+      if (!offer) return null;
+      const descriptions = {
+        'Storage & Services': 'Unlock a priority deal from a featured service partner before you keep scrolling.',
+        'Flights & Meta Search': 'Compare smarter and tap into a featured booking opportunity right now.',
+        'SIM & Connectivity': 'Stay connected abroad with a highlighted offer picked for conversion.',
+        'Transfers & Transport': 'Pre-book a trusted ride and grab the offer while it is featured.',
+        'Tours & Activities': 'Book an experience deal surfaced ahead of the crowd.',
+        'Insurance & Claims': 'Protect your trip with a featured partner pick.',
+        'Car Rentals': 'Reserve a ride from a promoted rental partner now.',
+        'Specialty & Other': 'Tap the promoted offer before it rotates out.'
+      };
+      return {
+        isMoneyCard: true,
+        platform: 'deals',
+        title: offer.tier === 1 ? ('🔥 Featured deal: ' + offer.name) : ('💸 Limited deal: ' + offer.name),
+        description: descriptions[offer.category] || 'Don’t miss this partner offer while it is featured.',
+        author: 'SignalBoost',
+        publishedAt: new Date().toISOString(),
+        url: monetizeUrl(offer.url, { partner: offer.name, source: 'money_card' }),
+        postUrl: monetizeUrl(offer.url, { partner: offer.name, source: 'money_card' }),
+        thumbnail: 'https://via.placeholder.com/720x1280/161b22/f5c542?text=' + encodeURIComponent(offer.name),
+        partnerName: offer.name,
+        category: offer.category,
+        tier: offer.tier || 3
+      };
     }
 
     function appendFeedItems(items) {
       const html = items.map(function(item) {
         const platform = normalizePlatform(item.platform);
         const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
-        const monetizedPrimaryUrl = monetizeUrl(primaryUrl, { partner: item.partnerName || item.title || platform || 'offer', source: item.sourceLabel || ('feed_primary_' + platform) });
-        const extraNote = platform === 'reddit' ? '<div class="feed-meta">Reddit clips may require opening the Reddit post for full audio.</div>' : '';
         const relatedPartner = getRelatedPartnerForItem(item);
         const relatedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
         const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
+        const title = escapeHtml(item.title || 'Discover something new');
+        const description = escapeHtml(item.description || '');
+        const meta = '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>';
+        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA() + '</a>';
+        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedUrl) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '';
+        const moneyClass = item.isMoneyCard ? ' money-card' : '';
+        const clickableUrl = escapeHtml(primaryUrl);
 
-        return '<article class="feed-card" data-primary-url="' + escapeHtml(monetizedPrimaryUrl) + '">' +
-          createMediaMarkup(item) +
-          '<div class="feed-content">' +
-          '<h3>' + escapeHtml(item.title || 'Discover something new') + '</h3>' +
-          '<div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(platform) + '</div>' +
-          '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>' +
-          '<p>' + escapeHtml(item.description || '') + '</p>' +
-          extraNote +
-          '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' +
-          '<a class="feed-link" href="' + escapeHtml(monetizedPrimaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA(platform) + '</a>' +
-          (relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedUrl) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '') +
-          '</div>' +
-          '</div></article>';
+        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '">' +
+          (item.isMoneyCard
+            ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority partner' : 'Featured offer') + '</div><h3>' + title + '</h3>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
+            : createMediaMarkup(item) + '<div class="feed-content"><h3>' + title + '</h3><div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(platform) + '</div>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
+          '</article>';
       }).join('');
       feedContainer.insertAdjacentHTML('beforeend', html);
     }
@@ -1274,11 +1202,10 @@
       const nextItems = allFeedItems.slice(renderedFeedCount, renderedFeedCount + FEED_BATCH_SIZE);
       appendFeedItems(nextItems);
       renderedFeedCount += nextItems.length;
-
-      if (renderedFeedCount % moneyCardEvery === 0) {
-        appendFeedItems([buildMoneyCardItem('money_card_batch_' + renderedFeedCount)]);
+      if (renderedFeedCount % FEED_INSERTION_INTERVAL === 0) {
+        const moneyCard = createMoneyCardItem();
+        if (moneyCard) appendFeedItems([moneyCard]);
       }
-
       isRenderingMore = false;
     }
 
@@ -1441,23 +1368,127 @@
         const response = await fetch('/data/partners.json', { cache: 'no-store' });
         if (!response.ok) throw new Error('partners.json ' + response.status);
         const data = await response.json();
-        if (Array.isArray(data) && data.length) partnersData = data;
+        if (Array.isArray(data) && data.length) {
+          partnersData = data.map(function(p) {
+            return {
+              name: p.name,
+              category: p.category || 'Specialty & Other',
+              url: p.url,
+              tier: Number(p.tier || 3),
+              logo: p.logo || ''
+            };
+          });
+        }
       } catch (error) {
         console.error('partners load error', error);
         partnersData = fallbackPartners.slice();
       }
       renderPartners(partnersData);
       renderBrandGrid(partnersData);
+      setupFeaturedHeader();
+      updateStickyOffer();
     }
 
-    document.getElementById('partnerSearch').addEventListener('input', function() {
-      const q = this.value.trim().toLowerCase();
-      if (!q) {
-        renderPartners(partnersData);
-        return;
+    function setupFeaturedHeader() {
+      const featuredLink = document.getElementById('featuredPartnerLink');
+      const title = document.getElementById('featuredDealTitle');
+      const subtitle = document.getElementById('featuredDealSubtitle');
+
+      function rotateHeaderDeal() {
+        const offer = getOfferFromPartners();
+        if (!offer) return;
+        featuredLink.href = monetizeUrl(offer.url, { partner: offer.name, source: 'header_featured' });
+        title.textContent = offer.tier === 1 ? ('🔥 ' + offer.name + ' featured deal') : ('Explore ' + offer.name);
+        subtitle.textContent = offer.tier === 1 ? 'Priority partner offer surfaced more often for conversion.' : 'Discover more in one place';
       }
-      renderPartners(partnersData.filter(function(p) { return p.name.toLowerCase().includes(q); }));
-    });
+
+      rotateHeaderDeal();
+      window.setInterval(rotateHeaderDeal, 10000);
+    }
+
+    function updateStickyOffer() {
+      const stickyCopy = document.getElementById('stickyCopy');
+      const stickyLink = document.getElementById('stickyLink');
+      const offer = getOfferFromPartners();
+      if (!offer) return;
+      stickyCopy.textContent = offer.tier === 1
+        ? ('🔥 Priority offer: ' + offer.name + ' is being pushed right now.')
+        : ('💸 Featured deal: tap into ' + offer.name + ' before it rotates.');
+      stickyLink.href = monetizeUrl(offer.url, { partner: offer.name, source: 'sticky' });
+      stickyLink.textContent = getCTA();
+    }
+
+    function showPopupDeal() {
+      if (popupShown) return;
+      const popup = document.getElementById('dealPopup');
+      const title = document.getElementById('popupTitle');
+      const text = document.getElementById('popupText');
+      const link = document.getElementById('popupLink');
+      const offer = getOfferFromPartners();
+      if (!popup || !offer) return;
+      title.textContent = offer.tier === 1 ? ('🔥 ' + offer.name + ' is featured right now') : ('💸 Don’t miss ' + offer.name);
+      text.textContent = offer.tier === 1
+        ? 'This priority partner is receiving extra visibility. Tap now before you keep scrolling.'
+        : 'This partner offer is live now. Grab it before it rotates out.';
+      link.href = monetizeUrl(offer.url, { partner: offer.name, source: 'popup' });
+      link.textContent = getCTA();
+      popup.style.display = 'flex';
+      popupShown = true;
+    }
+
+    function attachGlobalInteractions() {
+      document.addEventListener('click', function(e) {
+        const anchor = e.target.closest('a[href]');
+        if (anchor) {
+          if (anchor.href.includes('/api/out?') || anchor.target === '_blank') {
+            incrementClickCount();
+          }
+          e.stopPropagation();
+          return;
+        }
+
+        const card = e.target.closest('.feed-card[data-open-url]');
+        if (!card) return;
+        const url = card.getAttribute('data-open-url');
+        if (!url || url === '#') return;
+        incrementClickCount();
+        window.open(url, '_blank', 'noopener');
+      });
+
+      document.getElementById('popupClose').addEventListener('click', function() {
+        document.getElementById('dealPopup').style.display = 'none';
+      });
+
+      document.getElementById('dealPopup').addEventListener('click', function(e) {
+        if (e.target.id === 'dealPopup') {
+          document.getElementById('dealPopup').style.display = 'none';
+        }
+      });
+
+      document.getElementById('partnerSearch').addEventListener('input', function() {
+        const q = this.value.trim().toLowerCase();
+        if (!q) {
+          renderPartners(partnersData);
+          return;
+        }
+        renderPartners(partnersData.filter(function(p) {
+          return p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+        }));
+      });
+    }
+
+    function scheduleMonetizationTriggers() {
+      window.setTimeout(showPopupDeal, 8000);
+      window.setInterval(updateStickyOffer, 12000);
+    }
+
+    detectRegion();
+    applyLanguageUI();
+    attachGlobalInteractions();
+    loadPartnersData();
+    setupInfiniteScroll();
+    updateClickDisplay();
+    scheduleMonetizationTriggers();
 
     fetchDynamicFeed()
       .then(function(liveItems) {
@@ -1477,30 +1508,6 @@
         }
         feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>' + escapeHtml(window.__sbEmptyFeedTitle || 'No new content yet') + '</h3><p>' + escapeHtml(window.__sbEmptyFeedText || 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.') + '</p></div></article>';
       });
-
-    document.addEventListener('click', function(e) {
-      const card = e.target.closest('.feed-card[data-primary-url]');
-      if (!card) return;
-      if (e.target.closest('a, button, input, textarea, select, summary, details, iframe, video')) return;
-      const targetUrl = card.getAttribute('data-primary-url');
-      if (!targetUrl) return;
-      window.open(targetUrl, '_blank', 'noopener');
-    });
-
-    document.getElementById('dealPopupClose').addEventListener('click', closeDealPopup);
-    document.getElementById('dealPopup').addEventListener('click', function(e) {
-      if (e.target === this) closeDealPopup();
-    });
-
-    setStickyOffer();
-    setInterval(setStickyOffer, 12000);
-    setTimeout(showDealPopup, 8000);
-
-    detectRegion();
-    applyLanguageUI();
-    loadPartnersData();
-    setupInfiniteScroll();
-    updateClickDisplay();
   </script>
 </body>
 </html>
