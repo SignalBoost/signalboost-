@@ -311,7 +311,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       border-radius: 12px;
       min-height: 92px;
       padding: 12px;
@@ -327,9 +327,21 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
 
+    .brand-logo-wrap {
+      width: 100%;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.96);
+    }
+
     .brand-tile img {
-      width: 28px;
-      height: 28px;
+      width: auto;
+      max-width: 100%;
+      height: 30px;
       object-fit: contain;
       display: block;
     }
@@ -339,6 +351,10 @@
       font-weight: 700;
       text-align: center;
       line-height: 1.2;
+    }
+
+    .brand-tile.logo-only span {
+      display: none;
     }
 
     *::-webkit-scrollbar { width: 0; height: 0; }
@@ -840,8 +856,9 @@
       brandGrid.innerHTML = selected.map(function(p) {
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15', '0.35');
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
-          (p.logo ? '<img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.style.display=\'none\';">' : '') +
+        const hasLogo = !!p.logo;
+        return '<a class="brand-tile' + (hasLogo ? ' logo-only' : '') + '" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
+          (hasLogo ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.parentNode.remove(); this.closest(\'a\').classList.remove(\'logo-only\');"></div>' : '') +
           '<span>' + escapeHtml(p.name) + '</span>' +
           '</a>';
       }).join('');
