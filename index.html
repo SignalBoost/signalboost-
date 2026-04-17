@@ -343,6 +343,14 @@
   </style>
 </head>
 <body>
+  <div id="localeSwitcher" style="position:fixed;top:12px;right:12px;z-index:30;display:flex;gap:6px;flex-wrap:wrap;max-width:320px;justify-content:flex-end;">
+    <button type="button" data-region="global" style="background:#161b22;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;padding:6px 10px;cursor:pointer;">🌍 Global</button>
+    <button type="button" data-region="mx" style="background:#161b22;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;padding:6px 10px;cursor:pointer;">🇲🇽 MX</button>
+    <button type="button" data-region="br" style="background:#161b22;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;padding:6px 10px;cursor:pointer;">🇧🇷 BR</button>
+    <button type="button" data-region="es" style="background:#161b22;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;padding:6px 10px;cursor:pointer;">🇪🇸 ES</button>
+    <button type="button" data-region="eu" style="background:#161b22;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;padding:6px 10px;cursor:pointer;">🇪🇺 EU</button>
+    <button type="button" data-region="pl" style="background:#161b22;border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:999px;padding:6px 10px;cursor:pointer;">🇵🇱 PL</button>
+  </div>
   <div style="position:fixed;top:0;left:0;width:280px;background:#0f141b;border-right:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 16px;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
     <div>
       <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
@@ -392,6 +400,7 @@
     let partnersData = fallbackPartners.slice();
     let currentRegion = 'global';
     let currentLanguage = 'en';
+    let localeForcedByUser = false;
 
     const promoFallbackItems = [];
 
@@ -499,6 +508,7 @@
     const feedContainer = document.getElementById('feedContainer');
     const brandGridTitle = document.getElementById('brandGridTitle');
     const regionTagline = document.getElementById('regionTagline');
+    const localeSwitcher = document.getElementById('localeSwitcher');
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -617,6 +627,11 @@
           title: 'Top Brands for Europe',
           tagline: 'Discover services, tools and deals across Europe.',
           priority: ['Kiwi.com','Trivago DE','Trivago NZ','Airalo','Welcome Pickups','Kiwitaxi','Tiqets UK','Tiqets FR','Tiqets IT','GoCity','Fiverr Affiliates']
+        },
+        pl: {
+          title: 'Najlepsze marki dla Polski',
+          tagline: 'Odkrywaj usługi, narzędzia i oferty dla Polski.',
+          priority: ['Kiwi.com','Airalo','Welcome Pickups','Kiwitaxi','Trivago DE','Trivago USA','Busbud','Aviasales','Fiverr Affiliates','Giftlab']
         }
       };
       return configs[region] || configs.global;
@@ -925,11 +940,26 @@
           featuredDealLabel: 'Oferta em destaque',
           featuredDealTitle: 'Compare voos no Kiwi.com',
           featuredDealSubtitle: 'Busca rápida • rotas globais',
-          headerFootnote: 'Marcas de viagem confiáveis e ofertas monetizadas.'
+          headerFootnote: 'Marcas de viagem confiáveis e ofertas monetizadas.',
+          emptyFeedTitle: 'Brak nowych materiałów',
+          emptyFeedText: 'Kolumna 2 korzysta ze sprawdzonej puli osadzeń YouTube, Vimeo i Dailymotion.'
+        },
+        pl: {
+          navTitle: 'Nawigacja',
+          partnerPlaceholder: 'Szukaj partnerów...',
+          feedIntro: 'Popularne treści, oferty i usługi ↓',
+          featuredDealLabel: 'Polecana oferta',
+          featuredDealTitle: 'Porównaj loty w Kiwi.com',
+          featuredDealSubtitle: 'Szybkie wyszukiwanie • trasy globalne',
+          headerFootnote: 'Zaufane marki podróżnicze i monetyzowane oferty zewnętrzne.',
+          emptyFeedTitle: 'Brak nowych materiałów',
+          emptyFeedText: 'Kolumna 2 korzysta ze sprawdzonej puli osadzeń YouTube, Vimeo i Dailymotion.'
         }
       };
 
       const langCopy = copy[currentLanguage] || copy.en;
+      const emptyFeedTitle = langCopy.emptyFeedTitle || 'No platform videos yet';
+      const emptyFeedText = langCopy.emptyFeedText || 'Column 2 now uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.';
       const navTitle = document.getElementById('navTitle');
       const partnerSearch = document.getElementById('partnerSearch');
       const feedIntro = document.getElementById('feedIntro');
@@ -946,6 +976,15 @@
       if (featuredDealSubtitle) featuredDealSubtitle.textContent = langCopy.featuredDealSubtitle;
       if (headerFootnote) headerFootnote.textContent = langCopy.headerFootnote;
       document.documentElement.lang = currentLanguage;
+      window.__sbEmptyFeedTitle = emptyFeedTitle;
+      window.__sbEmptyFeedText = emptyFeedText;
+      if (localeSwitcher) {
+        localeSwitcher.querySelectorAll('button[data-region]').forEach(function(btn) {
+          const active = btn.getAttribute('data-region') === currentRegion;
+          btn.style.borderColor = active ? '#f5c542' : 'rgba(255,255,255,0.12)';
+          btn.style.color = active ? '#f5c542' : '#fff';
+        });
+      }
     }
 
     function detectRegion() {
@@ -960,15 +999,21 @@
         return;
       }
 
-      if (langParam === 'pt' || browserLang.startsWith('pt-br')) {
+      if (langParam === 'pt' || browserLang.startsWith('pt-br') || browserLang.startsWith('pt-pt')) {
         currentLanguage = 'pt';
         currentRegion = regionParam || 'br';
         return;
       }
 
+      if (langParam === 'pl' || browserLang.startsWith('pl')) {
+        currentLanguage = 'pl';
+        currentRegion = regionParam || 'pl';
+        return;
+      }
+
       if (regionParam) {
         currentRegion = regionParam;
-        currentLanguage = regionParam === 'mx' || regionParam === 'es' ? 'es' : regionParam === 'br' ? 'pt' : 'en';
+        currentLanguage = regionParam === 'mx' || regionParam === 'es' ? 'es' : regionParam === 'br' ? 'pt' : regionParam === 'pl' ? 'pl' : 'en';
         return;
       }
 
@@ -984,7 +1029,7 @@
         return;
       }
 
-      const europeLanguages = ['fr', 'de', 'it', 'nl', 'pl', 'sv', 'da', 'no', 'fi'];
+      const europeLanguages = ['fr', 'de', 'it', 'nl', 'sv', 'da', 'no', 'fi'];
       if (europeLanguages.some(function(code) { return browserLang.startsWith(code); })) {
         currentLanguage = 'en';
         currentRegion = 'eu';
@@ -1021,7 +1066,7 @@
       .then(function(liveItems) {
         const platformItems = buildDynamicFeed(liveItems);
         if (!platformItems.length) {
-          feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>No platform videos yet</h3><p>Column 2 now uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.</p></div></article>';
+          feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>' + escapeHtml(window.__sbEmptyFeedTitle || 'No platform videos yet') + '</h3><p>' + escapeHtml(window.__sbEmptyFeedText || 'Column 2 now uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.') + '</p></div></article>';
           return;
         }
         renderFeed(platformItems);
@@ -1033,7 +1078,7 @@
           renderFeed(platformItems);
           return;
         }
-        feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>Platform feed unavailable</h3><p>The current platform sources did not return usable content.</p></div></article>';
+        feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>' + escapeHtml(window.__sbEmptyFeedTitle || 'Platform feed unavailable') + '</h3><p>' + escapeHtml(window.__sbEmptyFeedText || 'The current platform sources did not return usable content.') + '</p></div></article>';
       });
 
     const search = document.getElementById('partnerSearch');
