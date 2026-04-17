@@ -17,6 +17,21 @@
       color: #fff;
     }
     body { overflow: hidden; }
+    .top-feature {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      background: #0f141b;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 16px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
 
     .app {
       display: grid;
@@ -334,16 +349,102 @@
     }
 
     @media (max-width: 768px) {
-      .app { grid-template-columns: 1fr; }
-      .column-1 { display: none; }
-      #magnetoColumn { padding: 12px 12px 24px; }
-      .feed-container { max-width: 100%; }
-      .media-box { min-height: 360px; max-height: 70vh; }
+      html, body {
+        height: auto;
+        min-height: 100%;
+      }
+
+      body {
+        overflow: auto;
+      }
+
+      .top-feature {
+        position: relative;
+        width: 100%;
+        border-right: 0;
+        padding: 14px 16px;
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
+      }
+
+      .column {
+        overflow: visible;
+      }
+
+      .column-1,
+      .column-2,
+      .column-3 {
+        display: flex;
+        width: 100%;
+        border: 0;
+        padding-top: 0;
+      }
+
+      .column-1 {
+        background: #0f141b;
+        padding: 0 0 10px;
+      }
+
+      .column-1-header,
+      .column-3 h2 {
+        text-align: left;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .column-1-search-wrap {
+        padding: 10px 16px 0;
+      }
+
+      .column-1-search {
+        max-width: 100%;
+      }
+
+      .column-1-scroll {
+        overflow: visible;
+        padding: 12px 16px;
+        align-items: stretch;
+      }
+
+      .category,
+      .brand-grid {
+        max-width: 100%;
+      }
+
+      #magnetoColumn {
+        height: auto;
+        overflow: visible;
+        padding: 12px 12px 24px;
+      }
+
+      .feed-container {
+        max-width: 100%;
+      }
+
+      .media-box {
+        min-height: 320px;
+        max-height: 65vh;
+      }
+
+      .column-3 {
+        padding: 8px 16px 28px;
+        background: #0f141b;
+      }
+
+      .brand-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <div style="position:fixed;top:0;left:0;width:280px;background:#0f141b;border-right:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 16px;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+  <div class="top-feature">
     <div>
       <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
       <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Services, tools & deals.</div>
@@ -807,13 +908,48 @@
 
     function getCTA(platform) {
       const ctas = {
-        en: { explore: 'Explore now', reddit: 'View on Reddit' },
-        es: { explore: 'Explorar ahora', reddit: 'Ver en Reddit' },
-        pt: { explore: 'Explorar agora', reddit: 'Ver no Reddit' },
-        pl: { explore: 'Zobacz teraz', reddit: 'Zobacz na Reddit' }
+        en: { explore: 'Watch source', reddit: 'View on Reddit' },
+        es: { explore: 'Ver fuente', reddit: 'Ver en Reddit' },
+        pt: { explore: 'Ver origem', reddit: 'Ver no Reddit' },
+        pl: { explore: 'Zobacz źródło', reddit: 'Zobacz na Reddit' }
       };
       const pack = ctas[currentLanguage] || ctas.en;
       return platform === 'reddit' ? pack.reddit : pack.explore;
+    }
+
+    function getServiceCTA() {
+      const labels = {
+        en: 'Explore related services',
+        es: 'Explorar servicios relacionados',
+        pt: 'Explorar serviços relacionados',
+        pl: 'Odkryj powiązane usługi'
+      };
+      return labels[currentLanguage] || labels.en;
+    }
+
+    function getRelatedPartnerForItem(item) {
+      const platform = normalizePlatform(item.platform);
+      const regionConfig = getRegionConfig(currentRegion);
+      const regionPartners = regionConfig.priority
+        .map(function(name) {
+          return partnersData.find(function(p) { return p.name === name; });
+        })
+        .filter(Boolean);
+
+      const preferredCategories =
+        platform === 'youtube' || platform === 'vimeo' || platform === 'dailymotion' || platform === 'tiktok'
+          ? ['Tours & Activities', 'Storage & Services', 'SIM & Connectivity', 'Flights & Meta Search']
+          : platform === 'reddit'
+            ? ['Flights & Meta Search', 'Transfers & Transport', 'Tours & Activities', 'Storage & Services']
+            : ['Storage & Services', 'Specialty & Other', 'Flights & Meta Search'];
+
+      for (const category of preferredCategories) {
+        const match = regionPartners.find(function(partner) { return partner.category === category; }) ||
+          partnersData.find(function(partner) { return partner.category === category; });
+        if (match) return match;
+      }
+
+      return regionPartners[0] || partnersData[0] || null;
     }
 
     function getKicker(platform) {
@@ -832,6 +968,9 @@
         const platform = normalizePlatform(item.platform);
         const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
         const extraNote = platform === 'reddit' ? '<div class="feed-meta">Reddit clips may require opening the Reddit post for full audio.</div>' : '';
+        const relatedPartner = getRelatedPartnerForItem(item);
+        const relatedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
+        const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
 
         return '<article class="feed-card">' +
           createMediaMarkup(item) +
@@ -841,7 +980,10 @@
           '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>' +
           '<p>' + escapeHtml(item.description || '') + '</p>' +
           extraNote +
+          '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' +
           '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA(platform) + '</a>' +
+          (relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedUrl) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '') +
+          '</div>' +
           '</div></article>';
       }).join('');
       feedContainer.insertAdjacentHTML('beforeend', html);
