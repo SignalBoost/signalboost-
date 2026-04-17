@@ -578,6 +578,54 @@
       return grouped;
     }
 
+    function getCategoryLabel(categoryName) {
+      const labels = {
+        en: {
+          'Transfers & Transport': 'Transfers & Transport',
+          'Car Rentals': 'Car Rentals',
+          'SIM & Connectivity': 'SIM & Connectivity',
+          'Tours & Activities': 'Tours & Activities',
+          'Insurance & Claims': 'Insurance & Claims',
+          'Flights & Meta Search': 'Flights & Meta Search',
+          'Storage & Services': 'Storage & Services',
+          'Specialty & Other': 'Specialty & Other'
+        },
+        es: {
+          'Transfers & Transport': 'Traslados y transporte',
+          'Car Rentals': 'Alquiler de autos',
+          'SIM & Connectivity': 'SIM y conectividad',
+          'Tours & Activities': 'Tours y actividades',
+          'Insurance & Claims': 'Seguros y reclamaciones',
+          'Flights & Meta Search': 'Vuelos y metabuscadores',
+          'Storage & Services': 'Almacenamiento y servicios',
+          'Specialty & Other': 'Especialidades y otros'
+        },
+        pt: {
+          'Transfers & Transport': 'Traslados e transporte',
+          'Car Rentals': 'Aluguel de carros',
+          'SIM & Connectivity': 'SIM e conectividade',
+          'Tours & Activities': 'Passeios e atividades',
+          'Insurance & Claims': 'Seguro e reembolsos',
+          'Flights & Meta Search': 'Voos e metabusca',
+          'Storage & Services': 'Armazenamento e serviços',
+          'Specialty & Other': 'Especialidades e outros'
+        },
+        pl: {
+          'Transfers & Transport': 'Transfery i transport',
+          'Car Rentals': 'Wynajem samochodów',
+          'SIM & Connectivity': 'SIM i łączność',
+          'Tours & Activities': 'Wycieczki i atrakcje',
+          'Insurance & Claims': 'Ubezpieczenia i roszczenia',
+          'Flights & Meta Search': 'Loty i porównywarki',
+          'Storage & Services': 'Przechowywanie i usługi',
+          'Specialty & Other': 'Specjalne i inne'
+        }
+      };
+
+      const pack = labels[currentLanguage] || labels.en;
+      return pack[categoryName] || categoryName;
+    }
+
     function renderPartners(items) {
       const grouped = groupPartners(items);
       const order = ['Transfers & Transport', 'Car Rentals', 'SIM & Connectivity', 'Tours & Activities', 'Insurance & Claims', 'Flights & Meta Search', 'Storage & Services', 'Specialty & Other'];
@@ -588,7 +636,7 @@
           const color = grouped[categoryName][0].color;
           return '<div class="category">' +
             '<details' + (index === 0 ? ' open' : '') + '>' +
-            '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(categoryName) + '</summary>' +
+            '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
             '<ul>' + grouped[categoryName].map(function(partner) {
               return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + '</a></li>';
             }).join('') + '</ul>' +
