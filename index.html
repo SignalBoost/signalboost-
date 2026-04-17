@@ -795,6 +795,39 @@
       return '/api/out?' + params.toString();
     }
 
+    function setTrackedLinkAttributes(element, rawUrl, meta) {
+      if (!element) return;
+      const trackedUrl = monetizeUrl(rawUrl, meta);
+      element.href = rawUrl || '#';
+      element.setAttribute('data-raw-url', rawUrl || '#');
+      element.setAttribute('data-tracked-url', trackedUrl || '#');
+      if (meta && meta.partner) element.setAttribute('data-partner', meta.partner);
+      if (meta && meta.source) element.setAttribute('data-source', meta.source);
+    }
+
+    async function canUseTrackedUrl(trackedUrl) {
+      if (!trackedUrl || trackedUrl === '#') return false;
+      if (!trackedUrl.startsWith('/api/out?')) return true;
+      try {
+        const response = await fetch(trackedUrl, {
+          method: 'HEAD',
+          redirect: 'manual',
+          cache: 'no-store'
+        });
+        return response.status >= 300 && response.status < 400;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async function openPartnerLink(rawUrl, trackedUrl) {
+      if (!rawUrl || rawUrl === '#') return;
+      const useTracked = await canUseTrackedUrl(trackedUrl);
+      const destination = useTracked ? trackedUrl : rawUrl;
+      incrementClickCount();
+      window.open(destination, '_blank', 'noopener,noreferrer');
+    }
+
     function hexToRgb(hex) {
       const clean = String(hex || '').replace('#', '');
       if (clean.length !== 6) return '143,159,179';
@@ -891,7 +924,7 @@
             '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
             '<ul>' + partners.map(function(partner) {
               const badge = partner.tier === 1 ? ' 🔥' : partner.tier === 2 ? ' ⭐' : '';
-              return '<li><a href="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
+              return '<li><a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
             }).join('') + '</ul>' +
             '</details>' +
             '</div>';
@@ -1007,7 +1040,7 @@
         const logoMarkup = p.logo
           ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
           : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" data-partner="' + escapeHtml(p.name) + '" data-source="' + escapeHtml('column3_' + currentRegion) + '" target="_blank" rel="noopener noreferrer">' +
           logoMarkup +
           '<span>' + escapeHtml(displayName) + badge + '</span>' +
           '</a>';
@@ -1176,17 +1209,21 @@
         const platform = normalizePlatform(item.platform);
         const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
         const relatedPartner = getRelatedPartnerForItem(item);
-        const relatedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
+        const relatedTrackedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
         const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
         const title = escapeHtml(item.title || 'Discover something new');
         const description = escapeHtml(item.description || '');
         const meta = '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>';
-        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA() + '</a>';
-        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedUrl) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '';
+        const primaryTrackedUrl = item.isMoneyCard && item.partnerName
+          ? monetizeUrl(primaryUrl, { partner: item.partnerName, source: item.source || 'money_card' })
+          : primaryUrl;
+        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA() + '</a>';
+        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-source="' + escapeHtml('column2_service_' + platform + '_' + currentRegion) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '';
         const moneyClass = item.isMoneyCard ? ' money-card' : '';
         const clickableUrl = escapeHtml(primaryUrl);
+        const clickableTrackedUrl = escapeHtml(primaryTrackedUrl);
 
-        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '">' +
+        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '">' +
           (item.isMoneyCard
             ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority partner' : 'Featured offer') + '</div><h3>' + title + '</h3>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
             : createMediaMarkup(item) + '<div class="feed-content"><h3>' + title + '</h3><div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(platform) + '</div>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
@@ -1397,7 +1434,7 @@
       function rotateHeaderDeal() {
         const offer = getOfferFromPartners();
         if (!offer) return;
-        featuredLink.href = monetizeUrl(offer.url, { partner: offer.name, source: 'header_featured' });
+        setTrackedLinkAttributes(featuredLink, offer.url, { partner: offer.name, source: 'header_featured' });
         title.textContent = offer.tier === 1 ? ('🔥 ' + offer.name + ' featured deal') : ('Explore ' + offer.name);
         subtitle.textContent = offer.tier === 1 ? 'Priority partner offer surfaced more often for conversion.' : 'Discover more in one place';
       }
@@ -1414,7 +1451,7 @@
       stickyCopy.textContent = offer.tier === 1
         ? ('🔥 Priority offer: ' + offer.name + ' is being pushed right now.')
         : ('💸 Featured deal: tap into ' + offer.name + ' before it rotates.');
-      stickyLink.href = monetizeUrl(offer.url, { partner: offer.name, source: 'sticky' });
+      setTrackedLinkAttributes(stickyLink, offer.url, { partner: offer.name, source: 'sticky' });
       stickyLink.textContent = getCTA();
     }
 
@@ -1430,7 +1467,7 @@
       text.textContent = offer.tier === 1
         ? 'This priority partner is receiving extra visibility. Tap now before you keep scrolling.'
         : 'This partner offer is live now. Grab it before it rotates out.';
-      link.href = monetizeUrl(offer.url, { partner: offer.name, source: 'popup' });
+      setTrackedLinkAttributes(link, offer.url, { partner: offer.name, source: 'popup' });
       link.textContent = getCTA();
       popup.style.display = 'flex';
       popupShown = true;
@@ -1440,8 +1477,13 @@
       document.addEventListener('click', function(e) {
         const anchor = e.target.closest('a[href]');
         if (anchor) {
-          if (anchor.href.includes('/api/out?') || anchor.target === '_blank') {
-            incrementClickCount();
+          const rawUrl = anchor.getAttribute('data-raw-url') || anchor.getAttribute('href');
+          const trackedUrl = anchor.getAttribute('data-tracked-url') || anchor.getAttribute('href');
+          if (rawUrl && rawUrl !== '#') {
+            e.preventDefault();
+            e.stopPropagation();
+            openPartnerLink(rawUrl, trackedUrl);
+            return;
           }
           e.stopPropagation();
           return;
@@ -1449,10 +1491,10 @@
 
         const card = e.target.closest('.feed-card[data-open-url]');
         if (!card) return;
-        const url = card.getAttribute('data-open-url');
-        if (!url || url === '#') return;
-        incrementClickCount();
-        window.open(url, '_blank', 'noopener');
+        const rawUrl = card.getAttribute('data-open-url');
+        const trackedUrl = card.getAttribute('data-open-tracked-url') || rawUrl;
+        if (!rawUrl || rawUrl === '#') return;
+        openPartnerLink(rawUrl, trackedUrl);
       });
 
       document.getElementById('popupClose').addEventListener('click', function() {
