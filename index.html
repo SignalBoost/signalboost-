@@ -353,8 +353,20 @@
       line-height: 1.2;
     }
 
-    .brand-tile.logo-only span {
-      display: none;
+    .brand-fallback {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 30px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15,20,27,0.12);
+      color: #0f141b;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     *::-webkit-scrollbar { width: 0; height: 0; }
@@ -829,9 +841,9 @@
 
     function getBrandFamily(name) {
       const value = String(name || '');
-      if (/^Trivago/i.test(value)) return 'Trivago';
-      if (/^Kiwi/i.test(value)) return 'Kiwi';
-      if (/^Tiqets/i.test(value)) return 'Tiqets';
+      if (value.toLowerCase().indexOf('trivago') === 0) return 'Trivago';
+      if (value.toLowerCase().indexOf('kiwi') === 0) return 'Kiwi';
+      if (value.toLowerCase().indexOf('tiqets') === 0) return 'Tiqets';
       return value;
     }
 
@@ -839,6 +851,15 @@
       const family = getBrandFamily(name);
       if (family === 'Kiwi') return 'Kiwi.com';
       return family;
+    }
+
+    function getBrandFallbackText(name) {
+      return String(name || '')
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(function(part) { return part[0]; })
+        .join('') || 'SB';
     }
 
     function renderBrandGrid(items) {
@@ -880,10 +901,13 @@
       brandGrid.innerHTML = selected.map(function(p) {
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15', '0.35');
-        const hasLogo = !!p.logo;
         const displayName = getBrandDisplayName(p.name);
-        return '<a class="brand-tile' + (hasLogo ? ' logo-only' : '') + '" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
-          (hasLogo ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.parentNode.remove(); this.closest(\'a\').classList.remove(\'logo-only\');"></div>' : '') +
+        const fallbackText = getBrandFallbackText(displayName);
+        const logoMarkup = p.logo
+          ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
+          : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" target="_blank" rel="noopener noreferrer">' +
+          logoMarkup +
           '<span>' + escapeHtml(displayName) + '</span>' +
           '</a>';
       }).join('');
