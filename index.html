@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -915,6 +917,84 @@
         align-items: flex-start;
       }
     }
+
+    .amazon-section {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,153,0,0.14), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,153,0,0.28);
+    }
+
+    .amazon-section h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    .amazon-section p {
+      margin: 0 0 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .amazon-search-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .amazon-search-form input {
+      flex: 1 1 220px;
+      min-width: 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(13,17,23,0.95);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .amazon-search-form button {
+      appearance: none;
+      border: 1px solid rgba(255,153,0,0.34);
+      background: rgba(255,153,0,0.14);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .amazon-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .amazon-chip {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .amazon-chip:hover {
+      border-color: rgba(255,153,0,0.55);
+      background: rgba(255,153,0,0.12);
+    }
+
   </style>
 </head>
 <body>
@@ -984,6 +1064,30 @@
           <div id="comparisonGrid" class="comparison-grid"></div>
         </section>
 
+
+
+        <section id="amazonSection" class="amazon-section">
+          <div class="entry-kicker">Amazon storefront</div>
+          <h2>Shop Amazon with your StoreID built in</h2>
+          <p>
+            This section uses your Amazon Associate StoreID <strong>signalboostai-20</strong> in the outbound links so visitors can search Amazon or jump into featured categories from inside your mall.
+          </p>
+
+          <form id="amazonSearchForm" class="amazon-search-form" action="https://www.amazon.com/s" method="get" target="_blank" rel="noopener noreferrer">
+            <input id="amazonSearchInput" type="text" name="k" placeholder="Search Amazon products..." />
+            <input type="hidden" name="tag" value="signalboostai-20" />
+            <button type="submit">Search Amazon</button>
+          </form>
+
+          <div class="amazon-chip-row">
+            <a class="amazon-chip" href="https://www.amazon.com/?tag=signalboostai-20" data-raw-url="https://www.amazon.com/?tag=signalboostai-20" data-tracked-url="https://www.amazon.com/?tag=signalboostai-20" data-partner="Amazon" data-category="Marketplace" data-tier="1" data-source="amazon_hub" target="_blank" rel="noopener noreferrer">Amazon Home</a>
+            <a class="amazon-chip" href="https://www.amazon.com/s?k=travel+accessories&tag=signalboostai-20" data-raw-url="https://www.amazon.com/s?k=travel+accessories&tag=signalboostai-20" data-tracked-url="https://www.amazon.com/s?k=travel+accessories&tag=signalboostai-20" data-partner="Amazon" data-category="Marketplace" data-tier="1" data-source="amazon_hub" target="_blank" rel="noopener noreferrer">Travel accessories</a>
+            <a class="amazon-chip" href="https://www.amazon.com/s?k=portable+chargers&tag=signalboostai-20" data-raw-url="https://www.amazon.com/s?k=portable+chargers&tag=signalboostai-20" data-tracked-url="https://www.amazon.com/s?k=portable+chargers&tag=signalboostai-20" data-partner="Amazon" data-category="Marketplace" data-tier="1" data-source="amazon_hub" target="_blank" rel="noopener noreferrer">Portable chargers</a>
+            <a class="amazon-chip" href="https://www.amazon.com/s?k=luggage&tag=signalboostai-20" data-raw-url="https://www.amazon.com/s?k=luggage&tag=signalboostai-20" data-tracked-url="https://www.amazon.com/s?k=luggage&tag=signalboostai-20" data-partner="Amazon" data-category="Marketplace" data-tier="1" data-source="amazon_hub" target="_blank" rel="noopener noreferrer">Luggage</a>
+            <a class="amazon-chip" href="https://www.amazon.com/s?k=travel+insurance+organizer&tag=signalboostai-20" data-raw-url="https://www.amazon.com/s?k=travel+insurance+organizer&tag=signalboostai-20" data-tracked-url="https://www.amazon.com/s?k=travel+insurance+organizer&tag=signalboostai-20" data-partner="Amazon" data-category="Marketplace" data-tier="1" data-source="amazon_hub" target="_blank" rel="noopener noreferrer">Travel organizers</a>
+          </div>
+        </section>
+
         <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Curated picks for you ↓</div>
         <div id="clickStats" style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;">🔥 Discovery clicks today: <span id="clickCount">0</span></div>
         <div id="feedContainer" class="feed-container"></div>
@@ -1015,6 +1119,7 @@
 
   <script>
     const fallbackPartners = [
+      { name: 'Amazon', category: 'Marketplace', url: 'https://www.amazon.com/?tag=signalboostai-20', tier: 1, logo: '' },
       { name: 'Cozeware', category: 'Storage & Services', url: 'https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806', tier: 1, logo: '' },
       { name: 'Airalo', category: 'SIM & Connectivity', url: 'https://airalo.tpo.lv/eXjKLiuw', tier: 2, logo: '' },
       { name: 'Kiwi.com', category: 'Flights & Meta Search', url: 'https://booking.tpo.lv/enwsEbCs', tier: 2, logo: '' },
@@ -1290,6 +1395,7 @@
         'Insurance & Claims': '#ff6b6b',
         'Flights & Meta Search': '#4dd2c0',
         'Storage & Services': '#ffd966',
+        'Marketplace': '#ff9900',
         'Specialty & Other': '#8f7cff'
       };
       return map[category] || '#8f9fb3';
@@ -1313,6 +1419,7 @@
         'Insurance & Claims': 'Insurance & Claims',
         'Flights & Meta Search': 'Flights & comparisons',
         'Storage & Services': 'Storage & Services',
+        'Marketplace': 'Amazon & Marketplace',
         'Specialty & Other': 'Specialty & Other'
       };
       return labels[categoryName] || categoryName;
@@ -1367,6 +1474,7 @@
         'Insurance & Claims',
         'Flights & Meta Search',
         'Storage & Services',
+        'Marketplace',
         'Specialty & Other'
       ];
 
@@ -1457,6 +1565,7 @@
         'Car Rentals': 'rgba(255,184,77,0.15)',
         'Insurance & Claims': 'rgba(255,107,107,0.15)',
         'Storage & Services': 'rgba(255,217,102,0.15)',
+        'Marketplace': 'rgba(255,153,0,0.15)',
         'Specialty & Other': 'rgba(143,124,255,0.15)'
       };
 
@@ -1582,6 +1691,11 @@
           description: 'Useful services for easier trips.',
           cta: 'Explore services'
         },
+        'Marketplace': {
+          title: '🛒 Shop Amazon picks',
+          description: 'Browse Amazon with your StoreID attached.',
+          cta: 'Open Amazon'
+        },
         'Specialty & Other': {
           title: '✨ Discover a useful tool',
           description: 'Curated digital services for you.',
@@ -1630,6 +1744,7 @@
         'Tours & Activities': 'Explore',
         'Car Rentals': 'Find rentals',
         'Storage & Services': 'Explore service',
+        'Marketplace': 'Open Amazon',
         'Specialty & Other': 'Explore now'
       };
       return item.ctaLabel || map[item.category] || 'Explore now';
@@ -1665,7 +1780,7 @@
         'travel-protection': ['Insurance & Claims'],
         'connectivity': ['SIM & Connectivity'],
         'travel-planning': ['Tours & Activities', 'Flights & Meta Search', 'Storage & Services'],
-        'general': ['Storage & Services', 'Specialty & Other']
+        'general': ['Marketplace', 'Storage & Services', 'Specialty & Other']
       };
 
       const preferred = intentMap[intent] || intentMap.general;
@@ -1715,6 +1830,8 @@
             return 'Need data abroad? Solve that before you land.';
           case 'Tours & Activities':
             return 'Like this destination? Explore what to do there.';
+          case 'Marketplace':
+            return 'Want gear for this? Open Amazon with your tag ready.';
           default:
             return 'Ready for the next step? Explore a matching offer.';
         }
@@ -2398,6 +2515,22 @@
           if (brandGridColumn) {
             brandGridColumn.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
+        });
+      }
+
+      const amazonSearchForm = document.getElementById('amazonSearchForm');
+      if (amazonSearchForm) {
+        amazonSearchForm.addEventListener('submit', function() {
+          incrementClickCount();
+          trackPartnerClick('Amazon');
+          trackPartnerStats('Amazon', {
+            category: 'Marketplace',
+            tier: 1
+          });
+          window.setTimeout(function() {
+            renderBrandGrid(partnersData);
+            renderPartners(partnersData);
+          }, 150);
         });
       }
     }
