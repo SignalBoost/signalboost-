@@ -89,6 +89,59 @@
       outline: none;
     }
 
+    .affiliate-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 12px 0;
+      justify-content: center;
+    }
+
+    .affiliate-filter-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .affiliate-filter-btn:hover,
+    .affiliate-filter-btn.active {
+      border-color: rgba(245,197,66,0.32);
+      background: rgba(245,197,66,0.10);
+    }
+
+    .column-1-toolbar {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px 0;
+      justify-content: center;
+    }
+
+    .column-1-sort-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .column-1-sort-btn:hover,
+    .column-1-sort-btn.active {
+      border-color: rgba(88,166,255,0.32);
+      background: rgba(88,166,255,0.10);
+    }
+
     .column-1-scroll {
       flex: 1;
       overflow-y: auto;
@@ -121,6 +174,7 @@
     }
 
     .category summary::-webkit-details-marker { display: none; }
+
     .category summary::before {
       content: '▶';
       display: inline-block;
@@ -130,6 +184,7 @@
       transform: translateY(-1px);
       color: rgba(255,255,255,0.9);
     }
+
     .category details[open] summary::before { content: '▼'; }
 
     .category ul {
@@ -144,9 +199,40 @@
       color: rgba(255,255,255,0.92);
       text-decoration: none;
       font-size: 14px;
+      display: inline-block;
     }
 
     .category a:hover { text-decoration: underline; }
+
+    .partner-hover-card {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.18s ease, max-height 0.18s ease, margin-top 0.18s ease;
+    }
+
+    .category li:hover .partner-hover-card {
+      opacity: 1;
+      max-height: 120px;
+    }
+
+    .partner-hover-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .partner-hover-meta {
+      font-size: 11px;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.5;
+    }
 
     .column-2 {
       background: #0d1117;
@@ -850,9 +936,18 @@
   <div class="app">
     <div class="column column-1">
       <div id="navTitle" class="column-1-header">Navigation</div>
+
       <div class="column-1-search-wrap">
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Search partners..." />
       </div>
+
+      <div id="affiliateFilters" class="affiliate-filters"></div>
+
+      <div class="column-1-toolbar">
+        <button id="sortByDefault" class="column-1-sort-btn active" type="button">Default</button>
+        <button id="sortByPopular" class="column-1-sort-btn" type="button">Popular</button>
+      </div>
+
       <div id="partnersRail" class="column-1-scroll"></div>
     </div>
 
@@ -987,13 +1082,13 @@
     ];
 
     let partnersData = fallbackPartners.slice();
-    let currentRegion = 'global';
-    let currentLanguage = 'en';
     let baseFeedItems = [];
     let allFeedItems = [];
     let renderedFeedCount = 0;
     let isRenderingMore = false;
     let popupShown = false;
+    let activePartnerCategory = null;
+    let activePartnerSort = 'default';
 
     const FEED_BATCH_SIZE = 6;
     const FEED_INSERTION_INTERVAL = 6;
@@ -1057,6 +1152,58 @@
       } catch (err) {}
     }
 
+    function getPartnerStats() {
+      try {
+        return JSON.parse(localStorage.getItem('partnerStats') || '{}');
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function trackPartnerStats(partnerName, meta = {}) {
+      if (!partnerName) return;
+
+      try {
+        const stats = getPartnerStats();
+
+        if (!stats[partnerName]) {
+          stats[partnerName] = {
+            clicks: 0,
+            category: meta.category || null,
+            tier: meta.tier || null,
+            lastClick: null
+          };
+        }
+
+        stats[partnerName].clicks += 1;
+        stats[partnerName].category = meta.category || stats[partnerName].category;
+        stats[partnerName].tier = meta.tier || stats[partnerName].tier;
+        stats[partnerName].lastClick = Date.now();
+
+        localStorage.setItem('partnerStats', JSON.stringify(stats));
+
+        const recent = JSON.parse(sessionStorage.getItem('recentClicks') || '[]');
+        if (!recent.includes(partnerName)) {
+          recent.push(partnerName);
+          sessionStorage.setItem('recentClicks', JSON.stringify(recent.slice(-5)));
+        }
+      } catch (err) {}
+    }
+
+    function getPartnerClickCount(name) {
+      const stats = getPartnerStats();
+      return (stats[name] && stats[name].clicks) || 0;
+    }
+
+    function getSessionBoost(partnerName) {
+      try {
+        const recent = JSON.parse(sessionStorage.getItem('recentClicks') || '[]');
+        return recent.includes(partnerName) ? 2 : 0;
+      } catch (e) {
+        return 0;
+      }
+    }
+
     function monetizeUrl(url, meta) {
       if (!isValidHttpUrl(url)) return '#';
 
@@ -1086,6 +1233,8 @@
       element.setAttribute('data-tracked-url', trackedUrl || '#');
       if (meta && meta.partner) element.setAttribute('data-partner', meta.partner);
       if (meta && meta.source) element.setAttribute('data-source', meta.source);
+      if (meta && meta.category) element.setAttribute('data-category', meta.category);
+      if (meta && meta.tier) element.setAttribute('data-tier', String(meta.tier));
     }
 
     async function canUseTrackedUrl(trackedUrl) {
@@ -1105,11 +1254,19 @@
 
     async function openPartnerLink(rawUrl, trackedUrl, meta = {}) {
       if (!rawUrl || rawUrl === '#') return;
+
       const useTracked = await canUseTrackedUrl(trackedUrl);
       const destination = useTracked ? trackedUrl : rawUrl;
 
       incrementClickCount();
-      if (meta.partner) trackPartnerClick(meta.partner);
+
+      if (meta.partner) {
+        trackPartnerClick(meta.partner);
+        trackPartnerStats(meta.partner, {
+          category: meta.category || null,
+          tier: meta.tier || null
+        });
+      }
 
       window.open(destination, '_blank', 'noopener,noreferrer');
     }
@@ -1149,23 +1306,59 @@
 
     function getCategoryLabel(categoryName) {
       const labels = {
-        en: {
-          'Transfers & Transport': 'Transfers & Transport',
-          'Car Rentals': 'Car Rentals',
-          'SIM & Connectivity': 'SIM & Connectivity',
-          'Tours & Activities': 'Tours & Activities',
-          'Insurance & Claims': 'Insurance & Claims',
-          'Flights & Meta Search': 'Flights & comparisons',
-          'Storage & Services': 'Storage & Services',
-          'Specialty & Other': 'Specialty & Other'
-        }
+        'Transfers & Transport': 'Transfers & Transport',
+        'Car Rentals': 'Car Rentals',
+        'SIM & Connectivity': 'SIM & Connectivity',
+        'Tours & Activities': 'Tours & Activities',
+        'Insurance & Claims': 'Insurance & Claims',
+        'Flights & Meta Search': 'Flights & comparisons',
+        'Storage & Services': 'Storage & Services',
+        'Specialty & Other': 'Specialty & Other'
       };
-      const pack = labels[currentLanguage] || labels.en;
-      return pack[categoryName] || categoryName;
+      return labels[categoryName] || categoryName;
+    }
+
+    function getAvailablePartnerCategories(items) {
+      const unique = Array.from(new Set(items.map(p => p.category).filter(Boolean)));
+      return ['All'].concat(unique.sort());
+    }
+
+    function renderAffiliateFilters(items) {
+      const container = document.getElementById('affiliateFilters');
+      if (!container) return;
+
+      const categories = getAvailablePartnerCategories(items);
+      container.innerHTML = categories.map(category => {
+        const isActive =
+          (category === 'All' && !activePartnerCategory) ||
+          category === activePartnerCategory;
+
+        return '<button class="affiliate-filter-btn' + (isActive ? ' active' : '') + '" data-filter-category="' + escapeHtml(category) + '" type="button">' +
+          escapeHtml(category) +
+          '</button>';
+      }).join('');
     }
 
     function renderPartners(items) {
-      const grouped = groupPartners(items);
+      const stats = getPartnerStats();
+      renderAffiliateFilters(items);
+
+      let working = items.slice();
+
+      const searchValue = (document.getElementById('partnerSearch')?.value || '').trim().toLowerCase();
+      if (searchValue) {
+        working = working.filter(function(partner) {
+          return partner.name.toLowerCase().includes(searchValue) || partner.category.toLowerCase().includes(searchValue);
+        });
+      }
+
+      if (activePartnerCategory) {
+        working = working.filter(function(partner) {
+          return partner.category === activePartnerCategory;
+        });
+      }
+
+      const grouped = groupPartners(working);
       const order = [
         'Transfers & Transport',
         'Car Rentals',
@@ -1182,15 +1375,37 @@
         .map(function(categoryName, index) {
           const color = getCategoryColor(categoryName);
           const partners = grouped[categoryName].slice().sort(function(a, b) {
+            if (activePartnerSort === 'popular') {
+              const clicksA = (stats[a.name] && stats[a.name].clicks) || 0;
+              const clicksB = (stats[b.name] && stats[b.name].clicks) || 0;
+              if (clicksA !== clicksB) return clicksB - clicksA;
+            }
             return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
           });
+
           return '<div class="category">' +
             '<details' + (index === 0 ? ' open' : '') + '>' +
             '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
-            '<ul>' + partners.map(function(partner) {
+            '<ul>' +
+            partners.map(function(partner) {
               const badge = partner.tier === 1 ? ' 🔥' : partner.tier === 2 ? ' ⭐' : '';
-              return '<li><a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
-            }).join('') + '</ul>' +
+              const clickCount = getPartnerClickCount(partner.name);
+
+              return '<li>' +
+                '<a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-category="' + escapeHtml(partner.category) + '" data-tier="' + escapeHtml(String(partner.tier || 3)) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(partner.name) + badge +
+                '</a>' +
+                '<div class="partner-hover-card">' +
+                  '<div class="partner-hover-title">' + escapeHtml(partner.name) + '</div>' +
+                  '<div class="partner-hover-meta">' +
+                    '<div>Category: ' + escapeHtml(partner.category) + '</div>' +
+                    '<div>Tier: ' + escapeHtml(String(partner.tier || 3)) + '</div>' +
+                    '<div>Clicks: ' + escapeHtml(String(clickCount)) + '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</li>';
+            }).join('') +
+            '</ul>' +
             '</details>' +
             '</div>';
         }).join('');
@@ -1219,21 +1434,13 @@
         .join('') || 'SB';
     }
 
-    function getPartnerPopularityMap() {
-      try {
-        return JSON.parse(localStorage.getItem('partnerPopularity') || '{}');
-      } catch (err) {
-        return {};
-      }
-    }
-
     function getPopularPartners(items, limit = 8) {
-      const popularity = getPartnerPopularityMap();
+      const popularity = getPartnerStats();
       return items
         .slice()
         .sort(function(a, b) {
-          const popA = popularity[a.name] || 0;
-          const popB = popularity[b.name] || 0;
+          const popA = (popularity[a.name] && popularity[a.name].clicks) || 0;
+          const popB = (popularity[b.name] && popularity[b.name].clicks) || 0;
           if (popA !== popB) return popB - popA;
           if ((a.tier || 3) !== (b.tier || 3)) return (a.tier || 3) - (b.tier || 3);
           return a.name.localeCompare(b.name);
@@ -1263,13 +1470,14 @@
         const borderColor = bgColor.replace('0.15', '0.35');
         const displayName = getBrandDisplayName(p.name);
         const fallbackText = getBrandFallbackText(displayName);
-        const badge = p.tier === 1 ? ' 🔥' : p.tier === 2 ? ' ⭐' : '';
+        const clicks = getPartnerClickCount(p.name);
+        const badge = clicks > 5 ? ' 🔥' : p.tier === 1 ? ' ⭐' : '';
 
         const logoMarkup = p.logo
           ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
           : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
 
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_popular' })) + '" data-partner="' + escapeHtml(p.name) + '" data-source="column3_popular" target="_blank" rel="noopener noreferrer">' +
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_popular' })) + '" data-partner="' + escapeHtml(p.name) + '" data-category="' + escapeHtml(p.category) + '" data-tier="' + escapeHtml(String(p.tier || 3)) + '" data-source="column3_popular" target="_blank" rel="noopener noreferrer">' +
           logoMarkup +
           '<span>' + escapeHtml(displayName) + badge + '</span>' +
           '</a>';
@@ -1384,6 +1592,13 @@
       return byCategory[offer.category] || byCategory['Specialty & Other'];
     }
 
+    function isTopPick(partner) {
+      const stats = getPartnerStats();
+      const data = stats[partner.name];
+      if (!data) return partner.tier === 1;
+      return data.clicks > 3 || partner.tier === 1;
+    }
+
     function getDecisionBullets(item, relatedPartner) {
       const category = item.category || (relatedPartner && relatedPartner.category) || '';
 
@@ -1458,7 +1673,11 @@
       for (const category of preferred) {
         const matches = partnersData
           .filter(p => p.category === category)
-          .sort((a, b) => (a.tier || 3) - (b.tier || 3));
+          .sort((a, b) => {
+            const scoreA = (a.tier || 3) - getSessionBoost(a.name);
+            const scoreB = (b.tier || 3) - getSessionBoost(b.name);
+            return scoreA - scoreB;
+          });
 
         if (matches.length) return matches[0];
       }
@@ -1618,15 +1837,18 @@
           bullets.map(b => '<span class="decision-pill">' + escapeHtml(b) + '</span>').join('') +
           '</div>';
 
-        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_primary') + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(getContextualCTA(item)) + '</a>';
+        const primaryLink = '<div style="display:flex;flex-direction:column;gap:6px;">' +
+          '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-category="' + escapeHtml(item.category || '') + '" data-tier="' + escapeHtml(String(item.tier || 0)) + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_primary') + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(getContextualCTA(item)) + '</a>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,0.55);">Takes ~10 seconds</div>' +
+        '</div>';
 
-        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-source="' + escapeHtml('column2_related_' + platform) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">Explore related → ' + relatedLabel + '</a>' : '';
+        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-category="' + escapeHtml(relatedPartner.category || '') + '" data-tier="' + escapeHtml(String(relatedPartner.tier || 0)) + '" data-source="' + escapeHtml('column2_related_' + platform) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">Explore related → ' + relatedLabel + '</a>' : '';
 
         const moneyClass = item.isMoneyCard ? ' money-card' : '';
         const clickableUrl = escapeHtml(primaryUrl);
         const clickableTrackedUrl = escapeHtml(primaryTrackedUrl);
 
-        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_card') + '">' +
+        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-category="' + escapeHtml(item.category || '') + '" data-tier="' + escapeHtml(String(item.tier || 0)) + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_card') + '">' +
           (item.isMoneyCard
             ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority pick' : 'Featured offer') + '</div>' + intentLabel + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
             : createMediaMarkup(item) + '<div class="feed-content">' + intentLabel + hookHtml + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
@@ -1808,8 +2030,10 @@
           source: 'comparison_' + type
         });
 
+        const badgeText = isTopPick(partner) ? '🔥 Top pick' : item.badge;
+
         return '<article class="comparison-card">' +
-          '<div class="comparison-badge">' + escapeHtml(item.badge) + '</div>' +
+          '<div class="comparison-badge">' + escapeHtml(badgeText) + '</div>' +
           '<h3>' + escapeHtml(item.title) + '</h3>' +
           '<p>' + escapeHtml(item.description) + '</p>' +
           '<div class="comparison-list">' +
@@ -1817,7 +2041,7 @@
             return '<span class="comparison-pill">' + escapeHtml(pill) + '</span>';
           }).join('') +
           '</div>' +
-          '<a class="comparison-link" href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(trackedUrl) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="' + escapeHtml('comparison_' + type) + '" target="_blank" rel="noopener noreferrer">' +
+          '<a class="comparison-link" href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(trackedUrl) + '" data-partner="' + escapeHtml(partner.name) + '" data-category="' + escapeHtml(partner.category) + '" data-tier="' + escapeHtml(String(partner.tier || 0)) + '" data-source="' + escapeHtml('comparison_' + type) + '" target="_blank" rel="noopener noreferrer">' +
           escapeHtml(item.cta) +
           '</a>' +
           '</article>';
@@ -1873,6 +2097,8 @@
              data-raw-url="${partner.url}"
              data-tracked-url="${monetizeUrl(partner.url, { partner: partner.name, source: 'department_' + category })}"
              data-partner="${partner.name}"
+             data-category="${partner.category}"
+             data-tier="${partner.tier || 0}"
              data-source="department_${category}"
              target="_blank"
              rel="noopener noreferrer">
@@ -1953,7 +2179,7 @@
       if (intro) intro.textContent = 'Curated picks for you ↓';
 
       const entryLayer = document.getElementById('entryLayer');
-      if (entryLayer) entryLayer.style.display = 'none';
+      if (entryLayer) entryLayer.style.display = 'block';
     }
 
     async function fetchDynamicFeed() {
@@ -2012,7 +2238,12 @@
         if (!offer) return;
 
         const benefit = getOfferBenefitCopy(offer);
-        setTrackedLinkAttributes(featuredLink, offer.url, { partner: offer.name, source: 'header_featured' });
+        setTrackedLinkAttributes(featuredLink, offer.url, {
+          partner: offer.name,
+          source: 'header_featured',
+          category: offer.category,
+          tier: offer.tier
+        });
         title.textContent = benefit.title;
         subtitle.textContent = benefit.description;
       }
@@ -2029,7 +2260,12 @@
 
       const benefit = getOfferBenefitCopy(offer);
       stickyCopy.textContent = benefit.title + ' — ' + benefit.description;
-      setTrackedLinkAttributes(stickyLink, offer.url, { partner: offer.name, source: 'sticky' });
+      setTrackedLinkAttributes(stickyLink, offer.url, {
+        partner: offer.name,
+        source: 'sticky',
+        category: offer.category,
+        tier: offer.tier
+      });
       stickyLink.textContent = benefit.cta;
     }
 
@@ -2046,7 +2282,12 @@
       const benefit = getOfferBenefitCopy(offer);
       title.textContent = benefit.title;
       text.textContent = benefit.description;
-      setTrackedLinkAttributes(link, offer.url, { partner: offer.name, source: 'popup' });
+      setTrackedLinkAttributes(link, offer.url, {
+        partner: offer.name,
+        source: 'popup',
+        category: offer.category,
+        tier: offer.tier
+      });
       link.textContent = benefit.cta;
 
       popup.style.display = 'flex';
@@ -2055,6 +2296,32 @@
 
     function attachGlobalInteractions() {
       document.addEventListener('click', function(e) {
+        const filterBtn = e.target.closest('[data-filter-category]');
+        if (filterBtn) {
+          const category = filterBtn.getAttribute('data-filter-category');
+          activePartnerCategory = category === 'All' ? null : category;
+          renderPartners(partnersData);
+          return;
+        }
+
+        const sortDefault = e.target.closest('#sortByDefault');
+        if (sortDefault) {
+          activePartnerSort = 'default';
+          document.getElementById('sortByDefault')?.classList.add('active');
+          document.getElementById('sortByPopular')?.classList.remove('active');
+          renderPartners(partnersData);
+          return;
+        }
+
+        const sortPopular = e.target.closest('#sortByPopular');
+        if (sortPopular) {
+          activePartnerSort = 'popular';
+          document.getElementById('sortByPopular')?.classList.add('active');
+          document.getElementById('sortByDefault')?.classList.remove('active');
+          renderPartners(partnersData);
+          return;
+        }
+
         const anchor = e.target.closest('a[href]');
         if (anchor) {
           const rawUrl = anchor.getAttribute('data-raw-url') || anchor.getAttribute('href');
@@ -2064,7 +2331,12 @@
             e.stopPropagation();
             openPartnerLink(rawUrl, trackedUrl, {
               partner: anchor.getAttribute('data-partner'),
-              source: anchor.getAttribute('data-source')
+              source: anchor.getAttribute('data-source'),
+              category: anchor.getAttribute('data-category'),
+              tier: Number(anchor.getAttribute('data-tier') || 0)
+            }).then(() => {
+              renderBrandGrid(partnersData);
+              renderPartners(partnersData);
             });
             return;
           }
@@ -2074,13 +2346,19 @@
 
         const card = e.target.closest('.feed-card[data-open-url]');
         if (!card) return;
+
         const rawUrl = card.getAttribute('data-open-url');
         const trackedUrl = card.getAttribute('data-open-tracked-url') || rawUrl;
         if (!rawUrl || rawUrl === '#') return;
 
         openPartnerLink(rawUrl, trackedUrl, {
           partner: card.getAttribute('data-partner'),
-          source: card.getAttribute('data-source')
+          source: card.getAttribute('data-source'),
+          category: card.getAttribute('data-category'),
+          tier: Number(card.getAttribute('data-tier') || 0)
+        }).then(() => {
+          renderBrandGrid(partnersData);
+          renderPartners(partnersData);
         });
       });
 
@@ -2095,14 +2373,7 @@
       });
 
       document.getElementById('partnerSearch').addEventListener('input', function() {
-        const q = this.value.trim().toLowerCase();
-        if (!q) {
-          renderPartners(partnersData);
-          return;
-        }
-        renderPartners(partnersData.filter(function(p) {
-          return p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
-        }));
+        renderPartners(partnersData);
       });
 
       document.querySelectorAll('.entry-chip').forEach(function(button) {
@@ -2136,8 +2407,28 @@
       window.setInterval(updateStickyOffer, 12000);
     }
 
+    let scrollTriggered = false;
+    function setupScrollTriggeredCTA() {
+      const magneto = document.getElementById('magnetoColumn');
+      if (!magneto) return;
+
+      magneto.addEventListener('scroll', function() {
+        if (scrollTriggered) return;
+
+        if (this.scrollTop > 800) {
+          scrollTriggered = true;
+          const offer = getOfferFromPartners();
+          if (!offer) return;
+
+          const sticky = document.getElementById('stickyCopy');
+          sticky.textContent = 'Ready to act? ' + getOfferBenefitCopy(offer).title;
+        }
+      });
+    }
+
     attachGlobalInteractions();
     setupInfiniteScroll();
+    setupScrollTriggeredCTA();
     updateClickDisplay();
     loadPartnersData();
     scheduleMonetizationTriggers();
