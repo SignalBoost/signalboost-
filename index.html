@@ -1997,7 +1997,45 @@ function hydrateAmazonLinks() {
         tier: offer.tier || 3
       };
     }
+function createAmazonCard(intent) {
+  let type = 'general';
+  let title = 'Best travel essentials on Amazon';
+  let description = 'Useful gear that makes trips easier.';
 
+  if (intent === 'travel-planning') {
+    type = 'packing';
+    title = 'What I always pack before a trip';
+    description = 'Packing cubes and simple gear that save time and space.';
+  } else if (intent === 'connectivity') {
+    type = 'power';
+    title = 'Do not run out of battery while traveling';
+    description = 'Portable chargers and power gear for flights and long days.';
+  } else if (intent === 'travel-booking') {
+    type = 'adapter';
+    title = 'One thing people forget before traveling abroad';
+    description = 'A travel adapter can save a lot of hassle.';
+  } else if (intent === 'general') {
+    type = 'luggage';
+    title = 'Travel gear worth checking before you go';
+    description = 'Simple essentials for smoother trips.';
+  }
+
+  return {
+    isMoneyCard: true,
+    platform: 'amazon',
+    title,
+    description,
+    ctaLabel: 'Open Amazon',
+    author: 'Amazon',
+    publishedAt: new Date().toISOString(),
+    url: getAmazonLink(type),
+    postUrl: getAmazonLink(type),
+    thumbnail: 'https://via.placeholder.com/720x1280/161b22/ff9900?text=Amazon',
+    partnerName: 'Amazon',
+    category: 'Marketplace',
+    tier: 2
+  };
+}
     function interleaveJourneyCards(items) {
       const buckets = {
         'travel-planning': [],
