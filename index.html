@@ -4,6 +4,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1633,9 +1634,16 @@
       },
       {
             "name": "Cozeware",
-            "category": "Storage & Services",
+            "category": "Products & Tools",
             "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
             "tier": 1,
+            "logo": ""
+      },
+      {
+            "name": "Valerion US",
+            "category": "Products & Tools",
+            "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
+            "tier": 2,
             "logo": ""
       }
 ];
@@ -1975,6 +1983,7 @@ function hydrateAmazonLinks() {
         'Hotels & Accommodation': '#ff7ab6',
         'Storage & Services': '#ffd966',
         'Marketplace': '#ff9900',
+        'Products & Tools': '#9f7aea',
         'Specialty & Other': '#8f7cff'
       };
       return map[category] || '#8f9fb3';
@@ -2000,6 +2009,7 @@ function hydrateAmazonLinks() {
         'Hotels & Accommodation': 'Hotels',
         'Storage & Services': 'Travel Services',
         'Marketplace': 'Amazon Travel Gear',
+        'Products & Tools': 'Products & Tools',
         'Specialty & Other': 'Specialty & Other'
       };
       return labels[categoryName] || categoryName;
@@ -2061,6 +2071,7 @@ function hydrateAmazonLinks() {
         'Insurance & Claims',
         'Storage & Services',
         'Marketplace',
+        'Products & Tools',
         'Specialty & Other'
       ];
 
@@ -2288,6 +2299,11 @@ function hydrateAmazonLinks() {
           description: 'Useful gear for smoother trips and everyday travel.',
           cta: 'Open Amazon'
         },
+        'Products & Tools': {
+          title: '🧰 Discover useful products and tools',
+          description: 'Helpful tools, devices, and services beyond travel.',
+          cta: 'Explore tools'
+        },
         'Specialty & Other': {
           title: '✨ Discover a useful tool',
           description: 'Curated digital services for you.',
@@ -2326,6 +2342,9 @@ function hydrateAmazonLinks() {
       if (category === 'Tours & Activities') {
         return ['Top attractions', 'Easy browsing', 'Trip ideas'];
       }
+      if (category === 'Products & Tools') {
+        return ['Useful products', 'Helpful tools', 'Easy to explore'];
+      }
 
       return ['Curated pick', 'Quick access', 'Easy to explore'];
     }
@@ -2342,6 +2361,7 @@ function hydrateAmazonLinks() {
         'Car Rentals': 'Find rentals',
         'Storage & Services': 'Explore service',
         'Marketplace': 'Open Amazon',
+        'Products & Tools': 'Explore tools',
         'Specialty & Other': 'Explore now'
       };
       return item.ctaLabel || map[item.category] || 'Explore now';
@@ -2778,6 +2798,14 @@ function createAmazonCard(intent) {
               description: 'Choose a connectivity option before you travel.',
               pills: ['eSIM', 'Mobile data', 'Travel setup'],
               cta: 'See options'
+            },
+            {
+              badge: 'Products & tools',
+              category: 'Products & Tools',
+              title: 'Explore helpful tools and products',
+              description: 'Discover useful tools, devices, and products beyond travel.',
+              pills: ['Useful tools', 'Devices', 'Smart picks'],
+              cta: 'Explore tools'
             }
           ]
         };
