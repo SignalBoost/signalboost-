@@ -1281,7 +1281,73 @@
         return false;
       }
     }
+function getAmazonBaseByRegion() {
+  const region = (window.location.search.match(/[?&]region=([^&]+)/)?.[1] || '').toLowerCase();
 
+  if (region === 'pl') return 'https://www.amazon.pl';
+  if (region === 'br') return 'https://www.amazon.com.br';
+  if (region === 'mx') return 'https://www.amazon.com.mx';
+  if (region === 'es') return 'https://www.amazon.es';
+  if (region === 'de' || region === 'eu') return 'https://www.amazon.de';
+  if (region === 'fr') return 'https://www.amazon.fr';
+  if (region === 'it') return 'https://www.amazon.it';
+
+  return 'https://www.amazon.com';
+}
+
+function getAmazonTagByRegion() {
+  return 'signalboostai-20';
+}
+
+function getAmazonLink(type = 'general') {
+  const base = getAmazonBaseByRegion();
+  const tag = getAmazonTagByRegion();
+
+  const queries = {
+    power: 'power bank',
+    adapter: 'travel adapter',
+    luggage: 'carry on luggage',
+    packing: 'packing cubes',
+    general: 'travel essentials'
+  };
+
+  const q = encodeURIComponent(queries[type] || queries.general);
+  return `${base}/s?k=${q}&tag=${tag}`;
+}
+
+function hydrateAmazonLinks() {
+  const amazonCards = document.querySelectorAll('.amazon-card');
+
+  amazonCards.forEach((card) => {
+    let type = 'general';
+    const text = (card.textContent || '').toLowerCase();
+
+    if (text.includes('power')) type = 'power';
+    else if (text.includes('adapter')) type = 'adapter';
+    else if (text.includes('luggage')) type = 'luggage';
+    else if (text.includes('packing')) type = 'packing';
+
+    const url = getAmazonLink(type);
+
+    card.href = url;
+    card.setAttribute('data-raw-url', url);
+    card.setAttribute('data-tracked-url', url);
+    card.setAttribute('data-partner', 'Amazon');
+    card.setAttribute('data-category', 'Marketplace');
+    card.setAttribute('data-tier', '1');
+    card.setAttribute('data-source', 'amazon_hub');
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+  });
+
+  const form = document.getElementById('amazonSearchForm');
+  if (form) {
+    form.action = `${getAmazonBaseByRegion()}/s`;
+
+    const hiddenTag = form.querySelector('input[name="tag"]');
+    if (hiddenTag) hiddenTag.value = getAmazonTagByRegion();
+  }
+}
     function updateClickDisplay() {
       const el = document.getElementById('clickCount');
       if (!el) return;
