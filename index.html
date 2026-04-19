@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,69 +89,14 @@
       outline: none;
     }
 
-    .affiliate-filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 10px 12px 0;
-      justify-content: center;
-    }
-
-    .affiliate-filter-btn {
-      appearance: none;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .affiliate-filter-btn:hover,
-    .affiliate-filter-btn.active {
-      border-color: rgba(245,197,66,0.32);
-      background: rgba(245,197,66,0.10);
-    }
-
-    .column-1-toolbar {
-      display: flex;
-      gap: 8px;
-      padding: 10px 12px 0;
-      justify-content: center;
-    }
-
-    .column-1-sort-btn {
-      appearance: none;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .column-1-sort-btn:hover,
-    .column-1-sort-btn.active {
-      border-color: rgba(88,166,255,0.32);
-      background: rgba(88,166,255,0.10);
-    }
-
     .column-1-scroll {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  scrollbar-width: none;
-}
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      scrollbar-width: none;
     }
 
     .category {
@@ -178,7 +121,6 @@
     }
 
     .category summary::-webkit-details-marker { display: none; }
-
     .category summary::before {
       content: '▶';
       display: inline-block;
@@ -188,7 +130,6 @@
       transform: translateY(-1px);
       color: rgba(255,255,255,0.9);
     }
-
     .category details[open] summary::before { content: '▼'; }
 
     .category ul {
@@ -203,40 +144,9 @@
       color: rgba(255,255,255,0.92);
       text-decoration: none;
       font-size: 14px;
-      display: inline-block;
     }
 
     .category a:hover { text-decoration: underline; }
-
-    .partner-hover-card {
-      margin-top: 8px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: opacity 0.18s ease, max-height 0.18s ease, margin-top 0.18s ease;
-    }
-
-    .category li:hover .partner-hover-card {
-      opacity: 1;
-      max-height: 120px;
-    }
-
-    .partner-hover-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .partner-hover-meta {
-      font-size: 11px;
-      color: rgba(255,255,255,0.68);
-      line-height: 1.5;
-    }
 
     .column-2 {
       background: #0d1117;
@@ -827,13 +737,12 @@
       body {
         overflow: auto;
       }
+
       .top-feature {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  max-width: 280px;
-  z-index: 20;
-}
+        position: relative;
+        width: 100%;
+        border-right: 0;
+        padding: 14px 16px;
       }
 
       .app {
@@ -875,15 +784,11 @@
       .column-1-search {
         max-width: 100%;
       }
+
       .column-1-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  scrollbar-width: none;
-}
+        overflow: visible;
+        padding: 12px 16px;
+        align-items: stretch;
       }
 
       .category,
@@ -924,127 +829,6 @@
         align-items: flex-start;
       }
     }
-
-    .amazon-section {
-      width: 100%;
-      max-width: 560px;
-      margin: 0 auto 18px;
-      padding: 18px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,153,0,0.14), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,153,0,0.28);
-    }
-
-    .amazon-section h2 {
-      margin: 0 0 8px;
-      font-size: 24px;
-      line-height: 1.15;
-    }
-
-    .amazon-section p {
-      margin: 0 0 14px;
-      font-size: 14px;
-      line-height: 1.5;
-      color: rgba(255,255,255,0.78);
-    }
-
-    .amazon-search-form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .amazon-search-form input {
-      flex: 1 1 220px;
-      min-width: 0;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(13,17,23,0.95);
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .amazon-search-form button {
-      appearance: none;
-      border: 1px solid rgba(255,153,0,0.34);
-      background: rgba(255,153,0,0.14);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .amazon-chip-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .amazon-chip {
-      display: inline-block;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      color: #fff;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .amazon-chip:hover {
-      border-color: rgba(255,153,0,0.55);
-      background: rgba(255,153,0,0.12);
-    }
-/* AMAZON SECTION FIX */
-
-.amazon-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 16px 0;
-}
-
-.amazon-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: #161b22;
-  border: 1px solid rgba(255,255,255,0.06);
-  text-decoration: none !important;
-  color: #e6edf3 !important;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.amazon-card:hover {
-  background: rgba(245,197,66,0.08);
-  border-color: rgba(245,197,66,0.35);
-  color: #f5c542 !important;
-  transform: translateY(-2px);
-}
-
-.amazon-card:visited,
-.amazon-card:active {
-  color: #e6edf3 !important;
-}
-
-.amazon-icon {
-  font-size: 16px;
-  opacity: 0.9;
-}
-
-.amazon-text {
-  font-size: 14px;
-}
   </style>
 </head>
 <body>
@@ -1066,18 +850,9 @@
   <div class="app">
     <div class="column column-1">
       <div id="navTitle" class="column-1-header">Navigation</div>
-
       <div class="column-1-search-wrap">
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Search partners..." />
       </div>
-
-      <div id="affiliateFilters" class="affiliate-filters"></div>
-
-      <div class="column-1-toolbar">
-        <button id="sortByDefault" class="column-1-sort-btn active" type="button">Default</button>
-        <button id="sortByPopular" class="column-1-sort-btn" type="button">Popular</button>
-      </div>
-
       <div id="partnersRail" class="column-1-scroll"></div>
     </div>
 
@@ -1114,37 +889,6 @@
           <div id="comparisonGrid" class="comparison-grid"></div>
         </section>
 
-
-<section id="amazonSection" class="amazon-section">
-  <div class="entry-kicker">Amazon travel gear</div>
-  <h2>Best travel essentials on Amazon</h2>
-  <p>
-    From power banks to packing cubes, discover simple gear that saves time, 
-    avoids problems, and makes every trip easier.
-  </p>
-
-  <div class="amazon-grid">
-    <a href="https://www.amazon.com/s?k=power+bank&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
-      🔋 Power Banks
-    </a>
-    <a href="https://www.amazon.com/s?k=travel+adapter&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
-      🔌 Travel Adapters
-    </a>
-    <a href="https://www.amazon.com/s?k=carry+on+luggage&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
-      🧳 Carry-on Luggage
-    </a>
-    <a href="https://www.amazon.com/s?k=packing+cubes&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
-      🎒 Packing Cubes
-    </a>
-  </div>
-
-  <form id="amazonSearchForm" class="amazon-search-form" action="https://www.amazon.com/s" method="get" target="_blank" rel="noopener noreferrer">
-    <input id="amazonSearchInput" type="text" name="k" placeholder="Search travel gear on Amazon..." />
-    <input type="hidden" name="tag" value="signalboostai-20" />
-    <button type="submit">Search Amazon</button>
-  </form>
-</section>
-
         <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Curated picks for you ↓</div>
         <div id="clickStats" style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;">🔥 Discovery clicks today: <span id="clickCount">0</span></div>
         <div id="feedContainer" class="feed-container"></div>
@@ -1176,7 +920,6 @@
 
   <script>
     const fallbackPartners = [
-      { name: 'Amazon', category: 'Marketplace', url: 'https://www.amazon.com/?tag=signalboostai-20', tier: 1, logo: '' },
       { name: 'Cozeware', category: 'Storage & Services', url: 'https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806', tier: 1, logo: '' },
       { name: 'Airalo', category: 'SIM & Connectivity', url: 'https://airalo.tpo.lv/eXjKLiuw', tier: 2, logo: '' },
       { name: 'Kiwi.com', category: 'Flights & Meta Search', url: 'https://booking.tpo.lv/enwsEbCs', tier: 2, logo: '' },
@@ -1244,13 +987,13 @@
     ];
 
     let partnersData = fallbackPartners.slice();
+    let currentRegion = 'global';
+    let currentLanguage = 'en';
     let baseFeedItems = [];
     let allFeedItems = [];
     let renderedFeedCount = 0;
     let isRenderingMore = false;
     let popupShown = false;
-    let activePartnerCategory = null;
-    let activePartnerSort = 'default';
 
     const FEED_BATCH_SIZE = 6;
     const FEED_INSERTION_INTERVAL = 6;
@@ -1288,73 +1031,7 @@
         return false;
       }
     }
-function getAmazonBaseByRegion() {
-  const region = (window.location.search.match(/[?&]region=([^&]+)/)?.[1] || '').toLowerCase();
 
-  if (region === 'pl') return 'https://www.amazon.pl';
-  if (region === 'br') return 'https://www.amazon.com.br';
-  if (region === 'mx') return 'https://www.amazon.com.mx';
-  if (region === 'es') return 'https://www.amazon.es';
-  if (region === 'de' || region === 'eu') return 'https://www.amazon.de';
-  if (region === 'fr') return 'https://www.amazon.fr';
-  if (region === 'it') return 'https://www.amazon.it';
-
-  return 'https://www.amazon.com';
-}
-
-function getAmazonTagByRegion() {
-  return 'signalboostai-20';
-}
-
-function getAmazonLink(type = 'general') {
-  const base = getAmazonBaseByRegion();
-  const tag = getAmazonTagByRegion();
-
-  const queries = {
-    power: 'power bank',
-    adapter: 'travel adapter',
-    luggage: 'carry on luggage',
-    packing: 'packing cubes',
-    general: 'travel essentials'
-  };
-
-  const q = encodeURIComponent(queries[type] || queries.general);
-  return `${base}/s?k=${q}&tag=${tag}`;
-}
-
-function hydrateAmazonLinks() {
-  const amazonCards = document.querySelectorAll('.amazon-card');
-
-  amazonCards.forEach((card) => {
-    let type = 'general';
-    const text = (card.textContent || '').toLowerCase();
-
-    if (text.includes('power')) type = 'power';
-    else if (text.includes('adapter')) type = 'adapter';
-    else if (text.includes('luggage')) type = 'luggage';
-    else if (text.includes('packing')) type = 'packing';
-
-    const url = getAmazonLink(type);
-
-    card.href = url;
-    card.setAttribute('data-raw-url', url);
-    card.setAttribute('data-tracked-url', url);
-    card.setAttribute('data-partner', 'Amazon');
-    card.setAttribute('data-category', 'Marketplace');
-    card.setAttribute('data-tier', '1');
-    card.setAttribute('data-source', 'amazon_hub');
-    card.target = '_blank';
-    card.rel = 'noopener noreferrer';
-  });
-
-  const form = document.getElementById('amazonSearchForm');
-  if (form) {
-    form.action = `${getAmazonBaseByRegion()}/s`;
-
-    const hiddenTag = form.querySelector('input[name="tag"]');
-    if (hiddenTag) hiddenTag.value = getAmazonTagByRegion();
-  }
-}
     function updateClickDisplay() {
       const el = document.getElementById('clickCount');
       if (!el) return;
@@ -1378,58 +1055,6 @@ function hydrateAmazonLinks() {
         stats[partnerName] = (stats[partnerName] || 0) + 1;
         localStorage.setItem('partnerPopularity', JSON.stringify(stats));
       } catch (err) {}
-    }
-
-    function getPartnerStats() {
-      try {
-        return JSON.parse(localStorage.getItem('partnerStats') || '{}');
-      } catch (err) {
-        return {};
-      }
-    }
-
-    function trackPartnerStats(partnerName, meta = {}) {
-      if (!partnerName) return;
-
-      try {
-        const stats = getPartnerStats();
-
-        if (!stats[partnerName]) {
-          stats[partnerName] = {
-            clicks: 0,
-            category: meta.category || null,
-            tier: meta.tier || null,
-            lastClick: null
-          };
-        }
-
-        stats[partnerName].clicks += 1;
-        stats[partnerName].category = meta.category || stats[partnerName].category;
-        stats[partnerName].tier = meta.tier || stats[partnerName].tier;
-        stats[partnerName].lastClick = Date.now();
-
-        localStorage.setItem('partnerStats', JSON.stringify(stats));
-
-        const recent = JSON.parse(sessionStorage.getItem('recentClicks') || '[]');
-        if (!recent.includes(partnerName)) {
-          recent.push(partnerName);
-          sessionStorage.setItem('recentClicks', JSON.stringify(recent.slice(-5)));
-        }
-      } catch (err) {}
-    }
-
-    function getPartnerClickCount(name) {
-      const stats = getPartnerStats();
-      return (stats[name] && stats[name].clicks) || 0;
-    }
-
-    function getSessionBoost(partnerName) {
-      try {
-        const recent = JSON.parse(sessionStorage.getItem('recentClicks') || '[]');
-        return recent.includes(partnerName) ? 2 : 0;
-      } catch (e) {
-        return 0;
-      }
     }
 
     function monetizeUrl(url, meta) {
@@ -1461,8 +1086,6 @@ function hydrateAmazonLinks() {
       element.setAttribute('data-tracked-url', trackedUrl || '#');
       if (meta && meta.partner) element.setAttribute('data-partner', meta.partner);
       if (meta && meta.source) element.setAttribute('data-source', meta.source);
-      if (meta && meta.category) element.setAttribute('data-category', meta.category);
-      if (meta && meta.tier) element.setAttribute('data-tier', String(meta.tier));
     }
 
     async function canUseTrackedUrl(trackedUrl) {
@@ -1482,19 +1105,11 @@ function hydrateAmazonLinks() {
 
     async function openPartnerLink(rawUrl, trackedUrl, meta = {}) {
       if (!rawUrl || rawUrl === '#') return;
-
       const useTracked = await canUseTrackedUrl(trackedUrl);
       const destination = useTracked ? trackedUrl : rawUrl;
 
       incrementClickCount();
-
-      if (meta.partner) {
-        trackPartnerClick(meta.partner);
-        trackPartnerStats(meta.partner, {
-          category: meta.category || null,
-          tier: meta.tier || null
-        });
-      }
+      if (meta.partner) trackPartnerClick(meta.partner);
 
       window.open(destination, '_blank', 'noopener,noreferrer');
     }
@@ -1518,7 +1133,6 @@ function hydrateAmazonLinks() {
         'Insurance & Claims': '#ff6b6b',
         'Flights & Meta Search': '#4dd2c0',
         'Storage & Services': '#ffd966',
-        'Marketplace': '#ff9900',
         'Specialty & Other': '#8f7cff'
       };
       return map[category] || '#8f9fb3';
@@ -1535,60 +1149,23 @@ function hydrateAmazonLinks() {
 
     function getCategoryLabel(categoryName) {
       const labels = {
-        'Transfers & Transport': 'Transfers & Transport',
-        'Car Rentals': 'Car Rentals',
-        'SIM & Connectivity': 'SIM & Connectivity',
-        'Tours & Activities': 'Tours & Activities',
-        'Insurance & Claims': 'Insurance & Claims',
-        'Flights & Meta Search': 'Flights & comparisons',
-        'Storage & Services': 'Storage & Services',
-        'Marketplace': 'Amazon & Marketplace',
-        'Specialty & Other': 'Specialty & Other'
+        en: {
+          'Transfers & Transport': 'Transfers & Transport',
+          'Car Rentals': 'Car Rentals',
+          'SIM & Connectivity': 'SIM & Connectivity',
+          'Tours & Activities': 'Tours & Activities',
+          'Insurance & Claims': 'Insurance & Claims',
+          'Flights & Meta Search': 'Flights & comparisons',
+          'Storage & Services': 'Storage & Services',
+          'Specialty & Other': 'Specialty & Other'
+        }
       };
-      return labels[categoryName] || categoryName;
-    }
-
-    function getAvailablePartnerCategories(items) {
-      const unique = Array.from(new Set(items.map(p => p.category).filter(Boolean)));
-      return ['All'].concat(unique.sort());
-    }
-
-    function renderAffiliateFilters(items) {
-      const container = document.getElementById('affiliateFilters');
-      if (!container) return;
-
-      const categories = getAvailablePartnerCategories(items);
-      container.innerHTML = categories.map(category => {
-        const isActive =
-          (category === 'All' && !activePartnerCategory) ||
-          category === activePartnerCategory;
-
-        return '<button class="affiliate-filter-btn' + (isActive ? ' active' : '') + '" data-filter-category="' + escapeHtml(category) + '" type="button">' +
-          escapeHtml(category) +
-          '</button>';
-      }).join('');
+      const pack = labels[currentLanguage] || labels.en;
+      return pack[categoryName] || categoryName;
     }
 
     function renderPartners(items) {
-      const stats = getPartnerStats();
-      renderAffiliateFilters(items);
-
-      let working = items.slice();
-
-      const searchValue = (document.getElementById('partnerSearch')?.value || '').trim().toLowerCase();
-      if (searchValue) {
-        working = working.filter(function(partner) {
-          return partner.name.toLowerCase().includes(searchValue) || partner.category.toLowerCase().includes(searchValue);
-        });
-      }
-
-      if (activePartnerCategory) {
-        working = working.filter(function(partner) {
-          return partner.category === activePartnerCategory;
-        });
-      }
-
-      const grouped = groupPartners(working);
+      const grouped = groupPartners(items);
       const order = [
         'Transfers & Transport',
         'Car Rentals',
@@ -1597,7 +1174,6 @@ function hydrateAmazonLinks() {
         'Insurance & Claims',
         'Flights & Meta Search',
         'Storage & Services',
-        'Marketplace',
         'Specialty & Other'
       ];
 
@@ -1606,37 +1182,15 @@ function hydrateAmazonLinks() {
         .map(function(categoryName, index) {
           const color = getCategoryColor(categoryName);
           const partners = grouped[categoryName].slice().sort(function(a, b) {
-            if (activePartnerSort === 'popular') {
-              const clicksA = (stats[a.name] && stats[a.name].clicks) || 0;
-              const clicksB = (stats[b.name] && stats[b.name].clicks) || 0;
-              if (clicksA !== clicksB) return clicksB - clicksA;
-            }
             return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
           });
-
           return '<div class="category">' +
             '<details' + (index === 0 ? ' open' : '') + '>' +
             '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
-            '<ul>' +
-            partners.map(function(partner) {
+            '<ul>' + partners.map(function(partner) {
               const badge = partner.tier === 1 ? ' 🔥' : partner.tier === 2 ? ' ⭐' : '';
-              const clickCount = getPartnerClickCount(partner.name);
-
-              return '<li>' +
-                '<a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-category="' + escapeHtml(partner.category) + '" data-tier="' + escapeHtml(String(partner.tier || 3)) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' +
-                escapeHtml(partner.name) + badge +
-                '</a>' +
-                '<div class="partner-hover-card">' +
-                  '<div class="partner-hover-title">' + escapeHtml(partner.name) + '</div>' +
-                  '<div class="partner-hover-meta">' +
-                    '<div>Category: ' + escapeHtml(partner.category) + '</div>' +
-                    '<div>Tier: ' + escapeHtml(String(partner.tier || 3)) + '</div>' +
-                    '<div>Clicks: ' + escapeHtml(String(clickCount)) + '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</li>';
-            }).join('') +
-            '</ul>' +
+              return '<li><a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
+            }).join('') + '</ul>' +
             '</details>' +
             '</div>';
         }).join('');
@@ -1665,13 +1219,21 @@ function hydrateAmazonLinks() {
         .join('') || 'SB';
     }
 
+    function getPartnerPopularityMap() {
+      try {
+        return JSON.parse(localStorage.getItem('partnerPopularity') || '{}');
+      } catch (err) {
+        return {};
+      }
+    }
+
     function getPopularPartners(items, limit = 8) {
-      const popularity = getPartnerStats();
+      const popularity = getPartnerPopularityMap();
       return items
         .slice()
         .sort(function(a, b) {
-          const popA = (popularity[a.name] && popularity[a.name].clicks) || 0;
-          const popB = (popularity[b.name] && popularity[b.name].clicks) || 0;
+          const popA = popularity[a.name] || 0;
+          const popB = popularity[b.name] || 0;
           if (popA !== popB) return popB - popA;
           if ((a.tier || 3) !== (b.tier || 3)) return (a.tier || 3) - (b.tier || 3);
           return a.name.localeCompare(b.name);
@@ -1688,7 +1250,6 @@ function hydrateAmazonLinks() {
         'Car Rentals': 'rgba(255,184,77,0.15)',
         'Insurance & Claims': 'rgba(255,107,107,0.15)',
         'Storage & Services': 'rgba(255,217,102,0.15)',
-        'Marketplace': 'rgba(255,153,0,0.15)',
         'Specialty & Other': 'rgba(143,124,255,0.15)'
       };
 
@@ -1702,14 +1263,13 @@ function hydrateAmazonLinks() {
         const borderColor = bgColor.replace('0.15', '0.35');
         const displayName = getBrandDisplayName(p.name);
         const fallbackText = getBrandFallbackText(displayName);
-        const clicks = getPartnerClickCount(p.name);
-        const badge = clicks > 5 ? ' 🔥' : p.tier === 1 ? ' ⭐' : '';
+        const badge = p.tier === 1 ? ' 🔥' : p.tier === 2 ? ' ⭐' : '';
 
         const logoMarkup = p.logo
           ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
           : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
 
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_popular' })) + '" data-partner="' + escapeHtml(p.name) + '" data-category="' + escapeHtml(p.category) + '" data-tier="' + escapeHtml(String(p.tier || 3)) + '" data-source="column3_popular" target="_blank" rel="noopener noreferrer">' +
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_popular' })) + '" data-partner="' + escapeHtml(p.name) + '" data-source="column3_popular" target="_blank" rel="noopener noreferrer">' +
           logoMarkup +
           '<span>' + escapeHtml(displayName) + badge + '</span>' +
           '</a>';
@@ -1814,11 +1374,6 @@ function hydrateAmazonLinks() {
           description: 'Useful services for easier trips.',
           cta: 'Explore services'
         },
-        'Marketplace': {
-          title: '🛒 Shop Amazon picks',
-          description: 'Browse Amazon with your StoreID attached.',
-          cta: 'Open Amazon'
-        },
         'Specialty & Other': {
           title: '✨ Discover a useful tool',
           description: 'Curated digital services for you.',
@@ -1827,13 +1382,6 @@ function hydrateAmazonLinks() {
       };
 
       return byCategory[offer.category] || byCategory['Specialty & Other'];
-    }
-
-    function isTopPick(partner) {
-      const stats = getPartnerStats();
-      const data = stats[partner.name];
-      if (!data) return partner.tier === 1;
-      return data.clicks > 3 || partner.tier === 1;
     }
 
     function getDecisionBullets(item, relatedPartner) {
@@ -1867,7 +1415,6 @@ function hydrateAmazonLinks() {
         'Tours & Activities': 'Explore',
         'Car Rentals': 'Find rentals',
         'Storage & Services': 'Explore service',
-        'Marketplace': 'Open Amazon',
         'Specialty & Other': 'Explore now'
       };
       return item.ctaLabel || map[item.category] || 'Explore now';
@@ -1903,7 +1450,7 @@ function hydrateAmazonLinks() {
         'travel-protection': ['Insurance & Claims'],
         'connectivity': ['SIM & Connectivity'],
         'travel-planning': ['Tours & Activities', 'Flights & Meta Search', 'Storage & Services'],
-        'general': ['Marketplace', 'Storage & Services', 'Specialty & Other']
+        'general': ['Storage & Services', 'Specialty & Other']
       };
 
       const preferred = intentMap[intent] || intentMap.general;
@@ -1911,11 +1458,7 @@ function hydrateAmazonLinks() {
       for (const category of preferred) {
         const matches = partnersData
           .filter(p => p.category === category)
-          .sort((a, b) => {
-            const scoreA = (a.tier || 3) - getSessionBoost(a.name);
-            const scoreB = (b.tier || 3) - getSessionBoost(b.name);
-            return scoreA - scoreB;
-          });
+          .sort((a, b) => (a.tier || 3) - (b.tier || 3));
 
         if (matches.length) return matches[0];
       }
@@ -1953,8 +1496,6 @@ function hydrateAmazonLinks() {
             return 'Need data abroad? Solve that before you land.';
           case 'Tours & Activities':
             return 'Like this destination? Explore what to do there.';
-          case 'Marketplace':
-            return 'Want gear for this? Open Amazon with your tag ready.';
           default:
             return 'Ready for the next step? Explore a matching offer.';
         }
@@ -2004,45 +1545,7 @@ function hydrateAmazonLinks() {
         tier: offer.tier || 3
       };
     }
-function createAmazonCard(intent) {
-  let type = 'general';
-  let title = 'Best travel essentials on Amazon';
-  let description = 'Useful gear that makes trips easier.';
 
-  if (intent === 'travel-planning') {
-    type = 'packing';
-    title = 'What I always pack before a trip';
-    description = 'Packing cubes and simple gear that save time and space.';
-  } else if (intent === 'connectivity') {
-    type = 'power';
-    title = 'Do not run out of battery while traveling';
-    description = 'Portable chargers and power gear for flights and long days.';
-  } else if (intent === 'travel-booking') {
-    type = 'adapter';
-    title = 'One thing people forget before traveling abroad';
-    description = 'A travel adapter can save a lot of hassle.';
-  } else if (intent === 'general') {
-    type = 'luggage';
-    title = 'Travel gear worth checking before you go';
-    description = 'Simple essentials for smoother trips.';
-  }
-
-  return {
-    isMoneyCard: true,
-    platform: 'amazon',
-    title,
-    description,
-    ctaLabel: 'Open Amazon',
-    author: 'Amazon',
-    publishedAt: new Date().toISOString(),
-    url: getAmazonLink(type),
-    postUrl: getAmazonLink(type),
-    thumbnail: 'https://via.placeholder.com/720x1280/161b22/ff9900?text=Amazon',
-    partnerName: 'Amazon',
-    category: 'Marketplace',
-    tier: 2
-  };
-}
     function interleaveJourneyCards(items) {
       const buckets = {
         'travel-planning': [],
@@ -2115,18 +1618,15 @@ function createAmazonCard(intent) {
           bullets.map(b => '<span class="decision-pill">' + escapeHtml(b) + '</span>').join('') +
           '</div>';
 
-        const primaryLink = '<div style="display:flex;flex-direction:column;gap:6px;">' +
-          '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-category="' + escapeHtml(item.category || '') + '" data-tier="' + escapeHtml(String(item.tier || 0)) + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_primary') + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(getContextualCTA(item)) + '</a>' +
-          '<div style="font-size:11px;color:rgba(255,255,255,0.55);">Takes ~10 seconds</div>' +
-        '</div>';
+        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_primary') + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(getContextualCTA(item)) + '</a>';
 
-        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-category="' + escapeHtml(relatedPartner.category || '') + '" data-tier="' + escapeHtml(String(relatedPartner.tier || 0)) + '" data-source="' + escapeHtml('column2_related_' + platform) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">Explore related → ' + relatedLabel + '</a>' : '';
+        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-source="' + escapeHtml('column2_related_' + platform) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">Explore related → ' + relatedLabel + '</a>' : '';
 
         const moneyClass = item.isMoneyCard ? ' money-card' : '';
         const clickableUrl = escapeHtml(primaryUrl);
         const clickableTrackedUrl = escapeHtml(primaryTrackedUrl);
 
-        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-category="' + escapeHtml(item.category || '') + '" data-tier="' + escapeHtml(String(item.tier || 0)) + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_card') + '">' +
+        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_card') + '">' +
           (item.isMoneyCard
             ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority pick' : 'Featured offer') + '</div>' + intentLabel + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
             : createMediaMarkup(item) + '<div class="feed-content">' + intentLabel + hookHtml + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
@@ -2308,10 +1808,8 @@ function createAmazonCard(intent) {
           source: 'comparison_' + type
         });
 
-        const badgeText = isTopPick(partner) ? '🔥 Top pick' : item.badge;
-
         return '<article class="comparison-card">' +
-          '<div class="comparison-badge">' + escapeHtml(badgeText) + '</div>' +
+          '<div class="comparison-badge">' + escapeHtml(item.badge) + '</div>' +
           '<h3>' + escapeHtml(item.title) + '</h3>' +
           '<p>' + escapeHtml(item.description) + '</p>' +
           '<div class="comparison-list">' +
@@ -2319,7 +1817,7 @@ function createAmazonCard(intent) {
             return '<span class="comparison-pill">' + escapeHtml(pill) + '</span>';
           }).join('') +
           '</div>' +
-          '<a class="comparison-link" href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(trackedUrl) + '" data-partner="' + escapeHtml(partner.name) + '" data-category="' + escapeHtml(partner.category) + '" data-tier="' + escapeHtml(String(partner.tier || 0)) + '" data-source="' + escapeHtml('comparison_' + type) + '" target="_blank" rel="noopener noreferrer">' +
+          '<a class="comparison-link" href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(trackedUrl) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="' + escapeHtml('comparison_' + type) + '" target="_blank" rel="noopener noreferrer">' +
           escapeHtml(item.cta) +
           '</a>' +
           '</article>';
@@ -2375,8 +1873,6 @@ function createAmazonCard(intent) {
              data-raw-url="${partner.url}"
              data-tracked-url="${monetizeUrl(partner.url, { partner: partner.name, source: 'department_' + category })}"
              data-partner="${partner.name}"
-             data-category="${partner.category}"
-             data-tier="${partner.tier || 0}"
              data-source="department_${category}"
              target="_blank"
              rel="noopener noreferrer">
@@ -2457,7 +1953,7 @@ function createAmazonCard(intent) {
       if (intro) intro.textContent = 'Curated picks for you ↓';
 
       const entryLayer = document.getElementById('entryLayer');
-      if (entryLayer) entryLayer.style.display = 'block';
+      if (entryLayer) entryLayer.style.display = 'none';
     }
 
     async function fetchDynamicFeed() {
@@ -2516,12 +2012,7 @@ function createAmazonCard(intent) {
         if (!offer) return;
 
         const benefit = getOfferBenefitCopy(offer);
-        setTrackedLinkAttributes(featuredLink, offer.url, {
-          partner: offer.name,
-          source: 'header_featured',
-          category: offer.category,
-          tier: offer.tier
-        });
+        setTrackedLinkAttributes(featuredLink, offer.url, { partner: offer.name, source: 'header_featured' });
         title.textContent = benefit.title;
         subtitle.textContent = benefit.description;
       }
@@ -2538,12 +2029,7 @@ function createAmazonCard(intent) {
 
       const benefit = getOfferBenefitCopy(offer);
       stickyCopy.textContent = benefit.title + ' — ' + benefit.description;
-      setTrackedLinkAttributes(stickyLink, offer.url, {
-        partner: offer.name,
-        source: 'sticky',
-        category: offer.category,
-        tier: offer.tier
-      });
+      setTrackedLinkAttributes(stickyLink, offer.url, { partner: offer.name, source: 'sticky' });
       stickyLink.textContent = benefit.cta;
     }
 
@@ -2560,12 +2046,7 @@ function createAmazonCard(intent) {
       const benefit = getOfferBenefitCopy(offer);
       title.textContent = benefit.title;
       text.textContent = benefit.description;
-      setTrackedLinkAttributes(link, offer.url, {
-        partner: offer.name,
-        source: 'popup',
-        category: offer.category,
-        tier: offer.tier
-      });
+      setTrackedLinkAttributes(link, offer.url, { partner: offer.name, source: 'popup' });
       link.textContent = benefit.cta;
 
       popup.style.display = 'flex';
@@ -2574,32 +2055,6 @@ function createAmazonCard(intent) {
 
     function attachGlobalInteractions() {
       document.addEventListener('click', function(e) {
-        const filterBtn = e.target.closest('[data-filter-category]');
-        if (filterBtn) {
-          const category = filterBtn.getAttribute('data-filter-category');
-          activePartnerCategory = category === 'All' ? null : category;
-          renderPartners(partnersData);
-          return;
-        }
-
-        const sortDefault = e.target.closest('#sortByDefault');
-        if (sortDefault) {
-          activePartnerSort = 'default';
-          document.getElementById('sortByDefault')?.classList.add('active');
-          document.getElementById('sortByPopular')?.classList.remove('active');
-          renderPartners(partnersData);
-          return;
-        }
-
-        const sortPopular = e.target.closest('#sortByPopular');
-        if (sortPopular) {
-          activePartnerSort = 'popular';
-          document.getElementById('sortByPopular')?.classList.add('active');
-          document.getElementById('sortByDefault')?.classList.remove('active');
-          renderPartners(partnersData);
-          return;
-        }
-
         const anchor = e.target.closest('a[href]');
         if (anchor) {
           const rawUrl = anchor.getAttribute('data-raw-url') || anchor.getAttribute('href');
@@ -2609,12 +2064,7 @@ function createAmazonCard(intent) {
             e.stopPropagation();
             openPartnerLink(rawUrl, trackedUrl, {
               partner: anchor.getAttribute('data-partner'),
-              source: anchor.getAttribute('data-source'),
-              category: anchor.getAttribute('data-category'),
-              tier: Number(anchor.getAttribute('data-tier') || 0)
-            }).then(() => {
-              renderBrandGrid(partnersData);
-              renderPartners(partnersData);
+              source: anchor.getAttribute('data-source')
             });
             return;
           }
@@ -2624,19 +2074,13 @@ function createAmazonCard(intent) {
 
         const card = e.target.closest('.feed-card[data-open-url]');
         if (!card) return;
-
         const rawUrl = card.getAttribute('data-open-url');
         const trackedUrl = card.getAttribute('data-open-tracked-url') || rawUrl;
         if (!rawUrl || rawUrl === '#') return;
 
         openPartnerLink(rawUrl, trackedUrl, {
           partner: card.getAttribute('data-partner'),
-          source: card.getAttribute('data-source'),
-          category: card.getAttribute('data-category'),
-          tier: Number(card.getAttribute('data-tier') || 0)
-        }).then(() => {
-          renderBrandGrid(partnersData);
-          renderPartners(partnersData);
+          source: card.getAttribute('data-source')
         });
       });
 
@@ -2651,7 +2095,14 @@ function createAmazonCard(intent) {
       });
 
       document.getElementById('partnerSearch').addEventListener('input', function() {
-        renderPartners(partnersData);
+        const q = this.value.trim().toLowerCase();
+        if (!q) {
+          renderPartners(partnersData);
+          return;
+        }
+        renderPartners(partnersData.filter(function(p) {
+          return p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+        }));
       });
 
       document.querySelectorAll('.entry-chip').forEach(function(button) {
@@ -2678,22 +2129,6 @@ function createAmazonCard(intent) {
           }
         });
       }
-
-      const amazonSearchForm = document.getElementById('amazonSearchForm');
-      if (amazonSearchForm) {
-        amazonSearchForm.addEventListener('submit', function() {
-          incrementClickCount();
-          trackPartnerClick('Amazon');
-          trackPartnerStats('Amazon', {
-            category: 'Marketplace',
-            tier: 1
-          });
-          window.setTimeout(function() {
-            renderBrandGrid(partnersData);
-            renderPartners(partnersData);
-          }, 150);
-        });
-      }
     }
 
     function scheduleMonetizationTriggers() {
@@ -2701,28 +2136,8 @@ function createAmazonCard(intent) {
       window.setInterval(updateStickyOffer, 12000);
     }
 
-    let scrollTriggered = false;
-    function setupScrollTriggeredCTA() {
-      const magneto = document.getElementById('magnetoColumn');
-      if (!magneto) return;
-
-      magneto.addEventListener('scroll', function() {
-        if (scrollTriggered) return;
-
-        if (this.scrollTop > 800) {
-          scrollTriggered = true;
-          const offer = getOfferFromPartners();
-          if (!offer) return;
-
-          const sticky = document.getElementById('stickyCopy');
-          sticky.textContent = 'Ready to act? ' + getOfferBenefitCopy(offer).title;
-        }
-      });
-    }
-
     attachGlobalInteractions();
     setupInfiniteScroll();
-    setupScrollTriggeredCTA();
     updateClickDisplay();
     loadPartnersData();
     scheduleMonetizationTriggers();
