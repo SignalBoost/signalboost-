@@ -1125,6 +1125,7 @@
         </div>
       </div>
 
+      <div id="topPerformersBox" style="padding:8px 12px 0;"></div>
       <div id="partnersRail" class="column-1-scroll"></div>
     </div>
 
@@ -1693,13 +1694,6 @@
             "logo": ""
       },
       {
-            "name": "Petpivot US",
-            "category": "Products & Tools",
-            "url": "https://www.awin1.com/cread.php?awinmid=124898&awinaffid=2834806",
-            "tier": 3,
-            "logo": ""
-      },
-      {
             "name": "Sirenis Hotels (US, CA, MEX)",
             "category": "Hotels & Accommodation",
             "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
@@ -1946,6 +1940,39 @@ function hydrateAmazonLinks() {
       return (stats[name] && stats[name].clicks) || 0;
     }
 
+    function getTopPerformers(items, limit = 5) {
+      const stats = getPartnerStats();
+
+      return items
+        .slice()
+        .sort(function(a, b) {
+          const aStats = stats[a.name] || {};
+          const bStats = stats[b.name] || {};
+
+          const aClicks = aStats.clicks || 0;
+          const bClicks = bStats.clicks || 0;
+
+          if (aClicks !== bClicks) return bClicks - aClicks;
+
+          const aRecent = aStats.lastClick || 0;
+          const bRecent = bStats.lastClick || 0;
+          if (aRecent !== bRecent) return bRecent - aRecent;
+
+          return (a.tier || 3) - (b.tier || 3);
+        })
+        .slice(0, limit);
+    }
+
+    function getRevenueBadge(partner) {
+      const stats = getPartnerStats();
+      const clicks = (stats[partner.name] && stats[partner.name].clicks) || 0;
+
+      if (clicks >= 8) return ' 🔥';
+      if ((partner.tier || 3) === 1) return ' ⭐';
+      if ((partner.tier || 3) === 2) return ' ✅';
+      return '';
+    }
+
     function getSessionBoost(partnerName) {
       try {
         const recent = JSON.parse(sessionStorage.getItem('recentClicks') || '[]');
@@ -2144,9 +2171,11 @@ function hydrateAmazonLinks() {
           const color = getCategoryColor(categoryName);
           const partners = grouped[categoryName].slice().sort(function(a, b) {
             if (activePartnerSort === 'popular') {
-              const clicksA = (stats[a.name] && stats[a.name].clicks) || 0;
-              const clicksB = (stats[b.name] && stats[b.name].clicks) || 0;
-              if (clicksA !== clicksB) return clicksB - clicksA;
+              const scoreA = getPartnerClickCount(a.name) + getSessionBoost(a.name);
+              const scoreB = getPartnerClickCount(b.name) + getSessionBoost(b.name);
+              if (scoreA !== scoreB) return scoreB - scoreA;
+              if ((a.tier || 3) !== (b.tier || 3)) return (a.tier || 3) - (b.tier || 3);
+              return a.name.localeCompare(b.name);
             }
             return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
           });
@@ -2200,6 +2229,46 @@ function hydrateAmazonLinks() {
         .slice(0, 2)
         .map(function(part) { return part[0]; })
         .join('') || 'SB';
+    }
+
+    function renderTopPerformers(items) {
+      const el = document.getElementById('topPerformersBox');
+      if (!el) return;
+
+      const top = getTopPerformers(items, 5);
+
+      if (!top.length) {
+        el.innerHTML = '';
+        return;
+      }
+
+      el.innerHTML =
+        '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px;">' +
+          '<div style="font-size:11px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:#f5c542;margin-bottom:8px;">Top performers</div>' +
+          top.map(function(partner) {
+            const trackedUrl = monetizeUrl(partner.url, { partner: partner.name, source: 'top_performers' });
+            const clicks = getPartnerClickCount(partner.name);
+
+            return (
+              '<div style="margin:6px 0;">' +
+                '<a href="' + escapeHtml(partner.url) + '"' +
+                  ' data-raw-url="' + escapeHtml(partner.url) + '"' +
+                  ' data-tracked-url="' + escapeHtml(trackedUrl) + '"' +
+                  ' data-partner="' + escapeHtml(partner.name) + '"' +
+                  ' data-category="' + escapeHtml(partner.category) + '"' +
+                  ' data-tier="' + escapeHtml(String(partner.tier || 3)) + '"' +
+                  ' data-source="top_performers"' +
+                  ' target="_blank" rel="noopener noreferrer"' +
+                  ' style="color:#fff;text-decoration:none;font-size:13px;font-weight:700;">' +
+                  escapeHtml(partner.name) + escapeHtml(getRevenueBadge(partner)) +
+                '</a>' +
+                '<div style="font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;">' +
+                  escapeHtml(partner.category) + ' · ' + clicks + ' clicks' +
+                '</div>' +
+              '</div>'
+            );
+          }).join('') +
+        '</div>';
     }
 
     function getPopularPartners(items, limit = 8) {
@@ -3150,6 +3219,7 @@ function createAmazonCard(intent) {
           console.info('Loaded partners from', path, 'count:', partnersData.length);
           renderPartners(partnersData);
           renderBrandGrid(partnersData);
+          renderTopPerformers(partnersData);
           setupFeaturedHeader();
           updateStickyOffer();
           return;
@@ -3162,6 +3232,7 @@ function createAmazonCard(intent) {
       partnersData = fallbackPartners.slice();
       renderPartners(partnersData);
       renderBrandGrid(partnersData);
+      renderTopPerformers(partnersData);
       setupFeaturedHeader();
       updateStickyOffer();
     }
