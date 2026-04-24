@@ -1,4 +1,16 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,12 +18,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="verify-admitad" content="93d3c3a3c1" />
   <meta name="fo-verify" content="ecaf9150-b94f-4c51-9be8-901f70cd5e9a" />
-  <title>SignalBoost – Discover products, services and tools in one scroll</title>
-  <meta name="description" content="SignalBoost lets you discover products, services, tools and deals in one scroll—no need to search multiple sites." />
-  <meta name="keywords" content="discover services, product discovery platform, deals, tools marketplace, scroll discovery" />
+  <title>SignalBoost – Discover travel, finance, insurance and digital services in one place</title>
+  <meta name="description" content="SignalBoost is a digital shopping mall for travel, finance, insurance and online tools. Browse curated offers, compare options, and discover useful services in one scroll." />
+  <meta name="keywords" content="digital shopping mall, travel deals, finance tools, insurance offers, online services marketplace, product discovery platform" />
   <meta name="google-site-verification" content="rYali_68D0WtYK42cslb1hbj3sejZYe3p-UM4FoK_BM" />
+
   <style>
     * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       height: 100%;
@@ -19,6 +33,7 @@
       background: #0d1117;
       color: #fff;
     }
+
     body { overflow: hidden; }
 
     .top-feature {
@@ -29,12 +44,12 @@
       background: #0f141b;
       border-right: 1px solid rgba(255,255,255,0.06);
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 16px;
+      padding: 8px 12px;
       z-index: 20;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 10px;
+      gap: 6px;
     }
 
     .app {
@@ -52,39 +67,114 @@
     }
 
     .column-1 {
-      padding-top: 132px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      min-height: 0;
+      padding-top: 92px;
       background: #0f141b;
       border-right: 1px solid rgba(255,255,255,0.06);
     }
 
-    .column-1-header {
-      padding: 14px 16px;
-      font-size: 16px;
-      font-weight: 700;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      text-align: center;
-      background: #0f141b;
+    .column-1-controls {
       position: sticky;
       top: 0;
-      z-index: 5;
+      z-index: 8;
+      background: linear-gradient(180deg, rgba(15,20,27,0.98), rgba(15,20,27,0.96));
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 6px 8px 8px;
+    }
+
+    .column-1-header {
+      padding: 0 4px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.62);
+      background: transparent;
+    }
+
+    .column-1-helper {
+      padding: 0 4px 6px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.42);
+      line-height: 1.35;
     }
 
     .column-1-search-wrap {
-      padding: 8px 12px 0;
+      padding: 0;
       display: flex;
       justify-content: center;
     }
 
     .column-1-search {
       width: 100%;
-      max-width: 232px;
-      padding: 8px 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
+      max-width: 100%;
+      padding: 7px 10px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
       background: #0d1117;
       color: #fff;
-      font-size: 13px;
+      font-size: 12px;
       outline: none;
+    }
+
+    .affiliate-filters {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+      padding: 6px 0 0;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .affiliate-filter-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .affiliate-filter-btn:hover,
+    .affiliate-filter-btn.active {
+      border-color: rgba(245,197,66,0.32);
+      background: rgba(245,197,66,0.10);
+    }
+
+    .column-1-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 6px 0 0;
+      justify-content: flex-start;
+    }
+
+    .column-1-sort-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .column-1-sort-btn:hover,
+    .column-1-sort-btn.active {
+      border-color: rgba(88,166,255,0.32);
+      background: rgba(88,166,255,0.10);
     }
 
     .column-1-scroll {
@@ -94,11 +184,42 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      scrollbar-width: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.22) transparent;
+    }
+
+    .column-1-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.22);
+      border-radius: 999px;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.34);
+    }
+
+    .partners-empty {
+      width: 100%;
+      max-width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.68);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
     }
 
     .category {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       width: 100%;
       max-width: 244px;
     }
@@ -111,14 +232,16 @@
 
     .category summary {
       cursor: pointer;
-      padding: 11px 12px;
+      padding: 9px 10px;
       user-select: none;
       font-weight: 700;
       list-style: none;
       color: #fff;
+      font-size: 13px;
     }
 
     .category summary::-webkit-details-marker { display: none; }
+
     .category summary::before {
       content: '▶';
       display: inline-block;
@@ -128,11 +251,60 @@
       transform: translateY(-1px);
       color: rgba(255,255,255,0.9);
     }
+
     .category details[open] summary::before { content: '▼'; }
-    .category ul { list-style: none; margin: 0; padding: 10px 10px 4px; }
-    .category li { margin: 7px 0; }
-    .category a { color: rgba(255,255,255,0.92); text-decoration: none; font-size: 14px; }
+
+    .category ul {
+      list-style: none;
+      margin: 0;
+      padding: 10px 10px 4px;
+    }
+
+    .category li { margin: 5px 0; }
+
+    .category details[open] summary {
+      background: rgba(88,166,255,0.08) !important;
+      border-radius: 8px;
+    }
+
+    .category a {
+      color: rgba(255,255,255,0.92);
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+    }
+
     .category a:hover { text-decoration: underline; }
+
+    .partner-hover-card {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.18s ease, max-height 0.18s ease, margin-top 0.18s ease;
+    }
+
+    .category li:hover .partner-hover-card {
+      opacity: 1;
+      max-height: 120px;
+    }
+
+    .partner-hover-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .partner-hover-meta {
+      font-size: 11px;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.5;
+    }
 
     .column-2 {
       background: #0d1117;
@@ -146,10 +318,211 @@
       min-height: 0;
       height: 100%;
       overflow-y: auto;
-      padding: 24px 16px 100px;
+      padding: 12px 16px 100px;
       align-items: center;
       scrollbar-width: none;
     }
+
+    .entry-layer {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(245,197,66,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(245,197,66,0.18);
+      border-radius: 18px;
+    }
+
+    .entry-copy { margin-bottom: 14px; }
+
+    .entry-kicker {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(245,197,66,0.12);
+      color: #f5c542;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .entry-title {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.08;
+    }
+
+    .entry-subtitle {
+      margin: 0;
+      color: rgba(255,255,255,0.78);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .entry-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0 12px;
+    }
+
+    .entry-chip,
+    .entry-link-button {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .entry-chip:hover,
+    .entry-link-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(245,197,66,0.35);
+      background: rgba(245,197,66,0.08);
+    }
+
+    .entry-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .department-card {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(88,166,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(88,166,255,0.18);
+    }
+
+    .department-header h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+
+    .department-header p {
+      margin: 0 0 14px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .department-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .department-item {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .department-item:hover {
+      border-color: rgba(88,166,255,0.5);
+      background: rgba(88,166,255,0.12);
+    }
+
+    .comparison-section {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #161b22;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .comparison-header h2 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+
+    .comparison-header p {
+      margin: 0 0 16px;
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .comparison-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .comparison-badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(245,197,66,0.12);
+      color: #f5c542;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .comparison-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .comparison-card p {
+      margin: 0 0 10px;
+      color: rgba(255,255,255,0.78);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .comparison-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+
+    .comparison-pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.88);
+    }
+
+    .comparison-link {
+      display: inline-block;
+      text-decoration: none;
+      font-weight: 700;
+      color: #58a6ff;
+    }
+
+    .comparison-link:hover { text-decoration: underline; }
 
     .feed-container {
       display: flex;
@@ -290,9 +663,9 @@
     .feed-platform.tiktok { background: rgba(255,255,255,0.12); color: #ffffff; }
     .feed-platform.vimeo { background: rgba(26,183,234,0.15); color: #87dfff; }
     .feed-platform.dailymotion { background: rgba(0,110,255,0.15); color: #66a9ff; }
+    .feed-platform.amazon { background: rgba(255,153,0,0.15); color: #ffb84d; }
 
     .feed-link,
-    .money-link,
     .sticky-link,
     .popup-link {
       display: inline-block;
@@ -301,10 +674,27 @@
       font-size: 14px;
       font-weight: 700;
     }
+
     .feed-link:hover,
-    .money-link:hover,
     .sticky-link:hover,
     .popup-link:hover { text-decoration: underline; }
+
+    .decision-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 4px;
+    }
+
+    .decision-pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.88);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
 
     .column-3 {
       background: #0f141b;
@@ -490,7 +880,7 @@
       text-transform: uppercase;
     }
 
-    *::-webkit-scrollbar { width: 0; height: 0; }
+    .column-2 *::-webkit-scrollbar, .column-3 *::-webkit-scrollbar { width: 0; height: 0; }
 
     @media (max-width: 960px) {
       .app { grid-template-columns: 240px minmax(0, 1fr); }
@@ -537,6 +927,12 @@
       .column-1 {
         background: #0f141b;
         padding: 0 0 10px;
+        height: auto;
+      }
+
+      .column-1-controls {
+        position: static;
+        padding-bottom: 8px;
       }
 
       .column-1-header,
@@ -598,74 +994,714 @@
         align-items: flex-start;
       }
     }
-  
-.amazon-links { margin-top:8px; }
-.feed-link.secondary { display:block; font-size:13px; opacity:0.8; }
-</style>
+
+    .amazon-section {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,153,0,0.14), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,153,0,0.28);
+    }
+
+    .amazon-section h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    .amazon-section p {
+      margin: 0 0 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .amazon-search-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .amazon-search-form input {
+      flex: 1 1 220px;
+      min-width: 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(13,17,23,0.95);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .amazon-search-form button {
+      appearance: none;
+      border: 1px solid rgba(255,153,0,0.34);
+      background: rgba(255,153,0,0.14);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .amazon-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .amazon-chip {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .amazon-chip:hover {
+      border-color: rgba(255,153,0,0.55);
+      background: rgba(255,153,0,0.12);
+    }
+/* AMAZON SECTION FIX */
+
+.amazon-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.amazon-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #161b22;
+  border: 1px solid rgba(255,255,255,0.06);
+  text-decoration: none !important;
+  color: #e6edf3 !important;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.amazon-card:hover {
+  background: rgba(245,197,66,0.08);
+  border-color: rgba(245,197,66,0.35);
+  color: #f5c542 !important;
+  transform: translateY(-2px);
+}
+
+.amazon-card:visited,
+.amazon-card:active {
+  color: #e6edf3 !important;
+}
+
+.amazon-icon {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.amazon-text {
+  font-size: 14px;
+}
+  </style>
 </head>
 <body>
   <div class="top-feature">
     <div>
-      <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
-      <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Scroll. Discover. Services, tools & deals.</div>
+      <div style="font-weight:800;font-size:16px;color:#f5c542;">SignalBoost</div>
+      <div id="regionTagline" style="font-size:11px;color:rgba(255,255,255,0.6);">Browse the brands people click most.</div>
     </div>
+
     <a id="featuredPartnerLink" href="#" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
-      <div id="featuredDealLabel" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured</div>
-      <div id="featuredDealTitle" style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Explore offers and services</div>
-      <div id="featuredDealSubtitle" style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Discover more in one place</div>
+      <div id="featuredDealLabel" style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#f5c542;margin-bottom:2px;">Featured</div>
+      <div id="featuredDealTitle" style="font-size:12px;font-weight:700;color:#ffffff;line-height:1.25;">Explore top digital services</div>
+      <div id="featuredDealSubtitle" style="font-size:11px;color:rgba(255,255,255,0.68);margin-top:2px;">Curated picks for shopping smarter</div>
     </a>
-    <div id="headerFootnote" style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted platforms and monetized outbound offers.</div>
+
+    <div id="headerFootnote" style="font-size:10px;color:rgba(255,255,255,0.48);">Trusted platforms and monetized outbound offers.</div>
   </div>
 
   <div class="app">
     <div class="column column-1">
-      <div id="navTitle" class="column-1-header">Navigation</div>
-      <div class="column-1-search-wrap">
-        <input id="partnerSearch" class="column-1-search" type="text" placeholder="Search partners..." />
+      <div class="column-1-controls">
+        <div id="navTitle" class="column-1-header">Plan your trip</div>
+
+        <div class="column-1-search-wrap">
+          <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." />
+        </div>
+
+        <div id="affiliateFilters" class="affiliate-filters"></div>
+
+        <div class="column-1-toolbar">
+          <button id="sortByDefault" class="column-1-sort-btn active" type="button">Default</button>
+          <button id="sortByPopular" class="column-1-sort-btn" type="button">Popular</button>
+        </div>
       </div>
+
       <div id="partnersRail" class="column-1-scroll"></div>
     </div>
 
     <div class="column column-2">
       <div id="magnetoColumn">
-        <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Discovery stream ↓</div>
+
+
+<section id="amazonSection" class="amazon-section">
+  <div class="entry-kicker">Amazon travel gear</div>
+  <h2>Best travel essentials on Amazon</h2>
+  <p>
+    From power banks to packing cubes, discover simple gear that saves time, 
+    avoids problems, and makes every trip easier.
+  </p>
+
+  <div class="amazon-grid">
+    <a href="https://www.amazon.com/s?k=power+bank&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
+      🔋 Power Banks
+    </a>
+    <a href="https://www.amazon.com/s?k=travel+adapter&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
+      🔌 Travel Adapters
+    </a>
+    <a href="https://www.amazon.com/s?k=carry+on+luggage&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
+      🧳 Carry-on Luggage
+    </a>
+    <a href="https://www.amazon.com/s?k=packing+cubes&tag=signalboostai-20" target="_blank" rel="noopener noreferrer" class="amazon-card">
+      🎒 Packing Cubes
+    </a>
+  </div>
+
+  <form id="amazonSearchForm" class="amazon-search-form" action="https://www.amazon.com/s" method="get" target="_blank" rel="noopener noreferrer">
+    <input id="amazonSearchInput" type="text" name="k" placeholder="Search travel gear on Amazon..." />
+    <input type="hidden" name="tag" value="signalboostai-20" />
+    <button type="submit">Search Amazon</button>
+  </form>
+</section>
+
+        <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Curated picks for you ↓</div>
         <div id="clickStats" style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;">🔥 Discovery clicks today: <span id="clickCount">0</span></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
 
     <div class="column column-3">
-      <h2 id="brandGridTitle">Top Brands</h2>
+      <h2 id="brandGridTitle">Most Popular Partners</h2>
       <div id="brandGrid" class="brand-grid"></div>
     </div>
   </div>
 
   <div id="stickyBar">
-    <div class="sticky-copy" id="stickyCopy">🔥 Limited deal: don’t miss the top partner offer.</div>
-    <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer">🔥 Get the deal now</a>
+    <div class="sticky-copy" id="stickyCopy">Explore a featured service picked for this shopping stream.</div>
+    <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer">Explore now</a>
   </div>
 
   <div id="dealPopup">
     <div class="popup-card">
-      <div class="priority-pill">Limited-time offer</div>
-      <h3 id="popupTitle">Don’t miss this deal</h3>
-      <p id="popupText">Tap below to unlock the featured partner offer before you keep scrolling.</p>
+      <div class="priority-pill">Featured now</div>
+      <h3 id="popupTitle">Don’t miss this pick</h3>
+      <p id="popupText">Take a look at this featured service before you keep scrolling.</p>
       <div class="popup-actions">
-        <a id="popupLink" class="popup-link" href="#" target="_blank" rel="noopener noreferrer">👉 Get deal</a>
-        <button id="popupClose" class="popup-close" type="button">Keep scrolling</button>
+        <a id="popupLink" class="popup-link" href="#" target="_blank" rel="noopener noreferrer">Explore now</a>
+        <button id="popupClose" class="popup-close" type="button">Keep browsing</button>
       </div>
     </div>
   </div>
 
   <script>
     const fallbackPartners = [
-      { name: 'Cozeware', category: 'Storage & Services', url: 'https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806', tier: 1 },
-      { name: 'Airalo', category: 'SIM & Connectivity', url: 'https://airalo.tpo.lv/eXjKLiuw', tier: 2 },
-      { name: 'Kiwi.com', category: 'Flights & Meta Search', url: 'https://booking.tpo.lv/enwsEbCs', tier: 2 },
-      { name: 'Kiwitaxi', category: 'Transfers & Transport', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', tier: 3 },
-      { name: 'Welcome Pickups', category: 'Transfers & Transport', url: 'https://tpo.lv/XAJOoobr', tier: 3 },
-      { name: 'Klook', category: 'Tours & Activities', url: 'https://klook.tpo.lv/pTp1NljF', tier: 3 }
-    ];
+      {
+            "name": "Amazon",
+            "category": "Marketplace",
+            "url": "https://www.amazon.com/?tag=signalboostai-20",
+            "tier": 1,
+            "logo": ""
+      },
+      {
+            "name": "Cozeware",
+            "category": "Products & Tools",
+            "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
+            "tier": 1,
+            "logo": ""
+      },
+      {
+            "name": "Valerion US",
+            "category": "Products & Tools",
+            "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "Countabout Corporation",
+            "category": "Finance",
+            "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "FileYourTaxes",
+            "category": "Finance",
+            "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "Airalo",
+            "category": "SIM & Connectivity",
+            "url": "https://airalo.tpo.lv/eXjKLiuw",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "Intui.travel",
+            "category": "Transfers & Transport",
+            "url": "https://intui.tpo.lv/Rrx5VuN3",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "GoCity",
+            "category": "Tours & Activities",
+            "url": "https://gocity.tpo.lv/Des5Cgov",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Busbud",
+            "category": "Transfers & Transport",
+            "url": "https://busbud.tpo.lv/h4C6YPFZ",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "BikesBooking.com",
+            "category": "Tours & Activities",
+            "url": "https://bikesbooking.tpo.lv/B3zIKanS",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "EatWith",
+            "category": "Tours & Activities",
+            "url": "https://eatwith.tpo.lv/BfAnpZNb",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "WeGoTrip",
+            "category": "Tours & Activities",
+            "url": "https://wegotrip.tpo.lv/kKIF0gIW",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "HolidayTaxis",
+            "category": "Transfers & Transport",
+            "url": "https://holidaytaxis.tpo.lv/oHwpbrFt",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "AutoEurope",
+            "category": "Car Rentals",
+            "url": "https://autoeurope.tpo.lv/t84AzZbO",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "GetRentacar.com",
+            "category": "Car Rentals",
+            "url": "https://getrentacar.tpo.lv/OR2TWduQ",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Searadar",
+            "category": "Specialty & Other",
+            "url": "https://searadar.tpo.lv/TO4A5eBZ",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Radical Storage",
+            "category": "Storage & Services",
+            "url": "https://radicalstorage.tpo.lv/tna4hnly",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Aviasales",
+            "category": "Flights & Meta Search",
+            "url": "https://aviasales.tpo.lv/VoWXgFFm",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Compensair",
+            "category": "Insurance & Claims",
+            "url": "https://compensair.tpo.lv/wxDDCITG",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Saily",
+            "category": "SIM & Connectivity",
+            "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Localrent.com",
+            "category": "Car Rentals",
+            "url": "https://localrent.tpo.lv/XS0CqdMP",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Welcome Pickups",
+            "category": "Transfers & Transport",
+            "url": "https://tpo.lv/XAJOoobr",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Kiwitaxi",
+            "category": "Transfers & Transport",
+            "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "GetTransfer.com",
+            "category": "Transfers & Transport",
+            "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Drimsim",
+            "category": "SIM & Connectivity",
+            "url": "https://drimsim.tpo.lv/PGwr6JTr",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Economybookings.com",
+            "category": "Car Rentals",
+            "url": "https://economybookings.tpo.lv/jSFMPEPA",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "AirHelp",
+            "category": "Insurance & Claims",
+            "url": "https://airhelp.tpo.lv/EPrGDSO3",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "QEEQ",
+            "category": "Car Rentals",
+            "url": "https://qeeq.tpo.lv/jklB4Pbm",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "EKTA Insurance",
+            "category": "Insurance & Claims",
+            "url": "https://ektatraveling.tpo.lv/XWbZbj8S",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Kiwi CA",
+            "category": "Flights & Meta Search",
+            "url": "https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Kiwi MX",
+            "category": "Flights & Meta Search",
+            "url": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Kiwi US",
+            "category": "Flights & Meta Search",
+            "url": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Europcar AU NZ",
+            "category": "Car Rentals",
+            "url": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago AR",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago BR",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago CO",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=105935&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago DE",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago MX",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago NZ",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=66032&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago PE",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=105927&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Trivago USA",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Tsarbomba",
+            "category": "Specialty & Other",
+            "url": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Xuchang Aixiu Hair Products Co., Ltd.",
+            "category": "Specialty & Other",
+            "url": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Zlike Hair",
+            "category": "Specialty & Other",
+            "url": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Klook",
+            "category": "Tours & Activities",
+            "url": "https://klook.tpo.lv/pTp1NljF",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Yesim",
+            "category": "SIM & Connectivity",
+            "url": "https://yesim.tpo.lv/3vIzBQts",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Allycar",
+            "category": "Car Rentals",
+            "url": "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Carmel Car & Limousine",
+            "category": "Transfers & Transport",
+            "url": "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Desire Experience (US)",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=23098&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Evisa",
+            "category": "Specialty & Other",
+            "url": "https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Go! Go! España",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Go2Africa (US)",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Jumbo Car Costa Rica (US)",
+            "category": "Car Rentals",
+            "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "King Koil",
+            "category": "Specialty & Other",
+            "url": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Lastminute SE",
+            "category": "Flights & Meta Search",
+            "url": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "PearlMountain Limited",
+            "category": "Specialty & Other",
+            "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Temptation Experience (US)",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=23093&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "The BitJoy eSIM (US)",
+            "category": "SIM & Connectivity",
+            "url": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "The Builder Market (US)",
+            "category": "Specialty & Other",
+            "url": "https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Tiqets DE",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Tiqets IT",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Tiqets UK",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Tiqets US",
+            "category": "Tours & Activities",
+            "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "BiMPY",
+            "category": "Products & Tools",
+            "url": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "H10 Hotels (US & Canada)",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "NN Hotels Affiliate Program (US)",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=19428&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Sigma Imports Holdings Limited",
+            "category": "Products & Tools",
+            "url": "https://www.awin1.com/cread.php?awinmid=93863&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Petpivot US",
+            "category": "Products & Tools",
+            "url": "https://www.awin1.com/cread.php?awinmid=124898&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      },
+      {
+            "name": "Sirenis Hotels (US, CA, MEX)",
+            "category": "Hotels & Accommodation",
+            "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+            "tier": 3,
+            "logo": ""
+      }
+];
 
     const hybridVideoPool = [
       {
@@ -676,17 +1712,19 @@
         publishedAt: new Date().toISOString(),
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&playsinline=1',
-        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
+        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+        category: 'travel'
       },
       {
         platform: 'youtube',
         title: 'Cheap flights and booking hacks',
-        description: 'Short-form discovery content to keep the feed alive.',
+        description: 'Short-form discovery content to support better booking decisions.',
         author: 'YouTube',
         publishedAt: new Date(Date.now() - 60000).toISOString(),
         url: 'https://www.youtube.com/watch?v=OPf0YbXqDm0',
         embedUrl: 'https://www.youtube.com/embed/OPf0YbXqDm0?rel=0&modestbranding=1&playsinline=1',
-        thumbnail: 'https://img.youtube.com/vi/OPf0YbXqDm0/hqdefault.jpg'
+        thumbnail: 'https://img.youtube.com/vi/OPf0YbXqDm0/hqdefault.jpg',
+        category: 'travel'
       },
       {
         platform: 'vimeo',
@@ -696,7 +1734,8 @@
         publishedAt: new Date(Date.now() - 180000).toISOString(),
         url: 'https://vimeo.com/76979871',
         embedUrl: 'https://player.vimeo.com/video/76979871?title=0&byline=0&portrait=0',
-        thumbnail: 'https://i.vimeocdn.com/video/452001751-640.jpg'
+        thumbnail: 'https://i.vimeocdn.com/video/452001751-640.jpg',
+        category: 'travel'
       },
       {
         platform: 'dailymotion',
@@ -706,35 +1745,39 @@
         publishedAt: new Date(Date.now() - 300000).toISOString(),
         url: 'https://www.dailymotion.com/video/x84sh87',
         embedUrl: 'https://www.dailymotion.com/embed/video/x84sh87',
-        thumbnail: 'https://via.placeholder.com/720x1280/10203a/66a9ff?text=Dailymotion'
+        thumbnail: 'https://via.placeholder.com/720x1280/10203a/66a9ff?text=Dailymotion',
+        category: 'travel'
       },
       {
         platform: 'tiktok',
         title: 'Viral travel savings clip',
-        description: 'A preview slot for your short-form acquisition content.',
+        description: 'A preview slot for short-form acquisition content.',
         author: 'TikTok',
         publishedAt: new Date(Date.now() - 360000).toISOString(),
         url: 'https://www.tiktok.com/@scout2015/video/6718335390845095173',
         embedUrl: 'https://www.tiktok.com/player/v1/6718335390845095173',
-        thumbnail: 'https://via.placeholder.com/720x1280/101018/ffffff?text=TikTok'
+        thumbnail: 'https://via.placeholder.com/720x1280/101018/ffffff?text=TikTok',
+        category: 'travel'
       }
     ];
 
     let partnersData = fallbackPartners.slice();
-    let currentRegion = 'global';
-    let currentLanguage = 'en';
+    let baseFeedItems = [];
     let allFeedItems = [];
     let renderedFeedCount = 0;
     let isRenderingMore = false;
     let popupShown = false;
+    let activePartnerCategory = null;
+    let activePartnerSort = 'default';
+
     const FEED_BATCH_SIZE = 6;
     const FEED_INSERTION_INTERVAL = 6;
 
     const partnersRail = document.getElementById('partnersRail');
     const brandGrid = document.getElementById('brandGrid');
-    const feedContainer = document.getElementById('feedContainer');
     const brandGridTitle = document.getElementById('brandGridTitle');
     const regionTagline = document.getElementById('regionTagline');
+    const feedContainer = document.getElementById('feedContainer');
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -763,7 +1806,73 @@
         return false;
       }
     }
+function getAmazonBaseByRegion() {
+  const region = (window.location.search.match(/[?&]region=([^&]+)/)?.[1] || '').toLowerCase();
 
+  if (region === 'pl') return 'https://www.amazon.pl';
+  if (region === 'br') return 'https://www.amazon.com.br';
+  if (region === 'mx') return 'https://www.amazon.com.mx';
+  if (region === 'es') return 'https://www.amazon.es';
+  if (region === 'de' || region === 'eu') return 'https://www.amazon.de';
+  if (region === 'fr') return 'https://www.amazon.fr';
+  if (region === 'it') return 'https://www.amazon.it';
+
+  return 'https://www.amazon.com';
+}
+
+function getAmazonTagByRegion() {
+  return 'signalboostai-20';
+}
+
+function getAmazonLink(type = 'general') {
+  const base = getAmazonBaseByRegion();
+  const tag = getAmazonTagByRegion();
+
+  const queries = {
+    power: 'power bank',
+    adapter: 'travel adapter',
+    luggage: 'carry on luggage',
+    packing: 'packing cubes',
+    general: 'travel essentials'
+  };
+
+  const q = encodeURIComponent(queries[type] || queries.general);
+  return `${base}/s?k=${q}&tag=${tag}`;
+}
+
+function hydrateAmazonLinks() {
+  const amazonCards = document.querySelectorAll('.amazon-card');
+
+  amazonCards.forEach((card) => {
+    let type = 'general';
+    const text = (card.textContent || '').toLowerCase();
+
+    if (text.includes('power')) type = 'power';
+    else if (text.includes('adapter')) type = 'adapter';
+    else if (text.includes('luggage')) type = 'luggage';
+    else if (text.includes('packing')) type = 'packing';
+
+    const url = getAmazonLink(type);
+
+    card.href = url;
+    card.setAttribute('data-raw-url', url);
+    card.setAttribute('data-tracked-url', url);
+    card.setAttribute('data-partner', 'Amazon');
+    card.setAttribute('data-category', 'Marketplace');
+    card.setAttribute('data-tier', '1');
+    card.setAttribute('data-source', 'amazon_hub');
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+  });
+
+  const form = document.getElementById('amazonSearchForm');
+  if (form) {
+    form.action = `${getAmazonBaseByRegion()}/s`;
+
+    const hiddenTag = form.querySelector('input[name="tag"]');
+    if (hiddenTag) hiddenTag.value = getAmazonTagByRegion();
+  }
+}
     function updateClickDisplay() {
       const el = document.getElementById('clickCount');
       if (!el) return;
@@ -777,6 +1886,68 @@
         localStorage.setItem('clickCount', String(current + 1));
         updateClickDisplay();
       } catch (err) {}
+    }
+
+    function trackPartnerClick(partnerName) {
+      if (!partnerName) return;
+      try {
+        const raw = localStorage.getItem('partnerPopularity');
+        const stats = raw ? JSON.parse(raw) : {};
+        stats[partnerName] = (stats[partnerName] || 0) + 1;
+        localStorage.setItem('partnerPopularity', JSON.stringify(stats));
+      } catch (err) {}
+    }
+
+    function getPartnerStats() {
+      try {
+        return JSON.parse(localStorage.getItem('partnerStats') || '{}');
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function trackPartnerStats(partnerName, meta = {}) {
+      if (!partnerName) return;
+
+      try {
+        const stats = getPartnerStats();
+
+        if (!stats[partnerName]) {
+          stats[partnerName] = {
+            clicks: 0,
+            category: meta.category || null,
+            tier: meta.tier || null,
+            lastClick: null
+          };
+        }
+
+        stats[partnerName].clicks += 1;
+        stats[partnerName].category = meta.category || stats[partnerName].category;
+        stats[partnerName].tier = meta.tier || stats[partnerName].tier;
+        stats[partnerName].lastClick = Date.now();
+
+        localStorage.setItem('partnerStats', JSON.stringify(stats));
+
+        const recent = JSON.parse(sessionStorage.getItem('recentClicks') || '[]');
+        if (!recent.includes(partnerName)) {
+          recent.push(partnerName);
+          sessionStorage.setItem('recentClicks', JSON.stringify(recent.slice(-5)));
+        }
+      } catch (err) {}
+    }
+
+    function getPartnerClickCount(name) {
+      const stats = getPartnerStats();
+      return (stats[name] && stats[name].clicks) || 0;
+    }
+
+    function getSessionBoost(partnerName) {
+      try {
+        const recent = JSON.parse(sessionStorage.getItem('recentClicks') || '[]');
+        return recent.includes(partnerName) ? 2 : 0;
+      } catch (e) {
+        return 0;
+      }
     }
 
     function monetizeUrl(url, meta) {
@@ -808,6 +1979,8 @@
       element.setAttribute('data-tracked-url', trackedUrl || '#');
       if (meta && meta.partner) element.setAttribute('data-partner', meta.partner);
       if (meta && meta.source) element.setAttribute('data-source', meta.source);
+      if (meta && meta.category) element.setAttribute('data-category', meta.category);
+      if (meta && meta.tier) element.setAttribute('data-tier', String(meta.tier));
     }
 
     async function canUseTrackedUrl(trackedUrl) {
@@ -825,11 +1998,22 @@
       }
     }
 
-    async function openPartnerLink(rawUrl, trackedUrl) {
+    async function openPartnerLink(rawUrl, trackedUrl, meta = {}) {
       if (!rawUrl || rawUrl === '#') return;
+
       const useTracked = await canUseTrackedUrl(trackedUrl);
       const destination = useTracked ? trackedUrl : rawUrl;
+
       incrementClickCount();
+
+      if (meta.partner) {
+        trackPartnerClick(meta.partner);
+        trackPartnerStats(meta.partner, {
+          category: meta.category || null,
+          tier: meta.tier || null
+        });
+      }
+
       window.open(destination, '_blank', 'noopener,noreferrer');
     }
 
@@ -851,7 +2035,11 @@
         'Tours & Activities': '#6cd98b',
         'Insurance & Claims': '#ff6b6b',
         'Flights & Meta Search': '#4dd2c0',
+        'Hotels & Accommodation': '#ff7ab6',
+        'Finance': '#f2cc60',
         'Storage & Services': '#ffd966',
+        'Marketplace': '#ff9900',
+        'Products & Tools': '#9f7aea',
         'Specialty & Other': '#8f7cff'
       };
       return map[category] || '#8f9fb3';
@@ -868,108 +2056,132 @@
 
     function getCategoryLabel(categoryName) {
       const labels = {
-        en: {
-          'Transfers & Transport': 'Transfers & Transport',
-          'Car Rentals': 'Car Rentals',
-          'SIM & Connectivity': 'SIM & Connectivity',
-          'Tours & Activities': 'Tours & Activities',
-          'Insurance & Claims': 'Insurance & Claims',
-          'Flights & Meta Search': 'Flights & comparisons',
-          'Storage & Services': 'Storage & Services',
-          'Specialty & Other': 'Specialty & Other'
-        },
-        es: {
-          'Transfers & Transport': 'Traslados y transporte',
-          'Car Rentals': 'Alquiler de autos',
-          'SIM & Connectivity': 'SIM y conectividad',
-          'Tours & Activities': 'Tours y actividades',
-          'Insurance & Claims': 'Seguros y reclamaciones',
-          'Flights & Meta Search': 'Vuelos y comparadores',
-          'Storage & Services': 'Almacenamiento y servicios',
-          'Specialty & Other': 'Especialidades y otros'
-        },
-        pt: {
-          'Transfers & Transport': 'Traslados e transporte',
-          'Car Rentals': 'Aluguel de carros',
-          'SIM & Connectivity': 'SIM e conectividade',
-          'Tours & Activities': 'Passeios e atividades',
-          'Insurance & Claims': 'Seguro e reembolsos',
-          'Flights & Meta Search': 'Voos e comparadores',
-          'Storage & Services': 'Armazenamento e serviços',
-          'Specialty & Other': 'Especialidades e outros'
-        },
-        pl: {
-          'Transfers & Transport': 'Transfery i transport',
-          'Car Rentals': 'Wynajem samochodów',
-          'SIM & Connectivity': 'SIM i łączność',
-          'Tours & Activities': 'Wycieczki i atrakcje',
-          'Insurance & Claims': 'Ubezpieczenia i roszczenia',
-          'Flights & Meta Search': 'Loty i porównania',
-          'Storage & Services': 'Przechowywanie i usługi',
-          'Specialty & Other': 'Specjalne i inne'
-        }
+        'Transfers & Transport': 'Transfers & Transport',
+        'Car Rentals': 'Car Rentals',
+        'SIM & Connectivity': 'SIM & Connectivity',
+        'Tours & Activities': 'Tours & Activities',
+        'Insurance & Claims': 'Insurance & Claims',
+        'Finance': 'Finance',
+        'Flights & Meta Search': 'Flights',
+        'Hotels & Accommodation': 'Hotels',
+        'Storage & Services': 'Travel Services',
+        'Marketplace': 'Amazon Travel Gear',
+        'Products & Tools': 'Products & Tools',
+        'Specialty & Other': 'Specialty & Other'
       };
-      const pack = labels[currentLanguage] || labels.en;
-      return pack[categoryName] || categoryName;
+      return labels[categoryName] || categoryName;
+    }
+
+    function getAvailablePartnerCategories(items) {
+      const unique = Array.from(new Set(items.map(p => p.category).filter(Boolean)));
+      return ['All'].concat(unique.sort());
+    }
+
+    function renderAffiliateFilters(items) {
+      const container = document.getElementById('affiliateFilters');
+      if (!container) return;
+
+      const categories = getAvailablePartnerCategories(items);
+      container.innerHTML = categories.map(category => {
+        const isActive =
+          (category === 'All' && !activePartnerCategory) ||
+          category === activePartnerCategory;
+
+        return '<button class="affiliate-filter-btn' + (isActive ? ' active' : '') + '" data-filter-category="' + escapeHtml(category) + '" type="button">' +
+          escapeHtml(category) +
+          '</button>';
+      }).join('');
     }
 
     function renderPartners(items) {
-      const grouped = groupPartners(items);
-      const order = ['Transfers & Transport', 'Car Rentals', 'SIM & Connectivity', 'Tours & Activities', 'Insurance & Claims', 'Flights & Meta Search', 'Storage & Services', 'Specialty & Other'];
+      const stats = getPartnerStats();
+      renderAffiliateFilters(items);
+
+      let working = items.slice();
+
+      const searchValue = (document.getElementById('partnerSearch')?.value || '').trim().toLowerCase();
+      if (searchValue) {
+        working = working.filter(function(partner) {
+          return partner.name.toLowerCase().includes(searchValue) || partner.category.toLowerCase().includes(searchValue);
+        });
+      }
+
+      if (activePartnerCategory) {
+        working = working.filter(function(partner) {
+          return partner.category === activePartnerCategory;
+        });
+      }
+
+      if (!working.length) {
+        partnersRail.innerHTML = '<div class="partners-empty">No partners match that search or filter yet.</div>';
+        return;
+      }
+
+      const grouped = groupPartners(working);
+      const order = [
+        'Flights & Meta Search',
+        'Hotels & Accommodation',
+        'Finance',
+        'Transfers & Transport',
+        'Car Rentals',
+        'SIM & Connectivity',
+        'Tours & Activities',
+        'Insurance & Claims',
+        'Storage & Services',
+        'Marketplace',
+        'Products & Tools',
+        'Specialty & Other'
+      ];
 
       partnersRail.innerHTML = order
         .filter(function(name) { return grouped[name] && grouped[name].length; })
         .map(function(categoryName, index) {
           const color = getCategoryColor(categoryName);
           const partners = grouped[categoryName].slice().sort(function(a, b) {
+            if (activePartnerSort === 'popular') {
+              const clicksA = (stats[a.name] && stats[a.name].clicks) || 0;
+              const clicksB = (stats[b.name] && stats[b.name].clicks) || 0;
+              if (clicksA !== clicksB) return clicksB - clicksA;
+            }
             return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
           });
+
           return '<div class="category">' +
             '<details' + (index === 0 ? ' open' : '') + '>' +
-            '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
-            '<ul>' + partners.map(function(partner) {
+            '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + ' <span style="opacity:.65;">(' + partners.length + ')</span></summary>' +
+            '<ul>' +
+            partners.map(function(partner) {
               const badge = partner.tier === 1 ? ' 🔥' : partner.tier === 2 ? ' ⭐' : '';
-              return '<li><a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
-            }).join('') + '</ul>' +
+              const clickCount = getPartnerClickCount(partner.name);
+
+              return '<li>' +
+                '<a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-category="' + escapeHtml(partner.category) + '" data-tier="' + escapeHtml(String(partner.tier || 3)) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(partner.name) + badge +
+                '</a>' +
+                '<div class="partner-hover-card">' +
+                  '<div class="partner-hover-title">' + escapeHtml(partner.name) + '</div>' +
+                  '<div class="partner-hover-meta">' +
+                    '<div>Category: ' + escapeHtml(partner.category) + '</div>' +
+                    '<div>Tier: ' + escapeHtml(String(partner.tier || 3)) + '</div>' +
+                    '<div>Clicks: ' + escapeHtml(String(clickCount)) + '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</li>';
+            }).join('') +
+            '</ul>' +
             '</details>' +
             '</div>';
         }).join('');
-    }
 
-    function getRegionConfig(region) {
-      const configs = {
-        global: {
-          title: 'Top Brands',
-          tagline: 'Scroll. Discover. Services, tools & deals.',
-          priority: ['Cozeware','Airalo','Kiwi.com','Kiwitaxi','Welcome Pickups','Klook','Aviasales','Trivago USA','GoCity','Radical Storage']
-        },
-        mx: {
-          title: 'Top Brands for Mexico',
-          tagline: 'Discover services, tools and deals for Mexico.',
-          priority: ['Cozeware','Airalo','Kiwi MX','Kiwi.com','Trivago MX','Kiwitaxi','Welcome Pickups','Busbud']
-        },
-        br: {
-          title: 'Top Brands for Brazil',
-          tagline: 'Descubra serviços, ferramentas e ofertas no Brasil.',
-          priority: ['Cozeware','Airalo','Kiwi.com','Trivago BR','Kiwitaxi','Welcome Pickups','Aviasales']
-        },
-        es: {
-          title: 'Top Brands for Spain',
-          tagline: 'Descubre servicios, herramientas y ofertas en España.',
-          priority: ['Cozeware','Airalo','Kiwi.com','Trivago DE','Tiqets UK','Klook','GoCity']
-        },
-        eu: {
-          title: 'Top Brands for Europe',
-          tagline: 'Discover services, tools and deals across Europe.',
-          priority: ['Cozeware','Airalo','Kiwi.com','Trivago DE','Tiqets DE','Kiwitaxi','Welcome Pickups']
-        },
-        pl: {
-          title: 'Najlepsze marki dla Polski',
-          tagline: 'Odkrywaj usługi, narzędzia i oferty w jednym miejscu.',
-          priority: ['Cozeware','Airalo','Kiwi.com','Kiwitaxi','Welcome Pickups','Busbud','Aviasales']
-        }
-      };
-      return configs[region] || configs.global;
+      const railDetails = partnersRail.querySelectorAll('.category details');
+      railDetails.forEach(function(detail) {
+        detail.addEventListener('toggle', function() {
+          if (!detail.open) return;
+          railDetails.forEach(function(other) {
+            if (other !== detail) other.open = false;
+          });
+        });
+      });
     }
 
     function getBrandFamily(name) {
@@ -995,57 +2207,53 @@
         .join('') || 'SB';
     }
 
+    function getPopularPartners(items, limit = 8) {
+      const popularity = getPartnerStats();
+      return items
+        .slice()
+        .sort(function(a, b) {
+          const popA = (popularity[a.name] && popularity[a.name].clicks) || 0;
+          const popB = (popularity[b.name] && popularity[b.name].clicks) || 0;
+          if (popA !== popB) return popB - popA;
+          if ((a.tier || 3) !== (b.tier || 3)) return (a.tier || 3) - (b.tier || 3);
+          return a.name.localeCompare(b.name);
+        })
+        .slice(0, limit);
+    }
+
     function renderBrandGrid(items) {
       const colorMap = {
         'Flights & Meta Search': 'rgba(77,210,192,0.15)',
+        'Hotels & Accommodation': 'rgba(255,122,182,0.15)',
         'Transfers & Transport': 'rgba(77,166,255,0.15)',
         'Tours & Activities': 'rgba(108,217,139,0.15)',
         'SIM & Connectivity': 'rgba(193,125,255,0.15)',
         'Car Rentals': 'rgba(255,184,77,0.15)',
         'Insurance & Claims': 'rgba(255,107,107,0.15)',
+        'Finance': 'rgba(242,204,96,0.15)',
         'Storage & Services': 'rgba(255,217,102,0.15)',
+        'Marketplace': 'rgba(255,153,0,0.15)',
         'Specialty & Other': 'rgba(143,124,255,0.15)'
       };
 
-      const regionConfig = getRegionConfig(currentRegion);
-      brandGridTitle.textContent = regionConfig.title;
-      regionTagline.textContent = regionConfig.tagline;
+      brandGridTitle.textContent = 'Most Popular Partners';
+      regionTagline.textContent = 'Browse the brands people click most.';
 
-      const selected = [];
-      const seenFamilies = new Set();
-
-      regionConfig.priority.forEach(function(name) {
-        const match = items.find(function(p) { return p.name === name; });
-        if (!match) return;
-        const family = getBrandFamily(match.name);
-        if (seenFamilies.has(family)) return;
-        selected.push(match);
-        seenFamilies.add(family);
-      });
-
-      items
-        .slice()
-        .sort(function(a, b) {
-          return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
-        })
-        .forEach(function(p) {
-          const family = getBrandFamily(p.name);
-          if (selected.length < 16 && !seenFamilies.has(family)) {
-            selected.push(p);
-            seenFamilies.add(family);
-          }
-        });
+      const selected = getPopularPartners(items, 8);
 
       brandGrid.innerHTML = selected.map(function(p) {
         const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
         const borderColor = bgColor.replace('0.15', '0.35');
         const displayName = getBrandDisplayName(p.name);
         const fallbackText = getBrandFallbackText(displayName);
-        const badge = p.tier === 1 ? ' 🔥' : p.tier === 2 ? ' ⭐' : '';
+        const clicks = getPartnerClickCount(p.name);
+        const badge = clicks > 5 ? ' 🔥' : p.tier === 1 ? ' ⭐' : '';
+
         const logoMarkup = p.logo
           ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
           : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_' + currentRegion })) + '" data-partner="' + escapeHtml(p.name) + '" data-source="' + escapeHtml('column3_' + currentRegion) + '" target="_blank" rel="noopener noreferrer">' +
+
+        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_popular' })) + '" data-partner="' + escapeHtml(p.name) + '" data-category="' + escapeHtml(p.category) + '" data-tier="' + escapeHtml(String(p.tier || 3)) + '" data-source="column3_popular" target="_blank" rel="noopener noreferrer">' +
           logoMarkup +
           '<span>' + escapeHtml(displayName) + badge + '</span>' +
           '</a>';
@@ -1070,6 +2278,7 @@
       const basePostUrl = item.postUrl || item.url || item.link || '#';
       const derivedEmbedUrl = item.embedUrl || item.embed || (platform === 'youtube' ? getYouTubeEmbed(basePostUrl || baseUrl) : '');
       const derivedVideoUrl = item.videoUrl || (platform === 'reddit' ? baseUrl : '');
+
       return {
         platform,
         title: item.title || item.name || 'Untitled',
@@ -1112,24 +2321,227 @@
         '</div></a></div>';
     }
 
-    function getCTA() {
-      const labels = {
-        en: '🔥 Get the deal now',
-        es: '🔥 Consigue la oferta',
-        pt: '🔥 Aproveite a oferta',
-        pl: '🔥 Zgarnij ofertę'
+    function getOfferBenefitCopy(offer) {
+      const byCategory = {
+        'Flights & Meta Search': {
+          title: '✈️ Find cheaper flights fast',
+          description: 'Compare routes and prices before booking.',
+          cta: 'Compare flights'
+        },
+        'Hotels & Accommodation': {
+          title: '🏨 Compare hotel stays faster',
+          description: 'Browse hotel options and compare where to stay.',
+          cta: 'Explore hotels'
+        },
+        'Insurance & Claims': {
+          title: '🛡️ Get travel coverage before you go',
+          description: 'Choose the right protection for your trip.',
+          cta: 'View coverage'
+        },
+        'Finance': {
+          title: '💰 Explore finance tools',
+          description: 'Compare helpful money and tax tools.',
+          cta: 'Explore finance'
+        },
+        'SIM & Connectivity': {
+          title: '📶 Stay connected anywhere',
+          description: 'Get mobile data instantly abroad.',
+          cta: 'See eSIM options'
+        },
+        'Transfers & Transport': {
+          title: '🚗 Book your ride in advance',
+          description: 'Secure transfers before arrival.',
+          cta: 'Find rides'
+        },
+        'Tours & Activities': {
+          title: '🎟️ Discover things to do',
+          description: 'Explore top attractions and tours.',
+          cta: 'Explore activities'
+        },
+        'Car Rentals': {
+          title: '🚘 Compare car rentals',
+          description: 'Find the best deal before booking.',
+          cta: 'Find rentals'
+        },
+        'Storage & Services': {
+          title: '🧳 Travel smarter',
+          description: 'Useful services for easier trips.',
+          cta: 'Explore services'
+        },
+        'Marketplace': {
+          title: '🛒 Travel essentials on Amazon',
+          description: 'Useful gear for smoother trips and everyday travel.',
+          cta: 'Open Amazon'
+        },
+        'Products & Tools': {
+          title: '🧰 Discover useful products and tools',
+          description: 'Helpful tools, devices, and services beyond travel.',
+          cta: 'Explore tools'
+        },
+        'Specialty & Other': {
+          title: '✨ Discover a useful tool',
+          description: 'Curated digital services for you.',
+          cta: 'Explore now'
+        }
       };
-      return labels[currentLanguage] || labels.en;
+
+      return byCategory[offer.category] || byCategory['Specialty & Other'];
     }
 
-    function getServiceCTA() {
-      const labels = {
-        en: '💸 Explore related services',
-        es: '💸 Explorar servicios relacionados',
-        pt: '💸 Explorar serviços relacionados',
-        pl: '💸 Odkryj powiązane usługi'
+    function isTopPick(partner) {
+      const stats = getPartnerStats();
+      const data = stats[partner.name];
+      if (!data) return partner.tier === 1;
+      return data.clicks > 3 || partner.tier === 1;
+    }
+
+    function getDecisionBullets(item, relatedPartner) {
+      const category = item.category || (relatedPartner && relatedPartner.category) || '';
+
+      if (category === 'Flights & Meta Search') {
+        return ['Compare prices', 'Find cheapest route', 'Fast results'];
+      }
+      if (category === 'Hotels & Accommodation') {
+        return ['Compare stays', 'Find hotel deals', 'Book smarter'];
+      }
+      if (category === 'Insurance & Claims') {
+        return ['Travel protection', 'Compare coverage', 'Quick signup'];
+      }
+      if (category === 'Finance') {
+        return ['Money tools', 'Tax support', 'Quick access'];
+      }
+      if (category === 'SIM & Connectivity') {
+        return ['Instant data', 'No SIM swap', 'Works worldwide'];
+      }
+      if (category === 'Transfers & Transport') {
+        return ['Pre-book rides', 'Less arrival stress', 'Travel ready'];
+      }
+      if (category === 'Tours & Activities') {
+        return ['Top attractions', 'Easy browsing', 'Trip ideas'];
+      }
+      if (category === 'Products & Tools') {
+        return ['Useful products', 'Helpful tools', 'Easy to explore'];
+      }
+
+      return ['Curated pick', 'Quick access', 'Easy to explore'];
+    }
+
+    function getContextualCTA(item) {
+      if (item.platform === 'amazon') return 'Open Amazon';
+      const map = {
+        'Flights & Meta Search': 'Compare flights',
+        'Hotels & Accommodation': 'Explore hotels',
+        'Insurance & Claims': 'View coverage',
+        'Finance': 'Explore finance',
+        'SIM & Connectivity': 'See options',
+        'Transfers & Transport': 'Book now',
+        'Tours & Activities': 'Explore',
+        'Car Rentals': 'Find rentals',
+        'Storage & Services': 'Explore service',
+        'Marketplace': 'Open Amazon',
+        'Products & Tools': 'Explore tools',
+        'Specialty & Other': 'Explore now'
       };
-      return labels[currentLanguage] || labels.en;
+      return item.ctaLabel || map[item.category] || 'Explore now';
+    }
+
+    function classifyFeedIntent(item) {
+      const platform = normalizePlatform(item.platform);
+      const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
+
+      if (text.includes('flight') || text.includes('airport') || text.includes('airline') || text.includes('booking')) {
+        return 'travel-booking';
+      }
+      if (text.includes('hotel') || text.includes('stay') || text.includes('accommodation') || text.includes('resort')) {
+        return 'travel-planning';
+      }
+      if (text.includes('insurance') || text.includes('safe') || text.includes('coverage')) {
+        return 'travel-protection';
+      }
+      if (text.includes('sim') || text.includes('esim') || text.includes('data') || text.includes('phone')) {
+        return 'connectivity';
+      }
+      if (text.includes('hotel') || text.includes('trip') || text.includes('vacation') || text.includes('destination') || text.includes('travel')) {
+        return 'travel-planning';
+      }
+
+      if (platform === 'youtube' || platform === 'tiktok' || platform === 'vimeo' || platform === 'dailymotion') {
+        return 'travel-planning';
+      }
+
+      return 'general';
+    }
+
+    function getPartnerForIntent(intent) {
+      const intentMap = {
+        'travel-booking': ['Flights & Meta Search', 'Hotels & Accommodation', 'Transfers & Transport'],
+        'travel-protection': ['Insurance & Claims'],
+        'connectivity': ['SIM & Connectivity'],
+        'travel-planning': ['Hotels & Accommodation', 'Tours & Activities', 'Flights & Meta Search', 'Storage & Services'],
+        'general': ['Marketplace', 'Finance', 'Products & Tools', 'Storage & Services', 'Specialty & Other']
+      };
+
+      const preferred = intentMap[intent] || intentMap.general;
+
+      for (const category of preferred) {
+        const matches = partnersData
+          .filter(p => p.category === category)
+          .sort((a, b) => {
+            const scoreA = (a.tier || 3) - getSessionBoost(a.name);
+            const scoreB = (b.tier || 3) - getSessionBoost(b.name);
+            return scoreA - scoreB;
+          });
+
+        if (matches.length) return matches[0];
+      }
+
+      return getOfferFromPartners();
+    }
+
+    function getRelatedPartnerForItem(item) {
+      const intent = classifyFeedIntent(item);
+      return getPartnerForIntent(intent);
+    }
+
+    function getIntentLabel(item) {
+      const intent = classifyFeedIntent(item);
+      const labels = {
+        'travel-planning': 'Trip ideas',
+        'travel-booking': 'Booking tools',
+        'travel-protection': 'Protection picks',
+        'connectivity': 'Stay connected',
+        'general': 'Discover more'
+      };
+      return labels[intent] || labels.general;
+    }
+
+    function getIntentHook(item, relatedPartner) {
+      const platform = normalizePlatform(item.platform);
+
+      if (relatedPartner) {
+        switch (relatedPartner.category) {
+          case 'Flights & Meta Search':
+            return 'Planning a trip? Start with flight prices.';
+          case 'Hotels & Accommodation':
+            return 'Picking a destination? Compare where to stay next.';
+          case 'Insurance & Claims':
+            return 'Traveling soon? Check protection before checkout.';
+          case 'SIM & Connectivity':
+            return 'Need data abroad? Solve that before you land.';
+          case 'Tours & Activities':
+            return 'Like this destination? Explore what to do there.';
+          case 'Marketplace':
+            return 'Want gear for this? Open Amazon with your tag ready.';
+          default:
+            return 'Ready for the next step? Explore a matching offer.';
+        }
+      }
+
+      if (platform === 'youtube' || platform === 'tiktok' || platform === 'vimeo') {
+        return 'Watch, then act on the next step.';
+      }
+
+      return 'Discover something useful and keep exploring.';
     }
 
     function getOfferFromPartners() {
@@ -1140,68 +2552,29 @@
       const tier3 = partnersData.filter(function(p) { return Number(p.tier || 3) === 3; });
       const roll = Math.random();
 
-      if (roll < 0.6 && tier1.length) {
-        return tier1[Math.floor(Math.random() * tier1.length)];
-      }
-      if (roll < 0.85 && tier2.length) {
-        return tier2[Math.floor(Math.random() * tier2.length)];
-      }
+      if (roll < 0.6 && tier1.length) return tier1[Math.floor(Math.random() * tier1.length)];
+      if (roll < 0.85 && tier2.length) return tier2[Math.floor(Math.random() * tier2.length)];
+
       const pool = tier3.length ? tier3 : (tier2.length ? tier2 : tier1);
       return pool[Math.floor(Math.random() * pool.length)] || null;
     }
 
-    function getRelatedPartnerForItem(item) {
-      const platform = normalizePlatform(item.platform);
-      const preferredCategories =
-        platform === 'youtube' || platform === 'vimeo' || platform === 'dailymotion' || platform === 'tiktok'
-          ? ['Tours & Activities', 'Storage & Services', 'SIM & Connectivity', 'Flights & Meta Search']
-          : platform === 'reddit'
-            ? ['Flights & Meta Search', 'Transfers & Transport', 'Tours & Activities', 'Storage & Services']
-            : ['Storage & Services', 'Specialty & Other', 'Flights & Meta Search'];
-
-      for (const category of preferredCategories) {
-        const categoryPool = partnersData.filter(function(partner) { return partner.category === category; });
-        if (!categoryPool.length) continue;
-        categoryPool.sort(function(a, b) { return (a.tier || 3) - (b.tier || 3); });
-        return categoryPool[0];
-      }
-
-      return getOfferFromPartners();
-    }
-
-    function getKicker(platform) {
-      const map = {
-        en: { youtube: '🔥 Trending Video', vimeo: '🎬 Featured Content', dailymotion: '📺 Popular Clip', tiktok: '📱 Viral Clip', reddit: '💬 Community Pick', deals: '💸 Priority Offer', default: '✨ Discovery' },
-        es: { youtube: '🔥 Video en tendencia', vimeo: '🎬 Contenido destacado', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidad', deals: '💸 Oferta prioritaria', default: '✨ Descubre' },
-        pt: { youtube: '🔥 Vídeo em alta', vimeo: '🎬 Conteúdo em destaque', dailymotion: '📺 Clip popular', tiktok: '📱 Viral', reddit: '💬 Comunidade', deals: '💸 Oferta prioritária', default: '✨ Descobrir' },
-        pl: { youtube: '🔥 Popularne wideo', vimeo: '🎬 Polecane', dailymotion: '📺 Popularny klip', tiktok: '📱 Viral', reddit: '💬 Społeczność', deals: '💸 Oferta priorytetowa', default: '✨ Odkryj' }
-      };
-      const pack = map[currentLanguage] || map.en;
-      return pack[platform] || pack.default;
-    }
-
-    function createMoneyCardItem() {
-      const offer = getOfferFromPartners();
+    function createMoneyCardItemFromIntent(intent) {
+      const offer = getPartnerForIntent(intent);
       if (!offer) return null;
-      const descriptions = {
-        'Storage & Services': 'Unlock a priority deal from a featured service partner before you keep scrolling.',
-        'Flights & Meta Search': 'Compare smarter and tap into a featured booking opportunity right now.',
-        'SIM & Connectivity': 'Stay connected abroad with a highlighted offer picked for conversion.',
-        'Transfers & Transport': 'Pre-book a trusted ride and grab the offer while it is featured.',
-        'Tours & Activities': 'Book an experience deal surfaced ahead of the crowd.',
-        'Insurance & Claims': 'Protect your trip with a featured partner pick.',
-        'Car Rentals': 'Reserve a ride from a promoted rental partner now.',
-        'Specialty & Other': 'Tap the promoted offer before it rotates out.'
-      };
+
+      const benefit = getOfferBenefitCopy(offer);
+
       return {
         isMoneyCard: true,
         platform: 'deals',
-        title: offer.tier === 1 ? ('🔥 Featured deal: ' + offer.name) : ('💸 Limited deal: ' + offer.name),
-        description: descriptions[offer.category] || 'Don’t miss this partner offer while it is featured.',
+        title: benefit.title,
+        description: benefit.description,
+        ctaLabel: benefit.cta,
         author: 'SignalBoost',
         publishedAt: new Date().toISOString(),
-        url: monetizeUrl(offer.url, { partner: offer.name, source: 'money_card' }),
-        postUrl: monetizeUrl(offer.url, { partner: offer.name, source: 'money_card' }),
+        url: offer.url,
+        postUrl: offer.url,
         thumbnail: 'https://via.placeholder.com/720x1280/161b22/f5c542?text=' + encodeURIComponent(offer.name),
         partnerName: offer.name,
         category: offer.category,
@@ -1209,45 +2582,200 @@
       };
     }
 
+    function createAmazonCard(intent) {
+      let type = 'general';
+      let title = 'Best travel essentials on Amazon';
+      let description = 'Useful gear that makes trips easier.';
+
+      if (intent === 'travel-planning') {
+        type = 'packing';
+        title = 'What I always pack before a trip';
+        description = 'Packing cubes and simple gear that save time and space.';
+      } else if (intent === 'connectivity') {
+        type = 'power';
+        title = 'Do not run out of battery while traveling';
+        description = 'Portable chargers and power gear for flights and long days.';
+      } else if (intent === 'travel-booking') {
+        type = 'adapter';
+        title = 'One thing people forget before traveling abroad';
+        description = 'A travel adapter can save a lot of hassle.';
+      } else if (intent === 'general') {
+        type = 'luggage';
+        title = 'Travel gear worth checking before you go';
+        description = 'Simple essentials for smoother trips.';
+      }
+
+      return {
+        isMoneyCard: true,
+        platform: 'amazon',
+        title,
+        description,
+        ctaLabel: 'Open Amazon',
+        author: 'Amazon',
+        publishedAt: new Date().toISOString(),
+        url: getAmazonLink(type),
+        postUrl: getAmazonLink(type),
+        thumbnail: 'https://via.placeholder.com/720x1280/161b22/ff9900?text=Amazon',
+        partnerName: 'Amazon',
+        category: 'Marketplace',
+        tier: 2
+      };
+    }
+function createAmazonCard(intent) {
+  let type = 'general';
+  let title = 'Best travel essentials on Amazon';
+  let description = 'Useful gear that makes trips easier.';
+
+  if (intent === 'travel-planning') {
+    type = 'packing';
+    title = 'What I always pack before a trip';
+    description = 'Packing cubes and simple gear that save time and space.';
+  } else if (intent === 'connectivity') {
+    type = 'power';
+    title = 'Do not run out of battery while traveling';
+    description = 'Portable chargers and power gear for flights and long days.';
+  } else if (intent === 'travel-booking') {
+    type = 'adapter';
+    title = 'One thing people forget before traveling abroad';
+    description = 'A travel adapter can save a lot of hassle.';
+  } else if (intent === 'general') {
+    type = 'luggage';
+    title = 'Travel gear worth checking before you go';
+    description = 'Simple essentials for smoother trips.';
+  }
+
+  return {
+    isMoneyCard: true,
+    platform: 'amazon',
+    title,
+    description,
+    ctaLabel: 'Open Amazon',
+    author: 'Amazon',
+    publishedAt: new Date().toISOString(),
+    url: getAmazonLink(type),
+    postUrl: getAmazonLink(type),
+    thumbnail: 'https://via.placeholder.com/720x1280/161b22/ff9900?text=Amazon',
+    partnerName: 'Amazon',
+    category: 'Marketplace',
+    tier: 2
+  };
+}
+    function interleaveJourneyCards(items) {
+      const buckets = {
+        'travel-planning': [],
+        'travel-booking': [],
+        'travel-protection': [],
+        'connectivity': [],
+        'general': []
+      };
+
+      items.forEach(item => {
+        const intent = classifyFeedIntent(item);
+        if (!buckets[intent]) buckets.general.push(item);
+        else buckets[intent].push(item);
+      });
+
+      const ordered = [];
+      const pattern = ['travel-planning', 'travel-booking', 'travel-protection', 'connectivity', 'general'];
+
+      let added = true;
+      while (added) {
+        added = false;
+        for (const key of pattern) {
+          if (buckets[key].length) {
+            ordered.push(buckets[key].shift());
+            added = true;
+          }
+        }
+      }
+
+      return ordered;
+    }
+
+    function buildDynamicFeed(liveItems) {
+      const seen = new Set();
+
+      const normalized = []
+        .concat(liveItems || [])
+        .concat(hybridVideoPool.map(item => normalizeFeedItem(item, item.platform)))
+        .filter(item => isValidHttpUrl(item.url || item.postUrl || item.videoUrl))
+        .filter(item => {
+          const key = item.videoUrl || item.embedUrl || item.postUrl || item.url || item.title;
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
+      return interleaveJourneyCards(normalized);
+    }
+
     function appendFeedItems(items) {
       const html = items.map(function(item) {
         const platform = normalizePlatform(item.platform);
         const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
         const relatedPartner = getRelatedPartnerForItem(item);
-        const relatedTrackedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_service_' + platform + '_' + currentRegion }) : '#';
+        const relatedTrackedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_related_' + platform }) : '#';
         const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
         const title = escapeHtml(item.title || 'Discover something new');
         const description = escapeHtml(item.description || '');
+        const intentLabel = '<div style="font-size:11px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:6px;">' + escapeHtml(getIntentLabel(item)) + '</div>';
+        const hookHtml = '<div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + escapeHtml(getIntentHook(item, relatedPartner)) + '</div>';
         const meta = '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>';
+
         const primaryTrackedUrl = item.isMoneyCard && item.partnerName
           ? monetizeUrl(primaryUrl, { partner: item.partnerName, source: item.source || 'money_card' })
           : primaryUrl;
-        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" target="_blank" rel="noopener noreferrer">' + getCTA() + '</a>';
-        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-source="' + escapeHtml('column2_service_' + platform + '_' + currentRegion) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">' + getServiceCTA() + ' → ' + relatedLabel + '</a>' : '';
+
+        const bullets = getDecisionBullets(item, relatedPartner);
+        const bulletsHtml = '<div class="decision-strip">' +
+          bullets.map(b => '<span class="decision-pill">' + escapeHtml(b) + '</span>').join('') +
+          '</div>';
+
+        const primaryLink = '<div style="display:flex;flex-direction:column;gap:6px;">' +
+          '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-category="' + escapeHtml(item.category || '') + '" data-tier="' + escapeHtml(String(item.tier || 0)) + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_primary') + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(getContextualCTA(item)) + '</a>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,0.55);">Takes ~10 seconds</div>' +
+        '</div>';
+
+        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-category="' + escapeHtml(relatedPartner.category || '') + '" data-tier="' + escapeHtml(String(relatedPartner.tier || 0)) + '" data-source="' + escapeHtml('column2_related_' + platform) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">Explore related → ' + relatedLabel + '</a>' : '';
+
         const moneyClass = item.isMoneyCard ? ' money-card' : '';
         const clickableUrl = escapeHtml(primaryUrl);
         const clickableTrackedUrl = escapeHtml(primaryTrackedUrl);
 
-        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '">' +
+        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-category="' + escapeHtml(item.category || '') + '" data-tier="' + escapeHtml(String(item.tier || 0)) + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_card') + '">' +
           (item.isMoneyCard
-            ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority partner' : 'Featured offer') + '</div><h3>' + title + '</h3>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
-            : createMediaMarkup(item) + '<div class="feed-content"><h3>' + title + '</h3><div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + getKicker(platform) + '</div>' + meta + '<p>' + description + '</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
+            ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority pick' : 'Featured offer') + '</div>' + intentLabel + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
+            : createMediaMarkup(item) + '<div class="feed-content">' + intentLabel + hookHtml + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
           '</article>';
       }).join('');
+
       feedContainer.insertAdjacentHTML('beforeend', html);
     }
 
     function renderMoreFeed() {
       if (isRenderingMore) return;
       if (renderedFeedCount >= allFeedItems.length) return;
+
       isRenderingMore = true;
       const nextItems = allFeedItems.slice(renderedFeedCount, renderedFeedCount + FEED_BATCH_SIZE);
       appendFeedItems(nextItems);
       renderedFeedCount += nextItems.length;
+
       if (renderedFeedCount % FEED_INSERTION_INTERVAL === 0) {
-        const moneyCard = createMoneyCardItem();
+        const previousItem = allFeedItems[Math.max(0, renderedFeedCount - 1)];
+        const intent = previousItem ? classifyFeedIntent(previousItem) : 'general';
+
+        let moneyCard;
+        if (Math.random() < 0.4) {
+          moneyCard = createAmazonCard(intent);
+        } else {
+          moneyCard = createMoneyCardItemFromIntent(intent);
+        }
+
         if (moneyCard) appendFeedItems([moneyCard]);
       }
+
       isRenderingMore = false;
     }
 
@@ -1269,29 +2797,299 @@
       updateClickDisplay();
     }
 
-    function buildDynamicFeed(liveItems) {
-      const seen = new Set();
-      return [].concat(liveItems || []).concat(hybridVideoPool.map(function(item) { return normalizeFeedItem(item, item.platform); }))
-        .filter(function(item) { return isValidHttpUrl(item.url || item.postUrl || item.videoUrl); })
-        .filter(function(item) {
-          const key = item.videoUrl || item.embedUrl || item.postUrl || item.url || item.title;
-          if (!key || seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        })
-        .sort(function(a, b) {
-          const priority = function(platform) {
-            if (platform === 'youtube') return 1;
-            if (platform === 'vimeo') return 2;
-            if (platform === 'dailymotion') return 3;
-            if (platform === 'tiktok') return 4;
-            return 5;
-          };
-          const pa = priority(normalizePlatform(a.platform));
-          const pb = priority(normalizePlatform(b.platform));
-          if (pa !== pb) return pa - pb;
-          return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+    function getComparisonConfig(type) {
+      if (type === 'travel') {
+        return {
+          title: 'Compare travel services',
+          subtitle: 'Choose the right option for flights, transfers, connectivity, and activities.',
+          items: [
+            {
+              badge: 'Best for flights',
+              category: 'Flights & Meta Search',
+              title: 'Find cheaper flights',
+              description: 'Compare routes and prices before booking your trip.',
+              pills: ['Price comparison', 'Fast search', 'Trip planning'],
+              cta: 'Compare flights'
+            },
+            {
+              badge: 'Best for transfers',
+              category: 'Transfers & Transport',
+              title: 'Book airport and city rides',
+              description: 'Pre-book transport so you are covered when you arrive.',
+              pills: ['Airport pickup', 'Less hassle', 'Travel ready'],
+              cta: 'Find rides'
+            },
+            {
+              badge: 'Best for connectivity',
+              category: 'SIM & Connectivity',
+              title: 'Stay connected abroad',
+              description: 'Set up mobile data before you land.',
+              pills: ['eSIM options', 'Fast setup', 'Works abroad'],
+              cta: 'See eSIM options'
+            },
+            {
+              badge: 'Best for activities',
+              category: 'Tours & Activities',
+              title: 'Discover things to do',
+              description: 'Browse attractions, tickets, and experiences.',
+              pills: ['Tours', 'Attractions', 'Easy browsing'],
+              cta: 'Explore activities'
+            }
+          ]
+        };
+      }
+
+      if (type === 'insurance') {
+        return {
+          title: 'Compare insurance options',
+          subtitle: 'Choose the right coverage before you travel.',
+          items: [
+            {
+              badge: 'Top protection pick',
+              category: 'Insurance & Claims',
+              title: 'Compare travel coverage',
+              description: 'Choose coverage that fits your trip and destination.',
+              pills: ['Trip protection', 'Easy comparison', 'Travel ready'],
+              cta: 'View coverage'
+            }
+          ]
+        };
+      }
+
+      if (type === 'tools') {
+        return {
+          title: 'Compare digital tools',
+          subtitle: 'Find useful services that make planning and travel easier.',
+          items: [
+            {
+              badge: 'Useful services',
+              category: 'Storage & Services',
+              title: 'Explore practical travel tools',
+              description: 'Find digital services that make travel easier.',
+              pills: ['Useful tools', 'Trip support', 'Easy access'],
+              cta: 'Explore services'
+            },
+            {
+              badge: 'Connectivity',
+              category: 'SIM & Connectivity',
+              title: 'Get online faster',
+              description: 'Choose a connectivity option before you travel.',
+              pills: ['eSIM', 'Mobile data', 'Travel setup'],
+              cta: 'See options'
+            },
+            {
+              badge: 'Products & tools',
+              category: 'Products & Tools',
+              title: 'Explore helpful tools and products',
+              description: 'Discover useful tools, devices, and products beyond travel.',
+              pills: ['Useful tools', 'Devices', 'Smart picks'],
+              cta: 'Explore tools'
+            }
+          ]
+        };
+      }
+
+      if (type === 'finance') {
+        return {
+          title: 'Compare finance tools',
+          subtitle: 'Explore payment and money tools that support digital life.',
+          items: [
+            {
+              badge: 'Useful money tool',
+              category: 'Finance',
+              title: 'Discover practical finance tools',
+              description: 'Start with a useful partner for taxes, money, and digital finance.',
+              pills: ['Money tools', 'Tax support', 'Digital-first'],
+              cta: 'Explore finance'
+            }
+          ]
+        };
+      }
+
+      return null;
+    }
+
+    function renderComparisonSection(type) {
+      const section = document.getElementById('comparisonSection');
+      const grid = document.getElementById('comparisonGrid');
+      const title = document.getElementById('comparisonTitle');
+      const subtitle = document.getElementById('comparisonSubtitle');
+
+      if (!section || !grid || !title || !subtitle) return;
+
+      const config = getComparisonConfig(type);
+      if (!config) {
+        section.style.display = 'none';
+        grid.innerHTML = '';
+        return;
+      }
+
+      title.textContent = config.title;
+      subtitle.textContent = config.subtitle;
+      section.style.display = 'block';
+
+      grid.innerHTML = config.items.map(function(item) {
+        const partner = partnersData
+          .filter(function(p) { return p.category === item.category; })
+          .sort(function(a, b) { return (a.tier || 3) - (b.tier || 3); })[0];
+
+        if (!partner) return '';
+
+        const trackedUrl = monetizeUrl(partner.url, {
+          partner: partner.name,
+          source: 'comparison_' + type
         });
+
+        const badgeText = isTopPick(partner) ? '🔥 Top pick' : item.badge;
+
+        return '<article class="comparison-card">' +
+          '<div class="comparison-badge">' + escapeHtml(badgeText) + '</div>' +
+          '<h3>' + escapeHtml(item.title) + '</h3>' +
+          '<p>' + escapeHtml(item.description) + '</p>' +
+          '<div class="comparison-list">' +
+          item.pills.map(function(pill) {
+            return '<span class="comparison-pill">' + escapeHtml(pill) + '</span>';
+          }).join('') +
+          '</div>' +
+          '<a class="comparison-link" href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(trackedUrl) + '" data-partner="' + escapeHtml(partner.name) + '" data-category="' + escapeHtml(partner.category) + '" data-tier="' + escapeHtml(String(partner.tier || 0)) + '" data-source="' + escapeHtml('comparison_' + type) + '" target="_blank" rel="noopener noreferrer">' +
+          escapeHtml(item.cta) +
+          '</a>' +
+          '</article>';
+      }).join('');
+    }
+
+    function createDepartmentCard(category) {
+      const configs = {
+        travel: {
+          title: '✈️ Travel smarter',
+          subtitle: 'Compare flights, book stays, and prepare your trip',
+          items: [
+            { label: 'Find cheap flights', category: 'Flights & Meta Search' },
+            { label: 'Book transfers', category: 'Transfers & Transport' },
+            { label: 'Explore activities', category: 'Tours & Activities' }
+          ]
+        },
+        finance: {
+          title: '💰 Manage your money',
+          subtitle: 'Discover tools for payments, banking and investing',
+          items: [
+            { label: 'Best finance tools', category: 'Finance' },
+            { label: 'Useful products', category: 'Products & Tools' }
+          ]
+        },
+        insurance: {
+          title: '🛡️ Stay protected',
+          subtitle: 'Compare insurance options before your trip',
+          items: [
+            { label: 'Travel insurance', category: 'Insurance & Claims' }
+          ]
+        },
+        tools: {
+          title: '🌐 Digital tools',
+          subtitle: 'Explore useful online services and tools',
+          items: [
+            { label: 'Connectivity tools', category: 'SIM & Connectivity' },
+            { label: 'Useful services', category: 'Storage & Services' }
+          ]
+        }
+      };
+
+      const config = configs[category];
+      if (!config) return '';
+
+      const itemsHtml = config.items.map(item => {
+        const partner = partnersData.find(p => p.category === item.category);
+        if (!partner) return '';
+
+        return `
+          <a class="department-item"
+             href="${partner.url}"
+             data-raw-url="${partner.url}"
+             data-tracked-url="${monetizeUrl(partner.url, { partner: partner.name, source: 'department_' + category })}"
+             data-partner="${partner.name}"
+             data-category="${partner.category}"
+             data-tier="${partner.tier || 0}"
+             data-source="department_${category}"
+             target="_blank"
+             rel="noopener noreferrer">
+            ${item.label}
+          </a>
+        `;
+      }).join('');
+
+      return `
+        <div class="department-card">
+          <div class="department-header">
+            <h2>${config.title}</h2>
+            <p>${config.subtitle}</p>
+          </div>
+          <div class="department-items">
+            ${itemsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function matchesEntryCategory(item, category) {
+      const text = ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.category || '')).toLowerCase();
+
+      const map = {
+        travel: ['flight', 'hotel', 'trip', 'travel', 'destination', 'airport', 'tour', 'activity', 'booking'],
+        finance: ['bank', 'card', 'money', 'finance', 'invest', 'payment', 'wallet', 'crypto'],
+        insurance: ['insurance', 'coverage', 'claim', 'protect', 'protection'],
+        tools: ['tool', 'service', 'storage', 'vpn', 'software', 'sim', 'esim', 'connectivity']
+      };
+
+      const keywords = map[category] || [];
+      return keywords.some(keyword => text.includes(keyword));
+    }
+
+    function filterFeedByEntryCategory(category) {
+      if (!baseFeedItems || !baseFeedItems.length) return;
+
+      const filtered = baseFeedItems.filter(item => matchesEntryCategory(item, category));
+      if (!filtered.length) return;
+
+      feedContainer.innerHTML = createDepartmentCard(category);
+      allFeedItems = filtered.slice();
+      renderedFeedCount = 0;
+      renderMoreFeed();
+      renderMoreFeed();
+
+      if (category === 'travel') renderComparisonSection('travel');
+      else if (category === 'insurance') renderComparisonSection('insurance');
+      else if (category === 'tools') renderComparisonSection('tools');
+      else if (category === 'finance') renderComparisonSection('finance');
+      else renderComparisonSection('');
+
+      const intro = document.getElementById('feedIntro');
+      if (intro) {
+        const labels = {
+          travel: 'Travel picks ↓',
+          finance: 'Finance picks ↓',
+          insurance: 'Insurance picks ↓',
+          tools: 'Tools & services ↓'
+        };
+        intro.textContent = labels[category] || 'Curated picks for you ↓';
+      }
+
+      const entryLayer = document.getElementById('entryLayer');
+      if (entryLayer) entryLayer.style.display = 'none';
+    }
+
+    function resetFeedFromEntryLayer() {
+      renderComparisonSection('');
+      feedContainer.innerHTML = '';
+      allFeedItems = baseFeedItems.slice();
+      renderedFeedCount = 0;
+      renderMoreFeed();
+      renderMoreFeed();
+
+      const intro = document.getElementById('feedIntro');
+      if (intro) intro.textContent = 'Curated picks for you ↓';
+
+      const entryLayer = document.getElementById('entryLayer');
+      if (entryLayer) entryLayer.style.display = 'block';
     }
 
     async function fetchDynamicFeed() {
@@ -1313,118 +3111,60 @@
       }
     }
 
-    function applyLanguageUI() {
-      const copy = {
-        en: {
-          navTitle: 'Navigation',
-          partnerPlaceholder: 'Search partners...',
-          feedIntro: 'Discovery stream ↓',
-          featuredDealLabel: 'Featured',
-          featuredDealTitle: 'Explore offers and services',
-          featuredDealSubtitle: 'Discover more in one place',
-          headerFootnote: 'Trusted platforms and monetized outbound offers.',
-          emptyFeedTitle: 'No new content yet',
-          emptyFeedText: 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.'
-        },
-        es: {
-          navTitle: 'Navegación',
-          partnerPlaceholder: 'Buscar socios...',
-          feedIntro: 'Flujo de descubrimiento ↓',
-          featuredDealLabel: 'Destacado',
-          featuredDealTitle: 'Explora ofertas y servicios',
-          featuredDealSubtitle: 'Descubre más en un solo lugar',
-          headerFootnote: 'Plataformas confiables y ofertas monetizadas.',
-          emptyFeedTitle: 'Sin contenido nuevo',
-          emptyFeedText: 'La columna 2 usa la colección estable de YouTube, Vimeo y Dailymotion.'
-        },
-        pt: {
-          navTitle: 'Navegação',
-          partnerPlaceholder: 'Buscar parceiros...',
-          feedIntro: 'Fluxo de descoberta ↓',
-          featuredDealLabel: 'Destaque',
-          featuredDealTitle: 'Explore ofertas e serviços',
-          featuredDealSubtitle: 'Descubra mais em um só lugar',
-          headerFootnote: 'Plataformas confiáveis e ofertas monetizadas.',
-          emptyFeedTitle: 'Sem novos conteúdos',
-          emptyFeedText: 'A coluna 2 usa a coleção estável de YouTube, Vimeo e Dailymotion.'
-        },
-        pl: {
-          navTitle: 'Nawigacja',
-          partnerPlaceholder: 'Szukaj partnerów...',
-          feedIntro: 'Strumień odkryć ↓',
-          featuredDealLabel: 'Polecane',
-          featuredDealTitle: 'Odkrywaj oferty i usługi',
-          featuredDealSubtitle: 'Znajdź więcej w jednym miejscu',
-          headerFootnote: 'Zaufane platformy i monetyzowane oferty zewnętrzne.',
-          emptyFeedTitle: 'Brak nowych materiałów',
-          emptyFeedText: 'Kolumna 2 korzysta ze sprawdzonej puli YouTube, Vimeo i Dailymotion.'
-        }
-      };
-
-      const langCopy = copy[currentLanguage] || copy.en;
-      document.getElementById('navTitle').textContent = langCopy.navTitle;
-      document.getElementById('partnerSearch').placeholder = langCopy.partnerPlaceholder;
-      document.getElementById('feedIntro').textContent = langCopy.feedIntro;
-      document.getElementById('featuredDealLabel').textContent = langCopy.featuredDealLabel;
-      document.getElementById('featuredDealTitle').textContent = langCopy.featuredDealTitle;
-      document.getElementById('featuredDealSubtitle').textContent = langCopy.featuredDealSubtitle;
-      document.getElementById('headerFootnote').textContent = langCopy.headerFootnote;
-      window.__sbEmptyFeedTitle = langCopy.emptyFeedTitle;
-      window.__sbEmptyFeedText = langCopy.emptyFeedText;
-      document.documentElement.lang = currentLanguage;
-    }
-
-    function detectRegion() {
-      const params = new URLSearchParams(window.location.search);
-      const regionParam = (params.get('region') || '').toLowerCase();
-      const langParam = (params.get('lang') || '').toLowerCase();
-
-      if (regionParam) {
-        currentRegion = regionParam;
-        currentLanguage = regionParam === 'mx' || regionParam === 'es' ? 'es' : regionParam === 'br' ? 'pt' : regionParam === 'pl' ? 'pl' : 'en';
-        return;
-      }
-
-      if (langParam === 'es') {
-        currentLanguage = 'es';
-        currentRegion = 'mx';
-        return;
-      }
-      if (langParam === 'pt') {
-        currentLanguage = 'pt';
-        currentRegion = 'br';
-        return;
-      }
-      if (langParam === 'pl') {
-        currentLanguage = 'pl';
-        currentRegion = 'pl';
-        return;
-      }
-
-      currentLanguage = 'en';
-      currentRegion = 'global';
-    }
-
+    
     async function loadPartnersData() {
-      try {
-        const response = await fetch('/data/partners.json', { cache: 'no-store' });
-        if (!response.ok) throw new Error('partners.json ' + response.status);
-        const data = await response.json();
-        if (Array.isArray(data) && data.length) {
+      const candidatePaths = [
+        '/data/partners.json',
+        './data/partners.json',
+        'data/partners.json',
+        './partners.json',
+        'partners.json'
+      ];
+
+      let lastError = null;
+
+      for (const path of candidatePaths) {
+        try {
+          const response = await fetch(path, { cache: 'no-store' });
+          if (!response.ok) throw new Error('partners.json ' + response.status + ' @ ' + path);
+
+          const data = await response.json();
+          if (!Array.isArray(data) || !data.length) {
+            throw new Error('partners.json empty or invalid @ ' + path);
+          }
+
           partnersData = data.map(function(p) {
+            const name = p.name || '';
+            let category = p.category || 'Specialty & Other';
+
+            if (/^trivago/i.test(name)) category = 'Hotels & Accommodation';
+            if (/^(h10 hotels|nn hotels affiliate program|sirenis hotels)/i.test(name)) category = 'Hotels & Accommodation';
+            if (category === 'Hotels & Stays') category = 'Hotels & Accommodation';
+            if (/^bikesbooking/i.test(name)) category = 'Tours & Activities';
+            if (/^(countabout corporation|fileyourtaxes)$/i.test(name)) category = 'Finance';
+
             return {
-              name: p.name,
-              category: p.category || 'Specialty & Other',
+              name: name,
+              category: category,
               url: p.url,
               tier: Number(p.tier || 3),
               logo: p.logo || ''
             };
           });
+
+          console.info('Loaded partners from', path, 'count:', partnersData.length);
+          renderPartners(partnersData);
+          renderBrandGrid(partnersData);
+          setupFeaturedHeader();
+          updateStickyOffer();
+          return;
+        } catch (error) {
+          lastError = error;
         }
-      } catch (error) {
-        console.error('partners load error', error);
-        partnersData = fallbackPartners.slice();
       }
+
+      console.error('partners load error', lastError);
+      partnersData = fallbackPartners.slice();
       renderPartners(partnersData);
       renderBrandGrid(partnersData);
       setupFeaturedHeader();
@@ -1439,9 +3179,16 @@
       function rotateHeaderDeal() {
         const offer = getOfferFromPartners();
         if (!offer) return;
-        setTrackedLinkAttributes(featuredLink, offer.url, { partner: offer.name, source: 'header_featured' });
-        title.textContent = offer.tier === 1 ? ('🔥 ' + offer.name + ' featured deal') : ('Explore ' + offer.name);
-        subtitle.textContent = offer.tier === 1 ? 'Priority partner offer surfaced more often for conversion.' : 'Discover more in one place';
+
+        const benefit = getOfferBenefitCopy(offer);
+        setTrackedLinkAttributes(featuredLink, offer.url, {
+          partner: offer.name,
+          source: 'header_featured',
+          category: offer.category,
+          tier: offer.tier
+        });
+        title.textContent = benefit.title;
+        subtitle.textContent = benefit.description;
       }
 
       rotateHeaderDeal();
@@ -1453,33 +3200,71 @@
       const stickyLink = document.getElementById('stickyLink');
       const offer = getOfferFromPartners();
       if (!offer) return;
-      stickyCopy.textContent = offer.tier === 1
-        ? ('🔥 Priority offer: ' + offer.name + ' is being pushed right now.')
-        : ('💸 Featured deal: tap into ' + offer.name + ' before it rotates.');
-      setTrackedLinkAttributes(stickyLink, offer.url, { partner: offer.name, source: 'sticky' });
-      stickyLink.textContent = getCTA();
+
+      const benefit = getOfferBenefitCopy(offer);
+      stickyCopy.textContent = benefit.title + ' — ' + benefit.description;
+      setTrackedLinkAttributes(stickyLink, offer.url, {
+        partner: offer.name,
+        source: 'sticky',
+        category: offer.category,
+        tier: offer.tier
+      });
+      stickyLink.textContent = benefit.cta;
     }
 
     function showPopupDeal() {
       if (popupShown) return;
+
       const popup = document.getElementById('dealPopup');
       const title = document.getElementById('popupTitle');
       const text = document.getElementById('popupText');
       const link = document.getElementById('popupLink');
       const offer = getOfferFromPartners();
       if (!popup || !offer) return;
-      title.textContent = offer.tier === 1 ? ('🔥 ' + offer.name + ' is featured right now') : ('💸 Don’t miss ' + offer.name);
-      text.textContent = offer.tier === 1
-        ? 'This priority partner is receiving extra visibility. Tap now before you keep scrolling.'
-        : 'This partner offer is live now. Grab it before it rotates out.';
-      setTrackedLinkAttributes(link, offer.url, { partner: offer.name, source: 'popup' });
-      link.textContent = getCTA();
+
+      const benefit = getOfferBenefitCopy(offer);
+      title.textContent = benefit.title;
+      text.textContent = benefit.description;
+      setTrackedLinkAttributes(link, offer.url, {
+        partner: offer.name,
+        source: 'popup',
+        category: offer.category,
+        tier: offer.tier
+      });
+      link.textContent = benefit.cta;
+
       popup.style.display = 'flex';
       popupShown = true;
     }
 
     function attachGlobalInteractions() {
       document.addEventListener('click', function(e) {
+        const filterBtn = e.target.closest('[data-filter-category]');
+        if (filterBtn) {
+          const category = filterBtn.getAttribute('data-filter-category');
+          activePartnerCategory = category === 'All' ? null : category;
+          renderPartners(partnersData);
+          return;
+        }
+
+        const sortDefault = e.target.closest('#sortByDefault');
+        if (sortDefault) {
+          activePartnerSort = 'default';
+          document.getElementById('sortByDefault')?.classList.add('active');
+          document.getElementById('sortByPopular')?.classList.remove('active');
+          renderPartners(partnersData);
+          return;
+        }
+
+        const sortPopular = e.target.closest('#sortByPopular');
+        if (sortPopular) {
+          activePartnerSort = 'popular';
+          document.getElementById('sortByPopular')?.classList.add('active');
+          document.getElementById('sortByDefault')?.classList.remove('active');
+          renderPartners(partnersData);
+          return;
+        }
+
         const anchor = e.target.closest('a[href]');
         if (anchor) {
           const rawUrl = anchor.getAttribute('data-raw-url') || anchor.getAttribute('href');
@@ -1487,7 +3272,15 @@
           if (rawUrl && rawUrl !== '#') {
             e.preventDefault();
             e.stopPropagation();
-            openPartnerLink(rawUrl, trackedUrl);
+            openPartnerLink(rawUrl, trackedUrl, {
+              partner: anchor.getAttribute('data-partner'),
+              source: anchor.getAttribute('data-source'),
+              category: anchor.getAttribute('data-category'),
+              tier: Number(anchor.getAttribute('data-tier') || 0)
+            }).then(() => {
+              renderBrandGrid(partnersData);
+              renderPartners(partnersData);
+            });
             return;
           }
           e.stopPropagation();
@@ -1496,10 +3289,20 @@
 
         const card = e.target.closest('.feed-card[data-open-url]');
         if (!card) return;
+
         const rawUrl = card.getAttribute('data-open-url');
         const trackedUrl = card.getAttribute('data-open-tracked-url') || rawUrl;
         if (!rawUrl || rawUrl === '#') return;
-        openPartnerLink(rawUrl, trackedUrl);
+
+        openPartnerLink(rawUrl, trackedUrl, {
+          partner: card.getAttribute('data-partner'),
+          source: card.getAttribute('data-source'),
+          category: card.getAttribute('data-category'),
+          tier: Number(card.getAttribute('data-tier') || 0)
+        }).then(() => {
+          renderBrandGrid(partnersData);
+          renderPartners(partnersData);
+        });
       });
 
       document.getElementById('popupClose').addEventListener('click', function() {
@@ -1513,15 +3316,49 @@
       });
 
       document.getElementById('partnerSearch').addEventListener('input', function() {
-        const q = this.value.trim().toLowerCase();
-        if (!q) {
-          renderPartners(partnersData);
-          return;
-        }
-        renderPartners(partnersData.filter(function(p) {
-          return p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
-        }));
+        renderPartners(partnersData);
       });
+
+      document.querySelectorAll('.entry-chip').forEach(function(button) {
+        button.addEventListener('click', function() {
+          const category = this.getAttribute('data-entry-category');
+          if (!category) return;
+          filterFeedByEntryCategory(category);
+        });
+      });
+
+      const showAllFeedBtn = document.getElementById('showAllFeed');
+      if (showAllFeedBtn) {
+        showAllFeedBtn.addEventListener('click', function() {
+          resetFeedFromEntryLayer();
+        });
+      }
+
+      const showPopularPartnersBtn = document.getElementById('showPopularPartners');
+      if (showPopularPartnersBtn) {
+        showPopularPartnersBtn.addEventListener('click', function() {
+          const brandGridColumn = document.querySelector('.column-3');
+          if (brandGridColumn) {
+            brandGridColumn.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+
+      const amazonSearchForm = document.getElementById('amazonSearchForm');
+      if (amazonSearchForm) {
+        amazonSearchForm.addEventListener('submit', function() {
+          incrementClickCount();
+          trackPartnerClick('Amazon');
+          trackPartnerStats('Amazon', {
+            category: 'Marketplace',
+            tier: 1
+          });
+          window.setTimeout(function() {
+            renderBrandGrid(partnersData);
+            renderPartners(partnersData);
+          }, 150);
+        });
+      }
     }
 
     function scheduleMonetizationTriggers() {
@@ -1529,31 +3366,59 @@
       window.setInterval(updateStickyOffer, 12000);
     }
 
-    detectRegion();
-    applyLanguageUI();
+    let scrollTriggered = false;
+    function setupScrollTriggeredCTA() {
+      const magneto = document.getElementById('magnetoColumn');
+      if (!magneto) return;
+
+      magneto.addEventListener('scroll', function() {
+        if (scrollTriggered) return;
+
+        if (this.scrollTop > 800) {
+          scrollTriggered = true;
+          const offer = getOfferFromPartners();
+          if (!offer) return;
+
+          const sticky = document.getElementById('stickyCopy');
+          sticky.textContent = 'Ready to act? ' + getOfferBenefitCopy(offer).title;
+        }
+      });
+    }
+
     attachGlobalInteractions();
-    loadPartnersData();
     setupInfiniteScroll();
+    setupScrollTriggeredCTA();
     updateClickDisplay();
+    loadPartnersData();
     scheduleMonetizationTriggers();
+    hydrateAmazonLinks();
 
     fetchDynamicFeed()
       .then(function(liveItems) {
         const platformItems = buildDynamicFeed(liveItems);
+        baseFeedItems = platformItems.slice();
+        allFeedItems = platformItems.slice();
+
         if (!platformItems.length) {
-          feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>' + escapeHtml(window.__sbEmptyFeedTitle || 'No new content yet') + '</h3><p>' + escapeHtml(window.__sbEmptyFeedText || 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.') + '</p></div></article>';
+          feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>No new content yet</h3><p>The discovery feed is ready, but no items are available right now.</p></div></article>';
           return;
         }
+
         renderFeed(platformItems);
       })
       .catch(function(error) {
         console.error('Dynamic feed failed.', error);
+
         const platformItems = buildDynamicFeed([]);
+        baseFeedItems = platformItems.slice();
+        allFeedItems = platformItems.slice();
+
         if (platformItems.length) {
           renderFeed(platformItems);
           return;
         }
-        feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>' + escapeHtml(window.__sbEmptyFeedTitle || 'No new content yet') + '</h3><p>' + escapeHtml(window.__sbEmptyFeedText || 'Column 2 uses the known-good embedded pool for YouTube, Vimeo, and Dailymotion.') + '</p></div></article>';
+
+        feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>No new content yet</h3><p>The discovery feed is ready, but no items are available right now.</p></div></article>';
       });
   </script>
 </body>
