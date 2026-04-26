@@ -27,8 +27,6 @@
   <style>
     * { box-sizing: border-box; }
 
-    img, iframe, video { max-width: 100%; }
-
     html, body {
       margin: 0;
       height: 100%;
@@ -1170,249 +1168,6 @@
 .amazon-text {
   font-size: 14px;
 }
-  
-    /* RESPONSIVE LAYOUT FIXES */
-    @media (min-width: 1201px) {
-      .app {
-        grid-template-columns: 280px minmax(520px, 1fr) 280px;
-      }
-    }
-
-    @media (max-width: 1200px) {
-      .app {
-        grid-template-columns: 260px minmax(0, 1fr);
-      }
-
-      .top-feature {
-        width: 260px;
-      }
-
-      .column-1 {
-        padding-top: 92px;
-      }
-
-      .column-3 {
-        display: none;
-      }
-
-      #stickyBar {
-        left: calc(260px + ((100vw - 260px) / 2));
-        width: min(640px, calc(100vw - 284px));
-      }
-    }
-
-    @media (max-width: 900px) {
-      body {
-        overflow: auto;
-      }
-
-      html,
-      body {
-        height: auto;
-        min-height: 100%;
-      }
-
-      .top-feature {
-        position: relative;
-        width: 100%;
-        padding: 10px 14px;
-        border-right: 0;
-      }
-
-      .top-feature a {
-        max-width: 100%;
-      }
-
-      .app {
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh;
-      }
-
-      .column {
-        width: 100%;
-        overflow: visible;
-      }
-
-      .column-1 {
-        height: auto;
-        max-height: none;
-        padding-top: 0;
-        border-right: 0;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-      }
-
-      .column-1-controls {
-        position: static;
-        padding: 10px 12px;
-      }
-
-      .column-1-header {
-        padding: 0 0 4px;
-      }
-
-      .column-1-helper {
-        padding: 0 0 8px;
-      }
-
-      .column-1-scroll {
-        max-height: 42vh;
-        overflow-y: auto;
-        padding: 10px 12px 18px;
-        align-items: stretch;
-      }
-
-      .category {
-        max-width: 100%;
-      }
-
-      .column-2 {
-        min-height: auto;
-      }
-
-      #magnetoColumn {
-        height: auto;
-        min-height: auto;
-        overflow: visible;
-        padding: 14px 12px 110px;
-      }
-
-      .amazon-section,
-      .entry-layer,
-      .comparison-section,
-      .department-card,
-      .feed-container {
-        max-width: 680px;
-        width: 100%;
-      }
-
-      .media-box {
-        min-height: 420px;
-        max-height: 78vh;
-      }
-
-      .column-3 {
-        display: none;
-      }
-
-      #stickyBar {
-        left: 50%;
-        width: calc(100% - 24px);
-        bottom: 10px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .top-feature {
-        gap: 8px;
-      }
-
-      .top-feature a {
-        padding: 9px 10px !important;
-      }
-
-      .column-1-scroll {
-        max-height: 38vh;
-      }
-
-      .affiliate-filters {
-        padding-top: 8px;
-      }
-
-      .column-1-toolbar {
-        padding-top: 8px;
-      }
-
-      .amazon-section {
-        padding: 14px;
-        border-radius: 16px;
-      }
-
-      .amazon-section h2 {
-        font-size: 21px;
-      }
-
-      .amazon-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .amazon-card {
-        padding: 13px 14px;
-      }
-
-      .amazon-search-form {
-        flex-direction: column;
-      }
-
-      .amazon-search-form input,
-      .amazon-search-form button {
-        width: 100%;
-      }
-
-      .feed-card {
-        padding: 12px;
-        border-radius: 14px;
-      }
-
-      .media-box {
-        min-height: 340px;
-        max-height: 70vh;
-      }
-
-      .promo-title {
-        font-size: 22px;
-        max-width: 100%;
-      }
-
-      .promo-subtitle {
-        max-width: 100%;
-      }
-
-      .feed-content h3 {
-        font-size: 18px;
-      }
-
-      .decision-strip {
-        gap: 6px;
-      }
-
-      #stickyBar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        padding: 10px 12px;
-      }
-
-      .sticky-link {
-        white-space: normal;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .column-1-scroll {
-        max-height: 36vh;
-      }
-
-      #magnetoColumn {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      .media-box {
-        min-height: 300px;
-      }
-
-      .amazon-section h2 {
-        font-size: 19px;
-      }
-
-      .amazon-section p {
-        font-size: 13px;
-      }
-    }
-
   </style>
 </head>
 <body>
@@ -4145,5 +3900,165 @@ function createAmazonCard(intent) {
         feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>No new content yet</h3><p>The discovery feed is ready, but no items are available right now.</p></div></article>';
       });
   </script>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const region = (params.get('region') || '').toLowerCase();
+  const lang = (params.get('lang') || '').toLowerCase();
+
+  const isBR = region === 'br' || lang === 'pt' || lang === 'pt-br';
+  const isPL = region === 'pl' || lang === 'pl';
+
+  if (!isBR && !isPL) return;
+
+  const pack = isBR ? {
+    language: 'pt-BR',
+    navTitle: 'Planeje sua viagem',
+    tagline: 'Explore as marcas mais clicadas.',
+    featuredLabel: 'Destaque',
+    featuredTitle: 'Compare viagens, hotéis e serviços',
+    featuredSubtitle: 'Ofertas selecionadas para viajar e comprar melhor',
+    headerFootnote: 'Plataformas confiáveis e ofertas afiliadas monetizadas.',
+    feedIntro: 'Escolhas selecionadas para você ↓',
+    clickStatsPrefix: '🔥 Cliques de descoberta hoje: ',
+    brandGridTitle: 'Parceiros mais populares',
+    stickyCopy: 'Explore um serviço em destaque escolhido para você.',
+    stickyLink: 'Explorar agora',
+    popupTitle: 'Não perca esta oferta',
+    popupText: 'Veja este serviço em destaque antes de continuar navegando.',
+    popupLink: 'Explorar agora',
+    popupClose: 'Continuar navegando',
+    defaultSort: 'Padrão',
+    popularSort: 'Popular'
+  } : {
+    language: 'pl',
+    navTitle: 'Zaplanuj podróż',
+    tagline: 'Przeglądaj najpopularniejsze marki.',
+    featuredLabel: 'Polecane',
+    featuredTitle: 'Porównaj podróże, hotele i usługi',
+    featuredSubtitle: 'Wybrane oferty, które pomagają kupować mądrzej',
+    headerFootnote: 'Zaufane platformy i monetyzowane oferty partnerskie.',
+    feedIntro: 'Wybrane propozycje dla Ciebie ↓',
+    clickStatsPrefix: '🔥 Kliknięcia odkrywania dzisiaj: ',
+    brandGridTitle: 'Najpopularniejsi partnerzy',
+    stickyCopy: 'Sprawdź polecaną usługę wybraną dla Ciebie.',
+    stickyLink: 'Zobacz teraz',
+    popupTitle: 'Nie przegap tej oferty',
+    popupText: 'Sprawdź tę polecaną usługę przed dalszym przeglądaniem.',
+    popupLink: 'Zobacz teraz',
+    popupClose: 'Przeglądaj dalej',
+    defaultSort: 'Domyślnie',
+    popularSort: 'Popularne'
+  };
+
+  const dictBR = {
+    'Most Popular Partners': 'Parceiros mais populares',
+    'Find cheaper flights fast': 'Encontre voos mais baratos rapidamente',
+    'Compare routes and prices before booking.': 'Compare rotas e preços antes de reservar.',
+    'Compare hotel stays faster': 'Compare hotéis mais rapidamente',
+    'Browse hotel options and compare where to stay.': 'Veja opções de hotéis e compare onde ficar.',
+    'Stay connected anywhere': 'Fique conectado em qualquer lugar',
+    'Get mobile data instantly abroad.': 'Tenha internet móvel instantaneamente no exterior.',
+    'Book your ride in advance': 'Reserve seu transporte com antecedência',
+    'Secure transfers before arrival.': 'Garanta traslados antes da chegada.',
+    'Travel essentials on Amazon': 'Itens essenciais de viagem na Amazon',
+    'Useful gear for smoother trips and everyday travel.': 'Produtos úteis para viagens mais tranquilas e o dia a dia.',
+    'Open Amazon': 'Abrir Amazon',
+    'Find rides': 'Encontrar traslados',
+    'See eSIM options': 'Ver opções de eSIM',
+    'Compare flights': 'Comparar voos',
+    'Explore hotels': 'Explorar hotéis',
+    'Explore now': 'Explorar agora',
+    'Featured': 'Destaque',
+    'Priority pick': 'Escolha prioritária',
+    'Featured offer': 'Oferta em destaque'
+  };
+
+  const dictPL = {
+    'Most Popular Partners': 'Najpopularniejsi partnerzy',
+    'Find cheaper flights fast': 'Znajdź tańsze loty szybciej',
+    'Compare routes and prices before booking.': 'Porównaj trasy i ceny przed rezerwacją.',
+    'Compare hotel stays faster': 'Porównaj hotele szybciej',
+    'Browse hotel options and compare where to stay.': 'Przeglądaj opcje hoteli i porównuj miejsca pobytu.',
+    'Stay connected anywhere': 'Bądź online wszędzie',
+    'Get mobile data instantly abroad.': 'Uzyskaj internet mobilny za granicą.',
+    'Book your ride in advance': 'Zarezerwuj przejazd z wyprzedzeniem',
+    'Secure transfers before arrival.': 'Zarezerwuj transfer przed przyjazdem.',
+    'Travel essentials on Amazon': 'Akcesoria podróżne na Amazon',
+    'Useful gear for smoother trips and everyday travel.': 'Przydatne produkty na wygodniejsze podróże.',
+    'Open Amazon': 'Otwórz Amazon',
+    'Find rides': 'Znajdź przejazdy',
+    'See eSIM options': 'Zobacz eSIM',
+    'Compare flights': 'Porównaj loty',
+    'Explore hotels': 'Zobacz hotele',
+    'Explore now': 'Zobacz teraz',
+    'Featured': 'Polecane',
+    'Priority pick': 'Wybór priorytetowy',
+    'Featured offer': 'Oferta polecana'
+  };
+
+  const dict = isBR ? dictBR : dictPL;
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el && value) el.textContent = value;
+  }
+
+  function translateTextNodes() {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach((node) => {
+      let value = node.nodeValue;
+      Object.keys(dict).forEach((key) => {
+        if (value.includes(key)) value = value.replaceAll(key, dict[key]);
+      });
+      node.nodeValue = value;
+    });
+  }
+
+  function applyRegionalTranslations() {
+    document.documentElement.lang = pack.language;
+
+    setText('navTitle', pack.navTitle);
+    setText('regionTagline', pack.tagline);
+    setText('featuredDealLabel', pack.featuredLabel);
+    setText('featuredDealTitle', pack.featuredTitle);
+    setText('featuredDealSubtitle', pack.featuredSubtitle);
+    setText('headerFootnote', pack.headerFootnote);
+    setText('feedIntro', pack.feedIntro);
+    setText('brandGridTitle', pack.brandGridTitle);
+    setText('stickyCopy', pack.stickyCopy);
+    setText('stickyLink', pack.stickyLink);
+    setText('popupTitle', pack.popupTitle);
+    setText('popupText', pack.popupText);
+    setText('popupLink', pack.popupLink);
+    setText('popupClose', pack.popupClose);
+
+    const defaultBtn = document.getElementById('sortByDefault');
+    if (defaultBtn) defaultBtn.textContent = pack.defaultSort;
+
+    const popularBtn = document.getElementById('sortByPopular');
+    if (popularBtn) popularBtn.textContent = pack.popularSort;
+
+    const clickStats = document.getElementById('clickStats');
+    const clickCount = document.getElementById('clickCount');
+    if (clickStats && clickCount) {
+      clickStats.innerHTML = pack.clickStatsPrefix + '<span id="clickCount">' + clickCount.textContent + '</span>';
+    }
+
+    translateTextNodes();
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    applyRegionalTranslations();
+    setTimeout(applyRegionalTranslations, 500);
+    setTimeout(applyRegionalTranslations, 1500);
+  });
+})();
+</script>
+
 </body>
 </html>
