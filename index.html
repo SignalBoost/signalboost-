@@ -11,6 +11,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -621,6 +622,21 @@
       color: rgba(255,255,255,0.85);
       max-width: 85%;
       line-height: 1.4;
+    }
+
+
+    .feed-intent-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #f5c542;
+      background: rgba(245,197,66,0.10);
+      border: 1px solid rgba(245,197,66,0.18);
     }
 
     .feed-content h3 {
@@ -1734,9 +1750,9 @@
         description: 'Quick inspiration for your next trip decision.',
         author: 'YouTube',
         publishedAt: new Date().toISOString(),
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&playsinline=1',
-        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+        url: 'https://www.youtube.com/watch?v=RcmrbNRK-jY',
+        embedUrl: 'https://www.youtube.com/embed/RcmrbNRK-jY?rel=0&modestbranding=1&playsinline=1',
+        thumbnail: 'https://img.youtube.com/vi/RcmrbNRK-jY/hqdefault.jpg',
         category: 'travel'
       },
       {
@@ -1745,9 +1761,9 @@
         description: 'Short-form discovery content to support better booking decisions.',
         author: 'YouTube',
         publishedAt: new Date(Date.now() - 60000).toISOString(),
-        url: 'https://www.youtube.com/watch?v=OPf0YbXqDm0',
-        embedUrl: 'https://www.youtube.com/embed/OPf0YbXqDm0?rel=0&modestbranding=1&playsinline=1',
-        thumbnail: 'https://img.youtube.com/vi/OPf0YbXqDm0/hqdefault.jpg',
+        url: 'https://www.youtube.com/watch?v=1La4QzGeaaQ',
+        embedUrl: 'https://www.youtube.com/embed/1La4QzGeaaQ?rel=0&modestbranding=1&playsinline=1',
+        thumbnail: 'https://img.youtube.com/vi/1La4QzGeaaQ/hqdefault.jpg',
         category: 'travel'
       },
       {
@@ -2630,8 +2646,16 @@ function hydrateAmazonLinks() {
       }
 
       if (platform === 'youtube') {
-        const embed = item.embedUrl || getYouTubeEmbed(item.postUrl || item.url || '');
-        if (embed) return '<div class="media-box"><iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
+        const watchUrl = isValidHttpUrl(item.postUrl || item.url) ? (item.postUrl || item.url) : '#';
+        const thumbnail = item.thumbnail || 'https://img.youtube.com/vi/' + ((watchUrl.match(/[?&]v=([^&]+)/) || [])[1] || '') + '/hqdefault.jpg';
+
+        return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(watchUrl) + '" target="_blank" rel="noopener noreferrer">' +
+          '<img src="' + escapeHtml(thumbnail || 'https://via.placeholder.com/720x1280/161b22/f5c542?text=YouTube') + '" alt="' + title + '" loading="lazy">' +
+          '<div class="promo-overlay">' +
+          '<div class="promo-kicker">YouTube</div>' +
+          '<div class="promo-title">' + title + '</div>' +
+          '<div class="promo-subtitle">Tap to watch on YouTube</div>' +
+          '</div></a></div>';
       }
 
       if (platform === 'vimeo' || platform === 'tiktok' || platform === 'dailymotion') {
@@ -3018,20 +3042,142 @@ function createAmazonCard(intent) {
       return ordered;
     }
 
+
+    function getFeedText(item) {
+      return ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.author || '') + ' ' + (item.category || '')).toLowerCase();
+    }
+
+    const blockedFeedTerms = [
+      'rick astley',
+      'never gonna give you up',
+      'rickroll',
+      'rick roll',
+      'meme',
+      'prank',
+      'troll',
+      'scam',
+      'scammer',
+      'casino',
+      'gambling',
+      'betting',
+      'adult',
+      'porn',
+      'onlyfans',
+      'crypto giveaway',
+      'free money',
+      'get rich quick',
+      'shock',
+      'fight',
+      'violence'
+    ];
+
+    const trustedFeedTerms = [
+      'travel',
+      'trip',
+      'flight',
+      'airport',
+      'hotel',
+      'stay',
+      'booking',
+      'destination',
+      'vacation',
+      'holiday',
+      'tour',
+      'guide',
+      'packing',
+      'luggage',
+      'carry on',
+      'power bank',
+      'adapter',
+      'esim',
+      'sim card',
+      'insurance',
+      'visa',
+      'passport',
+      'transport',
+      'transfer',
+      'taxi',
+      'rental car',
+      'warsaw',
+      'poland',
+      'brazil',
+      'mexico',
+      'europe',
+      'budget travel',
+      'travel tips',
+      'travel hack',
+      'finance',
+      'save money',
+      'credit card',
+      'cashback'
+    ];
+
+    function isTrustedFeedItem(item) {
+      const text = getFeedText(item);
+      if (!text.trim()) return false;
+
+      if (blockedFeedTerms.some(function(term) { return text.includes(term); })) {
+        return false;
+      }
+
+      return trustedFeedTerms.some(function(term) { return text.includes(term); });
+    }
+
+    function getSafeFeedIntent(item) {
+      const text = getFeedText(item);
+
+      if (text.includes('hotel') || text.includes('stay') || text.includes('accommodation') || text.includes('resort')) return 'Hotels';
+      if (text.includes('flight') || text.includes('airport') || text.includes('airline')) return 'Flights';
+      if (text.includes('esim') || text.includes('sim card') || text.includes('data roaming') || text.includes('phone data')) return 'Connectivity';
+      if (text.includes('packing') || text.includes('luggage') || text.includes('carry on') || text.includes('power bank') || text.includes('adapter')) return 'Travel gear';
+      if (text.includes('insurance') || text.includes('claim') || text.includes('coverage')) return 'Protection';
+      if (text.includes('taxi') || text.includes('transfer') || text.includes('transport') || text.includes('rental car')) return 'Transport';
+      if (text.includes('tour') || text.includes('things to do') || text.includes('attractions') || text.includes('guide')) return 'Tours';
+      if (text.includes('finance') || text.includes('save money') || text.includes('credit card') || text.includes('cashback')) return 'Finance';
+
+      return 'Travel tip';
+    }
+
+    function decorateSafeFeedItem(item) {
+      return Object.assign({}, item, {
+        intentLabel: item.intentLabel || getSafeFeedIntent(item)
+      });
+    }
+
     function buildDynamicFeed(liveItems) {
       const seen = new Set();
 
       const normalized = []
         .concat(liveItems || [])
         .concat(hybridVideoPool.map(item => normalizeFeedItem(item, item.platform)))
+        .map(decorateSafeFeedItem)
         .filter(item => isValidHttpUrl(item.url || item.postUrl || item.videoUrl))
+        .filter(item => isTrustedFeedItem(item))
         .filter(item => {
           const key = item.videoUrl || item.embedUrl || item.postUrl || item.url || item.title;
           if (!key || seen.has(key)) return false;
           seen.add(key);
           return true;
         })
-        .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+        .sort((a, b) => {
+          const priority = item => {
+            const intent = item.intentLabel || getSafeFeedIntent(item);
+            if (intent === 'Hotels') return 1;
+            if (intent === 'Flights') return 2;
+            if (intent === 'Travel gear') return 3;
+            if (intent === 'Connectivity') return 4;
+            if (intent === 'Transport') return 5;
+            if (intent === 'Tours') return 6;
+            if (intent === 'Protection') return 7;
+            if (intent === 'Finance') return 8;
+            return 9;
+          };
+
+          const pa = priority(a);
+          const pb = priority(b);
+          if (pa !== pb) return pa - pb;
+          return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        });
 
       return interleaveJourneyCards(normalized);
     }
@@ -3045,7 +3191,7 @@ function createAmazonCard(intent) {
         const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
         const title = escapeHtml(item.title || 'Discover something new');
         const description = escapeHtml(item.description || '');
-        const intentLabel = '<div style="font-size:11px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:6px;">' + escapeHtml(getIntentLabel(item)) + '</div>';
+        const intentLabel = '<div class="feed-intent-label">' + escapeHtml(item.intentLabel || getSafeFeedIntent(item)) + '</div>';
         const hookHtml = '<div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + escapeHtml(getIntentHook(item, relatedPartner)) + '</div>';
         const meta = '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>';
 
@@ -3420,7 +3566,7 @@ function createAmazonCard(intent) {
 
     async function fetchDynamicFeed() {
       try {
-        const response = await fetch('/api/feed/reddit?subreddits=travel,videos,funny&limit=18', { headers: { Accept: 'application/json' } });
+        const response = await fetch('/api/feed/reddit?subreddits=travel,solotravel,digitalnomad,onebag,Shoestring&limit=18', { headers: { Accept: 'application/json' } });
         const text = await response.text();
         let data;
         try {
