@@ -3972,7 +3972,20 @@ function createAmazonCard(intent) {
     'Explore now': 'Explorar agora',
     'Featured': 'Destaque',
     'Priority pick': 'Escolha prioritária',
-    'Featured offer': 'Oferta em destaque'
+    'Featured offer': 'Oferta em destaque',
+    'All': 'Tudo',
+    'Car Rentals': 'Aluguel de carros',
+    'Flights & Meta Search': 'Voos',
+    'Hotels & Accommodation': 'Hotéis',
+    'Transfers & Transport': 'Traslados e transporte',
+    'SIM & Connectivity': 'eSIM e conectividade',
+    'Tours & Activities': 'Passeios e atividades',
+    'Insurance & Claims': 'Seguros e indenizações',
+    'Storage & Services': 'Serviços de viagem',
+    'Products & Tools': 'Produtos e ferramentas',
+    'Marketplace': 'Marketplace',
+    'Finance': 'Finanças',
+    'Specialty & Other': 'Outros'
   };
 
   const dictPL = {
@@ -3995,7 +4008,20 @@ function createAmazonCard(intent) {
     'Explore now': 'Zobacz teraz',
     'Featured': 'Polecane',
     'Priority pick': 'Wybór priorytetowy',
-    'Featured offer': 'Oferta polecana'
+    'Featured offer': 'Oferta polecana',
+    'All': 'Wszystko',
+    'Car Rentals': 'Wynajem aut',
+    'Flights & Meta Search': 'Loty',
+    'Hotels & Accommodation': 'Hotele',
+    'Transfers & Transport': 'Transfery i transport',
+    'SIM & Connectivity': 'eSIM i łączność',
+    'Tours & Activities': 'Wycieczki i atrakcje',
+    'Insurance & Claims': 'Ubezpieczenia',
+    'Storage & Services': 'Usługi podróżne',
+    'Products & Tools': 'Produkty i narzędzia',
+    'Marketplace': 'Marketplace',
+    'Finance': 'Finanse',
+    'Specialty & Other': 'Inne'
   };
 
   const dict = isBR ? dictBR : dictPL;
@@ -4016,6 +4042,30 @@ function createAmazonCard(intent) {
         if (value.includes(key)) value = value.replaceAll(key, dict[key]);
       });
       node.nodeValue = value;
+    });
+  }
+
+  function translateDynamicCategoryChips() {
+    document.querySelectorAll('[data-filter-category]').forEach((btn) => {
+      const raw = btn.getAttribute('data-filter-category') || btn.textContent.trim();
+      if (dict[raw]) btn.textContent = dict[raw];
+    });
+
+    document.querySelectorAll('.category summary').forEach((summary) => {
+      let value = summary.textContent;
+      Object.keys(dict).forEach((key) => {
+        if (value.includes(key)) value = value.replaceAll(key, dict[key]);
+      });
+
+      const countMatch = summary.textContent.match(/\s*\(\d+\)\s*$/);
+      if (countMatch) {
+        const base = summary.textContent.replace(/\s*\(\d+\)\s*$/, '').trim();
+        if (dict[base]) value = dict[base] + countMatch[0];
+      }
+
+      summary.childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) node.nodeValue = value;
+      });
     });
   }
 
@@ -4050,12 +4100,14 @@ function createAmazonCard(intent) {
     }
 
     translateTextNodes();
+    translateDynamicCategoryChips();
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     applyRegionalTranslations();
     setTimeout(applyRegionalTranslations, 500);
     setTimeout(applyRegionalTranslations, 1500);
+    setTimeout(applyRegionalTranslations, 3000);
   });
 })();
 </script>
