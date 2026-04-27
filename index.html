@@ -2671,71 +2671,237 @@ function hydrateAmazonLinks() {
         '</div></a></div>';
     }
 
-    function getOfferBenefitCopy(offer) {
-      const byCategory = {
+
+    function getActiveRegionCode() {
+      const params = new URLSearchParams(window.location.search);
+      const region = (params.get('region') || '').toLowerCase();
+      const lang = (params.get('lang') || '').toLowerCase();
+
+      if (region) return region;
+      if (lang === 'pt' || lang === 'pt-br') return 'br';
+      if (lang === 'pl') return 'pl';
+      return 'global';
+    }
+
+    function getLocalizedOfferCopy(category) {
+      const region = getActiveRegionCode();
+      const isBR = region === 'br';
+      const isPL = region === 'pl';
+
+      const copy = {
         'Flights & Meta Search': {
-          title: '✈️ Find cheaper flights fast',
-          description: 'Compare routes and prices before booking.',
-          cta: 'Compare flights'
+          en: {
+            title: '✈️ Find cheaper flights fast',
+            description: 'Compare routes and prices before booking.',
+            cta: 'Compare flights'
+          },
+          br: {
+            title: '✈️ Encontre voos mais baratos rapidamente',
+            description: 'Compare rotas e preços antes de reservar.',
+            cta: 'Comparar voos'
+          },
+          pl: {
+            title: '✈️ Znajdź tańsze loty szybciej',
+            description: 'Porównaj trasy i ceny przed rezerwacją.',
+            cta: 'Porównaj loty'
+          }
         },
         'Hotels & Accommodation': {
-          title: '🏨 Compare hotel stays faster',
-          description: 'Browse hotel options and compare where to stay.',
-          cta: 'Explore hotels'
-        },
-        'Insurance & Claims': {
-          title: '🛡️ Get travel coverage before you go',
-          description: 'Choose the right protection for your trip.',
-          cta: 'View coverage'
-        },
-        'Finance': {
-          title: '💰 Explore finance tools',
-          description: 'Compare helpful money and tax tools.',
-          cta: 'Explore finance'
+          en: {
+            title: '🏨 Compare hotel stays faster',
+            description: 'Browse hotel options and compare where to stay.',
+            cta: 'Explore hotels'
+          },
+          br: {
+            title: '🏨 Compare hotéis mais rapidamente',
+            description: 'Veja opções de hotéis e compare onde ficar.',
+            cta: 'Explorar hotéis'
+          },
+          pl: {
+            title: '🏨 Porównaj hotele szybciej',
+            description: 'Przeglądaj opcje hoteli i porównuj miejsca pobytu.',
+            cta: 'Zobacz hotele'
+          }
         },
         'SIM & Connectivity': {
-          title: '📶 Stay connected anywhere',
-          description: 'Get mobile data instantly abroad.',
-          cta: 'See eSIM options'
+          en: {
+            title: '📶 Stay connected anywhere',
+            description: 'Get mobile data instantly abroad.',
+            cta: 'See eSIM options'
+          },
+          br: {
+            title: '📶 Fique conectado em qualquer lugar',
+            description: 'Tenha internet móvel instantaneamente no exterior.',
+            cta: 'Ver opções de eSIM'
+          },
+          pl: {
+            title: '📶 Bądź online wszędzie',
+            description: 'Uzyskaj internet mobilny za granicą.',
+            cta: 'Zobacz eSIM'
+          }
         },
         'Transfers & Transport': {
-          title: '🚗 Book your ride in advance',
-          description: 'Secure transfers before arrival.',
-          cta: 'Find rides'
+          en: {
+            title: '🚕 Book your ride in advance',
+            description: 'Secure transfers before arrival.',
+            cta: 'Find rides'
+          },
+          br: {
+            title: '🚕 Reserve seu transporte com antecedência',
+            description: 'Garanta traslados antes da chegada.',
+            cta: 'Encontrar traslados'
+          },
+          pl: {
+            title: '🚕 Zarezerwuj przejazd z wyprzedzeniem',
+            description: 'Zarezerwuj transfer przed przyjazdem.',
+            cta: 'Znajdź przejazdy'
+          }
         },
         'Tours & Activities': {
-          title: '🎟️ Discover things to do',
-          description: 'Explore top attractions and tours.',
-          cta: 'Explore activities'
+          en: {
+            title: '🎟️ Discover things to do',
+            description: 'Explore top attractions and tours.',
+            cta: 'Explore activities'
+          },
+          br: {
+            title: '🎟️ Descubra o que fazer',
+            description: 'Explore atrações e passeios.',
+            cta: 'Explorar passeios'
+          },
+          pl: {
+            title: '🎟️ Odkryj atrakcje',
+            description: 'Przeglądaj atrakcje i wycieczki.',
+            cta: 'Zobacz atrakcje'
+          }
+        },
+        'Insurance & Claims': {
+          en: {
+            title: '🛡️ Get travel coverage before you go',
+            description: 'Choose the right protection for your trip.',
+            cta: 'View coverage'
+          },
+          br: {
+            title: '🛡️ Contrate proteção de viagem antes de ir',
+            description: 'Escolha a proteção certa para sua viagem.',
+            cta: 'Ver cobertura'
+          },
+          pl: {
+            title: '🛡️ Zadbaj o ochronę podróży przed wyjazdem',
+            description: 'Wybierz odpowiednią ochronę dla podróży.',
+            cta: 'Zobacz ochronę'
+          }
         },
         'Car Rentals': {
-          title: '🚘 Compare car rentals',
-          description: 'Find the best deal before booking.',
-          cta: 'Find rentals'
-        },
-        'Storage & Services': {
-          title: '🧳 Travel smarter',
-          description: 'Useful services for easier trips.',
-          cta: 'Explore services'
+          en: {
+            title: '🚗 Compare car rentals',
+            description: 'Find the best deal before booking.',
+            cta: 'Find rentals'
+          },
+          br: {
+            title: '🚗 Compare aluguel de carros',
+            description: 'Encontre a melhor opção antes de reservar.',
+            cta: 'Encontrar aluguel'
+          },
+          pl: {
+            title: '🚗 Porównaj wynajem aut',
+            description: 'Znajdź najlepszą ofertę przed rezerwacją.',
+            cta: 'Znajdź wynajem'
+          }
         },
         'Marketplace': {
-          title: '🛒 Travel essentials on Amazon',
-          description: 'Useful gear for smoother trips and everyday travel.',
-          cta: 'Open Amazon'
+          en: {
+            title: '🛒 Travel essentials on Amazon',
+            description: 'Useful gear for smoother trips and everyday travel.',
+            cta: 'Open Amazon'
+          },
+          br: {
+            title: '🛒 Itens essenciais de viagem na Amazon',
+            description: 'Produtos úteis para viagens mais tranquilas e o dia a dia.',
+            cta: 'Abrir Amazon'
+          },
+          pl: {
+            title: '🛒 Akcesoria podróżne na Amazon',
+            description: 'Przydatne produkty na wygodniejsze podróże.',
+            cta: 'Otwórz Amazon'
+          }
+        },
+        'Finance': {
+          en: {
+            title: '💳 Compare finance tools',
+            description: 'Explore useful money and planning services.',
+            cta: 'Explore finance'
+          },
+          br: {
+            title: '💳 Compare ferramentas financeiras',
+            description: 'Explore serviços úteis para dinheiro e planejamento.',
+            cta: 'Explorar finanças'
+          },
+          pl: {
+            title: '💳 Porównaj narzędzia finansowe',
+            description: 'Poznaj przydatne usługi finansowe i planowania.',
+            cta: 'Zobacz finanse'
+          }
         },
         'Products & Tools': {
-          title: '🧰 Discover useful products and tools',
-          description: 'Helpful tools, devices, and services beyond travel.',
-          cta: 'Explore tools'
+          en: {
+            title: '🧰 Discover useful tools',
+            description: 'Browse products and digital tools worth checking.',
+            cta: 'Explore tools'
+          },
+          br: {
+            title: '🧰 Descubra ferramentas úteis',
+            description: 'Veja produtos e ferramentas digitais interessantes.',
+            cta: 'Explorar ferramentas'
+          },
+          pl: {
+            title: '🧰 Odkryj przydatne narzędzia',
+            description: 'Przeglądaj produkty i narzędzia cyfrowe.',
+            cta: 'Zobacz narzędzia'
+          }
+        },
+        'Storage & Services': {
+          en: {
+            title: '🧳 Travel smarter',
+            description: 'Useful services for easier trips.',
+            cta: 'Explore services'
+          },
+          br: {
+            title: '🧳 Viaje com mais praticidade',
+            description: 'Serviços úteis para viagens mais fáceis.',
+            cta: 'Explorar serviços'
+          },
+          pl: {
+            title: '🧳 Podróżuj wygodniej',
+            description: 'Przydatne usługi dla łatwiejszych podróży.',
+            cta: 'Zobacz usługi'
+          }
         },
         'Specialty & Other': {
-          title: '✨ Discover a useful tool',
-          description: 'Curated digital services for you.',
-          cta: 'Explore now'
+          en: {
+            title: '✨ Discover a useful service',
+            description: 'Curated digital services for you.',
+            cta: 'Explore now'
+          },
+          br: {
+            title: '✨ Descubra um serviço útil',
+            description: 'Serviços digitais selecionados para você.',
+            cta: 'Explorar agora'
+          },
+          pl: {
+            title: '✨ Odkryj przydatną usługę',
+            description: 'Wybrane usługi cyfrowe dla Ciebie.',
+            cta: 'Zobacz teraz'
+          }
         }
       };
 
-      return byCategory[offer.category] || byCategory['Specialty & Other'];
+      const langKey = isBR ? 'br' : isPL ? 'pl' : 'en';
+      const fallback = copy['Specialty & Other'][langKey];
+      return (copy[category] && copy[category][langKey]) || fallback;
+    }
+
+    function getOfferBenefitCopy(offer) {
+      return getLocalizedOfferCopy(offer.category);
     }
 
     function isTopPick(partner) {
@@ -2777,22 +2943,10 @@ function hydrateAmazonLinks() {
     }
 
     function getContextualCTA(item) {
-      if (item.platform === 'amazon') return 'Open Amazon';
-      const map = {
-        'Flights & Meta Search': 'Compare flights',
-        'Hotels & Accommodation': 'Explore hotels',
-        'Insurance & Claims': 'View coverage',
-        'Finance': 'Explore finance',
-        'SIM & Connectivity': 'See options',
-        'Transfers & Transport': 'Book now',
-        'Tours & Activities': 'Explore',
-        'Car Rentals': 'Find rentals',
-        'Storage & Services': 'Explore service',
-        'Marketplace': 'Open Amazon',
-        'Products & Tools': 'Explore tools',
-        'Specialty & Other': 'Explore now'
-      };
-      return item.ctaLabel || map[item.category] || 'Explore now';
+      if (item && item.platform === 'amazon') return getLocalizedOfferCopy('Marketplace').cta;
+      if (item && item.ctaLabel) return item.ctaLabel;
+      if (item && item.category) return getLocalizedOfferCopy(item.category).cta;
+      return getLocalizedOfferCopy('Specialty & Other').cta;
     }
 
     function classifyFeedIntent(item) {
