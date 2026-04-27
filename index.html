@@ -4191,6 +4191,19 @@ function createAmazonCard(intent) {
     while (walker.nextNode()) nodes.push(walker.currentNode);
 
     nodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent) return;
+
+      // Category labels are handled separately to preserve counts.
+      if (
+        parent.matches('.category summary') ||
+        parent.closest('.category summary') ||
+        parent.matches('[data-filter-category]') ||
+        parent.closest('[data-filter-category]')
+      ) {
+        return;
+      }
+
       let value = node.nodeValue;
       Object.keys(dict).forEach((key) => {
         if (value.includes(key)) value = value.replaceAll(key, dict[key]);
@@ -4206,20 +4219,21 @@ function createAmazonCard(intent) {
     });
 
     document.querySelectorAll('.category summary').forEach((summary) => {
-      let value = summary.textContent;
-      Object.keys(dict).forEach((key) => {
-        if (value.includes(key)) value = value.replaceAll(key, dict[key]);
-      });
+      const originalCategory =
+        summary.getAttribute('data-category') ||
+        summary.getAttribute('data-original-category');
 
-      const countMatch = summary.textContent.match(/\s*\(\d+\)\s*$/);
-      if (countMatch) {
-        const base = summary.textContent.replace(/\s*\(\d+\)\s*$/, '').trim();
-        if (dict[base]) value = dict[base] + countMatch[0];
-      }
+      let rawLabel = originalCategory || summary.textContent || '';
 
-      summary.childNodes.forEach((node) => {
-        if (node.nodeType === Node.TEXT_NODE) node.nodeValue = value;
-      });
+      // Remove any existing counts, even duplicated ones like (3)(3)(3)
+      const countMatch = summary.textContent.match(/\((\d+)\)/);
+      const count = countMatch ? countMatch[1] : '';
+
+      rawLabel = rawLabel.replace(/\s*\(\d+\)\s*/g, '').trim();
+
+      const translated = dict[rawLabel] || rawLabel;
+
+      summary.textContent = count ? `${translated} (${count})` : translated;
     });
   }
 
@@ -4259,9 +4273,17 @@ function createAmazonCard(intent) {
 
   window.addEventListener('DOMContentLoaded', () => {
     applyRegionalTranslations();
-    setTimeout(applyRegionalTranslations, 500);
-    setTimeout(applyRegionalTranslations, 1500);
-    setTimeout(applyRegionalTranslations, 3000);
+    setTimeout(applyRegionalTranslations, 300);
+
+    const observer = new MutationObserver(() => {
+      clearTimeout(window.__sbTranslationTimer);
+      window.__sbTranslationTimer = setTimeout(applyRegionalTranslations, 100);
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   });
 })();
 </script>
