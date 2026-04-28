@@ -12,6 +12,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1650,7 +1652,7 @@
       {
             "name": "BikesBooking",
             "url": "https://bikesbooking.tpo.lv/B3zIKanS",
-            "category": "Storage & Services",
+            "category": "Tours & Activities",
             "tier": 2,
             "logo": ""
       },
@@ -1777,6 +1779,38 @@
             "name": "Lastminute SE",
             "url": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
             "category": "Specialty & Other",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "Alamo US",
+            "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
+            "category": "Car Rentals",
+            "region": "global",
+            "tier": 1,
+            "logo": ""
+      },
+      {
+            "name": "TurboVPN WW",
+            "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
+            "category": "SIM & Connectivity",
+            "region": "global",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "AURAS Travel Insurance",
+            "url": "https://ogsib.com/g/g86qhgosread273170bc102b8feede/",
+            "category": "Insurance & Claims",
+            "region": "global",
+            "tier": 1,
+            "logo": ""
+      },
+      {
+            "name": "Kapitalwise",
+            "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
+            "category": "Finance",
+            "region": "global",
             "tier": 2,
             "logo": ""
       }
@@ -2066,15 +2100,15 @@
 
     function regionFromBrowserLanguage() {
       const lang = String(navigator.language || navigator.userLanguage || 'en').toLowerCase();
+
+      // Only auto-localize the markets you explicitly want to detect by browser language.
+      // Spanish is available through ?region=latam, ?region=mx, or ?region=es,
+      // but it should not appear accidentally for US visitors or social-media crawlers.
       if (lang.startsWith('pl')) return 'pl';
       if (lang.startsWith('pt')) return 'br';
-      if (lang.startsWith('es-es')) return 'es';
-      if (lang.startsWith('es')) return 'mx';
-      if (lang.startsWith('de')) return 'de';
-      if (lang.startsWith('fr')) return 'fr';
-      if (lang.startsWith('it')) return 'it';
-      if (lang.includes('gb')) return 'gb';
-      return 'global';
+
+      // Default experience: English / US.
+      return 'us';
     }
 
     function getUrlRegionOverride() {
@@ -2566,9 +2600,64 @@ function hydrateAmazonLinks() {
         .join('') || 'SB';
     }
 
+
+    function getPriorityPartners(region) {
+      const normalized = normalizeRegion(region || CURRENT_REGION || 'us');
+
+      if (normalized === 'br') {
+        return [
+          'Amazon BR',
+          'CVC BR',
+          'Airalo Brazil',
+          'SuperSim BR',
+          'Melhor Seguro BR',
+          'AirHelp BR',
+          'TurboVPN WW',
+          'Klook Brazil / Global'
+        ];
+      }
+
+      if (normalized === 'pl') {
+        return [
+          'Amazon PL',
+          'AliExpress PL',
+          'Travelking PL & HU',
+          'Airalo Poland / Europe',
+          'Kiwitaxi Poland / Europe',
+          'Radical Storage Poland / Europe',
+          'AURAS Travel Insurance',
+          'TurboVPN WW'
+        ];
+      }
+
+      if (normalized === 'mx' || normalized === 'es') {
+        return [
+          'Amazon MX',
+          'Kiwi MX',
+          'Trivago MX',
+          'Trivago AR',
+          'Trivago CO',
+          'Trivago PE',
+          'Airalo',
+          'TurboVPN WW'
+        ];
+      }
+
+      return [
+        'Amazon',
+        'Alamo US',
+        'Airalo',
+        'Kiwi.com',
+        'AURAS Travel Insurance',
+        'Economybookings',
+        'Localrent',
+        'TurboVPN WW'
+      ];
+    }
+
     function getPopularPartners(items, limit = 8) {
       const popularity = getPartnerStats();
-      const priorityNames = ['Valerion (US)', 'Valerion US'];
+      const priorityNames = getPriorityPartners(CURRENT_REGION);
       const selectedKeys = new Set();
 
       const priority = priorityNames
@@ -2589,8 +2678,12 @@ function hydrateAmazonLinks() {
           const popA = (popularity[a.name] && popularity[a.name].clicks) || 0;
           const popB = (popularity[b.name] && popularity[b.name].clicks) || 0;
           if (popA !== popB) return popB - popA;
-          if ((a.tier || 3) !== (b.tier || 3)) return (a.tier || 3) - (b.tier || 3);
-          return a.name.localeCompare(b.name);
+
+          const tierA = Number(a.tier || 3);
+          const tierB = Number(b.tier || 3);
+          if (tierA !== tierB) return tierA - tierB;
+
+          return String(a.name || '').localeCompare(String(b.name || ''));
         })
         .filter(function(p) {
           const key = String(p.name || '').trim().toLowerCase();
@@ -3813,8 +3906,12 @@ function createAmazonCard(intent) {
               category: category,
               url: p.url,
               region: p.region || '',
+              network: p.network || '',
               tier: Number(p.tier || 3),
-              logo: p.logo || ''
+              logo: p.logo || '',
+              highlight: p.highlight || '',
+              status: p.status || '',
+              notes: p.notes || ''
             };
           });
 
