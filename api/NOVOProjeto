@@ -12,6 +12,9 @@
 
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +29,6 @@
 
   <style>
     * { box-sizing: border-box; }
-
-    img, iframe, video { max-width: 100%; }
 
     html, body {
       margin: 0;
@@ -1171,246 +1172,35 @@
   font-size: 14px;
 }
   
-    /* RESPONSIVE LAYOUT FIXES */
-    @media (min-width: 1201px) {
-      .app {
-        grid-template-columns: 280px minmax(520px, 1fr) 280px;
-      }
+    .language-switcher {
+      display: flex;
+      gap: 6px;
+      padding: 6px 8px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: #0f141b;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
-
-    @media (max-width: 1200px) {
-      .app {
-        grid-template-columns: 260px minmax(0, 1fr);
-      }
-
-      .top-feature {
-        width: 260px;
-      }
-
-      .column-1 {
-        padding-top: 92px;
-      }
-
-      .column-3 {
-        display: none;
-      }
-
-      #stickyBar {
-        left: calc(260px + ((100vw - 260px) / 2));
-        width: min(640px, calc(100vw - 284px));
-      }
+    .language-switcher::-webkit-scrollbar { display: none; }
+    .language-switcher a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.82);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
     }
-
-    @media (max-width: 900px) {
-      body {
-        overflow: auto;
-      }
-
-      html,
-      body {
-        height: auto;
-        min-height: 100%;
-      }
-
-      .top-feature {
-        position: relative;
-        width: 100%;
-        padding: 10px 14px;
-        border-right: 0;
-      }
-
-      .top-feature a {
-        max-width: 100%;
-      }
-
-      .app {
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh;
-      }
-
-      .column {
-        width: 100%;
-        overflow: visible;
-      }
-
-      .column-1 {
-        height: auto;
-        max-height: none;
-        padding-top: 0;
-        border-right: 0;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-      }
-
-      .column-1-controls {
-        position: static;
-        padding: 10px 12px;
-      }
-
-      .column-1-header {
-        padding: 0 0 4px;
-      }
-
-      .column-1-helper {
-        padding: 0 0 8px;
-      }
-
-      .column-1-scroll {
-        max-height: 42vh;
-        overflow-y: auto;
-        padding: 10px 12px 18px;
-        align-items: stretch;
-      }
-
-      .category {
-        max-width: 100%;
-      }
-
-      .column-2 {
-        min-height: auto;
-      }
-
-      #magnetoColumn {
-        height: auto;
-        min-height: auto;
-        overflow: visible;
-        padding: 14px 12px 110px;
-      }
-
-      .amazon-section,
-      .entry-layer,
-      .comparison-section,
-      .department-card,
-      .feed-container {
-        max-width: 680px;
-        width: 100%;
-      }
-
-      .media-box {
-        min-height: 420px;
-        max-height: 78vh;
-      }
-
-      .column-3 {
-        display: none;
-      }
-
-      #stickyBar {
-        left: 50%;
-        width: calc(100% - 24px);
-        bottom: 10px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .top-feature {
-        gap: 8px;
-      }
-
-      .top-feature a {
-        padding: 9px 10px !important;
-      }
-
-      .column-1-scroll {
-        max-height: 38vh;
-      }
-
-      .affiliate-filters {
-        padding-top: 8px;
-      }
-
-      .column-1-toolbar {
-        padding-top: 8px;
-      }
-
-      .amazon-section {
-        padding: 14px;
-        border-radius: 16px;
-      }
-
-      .amazon-section h2 {
-        font-size: 21px;
-      }
-
-      .amazon-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .amazon-card {
-        padding: 13px 14px;
-      }
-
-      .amazon-search-form {
-        flex-direction: column;
-      }
-
-      .amazon-search-form input,
-      .amazon-search-form button {
-        width: 100%;
-      }
-
-      .feed-card {
-        padding: 12px;
-        border-radius: 14px;
-      }
-
-      .media-box {
-        min-height: 340px;
-        max-height: 70vh;
-      }
-
-      .promo-title {
-        font-size: 22px;
-        max-width: 100%;
-      }
-
-      .promo-subtitle {
-        max-width: 100%;
-      }
-
-      .feed-content h3 {
-        font-size: 18px;
-      }
-
-      .decision-strip {
-        gap: 6px;
-      }
-
-      #stickyBar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        padding: 10px 12px;
-      }
-
-      .sticky-link {
-        white-space: normal;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .column-1-scroll {
-        max-height: 36vh;
-      }
-
-      #magnetoColumn {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      .media-box {
-        min-height: 300px;
-      }
-
-      .amazon-section h2 {
-        font-size: 19px;
-      }
-
-      .amazon-section p {
-        font-size: 13px;
-      }
+    .language-switcher a.active {
+      color: #0d1117;
+      background: #f5c542;
+      border-color: rgba(245,197,66,0.65);
     }
 
   </style>
@@ -1435,6 +1225,13 @@
     <div class="column column-1">
       <div class="column-1-controls">
         <div id="navTitle" class="column-1-header">Plan your trip</div>
+
+        <div id="languageSwitcher" class="language-switcher" aria-label="Language selector">
+          <a href="?region=us" data-region-link="us">EN</a>
+          <a href="?region=br" data-region-link="br">PT</a>
+          <a href="?region=pl" data-region-link="pl">PL</a>
+          <a href="?region=latam" data-region-link="latam">ES</a>
+        </div>
 
         <div class="column-1-search-wrap">
           <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." />
@@ -1856,7 +1653,7 @@
       {
             "name": "BikesBooking",
             "url": "https://bikesbooking.tpo.lv/B3zIKanS",
-            "category": "Storage & Services",
+            "category": "Tours & Activities",
             "tier": 2,
             "logo": ""
       },
@@ -1983,6 +1780,38 @@
             "name": "Lastminute SE",
             "url": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
             "category": "Specialty & Other",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "Alamo US",
+            "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
+            "category": "Car Rentals",
+            "region": "global",
+            "tier": 1,
+            "logo": ""
+      },
+      {
+            "name": "TurboVPN WW",
+            "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
+            "category": "SIM & Connectivity",
+            "region": "global",
+            "tier": 2,
+            "logo": ""
+      },
+      {
+            "name": "AURAS Travel Insurance",
+            "url": "https://ogsib.com/g/g86qhgosread273170bc102b8feede/",
+            "category": "Insurance & Claims",
+            "region": "global",
+            "tier": 1,
+            "logo": ""
+      },
+      {
+            "name": "Kapitalwise",
+            "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
+            "category": "Finance",
+            "region": "global",
             "tier": 2,
             "logo": ""
       }
@@ -2272,15 +2101,15 @@
 
     function regionFromBrowserLanguage() {
       const lang = String(navigator.language || navigator.userLanguage || 'en').toLowerCase();
+
+      // Only auto-localize the markets you explicitly want to detect by browser language.
+      // Spanish is available through ?region=latam, ?region=mx, or ?region=es,
+      // but it should not appear accidentally for US visitors or social-media crawlers.
       if (lang.startsWith('pl')) return 'pl';
       if (lang.startsWith('pt')) return 'br';
-      if (lang.startsWith('es-es')) return 'es';
-      if (lang.startsWith('es')) return 'mx';
-      if (lang.startsWith('de')) return 'de';
-      if (lang.startsWith('fr')) return 'fr';
-      if (lang.startsWith('it')) return 'it';
-      if (lang.includes('gb')) return 'gb';
-      return 'global';
+
+      // Default experience: English / US.
+      return 'us';
     }
 
     function getUrlRegionOverride() {
@@ -2772,9 +2601,64 @@ function hydrateAmazonLinks() {
         .join('') || 'SB';
     }
 
+
+    function getPriorityPartners(region) {
+      const normalized = normalizeRegion(region || CURRENT_REGION || 'us');
+
+      if (normalized === 'br') {
+        return [
+          'Amazon BR',
+          'CVC BR',
+          'Airalo Brazil',
+          'SuperSim BR',
+          'Melhor Seguro BR',
+          'AirHelp BR',
+          'TurboVPN WW',
+          'Klook Brazil / Global'
+        ];
+      }
+
+      if (normalized === 'pl') {
+        return [
+          'Amazon PL',
+          'AliExpress PL',
+          'Travelking PL & HU',
+          'Airalo Poland / Europe',
+          'Kiwitaxi Poland / Europe',
+          'Radical Storage Poland / Europe',
+          'AURAS Travel Insurance',
+          'TurboVPN WW'
+        ];
+      }
+
+      if (normalized === 'mx' || normalized === 'es') {
+        return [
+          'Amazon MX',
+          'Kiwi MX',
+          'Trivago MX',
+          'Trivago AR',
+          'Trivago CO',
+          'Trivago PE',
+          'Airalo',
+          'TurboVPN WW'
+        ];
+      }
+
+      return [
+        'Amazon',
+        'Alamo US',
+        'Airalo',
+        'Kiwi.com',
+        'AURAS Travel Insurance',
+        'Economybookings',
+        'Localrent',
+        'TurboVPN WW'
+      ];
+    }
+
     function getPopularPartners(items, limit = 8) {
       const popularity = getPartnerStats();
-      const priorityNames = ['Valerion (US)', 'Valerion US'];
+      const priorityNames = getPriorityPartners(CURRENT_REGION);
       const selectedKeys = new Set();
 
       const priority = priorityNames
@@ -2795,8 +2679,12 @@ function hydrateAmazonLinks() {
           const popA = (popularity[a.name] && popularity[a.name].clicks) || 0;
           const popB = (popularity[b.name] && popularity[b.name].clicks) || 0;
           if (popA !== popB) return popB - popA;
-          if ((a.tier || 3) !== (b.tier || 3)) return (a.tier || 3) - (b.tier || 3);
-          return a.name.localeCompare(b.name);
+
+          const tierA = Number(a.tier || 3);
+          const tierB = Number(b.tier || 3);
+          if (tierA !== tierB) return tierA - tierB;
+
+          return String(a.name || '').localeCompare(String(b.name || ''));
         })
         .filter(function(p) {
           const key = String(p.name || '').trim().toLowerCase();
@@ -2916,71 +2804,237 @@ function hydrateAmazonLinks() {
         '</div></a></div>';
     }
 
-    function getOfferBenefitCopy(offer) {
-      const byCategory = {
+
+    function getActiveRegionCode() {
+      const params = new URLSearchParams(window.location.search);
+      const region = (params.get('region') || '').toLowerCase();
+      const lang = (params.get('lang') || '').toLowerCase();
+
+      if (region) return region;
+      if (lang === 'pt' || lang === 'pt-br') return 'br';
+      if (lang === 'pl') return 'pl';
+      return 'global';
+    }
+
+    function getLocalizedOfferCopy(category) {
+      const region = getActiveRegionCode();
+      const isBR = region === 'br';
+      const isPL = region === 'pl';
+
+      const copy = {
         'Flights & Meta Search': {
-          title: '✈️ Find cheaper flights fast',
-          description: 'Compare routes and prices before booking.',
-          cta: 'Compare flights'
+          en: {
+            title: '✈️ Find cheaper flights fast',
+            description: 'Compare routes and prices before booking.',
+            cta: 'Compare flights'
+          },
+          br: {
+            title: '✈️ Encontre voos mais baratos rapidamente',
+            description: 'Compare rotas e preços antes de reservar.',
+            cta: 'Comparar voos'
+          },
+          pl: {
+            title: '✈️ Znajdź tańsze loty szybciej',
+            description: 'Porównaj trasy i ceny przed rezerwacją.',
+            cta: 'Porównaj loty'
+          }
         },
         'Hotels & Accommodation': {
-          title: '🏨 Compare hotel stays faster',
-          description: 'Browse hotel options and compare where to stay.',
-          cta: 'Explore hotels'
-        },
-        'Insurance & Claims': {
-          title: '🛡️ Get travel coverage before you go',
-          description: 'Choose the right protection for your trip.',
-          cta: 'View coverage'
-        },
-        'Finance': {
-          title: '💰 Explore finance tools',
-          description: 'Compare helpful money and tax tools.',
-          cta: 'Explore finance'
+          en: {
+            title: '🏨 Compare hotel stays faster',
+            description: 'Browse hotel options and compare where to stay.',
+            cta: 'Explore hotels'
+          },
+          br: {
+            title: '🏨 Compare hotéis mais rapidamente',
+            description: 'Veja opções de hotéis e compare onde ficar.',
+            cta: 'Explorar hotéis'
+          },
+          pl: {
+            title: '🏨 Porównaj hotele szybciej',
+            description: 'Przeglądaj opcje hoteli i porównuj miejsca pobytu.',
+            cta: 'Zobacz hotele'
+          }
         },
         'SIM & Connectivity': {
-          title: '📶 Stay connected anywhere',
-          description: 'Get mobile data instantly abroad.',
-          cta: 'See eSIM options'
+          en: {
+            title: '📶 Stay connected anywhere',
+            description: 'Get mobile data instantly abroad.',
+            cta: 'See eSIM options'
+          },
+          br: {
+            title: '📶 Fique conectado em qualquer lugar',
+            description: 'Tenha internet móvel instantaneamente no exterior.',
+            cta: 'Ver opções de eSIM'
+          },
+          pl: {
+            title: '📶 Bądź online wszędzie',
+            description: 'Uzyskaj internet mobilny za granicą.',
+            cta: 'Zobacz eSIM'
+          }
         },
         'Transfers & Transport': {
-          title: '🚗 Book your ride in advance',
-          description: 'Secure transfers before arrival.',
-          cta: 'Find rides'
+          en: {
+            title: '🚕 Book your ride in advance',
+            description: 'Secure transfers before arrival.',
+            cta: 'Find rides'
+          },
+          br: {
+            title: '🚕 Reserve seu transporte com antecedência',
+            description: 'Garanta traslados antes da chegada.',
+            cta: 'Encontrar traslados'
+          },
+          pl: {
+            title: '🚕 Zarezerwuj przejazd z wyprzedzeniem',
+            description: 'Zarezerwuj transfer przed przyjazdem.',
+            cta: 'Znajdź przejazdy'
+          }
         },
         'Tours & Activities': {
-          title: '🎟️ Discover things to do',
-          description: 'Explore top attractions and tours.',
-          cta: 'Explore activities'
+          en: {
+            title: '🎟️ Discover things to do',
+            description: 'Explore top attractions and tours.',
+            cta: 'Explore activities'
+          },
+          br: {
+            title: '🎟️ Descubra o que fazer',
+            description: 'Explore atrações e passeios.',
+            cta: 'Explorar passeios'
+          },
+          pl: {
+            title: '🎟️ Odkryj atrakcje',
+            description: 'Przeglądaj atrakcje i wycieczki.',
+            cta: 'Zobacz atrakcje'
+          }
+        },
+        'Insurance & Claims': {
+          en: {
+            title: '🛡️ Get travel coverage before you go',
+            description: 'Choose the right protection for your trip.',
+            cta: 'View coverage'
+          },
+          br: {
+            title: '🛡️ Contrate proteção de viagem antes de ir',
+            description: 'Escolha a proteção certa para sua viagem.',
+            cta: 'Ver cobertura'
+          },
+          pl: {
+            title: '🛡️ Zadbaj o ochronę podróży przed wyjazdem',
+            description: 'Wybierz odpowiednią ochronę dla podróży.',
+            cta: 'Zobacz ochronę'
+          }
         },
         'Car Rentals': {
-          title: '🚘 Compare car rentals',
-          description: 'Find the best deal before booking.',
-          cta: 'Find rentals'
-        },
-        'Storage & Services': {
-          title: '🧳 Travel smarter',
-          description: 'Useful services for easier trips.',
-          cta: 'Explore services'
+          en: {
+            title: '🚗 Compare car rentals',
+            description: 'Find the best deal before booking.',
+            cta: 'Find rentals'
+          },
+          br: {
+            title: '🚗 Compare aluguel de carros',
+            description: 'Encontre a melhor opção antes de reservar.',
+            cta: 'Encontrar aluguel'
+          },
+          pl: {
+            title: '🚗 Porównaj wynajem aut',
+            description: 'Znajdź najlepszą ofertę przed rezerwacją.',
+            cta: 'Znajdź wynajem'
+          }
         },
         'Marketplace': {
-          title: '🛒 Travel essentials on Amazon',
-          description: 'Useful gear for smoother trips and everyday travel.',
-          cta: 'Open Amazon'
+          en: {
+            title: '🛒 Travel essentials on Amazon',
+            description: 'Useful gear for smoother trips and everyday travel.',
+            cta: 'Open Amazon'
+          },
+          br: {
+            title: '🛒 Itens essenciais de viagem na Amazon',
+            description: 'Produtos úteis para viagens mais tranquilas e o dia a dia.',
+            cta: 'Abrir Amazon'
+          },
+          pl: {
+            title: '🛒 Akcesoria podróżne na Amazon',
+            description: 'Przydatne produkty na wygodniejsze podróże.',
+            cta: 'Otwórz Amazon'
+          }
+        },
+        'Finance': {
+          en: {
+            title: '💳 Compare finance tools',
+            description: 'Explore useful money and planning services.',
+            cta: 'Explore finance'
+          },
+          br: {
+            title: '💳 Compare ferramentas financeiras',
+            description: 'Explore serviços úteis para dinheiro e planejamento.',
+            cta: 'Explorar finanças'
+          },
+          pl: {
+            title: '💳 Porównaj narzędzia finansowe',
+            description: 'Poznaj przydatne usługi finansowe i planowania.',
+            cta: 'Zobacz finanse'
+          }
         },
         'Products & Tools': {
-          title: '🧰 Discover useful products and tools',
-          description: 'Helpful tools, devices, and services beyond travel.',
-          cta: 'Explore tools'
+          en: {
+            title: '🧰 Discover useful tools',
+            description: 'Browse products and digital tools worth checking.',
+            cta: 'Explore tools'
+          },
+          br: {
+            title: '🧰 Descubra ferramentas úteis',
+            description: 'Veja produtos e ferramentas digitais interessantes.',
+            cta: 'Explorar ferramentas'
+          },
+          pl: {
+            title: '🧰 Odkryj przydatne narzędzia',
+            description: 'Przeglądaj produkty i narzędzia cyfrowe.',
+            cta: 'Zobacz narzędzia'
+          }
+        },
+        'Storage & Services': {
+          en: {
+            title: '🧳 Travel smarter',
+            description: 'Useful services for easier trips.',
+            cta: 'Explore services'
+          },
+          br: {
+            title: '🧳 Viaje com mais praticidade',
+            description: 'Serviços úteis para viagens mais fáceis.',
+            cta: 'Explorar serviços'
+          },
+          pl: {
+            title: '🧳 Podróżuj wygodniej',
+            description: 'Przydatne usługi dla łatwiejszych podróży.',
+            cta: 'Zobacz usługi'
+          }
         },
         'Specialty & Other': {
-          title: '✨ Discover a useful tool',
-          description: 'Curated digital services for you.',
-          cta: 'Explore now'
+          en: {
+            title: '✨ Discover a useful service',
+            description: 'Curated digital services for you.',
+            cta: 'Explore now'
+          },
+          br: {
+            title: '✨ Descubra um serviço útil',
+            description: 'Serviços digitais selecionados para você.',
+            cta: 'Explorar agora'
+          },
+          pl: {
+            title: '✨ Odkryj przydatną usługę',
+            description: 'Wybrane usługi cyfrowe dla Ciebie.',
+            cta: 'Zobacz teraz'
+          }
         }
       };
 
-      return byCategory[offer.category] || byCategory['Specialty & Other'];
+      const langKey = isBR ? 'br' : isPL ? 'pl' : 'en';
+      const fallback = copy['Specialty & Other'][langKey];
+      return (copy[category] && copy[category][langKey]) || fallback;
+    }
+
+    function getOfferBenefitCopy(offer) {
+      return getLocalizedOfferCopy(offer.category);
     }
 
     function isTopPick(partner) {
@@ -3022,22 +3076,10 @@ function hydrateAmazonLinks() {
     }
 
     function getContextualCTA(item) {
-      if (item.platform === 'amazon') return 'Open Amazon';
-      const map = {
-        'Flights & Meta Search': 'Compare flights',
-        'Hotels & Accommodation': 'Explore hotels',
-        'Insurance & Claims': 'View coverage',
-        'Finance': 'Explore finance',
-        'SIM & Connectivity': 'See options',
-        'Transfers & Transport': 'Book now',
-        'Tours & Activities': 'Explore',
-        'Car Rentals': 'Find rentals',
-        'Storage & Services': 'Explore service',
-        'Marketplace': 'Open Amazon',
-        'Products & Tools': 'Explore tools',
-        'Specialty & Other': 'Explore now'
-      };
-      return item.ctaLabel || map[item.category] || 'Explore now';
+      if (item && item.platform === 'amazon') return getLocalizedOfferCopy('Marketplace').cta;
+      if (item && item.ctaLabel) return item.ctaLabel;
+      if (item && item.category) return getLocalizedOfferCopy(item.category).cta;
+      return getLocalizedOfferCopy('Specialty & Other').cta;
     }
 
     function classifyFeedIntent(item) {
@@ -3865,8 +3907,12 @@ function createAmazonCard(intent) {
               category: category,
               url: p.url,
               region: p.region || '',
+              network: p.network || '',
               tier: Number(p.tier || 3),
-              logo: p.logo || ''
+              logo: p.logo || '',
+              highlight: p.highlight || '',
+              status: p.status || '',
+              notes: p.notes || ''
             };
           });
 
@@ -4145,5 +4191,533 @@ function createAmazonCard(intent) {
         feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>No new content yet</h3><p>The discovery feed is ready, but no items are available right now.</p></div></article>';
       });
   </script>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const region = (params.get('region') || '').toLowerCase();
+  const lang = (params.get('lang') || '').toLowerCase();
+
+  const isBR = region === 'br' || lang === 'pt' || lang === 'pt-br';
+  const isPL = region === 'pl' || lang === 'pl';
+
+  if (!isBR && !isPL) return;
+
+  const pack = isBR ? {
+    language: 'pt-BR',
+    navTitle: 'Planeje sua viagem',
+    tagline: 'Explore as marcas mais clicadas.',
+    featuredLabel: 'Destaque',
+    featuredTitle: 'Compare viagens, hotéis e serviços',
+    featuredSubtitle: 'Ofertas selecionadas para viajar e comprar melhor',
+    headerFootnote: 'Plataformas confiáveis e ofertas afiliadas monetizadas.',
+    feedIntro: 'Escolhas selecionadas para você ↓',
+    clickStatsPrefix: '🔥 Cliques de descoberta hoje: ',
+    brandGridTitle: 'Parceiros mais populares',
+    stickyCopy: 'Explore um serviço em destaque escolhido para você.',
+    stickyLink: 'Explorar agora',
+    popupTitle: 'Não perca esta oferta',
+    popupText: 'Veja este serviço em destaque antes de continuar navegando.',
+    popupLink: 'Explorar agora',
+    popupClose: 'Continuar navegando',
+    defaultSort: 'Padrão',
+    popularSort: 'Popular'
+  } : {
+    language: 'pl',
+    navTitle: 'Zaplanuj podróż',
+    tagline: 'Przeglądaj najpopularniejsze marki.',
+    featuredLabel: 'Polecane',
+    featuredTitle: 'Porównaj podróże, hotele i usługi',
+    featuredSubtitle: 'Wybrane oferty, które pomagają kupować mądrzej',
+    headerFootnote: 'Zaufane platformy i monetyzowane oferty partnerskie.',
+    feedIntro: 'Wybrane propozycje dla Ciebie ↓',
+    clickStatsPrefix: '🔥 Kliknięcia odkrywania dzisiaj: ',
+    brandGridTitle: 'Najpopularniejsi partnerzy',
+    stickyCopy: 'Sprawdź polecaną usługę wybraną dla Ciebie.',
+    stickyLink: 'Zobacz teraz',
+    popupTitle: 'Nie przegap tej oferty',
+    popupText: 'Sprawdź tę polecaną usługę przed dalszym przeglądaniem.',
+    popupLink: 'Zobacz teraz',
+    popupClose: 'Przeglądaj dalej',
+    defaultSort: 'Domyślnie',
+    popularSort: 'Popularne'
+  };
+
+  const dictBR = {
+    'Most Popular Partners': 'Parceiros mais populares',
+    'Find cheaper flights fast': 'Encontre voos mais baratos rapidamente',
+    'Compare routes and prices before booking.': 'Compare rotas e preços antes de reservar.',
+    'Compare hotel stays faster': 'Compare hotéis mais rapidamente',
+    'Browse hotel options and compare where to stay.': 'Veja opções de hotéis e compare onde ficar.',
+    'Stay connected anywhere': 'Fique conectado em qualquer lugar',
+    'Get mobile data instantly abroad.': 'Tenha internet móvel instantaneamente no exterior.',
+    'Book your ride in advance': 'Reserve seu transporte com antecedência',
+    'Secure transfers before arrival.': 'Garanta traslados antes da chegada.',
+    'Travel essentials on Amazon': 'Itens essenciais de viagem na Amazon',
+    'Useful gear for smoother trips and everyday travel.': 'Produtos úteis para viagens mais tranquilas e o dia a dia.',
+    'Open Amazon': 'Abrir Amazon',
+    'Find rides': 'Encontrar traslados',
+    'See eSIM options': 'Ver opções de eSIM',
+    'Compare flights': 'Comparar voos',
+    'Explore hotels': 'Explorar hotéis',
+    'Explore now': 'Explorar agora',
+    'Featured': 'Destaque',
+    'Priority pick': 'Escolha prioritária',
+    'Featured offer': 'Oferta em destaque',
+    'All': 'Tudo',
+    'Car Rentals': 'Aluguel de carros',
+    'Flights & Meta Search': 'Voos',
+    'Hotels & Accommodation': 'Hotéis',
+    'Transfers & Transport': 'Traslados e transporte',
+    'SIM & Connectivity': 'eSIM e conectividade',
+    'Tours & Activities': 'Passeios e atividades',
+    'Insurance & Claims': 'Seguros e indenizações',
+    'Storage & Services': 'Serviços de viagem',
+    'Products & Tools': 'Produtos e ferramentas',
+    'Marketplace': 'Marketplace',
+    'Finance': 'Finanças',
+    'Specialty & Other': 'Outros'
+  };
+
+  const dictPL = {
+    'Most Popular Partners': 'Najpopularniejsi partnerzy',
+    'Find cheaper flights fast': 'Znajdź tańsze loty szybciej',
+    'Compare routes and prices before booking.': 'Porównaj trasy i ceny przed rezerwacją.',
+    'Compare hotel stays faster': 'Porównaj hotele szybciej',
+    'Browse hotel options and compare where to stay.': 'Przeglądaj opcje hoteli i porównuj miejsca pobytu.',
+    'Stay connected anywhere': 'Bądź online wszędzie',
+    'Get mobile data instantly abroad.': 'Uzyskaj internet mobilny za granicą.',
+    'Book your ride in advance': 'Zarezerwuj przejazd z wyprzedzeniem',
+    'Secure transfers before arrival.': 'Zarezerwuj transfer przed przyjazdem.',
+    'Travel essentials on Amazon': 'Akcesoria podróżne na Amazon',
+    'Useful gear for smoother trips and everyday travel.': 'Przydatne produkty na wygodniejsze podróże.',
+    'Open Amazon': 'Otwórz Amazon',
+    'Find rides': 'Znajdź przejazdy',
+    'See eSIM options': 'Zobacz eSIM',
+    'Compare flights': 'Porównaj loty',
+    'Explore hotels': 'Zobacz hotele',
+    'Explore now': 'Zobacz teraz',
+    'Featured': 'Polecane',
+    'Priority pick': 'Wybór priorytetowy',
+    'Featured offer': 'Oferta polecana',
+    'All': 'Wszystko',
+    'Car Rentals': 'Wynajem aut',
+    'Flights & Meta Search': 'Loty',
+    'Hotels & Accommodation': 'Hotele',
+    'Transfers & Transport': 'Transfery i transport',
+    'SIM & Connectivity': 'eSIM i łączność',
+    'Tours & Activities': 'Wycieczki i atrakcje',
+    'Insurance & Claims': 'Ubezpieczenia',
+    'Storage & Services': 'Usługi podróżne',
+    'Products & Tools': 'Produkty i narzędzia',
+    'Marketplace': 'Marketplace',
+    'Finance': 'Finanse',
+    'Specialty & Other': 'Inne'
+  };
+
+  const dict = isBR ? dictBR : dictPL;
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el && value) el.textContent = value;
+  }
+
+  function translateTextNodes() {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent) return;
+
+      // Category labels are handled separately to preserve counts.
+      if (
+        parent.matches('.category summary') ||
+        parent.closest('.category summary') ||
+        parent.matches('[data-filter-category]') ||
+        parent.closest('[data-filter-category]')
+      ) {
+        return;
+      }
+
+      let value = node.nodeValue;
+      Object.keys(dict).forEach((key) => {
+        if (value.includes(key)) value = value.replaceAll(key, dict[key]);
+      });
+      node.nodeValue = value;
+    });
+  }
+
+  function translateDynamicCategoryChips() {
+    document.querySelectorAll('[data-filter-category]').forEach((btn) => {
+      const raw = btn.getAttribute('data-filter-category') || btn.textContent.trim();
+      if (dict[raw]) btn.textContent = dict[raw];
+    });
+
+    document.querySelectorAll('.category summary').forEach((summary) => {
+      const originalCategory =
+        summary.getAttribute('data-category') ||
+        summary.getAttribute('data-original-category');
+
+      let rawLabel = originalCategory || summary.textContent || '';
+
+      // Remove any existing counts, even duplicated ones like (3)(3)(3)
+      const countMatch = summary.textContent.match(/\((\d+)\)/);
+      const count = countMatch ? countMatch[1] : '';
+
+      rawLabel = rawLabel.replace(/\s*\(\d+\)\s*/g, '').trim();
+
+      const translated = dict[rawLabel] || rawLabel;
+
+      summary.textContent = count ? `${translated} (${count})` : translated;
+    });
+  }
+
+  function applyRegionalTranslations() {
+    document.documentElement.lang = pack.language;
+
+    setText('navTitle', pack.navTitle);
+    setText('regionTagline', pack.tagline);
+    setText('featuredDealLabel', pack.featuredLabel);
+    setText('featuredDealTitle', pack.featuredTitle);
+    setText('featuredDealSubtitle', pack.featuredSubtitle);
+    setText('headerFootnote', pack.headerFootnote);
+    setText('feedIntro', pack.feedIntro);
+    setText('brandGridTitle', pack.brandGridTitle);
+    setText('stickyCopy', pack.stickyCopy);
+    setText('stickyLink', pack.stickyLink);
+    setText('popupTitle', pack.popupTitle);
+    setText('popupText', pack.popupText);
+    setText('popupLink', pack.popupLink);
+    setText('popupClose', pack.popupClose);
+
+    const defaultBtn = document.getElementById('sortByDefault');
+    if (defaultBtn) defaultBtn.textContent = pack.defaultSort;
+
+    const popularBtn = document.getElementById('sortByPopular');
+    if (popularBtn) popularBtn.textContent = pack.popularSort;
+
+    const clickStats = document.getElementById('clickStats');
+    const clickCount = document.getElementById('clickCount');
+    if (clickStats && clickCount) {
+      clickStats.innerHTML = pack.clickStatsPrefix + '<span id="clickCount">' + clickCount.textContent + '</span>';
+    }
+
+    translateTextNodes();
+    translateDynamicCategoryChips();
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    applyRegionalTranslations();
+    setTimeout(applyRegionalTranslations, 300);
+
+    const observer = new MutationObserver(() => {
+      clearTimeout(window.__sbTranslationTimer);
+      window.__sbTranslationTimer = setTimeout(applyRegionalTranslations, 100);
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  });
+})();
+</script>
+
+
+<script>
+(function () {
+  function explicitRegion() {
+    return (new URLSearchParams(window.location.search).get('region') || '').toLowerCase();
+  }
+
+  function activeRegion() {
+    const region = explicitRegion();
+    if (region) return region;
+
+    const lang = (navigator.language || '').toLowerCase();
+    if (lang.startsWith('pt')) return 'br';
+    if (lang.startsWith('pl')) return 'pl';
+
+    // Default must be English. Spanish only when explicit: ?region=latam, ?region=mx, ?region=es
+    return 'us';
+  }
+
+  function activeLocale() {
+    const region = activeRegion();
+    if (region === 'br') return 'pt-BR';
+    if (region === 'pl') return 'pl';
+    if (region === 'latam' || region === 'mx' || region === 'es') return 'es';
+    return 'en';
+  }
+
+  const packs = {
+    en: {
+      navTitle: 'Explore offers',
+      tagline: 'Browse the brands people click most.',
+      featuredLabel: 'Featured',
+      featuredTitle: 'Compare services, tools and offers',
+      featuredSubtitle: 'Curated picks for shopping smarter',
+      headerFootnote: 'Trusted platforms and monetized outbound offers.',
+      feedIntro: 'Curated picks for you ↓',
+      clickStatsPrefix: '🔥 Discovery clicks today: ',
+      brandGridTitle: 'Most Popular Partners',
+      stickyCopy: 'Explore a featured service picked for you.',
+      stickyLink: 'Explore now',
+      defaultSort: 'Default',
+      popularSort: 'Popular'
+    },
+    'pt-BR': {
+      navTitle: 'Explorar ofertas',
+      tagline: 'Explore as marcas mais clicadas.',
+      featuredLabel: 'Destaque',
+      featuredTitle: 'Compare serviços, ferramentas e ofertas',
+      featuredSubtitle: 'Ofertas selecionadas para comprar melhor',
+      headerFootnote: 'Plataformas confiáveis e ofertas afiliadas monetizadas.',
+      feedIntro: 'Escolhas selecionadas para você ↓',
+      clickStatsPrefix: '🔥 Cliques de descoberta hoje: ',
+      brandGridTitle: 'Parceiros mais populares',
+      stickyCopy: 'Explore um serviço em destaque escolhido para você.',
+      stickyLink: 'Explorar agora',
+      defaultSort: 'Padrão',
+      popularSort: 'Popular'
+    },
+    pl: {
+      navTitle: 'Przeglądaj oferty',
+      tagline: 'Przeglądaj najpopularniejsze marki.',
+      featuredLabel: 'Polecane',
+      featuredTitle: 'Porównaj usługi, narzędzia i oferty',
+      featuredSubtitle: 'Wybrane oferty, które pomagają kupować mądrzej',
+      headerFootnote: 'Zaufane platformy i monetyzowane oferty partnerskie.',
+      feedIntro: 'Wybrane propozycje dla Ciebie ↓',
+      clickStatsPrefix: '🔥 Kliknięcia odkrywania dzisiaj: ',
+      brandGridTitle: 'Najpopularniejsi partnerzy',
+      stickyCopy: 'Sprawdź polecaną usługę wybraną dla Ciebie.',
+      stickyLink: 'Zobacz teraz',
+      defaultSort: 'Domyślnie',
+      popularSort: 'Popularne'
+    },
+    es: {
+      navTitle: 'Explorar ofertas',
+      tagline: 'Explora las marcas más populares.',
+      featuredLabel: 'Destacado',
+      featuredTitle: 'Compara servicios, herramientas y ofertas',
+      featuredSubtitle: 'Opciones seleccionadas para comprar mejor',
+      headerFootnote: 'Plataformas confiables y ofertas afiliadas monetizadas.',
+      feedIntro: 'Selecciones para ti ↓',
+      clickStatsPrefix: '🔥 Clics de descubrimiento hoy: ',
+      brandGridTitle: 'Socios más populares',
+      stickyCopy: 'Explora un servicio destacado elegido para ti.',
+      stickyLink: 'Explorar ahora',
+      defaultSort: 'Predeterminado',
+      popularSort: 'Popular'
+    }
+  };
+
+  const categoryLabels = {
+    en: {
+      'All': 'All',
+      'Car Rentals': 'Car Rentals',
+      'Flights & Meta Search': 'Flights',
+      'Hotels & Accommodation': 'Hotels',
+      'Transfers & Transport': 'Transfers & Transport',
+      'SIM & Connectivity': 'SIM & Connectivity',
+      'Tours & Activities': 'Tours & Activities',
+      'Insurance & Claims': 'Insurance & Claims',
+      'Storage & Services': 'Travel Services',
+      'Products & Tools': 'Products & Tools',
+      'Marketplace': 'Marketplace',
+      'Finance': 'Finance',
+      'Specialty & Other': 'Specialty & Other'
+    },
+    'pt-BR': {
+      'All': 'Tudo',
+      'Car Rentals': 'Aluguel de carros',
+      'Flights & Meta Search': 'Voos',
+      'Hotels & Accommodation': 'Hotéis',
+      'Transfers & Transport': 'Traslados e transporte',
+      'SIM & Connectivity': 'eSIM e conectividade',
+      'Tours & Activities': 'Passeios e atividades',
+      'Insurance & Claims': 'Seguros e indenizações',
+      'Storage & Services': 'Serviços de viagem',
+      'Products & Tools': 'Produtos e ferramentas',
+      'Marketplace': 'Marketplace',
+      'Finance': 'Finanças',
+      'Specialty & Other': 'Outros'
+    },
+    pl: {
+      'All': 'Wszystko',
+      'Car Rentals': 'Wynajem aut',
+      'Flights & Meta Search': 'Loty',
+      'Hotels & Accommodation': 'Hotele',
+      'Transfers & Transport': 'Transfery i transport',
+      'SIM & Connectivity': 'eSIM i łączność',
+      'Tours & Activities': 'Wycieczki i atrakcje',
+      'Insurance & Claims': 'Ubezpieczenia',
+      'Storage & Services': 'Usługi podróżne',
+      'Products & Tools': 'Produkty i narzędzia',
+      'Marketplace': 'Marketplace',
+      'Finance': 'Finanse',
+      'Specialty & Other': 'Inne'
+    },
+    es: {
+      'All': 'Todos',
+      'Car Rentals': 'Alquiler de coches',
+      'Flights & Meta Search': 'Vuelos',
+      'Hotels & Accommodation': 'Hoteles',
+      'Transfers & Transport': 'Traslados y transporte',
+      'SIM & Connectivity': 'eSIM y conectividad',
+      'Tours & Activities': 'Tours y actividades',
+      'Insurance & Claims': 'Seguros y reclamaciones',
+      'Storage & Services': 'Servicios de viaje',
+      'Products & Tools': 'Productos y herramientas',
+      'Marketplace': 'Marketplace',
+      'Finance': 'Finanzas',
+      'Specialty & Other': 'Otros'
+    }
+  };
+
+  const textMap = {
+    en: {
+      'Los mejores accesorios de viaje en Amazon': 'Best travel essentials on Amazon',
+      'Accesorios de viaje Amazon': 'Amazon travel gear',
+      'Buscar en Amazon': 'Search Amazon',
+      'Selecciones para ti ↓': 'Curated picks for you ↓',
+      'Clics de descubrimiento hoy': 'Discovery clicks today',
+      'Socios más populares': 'Most Popular Partners'
+    },
+    'pt-BR': {
+      'Best travel essentials on Amazon': 'Melhores acessórios de viagem na Amazon',
+      'Amazon travel gear': 'Acessórios de viagem Amazon',
+      'Search Amazon': 'Buscar na Amazon',
+      'Search travel gear on Amazon...': 'Buscar acessórios de viagem na Amazon...',
+      'Power Banks': 'Power banks',
+      'Travel Adapters': 'Adaptadores de viagem',
+      'Carry-on Luggage': 'Mala de bordo',
+      'Packing Cubes': 'Organizadores de mala'
+    },
+    pl: {
+      'Best travel essentials on Amazon': 'Najlepsze akcesoria podróżne na Amazon',
+      'Amazon travel gear': 'Akcesoria podróżne Amazon',
+      'Search Amazon': 'Szukaj na Amazon',
+      'Search travel gear on Amazon...': 'Szukaj akcesoriów podróżnych na Amazon...',
+      'Power Banks': 'Powerbanki',
+      'Travel Adapters': 'Adaptery podróżne',
+      'Carry-on Luggage': 'Bagaż podręczny',
+      'Packing Cubes': 'Organizery do pakowania'
+    },
+    es: {
+      'Best travel essentials on Amazon': 'Los mejores accesorios de viaje en Amazon',
+      'Amazon travel gear': 'Accesorios de viaje Amazon',
+      'Search Amazon': 'Buscar en Amazon',
+      'Search travel gear on Amazon...': 'Buscar accesorios de viaje en Amazon...',
+      'Power Banks': 'Baterías externas',
+      'Travel Adapters': 'Adaptadores de viaje',
+      'Carry-on Luggage': 'Equipaje de mano',
+      'Packing Cubes': 'Organizadores de equipaje'
+    }
+  };
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el && value) el.textContent = value;
+  }
+
+  function normalizeSummary(summary, locale) {
+    const labels = categoryLabels[locale] || categoryLabels.en;
+    const countMatch = summary.textContent.match(/\((\d+)\)/);
+    const count = countMatch ? countMatch[1] : '';
+
+    let raw = summary.getAttribute('data-category') || summary.getAttribute('data-original-category') || summary.textContent;
+    raw = raw.replace(/\s*\(\d+\)\s*/g, '').trim();
+
+    const translated = labels[raw] || Object.entries(labels).find(([_, v]) => v === raw)?.[1] || raw;
+    summary.textContent = count ? `${translated} (${count})` : translated;
+  }
+
+  function translateLooseText(locale) {
+    const map = textMap[locale] || {};
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent) return;
+      if (parent.closest('.category summary') || parent.closest('[data-filter-category]')) return;
+
+      let value = node.nodeValue;
+      Object.keys(map).forEach((key) => {
+        value = value.replaceAll(key, map[key]);
+      });
+      node.nodeValue = value;
+    });
+  }
+
+  function applyLanguage() {
+    const locale = activeLocale();
+    const pack = packs[locale] || packs.en;
+    document.documentElement.lang = locale;
+
+    setText('navTitle', pack.navTitle);
+    setText('regionTagline', pack.tagline);
+    setText('featuredDealLabel', pack.featuredLabel);
+    setText('featuredDealTitle', pack.featuredTitle);
+    setText('featuredDealSubtitle', pack.featuredSubtitle);
+    setText('headerFootnote', pack.headerFootnote);
+    setText('feedIntro', pack.feedIntro);
+    setText('brandGridTitle', pack.brandGridTitle);
+    setText('stickyCopy', pack.stickyCopy);
+    setText('stickyLink', pack.stickyLink);
+
+    const defaultBtn = document.getElementById('sortByDefault');
+    if (defaultBtn) defaultBtn.textContent = pack.defaultSort;
+
+    const popularBtn = document.getElementById('sortByPopular');
+    if (popularBtn) popularBtn.textContent = pack.popularSort;
+
+    const clickStats = document.getElementById('clickStats');
+    const clickCount = document.getElementById('clickCount');
+    if (clickStats && clickCount) {
+      clickStats.innerHTML = pack.clickStatsPrefix + '<span id="clickCount">' + clickCount.textContent + '</span>';
+    }
+
+    const labels = categoryLabels[locale] || categoryLabels.en;
+
+    document.querySelectorAll('[data-filter-category]').forEach((btn) => {
+      const raw = btn.getAttribute('data-filter-category') || btn.textContent.trim();
+      btn.textContent = labels[raw] || raw;
+    });
+
+    document.querySelectorAll('.category summary').forEach((summary) => normalizeSummary(summary, locale));
+
+    document.querySelectorAll('[data-region-link]').forEach((link) => {
+      const region = link.getAttribute('data-region-link');
+      const current =
+        locale === 'pt-BR' ? 'br' :
+        locale === 'pl' ? 'pl' :
+        locale === 'es' ? 'latam' :
+        'us';
+      link.classList.toggle('active', region === current);
+    });
+
+    translateLooseText(locale);
+  }
+
+  window.SignalBoostLanguage = { activeRegion, activeLocale, applyLanguage };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    applyLanguage();
+    setTimeout(applyLanguage, 400);
+    const observer = new MutationObserver(() => {
+      clearTimeout(window.__sbLangTimer);
+      window.__sbLangTimer = setTimeout(applyLanguage, 120);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+})();
+</script>
+
 </body>
 </html>
