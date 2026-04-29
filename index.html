@@ -1703,6 +1703,7 @@
         stickyCopy: "Explore a featured service picked for you.",
         stickyLink: "Explore now",
         videoCta: "Watch / open source →",
+        noExtraPartners: "No extra partners available for your region right now.",
         loadingVideos: "Loading current videos for your region…",
         categories: {
           "Flights & Meta Search": "Flights",
@@ -1720,6 +1721,7 @@
         stickyCopy: "Explore um serviço em destaque escolhido para você.",
         stickyLink: "Explorar agora",
         videoCta: "Assistir / abrir fonte →",
+        noExtraPartners: "Nenhum parceiro extra disponível para sua região no momento.",
         loadingVideos: "Carregando vídeos atuais para sua região…",
         categories: {
           "Flights & Meta Search": "Voos",
@@ -1727,7 +1729,19 @@
           "Transfers & Transport": "Transfers & Transporte",
           "Car Rentals": "Aluguel de carros",
           "SIM & Connectivity": "SIM & Conectividade",
-          "Tours & Activities": "Passeios & Atividades"
+          "Tours & Activities": "Passeios & Atividades",
+          "Insurance & Claims": "Seguros e reembolsos",
+          "Finance": "Finanças",
+          "Marketplace": "Compras online",
+          "Products & Tools": "Produtos e ferramentas",
+          "Storage & Services": "Serviços de viagem",
+          "Specialty & Other": "Outros serviços",
+          "Insurance & Claims": "Seguros e reembolsos",
+          "Finance": "Finanças",
+          "Marketplace": "Compras online",
+          "Products & Tools": "Produtos e ferramentas",
+          "Storage & Services": "Serviços de viagem",
+          "Specialty & Other": "Outros serviços"
         }
       },
       pl: {
@@ -1737,6 +1751,7 @@
         stickyCopy: "Sprawdź wyróżnioną usługę wybraną dla Ciebie.",
         stickyLink: "Otwórz teraz",
         videoCta: "Obejrzyj / otwórz źródło →",
+        noExtraPartners: "Brak dodatkowych partnerów dostępnych teraz w Twoim regionie.",
         loadingVideos: "Ładowanie aktualnych filmów dla Twojego regionu…",
         categories: {
           "Flights & Meta Search": "Loty",
@@ -1754,6 +1769,7 @@
         stickyCopy: "Explora un servicio destacado elegido para ti.",
         stickyLink: "Explorar ahora",
         videoCta: "Ver / abrir fuente →",
+        noExtraPartners: "No hay socios adicionales disponibles para tu región ahora.",
         loadingVideos: "Cargando videos actuales para tu región…",
         categories: {
           "Flights & Meta Search": "Vuelos",
@@ -1859,8 +1875,13 @@
         .replace(/'/g, "&#39;");
     }
 
-    function labelForCategory(cat) {
-      return (t().categories && t().categories[cat]) || cat;
+    function getCurrentTranslations() {
+      return I18N[getLang()] || I18N.en;
+    }
+
+    function labelForCategory(category) {
+      const dict = getCurrentTranslations();
+      return (dict.categories && dict.categories[category]) || category;
     }
 
     function allowedPartnerRegions() {
@@ -1929,12 +1950,75 @@
     }
 
     function applyI18N() {
+      const dict = getCurrentTranslations();
       document.documentElement.lang = getLang();
-      document.getElementById("leftHeader").textContent = t().leftHeader;
-      partnerSearch.placeholder = t().searchPlaceholder;
-      document.getElementById("brandGridTitle").textContent = t().brandGridTitle;
-      document.getElementById("stickyCopy").textContent = t().stickyCopy;
-      document.getElementById("stickyLink").textContent = t().stickyLink;
+
+      const leftHeader = document.getElementById("leftHeader") || document.getElementById("navTitle");
+      if (leftHeader) leftHeader.textContent = dict.leftHeader || dict.navTitle;
+
+      const partnerSearchEl = document.getElementById("partnerSearch");
+      if (partnerSearchEl) partnerSearchEl.placeholder = dict.searchPlaceholder;
+
+      const regionTaglineEl = document.getElementById("regionTagline");
+      if (regionTaglineEl) regionTaglineEl.textContent = dict.tagline;
+
+      const featuredDealLabel = document.getElementById("featuredDealLabel");
+      if (featuredDealLabel) featuredDealLabel.textContent = dict.featuredLabel;
+
+      const featuredDealTitle = document.getElementById("featuredDealTitle");
+      if (featuredDealTitle) featuredDealTitle.textContent = dict.featuredTitle;
+
+      const featuredDealSubtitle = document.getElementById("featuredDealSubtitle");
+      if (featuredDealSubtitle) featuredDealSubtitle.textContent = dict.featuredSubtitle;
+
+      const headerFootnote = document.getElementById("headerFootnote");
+      if (headerFootnote) headerFootnote.textContent = dict.headerFootnote;
+
+      const sortByDefaultEl = document.getElementById("sortByDefault");
+      if (sortByDefaultEl) sortByDefaultEl.textContent = dict.defaultSort;
+
+      const sortByPopularEl = document.getElementById("sortByPopular");
+      if (sortByPopularEl) sortByPopularEl.textContent = dict.popularSort;
+
+      const amazonKicker = document.querySelector("#amazonSection .entry-kicker");
+      if (amazonKicker) amazonKicker.textContent = dict.amazonKicker;
+
+      const amazonTitle = document.querySelector("#amazonSection h2");
+      if (amazonTitle) amazonTitle.textContent = dict.amazonTitle;
+
+      const amazonText = document.querySelector("#amazonSection p");
+      if (amazonText) amazonText.textContent = dict.amazonText;
+
+      const amazonInput = document.getElementById("amazonSearchInput");
+      if (amazonInput) amazonInput.placeholder = dict.amazonSearch;
+
+      const amazonButton = document.querySelector("#amazonSearchForm button");
+      if (amazonButton) amazonButton.textContent = dict.amazonButton;
+
+      const feedIntro = document.getElementById("feedIntro");
+      if (feedIntro) feedIntro.textContent = dict.feedIntro;
+
+      const clickStats = document.getElementById("clickStats");
+      const clickCount = document.getElementById("clickCount");
+      if (clickStats && clickCount) {
+        clickStats.innerHTML = escapeHtml(dict.clickStatsPrefix) + '<span id="clickCount">' + escapeHtml(clickCount.textContent || "0") + "</span>";
+      }
+
+      const brandGridTitleEl = document.getElementById("brandGridTitle");
+      if (brandGridTitleEl) brandGridTitleEl.textContent = dict.brandGridTitle;
+
+      const stickyCopy = document.getElementById("stickyCopy");
+      if (stickyCopy) stickyCopy.textContent = dict.stickyCopy;
+
+      const stickyLink = document.getElementById("stickyLink");
+      if (stickyLink) stickyLink.textContent = dict.stickyLink;
+
+      const cards = Array.from(document.querySelectorAll(".amazon-card"));
+      const cardKeys = ["power", "adapter", "luggage", "packing"];
+      cards.forEach(function(card, index) {
+        const key = cardKeys[index];
+        if (key && dict.amazonCards && dict.amazonCards[key]) card.textContent = dict.amazonCards[key];
+      });
     }
 
     function buildTravelDirectory() {
@@ -2026,7 +2110,7 @@
       const items = filteredColumn1Partners();
 
       if (!items.length) {
-        partnersRail.innerHTML = `<div class="partners-empty">No extra partners available for your region right now.</div>`;
+        partnersRail.innerHTML = `<div class="partners-empty">${escapeHtml(t().noExtraPartners || "No extra partners available for your region right now.")}</div>`;
         return;
       }
 
@@ -2035,7 +2119,7 @@
       partnersRail.innerHTML = Object.keys(grouped).sort().map((category, index) => `
         <div class="category">
           <details ${index === 0 ? "open" : ""}>
-            <summary>${escapeHtml(category)} (${grouped[category].length})</summary>
+            <summary>${escapeHtml(labelForCategory(category))} (${grouped[category].length})</summary>
             <ul>
               ${grouped[category].map(p => `
                 <li>
@@ -2239,6 +2323,45 @@
       brandGrid.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
     }
 
+
+    function getAmazonBaseByRegion() {
+      const region = REGION_CONFIG[getRegion()] || REGION_CONFIG.us;
+      return region.amazon || "https://www.amazon.com";
+    }
+
+    function getAmazonTagByRegion() {
+      return "signalboostai-20";
+    }
+
+    function getAmazonLink(type = "general") {
+      const base = getAmazonBaseByRegion();
+      const tag = getAmazonTagByRegion();
+      const dict = getCurrentTranslations();
+      const queries = dict.amazonQueries || I18N.en.amazonQueries;
+      const q = encodeURIComponent(queries[type] || queries.general);
+      return `${base}/s?k=${q}&tag=${tag}`;
+    }
+
+    function hydrateAmazonLinks() {
+      const amazonCards = document.querySelectorAll(".amazon-card");
+      const cardKeys = ["power", "adapter", "luggage", "packing"];
+
+      amazonCards.forEach((card, index) => {
+        const key = cardKeys[index] || "general";
+        const url = getAmazonLink(key);
+        card.href = url;
+        card.target = "_blank";
+        card.rel = "noopener noreferrer";
+      });
+
+      const form = document.getElementById("amazonSearchForm");
+      if (form) {
+        form.action = `${getAmazonBaseByRegion()}/s`;
+        const hiddenTag = form.querySelector('input[name="tag"]');
+        if (hiddenTag) hiddenTag.value = getAmazonTagByRegion();
+      }
+    }
+
     function setFeatured() {
       const featured = visibleTopTravelPartners().find(p => p.tier === 1) || visibleTopTravelPartners()[0];
       if (!featured) return;
@@ -2251,6 +2374,7 @@
     partnerSearch.addEventListener("input", renderPartnersRail);
 
     applyI18N();
+    hydrateAmazonLinks();
     buildTravelDirectory();
     renderPartnersRail();
     renderFeed();
