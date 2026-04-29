@@ -2278,10 +2278,13 @@
       `;
     }
 
-    async function renderFeed() {
-      const items = await loadHeroFeedItems();
+    const HERO_FEED_BATCH_SIZE = 6;
+    let heroFeedItems = [];
+    let heroRenderedCount = 0;
+    let heroScrollBound = false;
 
-      feedContainer.innerHTML = items.map((item, index) => `
+    function renderFeedCard(item, index) {
+      return `
         <a class="feed-card ${index === 0 ? "featured-video" : ""}"
            href="${escapeHtml(item.url)}"
            target="_blank"
@@ -2300,11 +2303,66 @@
             <span class="feed-link">${escapeHtml(t().videoCta || "Watch / open source →")}</span>
           </div>
         </a>
-      `).join("");
+      `;
+    }
 
-      feedContainer.querySelectorAll("a").forEach(a => {
+    function appendMoreHeroVideos() {
+      if (!heroFeedItems.length) return;
+      if (heroRenderedCount >= heroFeedItems.length) return;
+
+      const next = heroFeedItems.slice(heroRenderedCount, heroRenderedCount + HERO_FEED_BATCH_SIZE);
+      const html = next.map((item, offset) => renderFeedCard(item, heroRenderedCount + offset)).join("");
+
+      feedContainer.insertAdjacentHTML("beforeend", html);
+      heroRenderedCount += next.length;
+
+      feedContainer.querySelectorAll("a.feed-card").forEach(a => {
+        if (a.dataset.bound === "1") return;
+        a.dataset.bound = "1";
         a.addEventListener("click", trackClick);
       });
+
+      const loader = document.getElementById("feedLoader");
+      if (loader) {
+        loader.textContent = heroRenderedCount < heroFeedItems.length ? "Scroll for more videos…" : "";
+      }
+    }
+
+    function setupHeroInfiniteScroll() {
+      if (heroScrollBound) return;
+      heroScrollBound = true;
+
+      const scrollEl = document.getElementById("magnetoColumn") || window;
+
+      const onScroll = () => {
+        let nearBottom = false;
+
+        if (scrollEl === window) {
+          nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 700;
+        } else {
+          nearBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 700;
+        }
+
+        if (nearBottom) appendMoreHeroVideos();
+      };
+
+      scrollEl.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+    }
+
+    async function renderFeed() {
+      heroFeedItems = await loadHeroFeedItems();
+      heroRenderedCount = 0;
+
+      feedContainer.innerHTML = "";
+      appendMoreHeroVideos();
+      appendMoreHeroVideos();
+
+      if (!document.getElementById("feedLoader")) {
+        feedContainer.insertAdjacentHTML("afterend", `<div id="feedLoader" class="feed-loader">Scroll for more videos…</div>`);
+      }
+
+      setupHeroInfiniteScroll();
     }
 
     function renderBrandGrid() {
