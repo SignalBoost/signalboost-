@@ -2418,5 +2418,713 @@
     try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid failed", e); }
     try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
   </script>
+<script>
+async function detectUserLanguage() {
+  // 1. Browser language (most accurate)
+  let lang = navigator.language || navigator.userLanguage;
+
+  // Normalize (e.g., "en-US" → "en")
+  lang = lang.split("-")[0].toLowerCase();
+
+  // 2. Supported languages in your site
+  const supported = ["en", "es", "pt", "fr", "de", "it", "pl"];
+
+  // 3. Fallback to English if not supported
+  if (!supported.includes(lang)) {
+    lang = "en";
+  }
+
+  return lang;
+}
+-------------------------------------async function loadLanguage(lang) {
+  const res = await fetch(`/i18n/${lang}.json`);
+  const translations = await res.json();
+
+  // Apply translations to all elements with data-i18n
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (translations[key]) {
+      el.textContent = translations[key];
+    }
+  });
+}
+-------------------------------------------------
+(async () => {
+  const lang = await detectUserLanguage();
+  await loadLanguage(lang);
+})();
+-----------------------------------------------------
+async function detectUserRegion() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    return data.country_code.toLowerCase(); // e.g., "us", "br", "mx"
+  } catch {
+    return "us"; // fallback
+  }
+}
+---------------------------------------------------------
+(async () => {
+  const lang = await detectUserLanguage();
+  const region = await detectUserRegion();
+
+  // Load translations
+  await loadLanguage(lang);
+
+  // Load region-specific partners
+  loadTravelDirectory(region);
+})();
+---------------------------------------------------
+/i18n/
+   en.json
+   es.json
+   pt.json
+   fr.json
+   de.json
+   it.json
+   pl.json
+   ja.json
+   ko.json
+   zh.json
+   ru.json
+-----------------------------------------
+async function detectUserLanguage() {
+  let lang = navigator.language || navigator.userLanguage;
+  lang = lang.split("-")[0].toLowerCase();
+
+  const supported = ["en","es","pt","fr","de","it","pl","ja","ko","zh","ru"];
+
+  if (!supported.includes(lang)) {
+    lang = "en";
+  }
+
+  return lang;
+}
+-----------------------------------------------
+async function detectUserRegion() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    return data.country_code.toLowerCase();
+  } catch {
+    return "us";
+  }
+}
+-------------------------------------
+async function loadLanguage(lang) {
+  const res = await fetch(`/i18n/${lang}.json`);
+  const translations = await res.json();
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (translations[key]) {
+      el.textContent = translations[key];
+    }
+  });
+}
+------------------------------------
+(async () => {
+  const lang = await detectUserLanguage();
+  const region = await detectUserRegion();
+
+  await loadLanguage(lang);
+
+  // Load region-specific partners
+  loadTravelDirectory(region);
+})();
+------------------------------
+/i18n/
+   en.json
+   es.json
+   pt.json
+   fr.json
+   de.json
+   it.json
+   pl.json
+   ja.json
+   ko.json
+   zh.json
+   ru.json
+-----------------------------------------------{
+  "travel": "",
+  "flights": "",
+  "hotels": "",
+  "car_rentals": "",
+  "transfers": "",
+  "tours": "",
+  "sim": "",
+  "insurance": "",
+  "travel_services": "",
+
+  "products_tools": "",
+  "finance": "",
+  "specialty_other": "",
+  "marketplace": "",
+
+  "search": "",
+  "home": "",
+  "profile": "",
+  "menu": "",
+  "language": "",
+  "region": "",
+
+  "view_more": "",
+  "view_less": "",
+  "loading": "",
+  "no_results": "",
+  "partners": "",
+  "categories": ""
+}
+------------------------------------------------
+{
+  "travel": "Travel",
+  "flights": "Flights",
+  "hotels": "Hotels",
+  "car_rentals": "Car Rentals",
+  "transfers": "Transfers & Transport",
+  "tours": "Tours & Activities",
+  "sim": "SIM & Connectivity",
+  "insurance": "Insurance & Claims",
+  "travel_services": "Travel Services",
+
+  "products_tools": "Products & Tools",
+  "finance": "Finance",
+  "specialty_other": "Specialty & Other",
+  "marketplace": "Marketplace",
+
+  "search": "Search",
+  "home": "Home",
+  "profile": "Profile",
+  "menu": "Menu",
+  "language": "Language",
+  "region": "Region",
+
+  "view_more": "View More",
+  "view_less": "View Less",
+  "loading": "Loading...",
+  "no_results": "No results found",
+  "partners": "Partners",
+  "categories": "Categories"
+}
+----------------------------------------------
+{
+  "travel": "",
+  "flights": "",
+  "hotels": "",
+  "car_rentals": "",
+  "transfers": "",
+  "tours": "",
+  "sim": "",
+  "insurance": "",
+  "travel_services": "",
+
+  "products_tools": "",
+  "finance": "",
+  "specialty_other": "",
+  "marketplace": "",
+
+  "search": "",
+  "home": "",
+  "profile": "",
+  "menu": "",
+  "language": "",
+  "region": "",
+
+  "view_more": "",
+  "view_less": "",
+  "loading": "",
+  "no_results": "",
+  "partners": "",
+  "categories": ""
+}
+-------------------------------------------------
+{
+  "travel": "Travel",
+  "flights": "Flights",
+  "hotels": "Hotels",
+  "car_rentals": "Car Rentals",
+  "transfers": "Transfers & Transport",
+  "tours": "Tours & Activities",
+  "sim": "SIM & Connectivity",
+  "insurance": "Insurance & Claims",
+  "travel_services": "Travel Services",
+
+  "products_tools": "Products & Tools",
+  "finance": "Finance",
+  "specialty_other": "Specialty & Other",
+  "marketplace": "Marketplace",
+
+  "search": "Search",
+  "home": "Home",
+  "profile": "Profile",
+  "menu": "Menu",
+  "language": "Language",
+  "region": "Region",
+
+  "view_more": "View More",
+  "view_less": "View Less",
+  "loading": "Loading...",
+  "no_results": "No results found",
+  "partners": "Partners",
+  "categories": "Categories"
+}
+------------------------------
+{
+  "travel": "Viajes",
+  "flights": "Vuelos",
+  "hotels": "Hoteles",
+  "car_rentals": "Alquiler de Autos",
+  "transfers": "Traslados y Transporte",
+  "tours": "Tours y Actividades",
+  "sim": "SIM y Conectividad",
+  "insurance": "Seguros y Reclamaciones",
+  "travel_services": "Servicios de Viaje",
+
+  "products_tools": "Productos y Herramientas",
+  "finance": "Finanzas",
+  "specialty_other": "Especialidad y Otros",
+  "marketplace": "Marketplace",
+
+  "search": "Buscar",
+  "home": "Inicio",
+  "profile": "Perfil",
+  "menu": "Menú",
+  "language": "Idioma",
+  "region": "Región",
+
+  "view_more": "Ver más",
+  "view_less": "Ver menos",
+  "loading": "Cargando...",
+  "no_results": "No se encontraron resultados",
+  "partners": "Socios",
+  "categories": "Categorías"
+}
+-----------------------------------
+{
+  "travel": "Viagens",
+  "flights": "Voos",
+  "hotels": "Hotéis",
+  "car_rentals": "Aluguel de Carros",
+  "transfers": "Traslados e Transporte",
+  "tours": "Passeios e Atividades",
+  "sim": "SIM e Conectividade",
+  "insurance": "Seguro e Reivindicações",
+  "travel_services": "Serviços de Viagem",
+
+  "products_tools": "Produtos e Ferramentas",
+  "finance": "Finanças",
+  "specialty_other": "Especialidade e Outros",
+  "marketplace": "Marketplace",
+
+  "search": "Pesquisar",
+  "home": "Início",
+  "profile": "Perfil",
+  "menu": "Menu",
+  "language": "Idioma",
+  "region": "Região",
+
+  "view_more": "Ver mais",
+  "view_less": "Ver menos",
+  "loading": "Carregando...",
+  "no_results": "Nenhum resultado encontrado",
+  "partners": "Parceiros",
+  "categories": "Categorias"
+}
+----------------------------------------
+{
+  "travel": "Voyage",
+  "flights": "Vols",
+  "hotels": "Hôtels",
+  "car_rentals": "Location de Voitures",
+  "transfers": "Transferts et Transport",
+  "tours": "Tours et Activités",
+  "sim": "SIM et Connectivité",
+  "insurance": "Assurance et Réclamations",
+  "travel_services": "Services de Voyage",
+
+  "products_tools": "Produits et Outils",
+  "finance": "Finance",
+  "specialty_other": "Spécialité et Autres",
+  "marketplace": "Marketplace",
+
+  "search": "Recherche",
+  "home": "Accueil",
+  "profile": "Profil",
+  "menu": "Menu",
+  "language": "Langue",
+  "region": "Région",
+
+  "view_more": "Voir plus",
+  "view_less": "Voir moins",
+  "loading": "Chargement...",
+  "no_results": "Aucun résultat trouvé",
+  "partners": "Partenaires",
+  "categories": "Catégories"
+}
+-------------------------------------------------
+{
+  "travel": "Reisen",
+  "flights": "Flüge",
+  "hotels": "Hotels",
+  "car_rentals": "Mietwagen",
+  "transfers": "Transfers und Transport",
+  "tours": "Touren und Aktivitäten",
+  "sim": "SIM und Konnektivität",
+  "insurance": "Versicherung und Ansprüche",
+  "travel_services": "Reisedienstleistungen",
+
+  "products_tools": "Produkte und Werkzeuge",
+  "finance": "Finanzen",
+  "specialty_other": "Spezialität und Sonstiges",
+  "marketplace": "Marktplatz",
+
+  "search": "Suche",
+  "home": "Startseite",
+  "profile": "Profil",
+  "menu": "Menü",
+  "language": "Sprache",
+  "region": "Region",
+
+  "view_more": "Mehr anzeigen",
+  "view_less": "Weniger anzeigen",
+  "loading": "Laden...",
+  "no_results": "Keine Ergebnisse gefunden",
+  "partners": "Partner",
+  "categories": "Kategorien"
+}
+------------------------------------------------
+{
+  "travel": "Viaggi",
+  "flights": "Voli",
+  "hotels": "Hotel",
+  "car_rentals": "Noleggio Auto",
+  "transfers": "Transfer e Trasporti",
+  "tours": "Tour e Attività",
+  "sim": "SIM e Connettività",
+  "insurance": "Assicurazione e Reclami",
+  "travel_services": "Servizi di Viaggio",
+
+  "products_tools": "Prodotti e Strumenti",
+  "finance": "Finanza",
+  "specialty_other": "Specialità e Altro",
+  "marketplace": "Marketplace",
+
+  "search": "Ricerca",
+  "home": "Home",
+  "profile": "Profilo",
+  "menu": "Menu",
+  "language": "Lingua",
+  "region": "Regione",
+
+  "view_more": "Mostra di più",
+  "view_less": "Mostra di meno",
+  "loading": "Caricamento...",
+  "no_results": "Nessun risultato trovato",
+  "partners": "Partner",
+  "categories": "Categorie"
+}
+------------------------------
+{
+  "travel": "Podróże",
+  "flights": "Loty",
+  "hotels": "Hotele",
+  "car_rentals": "Wynajem Samochodów",
+  "transfers": "Transfery i Transport",
+  "tours": "Wycieczki i Aktywności",
+  "sim": "Karty SIM i Łączność",
+  "insurance": "Ubezpieczenia i Roszczenia",
+  "travel_services": "Usługi Podróżne",
+
+  "products_tools": "Produkty i Narzędzia",
+  "finance": "Finanse",
+  "specialty_other": "Specjalne i Inne",
+  "marketplace": "Marketplace",
+
+  "search": "Szukaj",
+  "home": "Strona główna",
+  "profile": "Profil",
+  "menu": "Menu",
+  "language": "Język",
+  "region": "Region",
+
+  "view_more": "Pokaż więcej",
+  "view_less": "Pokaż mniej",
+  "loading": "Ładowanie...",
+  "no_results": "Brak wyników",
+  "partners": "Partnerzy",
+  "categories": "Kategorie"
+}
+----------------------------------------
+{
+  "travel": "旅行",
+  "flights": "航空券",
+  "hotels": "ホテル",
+  "car_rentals": "レンタカー",
+  "transfers": "送迎・交通",
+  "tours": "ツアー・アクティビティ",
+  "sim": "SIM・通信",
+  "insurance": "保険・請求",
+  "travel_services": "旅行サービス",
+
+  "products_tools": "製品・ツール",
+  "finance": "金融",
+  "specialty_other": "専門・その他",
+  "marketplace": "マーケットプレイス",
+
+  "search": "検索",
+  "home": "ホーム",
+  "profile": "プロフィール",
+  "menu": "メニュー",
+  "language": "言語",
+  "region": "地域",
+
+  "view_more": "さらに表示",
+  "view_less": "表示を減らす",
+  "loading": "読み込み中...",
+  "no_results": "結果が見つかりません",
+  "partners": "パートナー",
+  "categories": "カテゴリー"
+}
+----------------------------------------
+{
+  "travel": "여행",
+  "flights": "항공편",
+  "hotels": "호텔",
+  "car_rentals": "렌터카",
+  "transfers": "이동 및 교통",
+  "tours": "투어 및 액티비티",
+  "sim": "SIM 및 연결",
+  "insurance": "보험 및 청구",
+  "travel_services": "여행 서비스",
+
+  "products_tools": "제품 및 도구",
+  "finance": "금융",
+  "specialty_other": "특수 및 기타",
+  "marketplace": "마켓플레이스",
+
+  "search": "검색",
+  "home": "홈",
+  "profile": "프로필",
+  "menu": "메뉴",
+  "language": "언어",
+  "region": "지역",
+
+  "view_more": "더 보기",
+  "view_less": "간단히 보기",
+  "loading": "로딩 중...",
+  "no_results": "결과가 없습니다",
+  "partners": "파트너",
+  "categories": "카테고리"
+}
+------------------------------------
+{
+  "travel": "旅行",
+  "flights": "航班",
+  "hotels": "酒店",
+  "car_rentals": "租车",
+  "transfers": "接送与交通",
+  "tours": "旅游与活动",
+  "sim": "SIM卡与连接",
+  "insurance": "保险与理赔",
+  "travel_services": "旅行服务",
+
+  "products_tools": "产品与工具",
+  "finance": "金融",
+  "specialty_other": "特色与其他",
+  "marketplace": "商城",
+
+  "search": "搜索",
+  "home": "首页",
+  "profile": "个人资料",
+  "menu": "菜单",
+  "language": "语言",
+  "region": "地区",
+
+  "view_more": "查看更多",
+  "view_less": "收起",
+  "loading": "加载中...",
+  "no_results": "未找到结果",
+  "partners": "合作伙伴",
+  "categories": "分类"
+}
+--------------------------------------------
+{
+  "travel": "旅行",
+  "flights": "航班",
+  "hotels": "飯店",
+  "car_rentals": "租車",
+  "transfers": "接送與交通",
+  "tours": "旅遊與活動",
+  "sim": "SIM卡與連線",
+  "insurance": "保險與理賠",
+  "travel_services": "旅行服務",
+
+  "products_tools": "產品與工具",
+  "finance": "金融",
+  "specialty_other": "特色與其他",
+  "marketplace": "市集",
+
+  "search": "搜尋",
+  "home": "首頁",
+  "profile": "個人資料",
+  "menu": "選單",
+  "language": "語言",
+  "region": "地區",
+
+  "view_more": "查看更多",
+  "view_less": "收起",
+  "loading": "載入中...",
+  "no_results": "找不到結果",
+  "partners": "合作夥伴",
+  "categories": "分類"
+}
+----------------------------------------
+{
+  "travel": "Путешествия",
+  "flights": "Авиабилеты",
+  "hotels": "Отели",
+  "car_rentals": "Аренда автомобилей",
+  "transfers": "Трансферы и транспорт",
+  "tours": "Туры и мероприятия",
+  "sim": "SIM и связь",
+  "insurance": "Страхование и претензии",
+  "travel_services": "Туристические услуги",
+
+  "products_tools": "Продукты и инструменты",
+  "finance": "Финансы",
+  "specialty_other": "Специальное и другое",
+  "marketplace": "Маркетплейс",
+
+  "search": "Поиск",
+  "home": "Главная",
+  "profile": "Профиль",
+  "menu": "Меню",
+  "language": "Язык",
+  "region": "Регион",
+
+  "view_more": "Показать больше",
+  "view_less": "Показать меньше",
+  "loading": "Загрузка...",
+  "no_results": "Результаты не найдены",
+  "partners": "Партнеры",
+  "categories": "Категории"
+}
+----------------------------------------------
+/i18n/
+   en.json
+   es.json
+   pt.json
+   fr.json
+   de.json
+   it.json
+   pl.json
+   ja.json
+   ko.json
+   zh-CN.json
+   zh-TW.json
+   ru.json
+---------------------------------
+<h2 data-i18n="travel"></h2>
+<button data-i18n="search"></button>
+<div data-i18n="categories"></div>
+--------------------------------------
+async function detectUserLanguage() {
+  let lang = navigator.language || navigator.userLanguage;
+  lang = lang.split("-")[0].toLowerCase();
+
+  const supported = ["en","es","pt","fr","de","it","pl","ja","ko","zh","ru"];
+
+  if (!supported.includes(lang)) {
+    lang = "en";
+  }
+
+  return lang;
+}
+--------------------------------------
+async function detectUserRegion() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    return data.country_code.toLowerCase();
+  } catch {
+    return "us";
+  }
+}
+-----------------------------------------
+async function loadLanguage(lang) {
+  const res = await fetch(`/i18n/${lang}.json`);
+  const translations = await res.json();
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (translations[key]) {
+      el.textContent = translations[key];
+    }
+  });
+}
+--------------------------------------------
+async function loadTravelDirectory(region) {
+  const res = await fetch('/api/data/partners.json');
+  const partners = await res.json();
+
+  const travelCategories = [
+    "Flights & Meta Search",
+    "Hotels",
+    "Car Rentals",
+    "Transfers & Transport",
+    "Tours & Activities",
+    "SIM & Connectivity",
+    "Insurance & Claims",
+    "Travel Services"
+  ];
+
+  const grouped = {};
+  travelCategories.forEach(cat => grouped[cat] = []);
+
+  partners.forEach(p => {
+    if (grouped[p.category]) {
+      if (p.region === "global" || p.region === region) {
+        grouped[p.category].push(p);
+      }
+    }
+  });
+
+  const bar = document.getElementById("travelBar");
+  bar.innerHTML = "";
+
+  travelCategories.forEach(cat => {
+    const group = document.createElement("div");
+    group.className = "ttb-group";
+
+    const btn = document.createElement("button");
+    btn.className = "ttb-item";
+    btn.textContent = `${cat} ▾`;
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "ttb-dropdown";
+
+    grouped[cat].forEach(partner => {
+      const link = document.createElement("a");
+      link.href = partner.url;
+      link.textContent = partner.name;
+      dropdown.appendChild(link);
+    });
+
+    group.appendChild(btn);
+    group.appendChild(dropdown);
+    bar.appendChild(group);
+  });
+}
+-----------------------------------------
+(async () => {
+  const lang = await detectUserLanguage();
+  const region = await detectUserRegion();
+
+  await loadLanguage(lang);
+  await loadTravelDirectory(region);
+})();
+--------------------------------------------------
+
+</script>
 </body>
 </html>
