@@ -956,6 +956,15 @@
     "logo": ""
   },
   {
+    "name": "PagBank",
+    "category": "Finance",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/",
+    "tier": 1,
+    "logo": ""
+  },
+  {
     "name": "Kapitalwise",
     "category": "Finance",
     "region": "global",
@@ -1111,6 +1120,15 @@
     "region": "us",
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+    "tier": 2,
+    "logo": ""
+  },
+  {
+    "name": "Planet of Hotels",
+    "category": "Hotels",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
     "tier": 2,
     "logo": ""
   },
@@ -1278,6 +1296,15 @@
     "network": "Admitad",
     "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
     "tier": 1,
+    "logo": ""
+  },
+  {
+    "name": "Beverly Hills MD",
+    "category": "Products & Tools",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806",
+    "tier": 2,
     "logo": ""
   },
   {
@@ -2278,13 +2305,20 @@
       `;
     }
 
-    const HERO_FEED_BATCH_SIZE = 6;
-    let heroFeedItems = [];
-    let heroRenderedCount = 0;
-    let heroScrollBound = false;
+    async function renderFeed() {
+      let items = [];
 
-    function renderFeedCard(item, index) {
-      return `
+      try {
+        items = await loadHeroFeedItems();
+      } catch (error) {
+        items = fallbackHeroFeedItems || [];
+      }
+
+      if (!items || !items.length) {
+        items = fallbackHeroFeedItems || [];
+      }
+
+      feedContainer.innerHTML = items.map((item, index) => `
         <a class="feed-card ${index === 0 ? "featured-video" : ""}"
            href="${escapeHtml(item.url)}"
            target="_blank"
@@ -2303,66 +2337,11 @@
             <span class="feed-link">${escapeHtml(t().videoCta || "Watch / open source →")}</span>
           </div>
         </a>
-      `;
-    }
-
-    function appendMoreHeroVideos() {
-      if (!heroFeedItems.length) return;
-      if (heroRenderedCount >= heroFeedItems.length) return;
-
-      const next = heroFeedItems.slice(heroRenderedCount, heroRenderedCount + HERO_FEED_BATCH_SIZE);
-      const html = next.map((item, offset) => renderFeedCard(item, heroRenderedCount + offset)).join("");
-
-      feedContainer.insertAdjacentHTML("beforeend", html);
-      heroRenderedCount += next.length;
+      `).join("");
 
       feedContainer.querySelectorAll("a.feed-card").forEach(a => {
-        if (a.dataset.bound === "1") return;
-        a.dataset.bound = "1";
         a.addEventListener("click", trackClick);
       });
-
-      const loader = document.getElementById("feedLoader");
-      if (loader) {
-        loader.textContent = heroRenderedCount < heroFeedItems.length ? "Scroll for more videos…" : "";
-      }
-    }
-
-    function setupHeroInfiniteScroll() {
-      if (heroScrollBound) return;
-      heroScrollBound = true;
-
-      const scrollEl = document.getElementById("magnetoColumn") || window;
-
-      const onScroll = () => {
-        let nearBottom = false;
-
-        if (scrollEl === window) {
-          nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 700;
-        } else {
-          nearBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 700;
-        }
-
-        if (nearBottom) appendMoreHeroVideos();
-      };
-
-      scrollEl.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", onScroll, { passive: true });
-    }
-
-    async function renderFeed() {
-      heroFeedItems = await loadHeroFeedItems();
-      heroRenderedCount = 0;
-
-      feedContainer.innerHTML = "";
-      appendMoreHeroVideos();
-      appendMoreHeroVideos();
-
-      if (!document.getElementById("feedLoader")) {
-        feedContainer.insertAdjacentHTML("afterend", `<div id="feedLoader" class="feed-loader">Scroll for more videos…</div>`);
-      }
-
-      setupHeroInfiniteScroll();
     }
 
     function renderBrandGrid() {
@@ -2431,13 +2410,13 @@
 
     partnerSearch.addEventListener("input", renderPartnersRail);
 
-    applyI18N();
-    hydrateAmazonLinks();
-    buildTravelDirectory();
-    renderPartnersRail();
-    renderFeed();
-    renderBrandGrid();
-    setFeatured();
+    try { applyI18N(); } catch (e) { console.error("applyI18N failed", e); }
+    try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
+    try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory failed", e); }
+    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail failed", e); }
+    try { renderFeed(); } catch (e) { console.error("renderFeed failed", e); }
+    try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid failed", e); }
+    try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
   </script>
 </body>
 </html>
