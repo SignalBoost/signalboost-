@@ -1891,7 +1891,7 @@
     }
 
     function t() {
-      return I18N[getLang()] || I18N.en;
+      return getCurrentTranslations();
     }
 
     function escapeHtml(value) {
@@ -1904,7 +1904,29 @@
     }
 
     function getCurrentTranslations() {
-      return I18N[getLang()] || I18N.en;
+      const legacyByRegion = I18N[getLang()] || I18N.en || {};
+      const active = (typeof ACTIVE_TRANSLATIONS !== "undefined" && ACTIVE_TRANSLATIONS) ? ACTIVE_TRANSLATIONS : {};
+      const merged = {
+        ...legacyByRegion,
+        ...active,
+        leftHeader: active.explore_offers || active.leftHeader || legacyByRegion.leftHeader || "Explore offers",
+        searchPlaceholder: active.search_placeholder || active.searchPlaceholder || legacyByRegion.searchPlaceholder || "Flights, hotels, eSIM, tours...",
+        brandGridTitle: active.partners || active.brandGridTitle || legacyByRegion.brandGridTitle || "Partners",
+        stickyCopy: active.featured_service || active.stickyCopy || legacyByRegion.stickyCopy || "Explore a featured service picked for you.",
+        stickyLink: active.view_more || active.stickyLink || legacyByRegion.stickyLink || "View More",
+        noExtraPartners: active.no_results || active.noExtraPartners || legacyByRegion.noExtraPartners || "No results found",
+        loadingVideos: active.loading || active.loadingVideos || legacyByRegion.loadingVideos || "Loading...",
+        videoCta: active.view_more || active.videoCta || legacyByRegion.videoCta || "View More",
+        categories: { ...(legacyByRegion.categories || {}) }
+      };
+
+      if (typeof CATEGORY_I18N_KEYS !== "undefined") {
+        Object.entries(CATEGORY_I18N_KEYS).forEach(([category, key]) => {
+          if (active[key]) merged.categories[category] = active[key];
+        });
+      }
+
+      return merged;
     }
 
     function labelForCategory(category) {
@@ -2725,11 +2747,13 @@
     let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
 
     async function detectUserLanguage() {
-      let lang = navigator.language || navigator.userLanguage || "en";
-      const full = lang.toLowerCase();
-      if (full === "zh-tw" || full === "zh-hk" || full === "zh-mo") return "zh-TW";
-      if (full.startsWith("zh")) return "zh-CN";
-      lang = lang.split("-")[0].toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      const requested = params.get("lang");
+      let lang = requested || navigator.language || navigator.userLanguage || "en";
+      const full = String(lang).toLowerCase();
+      if (["zh-tw", "zh-hk", "zh-mo"].includes(full)) return "zh-TW";
+      if (["zh-cn", "zh-sg"].includes(full) || full === "zh") return "zh-CN";
+      lang = full.split("-")[0];
       const supported = ["en","es","pt","fr","de","it","pl","ja","ko","ru"];
       return supported.includes(lang) ? lang : "en";
     }
@@ -2785,6 +2809,7 @@
       await detectUserRegion();
       await loadLanguage(lang);
 
+      try { applyI18N(); } catch (e) { console.error("applyI18N external i18n refresh failed", e); }
       try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory i18n refresh failed", e); }
       try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
       try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid i18n refresh failed", e); }
