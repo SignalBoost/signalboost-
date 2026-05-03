@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1990,6 +1991,31 @@
     }
     const brandGrid = document.getElementById("brandGrid");
     const partnerSearch = document.getElementById("partnerSearch");
+    let ACTIVE_REGION = null;
+
+    function normalizeRegion(value) {
+      const raw = String(value || "").trim().toLowerCase();
+      if (!raw) return "";
+
+      const aliases = {
+        usa: "us", unitedstates: "us", "united-states": "us",
+        uk: "gb", "united-kingdom": "gb",
+        poland: "pl", polska: "pl",
+        brazil: "br", brasil: "br",
+        "pt-br": "br",
+        mexico: "mx", méxico: "mx",
+        china: "cn", japan: "jp", korea: "kr", "south-korea": "kr"
+      };
+
+      return aliases[raw] || raw.split("-").pop();
+    }
+
+    function setActiveRegion(value) {
+      const normalized = normalizeRegion(value);
+      ACTIVE_REGION = REGION_CONFIG[normalized] ? normalized : (normalized || "us");
+      document.documentElement.dataset.region = ACTIVE_REGION;
+      return ACTIVE_REGION;
+    }
 
     function detectRegionFromLocale() {
       const locale = (navigator.languages && navigator.languages[0]) || navigator.language || "";
@@ -2024,7 +2050,7 @@
 
     function getRegion() {
       const params = new URLSearchParams(window.location.search);
-      const raw = (params.get("region") || "").toLowerCase();
+      const raw = normalizeRegion(params.get("region"));
       if (raw && REGION_CONFIG[raw]) return raw;
 
       const path = window.location.pathname.toLowerCase();
@@ -2039,6 +2065,8 @@
       if (path.includes("/it")) return "it";
       if (path.includes("/ja") || path.includes("/jp")) return "jp";
       if (path.includes("/ko") || path.includes("/kr")) return "kr";
+
+      if (ACTIVE_REGION && REGION_CONFIG[ACTIVE_REGION]) return ACTIVE_REGION;
 
       const detected = detectRegionFromLocale();
       return REGION_CONFIG[detected] ? detected : "us";
@@ -2095,26 +2123,24 @@
     function allowedPartnerRegions() {
       const region = getRegion();
 
+      // Strict regionalization:
+      // - Country-specific offers show only for that country.
+      // - "global" offers show everywhere as fallback.
+      // - Broad regional buckets only show where they truly apply.
       const map = {
-        us: ["global", "us", "ca", "gb", "uk", "eu", "latam", "mx"],
-        ca: ["global", "ca", "us", "gb", "uk"],
+        us: ["global", "us"],
+        ca: ["global", "ca"],
         gb: ["global", "gb", "uk", "eu"],
         uk: ["global", "gb", "uk", "eu"],
         br: ["global", "br"],
         pl: ["global", "pl", "eu"],
-        latam: ["global", "latam", "mx"],
+        latam: ["global", "latam"],
         mx: ["global", "mx", "latam"],
         es: ["global", "es", "eu"],
         de: ["global", "de", "eu"],
         fr: ["global", "fr", "eu"],
         it: ["global", "it", "eu"],
-        ru: ["global", "ru", "eu"],
-        cn: ["global", "cn", "zh"],
-        zh: ["global", "cn", "zh"],
-        tw: ["global", "tw", "zh"],
-        jp: ["global", "jp", "ja"],
-        kr: ["global", "kr", "ko"],
-        ru: ["global", "ru", "eu"],
+        ru: ["global", "ru"],
         cn: ["global", "cn", "zh"],
         zh: ["global", "cn", "zh"],
         tw: ["global", "tw", "zh"],
@@ -2125,26 +2151,9 @@
       return map[region] || ["global", region];
     }
 
-    function isBrazilOnlyPartner(partner) {
-      const region = String(partner.region || "").toLowerCase();
-      const name = String(partner.name || "").toLowerCase();
-      return region === "br" || /\bbr\b|brazil|brasil/.test(name);
-    }
-
-    function isPolandOnlyPartner(partner) {
-      const region = String(partner.region || "").toLowerCase();
-      const name = String(partner.name || "").toLowerCase();
-      return region === "pl" || /\bpl\b|poland|polska/.test(name);
-    }
-
     function isPartnerAllowedForRegion(partner) {
-      const currentRegion = getRegion();
-      const partnerRegion = String(partner.region || "global").toLowerCase();
-      const partnerName = String(partner.name || "").toLowerCase();
-
-      if (currentRegion === "us" && (isBrazilOnlyPartner(partner) || isPolandOnlyPartner(partner))) return false;
-      if (currentRegion === "us" && (partnerRegion === "us" || /\busa?\b/.test(partnerName))) return true;
-
+      const partnerRegion = normalizeRegion(partner.region || "global") || "global";
+      if (partnerRegion === "global") return true;
       return allowedPartnerRegions().includes(partnerRegion);
     }
 
@@ -2990,13 +2999,21 @@
     async function detectUserRegion() {
       const params = new URLSearchParams(window.location.search);
       const regionParam = params.get("region");
-      if (regionParam) return regionParam.toLowerCase();
+      if (regionParam) return setActiveRegion(regionParam);
+
+      // Path-based pages should win over IP, so /pl/ always stays Poland
+      // and /pt-br/ always stays Brazil.
+      const pathRegion = getRegion();
+      const path = window.location.pathname.toLowerCase();
+      if (path !== "/" && pathRegion) return setActiveRegion(pathRegion);
+
       try {
-        const res = await fetch("https://ipapi.co/json/");
+        const res = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+        if (!res.ok) throw new Error("Geo lookup failed");
         const data = await res.json();
-        return String(data.country_code || getRegion() || "us").toLowerCase();
+        return setActiveRegion(data.country_code || pathRegion || "us");
       } catch {
-        return getRegion() || "us";
+        return setActiveRegion(pathRegion || detectRegionFromLocale() || "us");
       }
     }
 
