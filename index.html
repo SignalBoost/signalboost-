@@ -2123,17 +2123,15 @@
     function allowedPartnerRegions() {
       const region = getRegion();
 
-      // Strict regionalization:
-      // - Country-specific offers show only for that country.
-      // - "global" offers show everywhere as fallback.
-      // - Broad regional buckets only show where they truly apply.
+      // Main left rail: show the active country/market plus worldwide offers.
+      // Do NOT include unrelated country offers (for example US offers on ?region=pl).
       const map = {
         us: ["global", "us"],
         ca: ["global", "ca"],
         gb: ["global", "gb", "uk", "eu"],
         uk: ["global", "gb", "uk", "eu"],
         br: ["global", "br"],
-        pl: ["global", "pl", "eu"],
+        pl: ["global", "pl"],
         latam: ["global", "latam"],
         mx: ["global", "mx", "latam"],
         es: ["global", "es", "eu"],
@@ -2151,18 +2149,56 @@
       return map[region] || ["global", region];
     }
 
+    function strictRegionalPartnerRegions() {
+      const region = getRegion();
+      const map = {
+        us: ["us"],
+        ca: ["ca"],
+        gb: ["gb", "uk", "eu"],
+        uk: ["gb", "uk", "eu"],
+        br: ["br"],
+        pl: ["pl"],
+        latam: ["latam"],
+        mx: ["mx", "latam"],
+        es: ["es", "eu"],
+        de: ["de", "eu"],
+        fr: ["fr", "eu"],
+        it: ["it", "eu"],
+        ru: ["ru"],
+        cn: ["cn", "zh"],
+        zh: ["cn", "zh"],
+        tw: ["tw", "zh"],
+        jp: ["jp", "ja"],
+        kr: ["kr", "ko"]
+      };
+
+      return map[region] || [region];
+    }
+
     function isPartnerAllowedForRegion(partner) {
       const partnerRegion = normalizeRegion(partner.region || "global") || "global";
-      if (partnerRegion === "global") return true;
       return allowedPartnerRegions().includes(partnerRegion);
+    }
+
+    function isPartnerStrictlyRegional(partner) {
+      const partnerRegion = normalizeRegion(partner.region || "") || "global";
+      return strictRegionalPartnerRegions().includes(partnerRegion);
     }
 
     function visiblePartners() {
       return partnersData.filter(p => p.status !== "hold" && isPartnerAllowedForRegion(p));
     }
 
+    function visibleRegionalPartners() {
+      return partnersData.filter(p => p.status !== "hold" && isPartnerStrictlyRegional(p));
+    }
+
     function visibleTopTravelPartners() {
       return visiblePartners().filter(p => TOP_TRAVEL_CATEGORIES.includes(p.category));
+    }
+
+    function visibleTopRegionalTravelPartners() {
+      return visibleRegionalPartners().filter(p => TOP_TRAVEL_CATEGORIES.includes(p.category));
     }
 
     function visibleNonTransferredPartners() {
@@ -2171,6 +2207,10 @@
 
     function partnersForCategory(category) {
       return visiblePartners().filter(p => p.category === category);
+    }
+
+    function regionalPartnersForCategory(category) {
+      return visibleRegionalPartners().filter(p => p.category === category);
     }
 
     function trackClick() {
@@ -2251,46 +2291,20 @@
     }
 
     function headerPreferredRegions() {
-      const region = getRegion();
+      return strictRegionalPartnerRegions();
+    }
 
-      // Header menus should be tighter than the left rail:
-      // show truly local/regional partners first, and use global offers only
-      // when that category has no local partner for the active market.
-      const map = {
-        us: ["us"],
-        ca: ["ca"],
-        gb: ["gb", "uk", "eu"],
-        uk: ["gb", "uk", "eu"],
-        br: ["br"],
-        pl: ["pl"],
-        mx: ["mx", "latam"],
-        latam: ["latam"],
-        es: ["es", "eu"],
-        de: ["de", "eu"],
-        fr: ["fr", "eu"],
-        it: ["it", "eu"],
-        ru: ["ru"],
-        cn: ["cn", "zh"],
-        zh: ["cn", "zh"],
-        tw: ["tw", "zh"],
-        jp: ["jp", "ja"],
-        kr: ["kr", "ko"]
-      };
-
-      return map[region] || [region];
+    function isDefaultUSRegion() {
+      return getRegion() === "us";
     }
 
     function directoryPartnersForCategory(category) {
-      const allAllowed = partnersForCategory(category)
+      // US homepage keeps the broad marketplace structure: US + global partners.
+      // Localized markets stay regional in the header so PL does not show US/global-only header offers.
+      const source = isDefaultUSRegion() ? partnersForCategory(category) : regionalPartnersForCategory(category);
+      return source
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
-
-      const preferred = headerPreferredRegions();
-      const localPartners = allAllowed.filter(p => preferred.includes(normalizeRegion(p.region || "")));
-
-      // If a market has no local offer in a category, keep useful global fallback
-      // instead of showing an empty top navigation menu.
-      return localPartners.length ? localPartners : allAllowed.filter(p => normalizeRegion(p.region || "global") === "global");
     }
 
     function buildTravelDirectory() {
@@ -2643,7 +2657,9 @@
     }
 
     function renderBrandGrid() {
-      const top = visibleTopTravelPartners()
+      // US homepage keeps global + US partner tiles. Localized markets show local partner tiles only.
+      const source = isDefaultUSRegion() ? visibleTopTravelPartners() : visibleTopRegionalTravelPartners();
+      const top = source
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name))
         .slice(0, 10);
