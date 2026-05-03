@@ -2250,11 +2250,56 @@
       });
     }
 
+    function headerPreferredRegions() {
+      const region = getRegion();
+
+      // Header menus should be tighter than the left rail:
+      // show truly local/regional partners first, and use global offers only
+      // when that category has no local partner for the active market.
+      const map = {
+        us: ["us"],
+        ca: ["ca"],
+        gb: ["gb", "uk", "eu"],
+        uk: ["gb", "uk", "eu"],
+        br: ["br"],
+        pl: ["pl"],
+        mx: ["mx", "latam"],
+        latam: ["latam"],
+        es: ["es", "eu"],
+        de: ["de", "eu"],
+        fr: ["fr", "eu"],
+        it: ["it", "eu"],
+        ru: ["ru"],
+        cn: ["cn", "zh"],
+        zh: ["cn", "zh"],
+        tw: ["tw", "zh"],
+        jp: ["jp", "ja"],
+        kr: ["kr", "ko"]
+      };
+
+      return map[region] || [region];
+    }
+
+    function directoryPartnersForCategory(category) {
+      const allAllowed = partnersForCategory(category)
+        .slice()
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
+
+      const preferred = headerPreferredRegions();
+      const localPartners = allAllowed.filter(p => preferred.includes(normalizeRegion(p.region || "")));
+
+      // If a market has no local offer in a category, keep useful global fallback
+      // instead of showing an empty top navigation menu.
+      return localPartners.length ? localPartners : allAllowed.filter(p => normalizeRegion(p.region || "global") === "global");
+    }
+
     function buildTravelDirectory() {
       travelDirectory.innerHTML = "";
 
       TOP_TRAVEL_CATEGORIES.forEach(cat => {
-        const partners = partnersForCategory(cat);
+        const partners = directoryPartnersForCategory(cat);
+        if (!partners.length) return;
+
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "directory-item has-menu";
@@ -2268,9 +2313,7 @@
       document.querySelectorAll(".directory-item").forEach(el => el.classList.remove("active"));
       if (activeButton) activeButton.classList.add("active");
 
-      const partners = partnersForCategory(category)
-        .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
+      const partners = directoryPartnersForCategory(category);
 
       directoryMenu.innerHTML = `
         <div class="directory-menu-title">${escapeHtml(labelForCategory(category))}</div>
