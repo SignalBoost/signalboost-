@@ -292,6 +292,78 @@
       font-size: 11px;
     }
 
+
+
+    #column1 { width: 100%; }
+
+    .c1-group {
+      margin-bottom: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .c1-header {
+      cursor: pointer;
+      padding: 9px 10px;
+      user-select: none;
+      font-weight: 800;
+      color: #fff;
+      font-size: 13px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .c1-header::before {
+      content: "▶";
+      display: inline-block;
+      width: 14px;
+      margin-right: 6px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .c1-body.open + .unused { display: none; }
+
+    .c1-header.open::before { content: "▼"; }
+    .c1-header.open { background: rgba(88,166,255,0.08); }
+
+    .c1-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+      padding: 0 8px;
+    }
+
+    .c1-body.open {
+      max-height: 500px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .c1-partner {
+      display: block;
+      padding: 7px 8px;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.25;
+      cursor: pointer;
+    }
+
+    .c1-partner:hover {
+      background: rgba(245,197,66,0.09);
+      color: #f5c542;
+    }
+
+    .c1-partner .partner-meta {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255,255,255,0.52);
+      font-size: 11px;
+    }
+
     .partners-empty {
       padding: 14px;
       border-radius: 12px;
@@ -902,7 +974,50 @@
         <div id="leftHeader" class="column-1-header" data-i18n="explore_offers">Explore offers</div>
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
       </div>
-      <div id="partnersRail" class="column-1-scroll"></div>
+      <div id="partnersRail" class="column-1-scroll">
+        <div id="column1">
+          <div class="c1-group" data-cat="flights">
+            <div class="c1-header" data-i18n="flights">Flights</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="hotels">
+            <div class="c1-header" data-i18n="hotels">Hotels</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="transfers">
+            <div class="c1-header" data-i18n="transfers">Transfers</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="sim">
+            <div class="c1-header" data-i18n="sim">SIM & Connectivity</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="tours">
+            <div class="c1-header" data-i18n="tours">Tours</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="travel_services">
+            <div class="c1-header" data-i18n="travel_services">Travel Services</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="marketplace">
+            <div class="c1-header" data-i18n="marketplace">Marketplace</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="products_tools">
+            <div class="c1-header" data-i18n="products_tools">Products & Tools</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="finance">
+            <div class="c1-header" data-i18n="finance">Finance</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="insurance">
+            <div class="c1-header" data-i18n="insurance">Insurance</div>
+            <div class="c1-body"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="column column-2">
@@ -935,7 +1050,8 @@
     "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
     "tier": 1,
     "logo": "",
-    "highlight": "Reliable car rentals for airport and city trips"
+    "highlight": "Reliable car rentals for airport and city trips",
+    "category_key": "car_rentals"
   },
   {
     "name": "Localrent",
@@ -944,7 +1060,8 @@
     "network": "Travelpayouts",
     "url": "https://localrent.tpo.lv/XS0CqdMP",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "car_rentals"
   },
   {
     "name": "Economybookings",
@@ -953,7 +1070,8 @@
     "network": "Travelpayouts",
     "url": "https://economybookings.tpo.lv/jSFMPEPA",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "car_rentals"
   },
   {
     "name": "QEEQ",
@@ -962,7 +1080,8 @@
     "network": "Travelpayouts",
     "url": "https://qeeq.tpo.lv/jklB4Pbm",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "car_rentals"
   },
   {
     "name": "AutoEurope",
@@ -971,7 +1090,8 @@
     "network": "Travelpayouts",
     "url": "https://autoeurope.tpo.lv/t84AzZbO",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "car_rentals"
   },
   {
     "name": "Europcar AU/NZ",
@@ -980,7 +1100,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "car_rentals"
   },
   {
     "name": "GetRentacar",
@@ -989,7 +1110,8 @@
     "network": "Travelpayouts",
     "url": "https://getrentacar.tpo.lv/OR2TWduQ",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "car_rentals"
   },
   {
     "name": "Jumbo Car Costa Rica",
@@ -998,7 +1120,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "car_rentals"
   },
   {
     "name": "PagBank",
@@ -1007,7 +1130,8 @@
     "network": "Admitad",
     "url": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "finance"
   },
   {
     "name": "Kapitalwise",
@@ -1016,7 +1140,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "finance"
   },
   {
     "name": "Countabout",
@@ -1025,7 +1150,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "finance"
   },
   {
     "name": "FileYourTaxes",
@@ -1034,7 +1160,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "finance"
   },
   {
     "name": "Você RH",
@@ -1044,7 +1171,8 @@
     "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
     "tier": 3,
     "logo": "",
-    "notes": "Use only in finance/career context."
+    "notes": "Use only in finance/career context.",
+    "category_key": "finance"
   },
   {
     "name": "CVC BR",
@@ -1054,7 +1182,8 @@
     "url": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
     "tier": 1,
     "logo": "",
-    "notes": "Admitad connected offer. Verify rules and allowed traffic."
+    "notes": "Admitad connected offer. Verify rules and allowed traffic.",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1064,7 +1193,8 @@
     "url": "https://booking.tpo.lv/enwsEbCs",
     "tier": 1,
     "logo": "",
-    "status": "verify_subscription"
+    "status": "verify_subscription",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1073,7 +1203,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1083,7 +1214,8 @@
     "url": "https://booking.tpo.lv/enwsEbCs",
     "tier": 1,
     "logo": "",
-    "status": "verify_subscription"
+    "status": "verify_subscription",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1092,7 +1224,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1102,7 +1235,8 @@
     "url": "https://booking.tpo.lv/enwsEbCs",
     "tier": 1,
     "logo": "",
-    "status": "verify_subscription"
+    "status": "verify_subscription",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1111,7 +1245,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "flights"
   },
   {
     "name": "Aviasales",
@@ -1121,7 +1256,8 @@
     "url": "https://aviasales.tpo.lv/VoWXgFFm",
     "tier": 2,
     "logo": "",
-    "notes": "Flights only. Avoid hotel flow."
+    "notes": "Flights only. Avoid hotel flow.",
+    "category_key": "flights"
   },
   {
     "name": "Trivago",
@@ -1130,7 +1266,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1139,7 +1276,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1148,7 +1286,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1157,7 +1296,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "H10 Hotels",
@@ -1166,7 +1306,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Planet of Hotels",
@@ -1175,7 +1316,8 @@
     "network": "Admitad",
     "url": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Sirenis Hotels",
@@ -1184,7 +1326,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Travelking",
@@ -1193,7 +1336,8 @@
     "network": "Admitad",
     "url": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1202,7 +1346,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1211,7 +1356,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Zenhotels",
@@ -1220,7 +1366,8 @@
     "network": "Admitad",
     "url": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "AURAS Travel Insurance",
@@ -1230,7 +1377,8 @@
     "url": "https://ogsib.com/g/g86qhgosread273170bc102b8feede/",
     "tier": 1,
     "logo": "",
-    "highlight": "Travel with protection — simple & reliable insurance"
+    "highlight": "Travel with protection — simple & reliable insurance",
+    "category_key": "insurance"
   },
   {
     "name": "AirHelp",
@@ -1239,7 +1387,8 @@
     "network": "Admitad",
     "url": "https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "EKTA Insurance",
@@ -1248,7 +1397,8 @@
     "network": "Travelpayouts",
     "url": "https://ektatraveling.tpo.lv/XWbZbj8S",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "AirHelp",
@@ -1257,7 +1407,8 @@
     "network": "Travelpayouts",
     "url": "https://airhelp.tpo.lv/EPrGDSO3",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "Melhor Seguro",
@@ -1266,7 +1417,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "Compensair",
@@ -1275,7 +1427,8 @@
     "network": "Travelpayouts",
     "url": "https://compensair.tpo.lv/wxDDCITG",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "Amazon",
@@ -1284,7 +1437,8 @@
     "network": "Amazon",
     "url": "https://www.amazon.com/?tag=signalboostai-20",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "marketplace"
   },
   {
     "name": "Amazon BR",
@@ -1294,7 +1448,8 @@
     "url": "https://www.amazon.com.br/?tag=signalboostai-20",
     "tier": 1,
     "logo": "",
-    "status": "verify_local_amazon_tag"
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
   },
   {
     "name": "Amazon PL",
@@ -1304,7 +1459,8 @@
     "url": "https://www.amazon.pl/?tag=signalboostai-20",
     "tier": 1,
     "logo": "",
-    "status": "verify_local_amazon_tag"
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
   },
   {
     "name": "AliExpress PL",
@@ -1313,7 +1469,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "marketplace"
   },
   {
     "name": "Alibaba",
@@ -1322,7 +1479,8 @@
     "network": "Admitad",
     "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "marketplace"
   },
   {
     "name": "Amazon MX",
@@ -1332,7 +1490,8 @@
     "url": "https://www.amazon.com.mx/?tag=signalboostai-20",
     "tier": 2,
     "logo": "",
-    "status": "verify_local_amazon_tag"
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
   },
   {
     "name": "Proton VPN",
@@ -1341,7 +1500,8 @@
     "network": "Admitad",
     "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "Beverly Hills MD",
@@ -1350,7 +1510,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "Cozeware",
@@ -1359,7 +1520,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "ESET",
@@ -1368,7 +1530,8 @@
     "network": "Admitad",
     "url": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "UdPower",
@@ -1378,7 +1541,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Smart gadgets and power solutions for everyday use"
+    "highlight": "Smart gadgets and power solutions for everyday use",
+    "category_key": "products_tools"
   },
   {
     "name": "Guldi",
@@ -1388,7 +1552,8 @@
     "url": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/",
     "tier": 3,
     "logo": "",
-    "notes": "Guldi (EN) Affiliate Program"
+    "notes": "Guldi (EN) Affiliate Program",
+    "category_key": "products_tools"
   },
   {
     "name": "PearlMountain Limited",
@@ -1397,7 +1562,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "SuperBox",
@@ -1406,7 +1572,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "TikTok Lite",
@@ -1416,7 +1583,8 @@
     "url": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/",
     "tier": 3,
     "logo": "",
-    "notes": "CPI/CPA. Keep out of main travel UI unless rules allow this traffic."
+    "notes": "CPI/CPA. Keep out of main travel UI unless rules allow this traffic.",
+    "category_key": "products_tools"
   },
   {
     "name": "Valerion",
@@ -1425,7 +1593,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "Airalo",
@@ -1434,7 +1603,8 @@
     "network": "Travelpayouts",
     "url": "https://airalo.tpo.lv/eXjKLiuw",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
     "name": "Airalo",
@@ -1443,7 +1613,8 @@
     "network": "Travelpayouts",
     "url": "https://airalo.tpo.lv/eXjKLiuw",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
     "name": "Airalo",
@@ -1452,7 +1623,8 @@
     "network": "Travelpayouts",
     "url": "https://airalo.tpo.lv/eXjKLiuw",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
     "name": "SuperSim",
@@ -1461,7 +1633,8 @@
     "network": "Admitad",
     "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
     "name": "Saily",
@@ -1470,7 +1643,8 @@
     "network": "Travelpayouts",
     "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
     "name": "TurboVPN",
@@ -1480,7 +1654,8 @@
     "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
     "tier": 2,
     "logo": "",
-    "highlight": "Secure your connection anywhere with VPN access"
+    "highlight": "Secure your connection anywhere with VPN access",
+    "category_key": "sim"
   },
   {
     "name": "Yesim",
@@ -1489,7 +1664,8 @@
     "network": "Travelpayouts",
     "url": "https://yesim.tpo.lv/3vIzBQts",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
     "name": "Drimsim",
@@ -1498,7 +1674,8 @@
     "network": "Travelpayouts",
     "url": "https://drimsim.tpo.lv/PGwr6JTr",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
     "name": "Cyber Florist",
@@ -1509,7 +1686,8 @@
     "tier": 4,
     "logo": "",
     "status": "hold",
-    "notes": "Legitimate via Admitad screenshot, but weak strategic fit. Do not show unless testing."
+    "notes": "Legitimate via Admitad screenshot, but weak strategic fit. Do not show unless testing.",
+    "category_key": "specialty_other"
   },
   {
     "name": "King Koil",
@@ -1519,7 +1697,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
     "tier": 4,
     "logo": "",
-    "status": "hold"
+    "status": "hold",
+    "category_key": "specialty_other"
   },
   {
     "name": "Tsarbomba",
@@ -1529,7 +1708,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
     "tier": 4,
     "logo": "",
-    "status": "hold"
+    "status": "hold",
+    "category_key": "specialty_other"
   },
   {
     "name": "Xuchang Aixiu Hair Products",
@@ -1539,25 +1719,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
     "tier": 4,
     "logo": "",
-    "status": "hold"
-  },
-  {
-    "name": "Radical Storage",
-    "category": "Storage & Services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Radical Storage",
-    "category": "Storage & Services",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2,
-    "logo": ""
+    "status": "hold",
+    "category_key": "specialty_other"
   },
   {
     "name": "Klook",
@@ -1566,7 +1729,8 @@
     "network": "Travelpayouts",
     "url": "https://klook.tpo.lv/pTp1NljF",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "GoCity",
@@ -1575,7 +1739,8 @@
     "network": "Travelpayouts",
     "url": "https://gocity.tpo.lv/Des5Cgov",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "Klook",
@@ -1584,7 +1749,8 @@
     "network": "Travelpayouts",
     "url": "https://klook.tpo.lv/pTp1NljF",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "Tiqets",
@@ -1593,7 +1759,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "Tiqets",
@@ -1602,7 +1769,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "Tiqets",
@@ -1611,7 +1779,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "WeGoTrip",
@@ -1620,7 +1789,8 @@
     "network": "Travelpayouts",
     "url": "https://wegotrip.tpo.lv/kKIF0gIW",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "BigBusTours",
@@ -1629,7 +1799,8 @@
     "network": "Travelpayouts",
     "url": "https://bigbustours.tpo.lv/grT1QWXA",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "BikesBooking",
@@ -1638,7 +1809,8 @@
     "network": "Travelpayouts",
     "url": "https://bikesbooking.tpo.lv/B3zIKanS",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "EatWith",
@@ -1647,7 +1819,8 @@
     "network": "Travelpayouts",
     "url": "https://eatwith.tpo.lv/BfAnpZNb",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "Searadar",
@@ -1656,7 +1829,8 @@
     "network": "Travelpayouts",
     "url": "https://searadar.tpo.lv/TO4A5eBZ",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "tours"
   },
   {
     "name": "Kiwitaxi",
@@ -1665,7 +1839,8 @@
     "network": "Travelpayouts",
     "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "Welcome Pickups",
@@ -1674,7 +1849,8 @@
     "network": "Travelpayouts",
     "url": "https://tpo.lv/XAJOoobr",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "GetTransfer",
@@ -1683,7 +1859,8 @@
     "network": "Travelpayouts",
     "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "Intui.travel",
@@ -1692,7 +1869,8 @@
     "network": "Travelpayouts",
     "url": "https://intui.tpo.lv/Rrx5VuN3",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "Kiwitaxi",
@@ -1701,7 +1879,8 @@
     "network": "Travelpayouts",
     "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "Quero Passagem",
@@ -1711,7 +1890,8 @@
     "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
     "tier": 2,
     "logo": "",
-    "notes": "Brazil bus/travel ticket partner"
+    "notes": "Brazil bus/travel ticket partner",
+    "category_key": "transfers"
   },
   {
     "name": "Welcome Pickups",
@@ -1720,7 +1900,8 @@
     "network": "Travelpayouts",
     "url": "https://tpo.lv/XAJOoobr",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "Busbud",
@@ -1729,7 +1910,8 @@
     "network": "Travelpayouts",
     "url": "https://busbud.tpo.lv/h4C6YPFZ",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "HolidayTaxis",
@@ -1738,7 +1920,8 @@
     "network": "Travelpayouts",
     "url": "https://holidaytaxis.tpo.lv/oHwpbrFt",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "transfers"
   },
   {
     "name": "Bella Storia PL",
@@ -1748,7 +1931,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland partner offer"
+    "highlight": "Poland partner offer",
+    "category_key": "marketplace"
   },
   {
     "name": "Bloomcabin Poland",
@@ -1758,7 +1942,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland partner offer"
+    "highlight": "Poland partner offer",
+    "category_key": "marketplace"
   },
   {
     "name": "Converse PL",
@@ -1768,7 +1953,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland partner offer"
+    "highlight": "Poland partner offer",
+    "category_key": "marketplace"
   },
   {
     "name": "DAX PL",
@@ -1778,7 +1964,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland partner offer"
+    "highlight": "Poland partner offer",
+    "category_key": "products_tools"
   },
   {
     "name": "Swiat Supli PL",
@@ -1788,7 +1975,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland partner offer"
+    "highlight": "Poland partner offer",
+    "category_key": "products_tools"
   },
   {
     "name": "TWOJEMEBLE PL",
@@ -1798,7 +1986,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland partner offer"
+    "highlight": "Poland partner offer",
+    "category_key": "marketplace"
   },
   {
     "name": "Weneve PL",
@@ -1808,7 +1997,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland partner offer"
+    "highlight": "Poland partner offer",
+    "category_key": "marketplace"
   }
 ];
 
@@ -2198,11 +2388,11 @@
     }
 
     function visiblePartners() {
-      return partnersData.filter(p => p.status !== "hold" && isPartnerAllowedForRegion(p));
+      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerAllowedForRegion(p));
     }
 
     function visibleRegionalPartners() {
-      return partnersData.filter(p => p.status !== "hold" && isPartnerStrictlyRegional(p));
+      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerStrictlyRegional(p));
     }
 
     function visibleTopTravelPartners() {
@@ -2381,11 +2571,50 @@
       }
     });
 
+    function categoryKeyForPartner(partner) {
+      if (partner.category_key) return partner.category_key;
+      const map = {
+        "Flights & Meta Search": "flights",
+        "Hotels": "hotels",
+        "Hotels & Accommodation": "hotels",
+        "Car Rentals": "car_rentals",
+        "Transfers & Transport": "transfers",
+        "Tours & Activities": "tours",
+        "SIM & Connectivity": "sim",
+        "Insurance & Claims": "insurance",
+        "Storage & Services": "travel_services",
+        "Travel Services": "travel_services",
+        "Marketplace": "marketplace",
+        "Products & Tools": "products_tools",
+        "Finance": "finance",
+        "Specialty & Other": "specialty_other"
+      };
+      return map[partner.category] || String(partner.category || "other").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+    }
+
+    function categoryLabelForKey(categoryKey) {
+      const labels = {
+        flights: "Flights & Meta Search",
+        hotels: "Hotels",
+        car_rentals: "Car Rentals",
+        transfers: "Transfers & Transport",
+        tours: "Tours & Activities",
+        sim: "SIM & Connectivity",
+        insurance: "Insurance & Claims",
+        travel_services: "Travel Services",
+        marketplace: "Marketplace",
+        products_tools: "Products & Tools",
+        finance: "Finance",
+        specialty_other: "Specialty & Other"
+      };
+      return labelForCategory(labels[categoryKey] || categoryKey);
+    }
+
     function groupByCategory(items) {
       return items.reduce((groups, item) => {
-        const category = item.category || "Other";
-        if (!groups[category]) groups[category] = [];
-        groups[category].push(item);
+        const categoryKey = categoryKeyForPartner(item);
+        if (!groups[categoryKey]) groups[categoryKey] = [];
+        groups[categoryKey].push(item);
         return groups;
       }, {});
     }
@@ -2399,41 +2628,72 @@
           return !query || text.includes(query);
         })
         .sort((a, b) =>
-          String(a.category || "").localeCompare(String(b.category || "")) ||
+          categoryKeyForPartner(a).localeCompare(categoryKeyForPartner(b)) ||
           (a.tier || 99) - (b.tier || 99) ||
           a.name.localeCompare(b.name)
         );
     }
 
     function renderPartnersRail() {
+      partnersRail.querySelectorAll(".partners-empty").forEach(el => el.remove());
+      const groups = document.querySelectorAll(".c1-group");
       const items = filteredColumn1Partners();
 
+      groups.forEach(g => {
+        const body = g.querySelector(".c1-body");
+        if (body) body.innerHTML = "";
+      });
+
       if (!items.length) {
-        partnersRail.innerHTML = `<div class="partners-empty">${escapeHtml(t().noExtraPartners || "No extra partners available for your region right now.")}</div>`;
+        groups.forEach(g => { g.style.display = "none"; });
+        partnersRail.insertAdjacentHTML("beforeend", `<div class="partners-empty">${escapeHtml(t().noExtraPartners || "No extra partners available for your region right now.")}</div>`);
         return;
       }
 
-      const grouped = groupByCategory(items);
+      const seen = new Set();
 
-      partnersRail.innerHTML = Object.keys(grouped).sort().map((category, index) => `
-        <div class="category">
-          <details ${index === 0 ? "open" : ""}>
-            <summary>${escapeHtml(labelForCategory(category))} (${grouped[category].length})</summary>
-            <ul>
-              ${grouped[category].map(p => `
-                <li>
-                  <a href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(p.name)}
-                    <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
-                  </a>
-                </li>
-              `).join("")}
-            </ul>
-          </details>
-        </div>
-      `).join("");
+      items.forEach(p => {
+        const categoryKey = categoryKeyForPartner(p);
+        const group = document.querySelector(`.c1-group[data-cat='${categoryKey}']`);
+        if (!group) return;
 
-      partnersRail.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
+        const dedupeKey = `${p.name}|${categoryKey}`.toLowerCase();
+        if (seen.has(dedupeKey)) return;
+        seen.add(dedupeKey);
+
+        const body = group.querySelector(".c1-body");
+        const item = document.createElement("div");
+        item.className = "c1-partner";
+        item.innerHTML = `${escapeHtml(p.name)}<span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>`;
+        item.onclick = () => {
+          trackClick();
+          window.location.href = p.url;
+        };
+        body.appendChild(item);
+      });
+
+      groups.forEach(g => {
+        const body = g.querySelector(".c1-body");
+        g.style.display = body && body.children.length ? "block" : "none";
+      });
+    }
+
+    function initColumn1Accordion() {
+      document.querySelectorAll(".c1-header").forEach(header => {
+        header.addEventListener("click", () => {
+          const body = header.nextElementSibling;
+
+          document.querySelectorAll(".c1-body").forEach(b => {
+            if (b !== body) b.classList.remove("open");
+          });
+          document.querySelectorAll(".c1-header").forEach(h => {
+            if (h !== header) h.classList.remove("open");
+          });
+
+          body.classList.toggle("open");
+          header.classList.toggle("open", body.classList.contains("open"));
+        });
+      });
     }
 
     function formatDate(dateString) {
@@ -3288,7 +3548,8 @@
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
       try { applyI18N(); } catch (e) { console.error("applyI18N external i18n refresh failed", e); }
       try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory i18n refresh failed", e); }
-      try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
+      initColumn1Accordion();
+    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
       try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid i18n refresh failed", e); }
       try { setFeatured(); } catch (e) { console.error("setFeatured i18n refresh failed", e); }
     }
