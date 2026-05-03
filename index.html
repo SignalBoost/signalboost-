@@ -2151,28 +2151,22 @@
 
     function strictRegionalPartnerRegions() {
       const region = getRegion();
-      const map = {
-        us: ["us"],
-        ca: ["ca"],
-        gb: ["gb", "uk", "eu"],
-        uk: ["gb", "uk", "eu"],
-        br: ["br"],
-        pl: ["pl"],
-        latam: ["latam"],
-        mx: ["mx", "latam"],
-        es: ["es", "eu"],
-        de: ["de", "eu"],
-        fr: ["fr", "eu"],
-        it: ["it", "eu"],
-        ru: ["ru"],
+
+      // Header and right-side partner grid must be truly local.
+      // For example ?region=pl should show only partners tagged "pl".
+      // Global/US/EU/LatAm offers are kept out of these areas.
+      const aliases = {
+        uk: ["uk", "gb"],
+        gb: ["gb", "uk"],
         cn: ["cn", "zh"],
         zh: ["cn", "zh"],
-        tw: ["tw", "zh"],
         jp: ["jp", "ja"],
-        kr: ["kr", "ko"]
+        ja: ["jp", "ja"],
+        kr: ["kr", "ko"],
+        ko: ["kr", "ko"]
       };
 
-      return map[region] || [region];
+      return aliases[region] || [region];
     }
 
     function isPartnerAllowedForRegion(partner) {
@@ -2300,9 +2294,10 @@
 
     function directoryPartnersForCategory(category) {
       // US homepage keeps the broad marketplace structure: US + global partners.
-      // Localized markets stay regional in the header so PL does not show US/global-only header offers.
+      // Localized markets use exact local partner tags only.
       const source = isDefaultUSRegion() ? partnersForCategory(category) : regionalPartnersForCategory(category);
       return source
+        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
     }
@@ -2657,15 +2652,17 @@
     }
 
     function renderBrandGrid() {
-      // US homepage keeps global + US partner tiles. Localized markets show local partner tiles only.
+      // US homepage keeps global + US partner tiles.
+      // Every localized market uses exact local partner tags only: no global, no US, no EU fallback.
       const source = isDefaultUSRegion() ? visibleTopTravelPartners() : visibleTopRegionalTravelPartners();
       const top = source
+        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name))
         .slice(0, 10);
 
       brandGrid.innerHTML = top.map(p => `
-        <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">
+        <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">
           <span class="brand-fallback">${escapeHtml(p.name.slice(0, 2))}</span>
           <span>${escapeHtml(p.name)}</span>
         </a>
