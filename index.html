@@ -2972,10 +2972,16 @@
     async function detectUserLanguage() {
       const params = new URLSearchParams(window.location.search);
       const requested = params.get("lang");
-      let lang = requested || navigator.language || navigator.userLanguage || "en";
+
+      // Region/page override must win. Example: ?region=pl should load Polish
+      // even when the browser language is English.
+      let lang = requested || getLang() || navigator.language || navigator.userLanguage || "en";
+
       const full = String(lang).toLowerCase();
-      if (["zh-tw", "zh-hk", "zh-mo"].includes(full)) return "zh-TW";
-      if (["zh-cn", "zh-sg"].includes(full) || full === "zh") return "zh-CN";
+      if (["pt-br", "br"].includes(full)) return "pt-BR";
+      if (["zh-tw", "zh-hk", "zh-mo", "tw"].includes(full)) return "zh-TW";
+      if (["zh-cn", "zh-sg", "zh", "cn"].includes(full)) return "zh-CN";
+
       lang = full.split("-")[0];
       const supported = ["en","es","pt","fr","de","it","pl","ja","ko","ru"];
       return supported.includes(lang) ? lang : "en";
@@ -2995,12 +3001,20 @@
     }
 
     async function loadLanguage(lang) {
-      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS.en;
-      try {
-        const res = await fetch(`/i18n/${lang}.json`, { cache: "no-store" });
-        if (res.ok) translations = { ...translations, ...(await res.json()) };
-      } catch (e) {
-        console.info("Using built-in translations for", lang);
+      const builtInKey = lang === "pt-BR" ? "pt" : lang;
+      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
+      const externalCandidates = lang === builtInKey ? [lang] : [lang, builtInKey];
+
+      for (const candidate of externalCandidates) {
+        try {
+          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
+          if (res.ok) {
+            translations = { ...translations, ...(await res.json()) };
+            break;
+          }
+        } catch (e) {
+          console.info("Using built-in translations for", candidate);
+        }
       }
 
       ACTIVE_TRANSLATIONS = { ...BUILT_IN_TRANSLATIONS.en, ...translations };
