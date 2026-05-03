@@ -923,6 +923,8 @@
     <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="view_more">View More</a>
   </div>
 
+  <div id="sb-debug" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
+
   <script>
     const partnersData = [
   {
@@ -1823,11 +1825,17 @@
       global: { lang: "en", label: "Global" },
       us: { lang: "en", label: "United States" },
       ca: { lang: "en", label: "Canada" },
+      au: { lang: "en", label: "Australia" },
       gb: { lang: "en", label: "United Kingdom" },
       uk: { lang: "en", label: "United Kingdom" },
       pl: { lang: "pl", label: "Polska" },
       br: { lang: "pt-BR", label: "Brasil" },
-      mx: { lang: "es", label: "México / LatAm" },
+      pt: { lang: "pt", label: "Portugal" },
+      mx: { lang: "es", label: "México" },
+      ar: { lang: "es", label: "Argentina" },
+      co: { lang: "es", label: "Colombia" },
+      pe: { lang: "es", label: "Perú" },
+      cl: { lang: "es", label: "Chile" },
       latam: { lang: "es", label: "LatAm" },
       es: { lang: "es", label: "España" },
       de: { lang: "de", label: "Deutschland" },
@@ -2123,27 +2131,37 @@
     function allowedPartnerRegions() {
       const region = getRegion();
 
-      // Main left rail: show the active country/market plus worldwide offers.
-      // Do NOT include unrelated country offers (for example US offers on ?region=pl).
+      // Column 1 / left rail rule:
+      // - US homepage keeps the broad structure: global + US.
+      // - Localized markets get their exact local partners + global fallback only.
+      // - Never leak unrelated country tags, e.g. US offers on ?region=pl.
       const map = {
         us: ["global", "us"],
         ca: ["global", "ca"],
-        gb: ["global", "gb", "uk", "eu"],
-        uk: ["global", "gb", "uk", "eu"],
+        au: ["global", "au"],
+        gb: ["global", "gb", "uk"],
+        uk: ["global", "gb", "uk"],
         br: ["global", "br"],
+        pt: ["global", "pt"],
         pl: ["global", "pl"],
         latam: ["global", "latam"],
         mx: ["global", "mx", "latam"],
-        es: ["global", "es", "eu"],
-        de: ["global", "de", "eu"],
-        fr: ["global", "fr", "eu"],
-        it: ["global", "it", "eu"],
+        ar: ["global", "ar", "latam"],
+        co: ["global", "co", "latam"],
+        pe: ["global", "pe", "latam"],
+        cl: ["global", "cl", "latam"],
+        es: ["global", "es"],
+        de: ["global", "de"],
+        fr: ["global", "fr"],
+        it: ["global", "it"],
         ru: ["global", "ru"],
         cn: ["global", "cn", "zh"],
         zh: ["global", "cn", "zh"],
         tw: ["global", "tw", "zh"],
         jp: ["global", "jp", "ja"],
-        kr: ["global", "kr", "ko"]
+        ja: ["global", "jp", "ja"],
+        kr: ["global", "kr", "ko"],
+        ko: ["global", "kr", "ko"]
       };
 
       return map[region] || ["global", region];
@@ -3249,11 +3267,24 @@
       if (ogDescription) ogDescription.setAttribute("content", profile.description);
     }
 
-    async function initializeInternationalization() {
-      const lang = await detectUserLanguage();
-      await detectUserRegion();
-      await loadLanguage(lang);
+    function showDebug(region, lang) {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("debug")) return;
+      const box = document.getElementById("sb-debug");
+      if (!box) return;
+      box.innerHTML = `<strong>Region:</strong> ${escapeHtml(region)}<br><strong>Language:</strong> ${escapeHtml(lang)}`;
+      box.style.display = "block";
+      console.log("Detected region:", region);
+      console.log("Detected language:", lang);
+    }
 
+    async function initializeInternationalization() {
+      const region = await detectUserRegion();
+      const lang = await detectUserLanguage();
+      await loadLanguage(lang);
+      showDebug(region, lang);
+
+      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
       try { applyI18N(); } catch (e) { console.error("applyI18N external i18n refresh failed", e); }
       try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory i18n refresh failed", e); }
