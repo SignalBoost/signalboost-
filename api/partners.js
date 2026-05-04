@@ -18,7 +18,6 @@
   {"name":"Kiwi","category_key":"flights","region":"ca","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806","tier":1},
   {"name":"Kiwi","category_key":"flights","region":"global","network":"Travelpayouts","url":"https://booking.tpo.lv/enwsEbCs","tier":1},
   {"name":"Kiwi","category_key":"flights","region":"mx","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806","tier":1},
-  {"name":"Kiwi","category_key":"flights","region":"pl","network":"Travelpayouts","url":"https://booking.tpo.lv/enwsEbCs","tier":1},
   {"name":"Kiwi","category_key":"flights","region":"us","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806","tier":1},
   {"name":"Aviasales","category_key":"flights","region":"global","network":"Travelpayouts","url":"https://aviasales.tpo.lv/VoWXgFFm","tier":2},
 
