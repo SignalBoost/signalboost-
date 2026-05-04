@@ -80,7 +80,7 @@
   {"name":"Xuchang Aixiu Hair Products","category_key":"marketplace","region":"global","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806","tier":4},
 
   {"name":"Radical Storage","category_key":"travel_services","region":"global","network":"Travelpayouts","url":"https://radicalstorage.tpo.lv/tna4hnly","tier":2},
-  {"name":"Radical Storage","category_key":"travel_services","region":"pl","network":"Travelpayouts","url":"https://radicalstorage.tpo.lv/tna4hnly","tier":2},
+
 
   {"name":"Klook","category_key":"tours","region":"global","network":"Travelpayouts","url":"https://klook.tpo.lv/pTp1NljF","tier":1},
   {"name":"GoCity","category_key":"tours","region":"global","network":"Travelpayouts","url":"https://gocity.tpo.lv/Des5Cgov","tier":2},
@@ -93,12 +93,10 @@
   {"name":"BikesBooking","category_key":"tours","region":"global","network":"Travelpayouts","url":"https://bikesbooking.tpo.lv/B3zIKanS","tier":3},
   {"name":"EatWith","category_key":"tours","region":"global","network":"Travelpayouts","url":"https://eatwith.tpo.lv/BfAnpZNb","tier":3},
   {"name":"Searadar","category_key":"tours","region":"global","network":"Travelpayouts","url":"https://searadar.tpo.lv/TO4A5eBZ","tier":3},
-
   {"name":"Kiwitaxi","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://kiwitaxi.tpo.lv/DVaqmgKo","tier":1},
   {"name":"Welcome Pickups","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://tpo.lv/XAJOoobr","tier":1},
   {"name":"GetTransfer","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://gettransfer.tpo.lv/Pb4p9ljm","tier":2},
   {"name":"Intui.travel","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://intui.tpo.lv/Rrx5VuN3","tier":2},
-  {"name":"Kiwitaxi","category_key":"transfers","region":"pl","network":"Travelpayouts","url":"https://kiwitaxi.tpo.lv/DVaqmgKo","tier":2},
   {"name":"Quero Passagem","category_key":"transfers","region":"br","network":"Admitad","url":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/","tier":2},
   {"name":"Welcome Pickups","category_key":"transfers","region":"pl","network":"Travelpayouts","url":"https://tpo.lv/XAJOoobr","tier":2},
   {"name":"Busbud","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://busbud.tpo.lv/h4C6YPFZ","tier":3},
