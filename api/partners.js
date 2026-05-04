@@ -13,7 +13,8 @@
   {"name":"FileYourTaxes","category_key":"finance","region":"us","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806","tier":3},
   {"name":"Você RH","category_key":"finance","region":"br","network":"Admitad","url":"https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/","tier":3},
 
-  {"name":"CVC BR","category_key":"flights","region":"br","network":"Admitad","url":"https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/","tier":1},
+  {"name":"CVC BR","category_key":"flights","region":"br","network":"Admitad","url":"https://rkdro.cFtrivago
+    om/g/xo8ehfl68mad273170bcafa41ba253/","tier":1},
   {"name":"Kiwi","category_key":"flights","region":"br","network":"Travelpayouts","url":"https://booking.tpo.lv/enwsEbCs","tier":1},
   {"name":"Kiwi","category_key":"flights","region":"ca","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806","tier":1},
   {"name":"Kiwi","category_key":"flights","region":"global","network":"Travelpayouts","url":"https://booking.tpo.lv/enwsEbCs","tier":1},
@@ -27,11 +28,8 @@
   {"name":"Trivago","category_key":"hotels","region":"us","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806","tier":1},
   {"name":"H10 Hotels","category_key":"hotels","region":"us","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806","tier":2},
   {"name":"Sirenis Hotels","category_key":"hotels","region":"us","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806","tier":2},
-  {"name":"Travelking","category_key":"hotels","region":"pl","network":"Admitad","url":"https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/","tier":2},
   {"name":"Trivago","category_key":"hotels","region":"latam","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806","tier":2},
-  {"name":"Trivago","category_key":"hotels","region":"pl","network":"Awin","url":"https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806","tier":2},
   {"name":"Zenhotels","category_key":"hotels","region":"global","network":"Admitad","url":"https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/","tier":2},
-
   {"name":"AURAS Travel Insurance","category_key":"insurance","region":"global","network":"Admitad","url":"https://ogsib.com/g/g86qhgosread273170bc102b8feede/","tier":1},
   {"name":"AirHelp","category_key":"insurance","region":"br","network":"Admitad","url":"https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/","tier":1},
   {"name":"EKTA Insurance","category_key":"insurance","region":"global","network":"Travelpayouts","url":"https://ektatraveling.tpo.lv/XWbZbj8S","tier":1},
@@ -97,7 +95,6 @@
   {"name":"GetTransfer","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://gettransfer.tpo.lv/Pb4p9ljm","tier":2},
   {"name":"Intui.travel","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://intui.tpo.lv/Rrx5VuN3","tier":2},
   {"name":"Quero Passagem","category_key":"transfers","region":"br","network":"Admitad","url":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/","tier":2},
-  {"name":"Welcome Pickups","category_key":"transfers","region":"pl","network":"Travelpayouts","url":"https://tpo.lv/XAJOoobr","tier":2},
   {"name":"Busbud","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://busbud.tpo.lv/h4C6YPFZ","tier":3},
   {"name":"HolidayTaxis","category_key":"transfers","region":"global","network":"Travelpayouts","url":"https://holidaytaxis.tpo.lv/oHwpbrFt","tier":3}
 ]
