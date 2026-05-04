@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,10 +9,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="verify-admitad" content="93d3c3a3c1" />
   <meta name="fo-verify" content="ecaf9150-b94f-4c51-9be8-901f70cd5e9a" />
-  <title>SignalBoost – Discover travel, finance, insurance and digital services in one place</title>
-  <meta name="description" content="SignalBoost is a digital shopping mall for travel, finance, insurance and online tools. Browse curated offers, compare options, and discover useful services in one scroll." />
-  <meta name="keywords" content="digital shopping mall, travel deals, finance tools, insurance offers, online services marketplace, product discovery platform" />
   <meta name="google-site-verification" content="rYali_68D0WtYK42cslb1hbj3sejZYe3p-UM4FoK_BM" />
+  <title id="pageTitle">Cheap Flights & Hotels Worldwide | SignalBoost</title>
+  <meta id="seoDescription" name="description" content="Find cheap flights, hotels, eSIM, tours, transfers and travel deals worldwide with SignalBoost." />
+  <meta name="robots" content="index, follow" />
+  <link id="canonicalLink" rel="canonical" href="/" />
+  <link rel="alternate" hreflang="en" href="/" />
+  <link rel="alternate" hreflang="pl" href="/pl/" />
+  <link rel="alternate" hreflang="pt-BR" href="/pt-br/" />
+  <link rel="alternate" hreflang="es" href="/es/" />
+  <link rel="alternate" hreflang="ru" href="/ru/" />
+  <link rel="alternate" hreflang="zh-CN" href="/zh-cn/" />
+  <link rel="alternate" hreflang="zh-TW" href="/zh-tw/" />
+  <link rel="alternate" hreflang="fr" href="/fr/" />
+  <link rel="alternate" hreflang="de" href="/de/" />
+  <link rel="alternate" hreflang="it" href="/it/" />
+  <link rel="alternate" hreflang="ja" href="/ja/" />
+  <link rel="alternate" hreflang="ko" href="/ko/" />
+  <link rel="alternate" hreflang="x-default" href="/" />
+  <meta property="og:title" content="Cheap Flights & Hotels Worldwide | SignalBoost" />
+  <meta property="og:description" content="Find cheap flights, hotels and travel deals worldwide." />
+  <meta property="og:type" content="website" />
 
   <style>
     * { box-sizing: border-box; }
@@ -22,27 +43,140 @@
     }
 
     body { overflow: hidden; }
+    a { color: inherit; }
 
-    .top-feature {
+    .travel-directory-shell {
+      height: 42px;
+      background: #232f3e;
+      display: grid;
+      grid-template-columns: 130px 1fr 130px;
+      align-items: center;
+      padding: 0 8px;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 280px;
-      background: #0f141b;
-      border-right: 1px solid rgba(255,255,255,0.06);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 16px;
-      z-index: 20;
+      inset: 0 0 auto 0;
+      z-index: 9999;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .directory-left {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .directory-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .directory-logo {
+      color: #f5c542;
+      font-weight: 900;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .directory-center {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+
+    .directory-center::-webkit-scrollbar { display: none; }
+
+    .directory-item {
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      cursor: pointer;
+      background: transparent;
+      font-family: Arial, sans-serif;
+      flex: 0 0 auto;
+    }
+
+    .directory-item:hover,
+    .directory-item.active {
+      border-color: rgba(255,255,255,0.85);
+    }
+
+    .directory-item.has-menu::after {
+      content: " ▾";
+      font-size: 11px;
+      margin-left: 4px;
+    }
+
+    .directory-menu {
+      display: none;
+      position: fixed;
+      top: 42px;
+      left: 0;
+      width: 360px;
+      max-width: 92vw;
+      max-height: calc(100vh - 42px);
+      overflow-y: auto;
+      background: #fff;
+      color: #111;
+      z-index: 10000;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.35) transparent;
+    }
+
+    .directory-menu::-webkit-scrollbar { width: 6px; }
+    .directory-menu::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.35);
+      border-radius: 999px;
+    }
+
+    .directory-menu.open { display: block; }
+
+    .directory-menu-title {
+      background: #131921;
+      color: #fff;
+      padding: 14px 18px;
+      font-size: 17px;
+      font-weight: 900;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .directory-menu-link {
+      display: block;
+      padding: 10px 18px;
+      color: #111;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.25;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .directory-menu-link:hover { background: #f3f3f3; }
+
+    .directory-menu-meta {
+      display: block;
+      margin-top: 3px;
+      color: #666;
+      font-size: 11px;
     }
 
     .app {
       display: grid;
       grid-template-columns: 280px minmax(520px, 1fr) 280px;
       height: 100vh;
+      padding-top: 42px;
       min-height: 0;
     }
 
@@ -54,38 +188,34 @@
     }
 
     .column-1 {
-      padding-top: 132px;
+      height: calc(100vh - 42px);
       background: #0f141b;
       border-right: 1px solid rgba(255,255,255,0.06);
     }
 
-    .column-1-header {
-      padding: 14px 16px;
-      font-size: 16px;
-      font-weight: 700;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      text-align: center;
+    .column-1-controls {
+      padding: 8px 8px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       background: #0f141b;
-      position: sticky;
-      top: 0;
-      z-index: 5;
     }
 
-    .column-1-search-wrap {
-      padding: 8px 12px 0;
-      display: flex;
-      justify-content: center;
+    .column-1-header {
+      padding: 0 4px 7px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.65);
     }
 
     .column-1-search {
       width: 100%;
-      max-width: 232px;
-      padding: 8px 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
       background: #0d1117;
       color: #fff;
-      font-size: 13px;
+      font-size: 12px;
       outline: none;
     }
 
@@ -93,60 +223,159 @@
       flex: 1;
       overflow-y: auto;
       padding: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      scrollbar-width: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.22) transparent;
     }
 
     .category {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       width: 100%;
-      max-width: 244px;
     }
 
     .category details {
       border-radius: 10px;
       overflow: hidden;
-      background: rgba(255,255,255,0.02);
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .category summary {
       cursor: pointer;
-      padding: 11px 12px;
+      padding: 9px 10px;
       user-select: none;
-      font-weight: 700;
+      font-weight: 800;
       list-style: none;
       color: #fff;
+      font-size: 13px;
+      background: rgba(255,255,255,0.035);
     }
 
     .category summary::-webkit-details-marker { display: none; }
+
     .category summary::before {
-      content: '▶';
+      content: "▶";
       display: inline-block;
       width: 14px;
       margin-right: 6px;
       font-size: 10px;
-      transform: translateY(-1px);
       color: rgba(255,255,255,0.9);
     }
-    .category details[open] summary::before { content: '▼'; }
+
+    .category details[open] summary::before { content: "▼"; }
+    .category details[open] summary { background: rgba(88,166,255,0.08); }
 
     .category ul {
       list-style: none;
       margin: 0;
-      padding: 10px 10px 4px;
+      padding: 8px;
     }
 
-    .category li { margin: 7px 0; }
+    .category li { margin: 5px 0; }
 
     .category a {
-      color: rgba(255,255,255,0.92);
+      display: block;
+      padding: 7px 8px;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.9);
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
+      line-height: 1.25;
     }
 
-    .category a:hover { text-decoration: underline; }
+    .category a:hover {
+      background: rgba(245,197,66,0.09);
+      color: #f5c542;
+    }
+
+    .partner-meta {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255,255,255,0.52);
+      font-size: 11px;
+    }
+
+
+
+    #column1 { width: 100%; }
+
+    .c1-group {
+      margin-bottom: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .c1-header {
+      cursor: pointer;
+      padding: 9px 10px;
+      user-select: none;
+      font-weight: 800;
+      color: #fff;
+      font-size: 13px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .c1-header::before {
+      content: "▶";
+      display: inline-block;
+      width: 14px;
+      margin-right: 6px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .c1-body.open + .unused { display: none; }
+
+    .c1-header.open::before { content: "▼"; }
+    .c1-header.open { background: rgba(88,166,255,0.08); }
+
+    .c1-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+      padding: 0 8px;
+    }
+
+    .c1-body.open {
+      max-height: 500px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .c1-partner {
+      display: block;
+      padding: 7px 8px;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.25;
+      cursor: pointer;
+    }
+
+    .c1-partner:hover {
+      background: rgba(245,197,66,0.09);
+      color: #f5c542;
+    }
+
+    .c1-partner .partner-meta {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255,255,255,0.52);
+      font-size: 11px;
+    }
+
+    .partners-empty {
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.68);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
 
     .column-2 {
       background: #0d1117;
@@ -157,214 +386,26 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      min-height: 0;
-      height: 100%;
+      height: calc(100vh - 42px);
       overflow-y: auto;
-      padding: 24px 16px 100px;
+      padding: 12px 16px 100px;
       align-items: center;
+      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
 
-    .entry-layer {
+    #magnetoColumn::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hero-feed-status {
       width: 100%;
       max-width: 560px;
-      margin: 0 auto 18px;
-      padding: 18px;
-      background: linear-gradient(180deg, rgba(245,197,66,0.08), rgba(255,255,255,0.02));
-      border: 1px solid rgba(245,197,66,0.18);
-      border-radius: 18px;
-    }
-
-    .entry-copy { margin-bottom: 14px; }
-
-    .entry-kicker {
-      display: inline-block;
-      margin-bottom: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(245,197,66,0.12);
-      color: #f5c542;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .entry-title {
-      margin: 0 0 8px;
-      font-size: 30px;
-      line-height: 1.08;
-    }
-
-    .entry-subtitle {
-      margin: 0;
-      color: rgba(255,255,255,0.78);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .entry-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 16px 0 12px;
-    }
-
-    .entry-chip,
-    .entry-link-button {
-      appearance: none;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 700;
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-
-    .entry-chip:hover,
-    .entry-link-button:hover {
-      transform: translateY(-1px);
-      border-color: rgba(245,197,66,0.35);
-      background: rgba(245,197,66,0.08);
-    }
-
-    .entry-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .department-card {
-      width: 100%;
-      max-width: 560px;
-      margin: 0 auto 18px;
-      padding: 18px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(88,166,255,0.08), rgba(255,255,255,0.02));
-      border: 1px solid rgba(88,166,255,0.18);
-    }
-
-    .department-header h2 {
-      margin: 0 0 6px;
-      font-size: 22px;
-    }
-
-    .department-header p {
-      margin: 0 0 14px;
-      font-size: 14px;
-      color: rgba(255,255,255,0.75);
-    }
-
-    .department-items {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .department-item {
-      display: inline-block;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      color: #fff;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .department-item:hover {
-      border-color: rgba(88,166,255,0.5);
-      background: rgba(88,166,255,0.12);
-    }
-
-    .comparison-section {
-      width: 100%;
-      max-width: 560px;
-      margin: 0 auto 18px;
-      padding: 18px;
-      border-radius: 18px;
-      background: #161b22;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .comparison-header h2 {
-      margin: 0 0 6px;
-      font-size: 24px;
-    }
-
-    .comparison-header p {
-      margin: 0 0 16px;
-      color: rgba(255,255,255,0.75);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .comparison-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .comparison-badge {
-      display: inline-block;
-      margin-bottom: 8px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      background: rgba(245,197,66,0.12);
-      color: #f5c542;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .comparison-card h3 {
-      margin: 0 0 6px;
-      font-size: 18px;
-    }
-
-    .comparison-card p {
-      margin: 0 0 10px;
-      color: rgba(255,255,255,0.78);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .comparison-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0 12px;
-    }
-
-    .comparison-pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
+      margin: 0 auto 12px;
+      color: rgba(255,255,255,0.52);
       font-size: 12px;
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.88);
+      text-align: center;
     }
-
-    .comparison-link {
-      display: inline-block;
-      text-decoration: none;
-      font-weight: 700;
-      color: #58a6ff;
-    }
-
-    .comparison-link:hover { text-decoration: underline; }
 
     .feed-container {
       display: flex;
@@ -385,6 +426,7 @@
       border-radius: 16px;
       padding: 14px;
       cursor: pointer;
+      text-decoration: none;
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
@@ -394,12 +436,13 @@
       border-color: rgba(245,197,66,0.24);
     }
 
-    .feed-card.money-card {
-      border: 1px solid rgba(245,197,66,0.35);
-      background: linear-gradient(180deg, rgba(245,197,66,0.08), rgba(255,255,255,0.02));
+    .feed-card.featured-video {
+      border-color: rgba(245,197,66,0.20);
+      background: linear-gradient(180deg, rgba(245,197,66,0.06), rgba(22,27,34,1));
     }
 
     .media-box {
+      position: relative;
       width: 100%;
       aspect-ratio: 9 / 16;
       min-height: 500px;
@@ -410,8 +453,7 @@
     }
 
     .media-box iframe,
-    .media-box img,
-    .media-box video {
+    .media-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -419,60 +461,65 @@
       display: block;
     }
 
-    .promo-media {
+    .video-thumb {
       position: relative;
       width: 100%;
       height: 100%;
       display: block;
+      background: #10151d;
+      overflow: hidden;
     }
 
-    .promo-overlay {
+    .video-thumb img {
+      filter: brightness(0.74);
+      transform: scale(1.08);
+    }
+
+    .play-overlay {
       position: absolute;
       inset: 0;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 18px;
-      background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0.18) 45%, rgba(0,0,0,0.05));
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.10));
     }
 
-    .promo-kicker {
+    .play-button {
+      width: 74px;
+      height: 74px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.92);
+      color: #111;
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    .feed-intent-label {
       display: inline-block;
-      width: fit-content;
-      margin-bottom: 10px;
-      padding: 6px 10px;
+      margin-bottom: 8px;
+      padding: 5px 9px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-    }
-
-    .promo-title {
-      font-size: 28px;
       font-weight: 800;
-      line-height: 1.08;
-      margin-bottom: 8px;
-      max-width: 80%;
-    }
-
-    .promo-subtitle {
-      font-size: 14px;
-      color: rgba(255,255,255,0.85);
-      max-width: 85%;
-      line-height: 1.4;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #f5c542;
+      background: rgba(245,197,66,0.10);
+      border: 1px solid rgba(245,197,66,0.18);
     }
 
     .feed-content h3 {
-      margin: 0 0 8px 0;
+      margin: 0 0 8px;
       font-size: 20px;
       line-height: 1.3;
     }
 
     .feed-content p {
-      margin: 0 0 10px 0;
+      margin: 0 0 10px;
       color: rgba(255,255,255,0.82);
       line-height: 1.5;
       font-size: 14px;
@@ -494,47 +541,13 @@
       text-transform: capitalize;
       background: rgba(255,255,255,0.08);
       color: #ddd;
-      vertical-align: middle;
     }
 
-    .feed-platform.youtube { background: rgba(255,0,0,0.15); color: #ff6b6b; }
-    .feed-platform.reddit { background: rgba(255,69,0,0.15); color: #ff4500; }
-    .feed-platform.facebook { background: rgba(24,119,242,0.15); color: #66a3ff; }
-    .feed-platform.instagram { background: rgba(240,140,255,0.15); color: #f08cff; }
-    .feed-platform.deals { background: rgba(245,197,66,0.15); color: #f5c542; }
-    .feed-platform.tiktok { background: rgba(255,255,255,0.12); color: #ffffff; }
-    .feed-platform.vimeo { background: rgba(26,183,234,0.15); color: #87dfff; }
-    .feed-platform.dailymotion { background: rgba(0,110,255,0.15); color: #66a9ff; }
-
-    .feed-link,
-    .sticky-link,
-    .popup-link {
-      display: inline-block;
+    .feed-link {
       color: #58a6ff;
       text-decoration: none;
       font-size: 14px;
       font-weight: 700;
-    }
-
-    .feed-link:hover,
-    .sticky-link:hover,
-    .popup-link:hover { text-decoration: underline; }
-
-    .decision-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0 4px;
-    }
-
-    .decision-pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.88);
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
     }
 
     .column-3 {
@@ -546,7 +559,7 @@
     }
 
     .column-3 h2 {
-      margin: 0 0 16px 0;
+      margin: 0 0 16px;
       font-size: 18px;
       font-weight: 700;
       text-align: center;
@@ -571,57 +584,36 @@
       min-height: 92px;
       padding: 12px;
       text-decoration: none;
-      overflow: hidden;
-      transition: all 0.2s ease;
-      position: relative;
       color: #fff;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
     }
 
     .brand-tile:hover {
+      border-color: rgba(245,197,66,0.30);
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-
-    .brand-logo-wrap {
-      width: 100%;
-      min-height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 8px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.96);
-    }
-
-    .brand-tile img {
-      width: auto;
-      max-width: 100%;
-      height: 30px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .brand-tile span {
-      font-size: 12px;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.2;
     }
 
     .brand-fallback {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 44px;
-      min-height: 30px;
-      padding: 4px 8px;
+      width: 32px;
+      height: 32px;
       border-radius: 999px;
-      background: rgba(15,20,27,0.12);
+      background: rgba(255,255,255,0.94);
       color: #0f141b;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
+      font-size: 12px;
+      font-weight: 900;
       text-transform: uppercase;
+    }
+
+    .brand-tile span {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
     }
 
     #stickyBar {
@@ -652,76 +644,9 @@
       color: #f5c542;
       white-space: nowrap;
       font-size: 14px;
-    }
-
-    #dealPopup {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.62);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 80;
-      padding: 20px;
-    }
-
-    .popup-card {
-      width: min(420px, 100%);
-      background: #161b22;
-      border: 1px solid rgba(245,197,66,0.28);
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 18px 46px rgba(0,0,0,0.42);
-    }
-
-    .popup-card h3 {
-      margin: 0 0 8px;
-      font-size: 24px;
-      line-height: 1.15;
-    }
-
-    .popup-card p {
-      margin: 0 0 16px;
-      color: rgba(255,255,255,0.78);
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .popup-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .popup-link {
-      color: #f5c542;
-      font-size: 15px;
-    }
-
-    .popup-close {
-      border: 1px solid rgba(255,255,255,0.12);
-      background: transparent;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .priority-pill {
-      display: inline-block;
-      margin-bottom: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(245,197,66,0.12);
-      color: #f5c542;
-      font-size: 11px;
+      text-decoration: none;
       font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
     }
-
-    *::-webkit-scrollbar { width: 0; height: 0; }
 
     @media (max-width: 960px) {
       .app { grid-template-columns: 240px minmax(0, 1fr); }
@@ -734,22 +659,22 @@
         min-height: 100%;
       }
 
-      body {
-        overflow: auto;
+      body { overflow: auto; }
+
+      .travel-directory-shell {
+        position: sticky;
+        top: 0;
+        grid-template-columns: auto 1fr;
       }
 
-      .top-feature {
-        position: relative;
-        width: 100%;
-        border-right: 0;
-        padding: 14px 16px;
-      }
+      .directory-right { display: none; }
+      .directory-center { justify-content: flex-start; }
 
       .app {
         display: flex;
         flex-direction: column;
         height: auto;
-        min-height: 0;
+        padding-top: 0;
       }
 
       .column {
@@ -759,41 +684,17 @@
       .column-1,
       .column-2,
       .column-3 {
-        display: flex;
         width: 100%;
         border: 0;
-        padding-top: 0;
       }
 
       .column-1 {
-        background: #0f141b;
-        padding: 0 0 10px;
-      }
-
-      .column-1-header,
-      .column-3 h2 {
-        text-align: left;
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .column-1-search-wrap {
-        padding: 10px 16px 0;
-      }
-
-      .column-1-search {
-        max-width: 100%;
+        height: auto;
       }
 
       .column-1-scroll {
         overflow: visible;
         padding: 12px 16px;
-        align-items: stretch;
-      }
-
-      .category,
-      .brand-grid {
-        max-width: 100%;
       }
 
       #magnetoColumn {
@@ -802,9 +703,7 @@
         padding: 12px 12px 110px;
       }
 
-      .feed-container {
-        max-width: 100%;
-      }
+      .feed-container { max-width: 100%; }
 
       .media-box {
         min-height: 320px;
@@ -812,1363 +711,3305 @@
       }
 
       .column-3 {
+        display: flex;
         padding: 8px 16px 28px;
+      }
+
+      .brand-grid { max-width: 100%; }
+
+      #stickyBar {
+        width: calc(100% - 20px);
+        bottom: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    .source-link {
+      display: inline-block;
+      margin-top: 8px;
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .source-link:hover {
+      text-decoration: underline;
+    }
+
+    .feed-loader {
+      width: 100%;
+      max-width: 560px;
+      margin: 8px auto 0;
+      padding: 12px;
+      text-align: center;
+      color: rgba(255,255,255,0.55);
+      font-size: 12px;
+    }
+
+
+    /* Mobile responsiveness upgrade */
+    .directory-center {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .directory-item {
+      flex: 0 0 auto;
+    }
+
+    .feed-card:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 768px) {
+      html, body {
+        height: auto;
+        min-height: 100%;
+      }
+
+      body {
+        overflow: auto;
+      }
+
+      .travel-directory-shell {
+        position: sticky;
+        top: 0;
+        grid-template-columns: auto 1fr;
+        height: auto;
+        min-height: 42px;
+      }
+
+      .directory-left {
+        min-width: auto;
+        padding-right: 10px;
+      }
+
+      .directory-right {
+        display: none;
+      }
+
+      .directory-center {
+        justify-content: flex-start;
+        height: 42px;
+        gap: 6px;
+      }
+
+      .directory-item {
+        height: 30px;
+        padding: 0 9px;
+        font-size: 13px;
+      }
+
+      .directory-menu {
+        width: 100%;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        max-height: calc(100vh - 42px);
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
+        padding-top: 0;
+      }
+
+      .column {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+      }
+
+      .column-1,
+      .column-2,
+      .column-3 {
+        width: 100%;
+        border: 0;
+      }
+
+      .column-1 {
+        height: auto;
         background: #0f141b;
       }
 
+      .column-1-controls {
+        position: static;
+        padding: 10px 12px;
+      }
+
+      .column-1-scroll {
+        overflow: visible;
+        padding: 12px;
+        align-items: stretch;
+      }
+
+      .category {
+        max-width: 100%;
+      }
+
+      #magnetoColumn {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        padding: 10px 10px 100px;
+        align-items: stretch;
+      }
+
+      .feed-container {
+        max-width: 100%;
+        gap: 14px;
+      }
+
+      .feed-card {
+        padding: 12px;
+        border-radius: 14px;
+      }
+
+      .media-box {
+        aspect-ratio: 9 / 16;
+        min-height: 260px;
+        max-height: 65vh;
+      }
+
+      .feed-content h3 {
+        font-size: 17px;
+      }
+
+      .feed-content p {
+        font-size: 13px;
+      }
+
+      .column-3 {
+        display: flex;
+        padding: 12px 12px 28px;
+        background: #0f141b;
+      }
+
+      .column-3 h2 {
+        text-align: left;
+        margin-left: 0;
+      }
+
       .brand-grid {
+        max-width: 100%;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        margin: 0;
       }
 
       #stickyBar {
         width: calc(100% - 20px);
         bottom: 10px;
-        padding: 12px;
         flex-direction: column;
         align-items: flex-start;
+        gap: 6px;
+        padding: 10px;
+      }
+
+      .sticky-copy {
+        font-size: 12px;
+      }
+
+      .sticky-link {
+        font-size: 13px;
       }
     }
-  </style>
+
+    @media (max-width: 420px) {
+      .directory-logo {
+        font-size: 14px;
+      }
+
+      .directory-item {
+        font-size: 12px;
+        padding: 0 8px;
+      }
+
+      .media-box {
+        min-height: 240px;
+      }
+
+      .brand-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+    }
+
+
+    .seo-local-content {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+  
+
+    html[data-i18n-ready="0"] body { opacity: 0; }
+    html[data-i18n-ready="1"] body { opacity: 1; transition: opacity .15s ease; }
+  
+
+    /* ---------------------------------------------------------
+       COLUMN 1 — BASELINE DARK CARD ACCORDION
+       Header keeps travel categories; Column 1 shows the rest.
+    --------------------------------------------------------- */
+
+    .column-1 {
+      background: #0f141b;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .column-1-controls {
+      padding: 10px 8px 12px;
+      background: #0f141b;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .column-1-header {
+      padding: 0 0 8px 4px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #b9c7d8;
+    }
+
+    .column-1-search {
+      width: 100%;
+      height: 32px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #0d1117;
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .column-1-search::placeholder {
+      color: rgba(255,255,255,0.45);
+    }
+
+    .column-1-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      background: #0f141b;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.22) transparent;
+    }
+
+    #column1.c1 {
+      width: 100%;
+      background: transparent;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    #column1.c1 .c1-group {
+      margin: 0 0 10px;
+      border-radius: 9px;
+      overflow: hidden;
+      background: #1b2128;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    #column1.c1 .c1-header {
+      min-height: 36px;
+      padding: 9px 12px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      line-height: 1.15;
+      font-weight: 900;
+      color: #ffffff;
+      background: #1b2128;
+      transition: background 0.18s ease;
+    }
+
+    #column1.c1 .c1-header:hover,
+    #column1.c1 .c1-header.open,
+    #column1.c1 .c1-header.active {
+      background: #192532;
+    }
+
+    #column1.c1 .c1-header::before {
+      content: "▶";
+      display: inline-block;
+      width: 13px;
+      flex: 0 0 13px;
+      color: rgba(255,255,255,0.9);
+      font-size: 11px;
+      line-height: 1;
+      transform: translateY(1px);
+    }
+
+    #column1.c1 .c1-header.open::before,
+    #column1.c1 .c1-header.active::before {
+      content: "▼";
+      color: #aee1ff;
+    }
+
+    #column1.c1 .c1-header::after {
+      content: none;
+    }
+
+    #column1.c1 .c1-body {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 15px;
+      background: #141a20;
+      transition: max-height 0.25s ease, padding 0.2s ease;
+    }
+
+    #column1.c1 .c1-body.open {
+      max-height: 700px;
+      padding: 12px 15px 14px;
+    }
+
+    #column1.c1 .c1-partner {
+      display: block;
+      padding: 8px 0;
+      border-radius: 0;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-decoration: none;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+
+    #column1.c1 .c1-partner:hover {
+      color: #f5c542;
+      background: transparent;
+      transform: translateX(2px);
+    }
+
+    #column1.c1 .c1-partner .partner-meta {
+      display: block;
+      margin-top: 3px;
+      color: #9bb0c2;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: lowercase;
+    }
+
+    .partners-empty {
+      margin: 0;
+      padding: 14px;
+      border-radius: 10px;
+      background: #1b2128;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.68);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .column-1-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-track {
+      background: #0f141b;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-thumb {
+      background: #2a3440;
+      border-radius: 999px;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-thumb:hover {
+      background: #3a4654;
+    }
+
+    @media (max-width: 900px) {
+      .column-1 {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .column-1-scroll {
+        overflow: visible;
+        padding: 12px;
+      }
+
+      #column1.c1 .c1-header {
+        min-height: 40px;
+        font-size: 16px;
+      }
+
+      #column1.c1 .c1-partner {
+        font-size: 15px;
+      }
+    }
+</style>
 </head>
+
 <body>
-  <div class="top-feature">
-    <div>
-      <div style="font-weight:800;font-size:20px;color:#f5c542;">SignalBoost</div>
-      <div id="regionTagline" style="font-size:12px;color:rgba(255,255,255,0.6);">Browse the brands people click most.</div>
+
+  <section id="seoContent" class="seo-local-content">
+    <h1 id="seoH1">Cheap flights, hotels and travel deals worldwide</h1>
+    <p id="seoText">Find flights, hotels, eSIM, car rentals, tours, transfers and travel services in one place.</p>
+  </section>
+  <div class="travel-directory-shell">
+    <div class="directory-left">
+      <div class="directory-logo" data-i18n="brand_name">SignalBoost</div>
     </div>
-
-    <a id="featuredPartnerLink" href="#" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background:#161b22;border:1px solid rgba(245,197,66,0.28);border-radius:12px;padding:10px 12px;text-decoration:none;">
-      <div id="featuredDealLabel" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f5c542;margin-bottom:4px;">Featured</div>
-      <div id="featuredDealTitle" style="font-size:14px;font-weight:700;color:#ffffff;line-height:1.3;">Explore top digital services</div>
-      <div id="featuredDealSubtitle" style="font-size:12px;color:rgba(255,255,255,0.68);margin-top:4px;">Curated picks for shopping smarter</div>
-    </a>
-
-    <div id="headerFootnote" style="font-size:11px;color:rgba(255,255,255,0.48);">Trusted platforms and monetized outbound offers.</div>
+    <div class="directory-center" id="travelDirectory"></div>
+    <div class="directory-right"></div>
   </div>
+
+  <div class="directory-menu" id="directoryMenu"></div>
 
   <div class="app">
     <div class="column column-1">
-      <div id="navTitle" class="column-1-header">Navigation</div>
-      <div class="column-1-search-wrap">
-        <input id="partnerSearch" class="column-1-search" type="text" placeholder="Search partners..." />
+      <div class="column-1-controls">
+        <div id="leftHeader" class="column-1-header" data-i18n="explore_offers">Explore offers</div>
+        <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
       </div>
-      <div id="partnersRail" class="column-1-scroll"></div>
+      <div id="partnersRail" class="column-1-scroll">
+        <div id="column1" class="c1">
+          <div class="c1-group" data-cat="marketplace">
+            <div class="c1-header" data-i18n="marketplace">Marketplace</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="products_tools">
+            <div class="c1-header" data-i18n="products_tools">Products &amp; Tools</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="finance">
+            <div class="c1-header" data-i18n="finance">Finance</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="insurance">
+            <div class="c1-header" data-i18n="insurance">Insurance &amp; Claims</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="travel_services">
+            <div class="c1-header" data-i18n="travel_services">Storage &amp; Services</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="specialty_other">
+            <div class="c1-header">Specialty &amp; Other</div>
+            <div class="c1-body"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="column column-2">
       <div id="magnetoColumn">
-        <section id="entryLayer" class="entry-layer">
-          <div class="entry-copy">
-            <div class="entry-kicker">Digital shopping mall</div>
-            <h1 class="entry-title">Find the best digital services in one place</h1>
-            <p class="entry-subtitle">
-              Browse travel, finance, insurance, and online tools curated for smarter decisions.
-            </p>
-          </div>
-
-          <div class="entry-actions">
-            <button class="entry-chip" data-entry-category="travel">✈️ Travel</button>
-            <button class="entry-chip" data-entry-category="finance">💰 Finance</button>
-            <button class="entry-chip" data-entry-category="insurance">🛡️ Insurance</button>
-            <button class="entry-chip" data-entry-category="tools">🌐 Tools</button>
-          </div>
-
-          <div class="entry-links">
-            <button class="entry-link-button" id="showPopularPartners">🔥 Show most popular partners</button>
-            <button class="entry-link-button" id="showAllFeed">✨ Explore everything</button>
-          </div>
-        </section>
-
-        <section id="comparisonSection" class="comparison-section" style="display:none;">
-          <div class="comparison-header">
-            <div class="entry-kicker">Top picks</div>
-            <h2 id="comparisonTitle">Compare services</h2>
-            <p id="comparisonSubtitle">Choose the option that fits what you need.</p>
-          </div>
-          <div id="comparisonGrid" class="comparison-grid"></div>
-        </section>
-
-        <div id="feedIntro" style="font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:12px;">Curated picks for you ↓</div>
-        <div id="clickStats" style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;">🔥 Discovery clicks today: <span id="clickCount">0</span></div>
+        <div id="heroFeedStatus" class="hero-feed-status"></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
 
     <div class="column column-3">
-      <h2 id="brandGridTitle">Most Popular Partners</h2>
+      <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
       <div id="brandGrid" class="brand-grid"></div>
     </div>
   </div>
 
   <div id="stickyBar">
-    <div class="sticky-copy" id="stickyCopy">Explore a featured service picked for this shopping stream.</div>
-    <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer">Explore now</a>
+    <div class="sticky-copy" id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
+    <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="view_more">View More</a>
   </div>
 
-  <div id="dealPopup">
-    <div class="popup-card">
-      <div class="priority-pill">Featured now</div>
-      <h3 id="popupTitle">Don’t miss this pick</h3>
-      <p id="popupText">Take a look at this featured service before you keep scrolling.</p>
-      <div class="popup-actions">
-        <a id="popupLink" class="popup-link" href="#" target="_blank" rel="noopener noreferrer">Explore now</a>
-        <button id="popupClose" class="popup-close" type="button">Keep browsing</button>
-      </div>
-    </div>
-  </div>
+  <div id="sb-debug" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
 
   <script>
-    const fallbackPartners = [
-      { name: 'Cozeware', category: 'Storage & Services', url: 'https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806', tier: 1, logo: '' },
-      { name: 'Airalo', category: 'SIM & Connectivity', url: 'https://airalo.tpo.lv/eXjKLiuw', tier: 2, logo: '' },
-      { name: 'Kiwi.com', category: 'Flights & Meta Search', url: 'https://booking.tpo.lv/enwsEbCs', tier: 2, logo: '' },
-      { name: 'Kiwitaxi', category: 'Transfers & Transport', url: 'https://kiwitaxi.tpo.lv/DVaqmgKo', tier: 3, logo: '' },
-      { name: 'Welcome Pickups', category: 'Transfers & Transport', url: 'https://tpo.lv/XAJOoobr', tier: 3, logo: '' },
-      { name: 'Klook', category: 'Tours & Activities', url: 'https://klook.tpo.lv/pTp1NljF', tier: 3, logo: '' }
+    const partnersData = [
+  {
+    "name": "Alamo",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
+    "tier": 1,
+    "logo": "",
+    "highlight": "Reliable car rentals for airport and city trips",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Localrent",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://localrent.tpo.lv/XS0CqdMP",
+    "tier": 1,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Economybookings",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://economybookings.tpo.lv/jSFMPEPA",
+    "tier": 2,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "QEEQ",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://qeeq.tpo.lv/jklB4Pbm",
+    "tier": 2,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "AutoEurope",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://autoeurope.tpo.lv/t84AzZbO",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Europcar AU/NZ",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "GetRentacar",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://getrentacar.tpo.lv/OR2TWduQ",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Jumbo Car Costa Rica",
+    "category": "Car Rentals",
+    "region": "latam",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Kapitalwise",
+    "category": "Finance",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "finance"
+  },
+  {
+    "name": "Countabout",
+    "category": "Finance",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "finance"
+  },
+  {
+    "name": "FileYourTaxes",
+    "category": "Finance",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "finance"
+  },
+  {
+    "name": "Você RH",
+    "category": "Finance",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
+    "tier": 3,
+    "logo": "",
+    "notes": "Use only in finance/career context.",
+    "category_key": "finance"
+  },
+  {
+    "name": "CVC BR",
+    "category": "Flights & Meta Search",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
+    "tier": 1,
+    "logo": "",
+    "notes": "Admitad connected offer. Verify rules and allowed traffic.",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi",
+    "category": "Flights & Meta Search",
+    "region": "br",
+    "network": "Travelpayouts",
+    "url": "https://booking.tpo.lv/enwsEbCs",
+    "tier": 1,
+    "logo": "",
+    "status": "verify_subscription",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi",
+    "category": "Flights & Meta Search",
+    "region": "ca",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi",
+    "category": "Flights & Meta Search",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://booking.tpo.lv/enwsEbCs",
+    "tier": 1,
+    "logo": "",
+    "status": "verify_subscription",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi",
+    "category": "Flights & Meta Search",
+    "region": "mx",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi",
+    "category": "Flights & Meta Search",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://booking.tpo.lv/enwsEbCs",
+    "tier": 1,
+    "logo": "",
+    "status": "verify_subscription",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi",
+    "category": "Flights & Meta Search",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "flights"
+  },
+  {
+    "name": "Aviasales",
+    "category": "Flights & Meta Search",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://aviasales.tpo.lv/VoWXgFFm",
+    "tier": 2,
+    "logo": "",
+    "notes": "Flights only. Avoid hotel flow.",
+    "category_key": "flights"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "br",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "eu",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "mx",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "H10 Hotels",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Sirenis Hotels",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Travelking",
+    "category": "Hotels",
+    "region": "pl",
+    "network": "Admitad",
+    "url": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "latam",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Zenhotels",
+    "category": "Hotels",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "AURAS Travel Insurance",
+    "category": "Insurance & Claims",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://ogsib.com/g/g86qhgosread273170bc102b8feede/",
+    "tier": 1,
+    "logo": "",
+    "highlight": "Travel with protection — simple & reliable insurance",
+    "category_key": "insurance"
+  },
+  {
+    "name": "AirHelp",
+    "category": "Insurance & Claims",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/",
+    "tier": 1,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "EKTA Insurance",
+    "category": "Insurance & Claims",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://ektatraveling.tpo.lv/XWbZbj8S",
+    "tier": 1,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "AirHelp",
+    "category": "Insurance & Claims",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://airhelp.tpo.lv/EPrGDSO3",
+    "tier": 2,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "Melhor Seguro",
+    "category": "Insurance & Claims",
+    "region": "br",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "Compensair",
+    "category": "Insurance & Claims",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://compensair.tpo.lv/wxDDCITG",
+    "tier": 3,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "Amazon",
+    "category": "Marketplace",
+    "region": "global",
+    "network": "Amazon",
+    "url": "https://www.amazon.com/?tag=signalboostai-20",
+    "tier": 1,
+    "logo": "",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Amazon BR",
+    "category": "Marketplace",
+    "region": "br",
+    "network": "Amazon",
+    "url": "https://www.amazon.com.br/?tag=signalboostai-20",
+    "tier": 1,
+    "logo": "",
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Amazon PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Amazon",
+    "url": "https://www.amazon.pl/?tag=signalboostai-20",
+    "tier": 1,
+    "logo": "",
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "AliExpress PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Alibaba",
+    "category": "Marketplace",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Amazon MX",
+    "category": "Marketplace",
+    "region": "mx",
+    "network": "Amazon",
+    "url": "https://www.amazon.com.mx/?tag=signalboostai-20",
+    "tier": 2,
+    "logo": "",
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Proton VPN",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+    "tier": 1,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Cozeware",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "ESET",
+    "category": "Products & Tools",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "UdPower",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Smart gadgets and power solutions for everyday use",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Guldi",
+    "category": "Products & Tools",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/",
+    "tier": 3,
+    "logo": "",
+    "notes": "Guldi (EN) Affiliate Program",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "PearlMountain Limited",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "SuperBox",
+    "category": "Products & Tools",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "TikTok Lite",
+    "category": "Products & Tools",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/",
+    "tier": 3,
+    "logo": "",
+    "notes": "CPI/CPA. Keep out of main travel UI unless rules allow this traffic.",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Valerion",
+    "category": "Products & Tools",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Airalo",
+    "category": "SIM & Connectivity",
+    "region": "br",
+    "network": "Travelpayouts",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
+    "tier": 1,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Airalo",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
+    "tier": 1,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Airalo",
+    "category": "SIM & Connectivity",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
+    "tier": 1,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "SuperSim",
+    "category": "SIM & Connectivity",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
+    "tier": 1,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Saily",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
+    "tier": 2,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "TurboVPN",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Secure your connection anywhere with VPN access",
+    "category_key": "sim"
+  },
+  {
+    "name": "Yesim",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://yesim.tpo.lv/3vIzBQts",
+    "tier": 2,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Drimsim",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://drimsim.tpo.lv/PGwr6JTr",
+    "tier": 3,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Cyber Florist",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://yjfca.com/g/75nfprdgefad273170bc5a87002712/",
+    "tier": 4,
+    "logo": "",
+    "status": "hold",
+    "notes": "Legitimate via Admitad screenshot, but weak strategic fit. Do not show unless testing.",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "King Koil",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
+    "tier": 4,
+    "logo": "",
+    "status": "hold",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Tsarbomba",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
+    "tier": 4,
+    "logo": "",
+    "status": "hold",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Xuchang Aixiu Hair Products",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
+    "tier": 4,
+    "logo": "",
+    "status": "hold",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Radical Storage",
+    "category": "Storage & Services",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://radicalstorage.tpo.lv/tna4hnly",
+    "tier": 2,
+    "logo": "",
+    "category_key": "travel_services"
+  },
+  {
+    "name": "Radical Storage",
+    "category": "Storage & Services",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://radicalstorage.tpo.lv/tna4hnly",
+    "tier": 2,
+    "logo": "",
+    "category_key": "travel_services"
+  },
+  {
+    "name": "Klook",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://klook.tpo.lv/pTp1NljF",
+    "tier": 1,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "GoCity",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://gocity.tpo.lv/Des5Cgov",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Klook",
+    "category": "Tours & Activities",
+    "region": "br",
+    "network": "Travelpayouts",
+    "url": "https://klook.tpo.lv/pTp1NljF",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets",
+    "category": "Tours & Activities",
+    "region": "eu",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets",
+    "category": "Tours & Activities",
+    "region": "gb",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets",
+    "category": "Tours & Activities",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "WeGoTrip",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://wegotrip.tpo.lv/kKIF0gIW",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "BigBusTours",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://bigbustours.tpo.lv/grT1QWXA",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "BikesBooking",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://bikesbooking.tpo.lv/B3zIKanS",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "EatWith",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://eatwith.tpo.lv/BfAnpZNb",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Searadar",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://searadar.tpo.lv/TO4A5eBZ",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Kiwitaxi",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+    "tier": 1,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Welcome Pickups",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://tpo.lv/XAJOoobr",
+    "tier": 1,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "GetTransfer",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Intui.travel",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://intui.tpo.lv/Rrx5VuN3",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Kiwitaxi",
+    "category": "Transfers & Transport",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Quero Passagem",
+    "category": "Transfers & Transport",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
+    "tier": 2,
+    "logo": "",
+    "notes": "Brazil bus/travel ticket partner",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Welcome Pickups",
+    "category": "Transfers & Transport",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://tpo.lv/XAJOoobr",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Busbud",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://busbud.tpo.lv/h4C6YPFZ",
+    "tier": 3,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "HolidayTaxis",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://holidaytaxis.tpo.lv/oHwpbrFt",
+    "tier": 3,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Bella Storia PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Bloomcabin Poland",
+    "category": "Products & Tools",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Converse PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "DAX PL",
+    "category": "Products & Tools",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Swiat Supli PL",
+    "category": "Products & Tools",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "TWOJEMEBLE PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Weneve PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  }
+];
+
+    const TOP_TRAVEL_CATEGORIES = [
+      "Flights & Meta Search",
+      "Hotels",
+      "Transfers & Transport",
+      "Car Rentals",
+      "SIM & Connectivity",
+      "Tours & Activities"
     ];
 
-    const hybridVideoPool = [
+    const REGION_CONFIG = {
+      global: { lang: "en", label: "Global" },
+      us: { lang: "en", label: "United States" },
+      ca: { lang: "en", label: "Canada" },
+      au: { lang: "en", label: "Australia" },
+      gb: { lang: "en", label: "United Kingdom" },
+      uk: { lang: "en", label: "United Kingdom" },
+      pl: { lang: "pl", label: "Polska" },
+      br: { lang: "pt-BR", label: "Brasil" },
+      pt: { lang: "pt", label: "Portugal" },
+      mx: { lang: "es", label: "México" },
+      ar: { lang: "es", label: "Argentina" },
+      co: { lang: "es", label: "Colombia" },
+      pe: { lang: "es", label: "Perú" },
+      cl: { lang: "es", label: "Chile" },
+      latam: { lang: "es", label: "LatAm" },
+      es: { lang: "es", label: "España" },
+      de: { lang: "de", label: "Deutschland" },
+      fr: { lang: "fr", label: "France" },
+      it: { lang: "it", label: "Italia" },
+      ru: { lang: "ru", label: "Россия" },
+      cn: { lang: "zh-CN", label: "中国" },
+      zh: { lang: "zh-CN", label: "中国" },
+      tw: { lang: "zh-TW", label: "台灣" },
+      jp: { lang: "ja", label: "日本" },
+      kr: { lang: "ko", label: "한국" }
+    };
+
+    const I18N = {
+      en: {
+        leftHeader: "Explore offers",
+        searchPlaceholder: "Flights, hotels, eSIM, tours...",
+        brandGridTitle: "Most Popular Partners",
+        stickyCopy: "Explore a featured service picked for you.",
+        stickyLink: "Explore now",
+        videoCta: "Watch / open source →",
+        noExtraPartners: "No extra partners available for your region right now.",
+        loadingVideos: "Loading current videos for your region…",
+        categories: {
+          "Flights & Meta Search": "Flights",
+          "Hotels": "Hotels",
+          "Transfers & Transport": "Transfers & Transport",
+          "Car Rentals": "Car Rentals",
+          "SIM & Connectivity": "SIM & Connectivity",
+          "Tours & Activities": "Tours & Activities"
+        }
+      },
+      "pt-BR": {
+        leftHeader: "Explorar ofertas",
+        searchPlaceholder: "Voos, hotéis, eSIM, passeios...",
+        brandGridTitle: "Parceiros mais populares",
+        stickyCopy: "Explore um serviço em destaque escolhido para você.",
+        stickyLink: "Explorar agora",
+        videoCta: "Assistir / abrir fonte →",
+        noExtraPartners: "Nenhum parceiro extra disponível para sua região no momento.",
+        loadingVideos: "Carregando vídeos atuais para sua região…",
+        categories: {
+          "Flights & Meta Search": "Voos",
+          "Hotels": "Hotéis",
+          "Transfers & Transport": "Transfers & Transporte",
+          "Car Rentals": "Aluguel de carros",
+          "SIM & Connectivity": "SIM & Conectividade",
+          "Tours & Activities": "Passeios & Atividades",
+          "Insurance & Claims": "Seguros e reembolsos",
+          "Finance": "Finanças",
+          "Marketplace": "Compras online",
+          "Products & Tools": "Produtos e ferramentas",
+          "Storage & Services": "Serviços de viagem",
+          "Specialty & Other": "Outros serviços",
+          "Insurance & Claims": "Seguros e reembolsos",
+          "Finance": "Finanças",
+          "Marketplace": "Compras online",
+          "Products & Tools": "Produtos e ferramentas",
+          "Storage & Services": "Serviços de viagem",
+          "Specialty & Other": "Outros serviços"
+        }
+      },
+      pl: {
+        leftHeader: "Przeglądaj oferty",
+        searchPlaceholder: "Loty, hotele, eSIM, wycieczki...",
+        brandGridTitle: "Najpopularniejsi partnerzy",
+        stickyCopy: "Sprawdź wyróżnioną usługę wybraną dla Ciebie.",
+        stickyLink: "Otwórz teraz",
+        videoCta: "Obejrzyj / otwórz źródło →",
+        noExtraPartners: "Brak dodatkowych partnerów dostępnych teraz w Twoim regionie.",
+        loadingVideos: "Ładowanie aktualnych filmów dla Twojego regionu…",
+        categories: {
+          "Flights & Meta Search": "Loty",
+          "Hotels": "Hotele",
+          "Transfers & Transport": "Transfery i transport",
+          "Car Rentals": "Wynajem aut",
+          "SIM & Connectivity": "SIM i łączność",
+          "Tours & Activities": "Wycieczki i atrakcje"
+        }
+      },
+      es: {
+        leftHeader: "Explorar ofertas",
+        searchPlaceholder: "Vuelos, hoteles, eSIM, tours...",
+        brandGridTitle: "Socios más populares",
+        stickyCopy: "Explora un servicio destacado elegido para ti.",
+        stickyLink: "Explorar ahora",
+        videoCta: "Ver / abrir fuente →",
+        noExtraPartners: "No hay socios adicionales disponibles para tu región ahora.",
+        loadingVideos: "Cargando videos actuales para tu región…",
+        categories: {
+          "Flights & Meta Search": "Vuelos",
+          "Hotels": "Hoteles",
+          "Transfers & Transport": "Traslados y transporte",
+          "Car Rentals": "Alquiler de autos",
+          "SIM & Connectivity": "SIM y conectividad",
+          "Tours & Activities": "Tours y actividades"
+        }
+      }
+    };
+
+    const fallbackHeroFeedItems = [
       {
-        platform: 'youtube',
-        title: 'Travel smarter before you book',
-        description: 'Quick inspiration for your next trip decision.',
-        author: 'YouTube',
+        platform: "youtube",
+        title: "Travel smarter before you book",
+        description: "Regional hybrid feed fallback preview.",
+        author: "YouTube",
         publishedAt: new Date().toISOString(),
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&playsinline=1',
-        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-        category: 'travel'
+        url: "https://www.youtube.com/watch?v=RcmrbNRK-jY",
+        thumbnail: "https://img.youtube.com/vi/RcmrbNRK-jY/hqdefault.jpg",
+        region: "global",
+        score: 5
       },
       {
-        platform: 'youtube',
-        title: 'Cheap flights and booking hacks',
-        description: 'Short-form discovery content to support better booking decisions.',
-        author: 'YouTube',
+        platform: "youtube",
+        title: "Cheap flights and booking hacks",
+        description: "Popular travel discovery fallback.",
+        author: "YouTube",
         publishedAt: new Date(Date.now() - 60000).toISOString(),
-        url: 'https://www.youtube.com/watch?v=OPf0YbXqDm0',
-        embedUrl: 'https://www.youtube.com/embed/OPf0YbXqDm0?rel=0&modestbranding=1&playsinline=1',
-        thumbnail: 'https://img.youtube.com/vi/OPf0YbXqDm0/hqdefault.jpg',
-        category: 'travel'
+        url: "https://www.youtube.com/watch?v=1La4QzGeaaQ",
+        thumbnail: "https://img.youtube.com/vi/1La4QzGeaaQ/hqdefault.jpg",
+        region: "global",
+        score: 4
       },
       {
-        platform: 'vimeo',
-        title: 'Featured travel content',
-        description: 'Browse partner-ready inspiration and jump into offers.',
-        author: 'Vimeo',
+        platform: "vimeo",
+        title: "Featured travel content",
+        description: "Browse partner-ready inspiration and jump into offers.",
+        author: "Vimeo",
         publishedAt: new Date(Date.now() - 180000).toISOString(),
-        url: 'https://vimeo.com/76979871',
-        embedUrl: 'https://player.vimeo.com/video/76979871?title=0&byline=0&portrait=0',
-        thumbnail: 'https://i.vimeocdn.com/video/452001751-640.jpg',
-        category: 'travel'
-      },
-      {
-        platform: 'dailymotion',
-        title: 'Travel clip highlight',
-        description: 'Short and scrollable content for discovery mode.',
-        author: 'Dailymotion',
-        publishedAt: new Date(Date.now() - 300000).toISOString(),
-        url: 'https://www.dailymotion.com/video/x84sh87',
-        embedUrl: 'https://www.dailymotion.com/embed/video/x84sh87',
-        thumbnail: 'https://via.placeholder.com/720x1280/10203a/66a9ff?text=Dailymotion',
-        category: 'travel'
-      },
-      {
-        platform: 'tiktok',
-        title: 'Viral travel savings clip',
-        description: 'A preview slot for short-form acquisition content.',
-        author: 'TikTok',
-        publishedAt: new Date(Date.now() - 360000).toISOString(),
-        url: 'https://www.tiktok.com/@scout2015/video/6718335390845095173',
-        embedUrl: 'https://www.tiktok.com/player/v1/6718335390845095173',
-        thumbnail: 'https://via.placeholder.com/720x1280/101018/ffffff?text=TikTok',
-        category: 'travel'
+        url: "https://vimeo.com/76979871",
+        embedUrl: "https://player.vimeo.com/video/76979871?title=0&byline=0&portrait=0",
+        thumbnail: "https://i.vimeocdn.com/video/452001751-640.jpg",
+        region: "global",
+        score: 3
       }
     ];
 
-    let partnersData = fallbackPartners.slice();
-    let currentRegion = 'global';
-    let currentLanguage = 'en';
-    let baseFeedItems = [];
-    let allFeedItems = [];
-    let renderedFeedCount = 0;
-    let isRenderingMore = false;
-    let popupShown = false;
+    let clickCount = Number(localStorage.getItem("signalboost_clicks") || "0");
 
-    const FEED_BATCH_SIZE = 6;
-    const FEED_INSERTION_INTERVAL = 6;
+    const travelDirectory = document.getElementById("travelDirectory");
+    const directoryMenu = document.getElementById("directoryMenu");
+    const partnersRail = document.getElementById("partnersRail");
+    const feedContainer = document.getElementById("feedContainer");
+    const magnetoColumn = document.getElementById("magnetoColumn");
+    let loadingMoreFeedItems = false;
+    const FEED_PAGE_SIZE = 3;
+    let feedSourceItems = [];
+    let feedNextIndex = 0;
 
-    const partnersRail = document.getElementById('partnersRail');
-    const brandGrid = document.getElementById('brandGrid');
-    const brandGridTitle = document.getElementById('brandGridTitle');
-    const regionTagline = document.getElementById('regionTagline');
-    const feedContainer = document.getElementById('feedContainer');
+    function getNextFeedBatch() {
+      if (!feedSourceItems.length) return [];
+
+      const batch = [];
+      for (let i = 0; i < FEED_PAGE_SIZE; i += 1) {
+        const sourceItem = feedSourceItems[feedNextIndex % feedSourceItems.length];
+        batch.push(sourceItem);
+        feedNextIndex += 1;
+      }
+
+      return batch;
+    }
+    const brandGrid = document.getElementById("brandGrid");
+    const partnerSearch = document.getElementById("partnerSearch");
+    let ACTIVE_REGION = null;
+
+    function normalizeRegion(value) {
+      const raw = String(value || "").trim().toLowerCase();
+      if (!raw) return "";
+
+      const aliases = {
+        usa: "us", unitedstates: "us", "united-states": "us",
+        uk: "gb", "united-kingdom": "gb",
+        poland: "pl", polska: "pl",
+        brazil: "br", brasil: "br",
+        "pt-br": "br",
+        mexico: "mx", méxico: "mx",
+        china: "cn", japan: "jp", korea: "kr", "south-korea": "kr"
+      };
+
+      return aliases[raw] || raw.split("-").pop();
+    }
+
+    function setActiveRegion(value) {
+      const normalized = normalizeRegion(value);
+      ACTIVE_REGION = REGION_CONFIG[normalized] ? normalized : (normalized || "us");
+      document.documentElement.dataset.region = ACTIVE_REGION;
+      return ACTIVE_REGION;
+    }
+
+    function detectRegionFromLocale() {
+      const locale = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+      const lang = locale.toLowerCase();
+
+      if (lang.startsWith("pt-br") || lang === "pt") return "br";
+      if (lang.startsWith("pl")) return "pl";
+      if (lang.startsWith("es")) return "latam";
+      if (lang.startsWith("en-gb")) return "gb";
+      if (lang.startsWith("en-ca")) return "ca";
+      if (lang.startsWith("en")) return "us";
+      if (lang.startsWith("de")) return "de";
+      if (lang.startsWith("fr")) return "fr";
+      if (lang.startsWith("it")) return "it";
+      if (lang.startsWith("ru")) return "ru";
+      if (lang.startsWith("zh")) return lang.includes("tw") || lang.includes("hk") || lang.includes("mo") ? "tw" : "cn";
+      if (lang.startsWith("ja")) return "jp";
+      if (lang.startsWith("ko")) return "kr";
+
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      if (tz.includes("Sao_Paulo")) return "br";
+      if (tz.includes("Warsaw")) return "pl";
+      if (tz.includes("Moscow")) return "ru";
+      if (tz.includes("Shanghai") || tz.includes("Beijing") || tz.includes("Chongqing") || tz.includes("Harbin")) return "cn";
+      if (tz.includes("Taipei")) return "tw";
+      if (tz.includes("Tokyo")) return "jp";
+      if (tz.includes("Seoul")) return "kr";
+      if (tz.includes("Mexico") || tz.includes("Bogota") || tz.includes("Lima") || tz.includes("Buenos_Aires") || tz.includes("Santiago")) return "latam";
+
+      return "us";
+    }
+
+    function getRegion() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = normalizeRegion(params.get("region"));
+      if (raw && REGION_CONFIG[raw]) return raw;
+
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes("/pl")) return "pl";
+      if (path.includes("/pt-br") || path.includes("/br")) return "br";
+      if (path.includes("/ru")) return "ru";
+      if (path.includes("/zh-cn") || path.includes("/cn")) return "cn";
+      if (path.includes("/zh-tw") || path.includes("/tw")) return "tw";
+      if (path.includes("/es")) return "es";
+      if (path.includes("/fr")) return "fr";
+      if (path.includes("/de")) return "de";
+      if (path.includes("/it")) return "it";
+      if (path.includes("/ja") || path.includes("/jp")) return "jp";
+      if (path.includes("/ko") || path.includes("/kr")) return "kr";
+
+      if (ACTIVE_REGION && REGION_CONFIG[ACTIVE_REGION]) return ACTIVE_REGION;
+
+      const detected = detectRegionFromLocale();
+      return REGION_CONFIG[detected] ? detected : "us";
+    }
+
+    function getLang() {
+      return REGION_CONFIG[getRegion()].lang;
+    }
+
+    function t() {
+      return getCurrentTranslations();
+    }
 
     function escapeHtml(value) {
-      return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function getCurrentTranslations() {
+      const legacyByRegion = I18N[getLang()] || I18N.en || {};
+      const active = (typeof ACTIVE_TRANSLATIONS !== "undefined" && ACTIVE_TRANSLATIONS) ? ACTIVE_TRANSLATIONS : {};
+      const merged = {
+        ...legacyByRegion,
+        ...active,
+        leftHeader: active.explore_offers || active.leftHeader || legacyByRegion.leftHeader || "Explore offers",
+        searchPlaceholder: active.search_placeholder || active.searchPlaceholder || legacyByRegion.searchPlaceholder || "Flights, hotels, eSIM, tours...",
+        brandGridTitle: active.partners || active.brandGridTitle || legacyByRegion.brandGridTitle || "Partners",
+        stickyCopy: active.featured_service || active.stickyCopy || legacyByRegion.stickyCopy || "Explore a featured service picked for you.",
+        stickyLink: active.view_more || active.stickyLink || legacyByRegion.stickyLink || "View More",
+        noExtraPartners: active.no_results || active.noExtraPartners || legacyByRegion.noExtraPartners || "No results found",
+        loadingVideos: active.loading || active.loadingVideos || legacyByRegion.loadingVideos || "Loading...",
+        videoCta: active.view_more || active.videoCta || legacyByRegion.videoCta || "View More",
+        categories: { ...(legacyByRegion.categories || {}) }
+      };
+
+      if (typeof CATEGORY_I18N_KEYS !== "undefined") {
+        Object.entries(CATEGORY_I18N_KEYS).forEach(([category, key]) => {
+          if (active[key]) merged.categories[category] = active[key];
+        });
+      }
+
+      return merged;
+    }
+
+    function labelForCategory(category) {
+      const dict = getCurrentTranslations();
+      return (dict.categories && dict.categories[category]) || category;
+    }
+
+    function allowedPartnerRegions() {
+      const region = getRegion();
+
+      // Column 1 / left rail rule:
+      // - US homepage keeps the broad structure: global + US.
+      // - Localized markets get their exact local partners + global fallback only.
+      // - Never leak unrelated country tags, e.g. US offers on ?region=pl.
+      const map = {
+        us: ["global", "us"],
+        ca: ["global", "ca"],
+        au: ["global", "au"],
+        gb: ["global", "gb", "uk"],
+        uk: ["global", "gb", "uk"],
+        br: ["global", "br"],
+        pt: ["global", "pt"],
+        pl: ["global", "pl"],
+        latam: ["global", "latam"],
+        mx: ["global", "mx", "latam"],
+        ar: ["global", "ar", "latam"],
+        co: ["global", "co", "latam"],
+        pe: ["global", "pe", "latam"],
+        cl: ["global", "cl", "latam"],
+        es: ["global", "es"],
+        de: ["global", "de"],
+        fr: ["global", "fr"],
+        it: ["global", "it"],
+        ru: ["global", "ru"],
+        cn: ["global", "cn", "zh"],
+        zh: ["global", "cn", "zh"],
+        tw: ["global", "tw", "zh"],
+        jp: ["global", "jp", "ja"],
+        ja: ["global", "jp", "ja"],
+        kr: ["global", "kr", "ko"],
+        ko: ["global", "kr", "ko"]
+      };
+
+      return map[region] || ["global", region];
+    }
+
+    function strictRegionalPartnerRegions() {
+      const region = getRegion();
+
+      // Header and right-side partner grid must be truly local.
+      // For example ?region=pl should show only partners tagged "pl".
+      // Global/US/EU/LatAm offers are kept out of these areas.
+      const aliases = {
+        uk: ["uk", "gb"],
+        gb: ["gb", "uk"],
+        cn: ["cn", "zh"],
+        zh: ["cn", "zh"],
+        jp: ["jp", "ja"],
+        ja: ["jp", "ja"],
+        kr: ["kr", "ko"],
+        ko: ["kr", "ko"]
+      };
+
+      return aliases[region] || [region];
+    }
+
+    function isPartnerAllowedForRegion(partner) {
+      const partnerRegion = normalizeRegion(partner.region || "global") || "global";
+      return allowedPartnerRegions().includes(partnerRegion);
+    }
+
+    function isPartnerStrictlyRegional(partner) {
+      const partnerRegion = normalizeRegion(partner.region || "") || "global";
+      return strictRegionalPartnerRegions().includes(partnerRegion);
+    }
+
+    function visiblePartners() {
+      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerAllowedForRegion(p));
+    }
+
+    function visibleRegionalPartners() {
+      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerStrictlyRegional(p));
+    }
+
+    function visibleTopTravelPartners() {
+      return visiblePartners().filter(p => TOP_TRAVEL_CATEGORIES.includes(p.category));
+    }
+
+    function visibleTopRegionalTravelPartners() {
+      return visibleRegionalPartners().filter(p => TOP_TRAVEL_CATEGORIES.includes(p.category));
+    }
+
+    function visibleNonTransferredPartners() {
+      return visiblePartners().filter(p => !TOP_TRAVEL_CATEGORIES.includes(p.category));
+    }
+
+    function partnersForCategory(category) {
+      return visiblePartners().filter(p => p.category === category);
+    }
+
+    function regionalPartnersForCategory(category) {
+      return visibleRegionalPartners().filter(p => p.category === category);
+    }
+
+    function trackClick() {
+      clickCount += 1;
+      localStorage.setItem("signalboost_clicks", String(clickCount));
+    }
+
+    function applyI18N() {
+      const dict = getCurrentTranslations();
+      document.documentElement.lang = getLang();
+
+      const leftHeader = document.getElementById("leftHeader") || document.getElementById("navTitle");
+      if (leftHeader) leftHeader.textContent = dict.leftHeader || dict.navTitle;
+
+      const partnerSearchEl = document.getElementById("partnerSearch");
+      if (partnerSearchEl) partnerSearchEl.placeholder = dict.searchPlaceholder;
+
+      const regionTaglineEl = document.getElementById("regionTagline");
+      if (regionTaglineEl) regionTaglineEl.textContent = dict.tagline;
+
+      const featuredDealLabel = document.getElementById("featuredDealLabel");
+      if (featuredDealLabel) featuredDealLabel.textContent = dict.featuredLabel;
+
+      const featuredDealTitle = document.getElementById("featuredDealTitle");
+      if (featuredDealTitle) featuredDealTitle.textContent = dict.featuredTitle;
+
+      const featuredDealSubtitle = document.getElementById("featuredDealSubtitle");
+      if (featuredDealSubtitle) featuredDealSubtitle.textContent = dict.featuredSubtitle;
+
+      const headerFootnote = document.getElementById("headerFootnote");
+      if (headerFootnote) headerFootnote.textContent = dict.headerFootnote;
+
+      const sortByDefaultEl = document.getElementById("sortByDefault");
+      if (sortByDefaultEl) sortByDefaultEl.textContent = dict.defaultSort;
+
+      const sortByPopularEl = document.getElementById("sortByPopular");
+      if (sortByPopularEl) sortByPopularEl.textContent = dict.popularSort;
+
+      const amazonKicker = document.querySelector("#amazonSection .entry-kicker");
+      if (amazonKicker) amazonKicker.textContent = dict.amazonKicker;
+
+      const amazonTitle = document.querySelector("#amazonSection h2");
+      if (amazonTitle) amazonTitle.textContent = dict.amazonTitle;
+
+      const amazonText = document.querySelector("#amazonSection p");
+      if (amazonText) amazonText.textContent = dict.amazonText;
+
+      const amazonInput = document.getElementById("amazonSearchInput");
+      if (amazonInput) amazonInput.placeholder = dict.amazonSearch;
+
+      const amazonButton = document.querySelector("#amazonSearchForm button");
+      if (amazonButton) amazonButton.textContent = dict.amazonButton;
+
+      const feedIntro = document.getElementById("feedIntro");
+      if (feedIntro) feedIntro.textContent = dict.feedIntro;
+
+      const clickStats = document.getElementById("clickStats");
+      const clickCount = document.getElementById("clickCount");
+      if (clickStats && clickCount) {
+        clickStats.innerHTML = escapeHtml(dict.clickStatsPrefix) + '<span id="clickCount">' + escapeHtml(clickCount.textContent || "0") + "</span>";
+      }
+
+      const brandGridTitleEl = document.getElementById("brandGridTitle");
+      if (brandGridTitleEl) brandGridTitleEl.textContent = dict.brandGridTitle;
+
+      const stickyCopy = document.getElementById("stickyCopy");
+      if (stickyCopy) stickyCopy.textContent = dict.stickyCopy;
+
+      const stickyLink = document.getElementById("stickyLink");
+      if (stickyLink) stickyLink.textContent = dict.stickyLink;
+
+      const cards = Array.from(document.querySelectorAll(".amazon-card"));
+      const cardKeys = ["power", "adapter", "luggage", "packing"];
+      cards.forEach(function(card, index) {
+        const key = cardKeys[index];
+        if (key && dict.amazonCards && dict.amazonCards[key]) card.textContent = dict.amazonCards[key];
+      });
+    }
+
+    function headerPreferredRegions() {
+      return strictRegionalPartnerRegions();
+    }
+
+    function isDefaultUSRegion() {
+      return getRegion() === "us";
+    }
+
+    function directoryPartnersForCategory(category) {
+      // US homepage keeps the broad marketplace structure: US + global partners.
+      // Localized markets use exact local partner tags only.
+      const source = isDefaultUSRegion() ? partnersForCategory(category) : regionalPartnersForCategory(category);
+      return source
+        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
+        .slice()
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
+    }
+
+    function buildTravelDirectory() {
+      travelDirectory.innerHTML = "";
+
+      TOP_TRAVEL_CATEGORIES.forEach(cat => {
+        const partners = directoryPartnersForCategory(cat);
+        if (!partners.length) return;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "directory-item has-menu";
+        btn.dataset.category = cat;
+        btn.textContent = `${labelForCategory(cat)} (${partners.length})`;
+        travelDirectory.appendChild(btn);
+      });
+    }
+
+    function openDirectoryMenu(category, activeButton) {
+      document.querySelectorAll(".directory-item").forEach(el => el.classList.remove("active"));
+      if (activeButton) activeButton.classList.add("active");
+
+      const partners = directoryPartnersForCategory(category);
+
+      directoryMenu.innerHTML = `
+        <div class="directory-menu-title">${escapeHtml(labelForCategory(category))}</div>
+        ${partners.length ? partners.map(p => `
+          <a class="directory-menu-link" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">
+            <strong>${escapeHtml(p.name)}</strong>
+            <span class="directory-menu-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
+          </a>
+        `).join("") : `<div class="directory-menu-link">No partners found.</div>`}
+      `;
+
+      directoryMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
+      directoryMenu.classList.add("open");
+    }
+
+    function closeDirectoryMenu() {
+      directoryMenu.classList.remove("open");
+      document.querySelectorAll(".directory-item").forEach(el => el.classList.remove("active"));
+    }
+
+    travelDirectory.addEventListener("click", event => {
+      const btn = event.target.closest("[data-category]");
+      if (!btn) return;
+
+      const category = btn.dataset.category;
+
+      if (directoryMenu.classList.contains("open") && btn.classList.contains("active")) {
+        closeDirectoryMenu();
+        return;
+      }
+
+      openDirectoryMenu(category, btn);
+    });
+
+    document.addEventListener("click", event => {
+      if (!event.target.closest("#travelDirectory") && !event.target.closest("#directoryMenu")) {
+        closeDirectoryMenu();
+      }
+    });
+
+    function categoryKeyForPartner(partner) {
+      if (partner.category_key) return partner.category_key;
+      const map = {
+        "Flights & Meta Search": "flights",
+        "Hotels": "hotels",
+        "Hotels & Accommodation": "hotels",
+        "Car Rentals": "car_rentals",
+        "Transfers & Transport": "transfers",
+        "Tours & Activities": "tours",
+        "SIM & Connectivity": "sim",
+        "Insurance & Claims": "insurance",
+        "Storage & Services": "travel_services",
+        "Travel Services": "travel_services",
+        "Marketplace": "marketplace",
+        "Products & Tools": "products_tools",
+        "Finance": "finance",
+        "Specialty & Other": "specialty_other"
+      };
+      return map[partner.category] || String(partner.category || "other").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+    }
+
+    function categoryLabelForKey(categoryKey) {
+      const labels = {
+        flights: "Flights & Meta Search",
+        hotels: "Hotels",
+        car_rentals: "Car Rentals",
+        transfers: "Transfers & Transport",
+        tours: "Tours & Activities",
+        sim: "SIM & Connectivity",
+        insurance: "Insurance & Claims",
+        travel_services: "Travel Services",
+        marketplace: "Marketplace",
+        products_tools: "Products & Tools",
+        finance: "Finance",
+        specialty_other: "Specialty & Other"
+      };
+      return labelForCategory(labels[categoryKey] || categoryKey);
+    }
+
+    function groupByCategory(items) {
+      return items.reduce((groups, item) => {
+        const categoryKey = categoryKeyForPartner(item);
+        if (!groups[categoryKey]) groups[categoryKey] = [];
+        groups[categoryKey].push(item);
+        return groups;
+      }, {});
+    }
+
+    function filteredColumn1Partners() {
+      const query = partnerSearch.value.trim().toLowerCase();
+
+      return visibleNonTransferredPartners()
+        .filter(p => {
+          const text = [p.name, p.category, p.region, p.network, p.highlight, p.notes].filter(Boolean).join(" ").toLowerCase();
+          return !query || text.includes(query);
+        })
+        .sort((a, b) =>
+          categoryKeyForPartner(a).localeCompare(categoryKeyForPartner(b)) ||
+          (a.tier || 99) - (b.tier || 99) ||
+          a.name.localeCompare(b.name)
+        );
+    }
+
+    function renderPartnersRail() {
+      partnersRail.querySelectorAll(".partners-empty").forEach(el => el.remove());
+      const groups = document.querySelectorAll(".c1-group");
+      const items = filteredColumn1Partners();
+
+      groups.forEach(g => {
+        const body = g.querySelector(".c1-body");
+        if (body) body.innerHTML = "";
+      });
+
+      if (!items.length) {
+        groups.forEach(g => { g.style.display = "none"; });
+        partnersRail.insertAdjacentHTML("beforeend", `<div class="partners-empty">${escapeHtml(t().noExtraPartners || "No extra partners available for your region right now.")}</div>`);
+        return;
+      }
+
+      const seen = new Set();
+
+      items.forEach(p => {
+        const categoryKey = categoryKeyForPartner(p);
+        const group = document.querySelector(`.c1-group[data-cat='${categoryKey}']`);
+        if (!group) return;
+
+        const dedupeKey = `${p.name}|${categoryKey}`.toLowerCase();
+        if (seen.has(dedupeKey)) return;
+        seen.add(dedupeKey);
+
+        const body = group.querySelector(".c1-body");
+        const item = document.createElement("div");
+        item.className = "c1-partner";
+        item.innerHTML = `${escapeHtml(p.name)}<span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>`;
+        item.onclick = () => {
+          trackClick();
+          window.location.href = p.url;
+        };
+        body.appendChild(item);
+      });
+
+      groups.forEach(g => {
+        const body = g.querySelector(".c1-body");
+        g.style.display = body && body.children.length ? "block" : "none";
+      });
+    }
+
+    function initColumn1Accordion() {
+      document.querySelectorAll(".c1-header").forEach(header => {
+        header.addEventListener("click", () => {
+          const body = header.nextElementSibling;
+
+          document.querySelectorAll(".c1-body").forEach(b => {
+            if (b !== body) b.classList.remove("open");
+          });
+          document.querySelectorAll(".c1-header").forEach(h => {
+            if (h !== header) h.classList.remove("open");
+          });
+
+          body.classList.toggle("open");
+          header.classList.toggle("open", body.classList.contains("open"));
+        });
+      });
     }
 
     function formatDate(dateString) {
       const d = new Date(dateString);
-      if (Number.isNaN(d.getTime())) return '';
+      if (Number.isNaN(d.getTime())) return "";
       return d.toLocaleString();
     }
 
-    function normalizePlatform(value) {
-      return String(value || '').trim().toLowerCase();
-    }
+    function getHybridFeedEndpoints() {
+      const region = getRegion();
 
-    function isValidHttpUrl(value) {
-      try {
-        const url = new URL(value, window.location.origin);
-        return url.protocol === 'http:' || url.protocol === 'https:';
-      } catch (err) {
-        return false;
-      }
-    }
-
-    function updateClickDisplay() {
-      const el = document.getElementById('clickCount');
-      if (!el) return;
-      const count = localStorage.getItem('clickCount') || '0';
-      el.textContent = count;
-    }
-
-    function incrementClickCount() {
-      try {
-        const current = parseInt(localStorage.getItem('clickCount') || '0', 10);
-        localStorage.setItem('clickCount', String(current + 1));
-        updateClickDisplay();
-      } catch (err) {}
-    }
-
-    function trackPartnerClick(partnerName) {
-      if (!partnerName) return;
-      try {
-        const raw = localStorage.getItem('partnerPopularity');
-        const stats = raw ? JSON.parse(raw) : {};
-        stats[partnerName] = (stats[partnerName] || 0) + 1;
-        localStorage.setItem('partnerPopularity', JSON.stringify(stats));
-      } catch (err) {}
-    }
-
-    function monetizeUrl(url, meta) {
-      if (!isValidHttpUrl(url)) return '#';
-
-      const host = window.location.hostname || '';
-      const protocol = window.location.protocol || '';
-      const isPreview =
-        protocol === 'file:' ||
-        host === 'localhost' ||
-        host === '127.0.0.1' ||
-        host.endsWith('.oausercontent.com') ||
-        host.includes('sandbox');
-
-      if (isPreview) return url;
-
-      const params = new URLSearchParams();
-      params.set('url', url);
-      if (meta && meta.partner) params.set('partner', meta.partner);
-      if (meta && meta.source) params.set('source', meta.source);
-      return '/api/out?' + params.toString();
-    }
-
-    function setTrackedLinkAttributes(element, rawUrl, meta) {
-      if (!element) return;
-      const trackedUrl = monetizeUrl(rawUrl, meta);
-      element.href = rawUrl || '#';
-      element.setAttribute('data-raw-url', rawUrl || '#');
-      element.setAttribute('data-tracked-url', trackedUrl || '#');
-      if (meta && meta.partner) element.setAttribute('data-partner', meta.partner);
-      if (meta && meta.source) element.setAttribute('data-source', meta.source);
-    }
-
-    async function canUseTrackedUrl(trackedUrl) {
-      if (!trackedUrl || trackedUrl === '#') return false;
-      if (!trackedUrl.startsWith('/api/out?')) return true;
-      try {
-        const response = await fetch(trackedUrl, {
-          method: 'HEAD',
-          redirect: 'manual',
-          cache: 'no-store'
-        });
-        return response.status >= 300 && response.status < 400;
-      } catch (error) {
-        return false;
-      }
-    }
-
-    async function openPartnerLink(rawUrl, trackedUrl, meta = {}) {
-      if (!rawUrl || rawUrl === '#') return;
-      const useTracked = await canUseTrackedUrl(trackedUrl);
-      const destination = useTracked ? trackedUrl : rawUrl;
-
-      incrementClickCount();
-      if (meta.partner) trackPartnerClick(meta.partner);
-
-      window.open(destination, '_blank', 'noopener,noreferrer');
-    }
-
-    function hexToRgb(hex) {
-      const clean = String(hex || '').replace('#', '');
-      if (clean.length !== 6) return '143,159,179';
-      const bigint = parseInt(clean, 16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return r + ',' + g + ',' + b;
-    }
-
-    function getCategoryColor(category) {
-      const map = {
-        'Transfers & Transport': '#4da6ff',
-        'Car Rentals': '#ffb84d',
-        'SIM & Connectivity': '#c17dff',
-        'Tours & Activities': '#6cd98b',
-        'Insurance & Claims': '#ff6b6b',
-        'Flights & Meta Search': '#4dd2c0',
-        'Storage & Services': '#ffd966',
-        'Specialty & Other': '#8f7cff'
-      };
-      return map[category] || '#8f9fb3';
-    }
-
-    function groupPartners(items) {
-      const grouped = {};
-      items.forEach(function(partner) {
-        if (!grouped[partner.category]) grouped[partner.category] = [];
-        grouped[partner.category].push(partner);
-      });
-      return grouped;
-    }
-
-    function getCategoryLabel(categoryName) {
-      const labels = {
-        en: {
-          'Transfers & Transport': 'Transfers & Transport',
-          'Car Rentals': 'Car Rentals',
-          'SIM & Connectivity': 'SIM & Connectivity',
-          'Tours & Activities': 'Tours & Activities',
-          'Insurance & Claims': 'Insurance & Claims',
-          'Flights & Meta Search': 'Flights & comparisons',
-          'Storage & Services': 'Storage & Services',
-          'Specialty & Other': 'Specialty & Other'
-        }
-      };
-      const pack = labels[currentLanguage] || labels.en;
-      return pack[categoryName] || categoryName;
-    }
-
-    function renderPartners(items) {
-      const grouped = groupPartners(items);
-      const order = [
-        'Transfers & Transport',
-        'Car Rentals',
-        'SIM & Connectivity',
-        'Tours & Activities',
-        'Insurance & Claims',
-        'Flights & Meta Search',
-        'Storage & Services',
-        'Specialty & Other'
+      return [
+        `/api/hybrid-video-feed?region=${encodeURIComponent(region)}`,
+        `/api/hybrid-video-feed/${encodeURIComponent(region)}`,
+        `/hybrid-video-feed.${region}.json`,
+        `/hero-feed.${region}.json`,
+        `/hybrid-video-feed.json`,
+        `/hero-feed.json`
       ];
-
-      partnersRail.innerHTML = order
-        .filter(function(name) { return grouped[name] && grouped[name].length; })
-        .map(function(categoryName, index) {
-          const color = getCategoryColor(categoryName);
-          const partners = grouped[categoryName].slice().sort(function(a, b) {
-            return (a.tier || 3) - (b.tier || 3) || a.name.localeCompare(b.name);
-          });
-          return '<div class="category">' +
-            '<details' + (index === 0 ? ' open' : '') + '>' +
-            '<summary style="background:rgba(' + hexToRgb(color) + ',0.12); border-left:4px solid ' + color + ';">' + escapeHtml(getCategoryLabel(categoryName)) + '</summary>' +
-            '<ul>' + partners.map(function(partner) {
-              const badge = partner.tier === 1 ? ' 🔥' : partner.tier === 2 ? ' ⭐' : '';
-              return '<li><a href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(partner.url, { partner: partner.name, source: 'column1' })) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="column1" target="_blank" rel="noopener noreferrer">' + escapeHtml(partner.name) + badge + '</a></li>';
-            }).join('') + '</ul>' +
-            '</details>' +
-            '</div>';
-        }).join('');
     }
 
-    function getBrandFamily(name) {
-      const value = String(name || '');
-      if (value.toLowerCase().indexOf('trivago') === 0) return 'Trivago';
-      if (value.toLowerCase().indexOf('kiwi') === 0) return 'Kiwi';
-      if (value.toLowerCase().indexOf('tiqets') === 0) return 'Tiqets';
-      return value;
-    }
-
-    function getBrandDisplayName(name) {
-      const family = getBrandFamily(name);
-      if (family === 'Kiwi') return 'Kiwi.com';
-      return family;
-    }
-
-    function getBrandFallbackText(name) {
-      return String(name || 'SB')
-        .split(' ')
-        .filter(Boolean)
-        .slice(0, 2)
-        .map(function(part) { return part[0]; })
-        .join('') || 'SB';
-    }
-
-    function getPartnerPopularityMap() {
-      try {
-        return JSON.parse(localStorage.getItem('partnerPopularity') || '{}');
-      } catch (err) {
-        return {};
-      }
-    }
-
-    function getPopularPartners(items, limit = 8) {
-      const popularity = getPartnerPopularityMap();
-      return items
-        .slice()
-        .sort(function(a, b) {
-          const popA = popularity[a.name] || 0;
-          const popB = popularity[b.name] || 0;
-          if (popA !== popB) return popB - popA;
-          if ((a.tier || 3) !== (b.tier || 3)) return (a.tier || 3) - (b.tier || 3);
-          return a.name.localeCompare(b.name);
-        })
-        .slice(0, limit);
-    }
-
-    function renderBrandGrid(items) {
-      const colorMap = {
-        'Flights & Meta Search': 'rgba(77,210,192,0.15)',
-        'Transfers & Transport': 'rgba(77,166,255,0.15)',
-        'Tours & Activities': 'rgba(108,217,139,0.15)',
-        'SIM & Connectivity': 'rgba(193,125,255,0.15)',
-        'Car Rentals': 'rgba(255,184,77,0.15)',
-        'Insurance & Claims': 'rgba(255,107,107,0.15)',
-        'Storage & Services': 'rgba(255,217,102,0.15)',
-        'Specialty & Other': 'rgba(143,124,255,0.15)'
-      };
-
-      brandGridTitle.textContent = 'Most Popular Partners';
-      regionTagline.textContent = 'Browse the brands people click most.';
-
-      const selected = getPopularPartners(items, 8);
-
-      brandGrid.innerHTML = selected.map(function(p) {
-        const bgColor = colorMap[p.category] || 'rgba(255,255,255,0.04)';
-        const borderColor = bgColor.replace('0.15', '0.35');
-        const displayName = getBrandDisplayName(p.name);
-        const fallbackText = getBrandFallbackText(displayName);
-        const badge = p.tier === 1 ? ' 🔥' : p.tier === 2 ? ' ⭐' : '';
-
-        const logoMarkup = p.logo
-          ? '<div class="brand-logo-wrap"><img src="' + escapeHtml(p.logo) + '" alt="' + escapeHtml(displayName) + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;brand-fallback&quot;>' + escapeHtml(fallbackText) + '</span>\';"></div>'
-          : '<div class="brand-logo-wrap"><span class="brand-fallback">' + escapeHtml(fallbackText) + '</span></div>';
-
-        return '<a class="brand-tile" style="background:' + bgColor + ';border:1px solid ' + borderColor + ';" href="' + escapeHtml(p.url) + '" data-raw-url="' + escapeHtml(p.url) + '" data-tracked-url="' + escapeHtml(monetizeUrl(p.url, { partner: p.name, source: 'column3_popular' })) + '" data-partner="' + escapeHtml(p.name) + '" data-source="column3_popular" target="_blank" rel="noopener noreferrer">' +
-          logoMarkup +
-          '<span>' + escapeHtml(displayName) + badge + '</span>' +
-          '</a>';
-      }).join('');
-    }
-
-    function getYouTubeEmbed(url) {
-      try {
-        const parsed = new URL(url);
-        let videoId = parsed.searchParams.get('v');
-        if (!videoId && parsed.hostname.includes('youtu.be')) videoId = parsed.pathname.replace(/^\//, '').split('/')[0];
-        if (!videoId && parsed.pathname.includes('/embed/')) videoId = parsed.pathname.split('/embed/')[1].split('/')[0];
-        if (!videoId && parsed.pathname.includes('/shorts/')) videoId = parsed.pathname.split('/shorts/')[1].split('/')[0];
-        if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&playsinline=1';
-      } catch (e) {}
-      return '';
-    }
-
-    function normalizeFeedItem(item, fallbackPlatform) {
-      const platform = normalizePlatform(item.platform || fallbackPlatform || 'deals');
-      const baseUrl = item.url || item.link || '#';
-      const basePostUrl = item.postUrl || item.url || item.link || '#';
-      const derivedEmbedUrl = item.embedUrl || item.embed || (platform === 'youtube' ? getYouTubeEmbed(basePostUrl || baseUrl) : '');
-      const derivedVideoUrl = item.videoUrl || (platform === 'reddit' ? baseUrl : '');
-
+    function normalizeHeroFeedItem(item) {
       return {
-        platform,
-        title: item.title || item.name || 'Untitled',
-        description: item.description || item.summary || item.caption || '',
-        author: item.author || item.source || 'SignalBoost',
-        publishedAt: item.publishedAt || item.date || item.pubDate || new Date().toISOString(),
-        url: baseUrl,
-        postUrl: basePostUrl,
-        embedUrl: derivedEmbedUrl,
-        videoUrl: derivedVideoUrl,
-        thumbnail: item.thumbnail || item.image || item.poster || '',
-        category: item.category || ''
+        platform: item.platform || item.sourceType || item.source || "web",
+        title: item.title || item.headline || "Current video",
+        description: item.description || item.summary || item.caption || "",
+        author: item.author || item.channel || item.creator || item.source || item.platform || "Source",
+        publishedAt: item.publishedAt || item.published_at || item.date || item.createdAt || new Date().toISOString(),
+        url: item.url || item.link || item.permalink || "#",
+        embedUrl: item.embedUrl || item.embed_url || item.embed || "",
+        thumbnail: item.thumbnail || item.thumbnailUrl || item.image || item.poster || "",
+        region: item.region || inferItemRegion(item),
+        score: Number(item.score || item.popularity || item.views || item.rank || 0)
       };
     }
 
-    function createMediaMarkup(item) {
-      const platform = normalizePlatform(item.platform);
-      const title = escapeHtml(item.title || 'Untitled');
-      const directUrl = isValidHttpUrl(item.postUrl || item.url) ? (item.postUrl || item.url) : '#';
-
-      if (platform === 'reddit' && item.videoUrl && item.videoUrl.includes('.mp4')) {
-        return '<div class="media-box"><video src="' + escapeHtml(item.videoUrl) + '" controls playsinline preload="metadata"></video></div>';
-      }
-
-      if (platform === 'youtube') {
-        const embed = item.embedUrl || getYouTubeEmbed(item.postUrl || item.url || '');
-        if (embed) return '<div class="media-box"><iframe src="' + escapeHtml(embed) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
-      }
-
-      if (platform === 'vimeo' || platform === 'tiktok' || platform === 'dailymotion') {
-        if (item.embedUrl) return '<div class="media-box"><iframe src="' + escapeHtml(item.embedUrl) + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>';
-      }
-
-      return '<div class="media-box"><a class="promo-media" href="' + escapeHtml(directUrl) + '" target="_blank" rel="noopener noreferrer">' +
-        '<img src="' + escapeHtml(item.thumbnail || 'https://via.placeholder.com/720x1280?text=Platform+Video') + '" alt="' + title + '" loading="lazy">' +
-        '<div class="promo-overlay">' +
-        '<div class="promo-kicker">' + escapeHtml(item.platform || 'platform') + '</div>' +
-        '<div class="promo-title">' + title + '</div>' +
-        '<div class="promo-subtitle">' + escapeHtml(item.description || '') + '</div>' +
-        '</div></a></div>';
-    }
-
-    function getOfferBenefitCopy(offer) {
-      const byCategory = {
-        'Flights & Meta Search': {
-          title: '✈️ Find cheaper flights fast',
-          description: 'Compare routes and prices before booking.',
-          cta: 'Compare flights'
-        },
-        'Insurance & Claims': {
-          title: '🛡️ Get travel coverage before you go',
-          description: 'Choose the right protection for your trip.',
-          cta: 'View coverage'
-        },
-        'SIM & Connectivity': {
-          title: '📶 Stay connected anywhere',
-          description: 'Get mobile data instantly abroad.',
-          cta: 'See eSIM options'
-        },
-        'Transfers & Transport': {
-          title: '🚗 Book your ride in advance',
-          description: 'Secure transfers before arrival.',
-          cta: 'Find rides'
-        },
-        'Tours & Activities': {
-          title: '🎟️ Discover things to do',
-          description: 'Explore top attractions and tours.',
-          cta: 'Explore activities'
-        },
-        'Car Rentals': {
-          title: '🚘 Compare car rentals',
-          description: 'Find the best deal before booking.',
-          cta: 'Find rentals'
-        },
-        'Storage & Services': {
-          title: '🧳 Travel smarter',
-          description: 'Useful services for easier trips.',
-          cta: 'Explore services'
-        },
-        'Specialty & Other': {
-          title: '✨ Discover a useful tool',
-          description: 'Curated digital services for you.',
-          cta: 'Explore now'
-        }
-      };
-
-      return byCategory[offer.category] || byCategory['Specialty & Other'];
-    }
-
-    function getDecisionBullets(item, relatedPartner) {
-      const category = item.category || (relatedPartner && relatedPartner.category) || '';
-
-      if (category === 'Flights & Meta Search') {
-        return ['Compare prices', 'Find cheapest route', 'Fast results'];
-      }
-      if (category === 'Insurance & Claims') {
-        return ['Travel protection', 'Compare coverage', 'Quick signup'];
-      }
-      if (category === 'SIM & Connectivity') {
-        return ['Instant data', 'No SIM swap', 'Works worldwide'];
-      }
-      if (category === 'Transfers & Transport') {
-        return ['Pre-book rides', 'Less arrival stress', 'Travel ready'];
-      }
-      if (category === 'Tours & Activities') {
-        return ['Top attractions', 'Easy browsing', 'Trip ideas'];
-      }
-
-      return ['Curated pick', 'Quick access', 'Easy to explore'];
-    }
-
-    function getContextualCTA(item) {
-      const map = {
-        'Flights & Meta Search': 'Compare flights',
-        'Insurance & Claims': 'View coverage',
-        'SIM & Connectivity': 'See options',
-        'Transfers & Transport': 'Book now',
-        'Tours & Activities': 'Explore',
-        'Car Rentals': 'Find rentals',
-        'Storage & Services': 'Explore service',
-        'Specialty & Other': 'Explore now'
-      };
-      return item.ctaLabel || map[item.category] || 'Explore now';
-    }
-
-    function classifyFeedIntent(item) {
-      const platform = normalizePlatform(item.platform);
-      const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
-
-      if (text.includes('flight') || text.includes('airport') || text.includes('airline') || text.includes('booking')) {
-        return 'travel-booking';
-      }
-      if (text.includes('insurance') || text.includes('safe') || text.includes('coverage')) {
-        return 'travel-protection';
-      }
-      if (text.includes('sim') || text.includes('esim') || text.includes('data') || text.includes('phone')) {
-        return 'connectivity';
-      }
-      if (text.includes('hotel') || text.includes('trip') || text.includes('vacation') || text.includes('destination') || text.includes('travel')) {
-        return 'travel-planning';
-      }
-
-      if (platform === 'youtube' || platform === 'tiktok' || platform === 'vimeo' || platform === 'dailymotion') {
-        return 'travel-planning';
-      }
-
-      return 'general';
-    }
-
-    function getPartnerForIntent(intent) {
-      const intentMap = {
-        'travel-booking': ['Flights & Meta Search', 'Transfers & Transport'],
-        'travel-protection': ['Insurance & Claims'],
-        'connectivity': ['SIM & Connectivity'],
-        'travel-planning': ['Tours & Activities', 'Flights & Meta Search', 'Storage & Services'],
-        'general': ['Storage & Services', 'Specialty & Other']
-      };
-
-      const preferred = intentMap[intent] || intentMap.general;
-
-      for (const category of preferred) {
-        const matches = partnersData
-          .filter(p => p.category === category)
-          .sort((a, b) => (a.tier || 3) - (b.tier || 3));
-
-        if (matches.length) return matches[0];
-      }
-
-      return getOfferFromPartners();
-    }
-
-    function getRelatedPartnerForItem(item) {
-      const intent = classifyFeedIntent(item);
-      return getPartnerForIntent(intent);
-    }
-
-    function getIntentLabel(item) {
-      const intent = classifyFeedIntent(item);
-      const labels = {
-        'travel-planning': 'Trip ideas',
-        'travel-booking': 'Booking tools',
-        'travel-protection': 'Protection picks',
-        'connectivity': 'Stay connected',
-        'general': 'Discover more'
-      };
-      return labels[intent] || labels.general;
-    }
-
-    function getIntentHook(item, relatedPartner) {
-      const platform = normalizePlatform(item.platform);
-
-      if (relatedPartner) {
-        switch (relatedPartner.category) {
-          case 'Flights & Meta Search':
-            return 'Planning a trip? Start with prices.';
-          case 'Insurance & Claims':
-            return 'Traveling soon? Check protection before checkout.';
-          case 'SIM & Connectivity':
-            return 'Need data abroad? Solve that before you land.';
-          case 'Tours & Activities':
-            return 'Like this destination? Explore what to do there.';
-          default:
-            return 'Ready for the next step? Explore a matching offer.';
-        }
-      }
-
-      if (platform === 'youtube' || platform === 'tiktok' || platform === 'vimeo') {
-        return 'Watch, then act on the next step.';
-      }
-
-      return 'Discover something useful and keep exploring.';
-    }
-
-    function getOfferFromPartners() {
-      if (!partnersData || !partnersData.length) return null;
-
-      const tier1 = partnersData.filter(function(p) { return Number(p.tier || 3) === 1; });
-      const tier2 = partnersData.filter(function(p) { return Number(p.tier || 3) === 2; });
-      const tier3 = partnersData.filter(function(p) { return Number(p.tier || 3) === 3; });
-      const roll = Math.random();
-
-      if (roll < 0.6 && tier1.length) return tier1[Math.floor(Math.random() * tier1.length)];
-      if (roll < 0.85 && tier2.length) return tier2[Math.floor(Math.random() * tier2.length)];
-
-      const pool = tier3.length ? tier3 : (tier2.length ? tier2 : tier1);
-      return pool[Math.floor(Math.random() * pool.length)] || null;
-    }
-
-    function createMoneyCardItemFromIntent(intent) {
-      const offer = getPartnerForIntent(intent);
-      if (!offer) return null;
-
-      const benefit = getOfferBenefitCopy(offer);
-
-      return {
-        isMoneyCard: true,
-        platform: 'deals',
-        title: benefit.title,
-        description: benefit.description,
-        ctaLabel: benefit.cta,
-        author: 'SignalBoost',
-        publishedAt: new Date().toISOString(),
-        url: offer.url,
-        postUrl: offer.url,
-        thumbnail: 'https://via.placeholder.com/720x1280/161b22/f5c542?text=' + encodeURIComponent(offer.name),
-        partnerName: offer.name,
-        category: offer.category,
-        tier: offer.tier || 3
-      };
-    }
-
-    function interleaveJourneyCards(items) {
-      const buckets = {
-        'travel-planning': [],
-        'travel-booking': [],
-        'travel-protection': [],
-        'connectivity': [],
-        'general': []
-      };
-
-      items.forEach(item => {
-        const intent = classifyFeedIntent(item);
-        if (!buckets[intent]) buckets.general.push(item);
-        else buckets[intent].push(item);
-      });
-
-      const ordered = [];
-      const pattern = ['travel-planning', 'travel-booking', 'travel-protection', 'connectivity', 'general'];
-
-      let added = true;
-      while (added) {
-        added = false;
-        for (const key of pattern) {
-          if (buckets[key].length) {
-            ordered.push(buckets[key].shift());
-            added = true;
-          }
-        }
-      }
-
-      return ordered;
-    }
-
-    function buildDynamicFeed(liveItems) {
-      const seen = new Set();
-
-      const normalized = []
-        .concat(liveItems || [])
-        .concat(hybridVideoPool.map(item => normalizeFeedItem(item, item.platform)))
-        .filter(item => isValidHttpUrl(item.url || item.postUrl || item.videoUrl))
-        .filter(item => {
-          const key = item.videoUrl || item.embedUrl || item.postUrl || item.url || item.title;
-          if (!key || seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        })
-        .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-
-      return interleaveJourneyCards(normalized);
-    }
-
-    function appendFeedItems(items) {
-      const html = items.map(function(item) {
-        const platform = normalizePlatform(item.platform);
-        const primaryUrl = platform === 'reddit' ? (item.postUrl || item.url || '#') : (item.postUrl || item.url || item.videoUrl || '#');
-        const relatedPartner = getRelatedPartnerForItem(item);
-        const relatedTrackedUrl = relatedPartner ? monetizeUrl(relatedPartner.url, { partner: relatedPartner.name, source: 'column2_related_' + platform }) : '#';
-        const relatedLabel = relatedPartner ? escapeHtml(relatedPartner.name) : '';
-        const title = escapeHtml(item.title || 'Discover something new');
-        const description = escapeHtml(item.description || '');
-        const intentLabel = '<div style="font-size:11px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:6px;">' + escapeHtml(getIntentLabel(item)) + '</div>';
-        const hookHtml = '<div style="font-size:12px;margin-bottom:6px;color:#f5c542;font-weight:700;">' + escapeHtml(getIntentHook(item, relatedPartner)) + '</div>';
-        const meta = '<div class="feed-meta"><span class="feed-platform ' + escapeHtml(platform) + '">' + escapeHtml(item.platform) + '</span>' + escapeHtml(item.author || '') + ' • ' + escapeHtml(formatDate(item.publishedAt)) + '</div>';
-
-        const primaryTrackedUrl = item.isMoneyCard && item.partnerName
-          ? monetizeUrl(primaryUrl, { partner: item.partnerName, source: item.source || 'money_card' })
-          : primaryUrl;
-
-        const bullets = getDecisionBullets(item, relatedPartner);
-        const bulletsHtml = '<div class="decision-strip">' +
-          bullets.map(b => '<span class="decision-pill">' + escapeHtml(b) + '</span>').join('') +
-          '</div>';
-
-        const primaryLink = '<a class="feed-link" href="' + escapeHtml(primaryUrl) + '" data-raw-url="' + escapeHtml(primaryUrl) + '" data-tracked-url="' + escapeHtml(primaryTrackedUrl) + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_primary') + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(getContextualCTA(item)) + '</a>';
-
-        const relatedLink = relatedPartner ? '<a class="feed-link" href="' + escapeHtml(relatedPartner.url) + '" data-raw-url="' + escapeHtml(relatedPartner.url) + '" data-tracked-url="' + escapeHtml(relatedTrackedUrl) + '" data-partner="' + relatedLabel + '" data-source="' + escapeHtml('column2_related_' + platform) + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;color:#f5c542;">Explore related → ' + relatedLabel + '</a>' : '';
-
-        const moneyClass = item.isMoneyCard ? ' money-card' : '';
-        const clickableUrl = escapeHtml(primaryUrl);
-        const clickableTrackedUrl = escapeHtml(primaryTrackedUrl);
-
-        return '<article class="feed-card' + moneyClass + '" data-open-url="' + clickableUrl + '" data-open-tracked-url="' + clickableTrackedUrl + '" data-partner="' + escapeHtml(item.partnerName || '') + '" data-source="' + escapeHtml(item.isMoneyCard ? 'money_card' : 'feed_card') + '">' +
-          (item.isMoneyCard
-            ? '<div class="feed-content"><div class="priority-pill">' + (item.tier === 1 ? 'Priority pick' : 'Featured offer') + '</div>' + intentLabel + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + '</div></div>'
-            : createMediaMarkup(item) + '<div class="feed-content">' + intentLabel + hookHtml + '<h3>' + title + '</h3>' + meta + '<p>' + description + '</p>' + bulletsHtml + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' + primaryLink + relatedLink + '</div></div>') +
-          '</article>';
-      }).join('');
-
-      feedContainer.insertAdjacentHTML('beforeend', html);
-    }
-
-    function renderMoreFeed() {
-      if (isRenderingMore) return;
-      if (renderedFeedCount >= allFeedItems.length) return;
-
-      isRenderingMore = true;
-      const nextItems = allFeedItems.slice(renderedFeedCount, renderedFeedCount + FEED_BATCH_SIZE);
-      appendFeedItems(nextItems);
-      renderedFeedCount += nextItems.length;
-
-      if (renderedFeedCount % FEED_INSERTION_INTERVAL === 0) {
-        const previousItem = allFeedItems[Math.max(0, renderedFeedCount - 1)];
-        const intent = previousItem ? classifyFeedIntent(previousItem) : 'general';
-        const moneyCard = createMoneyCardItemFromIntent(intent);
-        if (moneyCard) appendFeedItems([moneyCard]);
-      }
-
-      isRenderingMore = false;
-    }
-
-    function setupInfiniteScroll() {
-      const scroller = document.getElementById('magnetoColumn');
-      if (!scroller) return;
-      scroller.addEventListener('scroll', function() {
-        const remaining = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
-        if (remaining < 900) renderMoreFeed();
-      });
-    }
-
-    function renderFeed(items) {
-      feedContainer.innerHTML = '';
-      allFeedItems = items.slice();
-      renderedFeedCount = 0;
-      renderMoreFeed();
-      renderMoreFeed();
-      updateClickDisplay();
-    }
-
-    function getComparisonConfig(type) {
-      if (type === 'travel') {
-        return {
-          title: 'Compare travel services',
-          subtitle: 'Choose the right option for flights, transfers, connectivity, and activities.',
-          items: [
-            {
-              badge: 'Best for flights',
-              category: 'Flights & Meta Search',
-              title: 'Find cheaper flights',
-              description: 'Compare routes and prices before booking your trip.',
-              pills: ['Price comparison', 'Fast search', 'Trip planning'],
-              cta: 'Compare flights'
-            },
-            {
-              badge: 'Best for transfers',
-              category: 'Transfers & Transport',
-              title: 'Book airport and city rides',
-              description: 'Pre-book transport so you are covered when you arrive.',
-              pills: ['Airport pickup', 'Less hassle', 'Travel ready'],
-              cta: 'Find rides'
-            },
-            {
-              badge: 'Best for connectivity',
-              category: 'SIM & Connectivity',
-              title: 'Stay connected abroad',
-              description: 'Set up mobile data before you land.',
-              pills: ['eSIM options', 'Fast setup', 'Works abroad'],
-              cta: 'See eSIM options'
-            },
-            {
-              badge: 'Best for activities',
-              category: 'Tours & Activities',
-              title: 'Discover things to do',
-              description: 'Browse attractions, tickets, and experiences.',
-              pills: ['Tours', 'Attractions', 'Easy browsing'],
-              cta: 'Explore activities'
-            }
-          ]
-        };
-      }
-
-      if (type === 'insurance') {
-        return {
-          title: 'Compare insurance options',
-          subtitle: 'Choose the right coverage before you travel.',
-          items: [
-            {
-              badge: 'Top protection pick',
-              category: 'Insurance & Claims',
-              title: 'Compare travel coverage',
-              description: 'Choose coverage that fits your trip and destination.',
-              pills: ['Trip protection', 'Easy comparison', 'Travel ready'],
-              cta: 'View coverage'
-            }
-          ]
-        };
-      }
-
-      if (type === 'tools') {
-        return {
-          title: 'Compare digital tools',
-          subtitle: 'Find useful services that make planning and travel easier.',
-          items: [
-            {
-              badge: 'Useful services',
-              category: 'Storage & Services',
-              title: 'Explore practical travel tools',
-              description: 'Find digital services that make travel easier.',
-              pills: ['Useful tools', 'Trip support', 'Easy access'],
-              cta: 'Explore services'
-            },
-            {
-              badge: 'Connectivity',
-              category: 'SIM & Connectivity',
-              title: 'Get online faster',
-              description: 'Choose a connectivity option before you travel.',
-              pills: ['eSIM', 'Mobile data', 'Travel setup'],
-              cta: 'See options'
-            }
-          ]
-        };
-      }
-
-      if (type === 'finance') {
-        return {
-          title: 'Compare finance tools',
-          subtitle: 'Explore payment and money tools that support digital life.',
-          items: [
-            {
-              badge: 'Useful money tool',
-              category: 'Storage & Services',
-              title: 'Discover practical payment services',
-              description: 'Start with a useful partner for payments and digital services.',
-              pills: ['Easy access', 'Digital-first', 'Useful service'],
-              cta: 'Explore service'
-            }
-          ]
-        };
-      }
-
-      return null;
-    }
-
-    function renderComparisonSection(type) {
-      const section = document.getElementById('comparisonSection');
-      const grid = document.getElementById('comparisonGrid');
-      const title = document.getElementById('comparisonTitle');
-      const subtitle = document.getElementById('comparisonSubtitle');
-
-      if (!section || !grid || !title || !subtitle) return;
-
-      const config = getComparisonConfig(type);
-      if (!config) {
-        section.style.display = 'none';
-        grid.innerHTML = '';
-        return;
-      }
-
-      title.textContent = config.title;
-      subtitle.textContent = config.subtitle;
-      section.style.display = 'block';
-
-      grid.innerHTML = config.items.map(function(item) {
-        const partner = partnersData
-          .filter(function(p) { return p.category === item.category; })
-          .sort(function(a, b) { return (a.tier || 3) - (b.tier || 3); })[0];
-
-        if (!partner) return '';
-
-        const trackedUrl = monetizeUrl(partner.url, {
-          partner: partner.name,
-          source: 'comparison_' + type
+    async function fetchJsonWithTimeout(url, timeoutMs = 3500) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const response = await fetch(url, {
+          signal: controller.signal,
+          cache: "no-store"
         });
 
-        return '<article class="comparison-card">' +
-          '<div class="comparison-badge">' + escapeHtml(item.badge) + '</div>' +
-          '<h3>' + escapeHtml(item.title) + '</h3>' +
-          '<p>' + escapeHtml(item.description) + '</p>' +
-          '<div class="comparison-list">' +
-          item.pills.map(function(pill) {
-            return '<span class="comparison-pill">' + escapeHtml(pill) + '</span>';
-          }).join('') +
-          '</div>' +
-          '<a class="comparison-link" href="' + escapeHtml(partner.url) + '" data-raw-url="' + escapeHtml(partner.url) + '" data-tracked-url="' + escapeHtml(trackedUrl) + '" data-partner="' + escapeHtml(partner.name) + '" data-source="' + escapeHtml('comparison_' + type) + '" target="_blank" rel="noopener noreferrer">' +
-          escapeHtml(item.cta) +
-          '</a>' +
-          '</article>';
-      }).join('');
+        if (!response.ok) throw new Error("Feed request failed");
+        return await response.json();
+      } finally {
+        clearTimeout(id);
+      }
     }
 
-    function createDepartmentCard(category) {
-      const configs = {
-        travel: {
-          title: '✈️ Travel smarter',
-          subtitle: 'Compare flights, book stays, and prepare your trip',
-          items: [
-            { label: 'Find cheap flights', category: 'Flights & Meta Search' },
-            { label: 'Book transfers', category: 'Transfers & Transport' },
-            { label: 'Explore activities', category: 'Tours & Activities' }
-          ]
-        },
-        finance: {
-          title: '💰 Manage your money',
-          subtitle: 'Discover tools for payments, banking and investing',
-          items: [
-            { label: 'Best payment tools', category: 'Storage & Services' },
-            { label: 'Top finance tools', category: 'Specialty & Other' }
-          ]
-        },
-        insurance: {
-          title: '🛡️ Stay protected',
-          subtitle: 'Compare insurance options before your trip',
-          items: [
-            { label: 'Travel insurance', category: 'Insurance & Claims' }
-          ]
-        },
-        tools: {
-          title: '🌐 Digital tools',
-          subtitle: 'Explore useful online services and tools',
-          items: [
-            { label: 'Connectivity tools', category: 'SIM & Connectivity' },
-            { label: 'Useful services', category: 'Storage & Services' }
-          ]
-        }
+
+    function inferItemRegion(item) {
+      const explicit = String(item.region || "").toLowerCase();
+      if (explicit) return explicit;
+
+      const text = [
+        item.title,
+        item.description,
+        item.summary,
+        item.caption,
+        item.author,
+        item.channel,
+        item.creator,
+        item.url
+      ].filter(Boolean).join(" ").toLowerCase();
+
+      if (/\bperu\b|\bperú\b|\blima\b|\bcusco\b|\bmachu picchu\b/.test(text)) return "latam";
+      if (/\bbrazil\b|\bbrasil\b|\bsão paulo\b|\brio de janeiro\b/.test(text)) return "br";
+      if (/\bpoland\b|\bpolska\b|\bwarsaw\b|\bkrakow\b|\bkraków\b/.test(text)) return "pl";
+      if (/\bmexico\b|\bméxico\b|\bcancun\b|\bcancún\b/.test(text)) return "mx";
+      if (/\busa\b|\bunited states\b|\bnew york\b|\blas vegas\b|\bmiami\b|\blos angeles\b|\bcalifornia\b|\bflorida\b/.test(text)) return "us";
+
+      return "global";
+    }
+
+    function allowedVideoRegions() {
+      const region = getRegion();
+
+      const map = {
+        us: ["global", "us"],
+        ca: ["global", "ca", "us"],
+        gb: ["global", "gb", "uk", "eu"],
+        uk: ["global", "gb", "uk", "eu"],
+        br: ["global", "br"],
+        pl: ["global", "pl", "eu"],
+        latam: ["global", "latam", "mx"],
+        mx: ["global", "mx", "latam"],
+        es: ["global", "es", "eu"],
+        de: ["global", "de", "eu"],
+        fr: ["global", "fr", "eu"],
+        it: ["global", "it", "eu"]
       };
 
-      const config = configs[category];
-      if (!config) return '';
+      return map[region] || ["global", region];
+    }
 
-      const itemsHtml = config.items.map(item => {
-        const partner = partnersData.find(p => p.category === item.category);
-        if (!partner) return '';
+    function isVideoAllowedForRegion(item) {
+      return allowedVideoRegions().includes(inferItemRegion(item));
+    }
 
-        return `
-          <a class="department-item"
-             href="${partner.url}"
-             data-raw-url="${partner.url}"
-             data-tracked-url="${monetizeUrl(partner.url, { partner: partner.name, source: 'department_' + category })}"
-             data-partner="${partner.name}"
-             data-source="department_${category}"
-             target="_blank"
-             rel="noopener noreferrer">
-            ${item.label}
-          </a>
-        `;
-      }).join('');
+    async function loadHeroFeedItems() {
+      const status = document.getElementById("heroFeedStatus");
+      if (status) status.textContent = t().loadingVideos || "Loading current videos…";
 
+      for (const endpoint of getHybridFeedEndpoints()) {
+        try {
+          const data = await fetchJsonWithTimeout(endpoint);
+          const rawItems = Array.isArray(data) ? data : (data.items || data.videos || data.results || []);
+          const normalizedItems = rawItems
+            .map(normalizeHeroFeedItem)
+            .filter(item => item.url && item.title);
+
+          const regionalItems = normalizedItems.filter(isVideoAllowedForRegion);
+          const items = regionalItems.length ? regionalItems : normalizedItems.filter(item => inferItemRegion(item) === "global");
+
+          if (items.length) {
+            if (status) status.textContent = "";
+            return items
+              .sort((a, b) => (b.score || 0) - (a.score || 0))
+              .slice(0, 30);
+          }
+        } catch (error) {
+          // Try the next source silently.
+        }
+      }
+
+      if (status) status.textContent = "";
+      return fallbackHeroFeedItems.filter(isVideoAllowedForRegion).length ? fallbackHeroFeedItems.filter(isVideoAllowedForRegion) : fallbackHeroFeedItems;
+    }
+
+    function renderMedia(item) {
+      const thumb = item.thumbnail || "https://via.placeholder.com/720x1280/101018/ffffff?text=Video";
       return `
-        <div class="department-card">
-          <div class="department-header">
-            <h2>${config.title}</h2>
-            <p>${config.subtitle}</p>
-          </div>
-          <div class="department-items">
-            ${itemsHtml}
-          </div>
-        </div>
+        <span class="video-thumb">
+          <img src="${escapeHtml(thumb)}" alt="${escapeHtml(item.title)}" loading="lazy">
+          <span class="play-overlay"><span class="play-button">▶</span></span>
+        </span>
       `;
     }
 
-    function matchesEntryCategory(item, category) {
-      const text = ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.category || '')).toLowerCase();
-
-      const map = {
-        travel: ['flight', 'hotel', 'trip', 'travel', 'destination', 'airport', 'tour', 'activity', 'booking'],
-        finance: ['bank', 'card', 'money', 'finance', 'invest', 'payment', 'wallet', 'crypto'],
-        insurance: ['insurance', 'coverage', 'claim', 'protect', 'protection'],
-        tools: ['tool', 'service', 'storage', 'vpn', 'software', 'sim', 'esim', 'connectivity']
-      };
-
-      const keywords = map[category] || [];
-      return keywords.some(keyword => text.includes(keyword));
+    function renderFeedCard(item, index = 1) {
+      return `
+        <a class="feed-card ${index === 0 ? "featured-video" : ""}"
+           href="${escapeHtml(item.url)}"
+           target="_blank"
+           rel="noopener noreferrer">
+          <div class="media-box">
+            ${renderMedia(item)}
+          </div>
+          <div class="feed-content">
+            <span class="feed-intent-label">${escapeHtml(String(item.platform || "video").toUpperCase())}</span>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.description)}</p>
+            <div class="feed-meta">
+              <span class="feed-platform ${escapeHtml(item.platform)}">${escapeHtml(item.platform)}</span>
+              ${escapeHtml(item.author)} • ${escapeHtml(formatDate(item.publishedAt))}
+            </div>
+            <span class="feed-link">${escapeHtml(t().videoCta || "Watch / open source →")}</span>
+          </div>
+        </a>
+      `;
     }
 
-    function filterFeedByEntryCategory(category) {
-      if (!baseFeedItems || !baseFeedItems.length) return;
-
-      const filtered = baseFeedItems.filter(item => matchesEntryCategory(item, category));
-      if (!filtered.length) return;
-
-      feedContainer.innerHTML = createDepartmentCard(category);
-      allFeedItems = filtered.slice();
-      renderedFeedCount = 0;
-      renderMoreFeed();
-      renderMoreFeed();
-
-      if (category === 'travel') renderComparisonSection('travel');
-      else if (category === 'insurance') renderComparisonSection('insurance');
-      else if (category === 'tools') renderComparisonSection('tools');
-      else if (category === 'finance') renderComparisonSection('finance');
-      else renderComparisonSection('');
-
-      const intro = document.getElementById('feedIntro');
-      if (intro) {
-        const labels = {
-          travel: 'Travel picks ↓',
-          finance: 'Finance picks ↓',
-          insurance: 'Insurance picks ↓',
-          tools: 'Tools & services ↓'
-        };
-        intro.textContent = labels[category] || 'Curated picks for you ↓';
-      }
-
-      const entryLayer = document.getElementById('entryLayer');
-      if (entryLayer) entryLayer.style.display = 'none';
+    function attachFeedTracking(scope = feedContainer) {
+      scope.querySelectorAll("a.feed-card").forEach(a => {
+        a.removeEventListener("click", trackClick);
+        a.addEventListener("click", trackClick);
+      });
     }
 
-    function resetFeedFromEntryLayer() {
-      renderComparisonSection('');
-      feedContainer.innerHTML = '';
-      allFeedItems = baseFeedItems.slice();
-      renderedFeedCount = 0;
-      renderMoreFeed();
-      renderMoreFeed();
+    async function loadMoreFeedItems() {
+      if (loadingMoreFeedItems) return;
 
-      const intro = document.getElementById('feedIntro');
-      if (intro) intro.textContent = 'Curated picks for you ↓';
+      loadingMoreFeedItems = true;
 
-      const entryLayer = document.getElementById('entryLayer');
-      if (entryLayer) entryLayer.style.display = 'none';
-    }
-
-    async function fetchDynamicFeed() {
       try {
-        const response = await fetch('/api/feed/reddit?subreddits=travel,videos,funny&limit=18', { headers: { Accept: 'application/json' } });
-        const text = await response.text();
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch (parseError) {
-          console.error('Reddit non-JSON response:', text.slice(0, 200));
-          return [];
+        if (!feedSourceItems.length) {
+          feedSourceItems = await loadHeroFeedItems();
+          feedNextIndex = 0;
         }
-        const items = Array.isArray(data) ? data : (data.items || []);
-        return items.map(function(item) { return normalizeFeedItem(item, 'reddit'); });
-      } catch (e) {
-        console.error('fetchDynamicFeed error', e);
-        return [];
-      }
-    }
 
-    async function loadPartnersData() {
-      try {
-        const response = await fetch('/data/partners.json', { cache: 'no-store' });
-        if (!response.ok) throw new Error('partners.json ' + response.status);
-        const data = await response.json();
-        if (Array.isArray(data) && data.length) {
-          partnersData = data.map(function(p) {
-            return {
-              name: p.name,
-              category: p.category || 'Specialty & Other',
-              url: p.url,
-              tier: Number(p.tier || 3),
-              logo: p.logo || ''
-            };
-          });
-        }
+        const moreItems = getNextFeedBatch();
+        if (!moreItems.length) return;
+
+        const startIndex = feedContainer.children.length;
+        feedContainer.insertAdjacentHTML(
+          "beforeend",
+          moreItems.map((item, index) => renderFeedCard(item, startIndex + index)).join("")
+        );
+        attachFeedTracking();
       } catch (error) {
-        console.error('partners load error', error);
-        partnersData = fallbackPartners.slice();
+        console.error("loadMoreFeedItems failed", error);
+      } finally {
+        loadingMoreFeedItems = false;
+      }
+    }
+
+    function initializeFeedInfiniteScroll() {
+      if (!magnetoColumn || magnetoColumn.dataset.infiniteScrollReady === "true") return;
+      magnetoColumn.dataset.infiniteScrollReady = "true";
+
+      magnetoColumn.addEventListener("scroll", () => {
+        const nearBottom = magnetoColumn.scrollTop + magnetoColumn.clientHeight >= magnetoColumn.scrollHeight - 200;
+
+        if (nearBottom) {
+          loadMoreFeedItems();
+        }
+      }, { passive: true });
+    }
+
+    async function renderFeed() {
+      let items = [];
+
+      try {
+        items = await loadHeroFeedItems();
+      } catch (error) {
+        items = fallbackHeroFeedItems || [];
       }
 
-      renderPartners(partnersData);
-      renderBrandGrid(partnersData);
-      setupFeaturedHeader();
-      updateStickyOffer();
-    }
-
-    function setupFeaturedHeader() {
-      const featuredLink = document.getElementById('featuredPartnerLink');
-      const title = document.getElementById('featuredDealTitle');
-      const subtitle = document.getElementById('featuredDealSubtitle');
-
-      function rotateHeaderDeal() {
-        const offer = getOfferFromPartners();
-        if (!offer) return;
-
-        const benefit = getOfferBenefitCopy(offer);
-        setTrackedLinkAttributes(featuredLink, offer.url, { partner: offer.name, source: 'header_featured' });
-        title.textContent = benefit.title;
-        subtitle.textContent = benefit.description;
+      if (!items || !items.length) {
+        items = fallbackHeroFeedItems || [];
       }
 
-      rotateHeaderDeal();
-      window.setInterval(rotateHeaderDeal, 10000);
+      feedSourceItems = items.slice();
+      feedNextIndex = 0;
+
+      const firstBatch = getNextFeedBatch();
+      feedContainer.innerHTML = firstBatch.map((item, index) => renderFeedCard(item, index)).join("");
+      attachFeedTracking();
+      initializeFeedInfiniteScroll();
     }
 
-    function updateStickyOffer() {
-      const stickyCopy = document.getElementById('stickyCopy');
-      const stickyLink = document.getElementById('stickyLink');
-      const offer = getOfferFromPartners();
-      if (!offer) return;
+    function renderBrandGrid() {
+      // US homepage keeps global + US partner tiles.
+      // Every localized market uses exact local partner tags only: no global, no US, no EU fallback.
+      const source = isDefaultUSRegion() ? visibleTopTravelPartners() : visibleTopRegionalTravelPartners();
+      const top = source
+        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
+        .slice()
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name))
+        .slice(0, 10);
 
-      const benefit = getOfferBenefitCopy(offer);
-      stickyCopy.textContent = benefit.title + ' — ' + benefit.description;
-      setTrackedLinkAttributes(stickyLink, offer.url, { partner: offer.name, source: 'sticky' });
-      stickyLink.textContent = benefit.cta;
+      brandGrid.innerHTML = top.map(p => `
+        <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">
+          <span class="brand-fallback">${escapeHtml(p.name.slice(0, 2))}</span>
+          <span>${escapeHtml(p.name)}</span>
+        </a>
+      `).join("");
+
+      brandGrid.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
     }
 
-    function showPopupDeal() {
-      if (popupShown) return;
 
-      const popup = document.getElementById('dealPopup');
-      const title = document.getElementById('popupTitle');
-      const text = document.getElementById('popupText');
-      const link = document.getElementById('popupLink');
-      const offer = getOfferFromPartners();
-      if (!popup || !offer) return;
-
-      const benefit = getOfferBenefitCopy(offer);
-      title.textContent = benefit.title;
-      text.textContent = benefit.description;
-      setTrackedLinkAttributes(link, offer.url, { partner: offer.name, source: 'popup' });
-      link.textContent = benefit.cta;
-
-      popup.style.display = 'flex';
-      popupShown = true;
+    function getAmazonBaseByRegion() {
+      const region = REGION_CONFIG[getRegion()] || REGION_CONFIG.us;
+      return region.amazon || "https://www.amazon.com";
     }
 
-    function attachGlobalInteractions() {
-      document.addEventListener('click', function(e) {
-        const anchor = e.target.closest('a[href]');
-        if (anchor) {
-          const rawUrl = anchor.getAttribute('data-raw-url') || anchor.getAttribute('href');
-          const trackedUrl = anchor.getAttribute('data-tracked-url') || anchor.getAttribute('href');
-          if (rawUrl && rawUrl !== '#') {
-            e.preventDefault();
-            e.stopPropagation();
-            openPartnerLink(rawUrl, trackedUrl, {
-              partner: anchor.getAttribute('data-partner'),
-              source: anchor.getAttribute('data-source')
-            });
-            return;
+    function getAmazonTagByRegion() {
+      return "signalboostai-20";
+    }
+
+    function getAmazonLink(type = "general") {
+      const base = getAmazonBaseByRegion();
+      const tag = getAmazonTagByRegion();
+      const dict = getCurrentTranslations();
+      const queries = dict.amazonQueries || I18N.en.amazonQueries;
+      const q = encodeURIComponent(queries[type] || queries.general);
+      return `${base}/s?k=${q}&tag=${tag}`;
+    }
+
+    function hydrateAmazonLinks() {
+      const amazonCards = document.querySelectorAll(".amazon-card");
+      const cardKeys = ["power", "adapter", "luggage", "packing"];
+
+      amazonCards.forEach((card, index) => {
+        const key = cardKeys[index] || "general";
+        const url = getAmazonLink(key);
+        card.href = url;
+        card.target = "_blank";
+        card.rel = "noopener noreferrer";
+      });
+
+      const form = document.getElementById("amazonSearchForm");
+      if (form) {
+        form.action = `${getAmazonBaseByRegion()}/s`;
+        const hiddenTag = form.querySelector('input[name="tag"]');
+        if (hiddenTag) hiddenTag.value = getAmazonTagByRegion();
+      }
+    }
+
+    function setFeatured() {
+      const featured = visibleTopTravelPartners().find(p => p.tier === 1) || visibleTopTravelPartners()[0];
+      if (!featured) return;
+
+      document.getElementById("stickyCopy").textContent = t().stickyCopy;
+      document.getElementById("stickyLink").href = featured.url;
+      document.getElementById("stickyLink").addEventListener("click", trackClick);
+    }
+
+    partnerSearch.addEventListener("input", renderPartnersRail);
+
+
+    const HEADER_CATEGORY_KEYS = new Set([
+      "flights",
+      "hotels",
+      "transfers",
+      "car_rentals",
+      "sim",
+      "tours"
+    ]);
+
+    const CATEGORY_I18N_KEYS = {
+      "All": "all",
+      "Flights & Meta Search": "flights",
+      "Hotels": "hotels",
+      "Hotels & Accommodation": "hotels",
+      "Car Rentals": "car_rentals",
+      "Transfers & Transport": "transfers",
+      "Tours & Activities": "tours",
+      "SIM & Connectivity": "sim",
+      "Insurance & Claims": "insurance",
+      "Storage & Services": "travel_services",
+      "Travel Services": "travel_services",
+      "Marketplace": "marketplace",
+      "Products & Tools": "products_tools",
+      "Finance": "finance",
+      "Specialty & Other": "specialty_other"
+    };
+
+    const BUILT_IN_TRANSLATIONS = {
+      "en": {
+            "brand_name": "SignalBoost",
+            "all": "All",
+            "travel": "Travel",
+            "flights": "Flights",
+            "hotels": "Hotels",
+            "car_rentals": "Car Rentals",
+            "transfers": "Transfers & Transport",
+            "tours": "Tours & Activities",
+            "sim": "SIM & Connectivity",
+            "insurance": "Insurance & Claims",
+            "travel_services": "Travel Services",
+            "products_tools": "Products & Tools",
+            "finance": "Finance",
+            "specialty_other": "Specialty & Other",
+            "marketplace": "Marketplace",
+            "explore_offers": "Explore offers",
+            "search_placeholder": "Flights, hotels, eSIM, tours...",
+            "view_more": "View More",
+            "view_less": "View Less",
+            "loading": "Loading...",
+            "no_results": "No results found",
+            "partners": "Partners",
+            "categories": "Categories",
+            "featured_service": "Explore a featured service picked for you."
+      },
+      "es": {
+            "travel": "Viajes",
+            "flights": "Vuelos",
+            "hotels": "Hoteles",
+            "car_rentals": "Alquiler de Autos",
+            "transfers": "Traslados y Transporte",
+            "tours": "Tours y Actividades",
+            "sim": "SIM y Conectividad",
+            "insurance": "Seguros y Reclamaciones",
+            "travel_services": "Servicios de Viaje",
+            "products_tools": "Productos y Herramientas",
+            "finance": "Finanzas",
+            "specialty_other": "Especialidad y Otros",
+            "marketplace": "Marketplace",
+            "explore_offers": "Explorar ofertas",
+            "search_placeholder": "Vuelos, hoteles, eSIM, tours...",
+            "view_more": "Ver más",
+            "view_less": "Ver menos",
+            "loading": "Cargando...",
+            "no_results": "No se encontraron resultados",
+            "partners": "Socios",
+            "categories": "Categorías",
+            "featured_service": "Explora un servicio destacado elegido para ti."
+      },
+      "pt": {
+            "travel": "Viagens",
+            "flights": "Voos",
+            "hotels": "Hotéis",
+            "car_rentals": "Aluguel de Carros",
+            "transfers": "Traslados e Transporte",
+            "tours": "Passeios e Atividades",
+            "sim": "SIM e Conectividade",
+            "insurance": "Seguro e Reivindicações",
+            "travel_services": "Serviços de Viagem",
+            "products_tools": "Produtos e Ferramentas",
+            "finance": "Finanças",
+            "specialty_other": "Especialidade e Outros",
+            "marketplace": "Marketplace",
+            "explore_offers": "Explorar ofertas",
+            "search_placeholder": "Voos, hotéis, eSIM, passeios...",
+            "view_more": "Ver mais",
+            "view_less": "Ver menos",
+            "loading": "Carregando...",
+            "no_results": "Nenhum resultado encontrado",
+            "partners": "Parceiros",
+            "categories": "Categorias",
+            "featured_service": "Explore um serviço em destaque escolhido para você."
+      },
+      "fr": {
+            "travel": "Voyage",
+            "flights": "Vols",
+            "hotels": "Hôtels",
+            "car_rentals": "Location de Voitures",
+            "transfers": "Transferts et Transport",
+            "tours": "Tours et Activités",
+            "sim": "SIM et Connectivité",
+            "insurance": "Assurance et Réclamations",
+            "travel_services": "Services de Voyage",
+            "products_tools": "Produits et Outils",
+            "finance": "Finance",
+            "specialty_other": "Spécialité et Autres",
+            "marketplace": "Marketplace",
+            "explore_offers": "Explorer les offres",
+            "search_placeholder": "Vols, hôtels, eSIM, visites...",
+            "view_more": "Voir plus",
+            "view_less": "Voir moins",
+            "loading": "Chargement...",
+            "no_results": "Aucun résultat trouvé",
+            "partners": "Partenaires",
+            "categories": "Catégories",
+            "featured_service": "Explorez un service mis en avant pour vous."
+      },
+      "de": {
+            "travel": "Reisen",
+            "flights": "Flüge",
+            "hotels": "Hotels",
+            "car_rentals": "Mietwagen",
+            "transfers": "Transfers und Transport",
+            "tours": "Touren und Aktivitäten",
+            "sim": "SIM und Konnektivität",
+            "insurance": "Versicherung und Ansprüche",
+            "travel_services": "Reisedienstleistungen",
+            "products_tools": "Produkte und Werkzeuge",
+            "finance": "Finanzen",
+            "specialty_other": "Spezialität und Sonstiges",
+            "marketplace": "Marktplatz",
+            "explore_offers": "Angebote entdecken",
+            "search_placeholder": "Flüge, Hotels, eSIM, Touren...",
+            "view_more": "Mehr anzeigen",
+            "view_less": "Weniger anzeigen",
+            "loading": "Laden...",
+            "no_results": "Keine Ergebnisse gefunden",
+            "partners": "Partner",
+            "categories": "Kategorien",
+            "featured_service": "Entdecken Sie einen ausgewählten Service."
+      },
+      "it": {
+            "travel": "Viaggi",
+            "flights": "Voli",
+            "hotels": "Hotel",
+            "car_rentals": "Noleggio Auto",
+            "transfers": "Transfer e Trasporti",
+            "tours": "Tour e Attività",
+            "sim": "SIM e Connettività",
+            "insurance": "Assicurazione e Reclami",
+            "travel_services": "Servizi di Viaggio",
+            "products_tools": "Prodotti e Strumenti",
+            "finance": "Finanza",
+            "specialty_other": "Specialità e Altro",
+            "marketplace": "Marketplace",
+            "explore_offers": "Esplora offerte",
+            "search_placeholder": "Voli, hotel, eSIM, tour...",
+            "view_more": "Mostra di più",
+            "view_less": "Mostra di meno",
+            "loading": "Caricamento...",
+            "no_results": "Nessun risultato trovato",
+            "partners": "Partner",
+            "categories": "Categorie",
+            "featured_service": "Esplora un servizio in evidenza scelto per te."
+      },
+      "pl": {
+            "travel": "Podróże",
+            "flights": "Loty",
+            "hotels": "Hotele",
+            "car_rentals": "Wynajem Samochodów",
+            "transfers": "Transfery i Transport",
+            "tours": "Wycieczki i Aktywności",
+            "sim": "Karty SIM i Łączność",
+            "insurance": "Ubezpieczenia i Roszczenia",
+            "travel_services": "Usługi Podróżne",
+            "products_tools": "Produkty i Narzędzia",
+            "finance": "Finanse",
+            "specialty_other": "Specjalne i Inne",
+            "marketplace": "Marketplace",
+            "explore_offers": "Przeglądaj oferty",
+            "search_placeholder": "Loty, hotele, eSIM, wycieczki...",
+            "view_more": "Pokaż więcej",
+            "view_less": "Pokaż mniej",
+            "loading": "Ładowanie...",
+            "no_results": "Brak wyników",
+            "partners": "Partnerzy",
+            "categories": "Kategorie",
+            "featured_service": "Sprawdź wyróżnioną usługę wybraną dla Ciebie."
+      },
+      "ja": {
+            "travel": "旅行",
+            "flights": "航空券",
+            "hotels": "ホテル",
+            "car_rentals": "レンタカー",
+            "transfers": "送迎・交通",
+            "tours": "ツアー・アクティビティ",
+            "sim": "SIM・通信",
+            "insurance": "保険・請求",
+            "travel_services": "旅行サービス",
+            "products_tools": "製品・ツール",
+            "finance": "金融",
+            "specialty_other": "専門・その他",
+            "marketplace": "マーケットプレイス",
+            "explore_offers": "オファーを探す",
+            "search_placeholder": "航空券、ホテル、eSIM、ツアー...",
+            "view_more": "さらに表示",
+            "view_less": "表示を減らす",
+            "loading": "読み込み中...",
+            "no_results": "結果が見つかりません",
+            "partners": "パートナー",
+            "categories": "カテゴリー",
+            "featured_service": "あなたにおすすめの注目サービスをチェック。"
+      },
+      "ko": {
+            "travel": "여행",
+            "flights": "항공편",
+            "hotels": "호텔",
+            "car_rentals": "렌터카",
+            "transfers": "이동 및 교통",
+            "tours": "투어 및 액티비티",
+            "sim": "SIM 및 연결",
+            "insurance": "보험 및 청구",
+            "travel_services": "여행 서비스",
+            "products_tools": "제품 및 도구",
+            "finance": "금융",
+            "specialty_other": "특수 및 기타",
+            "marketplace": "마켓플레이스",
+            "explore_offers": "혜택 둘러보기",
+            "search_placeholder": "항공편, 호텔, eSIM, 투어...",
+            "view_more": "더 보기",
+            "view_less": "간단히 보기",
+            "loading": "로딩 중...",
+            "no_results": "결과가 없습니다",
+            "partners": "파트너",
+            "categories": "카테고리",
+            "featured_service": "추천 서비스를 확인해 보세요."
+      },
+      "zh-CN": {
+            "travel": "旅行",
+            "flights": "航班",
+            "hotels": "酒店",
+            "car_rentals": "租车",
+            "transfers": "接送与交通",
+            "tours": "旅游与活动",
+            "sim": "SIM卡与连接",
+            "insurance": "保险与理赔",
+            "travel_services": "旅行服务",
+            "products_tools": "产品与工具",
+            "finance": "金融",
+            "specialty_other": "特色与其他",
+            "marketplace": "商城",
+            "explore_offers": "浏览优惠",
+            "search_placeholder": "航班、酒店、eSIM、旅游...",
+            "view_more": "查看更多",
+            "view_less": "收起",
+            "loading": "加载中...",
+            "no_results": "未找到结果",
+            "partners": "合作伙伴",
+            "categories": "分类",
+            "featured_service": "查看为你精选的服务。"
+      },
+      "zh-TW": {
+            "travel": "旅行",
+            "flights": "航班",
+            "hotels": "飯店",
+            "car_rentals": "租車",
+            "transfers": "接送與交通",
+            "tours": "旅遊與活動",
+            "sim": "SIM卡與連線",
+            "insurance": "保險與理賠",
+            "travel_services": "旅行服務",
+            "products_tools": "產品與工具",
+            "finance": "金融",
+            "specialty_other": "特色與其他",
+            "marketplace": "市集",
+            "explore_offers": "瀏覽優惠",
+            "search_placeholder": "航班、飯店、eSIM、旅遊...",
+            "view_more": "查看更多",
+            "view_less": "收起",
+            "loading": "載入中...",
+            "no_results": "找不到結果",
+            "partners": "合作夥伴",
+            "categories": "分類",
+            "featured_service": "查看為你精選的服務。"
+      },
+      "ru": {
+            "travel": "Путешествия",
+            "flights": "Авиабилеты",
+            "hotels": "Отели",
+            "car_rentals": "Аренда автомобилей",
+            "transfers": "Трансферы и транспорт",
+            "tours": "Туры и мероприятия",
+            "sim": "SIM и связь",
+            "insurance": "Страхование и претензии",
+            "travel_services": "Туристические услуги",
+            "products_tools": "Продукты и инструменты",
+            "finance": "Финансы",
+            "specialty_other": "Специальное и другое",
+            "marketplace": "Маркетплейс",
+            "explore_offers": "Смотреть предложения",
+            "search_placeholder": "Авиабилеты, отели, eSIM, туры...",
+            "view_more": "Показать больше",
+            "view_less": "Показать меньше",
+            "loading": "Загрузка...",
+            "no_results": "Результаты не найдены",
+            "partners": "Партнеры",
+            "categories": "Категории",
+            "featured_service": "Посмотрите рекомендуемый сервис."
+      }
+};
+
+    let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
+
+    async function detectUserLanguage() {
+      const region = await detectUserRegion();
+      const map = {
+        br: "pt-BR",
+        pt: "pt",
+        pl: "pl",
+        mx: "es",
+        ar: "es",
+        es: "es",
+        latam: "es",
+        us: "en",
+        ca: "en",
+        gb: "en",
+        uk: "en",
+        au: "en",
+        de: "de",
+        fr: "fr",
+        it: "it",
+        jp: "ja",
+        kr: "ko",
+        cn: "zh-CN",
+        zh: "zh-CN",
+        tw: "zh-TW",
+        ru: "ru"
+      };
+      return map[region] || "en";
+    }
+
+    async function detectUserRegion() {
+      const urlParam = new URLSearchParams(window.location.search).get("region");
+      if (urlParam) return setActiveRegion(urlParam.toLowerCase());
+
+      const pathRegion = getRegion();
+      const path = window.location.pathname.toLowerCase();
+      if (path !== "/" && pathRegion) return setActiveRegion(pathRegion);
+
+      const lang = (navigator.language || "").toLowerCase();
+      if (lang.startsWith("pt")) return setActiveRegion("br");
+      if (lang.startsWith("pl")) return setActiveRegion("pl");
+      if (lang.startsWith("es")) return setActiveRegion("mx");
+      if (lang.startsWith("ja")) return setActiveRegion("jp");
+      if (lang.startsWith("de")) return setActiveRegion("de");
+      if (lang.startsWith("fr")) return setActiveRegion("fr");
+      if (lang.startsWith("it")) return setActiveRegion("it");
+      if (lang.startsWith("ko")) return setActiveRegion("kr");
+      if (lang.startsWith("zh-tw")) return setActiveRegion("tw");
+      if (lang.startsWith("zh")) return setActiveRegion("cn");
+
+      return setActiveRegion("us");
+    }
+
+    async function loadLanguage(lang) {
+      const builtInKey = lang === "pt-BR" ? "pt" : lang;
+      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
+      const externalCandidates = lang === builtInKey ? [lang] : [lang, builtInKey];
+
+      for (const candidate of externalCandidates) {
+        try {
+          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
+          if (res.ok) {
+            translations = { ...translations, ...(await res.json()) };
+            break;
           }
-          e.stopPropagation();
-          return;
+        } catch (e) {
+          console.info("Using built-in translations for", candidate);
         }
-
-        const card = e.target.closest('.feed-card[data-open-url]');
-        if (!card) return;
-        const rawUrl = card.getAttribute('data-open-url');
-        const trackedUrl = card.getAttribute('data-open-tracked-url') || rawUrl;
-        if (!rawUrl || rawUrl === '#') return;
-
-        openPartnerLink(rawUrl, trackedUrl, {
-          partner: card.getAttribute('data-partner'),
-          source: card.getAttribute('data-source')
-        });
-      });
-
-      document.getElementById('popupClose').addEventListener('click', function() {
-        document.getElementById('dealPopup').style.display = 'none';
-      });
-
-      document.getElementById('dealPopup').addEventListener('click', function(e) {
-        if (e.target.id === 'dealPopup') {
-          document.getElementById('dealPopup').style.display = 'none';
-        }
-      });
-
-      document.getElementById('partnerSearch').addEventListener('input', function() {
-        const q = this.value.trim().toLowerCase();
-        if (!q) {
-          renderPartners(partnersData);
-          return;
-        }
-        renderPartners(partnersData.filter(function(p) {
-          return p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
-        }));
-      });
-
-      document.querySelectorAll('.entry-chip').forEach(function(button) {
-        button.addEventListener('click', function() {
-          const category = this.getAttribute('data-entry-category');
-          if (!category) return;
-          filterFeedByEntryCategory(category);
-        });
-      });
-
-      const showAllFeedBtn = document.getElementById('showAllFeed');
-      if (showAllFeedBtn) {
-        showAllFeedBtn.addEventListener('click', function() {
-          resetFeedFromEntryLayer();
-        });
       }
 
-      const showPopularPartnersBtn = document.getElementById('showPopularPartners');
-      if (showPopularPartnersBtn) {
-        showPopularPartnersBtn.addEventListener('click', function() {
-          const brandGridColumn = document.querySelector('.column-3');
-          if (brandGridColumn) {
-            brandGridColumn.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+      ACTIVE_TRANSLATIONS = { ...BUILT_IN_TRANSLATIONS.en, ...translations };
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (ACTIVE_TRANSLATIONS[key]) el.textContent = ACTIVE_TRANSLATIONS[key];
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (ACTIVE_TRANSLATIONS[key]) el.setAttribute("placeholder", ACTIVE_TRANSLATIONS[key]);
+      });
+
+      document.documentElement.lang = lang;
+    }
+
+    async function initI18n(lang) {
+      document.documentElement.setAttribute("data-i18n-ready", "0");
+      await loadLanguage(lang);
+      document.documentElement.setAttribute("data-i18n-ready", "1");
+    }
+
+    function translateKey(key, fallback = "") {
+      return ACTIVE_TRANSLATIONS[key] || fallback || key;
+    }
+
+    function labelForCategory(category) {
+      const key = CATEGORY_I18N_KEYS[category] || category;
+      return translateKey(key, category);
+    }
+
+
+    const SEO_PROFILES = {
+      en: {
+        title: "Cheap Flights, Hotels & Travel Deals Worldwide | SignalBoost",
+        description: "Find cheap flights, hotels, eSIM, car rentals, tours, transfers and travel deals worldwide with SignalBoost.",
+        h1: "Cheap flights, hotels and travel deals worldwide",
+        text: "Compare travel services, flights, hotels, eSIM, tours, transfers and partner offers in one place.",
+        path: "/"
+      },
+      pl: {
+        title: "Tanie loty i hotele w Polsce | SignalBoost",
+        description: "Znajdź tanie loty, hotele, transfery, eSIM i oferty podróży w Polsce z SignalBoost.",
+        h1: "Tanie loty i hotele w Polsce",
+        text: "Porównuj oferty lotów, hoteli, transferów, kart eSIM i usług podróżnych dla Polski.",
+        path: "/pl/"
+      },
+      br: {
+        title: "Passagens baratas e hotéis no Brasil | SignalBoost",
+        description: "Encontre passagens baratas, hotéis, eSIM, traslados e ofertas de viagem no Brasil com SignalBoost.",
+        h1: "Passagens baratas e hotéis no Brasil",
+        text: "Compare ofertas de voos, hotéis, eSIM, traslados e serviços de viagem para o Brasil.",
+        path: "/pt-br/"
+      },
+      latam: {
+        title: "Vuelos baratos y hoteles en Latinoamérica | SignalBoost",
+        description: "Encuentra vuelos baratos, hoteles, eSIM, traslados y ofertas de viaje para Latinoamérica.",
+        h1: "Vuelos baratos y hoteles en Latinoamérica",
+        text: "Compara vuelos, hoteles, eSIM, traslados y servicios de viaje para Latinoamérica.",
+        path: "/es/"
+      },
+      mx: {
+        title: "Vuelos baratos y hoteles en México | SignalBoost",
+        description: "Encuentra vuelos baratos, hoteles y ofertas de viaje en México.",
+        h1: "Vuelos baratos y hoteles en México",
+        text: "Compara ofertas de viaje, vuelos, hoteles y servicios para México.",
+        path: "/es/"
+      },
+      es: {
+        title: "Vuelos baratos y hoteles | SignalBoost",
+        description: "Encuentra vuelos baratos, hoteles y ofertas de viaje.",
+        h1: "Vuelos baratos y hoteles",
+        text: "Compara vuelos, hoteles, eSIM, traslados y servicios de viaje.",
+        path: "/es/"
+      },
+      ru: {
+        title: "Дешевые авиабилеты и отели | SignalBoost",
+        description: "Находите дешевые авиабилеты, отели, eSIM, трансферы и туристические предложения с SignalBoost.",
+        h1: "Дешевые авиабилеты и отели",
+        text: "Сравнивайте авиабилеты, отели, eSIM, трансферы и туристические сервисы в одном месте.",
+        path: "/ru/"
+      },
+      cn: {
+        title: "便宜机票和酒店 | SignalBoost",
+        description: "使用 SignalBoost 查找便宜机票、酒店、eSIM、接送、旅游活动和旅行优惠。",
+        h1: "便宜机票和酒店",
+        text: "在一个地方比较机票、酒店、eSIM、接送和旅行服务优惠。",
+        path: "/zh-cn/"
+      },
+      zh: {
+        title: "便宜机票和酒店 | SignalBoost",
+        description: "使用 SignalBoost 查找便宜机票、酒店和旅行优惠。",
+        h1: "便宜机票和酒店",
+        text: "比较机票、酒店、eSIM、接送和旅行服务。",
+        path: "/zh-cn/"
+      },
+      tw: {
+        title: "便宜機票和飯店 | SignalBoost",
+        description: "使用 SignalBoost 尋找便宜機票、飯店、eSIM、接送和旅遊優惠。",
+        h1: "便宜機票和飯店",
+        text: "在一個地方比較機票、飯店、eSIM、接送和旅遊服務優惠。",
+        path: "/zh-tw/"
+      },
+      de: {
+        title: "Günstige Flüge und Hotels | SignalBoost",
+        description: "Finden Sie günstige Flüge, Hotels, eSIM, Transfers und Reiseangebote.",
+        h1: "Günstige Flüge und Hotels",
+        text: "Vergleichen Sie Flüge, Hotels, eSIM, Transfers und Reisedienste.",
+        path: "/de/"
+      },
+      fr: {
+        title: "Vols et hôtels pas chers | SignalBoost",
+        description: "Trouvez des vols, hôtels, eSIM, transferts et offres de voyage.",
+        h1: "Vols et hôtels pas chers",
+        text: "Comparez les vols, hôtels, eSIM, transferts et services de voyage.",
+        path: "/fr/"
+      },
+      it: {
+        title: "Voli e hotel economici | SignalBoost",
+        description: "Trova voli, hotel, eSIM, trasferimenti e offerte di viaggio.",
+        h1: "Voli e hotel economici",
+        text: "Confronta voli, hotel, eSIM, trasferimenti e servizi di viaggio.",
+        path: "/it/"
+      },
+      jp: {
+        title: "格安航空券とホテル | SignalBoost",
+        description: "SignalBoostで格安航空券、ホテル、eSIM、送迎、旅行サービスを探しましょう。",
+        h1: "格安航空券とホテル",
+        text: "航空券、ホテル、eSIM、送迎、旅行サービスを一か所で比較できます。",
+        path: "/ja/"
+      },
+      kr: {
+        title: "저렴한 항공권과 호텔 | SignalBoost",
+        description: "SignalBoost에서 항공권, 호텔, eSIM, 교통편 및 여행 혜택을 찾아보세요.",
+        h1: "저렴한 항공권과 호텔",
+        text: "항공권, 호텔, eSIM, 교통편 및 여행 서비스를 한곳에서 비교하세요.",
+        path: "/ko/"
+      }
+    };
+
+    function applyInternationalSeo() {
+      const region = getRegion();
+      const profile = SEO_PROFILES[region] || SEO_PROFILES[getLang()] || SEO_PROFILES.en;
+      const baseUrl = window.location.origin || "";
+
+      const titleEl = document.getElementById("pageTitle") || document.querySelector("title");
+      if (titleEl) titleEl.textContent = profile.title;
+      document.title = profile.title;
+
+      const descEl = document.getElementById("seoDescription") || document.querySelector('meta[name="description"]');
+      if (descEl) descEl.setAttribute("content", profile.description);
+
+      const canonical = document.getElementById("canonicalLink") || document.querySelector('link[rel="canonical"]');
+      if (canonical) canonical.setAttribute("href", baseUrl + profile.path);
+
+      const seoH1 = document.getElementById("seoH1");
+      if (seoH1) seoH1.textContent = profile.h1;
+      const seoText = document.getElementById("seoText");
+      if (seoText) seoText.textContent = profile.text;
+
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute("content", profile.title);
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      if (ogDescription) ogDescription.setAttribute("content", profile.description);
+    }
+
+    function showDebug(region, lang) {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("debug")) return;
+      const box = document.getElementById("sb-debug");
+      if (!box) return;
+      box.innerHTML = `<strong>Region:</strong> ${escapeHtml(region)}<br><strong>Language:</strong> ${escapeHtml(lang)}`;
+      box.style.display = "block";
+      console.log("Detected region:", region);
+      console.log("Detected language:", lang);
+    }
+
+    async function initializeInternationalization() {
+      const region = await detectUserRegion();
+      const lang = await detectUserLanguage();
+      await loadLanguage(lang);
+      showDebug(region, lang);
+
+      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
+      try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
+      try { applyI18N(); } catch (e) { console.error("applyI18N external i18n refresh failed", e); }
+      try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory i18n refresh failed", e); }
+      initColumn1Accordion();
+    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
+      try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid i18n refresh failed", e); }
+      try { setFeatured(); } catch (e) { console.error("setFeatured i18n refresh failed", e); }
+    }
+
+    /* ---------------------------------------------------------
+       REGION-FIRST PARTNER ENGINE + FINAL BOOTSTRAP
+       This block intentionally overrides the older mixed fallback renderers above.
+       Rule: if a region has partners, show ONLY that region. If it has none,
+       show global partners.
+    --------------------------------------------------------- */
+
+    let ACTIVE_PARTNERS = [];
+
+    function baseAvailablePartners() {
+      const source = Array.isArray(partnersData) ? partnersData : [];
+      return source.map(p => ({
+        ...p,
+        category_key: p.category_key || categoryKeyForPartner(p)
+      }));
+    }
+
+    function partnerRegionMatches(partner, region) {
+      return normalizeRegion(partner.region || "global") === normalizeRegion(region || "us");
+    }
+
+    function usablePartner(partner) {
+      return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
+    }
+
+    async function loadPartners(region, allPartners) {
+      const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
+      const normalizedRegion = normalizeRegion(region || "us");
+      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
+
+      if (regional.length > 0) return regional;
+      return all.filter(p => partnerRegionMatches(p, "global"));
+    }
+
+    function categoryKeySafe(partner) {
+      return partner.category_key || categoryKeyForPartner(partner);
+    }
+
+    function partnersFilteredBySearch(partners) {
+      const input = document.getElementById("partnerSearch");
+      const query = input ? input.value.trim().toLowerCase() : "";
+      if (!query) return partners;
+
+      return partners.filter(p => {
+        const haystack = [p.name, p.category, p.category_key, p.region, p.network, p.highlight, p.notes]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(query);
+      });
+    }
+
+    function renderColumn1(partners) {
+      const rail = document.getElementById("partnersRail");
+      const groups = document.querySelectorAll(".c1-group");
+
+      // Column 1 baseline: ONLY these non-travel categories.
+      // Travel categories stay in the top header navigation.
+      const COLUMN1_CATEGORY_KEYS = [
+        "marketplace",
+        "products_tools",
+        "finance",
+        "insurance"
+      ];
+      const column1Set = new Set(COLUMN1_CATEGORY_KEYS);
+
+      // Column 1 should show global + regional non-travel partners.
+      // This keeps useful global offers visible without duplicating travel header categories.
+      const region = getRegion();
+      const source = baseAvailablePartners()
+        .filter(usablePartner)
+        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
+        .filter(p => column1Set.has(categoryKeySafe(p)));
+
+      const items = partnersFilteredBySearch(source);
+
+      if (rail) rail.querySelectorAll(".partners-empty").forEach(el => el.remove());
+
+      // Reset every group and force the sidebar to the collapsed baseline state.
+      groups.forEach(group => {
+        const cat = group.getAttribute("data-cat");
+        const body = group.querySelector(".c1-body");
+        const header = group.querySelector(".c1-header");
+
+        if (body) {
+          body.innerHTML = "";
+          body.classList.remove("open");
+        }
+        if (header) header.classList.remove("open", "active");
+
+        group.style.display = column1Set.has(cat) ? "block" : "none";
+      });
+
+      const seen = new Set();
+
+      items
+        .slice()
+        .sort((a, b) =>
+          COLUMN1_CATEGORY_KEYS.indexOf(categoryKeySafe(a)) - COLUMN1_CATEGORY_KEYS.indexOf(categoryKeySafe(b)) ||
+          (a.tier || 99) - (b.tier || 99) ||
+          String(a.name || "").localeCompare(String(b.name || ""))
+        )
+        .forEach(p => {
+          const categoryKey = categoryKeySafe(p);
+          const group = document.querySelector(`.c1-group[data-cat="${CSS.escape(categoryKey)}"]`);
+          if (!group) return;
+
+          const dedupeKey = `${p.name}|${categoryKey}|${p.url}`.toLowerCase();
+          if (seen.has(dedupeKey)) return;
+          seen.add(dedupeKey);
+
+          const body = group.querySelector(".c1-body");
+          if (!body) return;
+
+          const item = document.createElement("div");
+          item.className = "c1-partner";
+          item.innerHTML = `
+            ${escapeHtml(p.name || "Partner")}
+            <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
+          `;
+          item.addEventListener("click", () => {
+            trackClick();
+            window.location.href = p.url;
+          });
+          body.appendChild(item);
         });
+
+      let visibleCount = 0;
+      groups.forEach(group => {
+        const cat = group.getAttribute("data-cat");
+        const body = group.querySelector(".c1-body");
+        const hasItems = Boolean(body && body.children.length);
+
+        group.style.display = column1Set.has(cat) && hasItems ? "block" : "none";
+        if (column1Set.has(cat) && hasItems) visibleCount += 1;
+      });
+
+      if (!visibleCount && rail) {
+        rail.insertAdjacentHTML("beforeend", `<div class="partners-empty">${escapeHtml(translateKey("noExtraPartners", "No partners available for this search."))}</div>`);
       }
     }
 
-    function scheduleMonetizationTriggers() {
-      window.setTimeout(showPopupDeal, 8000);
-      window.setInterval(updateStickyOffer, 12000);
+    function renderColumn3(partners) {
+      const container = document.getElementById("brandGrid");
+      if (!container) return;
+
+      const top = (partners || [])
+        .slice()
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || String(a.name || "").localeCompare(String(b.name || "")))
+        .slice(0, 12);
+
+      container.innerHTML = top.map(p => {
+        const logo = p.logo
+          ? `<img src="${escapeHtml(p.logo)}" alt="${escapeHtml(p.name || "Partner")}" style="max-width:42px;max-height:42px;object-fit:contain;">`
+          : `<span class="brand-fallback">${escapeHtml(String(p.name || "SB").slice(0, 2))}</span>`;
+
+        return `
+          <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || "")}">
+            ${logo}
+            <span>${escapeHtml(p.name || "Partner")}</span>
+          </a>
+        `;
+      }).join("");
+
+      container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
     }
 
-    attachGlobalInteractions();
-    setupInfiniteScroll();
-    updateClickDisplay();
-    loadPartnersData();
-    scheduleMonetizationTriggers();
+    function renderPartnersRail() {
+      renderColumn1(ACTIVE_PARTNERS);
+    }
 
-    fetchDynamicFeed()
-      .then(function(liveItems) {
-        const platformItems = buildDynamicFeed(liveItems);
-        baseFeedItems = platformItems.slice();
-        allFeedItems = platformItems.slice();
+    function renderBrandGrid() {
+      renderColumn3(ACTIVE_PARTNERS);
+    }
 
-        if (!platformItems.length) {
-          feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>No new content yet</h3><p>The discovery feed is ready, but no items are available right now.</p></div></article>';
-          return;
-        }
-
-        renderFeed(platformItems);
-      })
-      .catch(function(error) {
-        console.error('Dynamic feed failed.', error);
-
-        const platformItems = buildDynamicFeed([]);
-        baseFeedItems = platformItems.slice();
-        allFeedItems = platformItems.slice();
-
-        if (platformItems.length) {
-          renderFeed(platformItems);
-          return;
-        }
-
-        feedContainer.innerHTML = '<article class="feed-card"><div class="feed-content"><h3>No new content yet</h3><p>The discovery feed is ready, but no items are available right now.</p></div></article>';
+    function updateHeaderCounts(partners) {
+      const counts = {};
+      (partners || []).forEach(p => {
+        const key = categoryKeySafe(p);
+        counts[key] = (counts[key] || 0) + 1;
       });
+
+      document.querySelectorAll("[data-header-cat]").forEach(el => {
+        const cat = el.getAttribute("data-header-cat");
+        el.textContent = counts[cat] || 0;
+      });
+    }
+
+    function showDebugOverlay(region, partners, allPartners) {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("debug")) return;
+
+      const overlay = document.getElementById("sb-debug");
+      if (!overlay) return;
+
+      const regional = (allPartners || []).filter(p => partnerRegionMatches(p, region));
+      const global = (allPartners || []).filter(p => partnerRegionMatches(p, "global"));
+      const categories = [...new Set((partners || []).map(p => categoryKeySafe(p)))];
+
+      overlay.innerHTML = `
+        <strong>Region:</strong> ${escapeHtml(region)}<br>
+        <strong>Language:</strong> ${escapeHtml(getLang())}<br>
+        <strong>Regional partners:</strong> ${regional.length}<br>
+        <strong>Global partners:</strong> ${global.length}<br>
+        <strong>Loaded partners:</strong> ${(partners || []).length}<br>
+        <strong>Fallback mode:</strong> ${regional.length === 0 ? "YES" : "NO"}<br><br>
+        <strong>Categories loaded:</strong><br>
+        ${categories.map(c => `• ${escapeHtml(c)}`).join("<br>")}
+      `;
+      overlay.style.display = "block";
+    }
+
+    async function initSignalBoost() {
+      const region = await detectUserRegion();
+      const lang = await detectUserLanguage();
+
+      const allPartners = baseAvailablePartners();
+      const partners = await loadPartners(region, allPartners);
+      ACTIVE_PARTNERS = partners;
+      window.ACTIVE_PARTNERS = partners;
+
+      await initI18n(lang);
+      showDebug(region, lang);
+
+      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
+      try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
+      try { applyI18N(); } catch (e) { console.error("applyI18N failed", e); }
+      try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory failed", e); }
+
+      initColumn1Accordion();
+
+      try { renderColumn1(partners); } catch (e) { console.error("renderColumn1 failed", e); }
+      try { renderColumn3(partners); } catch (e) { console.error("renderColumn3 failed", e); }
+      try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
+      try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
+      try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
+      try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
+      try { validatePartners(); } catch (e) {}
+
+      const search = document.getElementById("partnerSearch");
+      if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
+    }
+
+    document.addEventListener("DOMContentLoaded", initSignalBoost);
   </script>
+
 </body>
 </html>
