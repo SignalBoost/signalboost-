@@ -1224,7 +1224,7 @@
 
     <div class="column column-3">
       <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
-      <div id="brandGrid" class="brand-grid"></div>
+      <div id="column3" class="brand-grid"></div>
     </div>
   </div>
 
@@ -2372,7 +2372,7 @@
 
       return batch;
     }
-    const brandGrid = document.getElementById("brandGrid");
+    const brandGrid = document.getElementById("column3");
     const partnerSearch = document.getElementById("partnerSearch");
     let ACTIVE_REGION = null;
 
@@ -2504,42 +2504,10 @@
     }
 
     function allowedPartnerRegions() {
-      const region = getRegion();
-
-      // Column 1 / left rail rule:
-      // - US homepage keeps the broad structure: global + US.
-      // - Localized markets get their exact local partners + global fallback only.
-      // - Never leak unrelated country tags, e.g. US offers on ?region=pl.
-      const map = {
-        us: ["global", "us"],
-        ca: ["global", "ca"],
-        au: ["global", "au"],
-        gb: ["global", "gb", "uk"],
-        uk: ["global", "gb", "uk"],
-        br: ["global", "br"],
-        pt: ["global", "pt"],
-        pl: ["global", "pl"],
-        latam: ["global", "latam"],
-        mx: ["global", "mx", "latam"],
-        ar: ["global", "ar", "latam"],
-        co: ["global", "co", "latam"],
-        pe: ["global", "pe", "latam"],
-        cl: ["global", "cl", "latam"],
-        es: ["global", "es"],
-        de: ["global", "de"],
-        fr: ["global", "fr"],
-        it: ["global", "it"],
-        ru: ["global", "ru"],
-        cn: ["global", "cn", "zh"],
-        zh: ["global", "cn", "zh"],
-        tw: ["global", "tw", "zh"],
-        jp: ["global", "jp", "ja"],
-        ja: ["global", "jp", "ja"],
-        kr: ["global", "kr", "ko"],
-        ko: ["global", "kr", "ko"]
-      };
-
-      return map[region] || ["global", region];
+      // STRICT REGION RULE:
+      // Only partners whose region exactly matches the active region are allowed.
+      // No global fallback, no US/EU/LatAm fallback.
+      return strictRegionalPartnerRegions();
     }
 
     function strictRegionalPartnerRegions() {
@@ -3115,23 +3083,7 @@
     }
 
     function renderBrandGrid() {
-      // US homepage keeps global + US partner tiles.
-      // Every localized market uses exact local partner tags only: no global, no US, no EU fallback.
-      const source = isDefaultUSRegion() ? visibleTopTravelPartners() : visibleTopRegionalTravelPartners();
-      const top = source
-        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
-        .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name))
-        .slice(0, 10);
-
-      brandGrid.innerHTML = top.map(p => `
-        <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">
-          <span class="brand-fallback">${escapeHtml(p.name.slice(0, 2))}</span>
-          <span>${escapeHtml(p.name)}</span>
-        </a>
-      `).join("");
-
-      brandGrid.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
+      renderColumn3(ACTIVE_PARTNERS || []);
     }
 
 
@@ -3770,7 +3722,8 @@
     /* ---------------------------------------------------------
        REGION-FIRST PARTNER ENGINE + FINAL BOOTSTRAP
        This block intentionally overrides the older mixed fallback renderers above.
-       Rule: show ONLY exact selected region. No global fallback / no leakage.
+       Rule: if a region has partners, show ONLY that region. If it has none,
+       show global partners.
     --------------------------------------------------------- */
 
     let ACTIVE_PARTNERS = [];
@@ -3787,19 +3740,17 @@
       return normalizeRegion(partner.region || "global") === normalizeRegion(region || "us");
     }
 
-    function filterByRegion(partners, selectedRegion) {
-      return (partners || []).filter(p => partnerRegionMatches(p, selectedRegion));
-    }
-
     function usablePartner(partner) {
       return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
     }
 
     async function loadPartners(region, allPartners) {
       const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const normalizedRegion = normalizeRegion(region || "us");
+      const normalizedRegion = normalizeRegion(region || getRegion() || "us");
 
-      // STRICT REGION ONLY: do not include global partners unless selectedRegion is actually "global".
+      // STRICT REGION RULE:
+      // Return only partners tagged with the active region.
+      // Do not fall back to global partners.
       return all.filter(p => partnerRegionMatches(p, normalizedRegion));
     }
 
@@ -3835,9 +3786,12 @@
       ];
       const column1Set = new Set(COLUMN1_CATEGORY_KEYS);
 
-      // STRICT REGION ONLY: Column 1 must not show global unless selected region is global.
-      const region = ACTIVE_REGION || getRegion();
-      const source = filterByRegion(baseAvailablePartners().filter(usablePartner), region)
+      // STRICT REGION RULE:
+      // Column 1 uses only the already-loaded regional partners.
+      // No global fallback and no unrelated region leakage.
+      const source = (partners || [])
+        .filter(usablePartner)
+        .filter(p => partnerRegionMatches(p, getRegion()))
         .filter(p => column1Set.has(categoryKeySafe(p)));
 
       const items = partnersFilteredBySearch(source);
@@ -3909,12 +3863,12 @@
     }
 
     function renderColumn3(partners) {
-      const container = document.getElementById("brandGrid");
+      const container = document.getElementById("column3");
       if (!container) return;
 
-      // STRICT REGION FILTER — this fixes the right-side Partnerzy chips.
-      const region = ACTIVE_REGION || getRegion();
-      const filtered = filterByRegion(partners, region);
+      // STRICT REGION FILTER:
+      // Column 3 shows only partners whose region exactly matches the active region.
+      const filtered = (partners || []).filter(p => partnerRegionMatches(p, getRegion()));
 
       const top = filtered
         .slice()
@@ -3975,7 +3929,7 @@
         <strong>Regional partners:</strong> ${regional.length}<br>
         <strong>Global partners:</strong> ${global.length}<br>
         <strong>Loaded partners:</strong> ${(partners || []).length}<br>
-        <strong>Strict region mode:</strong> YES<br><br>
+        <strong>Fallback mode:</strong> ${regional.length === 0 ? "YES" : "NO"}<br><br>
         <strong>Categories loaded:</strong><br>
         ${categories.map(c => `• ${escapeHtml(c)}`).join("<br>")}
       `;
