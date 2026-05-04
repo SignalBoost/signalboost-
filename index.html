@@ -2,6 +2,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1172,7 +1174,7 @@
       <div class="directory-logo" data-i18n="brand_name">SignalBoost</div>
     </div>
     <div class="directory-center" id="travelDirectory"></div>
-    <div class="directory-right"></div>
+    <div class="directory-right"><div id="header"></div></div>
   </div>
 
   <div class="directory-menu" id="directoryMenu"></div>
@@ -2185,6 +2187,67 @@
   }
 ];
 
+    /* ---------------------------------------------------------
+       STRICT REGION FILTER STATE
+       Rule: selected region ONLY. No global fallback/leakage.
+    --------------------------------------------------------- */
+    let selectedRegion = getRegionFromURL() || "global";
+    let selectedCategory = "marketplace";
+    let partners = [];
+
+    function getRegionFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const queryRegion = params.get("region");
+      if (queryRegion) return String(queryRegion).toLowerCase();
+
+      const path = window.location.pathname.toLowerCase();
+      const pathMatch = path.match(/\/(pl|br|us|mx|ca|eu|gb|uk|latam|global)(\/|$)/);
+      return pathMatch ? pathMatch[1] : null;
+    }
+
+    function filterByRegion(partnersList, region) {
+      return (partnersList || []).filter(p => p.region === region);
+    }
+
+    function renderHeader() {
+      const header = document.getElementById("header");
+      if (!header) return;
+
+      header.innerHTML = `
+        <div class="header-wrapper">
+          <div class="header-region">${selectedRegion.toUpperCase()}</div>
+          <div class="header-category">${selectedCategory}</div>
+        </div>
+      `;
+    }
+
+    function renderSidebar() {
+      const visible = filterByRegion(partners, selectedRegion);
+      const leftHeader = document.getElementById("leftHeader");
+      if (leftHeader) leftHeader.textContent = `Explore offers · ${visible.length} partners`;
+    }
+
+    function onRegionChange(region) {
+      selectedRegion = String(region || "global").toLowerCase();
+      ACTIVE_PARTNERS = filterByRegion(partners, selectedRegion).filter(usablePartner);
+      window.ACTIVE_PARTNERS = ACTIVE_PARTNERS;
+
+      renderHeader();
+      renderSidebar();
+      renderPartners();
+      renderPartnersRail();
+      updateHeaderCounts(ACTIVE_PARTNERS);
+    }
+
+    function onCategoryClick(categoryKey) {
+      selectedCategory = categoryKey;
+
+      renderHeader();
+      renderSidebar();
+      renderPartners();
+      renderPartnersRail();
+    }
+
     const TOP_TRAVEL_CATEGORIES = [
       "Flights & Meta Search",
       "Hotels",
@@ -2502,42 +2565,7 @@
     }
 
     function allowedPartnerRegions() {
-      const region = getRegion();
-
-      // Column 1 / left rail rule:
-      // - US homepage keeps the broad structure: global + US.
-      // - Localized markets get their exact local partners + global fallback only.
-      // - Never leak unrelated country tags, e.g. US offers on ?region=pl.
-      const map = {
-        us: ["global", "us"],
-        ca: ["global", "ca"],
-        au: ["global", "au"],
-        gb: ["global", "gb", "uk"],
-        uk: ["global", "gb", "uk"],
-        br: ["global", "br"],
-        pt: ["global", "pt"],
-        pl: ["global", "pl"],
-        latam: ["global", "latam"],
-        mx: ["global", "mx", "latam"],
-        ar: ["global", "ar", "latam"],
-        co: ["global", "co", "latam"],
-        pe: ["global", "pe", "latam"],
-        cl: ["global", "cl", "latam"],
-        es: ["global", "es"],
-        de: ["global", "de"],
-        fr: ["global", "fr"],
-        it: ["global", "it"],
-        ru: ["global", "ru"],
-        cn: ["global", "cn", "zh"],
-        zh: ["global", "cn", "zh"],
-        tw: ["global", "tw", "zh"],
-        jp: ["global", "jp", "ja"],
-        ja: ["global", "jp", "ja"],
-        kr: ["global", "kr", "ko"],
-        ko: ["global", "kr", "ko"]
-      };
-
-      return map[region] || ["global", region];
+      return [selectedRegion || getRegion() || "global"];
     }
 
     function strictRegionalPartnerRegions() {
@@ -2561,21 +2589,21 @@
     }
 
     function isPartnerAllowedForRegion(partner) {
-      const partnerRegion = normalizeRegion(partner.region || "global") || "global";
-      return allowedPartnerRegions().includes(partnerRegion);
+      return normalizeRegion(partner.region || "") === normalizeRegion(selectedRegion || getRegion() || "global");
     }
 
     function isPartnerStrictlyRegional(partner) {
-      const partnerRegion = normalizeRegion(partner.region || "") || "global";
-      return strictRegionalPartnerRegions().includes(partnerRegion);
+      return normalizeRegion(partner.region || "") === normalizeRegion(selectedRegion || getRegion() || "global");
     }
 
     function visiblePartners() {
-      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerAllowedForRegion(p));
+      const source = Array.isArray(partners) && partners.length ? partners : partnersData;
+      return source.filter(p => p.status !== "hold" && p.status !== "disabled" && isPartnerAllowedForRegion(p));
     }
 
     function visibleRegionalPartners() {
-      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerStrictlyRegional(p));
+      const source = Array.isArray(partners) && partners.length ? partners : partnersData;
+      return source.filter(p => p.status !== "hold" && p.status !== "disabled" && isPartnerStrictlyRegional(p));
     }
 
     function visibleTopTravelPartners() {
@@ -2680,15 +2708,12 @@
     }
 
     function isDefaultUSRegion() {
-      return getRegion() === "us";
+      return false;
     }
 
     function directoryPartnersForCategory(category) {
-      // US homepage keeps the broad marketplace structure: US + global partners.
-      // Localized markets use exact local partner tags only.
-      const source = isDefaultUSRegion() ? partnersForCategory(category) : regionalPartnersForCategory(category);
-      return source
-        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
+      return regionalPartnersForCategory(category)
+        .filter(p => isPartnerStrictlyRegional(p))
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
     }
@@ -3113,23 +3138,7 @@
     }
 
     function renderBrandGrid() {
-      // US homepage keeps global + US partner tiles.
-      // Every localized market uses exact local partner tags only: no global, no US, no EU fallback.
-      const source = isDefaultUSRegion() ? visibleTopTravelPartners() : visibleTopRegionalTravelPartners();
-      const top = source
-        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
-        .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name))
-        .slice(0, 10);
-
-      brandGrid.innerHTML = top.map(p => `
-        <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">
-          <span class="brand-fallback">${escapeHtml(p.name.slice(0, 2))}</span>
-          <span>${escapeHtml(p.name)}</span>
-        </a>
-      `).join("");
-
-      brandGrid.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
+      renderColumn3(filterByRegion(partners, selectedRegion).filter(usablePartner));
     }
 
 
@@ -3775,7 +3784,7 @@
     let ACTIVE_PARTNERS = [];
 
     function baseAvailablePartners() {
-      const source = Array.isArray(partnersData) ? partnersData : [];
+      const source = Array.isArray(partners) && partners.length ? partners : (Array.isArray(partnersData) ? partnersData : []);
       return source.map(p => ({
         ...p,
         category_key: p.category_key || categoryKeyForPartner(p)
@@ -3783,7 +3792,7 @@
     }
 
     function partnerRegionMatches(partner, region) {
-      return normalizeRegion(partner.region || "global") === normalizeRegion(region || "us");
+      return normalizeRegion(partner.region || "") === normalizeRegion(region || "");
     }
 
     function usablePartner(partner) {
@@ -3792,11 +3801,8 @@
 
     async function loadPartners(region, allPartners) {
       const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const normalizedRegion = normalizeRegion(region || "us");
-      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
-
-      if (regional.length > 0) return regional;
-      return all.filter(p => partnerRegionMatches(p, "global"));
+      const normalizedRegion = normalizeRegion(region || selectedRegion || "global");
+      return filterByRegion(all, normalizedRegion);
     }
 
     function categoryKeySafe(partner) {
@@ -3831,13 +3837,10 @@
       ];
       const column1Set = new Set(COLUMN1_CATEGORY_KEYS);
 
-      // Column 1 should show global + regional non-travel partners.
-      // This keeps useful global offers visible without duplicating travel header categories.
-      const region = getRegion();
-      const source = baseAvailablePartners()
-        .filter(usablePartner)
-        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
-        .filter(p => column1Set.has(categoryKeySafe(p)));
+      // STRICT: Column 1 uses only partners already filtered to selectedRegion.
+      // No global fallback/leakage.
+      const visible = filterByRegion(partners || ACTIVE_PARTNERS || [], selectedRegion).filter(usablePartner);
+      const source = visible.filter(p => column1Set.has(categoryKeySafe(p)));
 
       const items = partnersFilteredBySearch(source);
 
@@ -3933,11 +3936,19 @@
     }
 
     function renderPartnersRail() {
-      renderColumn1(ACTIVE_PARTNERS);
+      const visible = filterByRegion(partners, selectedRegion).filter(usablePartner);
+      ACTIVE_PARTNERS = visible;
+      renderColumn1(visible);
     }
 
     function renderBrandGrid() {
-      renderColumn3(ACTIVE_PARTNERS);
+      const visible = filterByRegion(partners, selectedRegion).filter(usablePartner);
+      ACTIVE_PARTNERS = visible;
+      renderColumn3(visible);
+    }
+
+    function renderPartners() {
+      renderBrandGrid();
     }
 
     function updateHeaderCounts(partners) {
@@ -3968,9 +3979,8 @@
         <strong>Region:</strong> ${escapeHtml(region)}<br>
         <strong>Language:</strong> ${escapeHtml(getLang())}<br>
         <strong>Regional partners:</strong> ${regional.length}<br>
-        <strong>Global partners:</strong> ${global.length}<br>
         <strong>Loaded partners:</strong> ${(partners || []).length}<br>
-        <strong>Fallback mode:</strong> ${regional.length === 0 ? "YES" : "NO"}<br><br>
+        <strong>Strict mode:</strong> YES<br><br>
         <strong>Categories loaded:</strong><br>
         ${categories.map(c => `• ${escapeHtml(c)}`).join("<br>")}
       `;
@@ -3978,16 +3988,34 @@
     }
 
     async function initSignalBoost() {
-      const region = await detectUserRegion();
+      selectedRegion = normalizeRegion(getRegionFromURL() || getRegion() || "global");
       const lang = await detectUserLanguage();
 
+      try {
+        const response = await fetch("/partners.json", { cache: "no-store" });
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data)) partners = data;
+        }
+      } catch (e) {
+        console.warn("partners.json unavailable; using embedded partnersData", e);
+      }
+
+      if (!Array.isArray(partners) || !partners.length) {
+        partners = Array.isArray(partnersData) ? partnersData : [];
+      }
+
+      partners = partners.map(p => ({
+        ...p,
+        category_key: p.category_key || categoryKeyForPartner(p)
+      }));
+
       const allPartners = baseAvailablePartners();
-      const partners = await loadPartners(region, allPartners);
-      ACTIVE_PARTNERS = partners;
-      window.ACTIVE_PARTNERS = partners;
+      ACTIVE_PARTNERS = filterByRegion(allPartners, selectedRegion).filter(usablePartner);
+      window.ACTIVE_PARTNERS = ACTIVE_PARTNERS;
 
       await initI18n(lang);
-      showDebug(region, lang);
+      showDebug(selectedRegion, lang);
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
@@ -3996,16 +4024,18 @@
 
       initColumn1Accordion();
 
-      try { renderColumn1(partners); } catch (e) { console.error("renderColumn1 failed", e); }
-      try { renderColumn3(partners); } catch (e) { console.error("renderColumn3 failed", e); }
-      try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
+      try { renderHeader(); } catch (e) { console.error("renderHeader failed", e); }
+      try { renderSidebar(); } catch (e) { console.error("renderSidebar failed", e); }
+      try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail failed", e); }
+      try { renderPartners(); } catch (e) { console.error("renderPartners failed", e); }
+      try { updateHeaderCounts(ACTIVE_PARTNERS); } catch (e) { console.error("updateHeaderCounts failed", e); }
       try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
-      try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
-      try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
+      try { await renderFeed(selectedRegion); } catch (e) { console.error("renderFeed failed", e); }
+      try { showDebugOverlay(selectedRegion, ACTIVE_PARTNERS, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
       try { validatePartners(); } catch (e) {}
 
       const search = document.getElementById("partnerSearch");
-      if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
+      if (search) search.addEventListener("input", () => renderPartnersRail());
     }
 
     document.addEventListener("DOMContentLoaded", initSignalBoost);
