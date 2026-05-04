@@ -1,7 +1,5 @@
 
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -951,214 +949,7 @@
       border: 0;
     }
 
-  
-
-    html[data-i18n-ready="0"] body { opacity: 0; }
-    html[data-i18n-ready="1"] body { opacity: 1; transition: opacity .15s ease; }
-  
-
-    /* ---------------------------------------------------------
-       COLUMN 1 — BASELINE DARK CARD ACCORDION
-       Header keeps travel categories; Column 1 shows the rest.
-    --------------------------------------------------------- */
-
-    .column-1 {
-      background: #0f141b;
-      border-right: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .column-1-controls {
-      padding: 10px 8px 12px;
-      background: #0f141b;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .column-1-header {
-      padding: 0 0 8px 4px;
-      font-size: 13px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #b9c7d8;
-    }
-
-    .column-1-search {
-      width: 100%;
-      height: 32px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: #0d1117;
-      color: #fff;
-      font-size: 12px;
-      outline: none;
-    }
-
-    .column-1-search::placeholder {
-      color: rgba(255,255,255,0.45);
-    }
-
-    .column-1-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      background: #0f141b;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.22) transparent;
-    }
-
-    #column1.c1 {
-      width: 100%;
-      background: transparent;
-      padding: 0;
-      min-height: 100%;
-    }
-
-    #column1.c1 .c1-group {
-      margin: 0 0 10px;
-      border-radius: 9px;
-      overflow: hidden;
-      background: #1b2128;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    #column1.c1 .c1-header {
-      min-height: 36px;
-      padding: 9px 12px;
-      cursor: pointer;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 15px;
-      line-height: 1.15;
-      font-weight: 900;
-      color: #ffffff;
-      background: #1b2128;
-      transition: background 0.18s ease;
-    }
-
-    #column1.c1 .c1-header:hover,
-    #column1.c1 .c1-header.open,
-    #column1.c1 .c1-header.active {
-      background: #192532;
-    }
-
-    #column1.c1 .c1-header::before {
-      content: "▶";
-      display: inline-block;
-      width: 13px;
-      flex: 0 0 13px;
-      color: rgba(255,255,255,0.9);
-      font-size: 11px;
-      line-height: 1;
-      transform: translateY(1px);
-    }
-
-    #column1.c1 .c1-header.open::before,
-    #column1.c1 .c1-header.active::before {
-      content: "▼";
-      color: #aee1ff;
-    }
-
-    #column1.c1 .c1-header::after {
-      content: none;
-    }
-
-    #column1.c1 .c1-body {
-      max-height: 0;
-      overflow: hidden;
-      padding: 0 15px;
-      background: #141a20;
-      transition: max-height 0.25s ease, padding 0.2s ease;
-    }
-
-    #column1.c1 .c1-body.open {
-      max-height: 700px;
-      padding: 12px 15px 14px;
-    }
-
-    #column1.c1 .c1-partner {
-      display: block;
-      padding: 8px 0;
-      border-radius: 0;
-      color: #ffffff;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.2;
-      text-decoration: none;
-      transition: color 0.15s ease, transform 0.15s ease;
-    }
-
-    #column1.c1 .c1-partner:hover {
-      color: #f5c542;
-      background: transparent;
-      transform: translateX(2px);
-    }
-
-    #column1.c1 .c1-partner .partner-meta {
-      display: block;
-      margin-top: 3px;
-      color: #9bb0c2;
-      font-size: 11px;
-      font-weight: 700;
-      line-height: 1.15;
-      text-transform: lowercase;
-    }
-
-    .partners-empty {
-      margin: 0;
-      padding: 14px;
-      border-radius: 10px;
-      background: #1b2128;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.68);
-      font-size: 13px;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .column-1-scroll::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .column-1-scroll::-webkit-scrollbar-track {
-      background: #0f141b;
-    }
-
-    .column-1-scroll::-webkit-scrollbar-thumb {
-      background: #2a3440;
-      border-radius: 999px;
-    }
-
-    .column-1-scroll::-webkit-scrollbar-thumb:hover {
-      background: #3a4654;
-    }
-
-    @media (max-width: 900px) {
-      .column-1 {
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-      }
-
-      .column-1-scroll {
-        overflow: visible;
-        padding: 12px;
-      }
-
-      #column1.c1 .c1-header {
-        min-height: 40px;
-        font-size: 16px;
-      }
-
-      #column1.c1 .c1-partner {
-        font-size: 15px;
-      }
-    }
-</style>
+  </style>
 </head>
 
 <body>
@@ -1184,13 +975,37 @@
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
       </div>
       <div id="partnersRail" class="column-1-scroll">
-        <div id="column1" class="c1">
+        <div id="column1">
+          <div class="c1-group" data-cat="flights">
+            <div class="c1-header" data-i18n="flights">Flights</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="hotels">
+            <div class="c1-header" data-i18n="hotels">Hotels</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="transfers">
+            <div class="c1-header" data-i18n="transfers">Transfers</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="sim">
+            <div class="c1-header" data-i18n="sim">SIM & Connectivity</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="tours">
+            <div class="c1-header" data-i18n="tours">Tours</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="travel_services">
+            <div class="c1-header" data-i18n="travel_services">Travel Services</div>
+            <div class="c1-body"></div>
+          </div>
           <div class="c1-group" data-cat="marketplace">
             <div class="c1-header" data-i18n="marketplace">Marketplace</div>
             <div class="c1-body"></div>
           </div>
           <div class="c1-group" data-cat="products_tools">
-            <div class="c1-header" data-i18n="products_tools">Products &amp; Tools</div>
+            <div class="c1-header" data-i18n="products_tools">Products & Tools</div>
             <div class="c1-body"></div>
           </div>
           <div class="c1-group" data-cat="finance">
@@ -1198,15 +1013,7 @@
             <div class="c1-body"></div>
           </div>
           <div class="c1-group" data-cat="insurance">
-            <div class="c1-header" data-i18n="insurance">Insurance &amp; Claims</div>
-            <div class="c1-body"></div>
-          </div>
-          <div class="c1-group" data-cat="travel_services">
-            <div class="c1-header" data-i18n="travel_services">Storage &amp; Services</div>
-            <div class="c1-body"></div>
-          </div>
-          <div class="c1-group" data-cat="specialty_other">
-            <div class="c1-header">Specialty &amp; Other</div>
+            <div class="c1-header" data-i18n="insurance">Insurance</div>
             <div class="c1-body"></div>
           </div>
         </div>
@@ -1315,6 +1122,16 @@
     "tier": 3,
     "logo": "",
     "category_key": "car_rentals"
+  },
+  {
+    "name": "PagBank",
+    "category": "Finance",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/",
+    "tier": 1,
+    "logo": "",
+    "category_key": "finance"
   },
   {
     "name": "Kapitalwise",
@@ -1488,6 +1305,16 @@
     "region": "us",
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Planet of Hotels",
+    "category": "Hotels",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
     "tier": 2,
     "logo": "",
     "category_key": "hotels"
@@ -1673,6 +1500,16 @@
     "network": "Admitad",
     "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
     "tier": 1,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Beverly Hills MD",
+    "category": "Products & Tools",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806",
+    "tier": 2,
     "logo": "",
     "category_key": "products_tools"
   },
@@ -1886,26 +1723,6 @@
     "category_key": "specialty_other"
   },
   {
-    "name": "Radical Storage",
-    "category": "Storage & Services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2,
-    "logo": "",
-    "category_key": "travel_services"
-  },
-  {
-    "name": "Radical Storage",
-    "category": "Storage & Services",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2,
-    "logo": "",
-    "category_key": "travel_services"
-  },
-  {
     "name": "Klook",
     "category": "Tours & Activities",
     "region": "global",
@@ -2114,19 +1931,19 @@
     "url": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland offer",
+    "highlight": "Poland partner offer",
     "category_key": "marketplace"
   },
   {
     "name": "Bloomcabin Poland",
-    "category": "Products & Tools",
+    "category": "Marketplace",
     "region": "pl",
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland offer",
-    "category_key": "products_tools"
+    "highlight": "Poland partner offer",
+    "category_key": "marketplace"
   },
   {
     "name": "Converse PL",
@@ -2136,7 +1953,7 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland offer",
+    "highlight": "Poland partner offer",
     "category_key": "marketplace"
   },
   {
@@ -2147,7 +1964,7 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland offer",
+    "highlight": "Poland partner offer",
     "category_key": "products_tools"
   },
   {
@@ -2158,7 +1975,7 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland offer",
+    "highlight": "Poland partner offer",
     "category_key": "products_tools"
   },
   {
@@ -2169,7 +1986,7 @@
     "url": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland offer",
+    "highlight": "Poland partner offer",
     "category_key": "marketplace"
   },
   {
@@ -2180,7 +1997,7 @@
     "url": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Poland offer",
+    "highlight": "Poland partner offer",
     "category_key": "marketplace"
   }
 ];
@@ -3182,16 +2999,6 @@
 
     partnerSearch.addEventListener("input", renderPartnersRail);
 
-
-    const HEADER_CATEGORY_KEYS = new Set([
-      "flights",
-      "hotels",
-      "transfers",
-      "car_rentals",
-      "sim",
-      "tours"
-    ]);
-
     const CATEGORY_I18N_KEYS = {
       "All": "all",
       "Flights & Meta Search": "flights",
@@ -3506,54 +3313,42 @@
     let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
 
     async function detectUserLanguage() {
-      const region = await detectUserRegion();
-      const map = {
-        br: "pt-BR",
-        pt: "pt",
-        pl: "pl",
-        mx: "es",
-        ar: "es",
-        es: "es",
-        latam: "es",
-        us: "en",
-        ca: "en",
-        gb: "en",
-        uk: "en",
-        au: "en",
-        de: "de",
-        fr: "fr",
-        it: "it",
-        jp: "ja",
-        kr: "ko",
-        cn: "zh-CN",
-        zh: "zh-CN",
-        tw: "zh-TW",
-        ru: "ru"
-      };
-      return map[region] || "en";
+      const params = new URLSearchParams(window.location.search);
+      const requested = params.get("lang");
+
+      // Region/page override must win. Example: ?region=pl should load Polish
+      // even when the browser language is English.
+      let lang = requested || getLang() || navigator.language || navigator.userLanguage || "en";
+
+      const full = String(lang).toLowerCase();
+      if (["pt-br", "br"].includes(full)) return "pt-BR";
+      if (["zh-tw", "zh-hk", "zh-mo", "tw"].includes(full)) return "zh-TW";
+      if (["zh-cn", "zh-sg", "zh", "cn"].includes(full)) return "zh-CN";
+
+      lang = full.split("-")[0];
+      const supported = ["en","es","pt","fr","de","it","pl","ja","ko","ru"];
+      return supported.includes(lang) ? lang : "en";
     }
 
     async function detectUserRegion() {
-      const urlParam = new URLSearchParams(window.location.search).get("region");
-      if (urlParam) return setActiveRegion(urlParam.toLowerCase());
+      const params = new URLSearchParams(window.location.search);
+      const regionParam = params.get("region");
+      if (regionParam) return setActiveRegion(regionParam);
 
+      // Path-based pages should win over IP, so /pl/ always stays Poland
+      // and /pt-br/ always stays Brazil.
       const pathRegion = getRegion();
       const path = window.location.pathname.toLowerCase();
       if (path !== "/" && pathRegion) return setActiveRegion(pathRegion);
 
-      const lang = (navigator.language || "").toLowerCase();
-      if (lang.startsWith("pt")) return setActiveRegion("br");
-      if (lang.startsWith("pl")) return setActiveRegion("pl");
-      if (lang.startsWith("es")) return setActiveRegion("mx");
-      if (lang.startsWith("ja")) return setActiveRegion("jp");
-      if (lang.startsWith("de")) return setActiveRegion("de");
-      if (lang.startsWith("fr")) return setActiveRegion("fr");
-      if (lang.startsWith("it")) return setActiveRegion("it");
-      if (lang.startsWith("ko")) return setActiveRegion("kr");
-      if (lang.startsWith("zh-tw")) return setActiveRegion("tw");
-      if (lang.startsWith("zh")) return setActiveRegion("cn");
-
-      return setActiveRegion("us");
+      try {
+        const res = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+        if (!res.ok) throw new Error("Geo lookup failed");
+        const data = await res.json();
+        return setActiveRegion(data.country_code || pathRegion || "us");
+      } catch {
+        return setActiveRegion(pathRegion || detectRegionFromLocale() || "us");
+      }
     }
 
     async function loadLanguage(lang) {
@@ -3586,12 +3381,6 @@
       });
 
       document.documentElement.lang = lang;
-    }
-
-    async function initI18n(lang) {
-      document.documentElement.setAttribute("data-i18n-ready", "0");
-      await loadLanguage(lang);
-      document.documentElement.setAttribute("data-i18n-ready", "1");
     }
 
     function translateKey(key, fallback = "") {
@@ -3765,250 +3554,15 @@
       try { setFeatured(); } catch (e) { console.error("setFeatured i18n refresh failed", e); }
     }
 
-    /* ---------------------------------------------------------
-       REGION-FIRST PARTNER ENGINE + FINAL BOOTSTRAP
-       This block intentionally overrides the older mixed fallback renderers above.
-       Rule: if a region has partners, show ONLY that region. If it has none,
-       show global partners.
-    --------------------------------------------------------- */
+    try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
+    try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory failed", e); }
+    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail failed", e); }
+    try { renderFeed(); } catch (e) { console.error("renderFeed failed", e); }
+    try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid failed", e); }
+    try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
+    try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo initial failed", e); }
 
-    let ACTIVE_PARTNERS = [];
-
-    function baseAvailablePartners() {
-      const source = Array.isArray(partnersData) ? partnersData : [];
-      return source.map(p => ({
-        ...p,
-        category_key: p.category_key || categoryKeyForPartner(p)
-      }));
-    }
-
-    function partnerRegionMatches(partner, region) {
-      return normalizeRegion(partner.region || "global") === normalizeRegion(region || "us");
-    }
-
-    function usablePartner(partner) {
-      return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
-    }
-
-    async function loadPartners(region, allPartners) {
-      const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const normalizedRegion = normalizeRegion(region || "us");
-      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
-
-      if (regional.length > 0) return regional;
-      return all.filter(p => partnerRegionMatches(p, "global"));
-    }
-
-    function categoryKeySafe(partner) {
-      return partner.category_key || categoryKeyForPartner(partner);
-    }
-
-    function partnersFilteredBySearch(partners) {
-      const input = document.getElementById("partnerSearch");
-      const query = input ? input.value.trim().toLowerCase() : "";
-      if (!query) return partners;
-
-      return partners.filter(p => {
-        const haystack = [p.name, p.category, p.category_key, p.region, p.network, p.highlight, p.notes]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        return haystack.includes(query);
-      });
-    }
-
-    function renderColumn1(partners) {
-      const rail = document.getElementById("partnersRail");
-      const groups = document.querySelectorAll(".c1-group");
-
-      // Column 1 baseline: ONLY these non-travel categories.
-      // Travel categories stay in the top header navigation.
-      const COLUMN1_CATEGORY_KEYS = [
-        "marketplace",
-        "products_tools",
-        "finance",
-        "insurance"
-      ];
-      const column1Set = new Set(COLUMN1_CATEGORY_KEYS);
-
-      // Column 1 should show global + regional non-travel partners.
-      // This keeps useful global offers visible without duplicating travel header categories.
-      const region = getRegion();
-      const source = baseAvailablePartners()
-        .filter(usablePartner)
-        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
-        .filter(p => column1Set.has(categoryKeySafe(p)));
-
-      const items = partnersFilteredBySearch(source);
-
-      if (rail) rail.querySelectorAll(".partners-empty").forEach(el => el.remove());
-
-      // Reset every group and force the sidebar to the collapsed baseline state.
-      groups.forEach(group => {
-        const cat = group.getAttribute("data-cat");
-        const body = group.querySelector(".c1-body");
-        const header = group.querySelector(".c1-header");
-
-        if (body) {
-          body.innerHTML = "";
-          body.classList.remove("open");
-        }
-        if (header) header.classList.remove("open", "active");
-
-        group.style.display = column1Set.has(cat) ? "block" : "none";
-      });
-
-      const seen = new Set();
-
-      items
-        .slice()
-        .sort((a, b) =>
-          COLUMN1_CATEGORY_KEYS.indexOf(categoryKeySafe(a)) - COLUMN1_CATEGORY_KEYS.indexOf(categoryKeySafe(b)) ||
-          (a.tier || 99) - (b.tier || 99) ||
-          String(a.name || "").localeCompare(String(b.name || ""))
-        )
-        .forEach(p => {
-          const categoryKey = categoryKeySafe(p);
-          const group = document.querySelector(`.c1-group[data-cat="${CSS.escape(categoryKey)}"]`);
-          if (!group) return;
-
-          const dedupeKey = `${p.name}|${categoryKey}|${p.url}`.toLowerCase();
-          if (seen.has(dedupeKey)) return;
-          seen.add(dedupeKey);
-
-          const body = group.querySelector(".c1-body");
-          if (!body) return;
-
-          const item = document.createElement("div");
-          item.className = "c1-partner";
-          item.innerHTML = `
-            ${escapeHtml(p.name || "Partner")}
-            <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
-          `;
-          item.addEventListener("click", () => {
-            trackClick();
-            window.location.href = p.url;
-          });
-          body.appendChild(item);
-        });
-
-      let visibleCount = 0;
-      groups.forEach(group => {
-        const cat = group.getAttribute("data-cat");
-        const body = group.querySelector(".c1-body");
-        const hasItems = Boolean(body && body.children.length);
-
-        group.style.display = column1Set.has(cat) && hasItems ? "block" : "none";
-        if (column1Set.has(cat) && hasItems) visibleCount += 1;
-      });
-
-      if (!visibleCount && rail) {
-        rail.insertAdjacentHTML("beforeend", `<div class="partners-empty">${escapeHtml(translateKey("noExtraPartners", "No partners available for this search."))}</div>`);
-      }
-    }
-
-    function renderColumn3(partners) {
-      const container = document.getElementById("brandGrid");
-      if (!container) return;
-
-      const top = (partners || [])
-        .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || String(a.name || "").localeCompare(String(b.name || "")))
-        .slice(0, 12);
-
-      container.innerHTML = top.map(p => {
-        const logo = p.logo
-          ? `<img src="${escapeHtml(p.logo)}" alt="${escapeHtml(p.name || "Partner")}" style="max-width:42px;max-height:42px;object-fit:contain;">`
-          : `<span class="brand-fallback">${escapeHtml(String(p.name || "SB").slice(0, 2))}</span>`;
-
-        return `
-          <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || "")}">
-            ${logo}
-            <span>${escapeHtml(p.name || "Partner")}</span>
-          </a>
-        `;
-      }).join("");
-
-      container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
-    }
-
-    function renderPartnersRail() {
-      renderColumn1(ACTIVE_PARTNERS);
-    }
-
-    function renderBrandGrid() {
-      renderColumn3(ACTIVE_PARTNERS);
-    }
-
-    function updateHeaderCounts(partners) {
-      const counts = {};
-      (partners || []).forEach(p => {
-        const key = categoryKeySafe(p);
-        counts[key] = (counts[key] || 0) + 1;
-      });
-
-      document.querySelectorAll("[data-header-cat]").forEach(el => {
-        const cat = el.getAttribute("data-header-cat");
-        el.textContent = counts[cat] || 0;
-      });
-    }
-
-    function showDebugOverlay(region, partners, allPartners) {
-      const params = new URLSearchParams(window.location.search);
-      if (!params.has("debug")) return;
-
-      const overlay = document.getElementById("sb-debug");
-      if (!overlay) return;
-
-      const regional = (allPartners || []).filter(p => partnerRegionMatches(p, region));
-      const global = (allPartners || []).filter(p => partnerRegionMatches(p, "global"));
-      const categories = [...new Set((partners || []).map(p => categoryKeySafe(p)))];
-
-      overlay.innerHTML = `
-        <strong>Region:</strong> ${escapeHtml(region)}<br>
-        <strong>Language:</strong> ${escapeHtml(getLang())}<br>
-        <strong>Regional partners:</strong> ${regional.length}<br>
-        <strong>Global partners:</strong> ${global.length}<br>
-        <strong>Loaded partners:</strong> ${(partners || []).length}<br>
-        <strong>Fallback mode:</strong> ${regional.length === 0 ? "YES" : "NO"}<br><br>
-        <strong>Categories loaded:</strong><br>
-        ${categories.map(c => `• ${escapeHtml(c)}`).join("<br>")}
-      `;
-      overlay.style.display = "block";
-    }
-
-    async function initSignalBoost() {
-      const region = await detectUserRegion();
-      const lang = await detectUserLanguage();
-
-      const allPartners = baseAvailablePartners();
-      const partners = await loadPartners(region, allPartners);
-      ACTIVE_PARTNERS = partners;
-      window.ACTIVE_PARTNERS = partners;
-
-      await initI18n(lang);
-      showDebug(region, lang);
-
-      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
-      try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
-      try { applyI18N(); } catch (e) { console.error("applyI18N failed", e); }
-      try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory failed", e); }
-
-      initColumn1Accordion();
-
-      try { renderColumn1(partners); } catch (e) { console.error("renderColumn1 failed", e); }
-      try { renderColumn3(partners); } catch (e) { console.error("renderColumn3 failed", e); }
-      try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
-      try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
-      try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
-      try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
-      try { validatePartners(); } catch (e) {}
-
-      const search = document.getElementById("partnerSearch");
-      if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
-    }
-
-    document.addEventListener("DOMContentLoaded", initSignalBoost);
+    document.addEventListener("DOMContentLoaded", initializeInternationalization);
   </script>
 
 </body>
