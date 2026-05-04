@@ -618,6 +618,18 @@
       overflow-wrap: anywhere;
     }
 
+
+
+    /* Dedicated visible Column 3 partner grid */
+    #column3 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 236px;
+      margin: 0 auto;
+    }
+
     #stickyBar {
       position: fixed;
       left: 50%;
@@ -2372,7 +2384,7 @@
 
       return batch;
     }
-    const brandGrid = document.getElementById("column3");
+    const brandGrid = document.getElementById("brandGrid");
     const partnerSearch = document.getElementById("partnerSearch");
     let ACTIVE_REGION = null;
 
@@ -2504,10 +2516,42 @@
     }
 
     function allowedPartnerRegions() {
-      // STRICT REGION RULE:
-      // Only partners whose region exactly matches the active region are allowed.
-      // No global fallback, no US/EU/LatAm fallback.
-      return strictRegionalPartnerRegions();
+      const region = getRegion();
+
+      // Column 1 / left rail rule:
+      // - US homepage keeps the broad structure: global + US.
+      // - Localized markets get their exact local partners + global fallback only.
+      // - Never leak unrelated country tags, e.g. US offers on ?region=pl.
+      const map = {
+        us: ["global", "us"],
+        ca: ["global", "ca"],
+        au: ["global", "au"],
+        gb: ["global", "gb", "uk"],
+        uk: ["global", "gb", "uk"],
+        br: ["global", "br"],
+        pt: ["global", "pt"],
+        pl: ["global", "pl"],
+        latam: ["global", "latam"],
+        mx: ["global", "mx", "latam"],
+        ar: ["global", "ar", "latam"],
+        co: ["global", "co", "latam"],
+        pe: ["global", "pe", "latam"],
+        cl: ["global", "cl", "latam"],
+        es: ["global", "es"],
+        de: ["global", "de"],
+        fr: ["global", "fr"],
+        it: ["global", "it"],
+        ru: ["global", "ru"],
+        cn: ["global", "cn", "zh"],
+        zh: ["global", "cn", "zh"],
+        tw: ["global", "tw", "zh"],
+        jp: ["global", "jp", "ja"],
+        ja: ["global", "jp", "ja"],
+        kr: ["global", "kr", "ko"],
+        ko: ["global", "kr", "ko"]
+      };
+
+      return map[region] || ["global", region];
     }
 
     function strictRegionalPartnerRegions() {
@@ -3083,7 +3127,7 @@
     }
 
     function renderBrandGrid() {
-      renderColumn3(ACTIVE_PARTNERS || []);
+      renderColumn3(ACTIVE_PARTNERS);
     }
 
 
@@ -3746,12 +3790,11 @@
 
     async function loadPartners(region, allPartners) {
       const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const normalizedRegion = normalizeRegion(region || getRegion() || "us");
+      const normalizedRegion = normalizeRegion(region || "us");
+      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
 
-      // STRICT REGION RULE:
-      // Return only partners tagged with the active region.
-      // Do not fall back to global partners.
-      return all.filter(p => partnerRegionMatches(p, normalizedRegion));
+      if (regional.length > 0) return regional;
+      return all.filter(p => partnerRegionMatches(p, "global"));
     }
 
     function categoryKeySafe(partner) {
@@ -3786,12 +3829,11 @@
       ];
       const column1Set = new Set(COLUMN1_CATEGORY_KEYS);
 
-      // STRICT REGION RULE:
-      // Column 1 uses only the already-loaded regional partners.
-      // No global fallback and no unrelated region leakage.
-      const source = (partners || [])
+      // Column 1 strict region only: no global fallback/leakage.
+      const region = getRegion();
+      const source = baseAvailablePartners()
         .filter(usablePartner)
-        .filter(p => partnerRegionMatches(p, getRegion()))
+        .filter(p => partnerRegionMatches(p, region))
         .filter(p => column1Set.has(categoryKeySafe(p)));
 
       const items = partnersFilteredBySearch(source);
@@ -3866,9 +3908,9 @@
       const container = document.getElementById("column3");
       if (!container) return;
 
-      // STRICT REGION FILTER:
-      // Column 3 shows only partners whose region exactly matches the active region.
-      const filtered = (partners || []).filter(p => partnerRegionMatches(p, getRegion()));
+      // Column 3 strict region only: no global fallback/leakage.
+      const region = getRegion();
+      const filtered = (partners || []).filter(p => partnerRegionMatches(p, region));
 
       const top = filtered
         .slice()
@@ -3964,7 +4006,10 @@
       try { validatePartners(); } catch (e) {}
 
       const search = document.getElementById("partnerSearch");
-      if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
+      if (search) search.addEventListener("input", () => {
+        renderColumn1(ACTIVE_PARTNERS);
+        renderColumn3(ACTIVE_PARTNERS);
+      });
     }
 
     document.addEventListener("DOMContentLoaded", initSignalBoost);
