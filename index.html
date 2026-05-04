@@ -618,18 +618,6 @@
       overflow-wrap: anywhere;
     }
 
-
-
-    /* Dedicated visible Column 3 partner grid */
-    #column3 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      width: 100%;
-      max-width: 236px;
-      margin: 0 auto;
-    }
-
     #stickyBar {
       position: fixed;
       left: 50%;
@@ -1172,6 +1160,39 @@
         font-size: 15px;
       }
     }
+
+
+    /* Column 3 Partnerzy chips */
+    #partnerChips {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 236px;
+      margin: 0 auto;
+    }
+
+    .partner-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 72px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .partner-chip:hover {
+      border-color: rgba(245,197,66,0.30);
+      transform: translateY(-2px);
+    }
+
 </style>
 </head>
 
@@ -1236,7 +1257,7 @@
 
     <div class="column column-3">
       <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
-      <div id="column3" class="brand-grid"></div>
+      <div id="partnerChips" class="brand-grid"></div>
     </div>
   </div>
 
@@ -2384,7 +2405,7 @@
 
       return batch;
     }
-    const brandGrid = document.getElementById("brandGrid");
+    const brandGrid = document.getElementById("partnerChips");
     const partnerSearch = document.getElementById("partnerSearch");
     let ACTIVE_REGION = null;
 
@@ -3127,7 +3148,7 @@
     }
 
     function renderBrandGrid() {
-      renderColumn3(ACTIVE_PARTNERS);
+      renderColumn3(ACTIVE_PARTNERS && ACTIVE_PARTNERS.length ? ACTIVE_PARTNERS : baseAvailablePartners());
     }
 
 
@@ -3829,11 +3850,12 @@
       ];
       const column1Set = new Set(COLUMN1_CATEGORY_KEYS);
 
-      // Column 1 strict region only: no global fallback/leakage.
+      // Column 1 should show global + regional non-travel partners.
+      // This keeps useful global offers visible without duplicating travel header categories.
       const region = getRegion();
       const source = baseAvailablePartners()
         .filter(usablePartner)
-        .filter(p => partnerRegionMatches(p, region))
+        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
         .filter(p => column1Set.has(categoryKeySafe(p)));
 
       const items = partnersFilteredBySearch(source);
@@ -3905,30 +3927,24 @@
     }
 
     function renderColumn3(partners) {
-      const container = document.getElementById("column3");
+      const selectedRegion = getRegion();
+      console.log("renderColumn3 CALLED", selectedRegion);
+
+      const container = document.getElementById("partnerChips");
       if (!container) return;
 
-      // Column 3 strict region only: no global fallback/leakage.
-      const region = getRegion();
-      const filtered = (partners || []).filter(p => partnerRegionMatches(p, region));
+      const filtered = (partners || []).filter(p => normalizeRegion(p.region || "") === normalizeRegion(selectedRegion));
+
+      console.log("VISIBLE PARTNERS:", filtered.map(p => p.name));
 
       const top = filtered
         .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || String(a.name || "").localeCompare(String(b.name || "")))
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99))
         .slice(0, 12);
 
-      container.innerHTML = top.map(p => {
-        const logo = p.logo
-          ? `<img src="${escapeHtml(p.logo)}" alt="${escapeHtml(p.name || "Partner")}" style="max-width:42px;max-height:42px;object-fit:contain;">`
-          : `<span class="brand-fallback">${escapeHtml(String(p.name || "SB").slice(0, 2))}</span>`;
-
-        return `
-          <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || "")}">
-            ${logo}
-            <span>${escapeHtml(p.name || "Partner")}</span>
-          </a>
-        `;
-      }).join("");
+      container.innerHTML = top.map(p => `
+        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">${escapeHtml(p.name || 'Partner')}</a>
+      `).join("");
 
       container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
     }
@@ -4006,10 +4022,7 @@
       try { validatePartners(); } catch (e) {}
 
       const search = document.getElementById("partnerSearch");
-      if (search) search.addEventListener("input", () => {
-        renderColumn1(ACTIVE_PARTNERS);
-        renderColumn3(ACTIVE_PARTNERS);
-      });
+      if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
     }
 
     document.addEventListener("DOMContentLoaded", initSignalBoost);
