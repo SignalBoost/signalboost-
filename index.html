@@ -4846,8 +4846,70 @@
       dashboard.classList.add("open");
     }
 
+
+
+    const FORCE_PAGES_REDEPLOY_WORKFLOW = [
+      "name: Force Pages Redeploy",
+      "",
+      "on:",
+      "  push:",
+      "    branches:",
+      "      - main   # or gh-pages, depending on your Pages source branch",
+      "",
+      "jobs:",
+      "  redeploy:",
+      "    runs-on: ubuntu-latest",
+      "",
+      "    steps:",
+      "      - name: Checkout repository",
+      "        uses: actions/checkout@v4",
+      "",
+      "      - name: Setup Node.js",
+      "        uses: actions/setup-node@v4",
+      "        with:",
+      "          node-version: 20",
+      "",
+      "      - name: Build site",
+      "        run: |",
+      "          npm install",
+      "          npm run build   # adjust to your build command",
+      "",
+      "      - name: Deploy to GitHub Pages",
+      "        uses: peaceiris/actions-gh-pages@v4",
+      "        with:",
+      "          github_token: ${{ secrets.GITHUB_TOKEN }}",
+      "          publish_dir: ./dist   # adjust to your build output folder",
+      "          publish_branch: gh-pages",
+      "          force_orphan: true    # ensures a clean redeploy"
+    ].join("\n");
+
+    function renderForcePagesRedeployWorkflow() {
+      const dashboard = document.getElementById("translationCoverageDashboard");
+      if (!dashboard) return FORCE_PAGES_REDEPLOY_WORKFLOW;
+
+      let panel = document.getElementById("forcePagesRedeployWorkflowPanel");
+      if (!panel) {
+        panel = document.createElement("section");
+        panel.id = "forcePagesRedeployWorkflowPanel";
+        panel.style.marginTop = "2rem";
+        panel.innerHTML = `
+          <h2>🚀 Force Pages Redeploy Workflow</h2>
+          <p class="coverage-note">Save this as <code>.github/workflows/force-pages-redeploy.yml</code> in your repository.</p>
+          <pre id="forcePagesRedeployWorkflowCode" style="white-space:pre-wrap;background:#0b0f14;border:1px solid #333;border-radius:10px;padding:14px;overflow:auto;"></pre>
+        `;
+        dashboard.appendChild(panel);
+      }
+
+      const code = document.getElementById("forcePagesRedeployWorkflowCode");
+      if (code) code.textContent = FORCE_PAGES_REDEPLOY_WORKFLOW;
+      dashboard.classList.add("open");
+      return FORCE_PAGES_REDEPLOY_WORKFLOW;
+    }
+
     window.generateCoverageReport = generateCoverageReport;
     window.renderTranslationCoverageDashboard = renderTranslationCoverageDashboard;
+    window.FORCE_PAGES_REDEPLOY_WORKFLOW = FORCE_PAGES_REDEPLOY_WORKFLOW;
+    window.renderForcePagesRedeployWorkflow = renderForcePagesRedeployWorkflow;
 
     async function initSignalBoost() {
       const region = await detectUserRegion();
