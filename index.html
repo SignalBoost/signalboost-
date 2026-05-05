@@ -1177,8 +1177,10 @@
 
     .partner-chip {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 4px;
       min-height: 72px;
       padding: 12px;
       border-radius: 12px;
@@ -1194,6 +1196,16 @@
     .partner-chip:hover {
       border-color: rgba(245,197,66,0.30);
       transform: translateY(-2px);
+    }
+
+    .partner-chip .partner-meta {
+      display: block;
+      margin-top: 2px;
+      color: #9bb0c2;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
     }
 
 </style>
@@ -4874,6 +4886,121 @@
       overlay.style.display = "block";
     }
 
+
+
+    // --- Column 2: resilient regional video feed with 45-minute session refresh ---
+    function youtubeRegionCode(region) {
+      const normalized = normalizeRegion(region || "global");
+      const map = {
+        br: "BR",
+        mx: "MX",
+        us: "US",
+        pl: "PL",
+        ca: "CA",
+        gb: "GB",
+        uk: "GB",
+        eu: "GB",
+        latam: "MX",
+        es: "ES",
+        ru: "RU",
+        in: "IN",
+        global: "US"
+      };
+      return map[normalized] || normalized.toUpperCase();
+    }
+
+    async function renderColumn2(region) {
+      const container = document.getElementById("feedContainer");
+      const status = document.getElementById("heroFeedStatus");
+      if (!container) return;
+
+      container.innerHTML = "";
+      if (status) status.textContent = "Loading regional videos...";
+
+      // Primary: your /api/videos route when it exists.
+      // Fallback: the existing hybrid/static hero feed already built into this file.
+      try {
+        const res = await fetch(
+          `/api/videos?chart=mostPopular&regionCode=${encodeURIComponent(youtubeRegionCode(region))}&maxResults=10`,
+          { cache: "no-store" }
+        );
+
+        if (!res.ok) throw new Error(`Video API failed: ${res.status}`);
+
+        const data = await res.json();
+        const videos = Array.isArray(data.items) ? data.items : [];
+
+        if (videos.length > 0) {
+          buildVideoCards(videos, container);
+          if (status) status.textContent = "";
+          return;
+        }
+      } catch (err) {
+        console.warn("Regional video API unavailable; using built-in feed fallback:", err);
+      }
+
+      try {
+        await renderFeed();
+        if (status) status.textContent = "";
+      } catch (fallbackErr) {
+        console.error("❌ Fallback feed failed:", fallbackErr);
+        container.innerHTML = `<div class="partners-empty">No videos available right now.</div>`;
+        if (status) status.textContent = "";
+      }
+    }
+
+    function buildVideoCards(videos, container) {
+      container.innerHTML = "";
+
+      (videos || []).slice(0, 10).forEach(v => {
+        const videoId = typeof v.id === "object" ? v.id.videoId : (v.videoId || v.id);
+        const snippet = v.snippet || {};
+        const title = snippet.title || v.title || "Regional video";
+        const channel = snippet.channelTitle || v.channel || "";
+
+        if (!videoId) return;
+
+        const card = document.createElement("div");
+        card.className = "feed-card video-card";
+
+        card.innerHTML = `
+          <div class="media-box">
+            <iframe
+              src="https://www.youtube.com/embed/${escapeHtml(videoId)}"
+              title="${escapeHtml(title)}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="feed-content">
+            <h3>${escapeHtml(title)}</h3>
+            <div class="feed-meta">${escapeHtml(channel)}</div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      if (!container.children.length) {
+        renderFeed();
+      }
+    }
+
+    function scheduleColumn2Session(region) {
+      renderColumn2(region);
+
+      if (window.__signalBoostColumn2Timer) {
+        clearInterval(window.__signalBoostColumn2Timer);
+      }
+
+      window.__signalBoostColumn2Timer = setInterval(() => {
+        console.log(`🔄 Session refresh for Column 2 (${region})`);
+        renderColumn2(region);
+      }, 45 * 60 * 1000);
+    }
+
     async function initSignalBoost() {
       const region = await detectUserRegion();
       const lang = await detectUserLanguage();
@@ -4897,7 +5024,7 @@
       try { renderColumn3(partners); } catch (e) { console.error("renderColumn3 failed", e); }
       try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
       try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
-      try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
+      try { scheduleColumn2Session(region); } catch (e) { console.error("scheduleColumn2Session failed", e); }
       try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
       try { highlightDuplicates(partners); } catch (e) { console.error("highlightDuplicates failed", e); }
       try { validatePartners(allPartners); } catch (e) { console.error("validatePartners failed", e); }
@@ -4977,35 +5104,9 @@ function getVideoRegionChain(region) {
 }
 
 async function renderColumn2VideosOnly(region) {
-  const container = document.getElementById("feedContainer") || document.getElementById("column2");
-  const status = document.getElementById("heroFeedStatus");
-  if (!container) return;
-
-  container.innerHTML = "";
-  if (status) status.textContent = "Loading regional videos...";
-
-  const chain = getVideoRegionChain(region);
-
-  for (const r of chain) {
-    try {
-      const res = await fetch(`/videos?region=${encodeURIComponent(r)}&t=${Date.now()}`);
-      if (!res.ok) continue;
-
-      const videos = await res.json();
-
-      if (Array.isArray(videos) && videos.length > 0) {
-        buildColumn2VideoCards(videos, container);
-        if (status) status.textContent = `Videos for ${r}`;
-        return;
-      }
-    } catch (err) {
-      console.warn("Video fetch failed:", r, err);
-    }
-  }
-
-  container.innerHTML = `<div class="partners-empty">No videos available for this region yet.</div>`;
-  if (status) status.textContent = "No videos available.";
+  return renderColumn2(region);
 }
+
 
 function buildColumn2VideoCards(videos, container) {
   container.innerHTML = "";
@@ -5050,8 +5151,7 @@ function buildColumn2VideoCards(videos, container) {
 }
 
 function scheduleColumn2Refresh(region) {
-  renderColumn2VideosOnly(region);
-  setInterval(() => renderColumn2VideosOnly(region), 900000);
+  scheduleColumn2Session(region);
 }
 
 
