@@ -1224,6 +1224,33 @@
       color: #f5c542;
     }
 
+
+    .debug-workflow {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .debug-workflow h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    .debug-workflow textarea {
+      width: 100%;
+      min-height: 120px;
+      margin-top: 6px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      resize: vertical;
+    }
+
 </style>
 </head>
 
@@ -4508,8 +4535,32 @@
       return report;
     }
 
+
+    const TRANSLATION_COVERAGE_WORKFLOW = 'name: Translation Coverage\n\non:\n  push:\n    paths:\n      - "i18n/**"\n  pull_request:\n    paths:\n      - "i18n/**"\n\njobs:\n  coverage-check:\n    runs-on: ubuntu-latest\n\n    steps:\n      - name: Checkout repository\n        uses: actions/checkout@v4\n\n      - name: Setup Node.js\n        uses: actions/setup-node@v4\n        with:\n          node-version: 20\n\n      - name: Install dependencies\n        run: npm install\n\n      - name: Run translation coverage report\n        run: node coverage-report.js\n\n      - name: Fail if coverage < 100%\n        run: |\n          node coverage-report.js > coverage.txt\n          if grep -q "%" coverage.txt; then\n            if grep -q "Missing:" coverage.txt; then\n              echo "❌ Translation coverage incomplete"\n              cat coverage.txt\n              exit 1\n            else\n              echo "✅ Translation coverage complete"\n              cat coverage.txt\n            fi\n          fi\n';
+
+    function renderTranslationCoverageWorkflow() {
+      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+      if (!overlay) return TRANSLATION_COVERAGE_WORKFLOW;
+
+      overlay.querySelectorAll(".debug-workflow").forEach(el => el.remove());
+      const section = document.createElement("div");
+      section.className = "debug-workflow";
+      section.innerHTML = `<h4>⚙️ GitHub Actions Workflow</h4><div style="color:#9ee493">Save as <strong>.github/workflows/translation-coverage.yml</strong></div>`;
+
+      const textarea = document.createElement("textarea");
+      textarea.readOnly = true;
+      textarea.value = TRANSLATION_COVERAGE_WORKFLOW;
+      section.appendChild(textarea);
+
+      overlay.appendChild(section);
+      overlay.style.display = "block";
+      return TRANSLATION_COVERAGE_WORKFLOW;
+    }
+
     window.detectMissingTranslations = detectMissingTranslations;
     window.generateCoverageReport = generateCoverageReport;
+    window.renderTranslationCoverageWorkflow = renderTranslationCoverageWorkflow;
+    window.TRANSLATION_COVERAGE_WORKFLOW = TRANSLATION_COVERAGE_WORKFLOW;
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
@@ -4780,7 +4831,7 @@
       try { detectMissingTranslations(translations); } catch (e) { console.error("detectMissingTranslations failed", e); }
       try {
         const params = new URLSearchParams(window.location.search);
-        if (params.has("debug") || params.has("coverage")) await generateCoverageReport();
+        if (params.has("debug") || params.has("coverage")) { await generateCoverageReport(); renderTranslationCoverageWorkflow(); }
       } catch (e) { console.error("generateCoverageReport failed", e); }
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
