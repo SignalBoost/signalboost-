@@ -1197,90 +1197,7 @@
       transform: translateY(-2px);
     }
 
-
-    /* Translation Coverage Dashboard */
-    #translationCoverageDashboard {
-      display: none;
-      width: min(1000px, calc(100% - 32px));
-      margin: 16px auto 120px;
-      padding: 18px;
-      border-radius: 16px;
-      background: #111;
-      color: #eee;
-      border: 1px solid rgba(255,255,255,0.10);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.28);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    #translationCoverageDashboard.open { display: block; }
-
-    #translationCoverageDashboard h1 {
-      margin: 0 0 10px;
-      font-size: 24px;
-      line-height: 1.2;
-    }
-
-    #translationCoverageDashboard .coverage-note {
-      margin: 0;
-      color: rgba(255,255,255,0.68);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    #translationCoverageDashboard table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2rem;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    #translationCoverageDashboard th,
-    #translationCoverageDashboard td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #333;
-      vertical-align: top;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    #translationCoverageDashboard th {
-      background: #222;
-      color: #fff;
-      font-weight: 800;
-    }
-
-    #translationCoverageDashboard .ok { color: #4caf50; font-weight: bold; }
-    #translationCoverageDashboard .fail { color: #f44336; font-weight: bold; }
-    #translationCoverageDashboard .missing-keys { color: #ffb74d; overflow-wrap: anywhere; }
-
-    @media (max-width: 768px) {
-      #translationCoverageDashboard {
-        width: calc(100% - 20px);
-        padding: 12px;
-        margin-bottom: 130px;
-        overflow-x: auto;
-      }
-
-      #translationCoverageDashboard h1 { font-size: 20px; }
-      #translationCoverageDashboard table { min-width: 680px; }
-    }
-
 </style>
-
-  <script>
-    // Auto-refresh translation coverage dashboard once every 24 hours when visible.
-    window.TRANSLATION_COVERAGE_AUTO_REFRESH_MS = 24 * 60 * 60 * 1000;
-    setInterval(() => {
-      const dashboard = document.getElementById("translationCoverageDashboard");
-      const shouldRefresh = dashboard && dashboard.classList.contains("open");
-      if (shouldRefresh) {
-        console.log("🔄 Auto-refreshing coverage dashboard...");
-        window.location.reload();
-      }
-    }, window.TRANSLATION_COVERAGE_AUTO_REFRESH_MS);
-  </script>
 </head>
 
 <body>
@@ -1353,43 +1270,7 @@
     <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="view_more">View More</a>
   </div>
 
-
-  <section id="translationCoverageDashboard" aria-live="polite">
-    <h1>🌐 Translation Coverage Dashboard</h1>
-    <p class="coverage-note">Rows are auto-generated from the live <code>/i18n/*.json</code> files. Add <strong>?coverage</strong> or <strong>?debug</strong> to the URL to open this dashboard.</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Language</th>
-          <th>Coverage</th>
-          <th>Missing Keys</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="coverage-table">
-        <tr>
-          <td>Spanish (es)</td>
-          <td>100%</td>
-          <td>—</td>
-          <td class="ok">✅ Complete</td>
-        </tr>
-        <tr>
-          <td>Portuguese (pt)</td>
-          <td>95.8%</td>
-          <td class="missing-keys">nav_hotels, btn_checkout, msg_error</td>
-          <td class="fail">❌ Incomplete</td>
-        </tr>
-        <tr>
-          <td>Japanese (ja)</td>
-          <td>98.3%</td>
-          <td class="missing-keys">nav_tours, msg_success</td>
-          <td class="fail">❌ Incomplete</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <div id="debug-overlay" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none;max-width:320px;max-height:70vh;overflow-y:auto;"></div>
+  <div id="sb-debug" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
 
   <script>
     const partnersData = [
@@ -3128,7 +3009,7 @@
       return ACTIVE_REGION;
     }
 
-    function detectRegionFromLocale() {
+    function getLocaleRegion() {
       const locale = (navigator.languages && navigator.languages[0]) || navigator.language || "";
       const lang = locale.toLowerCase();
 
@@ -3179,7 +3060,7 @@
 
       if (ACTIVE_REGION && REGION_CONFIG[ACTIVE_REGION]) return ACTIVE_REGION;
 
-      const detected = detectRegionFromLocale();
+      const detected = getLocaleRegion();
       return REGION_CONFIG[detected] ? detected : "us";
     }
 
@@ -4220,44 +4101,51 @@
     let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
 
 
-    // --- Region Detection (baseline, locale-first) ---
-    function detectRegion() {
-      console.log("detectRegion called");
-      const lang = (navigator.language || "").toLowerCase();
-      let region = "global";
-
-      if (lang.startsWith("es")) region = "mx";   // Spanish → Mexico
-      else if (lang.startsWith("pt")) region = "br";   // Portuguese → Brazil
-      else if (lang.startsWith("pl")) region = "pl";   // Polish → Poland
-      else if (lang.startsWith("ru")) region = "ru";   // Russian → Russia
-      else if (lang.startsWith("fr")) region = "fr";   // French → France
-      else if (lang.startsWith("en")) region = "us";   // English → US/UK
-
-      if (typeof setActiveRegion === "function") setActiveRegion(region);
-      return region;
-    }
-
-    // --- Language Mapping ---
     function detectLanguage(region) {
+      const normalizedRegion = normalizeRegion(region || "global");
       const map = {
-        mx: "es",
         br: "pt",
+        mx: "es",
         us: "en",
         uk: "en",
         gb: "en",
+        ca: "en",
+        au: "en",
         pl: "pl",
         ru: "ru",
         in: "hi",
         fr: "fr",
         es: "es",
+        de: "de",
+        it: "it",
+        jp: "ja",
+        kr: "ko",
+        cn: "zh-CN",
+        tw: "zh-TW",
         global: "en"
       };
-      return map[region] || "en";
+      return map[normalizedRegion] || "en";
     }
 
     async function detectUserLanguage() {
       const region = await detectUserRegion();
       return detectLanguage(region);
+    }
+
+    // --- Region Detection (baseline, locale-first) ---
+    function detectRegion() {
+      console.log("detectRegion called");
+
+      const lang = (navigator.language || "").toLowerCase();
+
+      if (lang.startsWith("es")) return setActiveRegion("mx");   // Spanish → Mexico
+      if (lang.startsWith("pt")) return setActiveRegion("br");   // Portuguese → Brazil
+      if (lang.startsWith("pl")) return setActiveRegion("pl");   // Polish → Poland
+      if (lang.startsWith("ru")) return setActiveRegion("ru");   // Russian → Russia
+      if (lang.startsWith("fr")) return setActiveRegion("fr");   // French → France
+      if (lang.startsWith("en")) return setActiveRegion("us");   // English → US/UK
+
+      return setActiveRegion("global"); // fallback
     }
 
     async function detectUserRegion() {
@@ -4266,26 +4154,38 @@
       return region;
     }
 
-    // --- Load Translations ---
+
     async function loadTranslations(lang) {
-      try {
-        const res = await fetch(`/i18n/${lang}.json`, { cache: "no-store" });
-        if (!res.ok) throw new Error(`Missing translation file: ${lang}`);
-        return await res.json();
-      } catch (err) {
-        console.warn(`⚠️ Falling back to English: ${err.message}`);
+      const normalizedLang = lang === "pt-BR" ? "pt" : lang;
+      const builtInBase = BUILT_IN_TRANSLATIONS.en || {};
+      const builtInLocal = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[normalizedLang] || {};
+      let translations = { ...builtInBase, ...builtInLocal };
+      const candidates = lang === normalizedLang ? [lang] : [lang, normalizedLang];
+
+      for (const candidate of candidates) {
+        try {
+          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
+          if (!res.ok) throw new Error(`Missing translation file: ${candidate}`);
+          translations = { ...translations, ...(await res.json()) };
+          return translations;
+        } catch (err) {
+          console.warn(`⚠️ Falling back from ${candidate}: ${err.message}`);
+        }
+      }
+
+      if (lang !== "en") {
         try {
           const res = await fetch(`/i18n/en.json`, { cache: "no-store" });
-          if (res.ok) return await res.json();
-        } catch (fallbackErr) {
-          console.warn(`⚠️ Built-in English fallback used: ${fallbackErr.message}`);
+          if (res.ok) translations = { ...translations, ...(await res.json()) };
+        } catch (err) {
+          console.warn(`⚠️ Falling back to built-in English: ${err.message}`);
         }
-        return BUILT_IN_TRANSLATIONS.en || {};
       }
+
+      return translations;
     }
 
-    // --- Apply Translations ---
-    function applyTranslations(translations) {
+    function applyTranslations(translations, lang = document.documentElement.lang || "en") {
       ACTIVE_TRANSLATIONS = { ...(BUILT_IN_TRANSLATIONS.en || {}), ...(translations || {}) };
 
       document.querySelectorAll("[data-i18n]").forEach(el => {
@@ -4297,23 +4197,19 @@
         const key = el.getAttribute("data-i18n-placeholder");
         if (ACTIVE_TRANSLATIONS[key]) el.setAttribute("placeholder", ACTIVE_TRANSLATIONS[key]);
       });
+
+      document.documentElement.lang = lang;
     }
 
     async function loadLanguage(lang) {
       const translations = await loadTranslations(lang);
-      applyTranslations(translations);
-      document.documentElement.lang = lang;
-      return translations;
+      applyTranslations(translations, lang);
     }
 
-    // --- Init I18n ---
     async function initI18n(lang) {
       document.documentElement.setAttribute("data-i18n-ready", "0");
-      const selectedLang = lang || detectLanguage(detectRegion());
-      console.log("🌎 Region:", detectRegion(), "| 🗣️ Language:", selectedLang);
-      const translations = await loadLanguage(selectedLang);
+      await loadLanguage(lang);
       document.documentElement.setAttribute("data-i18n-ready", "1");
-      return translations;
     }
 
     function translateKey(key, fallback = "") {
@@ -4460,47 +4356,34 @@
       if (ogDescription) ogDescription.setAttribute("content", profile.description);
     }
 
-    function getCommitHash() {
-      return window.SIGNALBOOST_COMMIT_HASH || "__COMMIT_HASH__";
-    }
-
-    function showDebug(region, lang, commitHash = getCommitHash(), partners = [], errors = []) {
+    function showDebug(region, lang) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
-
-      const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+      const box = document.getElementById("sb-debug");
       if (!box) return;
-
-      const counts = {};
-      if (Array.isArray(partners)) {
-        partners.forEach(p => {
-          const cat = p.category_key || "uncategorized";
-          counts[cat] = (counts[cat] || 0) + 1;
-        });
-      }
-
-      const countsHtml = Object.entries(counts)
-        .map(([cat, num]) => `${escapeHtml(cat)}: ${num}`)
-        .join("<br>") || "None";
-
-      box.innerHTML = `
-        <strong>Region:</strong> ${escapeHtml(region)}<br>
-        <strong>Language:</strong> ${escapeHtml(lang)}<br>
-        <strong>Commit Hash:</strong> ${escapeHtml(commitHash)}<br>
-        <hr style="border:0;border-top:1px solid #555;margin:6px 0;">
-        <strong>Partner counts:</strong><br>
-        ${countsHtml}<br>
-        <hr style="border:0;border-top:1px solid #555;margin:6px 0;">
-        <strong>Total Partners:</strong> ${Array.isArray(partners) ? partners.length : 0}<br>
-        <strong>Errors:</strong> ${Array.isArray(errors) ? errors.length : 0}
-      `;
+      box.innerHTML = `<strong>Region:</strong> ${escapeHtml(region)}<br><strong>Language:</strong> ${escapeHtml(lang)}`;
       box.style.display = "block";
       console.log("Detected region:", region);
       console.log("Detected language:", lang);
-      console.log("Commit hash:", commitHash);
     }
 
-/* ---------------------------------------------------------
+    async function initializeInternationalization() {
+      const region = await detectUserRegion();
+      const lang = detectLanguage(region);
+      await loadLanguage(lang);
+      showDebug(region, lang);
+
+      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
+      try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
+      try { applyI18N(); } catch (e) { console.error("applyI18N external i18n refresh failed", e); }
+      try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory i18n refresh failed", e); }
+      initColumn1Accordion();
+    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
+      try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid i18n refresh failed", e); }
+      try { setFeatured(); } catch (e) { console.error("setFeatured i18n refresh failed", e); }
+    }
+
+    /* ---------------------------------------------------------
        REGION-FIRST PARTNER ENGINE + FINAL BOOTSTRAP
        This block intentionally overrides the older mixed fallback renderers above.
        Rule: if a region has partners, show ONLY that region. If it has none,
@@ -4706,11 +4589,11 @@
       });
     }
 
-    function showDebugOverlay(region, partners, allPartners) {
+    function renderPartnerDebugOverlay(region, partners, allPartners) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
 
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+      const overlay = document.getElementById("sb-debug");
       if (!overlay) return;
 
       const loaded = Array.isArray(partners) ? partners : [];
@@ -4738,169 +4621,6 @@
       overlay.style.display = "block";
     }
 
-
-    function detectMissingTranslations(translations) {
-      const missing = [];
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (!translations || !translations[key]) {
-          missing.push(key);
-          el.style.outline = "2px solid red";
-          el.setAttribute("title", `⚠️ Missing translation: ${key}`);
-        }
-      });
-
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-      if (overlay) {
-        overlay.querySelectorAll(".debug-missing").forEach(el => el.remove());
-        const missSection = document.createElement("div");
-        missSection.className = "debug-missing";
-        missSection.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
-        missing.forEach(k => {
-          const el = document.createElement("div");
-          el.className = "missing-item";
-          el.textContent = k;
-          el.style.color = "orange";
-          missSection.appendChild(el);
-        });
-        overlay.appendChild(missSection);
-      }
-
-      return missing;
-    }
-
-    const TRANSLATION_LANGUAGE_LABELS = {
-      es: "Spanish (es)",
-      pt: "Portuguese (pt)",
-      fr: "French (fr)",
-      de: "German (de)",
-      it: "Italian (it)",
-      pl: "Polish (pl)",
-      ja: "Japanese (ja)",
-      ko: "Korean (ko)",
-      "zh-cn": "Chinese Simplified (zh-cn)",
-      "zh-tw": "Chinese Traditional (zh-tw)",
-      ru: "Russian (ru)"
-    };
-
-    async function generateCoverageReport(langs = ["es", "pt", "fr", "de", "it", "pl", "ja", "ko", "zh-cn", "zh-tw", "ru"]) {
-      const base = await loadTranslations("en");
-      const baseKeys = Object.keys(base || {});
-
-      const report = [];
-      for (const lang of langs) {
-        const translations = await loadTranslations(lang);
-        const translatedKeys = Object.keys(translations || {});
-        const missing = baseKeys.filter(k => !translatedKeys.includes(k));
-        const coverageNumber = baseKeys.length ? ((baseKeys.length - missing.length) / baseKeys.length) * 100 : 100;
-
-        report.push({
-          language: lang,
-          label: TRANSLATION_LANGUAGE_LABELS[lang] || lang,
-          totalKeys: baseKeys.length,
-          translatedKeys: translatedKeys.length,
-          coverage: `${coverageNumber.toFixed(1)}%`,
-          missing
-        });
-      }
-
-      console.log("🌐 Translation Coverage Report");
-      report.forEach(r => {
-        console.log(`- ${r.language}: ${r.coverage} (${r.translatedKeys}/${r.totalKeys})`);
-        if (r.missing.length > 0) console.log(`  Missing: ${r.missing.join(", ")}`);
-      });
-
-      renderTranslationCoverageDashboard(report);
-      return report;
-    }
-
-    function renderTranslationCoverageDashboard(report = []) {
-      const dashboard = document.getElementById("translationCoverageDashboard");
-      const tbody = document.getElementById("coverage-table") || document.getElementById("translationCoverageRows");
-      if (!dashboard || !tbody) return;
-
-      tbody.innerHTML = report.map(r => {
-        const complete = !r.missing || r.missing.length === 0;
-        const missingText = complete ? "—" : r.missing.map(escapeHtml).join(", ");
-        return `
-          <tr>
-            <td>${escapeHtml(r.label || r.language)}</td>
-            <td>${escapeHtml(r.coverage || "0%")}</td>
-            <td class="${complete ? "" : "missing-keys"}">${missingText}</td>
-            <td class="${complete ? "ok" : "fail"}">${complete ? "✅ Complete" : "❌ Incomplete"}</td>
-          </tr>
-        `;
-      }).join("");
-
-      dashboard.classList.add("open");
-    }
-
-
-
-    const FORCE_PAGES_REDEPLOY_WORKFLOW = [
-      "name: Force Pages Redeploy",
-      "",
-      "on:",
-      "  push:",
-      "    branches:",
-      "      - main   # or gh-pages, depending on your Pages source branch",
-      "",
-      "jobs:",
-      "  redeploy:",
-      "    runs-on: ubuntu-latest",
-      "",
-      "    steps:",
-      "      - name: Checkout repository",
-      "        uses: actions/checkout@v4",
-      "",
-      "      - name: Setup Node.js",
-      "        uses: actions/setup-node@v4",
-      "        with:",
-      "          node-version: 20",
-      "",
-      "      - name: Build site",
-      "        run: |",
-      "          npm install",
-      "          npm run build   # adjust to your build command",
-      "",
-      "      - name: Deploy to GitHub Pages",
-      "        uses: peaceiris/actions-gh-pages@v4",
-      "        with:",
-      "          github_token: ${{ secrets.GITHUB_TOKEN }}",
-      "          publish_dir: ./dist   # adjust to your build output folder",
-      "          publish_branch: gh-pages",
-      "          force_orphan: true    # ensures a clean redeploy"
-    ].join("\n");
-
-    function renderForcePagesRedeployWorkflow() {
-      const dashboard = document.getElementById("translationCoverageDashboard");
-      if (!dashboard) return FORCE_PAGES_REDEPLOY_WORKFLOW;
-
-      let panel = document.getElementById("forcePagesRedeployWorkflowPanel");
-      if (!panel) {
-        panel = document.createElement("section");
-        panel.id = "forcePagesRedeployWorkflowPanel";
-        panel.style.marginTop = "2rem";
-        panel.innerHTML = `
-          <h2>🚀 Force Pages Redeploy Workflow</h2>
-          <p class="coverage-note">Save this as <code>.github/workflows/force-pages-redeploy.yml</code> in your repository.</p>
-          <pre id="forcePagesRedeployWorkflowCode" style="white-space:pre-wrap;background:#0b0f14;border:1px solid #333;border-radius:10px;padding:14px;overflow:auto;"></pre>
-        `;
-        dashboard.appendChild(panel);
-      }
-
-      const code = document.getElementById("forcePagesRedeployWorkflowCode");
-      if (code) code.textContent = FORCE_PAGES_REDEPLOY_WORKFLOW;
-      dashboard.classList.add("open");
-      return FORCE_PAGES_REDEPLOY_WORKFLOW;
-    }
-
-    window.generateCoverageReport = generateCoverageReport;
-    window.renderTranslationCoverageDashboard = renderTranslationCoverageDashboard;
-    window.FORCE_PAGES_REDEPLOY_WORKFLOW = FORCE_PAGES_REDEPLOY_WORKFLOW;
-    window.renderForcePagesRedeployWorkflow = renderForcePagesRedeployWorkflow;
-
     async function initSignalBoost() {
       const region = await detectUserRegion();
       const lang = detectLanguage(region);
@@ -4910,13 +4630,8 @@
       ACTIVE_PARTNERS = partners;
       window.ACTIVE_PARTNERS = partners;
 
-      const translations = await initI18n(lang);
-      showDebug(region, lang, getCommitHash(), partners);
-      try { detectMissingTranslations(translations); } catch (e) { console.error("detectMissingTranslations failed", e); }
-      try {
-        const params = new URLSearchParams(window.location.search);
-        if (params.has("debug") || params.has("coverage")) await generateCoverageReport();
-      } catch (e) { console.error("generateCoverageReport failed", e); }
+      await initI18n(lang);
+      showDebug(region, lang);
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
@@ -4930,7 +4645,7 @@
       try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
       try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
       try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
-      try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
+      try { renderPartnerDebugOverlay(region, partners, allPartners); } catch (e) { console.error("renderPartnerDebugOverlay failed", e); }
       try { validatePartners(); } catch (e) {}
 
       const search = document.getElementById("partnerSearch");
@@ -4938,29 +4653,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", initSignalBoost);
-  </script>
-
-  <script id="cache-buster-script">
-    window.SIGNALBOOST_COMMIT_HASH = window.SIGNALBOOST_COMMIT_HASH || "__COMMIT_HASH__";
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const commitHash = window.SIGNALBOOST_COMMIT_HASH || "__COMMIT_HASH__";
-      const cacheVersion = commitHash === "__COMMIT_HASH__" ? Date.now() : commitHash;
-
-      document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
-        const href = link.getAttribute("href");
-        if (href && !href.includes("?v=")) {
-          link.setAttribute("href", `${href}?v=${cacheVersion}`);
-        }
-      });
-
-      document.querySelectorAll("script[src]").forEach(script => {
-        const src = script.getAttribute("src");
-        if (src && !src.includes("?v=")) {
-          script.setAttribute("src", `${src}?v=${cacheVersion}`);
-        }
-      });
-    });
   </script>
 
 </body>
