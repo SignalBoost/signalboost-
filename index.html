@@ -4953,6 +4953,29 @@ function renderColumn3Safe(partners) {
   });
 }
 
+
+/* STEP 9 SAFE: Column 1 filter buttons */
+function attachColumn1Filter(partners) {
+  const buttons = document.querySelectorAll("#column1-filter button");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const cat = btn.dataset.cat;
+
+      if (cat === "all") {
+        renderColumn1Grouped(partners);
+        return;
+      }
+
+      const filtered = partners.filter(p => {
+        const key = (p.category_key || p.category || "").toLowerCase();
+        return key === cat;
+      });
+
+      renderColumn1Grouped(filtered);
+    });
+  });
+}
+
 </script>
 
 </body>
