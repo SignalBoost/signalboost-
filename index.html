@@ -4966,10 +4966,7 @@ function attachColumn1Filter(partners) {
         return;
       }
 
-      const filtered = partners.filter(p => {
-        const key = (p.category_key || p.category || "").toLowerCase();
-        return key === cat;
-      });
+      const filtered = filterPartnersByCategorySafe(partners, cat);
 
       renderColumn1Grouped(filtered);
     });
