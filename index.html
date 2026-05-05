@@ -1268,6 +1268,19 @@
     }
 
 </style>
+
+  <script>
+    // Auto-refresh translation coverage dashboard once every 24 hours when visible.
+    window.TRANSLATION_COVERAGE_AUTO_REFRESH_MS = 24 * 60 * 60 * 1000;
+    setInterval(() => {
+      const dashboard = document.getElementById("translationCoverageDashboard");
+      const shouldRefresh = dashboard && dashboard.classList.contains("open");
+      if (shouldRefresh) {
+        console.log("🔄 Auto-refreshing coverage dashboard...");
+        window.location.reload();
+      }
+    }, window.TRANSLATION_COVERAGE_AUTO_REFRESH_MS);
+  </script>
 </head>
 
 <body>
@@ -1343,7 +1356,7 @@
 
   <section id="translationCoverageDashboard" aria-live="polite">
     <h1>🌐 Translation Coverage Dashboard</h1>
-    <p class="coverage-note">Add <strong>?coverage</strong> or <strong>?debug</strong> to the URL to generate this report from the live <code>/i18n/*.json</code> files.</p>
+    <p class="coverage-note">Rows are auto-generated from the live <code>/i18n/*.json</code> files. Add <strong>?coverage</strong> or <strong>?debug</strong> to the URL to open this dashboard.</p>
     <table>
       <thead>
         <tr>
@@ -1353,7 +1366,7 @@
           <th>Status</th>
         </tr>
       </thead>
-      <tbody id="translationCoverageRows">
+      <tbody id="coverage-table">
         <tr>
           <td>Spanish (es)</td>
           <td>100%</td>
@@ -4814,7 +4827,7 @@
 
     function renderTranslationCoverageDashboard(report = []) {
       const dashboard = document.getElementById("translationCoverageDashboard");
-      const tbody = document.getElementById("translationCoverageRows");
+      const tbody = document.getElementById("coverage-table") || document.getElementById("translationCoverageRows");
       if (!dashboard || !tbody) return;
 
       tbody.innerHTML = report.map(r => {
