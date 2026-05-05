@@ -4658,6 +4658,35 @@ function renderColumn1Simple(partners) {
   });
 }
 
+
+/* STEP 4: Simple Column 3 render only */
+function renderColumn3Simple(partners) {
+  const chips = document.getElementById("partnerChips") || document.getElementById("column3");
+  if (!chips) return;
+
+  chips.innerHTML = "";
+
+  if (!Array.isArray(partners) || partners.length === 0) {
+    chips.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
+    return;
+  }
+
+  const top = partners
+    .slice()
+    .sort((a, b) => (a.tier || 99) - (b.tier || 99))
+    .slice(0, 12);
+
+  top.forEach(p => {
+    const a = document.createElement("a");
+    a.className = chips.id === "partnerChips" ? "partner-chip" : "brand-tile";
+    a.href = p.url || "#";
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = p.name || "Partner";
+    chips.appendChild(a);
+  });
+}
+
 </script>
 
 </body>
