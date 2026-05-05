@@ -8,6 +8,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -4143,6 +4144,12 @@
       if (lang.startsWith("pl")) return setActiveRegion("pl");   // Polish → Poland
       if (lang.startsWith("ru")) return setActiveRegion("ru");   // Russian → Russia
       if (lang.startsWith("fr")) return setActiveRegion("fr");   // French → France
+      if (lang.startsWith("de")) return setActiveRegion("de");   // German → Germany
+      if (lang.startsWith("it")) return setActiveRegion("it");   // Italian → Italy
+      if (lang.startsWith("ja")) return setActiveRegion("jp");   // Japanese → Japan
+      if (lang.startsWith("ko")) return setActiveRegion("kr");   // Korean → Korea
+      if (lang.startsWith("zh-tw") || lang.startsWith("zh-hant")) return setActiveRegion("tw");
+      if (lang.startsWith("zh")) return setActiveRegion("cn");   // Chinese → China
       if (lang.startsWith("en")) return setActiveRegion("us");   // English → US/UK
 
       return setActiveRegion("global"); // fallback
