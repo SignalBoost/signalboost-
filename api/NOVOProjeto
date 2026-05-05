@@ -1,6 +1,12 @@
 
 
 
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +15,26 @@
   <meta name="verify-admitad" content="93d3c3a3c1" />
   <meta name="fo-verify" content="ecaf9150-b94f-4c51-9be8-901f70cd5e9a" />
   <meta name="google-site-verification" content="rYali_68D0WtYK42cslb1hbj3sejZYe3p-UM4FoK_BM" />
-  <title>SignalBoost</title>
+  <title id="pageTitle">Cheap Flights & Hotels Worldwide | SignalBoost</title>
+  <meta id="seoDescription" name="description" content="Find cheap flights, hotels, eSIM, tours, transfers and travel deals worldwide with SignalBoost." />
+  <meta name="robots" content="index, follow" />
+  <link id="canonicalLink" rel="canonical" href="/" />
+  <link rel="alternate" hreflang="en" href="/" />
+  <link rel="alternate" hreflang="pl" href="/pl/" />
+  <link rel="alternate" hreflang="pt-BR" href="/pt-br/" />
+  <link rel="alternate" hreflang="es" href="/es/" />
+  <link rel="alternate" hreflang="ru" href="/ru/" />
+  <link rel="alternate" hreflang="zh-CN" href="/zh-cn/" />
+  <link rel="alternate" hreflang="zh-TW" href="/zh-tw/" />
+  <link rel="alternate" hreflang="fr" href="/fr/" />
+  <link rel="alternate" hreflang="de" href="/de/" />
+  <link rel="alternate" hreflang="it" href="/it/" />
+  <link rel="alternate" hreflang="ja" href="/ja/" />
+  <link rel="alternate" hreflang="ko" href="/ko/" />
+  <link rel="alternate" hreflang="x-default" href="/" />
+  <meta property="og:title" content="Cheap Flights & Hotels Worldwide | SignalBoost" />
+  <meta property="og:description" content="Find cheap flights, hotels and travel deals worldwide." />
+  <meta property="og:type" content="website" />
 
   <style>
     * { box-sizing: border-box; }
@@ -274,6 +299,78 @@
       font-size: 11px;
     }
 
+
+
+    #column1 { width: 100%; }
+
+    .c1-group {
+      margin-bottom: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .c1-header {
+      cursor: pointer;
+      padding: 9px 10px;
+      user-select: none;
+      font-weight: 800;
+      color: #fff;
+      font-size: 13px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .c1-header::before {
+      content: "▶";
+      display: inline-block;
+      width: 14px;
+      margin-right: 6px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .c1-body.open + .unused { display: none; }
+
+    .c1-header.open::before { content: "▼"; }
+    .c1-header.open { background: rgba(88,166,255,0.08); }
+
+    .c1-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+      padding: 0 8px;
+    }
+
+    .c1-body.open {
+      max-height: 500px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .c1-partner {
+      display: block;
+      padding: 7px 8px;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.25;
+      cursor: pointer;
+    }
+
+    .c1-partner:hover {
+      background: rgba(245,197,66,0.09);
+      color: #f5c542;
+    }
+
+    .c1-partner .partner-meta {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255,255,255,0.52);
+      font-size: 11px;
+    }
+
     .partners-empty {
       padding: 14px;
       border-radius: 12px;
@@ -294,11 +391,16 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      height: 100%;
+      height: calc(100vh - 42px);
       overflow-y: auto;
       padding: 12px 16px 100px;
       align-items: center;
+      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+    }
+
+    #magnetoColumn::-webkit-scrollbar {
+      display: none;
     }
 
     .hero-feed-status {
@@ -841,10 +943,268 @@
       }
     }
 
-  </style>
+
+    .seo-local-content {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+  
+
+    html[data-i18n-ready="0"] body { opacity: 0; }
+    html[data-i18n-ready="1"] body { opacity: 1; transition: opacity .15s ease; }
+  
+
+    /* ---------------------------------------------------------
+       COLUMN 1 — BASELINE DARK CARD ACCORDION
+       Header keeps travel categories; Column 1 shows the rest.
+    --------------------------------------------------------- */
+
+    .column-1 {
+      background: #0f141b;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .column-1-controls {
+      padding: 10px 8px 12px;
+      background: #0f141b;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .column-1-header {
+      padding: 0 0 8px 4px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #b9c7d8;
+    }
+
+    .column-1-search {
+      width: 100%;
+      height: 32px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #0d1117;
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .column-1-search::placeholder {
+      color: rgba(255,255,255,0.45);
+    }
+
+    .column-1-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      background: #0f141b;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.22) transparent;
+    }
+
+    #column1.c1 {
+      width: 100%;
+      background: transparent;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    #column1.c1 .c1-group {
+      margin: 0 0 10px;
+      border-radius: 9px;
+      overflow: hidden;
+      background: #1b2128;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    #column1.c1 .c1-header {
+      min-height: 36px;
+      padding: 9px 12px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      line-height: 1.15;
+      font-weight: 900;
+      color: #ffffff;
+      background: #1b2128;
+      transition: background 0.18s ease;
+    }
+
+    #column1.c1 .c1-header:hover,
+    #column1.c1 .c1-header.open,
+    #column1.c1 .c1-header.active {
+      background: #192532;
+    }
+
+    #column1.c1 .c1-header::before {
+      content: "▶";
+      display: inline-block;
+      width: 13px;
+      flex: 0 0 13px;
+      color: rgba(255,255,255,0.9);
+      font-size: 11px;
+      line-height: 1;
+      transform: translateY(1px);
+    }
+
+    #column1.c1 .c1-header.open::before,
+    #column1.c1 .c1-header.active::before {
+      content: "▼";
+      color: #aee1ff;
+    }
+
+    #column1.c1 .c1-header::after {
+      content: none;
+    }
+
+    #column1.c1 .c1-body {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 15px;
+      background: #141a20;
+      transition: max-height 0.25s ease, padding 0.2s ease;
+    }
+
+    #column1.c1 .c1-body.open {
+      max-height: 700px;
+      padding: 12px 15px 14px;
+    }
+
+    #column1.c1 .c1-partner {
+      display: block;
+      padding: 8px 0;
+      border-radius: 0;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-decoration: none;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+
+    #column1.c1 .c1-partner:hover {
+      color: #f5c542;
+      background: transparent;
+      transform: translateX(2px);
+    }
+
+    #column1.c1 .c1-partner .partner-meta {
+      display: block;
+      margin-top: 3px;
+      color: #9bb0c2;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: lowercase;
+    }
+
+    .partners-empty {
+      margin: 0;
+      padding: 14px;
+      border-radius: 10px;
+      background: #1b2128;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.68);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .column-1-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-track {
+      background: #0f141b;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-thumb {
+      background: #2a3440;
+      border-radius: 999px;
+    }
+
+    .column-1-scroll::-webkit-scrollbar-thumb:hover {
+      background: #3a4654;
+    }
+
+    @media (max-width: 900px) {
+      .column-1 {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .column-1-scroll {
+        overflow: visible;
+        padding: 12px;
+      }
+
+      #column1.c1 .c1-header {
+        min-height: 40px;
+        font-size: 16px;
+      }
+
+      #column1.c1 .c1-partner {
+        font-size: 15px;
+      }
+    }
+
+
+    /* Column 3 Partnerzy chips */
+    #partnerChips {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 236px;
+      margin: 0 auto;
+    }
+
+    .partner-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 72px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .partner-chip:hover {
+      border-color: rgba(245,197,66,0.30);
+      transform: translateY(-2px);
+    }
+
+</style>
 </head>
 
 <body>
+
+  <section id="seoContent" class="seo-local-content">
+    <h1 id="seoH1">Cheap flights, hotels and travel deals worldwide</h1>
+    <p id="seoText">Find flights, hotels, eSIM, car rentals, tours, transfers and travel services in one place.</p>
+  </section>
   <div class="travel-directory-shell">
     <div class="directory-left">
       <div class="directory-logo" data-i18n="brand_name">SignalBoost</div>
@@ -861,7 +1221,34 @@
         <div id="leftHeader" class="column-1-header" data-i18n="explore_offers">Explore offers</div>
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
       </div>
-      <div id="partnersRail" class="column-1-scroll"></div>
+      <div id="partnersRail" class="column-1-scroll">
+        <div id="column1" class="c1">
+          <div class="c1-group" data-cat="marketplace">
+            <div class="c1-header" data-i18n="marketplace">Marketplace</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="products_tools">
+            <div class="c1-header" data-i18n="products_tools">Products &amp; Tools</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="finance">
+            <div class="c1-header" data-i18n="finance">Finance</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="insurance">
+            <div class="c1-header" data-i18n="insurance">Insurance &amp; Claims</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="travel_services">
+            <div class="c1-header" data-i18n="travel_services">Storage &amp; Services</div>
+            <div class="c1-body"></div>
+          </div>
+          <div class="c1-group" data-cat="specialty_other">
+            <div class="c1-header">Specialty &amp; Other</div>
+            <div class="c1-body"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="column column-2">
@@ -873,7 +1260,7 @@
 
     <div class="column column-3">
       <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
-      <div id="brandGrid" class="brand-grid"></div>
+      <div id="partnerChips" class="brand-grid"></div>
     </div>
   </div>
 
@@ -882,127 +1269,10 @@
     <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="view_more">View More</a>
   </div>
 
+  <div id="sb-debug" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
+
   <script>
     const partnersData = [
-  {
-    "name": "Alamo",
-    "category": "Car Rentals",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
-    "tier": 1,
-    "logo": "",
-    "highlight": "Reliable car rentals for airport and city trips"
-  },
-  {
-    "name": "Localrent",
-    "category": "Car Rentals",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://localrent.tpo.lv/XS0CqdMP",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "Economybookings",
-    "category": "Car Rentals",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://economybookings.tpo.lv/jSFMPEPA",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "QEEQ",
-    "category": "Car Rentals",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://qeeq.tpo.lv/jklB4Pbm",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "AutoEurope",
-    "category": "Car Rentals",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://autoeurope.tpo.lv/t84AzZbO",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "Europcar AU/NZ",
-    "category": "Car Rentals",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "GetRentacar",
-    "category": "Car Rentals",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://getrentacar.tpo.lv/OR2TWduQ",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "Jumbo Car Costa Rica",
-    "category": "Car Rentals",
-    "region": "latam",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "PagBank",
-    "category": "Finance",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "Kapitalwise",
-    "category": "Finance",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Countabout",
-    "category": "Finance",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "FileYourTaxes",
-    "category": "Finance",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "Você RH",
-    "category": "Finance",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
-    "tier": 3,
-    "logo": "",
-    "notes": "Use only in finance/career context."
-  },
   {
     "name": "CVC BR",
     "category": "Flights & Meta Search",
@@ -1011,7 +1281,8 @@
     "url": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
     "tier": 1,
     "logo": "",
-    "notes": "Admitad connected offer. Verify rules and allowed traffic."
+    "notes": "Admitad connected offer. Verify rules and allowed traffic.",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1021,7 +1292,8 @@
     "url": "https://booking.tpo.lv/enwsEbCs",
     "tier": 1,
     "logo": "",
-    "status": "verify_subscription"
+    "status": "verify_subscription",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1030,7 +1302,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1040,7 +1313,8 @@
     "url": "https://booking.tpo.lv/enwsEbCs",
     "tier": 1,
     "logo": "",
-    "status": "verify_subscription"
+    "status": "verify_subscription",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1049,7 +1323,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1059,7 +1334,8 @@
     "url": "https://booking.tpo.lv/enwsEbCs",
     "tier": 1,
     "logo": "",
-    "status": "verify_subscription"
+    "status": "verify_subscription",
+    "category_key": "flights"
   },
   {
     "name": "Kiwi",
@@ -1068,7 +1344,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "flights"
   },
   {
     "name": "Aviasales",
@@ -1078,7 +1355,74 @@
     "url": "https://aviasales.tpo.lv/VoWXgFFm",
     "tier": 2,
     "logo": "",
-    "notes": "Flights only. Avoid hotel flow."
+    "notes": "Flights only. Avoid hotel flow.",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwitaxi Global",
+    "category": "Flights & Meta Search",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+    "tier": 2,
+    "logo": "",
+    "highlight": "",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi BR",
+    "category": "Flights & Meta Search",
+    "region": "br",
+    "network": "Travelpayouts",
+    "url": "https://booking.tpo.lv/enwsEbCs",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "flights"
+  },
+  {
+    "name": "Quero Passagem BR",
+    "category": "Flights & Meta Search",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi CA",
+    "category": "Flights & Meta Search",
+    "region": "ca",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "CA offer",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi MX",
+    "category": "Flights & Meta Search",
+    "region": "mx",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "MX offer",
+    "category_key": "flights"
+  },
+  {
+    "name": "Kiwi US",
+    "category": "Flights & Meta Search",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "US offer",
+    "category_key": "flights"
   },
   {
     "name": "Trivago",
@@ -1087,7 +1431,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1096,7 +1441,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1105,7 +1451,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Trivago",
@@ -1114,61 +1461,8 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806",
     "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "H10 Hotels",
-    "category": "Hotels",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Planet of Hotels",
-    "category": "Hotels",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Sirenis Hotels",
-    "category": "Hotels",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Travelking",
-    "category": "Hotels",
-    "region": "pl",
-    "network": "Admitad",
-    "url": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Trivago",
-    "category": "Hotels",
-    "region": "latam",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Trivago",
-    "category": "Hotels",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
   },
   {
     "name": "Zenhotels",
@@ -1177,7 +1471,546 @@
     "network": "Admitad",
     "url": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "latam",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Travelking",
+    "category": "Hotels",
+    "region": "pl",
+    "network": "Admitad",
+    "url": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago",
+    "category": "Hotels",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "H10 Hotels",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Sirenis Hotels",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago BR",
+    "category": "Hotels",
+    "region": "br",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago EU",
+    "category": "Hotels",
+    "region": "eu",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "EU offer",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago LATAM",
+    "category": "Hotels",
+    "region": "latam",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "LATAM offer",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago MX",
+    "category": "Hotels",
+    "region": "mx",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "MX offer",
+    "category_key": "hotels"
+  },
+  {
+    "name": "H10 Hotels US",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "US offer",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Sirenis Hotels US",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "US offer",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Trivago US",
+    "category": "Hotels",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "US offer",
+    "category_key": "hotels"
+  },
+  {
+    "name": "Airalo Global",
+    "category": "eSIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
+    "tier": 2,
+    "logo": "",
+    "highlight": "",
+    "category_key": "esim"
+  },
+  {
+    "name": "Airalo BR",
+    "category": "eSIM & Connectivity",
+    "region": "br",
+    "network": "Travelpayouts",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "esim"
+  },
+  {
+    "name": "Alamo",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
+    "tier": 1,
+    "logo": "",
+    "highlight": "Reliable car rentals for airport and city trips",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Localrent",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://localrent.tpo.lv/XS0CqdMP",
+    "tier": 1,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Economybookings",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://economybookings.tpo.lv/jSFMPEPA",
+    "tier": 2,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "QEEQ",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://qeeq.tpo.lv/jklB4Pbm",
+    "tier": 2,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "AutoEurope",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://autoeurope.tpo.lv/t84AzZbO",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Europcar AU/NZ",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "GetRentacar",
+    "category": "Car Rentals",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://getrentacar.tpo.lv/OR2TWduQ",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Jumbo Car Costa Rica",
+    "category": "Car Rentals",
+    "region": "latam",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "car_rentals"
+  },
+  {
+    "name": "Klook",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://klook.tpo.lv/pTp1NljF",
+    "tier": 1,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Klook",
+    "category": "Tours & Activities",
+    "region": "br",
+    "network": "Travelpayouts",
+    "url": "https://klook.tpo.lv/pTp1NljF",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets",
+    "category": "Tours & Activities",
+    "region": "eu",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets",
+    "category": "Tours & Activities",
+    "region": "gb",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "GoCity",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://gocity.tpo.lv/Des5Cgov",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Klook Global",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://klook.tpo.lv/pTp1NljF",
+    "tier": 2,
+    "logo": "",
+    "highlight": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "WeGoTrip",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://wegotrip.tpo.lv/kKIF0gIW",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets",
+    "category": "Tours & Activities",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Klook BR",
+    "category": "Tours & Activities",
+    "region": "br",
+    "network": "Travelpayouts",
+    "url": "https://klook.tpo.lv/pTp1NljF",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets EU",
+    "category": "Tours & Activities",
+    "region": "eu",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "EU offer",
+    "category_key": "tours"
+  },
+  {
+    "name": "BigBusTours",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://bigbustours.tpo.lv/grT1QWXA",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "BikesBooking",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://bikesbooking.tpo.lv/B3zIKanS",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "EatWith",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://eatwith.tpo.lv/BfAnpZNb",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Searadar",
+    "category": "Tours & Activities",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://searadar.tpo.lv/TO4A5eBZ",
+    "tier": 3,
+    "logo": "",
+    "category_key": "tours"
+  },
+  {
+    "name": "Tiqets US",
+    "category": "Tours & Activities",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "US offer",
+    "category_key": "tours"
+  },
+  {
+    "name": "Kiwitaxi",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+    "tier": 1,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Welcome Pickups",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://tpo.lv/XAJOoobr",
+    "tier": 1,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Quero Passagem",
+    "category": "Transfers & Transport",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
+    "tier": 2,
+    "logo": "",
+    "notes": "Brazil bus/travel ticket partner",
+    "category_key": "transfers"
+  },
+  {
+    "name": "GetTransfer",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "GetTransfer Global",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
+    "tier": 2,
+    "logo": "",
+    "highlight": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Intui.travel",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://intui.tpo.lv/Rrx5VuN3",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Welcome Pickups Global",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://tpo.lv/XAJOoobr",
+    "tier": 2,
+    "logo": "",
+    "highlight": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Kiwitaxi",
+    "category": "Transfers & Transport",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Welcome Pickups",
+    "category": "Transfers & Transport",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://tpo.lv/XAJOoobr",
+    "tier": 2,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Busbud",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://busbud.tpo.lv/h4C6YPFZ",
+    "tier": 3,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "HolidayTaxis",
+    "category": "Transfers & Transport",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://holidaytaxis.tpo.lv/oHwpbrFt",
+    "tier": 3,
+    "logo": "",
+    "category_key": "transfers"
+  },
+  {
+    "name": "Radical Storage",
+    "category": "Storage & Services",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://radicalstorage.tpo.lv/tna4hnly",
+    "tier": 2,
+    "logo": "",
+    "category_key": "travel_services"
+  },
+  {
+    "name": "Radical Storage Global",
+    "category": "Storage & Services",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://radicalstorage.tpo.lv/tna4hnly",
+    "tier": 2,
+    "logo": "",
+    "highlight": "",
+    "category_key": "travel_services"
+  },
+  {
+    "name": "Radical Storage",
+    "category": "Storage & Services",
+    "region": "pl",
+    "network": "Travelpayouts",
+    "url": "https://radicalstorage.tpo.lv/tna4hnly",
+    "tier": 2,
+    "logo": "",
+    "category_key": "travel_services"
+  },
+  {
+    "name": "AirHelp",
+    "category": "Insurance & Claims",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/",
+    "tier": 1,
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "AURAS Travel Insurance",
@@ -1187,16 +2020,8 @@
     "url": "https://ogsib.com/g/g86qhgosread273170bc102b8feede/",
     "tier": 1,
     "logo": "",
-    "highlight": "Travel with protection — simple & reliable insurance"
-  },
-  {
-    "name": "AirHelp",
-    "category": "Insurance & Claims",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/",
-    "tier": 1,
-    "logo": ""
+    "highlight": "Travel with protection — simple & reliable insurance",
+    "category_key": "insurance"
   },
   {
     "name": "EKTA Insurance",
@@ -1205,16 +2030,8 @@
     "network": "Travelpayouts",
     "url": "https://ektatraveling.tpo.lv/XWbZbj8S",
     "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "AirHelp",
-    "category": "Insurance & Claims",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://airhelp.tpo.lv/EPrGDSO3",
-    "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "Melhor Seguro",
@@ -1223,7 +2040,40 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "AirHelp",
+    "category": "Insurance & Claims",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://airhelp.tpo.lv/EPrGDSO3",
+    "tier": 2,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "AirHelp BR",
+    "category": "Insurance & Claims",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "insurance"
+  },
+  {
+    "name": "Melhor Seguro BR",
+    "category": "Insurance & Claims",
+    "region": "br",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "insurance"
   },
   {
     "name": "Compensair",
@@ -1232,16 +2082,8 @@
     "network": "Travelpayouts",
     "url": "https://compensair.tpo.lv/wxDDCITG",
     "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "Amazon",
-    "category": "Marketplace",
-    "region": "global",
-    "network": "Amazon",
-    "url": "https://www.amazon.com/?tag=signalboostai-20",
-    "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "insurance"
   },
   {
     "name": "Amazon BR",
@@ -1251,7 +2093,18 @@
     "url": "https://www.amazon.com.br/?tag=signalboostai-20",
     "tier": 1,
     "logo": "",
-    "status": "verify_local_amazon_tag"
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Amazon",
+    "category": "Marketplace",
+    "region": "global",
+    "network": "Amazon",
+    "url": "https://www.amazon.com/?tag=signalboostai-20",
+    "tier": 1,
+    "logo": "",
+    "category_key": "marketplace"
   },
   {
     "name": "Amazon PL",
@@ -1261,16 +2114,8 @@
     "url": "https://www.amazon.pl/?tag=signalboostai-20",
     "tier": 1,
     "logo": "",
-    "status": "verify_local_amazon_tag"
-  },
-  {
-    "name": "AliExpress PL",
-    "category": "Marketplace",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
   },
   {
     "name": "Alibaba",
@@ -1279,7 +2124,19 @@
     "network": "Admitad",
     "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Amazon Global",
+    "category": "Marketplace",
+    "region": "global",
+    "network": "Amazon",
+    "url": "https://www.amazon.com/?tag=signalboostai-20",
+    "tier": 2,
+    "logo": "",
+    "highlight": "",
+    "category_key": "marketplace"
   },
   {
     "name": "Amazon MX",
@@ -1289,7 +2146,84 @@
     "url": "https://www.amazon.com.mx/?tag=signalboostai-20",
     "tier": 2,
     "logo": "",
-    "status": "verify_local_amazon_tag"
+    "status": "verify_local_amazon_tag",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "AliExpress PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Bella Storia PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Converse PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "TWOJEMEBLE PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Weneve PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Beetles Gel Polish",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "PL offer",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Cybercart PL",
+    "category": "Marketplace",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "highlight": "PL offer",
+    "category_key": "marketplace"
   },
   {
     "name": "Proton VPN",
@@ -1298,25 +2232,8 @@
     "network": "Admitad",
     "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
     "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "Beverly Hills MD",
-    "category": "Products & Tools",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Cozeware",
-    "category": "Products & Tools",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "ESET",
@@ -1325,7 +2242,18 @@
     "network": "Admitad",
     "url": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Cozeware",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "UdPower",
@@ -1335,7 +2263,52 @@
     "url": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
     "tier": 2,
     "logo": "",
-    "highlight": "Smart gadgets and power solutions for everyday use"
+    "highlight": "Smart gadgets and power solutions for everyday use",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Bloomcabin Poland",
+    "category": "Products & Tools",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "DAX PL",
+    "category": "Products & Tools",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Swiat Supli PL",
+    "category": "Products & Tools",
+    "region": "pl",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Poland offer",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "ESET BR",
+    "category": "Products & Tools",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "products_tools"
   },
   {
     "name": "Guldi",
@@ -1345,25 +2318,19 @@
     "url": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/",
     "tier": 3,
     "logo": "",
-    "notes": "Guldi (EN) Affiliate Program"
+    "notes": "Guldi (EN) Affiliate Program",
+    "category_key": "products_tools"
   },
   {
-    "name": "PearlMountain Limited",
+    "name": "SuperSim BR",
     "category": "Products & Tools",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
     "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "SuperBox",
-    "category": "Products & Tools",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806",
-    "tier": 3,
-    "logo": ""
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "products_tools"
   },
   {
     "name": "TikTok Lite",
@@ -1373,7 +2340,28 @@
     "url": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/",
     "tier": 3,
     "logo": "",
-    "notes": "CPI/CPA. Keep out of main travel UI unless rules allow this traffic."
+    "notes": "CPI/CPA. Keep out of main travel UI unless rules allow this traffic.",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "PearlMountain Limited",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "SuperBox",
+    "category": "Products & Tools",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
     "name": "Valerion",
@@ -1382,80 +2370,71 @@
     "network": "Awin",
     "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "products_tools"
   },
   {
-    "name": "Airalo",
-    "category": "SIM & Connectivity",
-    "region": "br",
-    "network": "Travelpayouts",
-    "url": "https://airalo.tpo.lv/eXjKLiuw",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "Airalo",
-    "category": "SIM & Connectivity",
+    "name": "HolidayTaxis Global",
+    "category": "Finance",
     "region": "global",
     "network": "Travelpayouts",
-    "url": "https://airalo.tpo.lv/eXjKLiuw",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "Airalo",
-    "category": "SIM & Connectivity",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://airalo.tpo.lv/eXjKLiuw",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "SuperSim",
-    "category": "SIM & Connectivity",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "Saily",
-    "category": "SIM & Connectivity",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "TurboVPN",
-    "category": "SIM & Connectivity",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
+    "url": "https://holidaytaxis.tpo.lv/oHwpbrFt",
     "tier": 2,
     "logo": "",
-    "highlight": "Secure your connection anywhere with VPN access"
+    "highlight": "",
+    "category_key": "finance"
   },
   {
-    "name": "Yesim",
-    "category": "SIM & Connectivity",
+    "name": "Kapitalwise",
+    "category": "Finance",
     "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://yesim.tpo.lv/3vIzBQts",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "finance"
   },
   {
-    "name": "Drimsim",
-    "category": "SIM & Connectivity",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://drimsim.tpo.lv/PGwr6JTr",
+    "name": "Você RH",
+    "category": "Finance",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "notes": "Use only in finance/career context.",
+    "category_key": "finance"
+  },
+  {
+    "name": "Você RH BR",
+    "category": "Finance",
+    "region": "br",
+    "network": "Admitad",
+    "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
+    "tier": 3,
+    "logo": "",
+    "highlight": "BR offer",
+    "category_key": "finance"
+  },
+  {
+    "name": "Countabout",
+    "category": "Finance",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "finance"
+  },
+  {
+    "name": "FileYourTaxes",
+    "category": "Finance",
+    "region": "us",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
+    "tier": 3,
+    "logo": "",
+    "category_key": "finance"
   },
   {
     "name": "Cyber Florist",
@@ -1466,7 +2445,8 @@
     "tier": 4,
     "logo": "",
     "status": "hold",
-    "notes": "Legitimate via Admitad screenshot, but weak strategic fit. Do not show unless testing."
+    "notes": "Legitimate via Admitad screenshot, but weak strategic fit. Do not show unless testing.",
+    "category_key": "specialty_other"
   },
   {
     "name": "King Koil",
@@ -1476,7 +2456,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
     "tier": 4,
     "logo": "",
-    "status": "hold"
+    "status": "hold",
+    "category_key": "specialty_other"
   },
   {
     "name": "Tsarbomba",
@@ -1486,7 +2467,8 @@
     "url": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
     "tier": 4,
     "logo": "",
-    "status": "hold"
+    "status": "hold",
+    "category_key": "specialty_other"
   },
   {
     "name": "Xuchang Aixiu Hair Products",
@@ -1496,206 +2478,320 @@
     "url": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
     "tier": 4,
     "logo": "",
-    "status": "hold"
+    "status": "hold",
+    "category_key": "specialty_other"
   },
   {
-    "name": "Radical Storage",
-    "category": "Storage & Services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Radical Storage",
-    "category": "Storage & Services",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Klook",
-    "category": "Tours & Activities",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://klook.tpo.lv/pTp1NljF",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "GoCity",
-    "category": "Tours & Activities",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://gocity.tpo.lv/Des5Cgov",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Klook",
-    "category": "Tours & Activities",
+    "name": "Airalo",
+    "category": "SIM & Connectivity",
     "region": "br",
     "network": "Travelpayouts",
-    "url": "https://klook.tpo.lv/pTp1NljF",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Tiqets",
-    "category": "Tours & Activities",
-    "region": "eu",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Tiqets",
-    "category": "Tours & Activities",
-    "region": "gb",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Tiqets",
-    "category": "Tours & Activities",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "WeGoTrip",
-    "category": "Tours & Activities",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://wegotrip.tpo.lv/kKIF0gIW",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "BigBusTours",
-    "category": "Tours & Activities",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://bigbustours.tpo.lv/grT1QWXA",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "BikesBooking",
-    "category": "Tours & Activities",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://bikesbooking.tpo.lv/B3zIKanS",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "EatWith",
-    "category": "Tours & Activities",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://eatwith.tpo.lv/BfAnpZNb",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "Searadar",
-    "category": "Tours & Activities",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://searadar.tpo.lv/TO4A5eBZ",
-    "tier": 3,
-    "logo": ""
-  },
-  {
-    "name": "Kiwitaxi",
-    "category": "Transfers & Transport",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
     "tier": 1,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
-    "name": "Welcome Pickups",
-    "category": "Transfers & Transport",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://tpo.lv/XAJOoobr",
-    "tier": 1,
-    "logo": ""
-  },
-  {
-    "name": "GetTransfer",
-    "category": "Transfers & Transport",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Intui.travel",
-    "category": "Transfers & Transport",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://intui.tpo.lv/Rrx5VuN3",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Kiwitaxi",
-    "category": "Transfers & Transport",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
-    "tier": 2,
-    "logo": ""
-  },
-  {
-    "name": "Quero Passagem",
-    "category": "Transfers & Transport",
+    "name": "SuperSim",
+    "category": "SIM & Connectivity",
     "region": "br",
     "network": "Admitad",
-    "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
-    "tier": 2,
+    "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
+    "tier": 1,
     "logo": "",
-    "notes": "Brazil bus/travel ticket partner"
+    "category_key": "sim"
   },
   {
-    "name": "Welcome Pickups",
-    "category": "Transfers & Transport",
+    "name": "Airalo",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
+    "tier": 1,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Airalo",
+    "category": "SIM & Connectivity",
     "region": "pl",
     "network": "Travelpayouts",
-    "url": "https://tpo.lv/XAJOoobr",
+    "url": "https://airalo.tpo.lv/eXjKLiuw",
+    "tier": 1,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Saily",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
     "tier": 2,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
   },
   {
-    "name": "Busbud",
-    "category": "Transfers & Transport",
+    "name": "TurboVPN",
+    "category": "SIM & Connectivity",
     "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://busbud.tpo.lv/h4C6YPFZ",
-    "tier": 3,
-    "logo": ""
+    "network": "Admitad",
+    "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
+    "tier": 2,
+    "logo": "",
+    "highlight": "Secure your connection anywhere with VPN access",
+    "category_key": "sim"
   },
   {
-    "name": "HolidayTaxis",
-    "category": "Transfers & Transport",
+    "name": "Yesim",
+    "category": "SIM & Connectivity",
     "region": "global",
     "network": "Travelpayouts",
-    "url": "https://holidaytaxis.tpo.lv/oHwpbrFt",
+    "url": "https://yesim.tpo.lv/3vIzBQts",
+    "tier": 2,
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Drimsim",
+    "category": "SIM & Connectivity",
+    "region": "global",
+    "network": "Travelpayouts",
+    "url": "https://drimsim.tpo.lv/PGwr6JTr",
     "tier": 3,
-    "logo": ""
+    "logo": "",
+    "category_key": "sim"
+  },
+  {
+    "name": "Woodestic",
+    "category": "Marketplace",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/",
+    "tier": 3,
+    "logo": "",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Western Union",
+    "category": "Finance",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "finance"
+  },
+  {
+    "name": "forcedrop",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Lennuabi",
+    "category": "Flights & Meta Search",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/",
+    "tier": 2,
+    "logo": "",
+    "notes": "Many GEOs",
+    "category_key": "flights"
+  },
+  {
+    "name": "AliExpress",
+    "category": "Marketplace",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "marketplace"
+  },
+  {
+    "name": "Booking.com Brazil",
+    "category": "Hotels",
+    "region": "br",
+    "network": "Awin",
+    "url": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806",
+    "tier": 1,
+    "logo": "",
+    "category_key": "hotels"
+  },
+  {
+    "name": "ICICI Lombard",
+    "category": "Insurance & Claims",
+    "region": "in",
+    "network": "Admitad",
+    "url": "https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "ACKO",
+    "category": "Insurance & Claims",
+    "region": "in",
+    "network": "Admitad",
+    "url": "https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "insurance"
+  },
+  {
+    "name": "JetPac",
+    "category": "eSIM & Connectivity",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "esim"
+  },
+  {
+    "name": "IGP",
+    "category": "Specialty & Other",
+    "region": "in",
+    "network": "Admitad",
+    "url": "https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Envato",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "AdGuard VPN",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "cs2case",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/?erid=2bL9aMPo2e49hMef4phyrL2RNS",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Bodylab",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/",
+    "tier": 3,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "ggpick",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Bunches",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "GGsel",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/?erid=2bL9aMPo2e49hMef4phyrMWkN2",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Delfin",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/?erid=2bL9aMPo2e49hMef4rqyKUjZvt",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "LEA",
+    "category": "Specialty & Other",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Lingualeo",
+    "category": "Products & Tools",
+    "region": "global",
+    "network": "Admitad",
+    "url": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/?erid=5jtCeReLm1S3Xx3LfA8SFZ6",
+    "tier": 3,
+    "logo": "",
+    "category_key": "products_tools"
+  },
+  {
+    "name": "Читай-город",
+    "category": "Specialty & Other",
+    "region": "ru",
+    "network": "Admitad",
+    "url": "https://kjuzv.com/g/q6gfnfvsq0ad273170bca804937a48/?erid=MvGzQC98w3Z1gMq1kx5ACoy5",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Буквоед",
+    "category": "Specialty & Other",
+    "region": "ru",
+    "network": "Admitad",
+    "url": "https://heqgr.com/g/531a4560a6ad273170bc27ad1bb5fb/?erid=5jtCeReLm1S3Xx3LfAELCUa",
+    "tier": 3,
+    "logo": "",
+    "category_key": "specialty_other"
+  },
+  {
+    "name": "Miravia ES",
+    "category": "Marketplace",
+    "region": "es",
+    "network": "Admitad",
+    "url": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/",
+    "tier": 2,
+    "logo": "",
+    "category_key": "marketplace"
   }
 ];
 
@@ -1712,16 +2808,28 @@
       global: { lang: "en", label: "Global" },
       us: { lang: "en", label: "United States" },
       ca: { lang: "en", label: "Canada" },
+      au: { lang: "en", label: "Australia" },
       gb: { lang: "en", label: "United Kingdom" },
       uk: { lang: "en", label: "United Kingdom" },
       pl: { lang: "pl", label: "Polska" },
       br: { lang: "pt-BR", label: "Brasil" },
-      mx: { lang: "es", label: "México / LatAm" },
+      pt: { lang: "pt", label: "Portugal" },
+      mx: { lang: "es", label: "México" },
+      ar: { lang: "es", label: "Argentina" },
+      co: { lang: "es", label: "Colombia" },
+      pe: { lang: "es", label: "Perú" },
+      cl: { lang: "es", label: "Chile" },
       latam: { lang: "es", label: "LatAm" },
       es: { lang: "es", label: "España" },
       de: { lang: "de", label: "Deutschland" },
       fr: { lang: "fr", label: "France" },
-      it: { lang: "it", label: "Italia" }
+      it: { lang: "it", label: "Italia" },
+      ru: { lang: "ru", label: "Россия" },
+      cn: { lang: "zh-CN", label: "中国" },
+      zh: { lang: "zh-CN", label: "中国" },
+      tw: { lang: "zh-TW", label: "台灣" },
+      jp: { lang: "ja", label: "日本" },
+      kr: { lang: "ko", label: "한국" }
     };
 
     const I18N = {
@@ -1854,8 +2962,51 @@
     const directoryMenu = document.getElementById("directoryMenu");
     const partnersRail = document.getElementById("partnersRail");
     const feedContainer = document.getElementById("feedContainer");
-    const brandGrid = document.getElementById("brandGrid");
+    const magnetoColumn = document.getElementById("magnetoColumn");
+    let loadingMoreFeedItems = false;
+    const FEED_PAGE_SIZE = 3;
+    let feedSourceItems = [];
+    let feedNextIndex = 0;
+
+    function getNextFeedBatch() {
+      if (!feedSourceItems.length) return [];
+
+      const batch = [];
+      for (let i = 0; i < FEED_PAGE_SIZE; i += 1) {
+        const sourceItem = feedSourceItems[feedNextIndex % feedSourceItems.length];
+        batch.push(sourceItem);
+        feedNextIndex += 1;
+      }
+
+      return batch;
+    }
+    const brandGrid = document.getElementById("partnerChips");
     const partnerSearch = document.getElementById("partnerSearch");
+    let ACTIVE_REGION = null;
+
+    function normalizeRegion(value) {
+      const raw = String(value || "").trim().toLowerCase();
+      if (!raw) return "";
+
+      const aliases = {
+        usa: "us", unitedstates: "us", "united-states": "us",
+        uk: "gb", "united-kingdom": "gb",
+        poland: "pl", polska: "pl",
+        brazil: "br", brasil: "br",
+        "pt-br": "br",
+        mexico: "mx", méxico: "mx",
+        china: "cn", japan: "jp", korea: "kr", "south-korea": "kr"
+      };
+
+      return aliases[raw] || raw.split("-").pop();
+    }
+
+    function setActiveRegion(value) {
+      const normalized = normalizeRegion(value);
+      ACTIVE_REGION = REGION_CONFIG[normalized] ? normalized : (normalized || "us");
+      document.documentElement.dataset.region = ACTIVE_REGION;
+      return ACTIVE_REGION;
+    }
 
     function detectRegionFromLocale() {
       const locale = (navigator.languages && navigator.languages[0]) || navigator.language || "";
@@ -1870,10 +3021,19 @@
       if (lang.startsWith("de")) return "de";
       if (lang.startsWith("fr")) return "fr";
       if (lang.startsWith("it")) return "it";
+      if (lang.startsWith("ru")) return "ru";
+      if (lang.startsWith("zh")) return lang.includes("tw") || lang.includes("hk") || lang.includes("mo") ? "tw" : "cn";
+      if (lang.startsWith("ja")) return "jp";
+      if (lang.startsWith("ko")) return "kr";
 
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
       if (tz.includes("Sao_Paulo")) return "br";
       if (tz.includes("Warsaw")) return "pl";
+      if (tz.includes("Moscow")) return "ru";
+      if (tz.includes("Shanghai") || tz.includes("Beijing") || tz.includes("Chongqing") || tz.includes("Harbin")) return "cn";
+      if (tz.includes("Taipei")) return "tw";
+      if (tz.includes("Tokyo")) return "jp";
+      if (tz.includes("Seoul")) return "kr";
       if (tz.includes("Mexico") || tz.includes("Bogota") || tz.includes("Lima") || tz.includes("Buenos_Aires") || tz.includes("Santiago")) return "latam";
 
       return "us";
@@ -1881,8 +3041,24 @@
 
     function getRegion() {
       const params = new URLSearchParams(window.location.search);
-      const raw = (params.get("region") || "").toLowerCase();
+      const raw = normalizeRegion(params.get("region"));
       if (raw && REGION_CONFIG[raw]) return raw;
+
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes("/pl")) return "pl";
+      if (path.includes("/pt-br") || path.includes("/br")) return "br";
+      if (path.includes("/ru")) return "ru";
+      if (path.includes("/zh-cn") || path.includes("/cn")) return "cn";
+      if (path.includes("/zh-tw") || path.includes("/tw")) return "tw";
+      if (path.includes("/es")) return "es";
+      if (path.includes("/fr")) return "fr";
+      if (path.includes("/de")) return "de";
+      if (path.includes("/it")) return "it";
+      if (path.includes("/ja") || path.includes("/jp")) return "jp";
+      if (path.includes("/ko") || path.includes("/kr")) return "kr";
+
+      if (ACTIVE_REGION && REGION_CONFIG[ACTIVE_REGION]) return ACTIVE_REGION;
+
       const detected = detectRegionFromLocale();
       return REGION_CONFIG[detected] ? detected : "us";
     }
@@ -1938,53 +3114,86 @@
     function allowedPartnerRegions() {
       const region = getRegion();
 
+      // Column 1 / left rail rule:
+      // - US homepage keeps the broad structure: global + US.
+      // - Localized markets get their exact local partners + global fallback only.
+      // - Never leak unrelated country tags, e.g. US offers on ?region=pl.
       const map = {
-        us: ["global", "us", "ca", "gb", "uk", "eu", "latam", "mx"],
-        ca: ["global", "ca", "us", "gb", "uk"],
-        gb: ["global", "gb", "uk", "eu"],
-        uk: ["global", "gb", "uk", "eu"],
+        us: ["global", "us"],
+        ca: ["global", "ca"],
+        au: ["global", "au"],
+        gb: ["global", "gb", "uk"],
+        uk: ["global", "gb", "uk"],
         br: ["global", "br"],
-        pl: ["global", "pl", "eu"],
-        latam: ["global", "latam", "mx"],
+        pt: ["global", "pt"],
+        pl: ["global", "pl"],
+        latam: ["global", "latam"],
         mx: ["global", "mx", "latam"],
-        es: ["global", "es", "eu"],
-        de: ["global", "de", "eu"],
-        fr: ["global", "fr", "eu"],
-        it: ["global", "it", "eu"]
+        ar: ["global", "ar", "latam"],
+        co: ["global", "co", "latam"],
+        pe: ["global", "pe", "latam"],
+        cl: ["global", "cl", "latam"],
+        es: ["global", "es"],
+        de: ["global", "de"],
+        fr: ["global", "fr"],
+        it: ["global", "it"],
+        ru: ["global", "ru"],
+        cn: ["global", "cn", "zh"],
+        zh: ["global", "cn", "zh"],
+        tw: ["global", "tw", "zh"],
+        jp: ["global", "jp", "ja"],
+        ja: ["global", "jp", "ja"],
+        kr: ["global", "kr", "ko"],
+        ko: ["global", "kr", "ko"]
       };
 
       return map[region] || ["global", region];
     }
 
-    function isBrazilOnlyPartner(partner) {
-      const region = String(partner.region || "").toLowerCase();
-      const name = String(partner.name || "").toLowerCase();
-      return region === "br" || /\bbr\b|brazil|brasil/.test(name);
-    }
+    function strictRegionalPartnerRegions() {
+      const region = getRegion();
 
-    function isPolandOnlyPartner(partner) {
-      const region = String(partner.region || "").toLowerCase();
-      const name = String(partner.name || "").toLowerCase();
-      return region === "pl" || /\bpl\b|poland|polska/.test(name);
+      // Header and right-side partner grid must be truly local.
+      // For example ?region=pl should show only partners tagged "pl".
+      // Global/US/EU/LatAm offers are kept out of these areas.
+      const aliases = {
+        uk: ["uk", "gb"],
+        gb: ["gb", "uk"],
+        cn: ["cn", "zh"],
+        zh: ["cn", "zh"],
+        jp: ["jp", "ja"],
+        ja: ["jp", "ja"],
+        kr: ["kr", "ko"],
+        ko: ["kr", "ko"]
+      };
+
+      return aliases[region] || [region];
     }
 
     function isPartnerAllowedForRegion(partner) {
-      const currentRegion = getRegion();
-      const partnerRegion = String(partner.region || "global").toLowerCase();
-      const partnerName = String(partner.name || "").toLowerCase();
-
-      if (currentRegion === "us" && (isBrazilOnlyPartner(partner) || isPolandOnlyPartner(partner))) return false;
-      if (currentRegion === "us" && (partnerRegion === "us" || /\busa?\b/.test(partnerName))) return true;
-
+      const partnerRegion = normalizeRegion(partner.region || "global") || "global";
       return allowedPartnerRegions().includes(partnerRegion);
     }
 
+    function isPartnerStrictlyRegional(partner) {
+      const partnerRegion = normalizeRegion(partner.region || "") || "global";
+      return strictRegionalPartnerRegions().includes(partnerRegion);
+    }
+
     function visiblePartners() {
-      return partnersData.filter(p => p.status !== "hold" && isPartnerAllowedForRegion(p));
+      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerAllowedForRegion(p));
+    }
+
+    function visibleRegionalPartners() {
+      return partnersData.filter(p => p.status !== "hold" && p.status !== "disabled" && p.name !== "Radical Storage" && isPartnerStrictlyRegional(p));
     }
 
     function visibleTopTravelPartners() {
       return visiblePartners().filter(p => TOP_TRAVEL_CATEGORIES.includes(p.category));
+    }
+
+    function visibleTopRegionalTravelPartners() {
+      return visibleRegionalPartners().filter(p => TOP_TRAVEL_CATEGORIES.includes(p.category));
     }
 
     function visibleNonTransferredPartners() {
@@ -1993,6 +3202,10 @@
 
     function partnersForCategory(category) {
       return visiblePartners().filter(p => p.category === category);
+    }
+
+    function regionalPartnersForCategory(category) {
+      return visibleRegionalPartners().filter(p => p.category === category);
     }
 
     function trackClick() {
@@ -2072,11 +3285,31 @@
       });
     }
 
+    function headerPreferredRegions() {
+      return strictRegionalPartnerRegions();
+    }
+
+    function isDefaultUSRegion() {
+      return getRegion() === "us";
+    }
+
+    function directoryPartnersForCategory(category) {
+      // US homepage keeps the broad marketplace structure: US + global partners.
+      // Localized markets use exact local partner tags only.
+      const source = isDefaultUSRegion() ? partnersForCategory(category) : regionalPartnersForCategory(category);
+      return source
+        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
+        .slice()
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
+    }
+
     function buildTravelDirectory() {
       travelDirectory.innerHTML = "";
 
       TOP_TRAVEL_CATEGORIES.forEach(cat => {
-        const partners = partnersForCategory(cat);
+        const partners = directoryPartnersForCategory(cat);
+        if (!partners.length) return;
+
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "directory-item has-menu";
@@ -2090,9 +3323,7 @@
       document.querySelectorAll(".directory-item").forEach(el => el.classList.remove("active"));
       if (activeButton) activeButton.classList.add("active");
 
-      const partners = partnersForCategory(category)
-        .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
+      const partners = directoryPartnersForCategory(category);
 
       directoryMenu.innerHTML = `
         <div class="directory-menu-title">${escapeHtml(labelForCategory(category))}</div>
@@ -2133,11 +3364,50 @@
       }
     });
 
+    function categoryKeyForPartner(partner) {
+      if (partner.category_key) return partner.category_key;
+      const map = {
+        "Flights & Meta Search": "flights",
+        "Hotels": "hotels",
+        "Hotels & Accommodation": "hotels",
+        "Car Rentals": "car_rentals",
+        "Transfers & Transport": "transfers",
+        "Tours & Activities": "tours",
+        "SIM & Connectivity": "sim",
+        "Insurance & Claims": "insurance",
+        "Storage & Services": "travel_services",
+        "Travel Services": "travel_services",
+        "Marketplace": "marketplace",
+        "Products & Tools": "products_tools",
+        "Finance": "finance",
+        "Specialty & Other": "specialty_other"
+      };
+      return map[partner.category] || String(partner.category || "other").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+    }
+
+    function categoryLabelForKey(categoryKey) {
+      const labels = {
+        flights: "Flights & Meta Search",
+        hotels: "Hotels",
+        car_rentals: "Car Rentals",
+        transfers: "Transfers & Transport",
+        tours: "Tours & Activities",
+        sim: "SIM & Connectivity",
+        insurance: "Insurance & Claims",
+        travel_services: "Travel Services",
+        marketplace: "Marketplace",
+        products_tools: "Products & Tools",
+        finance: "Finance",
+        specialty_other: "Specialty & Other"
+      };
+      return labelForCategory(labels[categoryKey] || categoryKey);
+    }
+
     function groupByCategory(items) {
       return items.reduce((groups, item) => {
-        const category = item.category || "Other";
-        if (!groups[category]) groups[category] = [];
-        groups[category].push(item);
+        const categoryKey = categoryKeyForPartner(item);
+        if (!groups[categoryKey]) groups[categoryKey] = [];
+        groups[categoryKey].push(item);
         return groups;
       }, {});
     }
@@ -2151,41 +3421,72 @@
           return !query || text.includes(query);
         })
         .sort((a, b) =>
-          String(a.category || "").localeCompare(String(b.category || "")) ||
+          categoryKeyForPartner(a).localeCompare(categoryKeyForPartner(b)) ||
           (a.tier || 99) - (b.tier || 99) ||
           a.name.localeCompare(b.name)
         );
     }
 
     function renderPartnersRail() {
+      partnersRail.querySelectorAll(".partners-empty").forEach(el => el.remove());
+      const groups = document.querySelectorAll(".c1-group");
       const items = filteredColumn1Partners();
 
+      groups.forEach(g => {
+        const body = g.querySelector(".c1-body");
+        if (body) body.innerHTML = "";
+      });
+
       if (!items.length) {
-        partnersRail.innerHTML = `<div class="partners-empty">${escapeHtml(t().noExtraPartners || "No extra partners available for your region right now.")}</div>`;
+        groups.forEach(g => { g.style.display = "none"; });
+        partnersRail.insertAdjacentHTML("beforeend", `<div class="partners-empty">${escapeHtml(t().noExtraPartners || "No extra partners available for your region right now.")}</div>`);
         return;
       }
 
-      const grouped = groupByCategory(items);
+      const seen = new Set();
 
-      partnersRail.innerHTML = Object.keys(grouped).sort().map((category, index) => `
-        <div class="category">
-          <details ${index === 0 ? "open" : ""}>
-            <summary>${escapeHtml(labelForCategory(category))} (${grouped[category].length})</summary>
-            <ul>
-              ${grouped[category].map(p => `
-                <li>
-                  <a href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(p.name)}
-                    <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
-                  </a>
-                </li>
-              `).join("")}
-            </ul>
-          </details>
-        </div>
-      `).join("");
+      items.forEach(p => {
+        const categoryKey = categoryKeyForPartner(p);
+        const group = document.querySelector(`.c1-group[data-cat='${categoryKey}']`);
+        if (!group) return;
 
-      partnersRail.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
+        const dedupeKey = `${p.name}|${categoryKey}`.toLowerCase();
+        if (seen.has(dedupeKey)) return;
+        seen.add(dedupeKey);
+
+        const body = group.querySelector(".c1-body");
+        const item = document.createElement("div");
+        item.className = "c1-partner";
+        item.innerHTML = `${escapeHtml(p.name)}<span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>`;
+        item.onclick = () => {
+          trackClick();
+          window.location.href = p.url;
+        };
+        body.appendChild(item);
+      });
+
+      groups.forEach(g => {
+        const body = g.querySelector(".c1-body");
+        g.style.display = body && body.children.length ? "block" : "none";
+      });
+    }
+
+    function initColumn1Accordion() {
+      document.querySelectorAll(".c1-header").forEach(header => {
+        header.addEventListener("click", () => {
+          const body = header.nextElementSibling;
+
+          document.querySelectorAll(".c1-body").forEach(b => {
+            if (b !== body) b.classList.remove("open");
+          });
+          document.querySelectorAll(".c1-header").forEach(h => {
+            if (h !== header) h.classList.remove("open");
+          });
+
+          body.classList.toggle("open");
+          header.classList.toggle("open", body.classList.contains("open"));
+        });
+      });
     }
 
     function formatDate(dateString) {
@@ -2329,20 +3630,8 @@
       `;
     }
 
-    async function renderFeed() {
-      let items = [];
-
-      try {
-        items = await loadHeroFeedItems();
-      } catch (error) {
-        items = fallbackHeroFeedItems || [];
-      }
-
-      if (!items || !items.length) {
-        items = fallbackHeroFeedItems || [];
-      }
-
-      feedContainer.innerHTML = items.map((item, index) => `
+    function renderFeedCard(item, index = 1) {
+      return `
         <a class="feed-card ${index === 0 ? "featured-video" : ""}"
            href="${escapeHtml(item.url)}"
            target="_blank"
@@ -2361,27 +3650,80 @@
             <span class="feed-link">${escapeHtml(t().videoCta || "Watch / open source →")}</span>
           </div>
         </a>
-      `).join("");
+      `;
+    }
 
-      feedContainer.querySelectorAll("a.feed-card").forEach(a => {
+    function attachFeedTracking(scope = feedContainer) {
+      scope.querySelectorAll("a.feed-card").forEach(a => {
+        a.removeEventListener("click", trackClick);
         a.addEventListener("click", trackClick);
       });
     }
 
+    async function loadMoreFeedItems() {
+      if (loadingMoreFeedItems) return;
+
+      loadingMoreFeedItems = true;
+
+      try {
+        if (!feedSourceItems.length) {
+          feedSourceItems = await loadHeroFeedItems();
+          feedNextIndex = 0;
+        }
+
+        const moreItems = getNextFeedBatch();
+        if (!moreItems.length) return;
+
+        const startIndex = feedContainer.children.length;
+        feedContainer.insertAdjacentHTML(
+          "beforeend",
+          moreItems.map((item, index) => renderFeedCard(item, startIndex + index)).join("")
+        );
+        attachFeedTracking();
+      } catch (error) {
+        console.error("loadMoreFeedItems failed", error);
+      } finally {
+        loadingMoreFeedItems = false;
+      }
+    }
+
+    function initializeFeedInfiniteScroll() {
+      if (!magnetoColumn || magnetoColumn.dataset.infiniteScrollReady === "true") return;
+      magnetoColumn.dataset.infiniteScrollReady = "true";
+
+      magnetoColumn.addEventListener("scroll", () => {
+        const nearBottom = magnetoColumn.scrollTop + magnetoColumn.clientHeight >= magnetoColumn.scrollHeight - 200;
+
+        if (nearBottom) {
+          loadMoreFeedItems();
+        }
+      }, { passive: true });
+    }
+
+    async function renderFeed() {
+      let items = [];
+
+      try {
+        items = await loadHeroFeedItems();
+      } catch (error) {
+        items = fallbackHeroFeedItems || [];
+      }
+
+      if (!items || !items.length) {
+        items = fallbackHeroFeedItems || [];
+      }
+
+      feedSourceItems = items.slice();
+      feedNextIndex = 0;
+
+      const firstBatch = getNextFeedBatch();
+      feedContainer.innerHTML = firstBatch.map((item, index) => renderFeedCard(item, index)).join("");
+      attachFeedTracking();
+      initializeFeedInfiniteScroll();
+    }
+
     function renderBrandGrid() {
-      const top = visibleTopTravelPartners()
-        .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name))
-        .slice(0, 10);
-
-      brandGrid.innerHTML = top.map(p => `
-        <a class="brand-tile" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">
-          <span class="brand-fallback">${escapeHtml(p.name.slice(0, 2))}</span>
-          <span>${escapeHtml(p.name)}</span>
-        </a>
-      `).join("");
-
-      brandGrid.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
+      renderColumn3(ACTIVE_PARTNERS && ACTIVE_PARTNERS.length ? ACTIVE_PARTNERS : baseAvailablePartners());
     }
 
 
@@ -2433,6 +3775,16 @@
     }
 
     partnerSearch.addEventListener("input", renderPartnersRail);
+
+
+    const HEADER_CATEGORY_KEYS = new Set([
+      "flights",
+      "hotels",
+      "transfers",
+      "car_rentals",
+      "sim",
+      "tours"
+    ]);
 
     const CATEGORY_I18N_KEYS = {
       "All": "all",
@@ -2748,37 +4100,71 @@
     let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
 
     async function detectUserLanguage() {
-      const params = new URLSearchParams(window.location.search);
-      const requested = params.get("lang");
-      let lang = requested || navigator.language || navigator.userLanguage || "en";
-      const full = String(lang).toLowerCase();
-      if (["zh-tw", "zh-hk", "zh-mo"].includes(full)) return "zh-TW";
-      if (["zh-cn", "zh-sg"].includes(full) || full === "zh") return "zh-CN";
-      lang = full.split("-")[0];
-      const supported = ["en","es","pt","fr","de","it","pl","ja","ko","ru"];
-      return supported.includes(lang) ? lang : "en";
+      const region = await detectUserRegion();
+      const map = {
+        br: "pt-BR",
+        pt: "pt",
+        pl: "pl",
+        mx: "es",
+        ar: "es",
+        es: "es",
+        latam: "es",
+        us: "en",
+        ca: "en",
+        gb: "en",
+        uk: "en",
+        au: "en",
+        de: "de",
+        fr: "fr",
+        it: "it",
+        jp: "ja",
+        kr: "ko",
+        cn: "zh-CN",
+        zh: "zh-CN",
+        tw: "zh-TW",
+        ru: "ru"
+      };
+      return map[region] || "en";
     }
 
     async function detectUserRegion() {
-      const params = new URLSearchParams(window.location.search);
-      const regionParam = params.get("region");
-      if (regionParam) return regionParam.toLowerCase();
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const data = await res.json();
-        return String(data.country_code || getRegion() || "us").toLowerCase();
-      } catch {
-        return getRegion() || "us";
-      }
+      const urlParam = new URLSearchParams(window.location.search).get("region");
+      if (urlParam) return setActiveRegion(urlParam.toLowerCase());
+
+      const pathRegion = getRegion();
+      const path = window.location.pathname.toLowerCase();
+      if (path !== "/" && pathRegion) return setActiveRegion(pathRegion);
+
+      const lang = (navigator.language || "").toLowerCase();
+      if (lang.startsWith("pt")) return setActiveRegion("br");
+      if (lang.startsWith("pl")) return setActiveRegion("pl");
+      if (lang.startsWith("es")) return setActiveRegion("mx");
+      if (lang.startsWith("ja")) return setActiveRegion("jp");
+      if (lang.startsWith("de")) return setActiveRegion("de");
+      if (lang.startsWith("fr")) return setActiveRegion("fr");
+      if (lang.startsWith("it")) return setActiveRegion("it");
+      if (lang.startsWith("ko")) return setActiveRegion("kr");
+      if (lang.startsWith("zh-tw")) return setActiveRegion("tw");
+      if (lang.startsWith("zh")) return setActiveRegion("cn");
+
+      return setActiveRegion("us");
     }
 
     async function loadLanguage(lang) {
-      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS.en;
-      try {
-        const res = await fetch(`/i18n/${lang}.json`, { cache: "no-store" });
-        if (res.ok) translations = { ...translations, ...(await res.json()) };
-      } catch (e) {
-        console.info("Using built-in translations for", lang);
+      const builtInKey = lang === "pt-BR" ? "pt" : lang;
+      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
+      const externalCandidates = lang === builtInKey ? [lang] : [lang, builtInKey];
+
+      for (const candidate of externalCandidates) {
+        try {
+          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
+          if (res.ok) {
+            translations = { ...translations, ...(await res.json()) };
+            break;
+          }
+        } catch (e) {
+          console.info("Using built-in translations for", candidate);
+        }
       }
 
       ACTIVE_TRANSLATIONS = { ...BUILT_IN_TRANSLATIONS.en, ...translations };
@@ -2796,6 +4182,12 @@
       document.documentElement.lang = lang;
     }
 
+    async function initI18n(lang) {
+      document.documentElement.setAttribute("data-i18n-ready", "0");
+      await loadLanguage(lang);
+      document.documentElement.setAttribute("data-i18n-ready", "1");
+    }
+
     function translateKey(key, fallback = "") {
       return ACTIVE_TRANSLATIONS[key] || fallback || key;
     }
@@ -2805,26 +4197,438 @@
       return translateKey(key, category);
     }
 
-    async function initializeInternationalization() {
-      const lang = await detectUserLanguage();
-      await detectUserRegion();
-      await loadLanguage(lang);
 
+    const SEO_PROFILES = {
+      en: {
+        title: "Cheap Flights, Hotels & Travel Deals Worldwide | SignalBoost",
+        description: "Find cheap flights, hotels, eSIM, car rentals, tours, transfers and travel deals worldwide with SignalBoost.",
+        h1: "Cheap flights, hotels and travel deals worldwide",
+        text: "Compare travel services, flights, hotels, eSIM, tours, transfers and partner offers in one place.",
+        path: "/"
+      },
+      pl: {
+        title: "Tanie loty i hotele w Polsce | SignalBoost",
+        description: "Znajdź tanie loty, hotele, transfery, eSIM i oferty podróży w Polsce z SignalBoost.",
+        h1: "Tanie loty i hotele w Polsce",
+        text: "Porównuj oferty lotów, hoteli, transferów, kart eSIM i usług podróżnych dla Polski.",
+        path: "/pl/"
+      },
+      br: {
+        title: "Passagens baratas e hotéis no Brasil | SignalBoost",
+        description: "Encontre passagens baratas, hotéis, eSIM, traslados e ofertas de viagem no Brasil com SignalBoost.",
+        h1: "Passagens baratas e hotéis no Brasil",
+        text: "Compare ofertas de voos, hotéis, eSIM, traslados e serviços de viagem para o Brasil.",
+        path: "/pt-br/"
+      },
+      latam: {
+        title: "Vuelos baratos y hoteles en Latinoamérica | SignalBoost",
+        description: "Encuentra vuelos baratos, hoteles, eSIM, traslados y ofertas de viaje para Latinoamérica.",
+        h1: "Vuelos baratos y hoteles en Latinoamérica",
+        text: "Compara vuelos, hoteles, eSIM, traslados y servicios de viaje para Latinoamérica.",
+        path: "/es/"
+      },
+      mx: {
+        title: "Vuelos baratos y hoteles en México | SignalBoost",
+        description: "Encuentra vuelos baratos, hoteles y ofertas de viaje en México.",
+        h1: "Vuelos baratos y hoteles en México",
+        text: "Compara ofertas de viaje, vuelos, hoteles y servicios para México.",
+        path: "/es/"
+      },
+      es: {
+        title: "Vuelos baratos y hoteles | SignalBoost",
+        description: "Encuentra vuelos baratos, hoteles y ofertas de viaje.",
+        h1: "Vuelos baratos y hoteles",
+        text: "Compara vuelos, hoteles, eSIM, traslados y servicios de viaje.",
+        path: "/es/"
+      },
+      ru: {
+        title: "Дешевые авиабилеты и отели | SignalBoost",
+        description: "Находите дешевые авиабилеты, отели, eSIM, трансферы и туристические предложения с SignalBoost.",
+        h1: "Дешевые авиабилеты и отели",
+        text: "Сравнивайте авиабилеты, отели, eSIM, трансферы и туристические сервисы в одном месте.",
+        path: "/ru/"
+      },
+      cn: {
+        title: "便宜机票和酒店 | SignalBoost",
+        description: "使用 SignalBoost 查找便宜机票、酒店、eSIM、接送、旅游活动和旅行优惠。",
+        h1: "便宜机票和酒店",
+        text: "在一个地方比较机票、酒店、eSIM、接送和旅行服务优惠。",
+        path: "/zh-cn/"
+      },
+      zh: {
+        title: "便宜机票和酒店 | SignalBoost",
+        description: "使用 SignalBoost 查找便宜机票、酒店和旅行优惠。",
+        h1: "便宜机票和酒店",
+        text: "比较机票、酒店、eSIM、接送和旅行服务。",
+        path: "/zh-cn/"
+      },
+      tw: {
+        title: "便宜機票和飯店 | SignalBoost",
+        description: "使用 SignalBoost 尋找便宜機票、飯店、eSIM、接送和旅遊優惠。",
+        h1: "便宜機票和飯店",
+        text: "在一個地方比較機票、飯店、eSIM、接送和旅遊服務優惠。",
+        path: "/zh-tw/"
+      },
+      de: {
+        title: "Günstige Flüge und Hotels | SignalBoost",
+        description: "Finden Sie günstige Flüge, Hotels, eSIM, Transfers und Reiseangebote.",
+        h1: "Günstige Flüge und Hotels",
+        text: "Vergleichen Sie Flüge, Hotels, eSIM, Transfers und Reisedienste.",
+        path: "/de/"
+      },
+      fr: {
+        title: "Vols et hôtels pas chers | SignalBoost",
+        description: "Trouvez des vols, hôtels, eSIM, transferts et offres de voyage.",
+        h1: "Vols et hôtels pas chers",
+        text: "Comparez les vols, hôtels, eSIM, transferts et services de voyage.",
+        path: "/fr/"
+      },
+      it: {
+        title: "Voli e hotel economici | SignalBoost",
+        description: "Trova voli, hotel, eSIM, trasferimenti e offerte di viaggio.",
+        h1: "Voli e hotel economici",
+        text: "Confronta voli, hotel, eSIM, trasferimenti e servizi di viaggio.",
+        path: "/it/"
+      },
+      jp: {
+        title: "格安航空券とホテル | SignalBoost",
+        description: "SignalBoostで格安航空券、ホテル、eSIM、送迎、旅行サービスを探しましょう。",
+        h1: "格安航空券とホテル",
+        text: "航空券、ホテル、eSIM、送迎、旅行サービスを一か所で比較できます。",
+        path: "/ja/"
+      },
+      kr: {
+        title: "저렴한 항공권과 호텔 | SignalBoost",
+        description: "SignalBoost에서 항공권, 호텔, eSIM, 교통편 및 여행 혜택을 찾아보세요.",
+        h1: "저렴한 항공권과 호텔",
+        text: "항공권, 호텔, eSIM, 교통편 및 여행 서비스를 한곳에서 비교하세요.",
+        path: "/ko/"
+      }
+    };
+
+    function applyInternationalSeo() {
+      const region = getRegion();
+      const profile = SEO_PROFILES[region] || SEO_PROFILES[getLang()] || SEO_PROFILES.en;
+      const baseUrl = window.location.origin || "";
+
+      const titleEl = document.getElementById("pageTitle") || document.querySelector("title");
+      if (titleEl) titleEl.textContent = profile.title;
+      document.title = profile.title;
+
+      const descEl = document.getElementById("seoDescription") || document.querySelector('meta[name="description"]');
+      if (descEl) descEl.setAttribute("content", profile.description);
+
+      const canonical = document.getElementById("canonicalLink") || document.querySelector('link[rel="canonical"]');
+      if (canonical) canonical.setAttribute("href", baseUrl + profile.path);
+
+      const seoH1 = document.getElementById("seoH1");
+      if (seoH1) seoH1.textContent = profile.h1;
+      const seoText = document.getElementById("seoText");
+      if (seoText) seoText.textContent = profile.text;
+
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute("content", profile.title);
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      if (ogDescription) ogDescription.setAttribute("content", profile.description);
+    }
+
+    function showDebug(region, lang) {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("debug")) return;
+      const box = document.getElementById("sb-debug");
+      if (!box) return;
+      box.innerHTML = `<strong>Region:</strong> ${escapeHtml(region)}<br><strong>Language:</strong> ${escapeHtml(lang)}`;
+      box.style.display = "block";
+      console.log("Detected region:", region);
+      console.log("Detected language:", lang);
+    }
+
+    async function initializeInternationalization() {
+      const region = await detectUserRegion();
+      const lang = await detectUserLanguage();
+      await loadLanguage(lang);
+      showDebug(region, lang);
+
+      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
+      try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
       try { applyI18N(); } catch (e) { console.error("applyI18N external i18n refresh failed", e); }
       try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory i18n refresh failed", e); }
-      try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
+      initColumn1Accordion();
+    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
       try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid i18n refresh failed", e); }
       try { setFeatured(); } catch (e) { console.error("setFeatured i18n refresh failed", e); }
     }
 
-    try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
-    try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory failed", e); }
-    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail failed", e); }
-    try { renderFeed(); } catch (e) { console.error("renderFeed failed", e); }
-    try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid failed", e); }
-    try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
+    /* ---------------------------------------------------------
+       REGION-FIRST PARTNER ENGINE + FINAL BOOTSTRAP
+       This block intentionally overrides the older mixed fallback renderers above.
+       Rule: if a region has partners, show ONLY that region. If it has none,
+       show global partners.
+    --------------------------------------------------------- */
 
-    document.addEventListener("DOMContentLoaded", initializeInternationalization);
+    let ACTIVE_PARTNERS = [];
+
+    function baseAvailablePartners() {
+      const source = Array.isArray(partnersData) ? partnersData : [];
+      return source.map(p => ({
+        ...p,
+        category_key: p.category_key || categoryKeyForPartner(p)
+      }));
+    }
+
+    function partnerRegionMatches(partner, region) {
+      return normalizeRegion(partner.region || "global") === normalizeRegion(region || "us");
+    }
+
+    function usablePartner(partner) {
+      return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
+    }
+
+    async function loadPartners(region, allPartners) {
+      const normalizedRegion = normalizeRegion(region || "global") || "global";
+
+      // Step 1: backend is source of truth. Prefer /partners?region=...
+      try {
+        const res = await fetch(`/partners?region=${encodeURIComponent(normalizedRegion)}`, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length) {
+            return data
+              .map(p => ({
+                ...p,
+                category_key: p.category_key || categoryKeyForPartner(p)
+              }))
+              .filter(usablePartner);
+          }
+        }
+      } catch (e) {
+        console.warn("/partners route unavailable; using embedded partnersData fallback", e);
+      }
+
+      // Safe fallback: keep the old baseline behavior if backend is unavailable.
+      const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
+      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
+
+      if (regional.length > 0) return regional;
+      return all.filter(p => partnerRegionMatches(p, "global"));
+    }
+
+    function categoryKeySafe(partner) {
+      return partner.category_key || categoryKeyForPartner(partner);
+    }
+
+    function partnersFilteredBySearch(partners) {
+      const input = document.getElementById("partnerSearch");
+      const query = input ? input.value.trim().toLowerCase() : "";
+      if (!query) return partners;
+
+      return partners.filter(p => {
+        const haystack = [p.name, p.category, p.category_key, p.region, p.network, p.highlight, p.notes]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(query);
+      });
+    }
+
+    function renderColumn1(partners) {
+      const rail = document.getElementById("partnersRail");
+      const groups = document.querySelectorAll(".c1-group");
+
+      // Column 1 baseline: ONLY these non-travel categories.
+      // Travel categories stay in the top header navigation.
+      const COLUMN1_CATEGORY_KEYS = [
+        "marketplace",
+        "products_tools",
+        "finance",
+        "insurance"
+      ];
+      const column1Set = new Set(COLUMN1_CATEGORY_KEYS);
+
+      // Column 1 should show global + regional non-travel partners.
+      // This keeps useful global offers visible without duplicating travel header categories.
+      const region = getRegion();
+      const source = baseAvailablePartners()
+        .filter(usablePartner)
+        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
+        .filter(p => column1Set.has(categoryKeySafe(p)));
+
+      const items = partnersFilteredBySearch(source);
+
+      if (rail) rail.querySelectorAll(".partners-empty").forEach(el => el.remove());
+
+      // Reset every group and force the sidebar to the collapsed baseline state.
+      groups.forEach(group => {
+        const cat = group.getAttribute("data-cat");
+        const body = group.querySelector(".c1-body");
+        const header = group.querySelector(".c1-header");
+
+        if (body) {
+          body.innerHTML = "";
+          body.classList.remove("open");
+        }
+        if (header) header.classList.remove("open", "active");
+
+        group.style.display = column1Set.has(cat) ? "block" : "none";
+      });
+
+      const seen = new Set();
+
+      items
+        .slice()
+        .sort((a, b) =>
+          COLUMN1_CATEGORY_KEYS.indexOf(categoryKeySafe(a)) - COLUMN1_CATEGORY_KEYS.indexOf(categoryKeySafe(b)) ||
+          (a.tier || 99) - (b.tier || 99) ||
+          String(a.name || "").localeCompare(String(b.name || ""))
+        )
+        .forEach(p => {
+          const categoryKey = categoryKeySafe(p);
+          const group = document.querySelector(`.c1-group[data-cat="${CSS.escape(categoryKey)}"]`);
+          if (!group) return;
+
+          const dedupeKey = `${p.name}|${categoryKey}|${p.url}`.toLowerCase();
+          if (seen.has(dedupeKey)) return;
+          seen.add(dedupeKey);
+
+          const body = group.querySelector(".c1-body");
+          if (!body) return;
+
+          const item = document.createElement("div");
+          item.className = "c1-partner";
+          item.innerHTML = `
+            ${escapeHtml(p.name || "Partner")}
+            <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
+          `;
+          item.addEventListener("click", () => {
+            trackClick();
+            window.location.href = p.url;
+          });
+          body.appendChild(item);
+        });
+
+      let visibleCount = 0;
+      groups.forEach(group => {
+        const cat = group.getAttribute("data-cat");
+        const body = group.querySelector(".c1-body");
+        const hasItems = Boolean(body && body.children.length);
+
+        group.style.display = column1Set.has(cat) && hasItems ? "block" : "none";
+        if (column1Set.has(cat) && hasItems) visibleCount += 1;
+      });
+
+      if (!visibleCount && rail) {
+        rail.insertAdjacentHTML("beforeend", `<div class="partners-empty">${escapeHtml(translateKey("noExtraPartners", "No partners available for this search."))}</div>`);
+      }
+    }
+
+    function renderColumn3(partners) {
+      const selectedRegion = getRegion();
+      console.log("renderColumn3 CALLED", selectedRegion);
+
+      const container = document.getElementById("partnerChips");
+      if (!container) return;
+
+      const filtered = (partners || []).filter(p => normalizeRegion(p.region || "") === normalizeRegion(selectedRegion));
+
+      console.log("VISIBLE PARTNERS:", filtered.map(p => p.name));
+
+      const top = filtered
+        .slice()
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99))
+        .slice(0, 12);
+
+      container.innerHTML = top.map(p => `
+        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">${escapeHtml(p.name || 'Partner')}</a>
+      `).join("");
+
+      container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
+    }
+
+    function renderPartnersRail() {
+      renderColumn1(ACTIVE_PARTNERS);
+    }
+
+    function renderBrandGrid() {
+      renderColumn3(ACTIVE_PARTNERS);
+    }
+
+    function updateHeaderCounts(partners) {
+      const counts = {};
+      (partners || []).forEach(p => {
+        const key = categoryKeySafe(p);
+        counts[key] = (counts[key] || 0) + 1;
+      });
+
+      document.querySelectorAll("[data-header-cat]").forEach(el => {
+        const cat = el.getAttribute("data-header-cat");
+        el.textContent = counts[cat] || 0;
+      });
+    }
+
+    function showDebugOverlay(region, partners, allPartners) {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("debug")) return;
+
+      const overlay = document.getElementById("sb-debug");
+      if (!overlay) return;
+
+      const loaded = Array.isArray(partners) ? partners : [];
+      const regional = (allPartners || []).filter(p => partnerRegionMatches(p, region));
+      const global = (allPartners || []).filter(p => partnerRegionMatches(p, "global"));
+      const categories = [...new Set(loaded.map(p => categoryKeySafe(p)))];
+      const bookingBR = loaded.some(p =>
+        String(p.name || "").toLowerCase().includes("booking") &&
+        normalizeRegion(p.region || "") === "br"
+      );
+
+      overlay.innerHTML = `
+        <strong>Region:</strong> ${escapeHtml(region)}<br>
+        <strong>Language:</strong> ${escapeHtml(getLang())}<br>
+        <strong>Loaded from /partners:</strong> ${loaded.length}<br>
+        <strong>Embedded regional count:</strong> ${regional.length}<br>
+        <strong>Embedded global count:</strong> ${global.length}<br>
+        <strong>Booking.com BR loaded:</strong> ${bookingBR ? "YES" : "NO"}<br>
+        <strong>Fallback mode:</strong> ${regional.length === 0 ? "YES" : "NO"}<br><br>
+        <strong>Categories loaded:</strong><br>
+        ${categories.map(c => `• ${escapeHtml(c)}`).join("<br>")}<br><br>
+        <strong>First loaded partners:</strong><br>
+        ${loaded.slice(0, 12).map(p => `• ${escapeHtml(p.name || "Partner")} <span style="opacity:.7">(${escapeHtml(p.region || "")}, ${escapeHtml(categoryKeySafe(p))})</span>`).join("<br>")}
+      `;
+      overlay.style.display = "block";
+    }
+
+    async function initSignalBoost() {
+      const region = await detectUserRegion();
+      const lang = await detectUserLanguage();
+
+      const allPartners = baseAvailablePartners();
+      const partners = await loadPartners(region, allPartners);
+      ACTIVE_PARTNERS = partners;
+      window.ACTIVE_PARTNERS = partners;
+
+      await initI18n(lang);
+      showDebug(region, lang);
+
+      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
+      try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
+      try { applyI18N(); } catch (e) { console.error("applyI18N failed", e); }
+      try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory failed", e); }
+
+      initColumn1Accordion();
+
+      try { renderColumn1(partners); } catch (e) { console.error("renderColumn1 failed", e); }
+      try { renderColumn3(partners); } catch (e) { console.error("renderColumn3 failed", e); }
+      try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
+      try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
+      try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
+      try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
+      try { validatePartners(); } catch (e) {}
+
+      const search = document.getElementById("partnerSearch");
+      if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
+    }
+
+    document.addEventListener("DOMContentLoaded", initSignalBoost);
   </script>
 
 </body>
