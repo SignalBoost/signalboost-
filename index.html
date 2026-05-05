@@ -3283,11 +3283,6 @@
         const key = cardKeys[index];
         if (key && dict.amazonCards && dict.amazonCards[key]) card.textContent = dict.amazonCards[key];
       });
-
-      // Generic i18n pass for current and newly-rendered elements.
-      if (typeof applyTranslations === "function") {
-        applyTranslations(ACTIVE_TRANSLATIONS || {});
-      }
     }
 
     function headerPreferredRegions() {
@@ -3462,8 +3457,6 @@
         const body = group.querySelector(".c1-body");
         const item = document.createElement("div");
         item.className = "c1-partner";
-        item.dataset.name = p.name || "";
-        item.dataset.region = normalizeRegion(p.region || "global");
         item.innerHTML = `${escapeHtml(p.name)}<span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>`;
         item.onclick = () => {
           trackClick();
@@ -4134,23 +4127,6 @@
       return map[region] || "en";
     }
 
-    // --- Detect region from browser language ---
-    function detectRegion() {
-      const lang = (navigator.language || "").toLowerCase();
-
-      if (lang.startsWith("pt-br")) return "br";
-      if (lang.startsWith("es-mx")) return "mx";
-      if (lang.startsWith("en-us")) return "us";
-      if (lang.startsWith("en-gb")) return "gb";
-      if (lang.startsWith("pl")) return "pl";
-      if (lang.startsWith("ru")) return "ru";
-      if (lang.startsWith("hi")) return "in";
-      if (lang.startsWith("fr")) return "eu";
-      if (lang.startsWith("es-es")) return "es";
-
-      return "global";
-    }
-
     async function detectUserRegion() {
       const urlParam = new URLSearchParams(window.location.search).get("region");
       if (urlParam) return setActiveRegion(urlParam.toLowerCase());
@@ -4159,152 +4135,51 @@
       const path = window.location.pathname.toLowerCase();
       if (path !== "/" && pathRegion) return setActiveRegion(pathRegion);
 
-      return setActiveRegion(detectRegion());
+      const lang = (navigator.language || "").toLowerCase();
+      if (lang.startsWith("pt")) return setActiveRegion("br");
+      if (lang.startsWith("pl")) return setActiveRegion("pl");
+      if (lang.startsWith("es")) return setActiveRegion("mx");
+      if (lang.startsWith("ja")) return setActiveRegion("jp");
+      if (lang.startsWith("de")) return setActiveRegion("de");
+      if (lang.startsWith("fr")) return setActiveRegion("fr");
+      if (lang.startsWith("it")) return setActiveRegion("it");
+      if (lang.startsWith("ko")) return setActiveRegion("kr");
+      if (lang.startsWith("zh-tw")) return setActiveRegion("tw");
+      if (lang.startsWith("zh")) return setActiveRegion("cn");
+
+      return setActiveRegion("us");
     }
 
-    function normalizeLanguageCode(lang) {
-      const raw = String(lang || "en").trim();
-      const lower = raw.toLowerCase();
-      if (lower === "pt-br" || lower === "br") return "pt";
-      if (lower === "zh-cn" || lower === "cn" || lower === "zh") return "zh-CN";
-      if (lower === "zh-tw" || lower === "tw") return "zh-TW";
-      if (lower === "gb" || lower === "uk" || lower === "us" || lower === "global") return "en";
-      if (lower === "mx" || lower === "latam" || lower === "es-es") return "es";
-      if (lower === "jp") return "ja";
-      if (lower === "kr") return "ko";
-      return lower;
-    }
+    async function loadLanguage(lang) {
+      const builtInKey = lang === "pt-BR" ? "pt" : lang;
+      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
+      const externalCandidates = lang === builtInKey ? [lang] : [lang, builtInKey];
 
-    function detectLanguage(region) {
-      const map = {
-        br: "pt",
-        pt: "pt",
-        mx: "es",
-        latam: "es",
-        es: "es",
-        us: "en",
-        ca: "en",
-        gb: "en",
-        uk: "en",
-        global: "en",
-        pl: "pl",
-        ru: "ru",
-        in: "hi",
-        fr: "fr",
-        de: "de",
-        it: "it",
-        jp: "ja",
-        kr: "ko",
-        cn: "zh-CN",
-        zh: "zh-CN",
-        tw: "zh-TW"
-      };
-
-      if (region && map[String(region).toLowerCase()]) return map[String(region).toLowerCase()];
-
-      const browser = (navigator.language || "en").toLowerCase();
-      if (browser.startsWith("pt")) return "pt";
-      if (browser.startsWith("es")) return "es";
-      if (browser.startsWith("pl")) return "pl";
-      if (browser.startsWith("ru")) return "ru";
-      if (browser.startsWith("fr")) return "fr";
-      if (browser.startsWith("de")) return "de";
-      if (browser.startsWith("it")) return "it";
-      if (browser.startsWith("ja")) return "ja";
-      if (browser.startsWith("ko")) return "ko";
-      if (browser.startsWith("zh-tw")) return "zh-TW";
-      if (browser.startsWith("zh")) return "zh-CN";
-      return "en";
-    }
-
-    function applyTranslations(translations) {
-      const dict = { ...BUILT_IN_TRANSLATIONS.en, ...(translations || {}) };
-      ACTIVE_TRANSLATIONS = dict;
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (dict[key]) el.textContent = dict[key];
-      });
-
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-        const key = el.getAttribute("data-i18n-placeholder");
-        if (dict[key]) el.setAttribute("placeholder", dict[key]);
-      });
-
-      return dict;
-    }
-
-    function detectMissingTranslations(translations) {
-      const dict = translations || ACTIVE_TRANSLATIONS || {};
-      const missing = [];
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (!dict[key]) {
-          missing.push(key);
-          if (new URLSearchParams(window.location.search).has("debug")) {
-            el.style.outline = "2px solid red";
-            el.setAttribute("title", `⚠️ Missing translation: ${key}`);
-          }
-        }
-      });
-
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-        const key = el.getAttribute("data-i18n-placeholder");
-        if (!dict[key]) missing.push(key);
-      });
-
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-      if (overlay && new URLSearchParams(window.location.search).has("debug")) {
-        const old = overlay.querySelector(".debug-missing");
-        if (old) old.remove();
-
-        const missSection = document.createElement("div");
-        missSection.className = "debug-missing";
-        missSection.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
-        missing.forEach(k => {
-          const el = document.createElement("div");
-          el.className = "missing-item";
-          el.textContent = k;
-          el.style.color = "orange";
-          missSection.appendChild(el);
-        });
-        overlay.appendChild(missSection);
-      }
-
-      return Array.from(new Set(missing));
-    }
-
-    async function loadTranslations(lang) {
-      const normalized = normalizeLanguageCode(lang);
-      const builtInKey = normalized === "pt-BR" ? "pt" : normalized;
-      let translations = BUILT_IN_TRANSLATIONS[normalized] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
-
-      const candidates = Array.from(new Set([normalized, builtInKey, "en"].filter(Boolean)));
-
-      for (const candidate of candidates) {
+      for (const candidate of externalCandidates) {
         try {
           const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
           if (res.ok) {
-            const external = await res.json();
-            translations = { ...translations, ...external };
+            translations = { ...translations, ...(await res.json()) };
             break;
           }
-        } catch (err) {
+        } catch (e) {
           console.info("Using built-in translations for", candidate);
         }
       }
 
-      return { ...BUILT_IN_TRANSLATIONS.en, ...translations };
-    }
+      ACTIVE_TRANSLATIONS = { ...BUILT_IN_TRANSLATIONS.en, ...translations };
 
-    async function loadLanguage(lang) {
-      const normalized = normalizeLanguageCode(lang);
-      const translations = await loadTranslations(normalized);
-      applyTranslations(translations);
-      document.documentElement.lang = normalized;
-      detectMissingTranslations(translations);
-      return translations;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (ACTIVE_TRANSLATIONS[key]) el.textContent = ACTIVE_TRANSLATIONS[key];
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (ACTIVE_TRANSLATIONS[key]) el.setAttribute("placeholder", ACTIVE_TRANSLATIONS[key]);
+      });
+
+      document.documentElement.lang = lang;
     }
 
     async function initI18n(lang) {
@@ -4470,7 +4345,7 @@
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
-      const lang = detectLanguage(region);
+      const lang = await detectUserLanguage();
       await loadLanguage(lang);
       showDebug(region, lang);
 
@@ -4509,288 +4384,33 @@
       return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
     }
 
-    function mergeDuplicates(partners) {
-      const merged = {};
-
-      (partners || []).forEach(p => {
-        if (!p || !p.name) return;
-
-        const region = normalizeRegion(p.region || "global");
-        const key = `${String(p.name).trim().toLowerCase()}|${region}`;
-
-        if (!merged[key]) {
-          merged[key] = { ...p, region };
-          return;
-        }
-
-        // Merge missing fields from duplicate without overwriting useful existing data.
-        Object.keys(p).forEach(field => {
-          if (!merged[key][field] || merged[key][field] === "") {
-            merged[key][field] = p[field];
-          }
-        });
-
-        merged[key].region = region;
-        merged[key].url = merged[key].url || p.url || "#";
-        merged[key].category_key = merged[key].category_key || p.category_key || categoryKeyForPartner(p);
-        merged[key].category = merged[key].category || p.category || p.category_key;
-        merged[key].network = merged[key].network || p.network || "";
-        merged[key].tier = Number(merged[key].tier || p.tier || 99);
-        merged[key].logo = merged[key].logo || p.logo || "";
-        merged[key].description = merged[key].description || p.description || "";
-      });
-
-      return Object.values(merged);
-    }
-
-    function dedupePartnersByNameRegion(partners) {
-      return mergeDuplicates(partners);
-    }
-
-
-    function mergeAcrossRegions(partners) {
-      const merged = {};
-
-      (partners || []).forEach(p => {
-        if (!p || !p.name) return;
-        const key = String(p.name).trim().toLowerCase();
-        const region = normalizeRegion(p.region || "global");
-
-        if (!merged[key]) {
-          merged[key] = { ...p, region, regions: [region] };
-          return;
-        }
-
-        if (!merged[key].regions.includes(region)) {
-          merged[key].regions.push(region);
-        }
-
-        // Merge missing fields without overwriting the first/best offer.
-        Object.keys(p).forEach(field => {
-          if (!merged[key][field] || merged[key][field] === "") {
-            merged[key][field] = p[field];
-          }
-        });
-
-        merged[key].category_key = merged[key].category_key || p.category_key || categoryKeyForPartner(p);
-        merged[key].category = merged[key].category || p.category || p.category_key;
-        merged[key].network = merged[key].network || p.network || "";
-        merged[key].tier = Math.min(Number(merged[key].tier || 99), Number(p.tier || 99));
-        merged[key].logo = merged[key].logo || p.logo || "";
-      });
-
-      return Object.values(merged);
-    }
-
-    function validatePartners(partners) {
-      const requiredFields = ["name", "url", "category", "region", "network", "logo"];
-      const validRegions = ["br", "mx", "us", "pl", "ca", "eu", "latam", "global"];
-      const errors = [];
-
-      (partners || baseAvailablePartners()).forEach((p, index) => {
-        const entryErrors = [];
-
-        requiredFields.forEach(field => {
-          if (!p || !p[field] || p[field].toString().trim() === "") {
-            entryErrors.push(`Missing required field: ${field}`);
-          }
-        });
-
-        const region = normalizeRegion(p && p.region ? p.region : "");
-        if (!validRegions.includes(region)) {
-          entryErrors.push(`Invalid region: ${p && p.region ? p.region : "(empty)"}`);
-        }
-
-        if (p && p.tier !== undefined && !Number.isInteger(Number(p.tier))) {
-          entryErrors.push(`Tier must be an integer, got: ${p.tier}`);
-        }
-
-        if (entryErrors.length > 0) {
-          errors.push({
-            index,
-            name: (p && p.name) || "(unnamed)",
-            region: (p && p.region) || "(no region)",
-            issues: entryErrors
-          });
-        }
-      });
-
-      if (errors.length > 0) {
-        console.groupCollapsed(`❌ Partner validation failed: ${errors.length} issue group(s)`);
-        errors.forEach(e => {
-          console.groupCollapsed(`Partner [${e.index}] ${e.name} (${e.region})`);
-          e.issues.forEach(issue => console.error(issue));
-          console.groupEnd();
-        });
-        console.groupEnd();
-      } else {
-        console.log("✅ All partners passed validation");
-      }
-
-      return errors;
-    }
-
-    function groupGlobalPartnersByCategory(partners) {
-      const grouped = {};
-
-      (partners || []).forEach(p => {
-        if (!usablePartner(p)) return;
-        if (normalizeRegion(p.region || "") !== "global") return;
-
-        const category = categoryKeySafe(p);
-        if (!grouped[category]) grouped[category] = [];
-        grouped[category].push(p);
-      });
-
-      return grouped;
-    }
-
-    function buildCuratedRegionalPartners(region, allPartners) {
-      const normalizedRegion = normalizeRegion(region || "global");
-      const all = (allPartners || baseAvailablePartners())
-        .map(p => ({ ...p, category_key: p.category_key || categoryKeyForPartner(p) }))
-        .filter(usablePartner);
-
-      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
-      const globalByCategory = groupGlobalPartnersByCategory(all);
-
-      if (!regional.length) {
-        return dedupePartnersByNameRegion(all.filter(p => partnerRegionMatches(p, "global")));
-      }
-
-      const combined = [];
-      regional.forEach(p => {
-        combined.push(p);
-        const category = categoryKeySafe(p);
-        (globalByCategory[category] || []).forEach(globalPartner => combined.push(globalPartner));
-      });
-
-      return dedupePartnersByNameRegion(combined);
-    }
-
-    function highlightDuplicatesInUI(partners) {
-      const params = new URLSearchParams(window.location.search);
-      const debugEnabled = params.has("debug");
-      const seen = new Map();
-      const duplicates = [];
-
-      (partners || []).forEach(p => {
-        if (!p || !p.name) return;
-        const key = `${String(p.name).trim().toLowerCase()}|${normalizeRegion(p.region || "global")}`;
-        if (seen.has(key)) {
-          duplicates.push(p);
-        } else {
-          seen.set(key, p);
-        }
-      });
-
-      // Highlight duplicates directly in the UI. Supports current sidebar/cards/chips.
-      duplicates.forEach(d => {
-        const name = cssEscape(String(d.name || ""));
-        const region = cssEscape(normalizeRegion(d.region || "global"));
-        const cards = document.querySelectorAll(
-          `.partner-card[data-name="${name}"][data-region="${region}"], .c1-partner[data-name="${name}"][data-region="${region}"], .partner-chip[data-name="${name}"][data-region="${region}"]`
-        );
-
-        cards.forEach(card => {
-          card.style.border = "2px solid red";
-          card.style.boxShadow = "0 0 5px red";
-          card.setAttribute("title", "⚠️ Duplicate partner detected");
-        });
-      });
-
-      // Also update debug overlay, but only when ?debug is present.
-      if (!debugEnabled) return;
-
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-      if (overlay) {
-        const oldSection = overlay.querySelector(".debug-duplicates");
-        if (oldSection) oldSection.remove();
-
-        const dupSection = document.createElement("div");
-        dupSection.className = "debug-duplicates";
-        dupSection.style.marginTop = "10px";
-        dupSection.innerHTML = `<h4 style="margin:0 0 6px">⚠️ Duplicates (${duplicates.length})</h4>`;
-
-        if (!duplicates.length) {
-          const empty = document.createElement("div");
-          empty.textContent = "None detected by name + region.";
-          empty.style.opacity = ".75";
-          dupSection.appendChild(empty);
-        }
-
-        duplicates.forEach(d => {
-          const el = document.createElement("div");
-          el.className = "duplicate-item";
-          el.textContent = `${d.name} [${normalizeRegion(d.region || "global")}]`;
-          el.style.color = "red";
-          dupSection.appendChild(el);
-        });
-
-        overlay.appendChild(dupSection);
-        overlay.style.display = "block";
-      }
-    }
-
-    function highlightDuplicates(partners) {
-      return highlightDuplicatesInUI(partners);
-    }
-
-    function cssEscape(value) {
-      if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(value);
-      return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    }
-
-
-    function normalizeLoadedPartners(partners, fallbackRegion) {
-      const normalizedRegion = normalizeRegion(fallbackRegion || "global") || "global";
-      return mergeDuplicates(
-        (partners || [])
-          .map(p => ({
-            ...p,
-            region: normalizeRegion(p.region || normalizedRegion),
-            category_key: p.category_key || categoryKeyForPartner(p)
-          }))
-          .filter(usablePartner)
-      );
-    }
-
-    function embeddedStrictPartners(region) {
-      const normalizedRegion = normalizeRegion(region || "global") || "global";
-      return normalizeLoadedPartners(
-        baseAvailablePartners().filter(p => normalizeRegion(p.region || "") === normalizedRegion),
-        normalizedRegion
-      );
-    }
-
-    // --- Strict loader: no global fallback ---
-    async function loadPartnersStrict(region) {
-      const normalizedRegion = normalizeRegion(region || "global") || "global";
-
-      try {
-        const res = await fetch(`/partners-${encodeURIComponent(normalizedRegion)}.json`, { cache: "no-store" });
-        if (!res.ok) throw new Error(`Region file not found: ${normalizedRegion}`);
-
-        const partners = await res.json();
-        if (!Array.isArray(partners)) throw new Error(`Invalid partners file format for region: ${normalizedRegion}`);
-
-        // Deduplicate before rendering. This stays strict: the file itself controls
-        // whether curated global partners are included. No runtime global fallback.
-        return normalizeLoadedPartners(partners, normalizedRegion);
-      } catch (err) {
-        console.warn(`⚠️ No partners file for region ${normalizedRegion}: ${err.message}`);
-
-        // Keep the UI usable in local/dev previews where partners-*.json files
-        // are not deployed yet. This uses ONLY embedded partners for the same
-        // region, so it still does not add global fallback partners.
-        return embeddedStrictPartners(normalizedRegion);
-      }
-    }
-
     async function loadPartners(region, allPartners) {
-      // Strict isolation mode: load only /partners-{region}.json.
-      // No global fallback is applied here by design.
-      return loadPartnersStrict(region);
+      const normalizedRegion = normalizeRegion(region || "global") || "global";
+
+      // Step 1: backend is source of truth. Prefer /partners?region=...
+      try {
+        const res = await fetch(`/partners?region=${encodeURIComponent(normalizedRegion)}`, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length) {
+            return data
+              .map(p => ({
+                ...p,
+                category_key: p.category_key || categoryKeyForPartner(p)
+              }))
+              .filter(usablePartner);
+          }
+        }
+      } catch (e) {
+        console.warn("/partners route unavailable; using embedded partnersData fallback", e);
+      }
+
+      // Safe fallback: keep the old baseline behavior if backend is unavailable.
+      const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
+      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
+
+      if (regional.length > 0) return regional;
+      return all.filter(p => partnerRegionMatches(p, "global"));
     }
 
     function categoryKeySafe(partner) {
@@ -4828,8 +4448,9 @@
       // Column 1 should show global + regional non-travel partners.
       // This keeps useful global offers visible without duplicating travel header categories.
       const region = getRegion();
-      const source = dedupePartnersByNameRegion(partners || ACTIVE_PARTNERS || [])
+      const source = baseAvailablePartners()
         .filter(usablePartner)
+        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
         .filter(p => column1Set.has(categoryKeySafe(p)));
 
       const items = partnersFilteredBySearch(source);
@@ -4874,8 +4495,6 @@
 
           const item = document.createElement("div");
           item.className = "c1-partner";
-          item.dataset.name = p.name || "";
-          item.dataset.region = normalizeRegion(p.region || "global");
           item.innerHTML = `
             ${escapeHtml(p.name || "Partner")}
             <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
@@ -4909,32 +4528,18 @@
       const container = document.getElementById("partnerChips");
       if (!container) return;
 
-      const filtered = (partners || []).filter(p => {
-        const r = normalizeRegion(p.region || "");
-        return r === normalizeRegion(selectedRegion) || r === "global";
-      });
+      const filtered = (partners || []).filter(p => normalizeRegion(p.region || "") === normalizeRegion(selectedRegion));
 
       console.log("VISIBLE PARTNERS:", filtered.map(p => p.name));
 
-      const top = mergeAcrossRegions(filtered)
+      const top = filtered
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99))
         .slice(0, 12);
 
-      if (!top.length) {
-        container.innerHTML = `<div class="partners-empty">No partners loaded for this region.</div>`;
-        return;
-      }
-
-      container.innerHTML = top.map(p => {
-        const regions = p.regions || [normalizeRegion(p.region || 'global')];
-        return `
-          <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-name="${escapeHtml(p.name || '')}" data-region="${escapeHtml(regions.join(','))}">
-            <span>${escapeHtml(p.name || 'Partner')}</span>
-            <span class="partner-meta">${escapeHtml(regions.join(', ').toUpperCase())}</span>
-          </a>
-        `;
-      }).join("");
+      container.innerHTML = top.map(p => `
+        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">${escapeHtml(p.name || 'Partner')}</a>
+      `).join("");
 
       container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
     }
@@ -4992,78 +4597,12 @@
       overlay.style.display = "block";
     }
 
-
-
-    // --- Column 2: resilient feed renderer with 45-minute session refresh ---
-    // The public page should not depend on /api/videos being present. The existing
-    // hero feed loader already tries configured endpoints and then falls back to
-    // embedded feed cards, so Column 2 always renders instead of showing an error.
-    function youtubeRegionCode(region) {
-      const normalized = normalizeRegion(region || "global");
-      const map = {
-        br: "BR",
-        mx: "MX",
-        us: "US",
-        pl: "PL",
-        ca: "CA",
-        gb: "GB",
-        uk: "GB",
-        eu: "GB",
-        latam: "MX",
-        es: "ES",
-        ru: "RU",
-        in: "IN",
-        global: "US"
-      };
-      return map[normalized] || normalized.toUpperCase();
-    }
-
-    async function renderColumn2(region) {
-      const container = document.getElementById("feedContainer");
-      const status = document.getElementById("heroFeedStatus");
-      if (!container) return;
-
-      try {
-        window.REGION = normalizeRegion(region || getRegion());
-        if (status) status.textContent = t().loadingVideos || "Loading current videos…";
-        await renderFeed();
-        if (status) status.textContent = "";
-      } catch (err) {
-        console.error("Column 2 feed fallback failed:", err);
-        const items = Array.isArray(fallbackHeroFeedItems) ? fallbackHeroFeedItems : [];
-        if (items.length) {
-          feedSourceItems = items.slice();
-          feedNextIndex = 0;
-          const firstBatch = getNextFeedBatch();
-          container.innerHTML = firstBatch.map((item, index) => renderFeedCard(item, index)).join("");
-          attachFeedTracking();
-          if (status) status.textContent = "";
-        } else {
-          container.innerHTML = `<div class="partners-empty">No videos available yet.</div>`;
-          if (status) status.textContent = "";
-        }
-      }
-    }
-
-    function scheduleColumn2Session(region) {
-      renderColumn2(region);
-
-      if (window.__signalBoostColumn2Timer) {
-        clearInterval(window.__signalBoostColumn2Timer);
-      }
-
-      window.__signalBoostColumn2Timer = setInterval(() => {
-        console.log(`🔄 Session refresh for Column 2 (${region})`);
-        renderColumn2(region);
-      }, 45 * 60 * 1000);
-    }
-
     async function initSignalBoost() {
       const region = await detectUserRegion();
-      const lang = detectLanguage(region);
+      const lang = await detectUserLanguage();
 
       const allPartners = baseAvailablePartners();
-      const partners = await loadPartnersStrict(region);
+      const partners = await loadPartners(region, allPartners);
       ACTIVE_PARTNERS = partners;
       window.ACTIVE_PARTNERS = partners;
 
@@ -5081,740 +4620,16 @@
       try { renderColumn3(partners); } catch (e) { console.error("renderColumn3 failed", e); }
       try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
       try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
-      try { scheduleColumn2Session(region); } catch (e) { console.error("scheduleColumn2Session failed", e); }
+      try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
       try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
-      try { highlightDuplicates(partners); } catch (e) { console.error("highlightDuplicates failed", e); }
-      try { validatePartners(allPartners); } catch (e) { console.error("validatePartners failed", e); }
+      try { validatePartners(); } catch (e) {}
 
       const search = document.getElementById("partnerSearch");
       if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
     }
 
     document.addEventListener("DOMContentLoaded", initSignalBoost);
-  
-/* STEP 3 REAL: Simple Column 1 render only */
-function renderColumn1Simple(partners) {
-  const col1 = document.getElementById("column1");
-  if (!col1) return;
-
-  col1.innerHTML = "";
-
-  if (!Array.isArray(partners) || partners.length === 0) {
-    col1.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
-    return;
-  }
-
-  partners.forEach(p => {
-    const item = document.createElement("a");
-    item.className = "c1-partner";
-    item.dataset.name = p.name || "";
-    item.dataset.region = normalizeRegion(p.region || "global");
-    item.href = p.url || "#";
-    item.target = "_blank";
-    item.rel = "noopener noreferrer";
-    item.textContent = p.name || "Unnamed partner";
-
-    const meta = document.createElement("span");
-    meta.className = "partner-meta";
-    meta.textContent = `${p.region || "global"} • ${p.network || ""}`;
-
-    item.appendChild(meta);
-    col1.appendChild(item);
-  });
-}
-
-
-/* STEP 4: Simple Column 3 (top partners) */
-function renderColumn3Simple(partners) {
-  const col3 = document.getElementById("column3");
-  if (!col3) return;
-
-  col3.innerHTML = "";
-
-  if (!Array.isArray(partners)) return;
-
-  const top = partners.slice(0, 8);
-
-  top.forEach(p => {
-    const item = document.createElement("a");
-    item.href = p.url || "#";
-    item.target = "_blank";
-    item.textContent = p.name;
-    item.style.display = "block";
-    item.style.marginBottom = "6px";
-    col3.appendChild(item);
-  });
-}
-
-
-/* STEP 5: Column 2 videos ONLY */
-function getVideoRegionChain(region) {
-  const clean = (region || "global").toLowerCase();
-  const fallbackMap = {
-    br: ["latam"],
-    mx: ["latam"],
-    uk: ["eu"],
-    gb: ["eu"],
-    ca: ["us"]
-  };
-  return [clean, ...(fallbackMap[clean] || []), "global"];
-}
-
-async function renderColumn2VideosOnly(region) {
-  const container = document.getElementById("feedContainer") || document.getElementById("column2");
-  const status = document.getElementById("heroFeedStatus");
-  if (!container) return;
-
-  container.innerHTML = "";
-  if (status) status.textContent = "Loading regional videos...";
-
-  const chain = getVideoRegionChain(region);
-
-  for (const r of chain) {
-    try {
-      const res = await fetch(`/videos?region=${encodeURIComponent(r)}&t=${Date.now()}`);
-      if (!res.ok) continue;
-
-      const videos = await res.json();
-
-      if (Array.isArray(videos) && videos.length > 0) {
-        buildColumn2VideoCards(videos, container);
-        if (status) status.textContent = `Videos for ${r}`;
-        return;
-      }
-    } catch (err) {
-      console.warn("Video fetch failed:", r, err);
-    }
-  }
-
-  container.innerHTML = `<div class="partners-empty">No videos available for this region yet.</div>`;
-  if (status) status.textContent = "No videos available.";
-}
-
-function buildColumn2VideoCards(videos, container) {
-  container.innerHTML = "";
-
-  videos.slice(0, 12).forEach(v => {
-    const card = document.createElement("div");
-    card.className = "feed-card";
-
-    const title = v.title || "Video";
-    const channel = v.channel || "";
-    const thumbnail = v.thumbnail || "";
-    const url = v.url || "";
-    const videoId = v.videoId || v.id || "";
-
-    let media = "";
-
-    if (videoId) {
-      media = `
-        <iframe
-          src="https://www.youtube.com/embed/${videoId}"
-          title="${title}"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
-      `;
-    } else if (url && url.includes("youtube")) {
-      media = `<a class="source-link" href="${url}" target="_blank" rel="noopener noreferrer">Open video</a>`;
-    } else if (thumbnail) {
-      media = `<img src="${thumbnail}" alt="${title}">`;
-    }
-
-    card.innerHTML = `
-      <div class="media-box">${media}</div>
-      <div class="feed-content">
-        <h3>${title}</h3>
-        <div class="feed-meta">${channel}</div>
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-function scheduleColumn2Refresh(region) {
-  renderColumn2VideosOnly(region);
-  setInterval(() => renderColumn2VideosOnly(region), 900000);
-}
-
-
-/* STEP 6: Header dropdown menu only */
-function renderHeaderDropdown(partners) {
-  const header = document.getElementById("travelDirectory");
-  const menu = document.getElementById("directoryMenu");
-  if (!header || !menu) return;
-
-  header.innerHTML = "";
-  menu.classList.remove("open");
-  menu.innerHTML = "";
-
-  if (!Array.isArray(partners) || partners.length === 0) {
-    return;
-  }
-
-  const categories = {};
-  partners.forEach(p => {
-    const cat = (p.category_key || p.category || "other").toLowerCase();
-    if (!categories[cat]) categories[cat] = [];
-    categories[cat].push(p);
-  });
-
-  Object.entries(categories).forEach(([cat, items]) => {
-    const btn = document.createElement("button");
-    btn.className = "directory-item has-menu";
-    btn.type = "button";
-    btn.textContent = `${cat} (${items.length})`;
-
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-
-      document.querySelectorAll(".directory-item").forEach(el => {
-        el.classList.remove("active");
-      });
-
-      btn.classList.add("active");
-
-      menu.innerHTML = `
-        <div class="directory-menu-title">${cat} (${items.length})</div>
-        ${items.map(p => `
-          <a class="directory-menu-link" href="${p.url || "#"}" target="_blank" rel="noopener noreferrer">
-            ${p.name || "Partner"}
-            <span class="directory-menu-meta">${p.region || "global"} • ${p.network || ""}</span>
-          </a>
-        `).join("")}
-      `;
-
-      menu.classList.add("open");
-    });
-
-    header.appendChild(btn);
-  });
-
-  document.addEventListener("click", () => {
-    menu.classList.remove("open");
-    document.querySelectorAll(".directory-item").forEach(el => {
-      el.classList.remove("active");
-    });
-  }, { once: false });
-}
-
-
-/* STEP 7: Column 1 grouped accordion using existing .c1-group HTML */
-function normalizeColumn1Category(cat) {
-  const key = (cat || "").trim().toLowerCase();
-
-  const map = {
-    esim: "products_tools",
-    e_sim: "products_tools",
-    car_rentals: "travel_services",
-    cars: "travel_services",
-    storage: "travel_services",
-    services: "travel_services"
-  };
-
-  return map[key] || key || "specialty_other";
-}
-
-function renderColumn1Grouped(partners) {
-  const root = document.getElementById("column1");
-  if (!root) return;
-
-  const groups = root.querySelectorAll(".c1-group");
-
-  // If the baseline accordion structure is missing, fail safely.
-  if (!groups.length) {
-    root.innerHTML = '<div class="partners-empty">Column 1 groups not found.</div>';
-    return;
-  }
-
-  groups.forEach(group => {
-    const body = group.querySelector(".c1-body");
-    const header = group.querySelector(".c1-header");
-    if (body) body.innerHTML = "";
-    if (header) header.classList.remove("open", "active");
-    if (body) body.classList.remove("open");
-    group.style.display = "none";
-  });
-
-  (partners || []).forEach(p => {
-    const cat = normalizeColumn1Category(p.category_key || p.category);
-    const group = root.querySelector(`.c1-group[data-cat="${cat}"]`);
-    if (!group) return;
-
-    const body = group.querySelector(".c1-body");
-    if (!body) return;
-
-    const item = document.createElement("a");
-    item.className = "c1-partner";
-    item.dataset.name = p.name || "";
-    item.dataset.region = normalizeRegion(p.region || "global");
-    item.href = p.url || "#";
-    item.target = "_blank";
-    item.rel = "noopener noreferrer";
-    item.textContent = p.name || "Partner";
-
-    const meta = document.createElement("span");
-    meta.className = "partner-meta";
-    meta.textContent = `${p.region || "global"} • ${p.network || ""}`;
-
-    item.appendChild(meta);
-    body.appendChild(item);
-    group.style.display = "block";
-  });
-
-  groups.forEach(group => {
-    const header = group.querySelector(".c1-header");
-    const body = group.querySelector(".c1-body");
-    if (!header || !body) return;
-
-    // Avoid duplicate click handlers by replacing node.
-    const freshHeader = header.cloneNode(true);
-    header.parentNode.replaceChild(freshHeader, header);
-
-    freshHeader.addEventListener("click", () => {
-      const isOpen = body.classList.toggle("open");
-      freshHeader.classList.toggle("open", isOpen);
-      freshHeader.classList.toggle("active", isOpen);
-    });
-  });
-}
-
-
-/* STEP 8 SAFE: Column 3 simple tier-sorted render */
-function renderColumn3Safe(partners) {
-  const col3 = document.getElementById("column3");
-  if (!col3) return;
-
-  col3.innerHTML = "";
-
-  if (!Array.isArray(partners) || partners.length === 0) {
-    col3.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
-    return;
-  }
-
-  const seen = new Set();
-
-  const top = partners
-    .slice()
-    .sort((a, b) => (a.tier || 99) - (b.tier || 99))
-    .filter(p => {
-      const key = `${p.name || ""}-${p.url || ""}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .slice(0, 8);
-
-  top.forEach(p => {
-    const item = document.createElement("a");
-    item.href = p.url || "#";
-    item.target = "_blank";
-    item.rel = "noopener noreferrer";
-    item.textContent = p.name || "Partner";
-    item.style.display = "block";
-    item.style.marginBottom = "6px";
-    item.style.textDecoration = "none";
-
-    col3.appendChild(item);
-  });
-}
-
-
-/* STEP 9 SAFE: Column 1 filter buttons */
-function attachColumn1Filter(partners) {
-  const buttons = document.querySelectorAll("#column1-filter button");
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const cat = btn.dataset.cat;
-
-      if (cat === "all") {
-        renderColumn1Grouped(partners);
-        return;
-      }
-
-      const filtered = filterPartnersByCategorySafe(partners, cat);
-
-      renderColumn1Grouped(filtered);
-    });
-  });
-}
-
-
-/* STEP 10A: Safe normalization helpers only */
-function normalizeRegion(region) {
-  const raw = (region || "global").toString().trim().toLowerCase();
-  const aliases = {
-    usa: "us", unitedstates: "us", "united-states": "us",
-    uk: "gb", "united-kingdom": "gb",
-    poland: "pl", polska: "pl",
-    brazil: "br", brasil: "br",
-    "pt-br": "br",
-    mexico: "mx", "méxico": "mx",
-    india: "in",
-    spain: "es",
-    china: "cn", japan: "jp", korea: "kr", "south-korea": "kr"
-  };
-  return aliases[raw] || raw;
-}
-
-function normalizeCategory(cat) {
-  return (cat || "other").toString().trim().toLowerCase();
-}
-
-function getPartnerCategory(partner) {
-  return normalizeCategory(partner?.category_key || partner?.category || "other");
-}
-
-function getPartnerRegion(partner) {
-  return normalizeRegion(partner?.region || "global");
-}
-
-
-/* STEP 10B: Safe partner filtering helpers only */
-function filterPartnersByRegion(partners, region) {
-  const selected = normalizeRegion(region);
-
-  return (partners || []).filter(p => {
-    const pRegion = getPartnerRegion(p);
-    return pRegion === selected || pRegion === "global";
-  });
-}
-
-function filterPartnersByCategorySafe(partners, categoryKey) {
-  const selected = normalizeCategory(categoryKey);
-
-  return (partners || []).filter(p => {
-    return getPartnerCategory(p) === selected;
-  });
-}
-
-function filterPartnersByTier(partners, tier = 1) {
-  const selectedTier = Number(tier);
-
-  return (partners || []).filter(p => {
-    return Number(p?.tier || 99) === selectedTier;
-  });
-}
-
-
-function renderUniquePartners(containerId, partners) {
-  const seen = new Set();
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  (partners || []).forEach(p => {
-    const key = `${String(p.name || "").toLowerCase()}|${normalizeRegion(p.region || "global")}`;
-    if (!p.name || seen.has(key)) return;
-    seen.add(key);
-
-    const el = document.createElement("div");
-    el.className = "partner-card";
-    el.dataset.name = p.name || "";
-    el.dataset.region = normalizeRegion(p.region || "global");
-    el.textContent = p.name;
-    container.appendChild(el);
-  });
-}
-
-/* STEP 10E: Safe duplicate merge helper only */
-function mergeDuplicatePartners(partners) {
-  return mergeDuplicates(partners);
-}
-
-</script>
-
-<script>
-/* FINAL TRANSLATION FIX — single browser-safe i18n pass.
-   This intentionally runs after the older scripts so it overrides any legacy
-   applyI18N/buildTravelDirectory text that was resetting labels to English. */
-(function () {
-  const FINAL_I18N = {
-    en: {
-      brand_name: "SignalBoost", explore_offers: "Explore offers", search_placeholder: "Flights, hotels, eSIM, tours...",
-      marketplace: "Marketplace", products_tools: "Products & Tools", finance: "Finance", insurance: "Insurance & Claims",
-      travel_services: "Storage & Services", specialty_other: "Specialty & Other", partners: "Partners",
-      featured_service: "Explore a featured service picked for you.", view_more: "View More",
-      flights: "Flights", hotels: "Hotels", transfers: "Transfers & Transport", car_rentals: "Car Rentals", sim: "SIM & Connectivity", tours: "Tours & Activities"
-    },
-    es: {
-      brand_name: "SignalBoost", explore_offers: "Explorar ofertas", search_placeholder: "Vuelos, hoteles, eSIM, tours...",
-      marketplace: "Marketplace", products_tools: "Productos y herramientas", finance: "Finanzas", insurance: "Seguros y reclamaciones",
-      travel_services: "Almacenamiento y servicios", specialty_other: "Especialidad y otros", partners: "Socios",
-      featured_service: "Explora un servicio destacado elegido para ti.", view_more: "Ver más",
-      flights: "Vuelos", hotels: "Hoteles", transfers: "Traslados y transporte", car_rentals: "Alquiler de autos", sim: "SIM y conectividad", tours: "Tours y actividades"
-    },
-    pt: {
-      brand_name: "SignalBoost", explore_offers: "Explorar ofertas", search_placeholder: "Voos, hotéis, eSIM, passeios...",
-      marketplace: "Marketplace", products_tools: "Produtos e ferramentas", finance: "Finanças", insurance: "Seguros e reembolsos",
-      travel_services: "Armazenamento e serviços", specialty_other: "Especialidade e outros", partners: "Parceiros",
-      featured_service: "Explore um serviço em destaque escolhido para você.", view_more: "Ver mais",
-      flights: "Voos", hotels: "Hotéis", transfers: "Transfers e transporte", car_rentals: "Aluguel de carros", sim: "SIM e conectividade", tours: "Passeios e atividades"
-    },
-    pl: {
-      brand_name: "SignalBoost", explore_offers: "Przeglądaj oferty", search_placeholder: "Loty, hotele, eSIM, wycieczki...",
-      marketplace: "Marketplace", products_tools: "Produkty i narzędzia", finance: "Finanse", insurance: "Ubezpieczenia i roszczenia",
-      travel_services: "Przechowalnia i usługi", specialty_other: "Specjalne i inne", partners: "Partnerzy",
-      featured_service: "Sprawdź wyróżnioną usługę wybraną dla Ciebie.", view_more: "Zobacz więcej",
-      flights: "Loty", hotels: "Hotele", transfers: "Transfery i transport", car_rentals: "Wynajem aut", sim: "SIM i łączność", tours: "Wycieczki i atrakcje"
-    },
-    fr: {
-      brand_name: "SignalBoost", explore_offers: "Explorer les offres", search_placeholder: "Vols, hôtels, eSIM, visites...",
-      marketplace: "Marketplace", products_tools: "Produits et outils", finance: "Finance", insurance: "Assurance et réclamations",
-      travel_services: "Stockage et services", specialty_other: "Spécialité et autres", partners: "Partenaires",
-      featured_service: "Explorez un service mis en avant pour vous.", view_more: "Voir plus",
-      flights: "Vols", hotels: "Hôtels", transfers: "Transferts et transport", car_rentals: "Location de voitures", sim: "SIM et connectivité", tours: "Tours et activités"
-    },
-    de: {
-      brand_name: "SignalBoost", explore_offers: "Angebote entdecken", search_placeholder: "Flüge, Hotels, eSIM, Touren...",
-      marketplace: "Marktplatz", products_tools: "Produkte und Tools", finance: "Finanzen", insurance: "Versicherung und Ansprüche",
-      travel_services: "Gepäckaufbewahrung und Services", specialty_other: "Spezialangebote und Sonstiges", partners: "Partner",
-      featured_service: "Entdecken Sie einen ausgewählten Service.", view_more: "Mehr anzeigen",
-      flights: "Flüge", hotels: "Hotels", transfers: "Transfers und Transport", car_rentals: "Mietwagen", sim: "SIM und Konnektivität", tours: "Touren und Aktivitäten"
-    },
-    it: {
-      brand_name: "SignalBoost", explore_offers: "Esplora offerte", search_placeholder: "Voli, hotel, eSIM, tour...",
-      marketplace: "Marketplace", products_tools: "Prodotti e strumenti", finance: "Finanza", insurance: "Assicurazione e reclami",
-      travel_services: "Deposito e servizi", specialty_other: "Specialità e altro", partners: "Partner",
-      featured_service: "Esplora un servizio in evidenza scelto per te.", view_more: "Mostra di più",
-      flights: "Voli", hotels: "Hotel", transfers: "Transfer e trasporti", car_rentals: "Noleggio auto", sim: "SIM e connettività", tours: "Tour e attività"
-    },
-    ru: {
-      brand_name: "SignalBoost", explore_offers: "Смотреть предложения", search_placeholder: "Авиабилеты, отели, eSIM, туры...",
-      marketplace: "Маркетплейс", products_tools: "Товары и инструменты", finance: "Финансы", insurance: "Страхование и претензии",
-      travel_services: "Хранение и сервисы", specialty_other: "Специальное и другое", partners: "Партнеры",
-      featured_service: "Посмотрите рекомендуемый сервис.", view_more: "Подробнее",
-      flights: "Авиабилеты", hotels: "Отели", transfers: "Трансферы и транспорт", car_rentals: "Аренда авто", sim: "SIM и связь", tours: "Туры и активности"
-    }
-  };
-
-  const CATEGORY_TO_KEY = {
-    "Flights & Meta Search": "flights",
-    "Hotels": "hotels",
-    "Transfers & Transport": "transfers",
-    "Car Rentals": "car_rentals",
-    "SIM & Connectivity": "sim",
-    "Tours & Activities": "tours",
-    "Marketplace": "marketplace",
-    "Products & Tools": "products_tools",
-    "Finance": "finance",
-    "Insurance & Claims": "insurance",
-    "Storage & Services": "travel_services",
-    "Specialty & Other": "specialty_other"
-  };
-
-  function normalizeLang(lang) {
-    const l = String(lang || "en").toLowerCase();
-    if (l === "pt-br" || l.startsWith("pt")) return "pt";
-    if (l === "zh-cn" || l.startsWith("zh")) return "zh-CN";
-    if (l === "zh-tw") return "zh-TW";
-    if (l.startsWith("es")) return "es";
-    if (l.startsWith("pl")) return "pl";
-    if (l.startsWith("fr")) return "fr";
-    if (l.startsWith("de")) return "de";
-    if (l.startsWith("it")) return "it";
-    if (l.startsWith("ru")) return "ru";
-    if (l.startsWith("ja")) return "ja";
-    if (l.startsWith("ko")) return "ko";
-    return "en";
-  }
-
-  function detectFinalRegion() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("region")) return params.get("region").toLowerCase();
-    const path = window.location.pathname.toLowerCase();
-    if (path.includes("/pt-br") || path.includes("/br")) return "br";
-    if (path.includes("/pl")) return "pl";
-    if (path.includes("/es")) return "es";
-    if (path.includes("/fr")) return "fr";
-    if (path.includes("/de")) return "de";
-    if (path.includes("/it")) return "it";
-    if (path.includes("/ru")) return "ru";
-    if (window.ACTIVE_REGION) return String(window.ACTIVE_REGION).toLowerCase();
-    return "global";
-  }
-
-  function detectFinalLanguage(region) {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("lang")) return normalizeLang(params.get("lang"));
-    const map = { br: "pt", pt: "pt", mx: "es", latam: "es", es: "es", pl: "pl", fr: "fr", de: "de", it: "it", ru: "ru", us: "en", uk: "en", gb: "en", global: "en" };
-    if (map[region]) return map[region];
-    return normalizeLang(navigator.language || "en");
-  }
-
-  async function loadFinalTranslations(lang) {
-    let dict = { ...FINAL_I18N.en, ...(FINAL_I18N[lang] || {}) };
-    const candidates = Array.from(new Set([lang, lang === "pt" ? "pt-BR" : null, "en"].filter(Boolean)));
-    for (const candidate of candidates) {
-      try {
-        const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
-        if (res.ok) {
-          dict = { ...dict, ...(await res.json()) };
-          if (candidate !== "en") break;
-        }
-      } catch (_) {}
-    }
-    return dict;
-  }
-
-  function applyFinalTranslations(dict, lang, region) {
-    window.ACTIVE_TRANSLATIONS = { ...(window.ACTIVE_TRANSLATIONS || {}), ...dict };
-    document.documentElement.lang = lang;
-    document.documentElement.dataset.lang = lang;
-    document.documentElement.dataset.region = region;
-    document.documentElement.setAttribute("data-i18n-ready", "1");
-
-    document.querySelectorAll("[data-i18n]").forEach(el => {
-      const key = el.getAttribute("data-i18n");
-      if (dict[key]) el.textContent = dict[key];
-    });
-    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-      const key = el.getAttribute("data-i18n-placeholder");
-      if (dict[key]) el.setAttribute("placeholder", dict[key]);
-    });
-
-    const idMap = {
-      leftHeader: "explore_offers",
-      brandGridTitle: "partners",
-      stickyCopy: "featured_service",
-      stickyLink: "view_more"
-    };
-    Object.entries(idMap).forEach(([id, key]) => {
-      const el = document.getElementById(id);
-      if (el && dict[key]) el.textContent = dict[key];
-    });
-
-    document.querySelectorAll(".c1-group[data-cat] .c1-header").forEach(header => {
-      const cat = header.closest(".c1-group")?.getAttribute("data-cat");
-      if (cat && dict[cat]) header.textContent = dict[cat];
-    });
-
-    document.querySelectorAll(".directory-item").forEach(btn => {
-      const category = btn.dataset.category || "";
-      const key = CATEGORY_TO_KEY[category] || category;
-      const count = (btn.textContent.match(/\((\d+)\)/) || [null, ""])[1];
-      if (dict[key]) btn.textContent = count ? `${dict[key]} (${count})` : dict[key];
-    });
-
-    const menuTitle = document.querySelector(".directory-menu-title");
-    if (menuTitle) {
-      const raw = Object.keys(CATEGORY_TO_KEY).find(cat => menuTitle.textContent.includes(cat));
-      if (raw && dict[CATEGORY_TO_KEY[raw]]) menuTitle.textContent = dict[CATEGORY_TO_KEY[raw]];
-    }
-  }
-
-  function detectMissingFinalTranslations(dict) {
-    const missing = [];
-    document.querySelectorAll("[data-i18n], [data-i18n-placeholder]").forEach(el => {
-      const key = el.getAttribute("data-i18n") || el.getAttribute("data-i18n-placeholder");
-      if (key && !dict[key]) missing.push(key);
-    });
-    const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-    if (overlay && new URLSearchParams(window.location.search).has("debug")) {
-      const old = overlay.querySelector(".debug-missing");
-      if (old) old.remove();
-      const section = document.createElement("div");
-      section.className = "debug-missing";
-      section.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
-      Array.from(new Set(missing)).forEach(k => {
-        const item = document.createElement("div");
-        item.className = "missing-item";
-        item.style.color = "orange";
-        item.textContent = k;
-        section.appendChild(item);
-      });
-      overlay.appendChild(section);
-      overlay.style.display = "block";
-    }
-    return Array.from(new Set(missing));
-  }
-
-  async function runFinalI18n() {
-    const region = detectFinalRegion();
-    const lang = detectFinalLanguage(region);
-    const dict = await loadFinalTranslations(lang);
-    applyFinalTranslations(dict, lang, region);
-    detectMissingFinalTranslations(dict);
-    window.__signalBoostFinalI18n = { region, lang, dict };
-  }
-
-  window.runFinalI18n = runFinalI18n;
-
-  document.addEventListener("DOMContentLoaded", () => {
-    runFinalI18n();
-    setTimeout(runFinalI18n, 75);
-    setTimeout(runFinalI18n, 350);
-    setTimeout(runFinalI18n, 1000);
-  });
-})();
-</script>
-
-<script>
-/* SignalBoost deploy cache/debug helpers */
-(function () {
-  const COMMIT_HASH = "__COMMIT_HASH__";
-  window.SIGNALBOOST_COMMIT_HASH = COMMIT_HASH;
-
-  function assetVersion() {
-    return (COMMIT_HASH && COMMIT_HASH !== "__COMMIT_HASH__") ? COMMIT_HASH : String(Date.now());
-  }
-
-  function withVersion(url, version) {
-    try {
-      const parsed = new URL(url, window.location.href);
-      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-        parsed.searchParams.set("v", version);
-        return parsed.pathname + parsed.search + parsed.hash;
-      }
-    } catch (_) {}
-    return url;
-  }
-
-  function bustStaticAssetCache() {
-    const version = assetVersion();
-    document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
-      const href = link.getAttribute("href");
-      if (href && !href.includes("?v=")) link.setAttribute("href", withVersion(href, version));
-    });
-    document.querySelectorAll("script[src]").forEach(script => {
-      const src = script.getAttribute("src");
-      if (src && !src.includes("?v=")) script.setAttribute("src", withVersion(src, version));
-    });
-  }
-
-  window.showDebug = function showDebug(region, lang, commitHash, partners = [], errors = []) {
-    if (Array.isArray(commitHash)) {
-      errors = partners || [];
-      partners = commitHash;
-      commitHash = window.SIGNALBOOST_COMMIT_HASH || "local";
-    }
-
-    const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-    if (!box) return;
-
-    box.innerHTML = `
-      <strong>Region:</strong> ${region || "global"}<br>
-      <strong>Language:</strong> ${lang || navigator.language || "en"}<br>
-      <strong>Commit Hash:</strong> ${commitHash || window.SIGNALBOOST_COMMIT_HASH || "local"}<br>
-      <strong>Partners:</strong> ${(partners || []).length}<br>
-      <strong>Errors:</strong> ${(errors || []).length}
-    `;
-
-    const debugOn = new URLSearchParams(window.location.search).has("debug");
-    box.style.display = debugOn ? "block" : (box.id === "sb-debug" ? "none" : box.style.display || "none");
-  };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    bustStaticAssetCache();
-    const info = window.__signalBoostFinalI18n || {};
-    if (new URLSearchParams(window.location.search).has("debug")) {
-      window.showDebug(info.region || (window.detectRegion && window.detectRegion()) || "global", info.lang || navigator.language, window.SIGNALBOOST_COMMIT_HASH, window.__signalBoostPartners || [], []);
-    }
-  });
-})();
-</script>
+  </script>
 
 </body>
 </html>
