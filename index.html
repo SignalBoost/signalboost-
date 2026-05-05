@@ -4628,7 +4628,37 @@
     }
 
     document.addEventListener("DOMContentLoaded", initSignalBoost);
-  </script>
+  
+/* STEP 3 REAL: Simple Column 1 render only */
+function renderColumn1Simple(partners) {
+  const col1 = document.getElementById("column1");
+  if (!col1) return;
+
+  col1.innerHTML = "";
+
+  if (!Array.isArray(partners) || partners.length === 0) {
+    col1.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
+    return;
+  }
+
+  partners.forEach(p => {
+    const item = document.createElement("a");
+    item.className = "c1-partner";
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.rel = "noopener noreferrer";
+    item.textContent = p.name || "Unnamed partner";
+
+    const meta = document.createElement("span");
+    meta.className = "partner-meta";
+    meta.textContent = `${p.region || "global"} • ${p.network || ""}`;
+
+    item.appendChild(meta);
+    col1.appendChild(item);
+  });
+}
+
+</script>
 
 </body>
 </html>
