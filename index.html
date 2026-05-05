@@ -3457,6 +3457,8 @@
         const body = group.querySelector(".c1-body");
         const item = document.createElement("div");
         item.className = "c1-partner";
+        item.dataset.name = p.name || "";
+        item.dataset.region = normalizeRegion(p.region || "global");
         item.innerHTML = `${escapeHtml(p.name)}<span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>`;
         item.onclick = () => {
           trackClick();
@@ -4384,36 +4386,42 @@
       return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
     }
 
-    function dedupePartnersByNameRegion(partners) {
-      const map = new Map();
+    function mergeDuplicates(partners) {
+      const merged = {};
 
       (partners || []).forEach(p => {
         if (!p || !p.name) return;
+
         const region = normalizeRegion(p.region || "global");
         const key = `${String(p.name).trim().toLowerCase()}|${region}`;
 
-        if (!map.has(key)) {
-          map.set(key, { ...p, region });
+        if (!merged[key]) {
+          merged[key] = { ...p, region };
           return;
         }
 
-        const existing = map.get(key);
-        map.set(key, {
-          ...existing,
-          ...p,
-          name: existing.name || p.name,
-          region,
-          url: existing.url || p.url || "#",
-          category_key: existing.category_key || p.category_key || categoryKeyForPartner(p),
-          category: existing.category || p.category || p.category_key,
-          network: existing.network || p.network || "",
-          tier: Number(existing.tier || p.tier || 99),
-          logo: existing.logo || p.logo || "",
-          description: existing.description || p.description || ""
+        // Merge missing fields from duplicate without overwriting useful existing data.
+        Object.keys(p).forEach(field => {
+          if (!merged[key][field] || merged[key][field] === "") {
+            merged[key][field] = p[field];
+          }
         });
+
+        merged[key].region = region;
+        merged[key].url = merged[key].url || p.url || "#";
+        merged[key].category_key = merged[key].category_key || p.category_key || categoryKeyForPartner(p);
+        merged[key].category = merged[key].category || p.category || p.category_key;
+        merged[key].network = merged[key].network || p.network || "";
+        merged[key].tier = Number(merged[key].tier || p.tier || 99);
+        merged[key].logo = merged[key].logo || p.logo || "";
+        merged[key].description = merged[key].description || p.description || "";
       });
 
-      return Array.from(map.values());
+      return Object.values(merged);
+    }
+
+    function dedupePartnersByNameRegion(partners) {
+      return mergeDuplicates(partners);
     }
 
     function groupGlobalPartnersByCategory(partners) {
@@ -4454,42 +4462,79 @@
       return dedupePartnersByNameRegion(combined);
     }
 
-    function highlightDuplicates(partners) {
+    function highlightDuplicatesInUI(partners) {
       const params = new URLSearchParams(window.location.search);
-      if (!params.has("debug")) return;
-
-      const overlay = document.getElementById("sb-debug") || document.getElementById("debug-overlay");
-      if (!overlay) return;
-
+      const debugEnabled = params.has("debug");
       const seen = new Map();
       const duplicates = [];
 
       (partners || []).forEach(p => {
-        const key = `${String(p.name || "").trim().toLowerCase()}|${normalizeRegion(p.region || "global")}`;
-        if (!p.name) return;
-        if (seen.has(key)) duplicates.push(p);
-        else seen.set(key, p);
+        if (!p || !p.name) return;
+        const key = `${String(p.name).trim().toLowerCase()}|${normalizeRegion(p.region || "global")}`;
+        if (seen.has(key)) {
+          duplicates.push(p);
+        } else {
+          seen.set(key, p);
+        }
       });
 
-      const section = document.createElement("div");
-      section.className = "debug-duplicates";
-      section.style.marginTop = "10px";
-      section.innerHTML = `<strong>⚠️ Duplicates (${duplicates.length})</strong><br>`;
+      // Highlight duplicates directly in the UI. Supports current sidebar/cards/chips.
+      duplicates.forEach(d => {
+        const name = cssEscape(String(d.name || ""));
+        const region = cssEscape(normalizeRegion(d.region || "global"));
+        const cards = document.querySelectorAll(
+          `.partner-card[data-name="${name}"][data-region="${region}"], .c1-partner[data-name="${name}"][data-region="${region}"], .partner-chip[data-name="${name}"][data-region="${region}"]`
+        );
 
-      if (!duplicates.length) {
-        section.insertAdjacentHTML("beforeend", `<span style="opacity:.75">None detected by name + region.</span>`);
-      } else {
+        cards.forEach(card => {
+          card.style.border = "2px solid red";
+          card.style.boxShadow = "0 0 5px red";
+          card.setAttribute("title", "⚠️ Duplicate partner detected");
+        });
+      });
+
+      // Also update debug overlay, but only when ?debug is present.
+      if (!debugEnabled) return;
+
+      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+      if (overlay) {
+        const oldSection = overlay.querySelector(".debug-duplicates");
+        if (oldSection) oldSection.remove();
+
+        const dupSection = document.createElement("div");
+        dupSection.className = "debug-duplicates";
+        dupSection.style.marginTop = "10px";
+        dupSection.innerHTML = `<h4 style="margin:0 0 6px">⚠️ Duplicates (${duplicates.length})</h4>`;
+
+        if (!duplicates.length) {
+          const empty = document.createElement("div");
+          empty.textContent = "None detected by name + region.";
+          empty.style.opacity = ".75";
+          dupSection.appendChild(empty);
+        }
+
         duplicates.forEach(d => {
           const el = document.createElement("div");
           el.className = "duplicate-item";
           el.textContent = `${d.name} [${normalizeRegion(d.region || "global")}]`;
-          el.style.color = "#ff6b6b";
-          section.appendChild(el);
+          el.style.color = "red";
+          dupSection.appendChild(el);
         });
-      }
 
-      overlay.appendChild(section);
+        overlay.appendChild(dupSection);
+        overlay.style.display = "block";
+      }
     }
+
+    function highlightDuplicates(partners) {
+      return highlightDuplicatesInUI(partners);
+    }
+
+    function cssEscape(value) {
+      if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(value);
+      return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    }
+
 
     async function loadPartners(region, allPartners) {
       const normalizedRegion = normalizeRegion(region || "global") || "global";
@@ -4652,7 +4697,7 @@
         .slice(0, 12);
 
       container.innerHTML = top.map(p => `
-        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">${escapeHtml(p.name || 'Partner')}</a>
+        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-name="${escapeHtml(p.name || '')}" data-region="${escapeHtml(normalizeRegion(p.region || 'global'))}">${escapeHtml(p.name || 'Partner')}</a>
       `).join("");
 
       container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
@@ -4716,7 +4761,7 @@
       const lang = await detectUserLanguage();
 
       const allPartners = baseAvailablePartners();
-      const partners = dedupePartnersByNameRegion(await loadPartners(region, allPartners));
+      const partners = mergeDuplicates(await loadPartners(region, allPartners));
       ACTIVE_PARTNERS = partners;
       window.ACTIVE_PARTNERS = partners;
 
@@ -4760,6 +4805,8 @@ function renderColumn1Simple(partners) {
   partners.forEach(p => {
     const item = document.createElement("a");
     item.className = "c1-partner";
+    item.dataset.name = p.name || "";
+    item.dataset.region = normalizeRegion(p.region || "global");
     item.href = p.url || "#";
     item.target = "_blank";
     item.rel = "noopener noreferrer";
@@ -4998,6 +5045,8 @@ function renderColumn1Grouped(partners) {
 
     const item = document.createElement("a");
     item.className = "c1-partner";
+    item.dataset.name = p.name || "";
+    item.dataset.region = normalizeRegion(p.region || "global");
     item.href = p.url || "#";
     item.target = "_blank";
     item.rel = "noopener noreferrer";
@@ -5149,6 +5198,8 @@ function renderUniquePartners(containerId, partners) {
 
     const el = document.createElement("div");
     el.className = "partner-card";
+    el.dataset.name = p.name || "";
+    el.dataset.region = normalizeRegion(p.region || "global");
     el.textContent = p.name;
     container.appendChild(el);
   });
@@ -5156,40 +5207,7 @@ function renderUniquePartners(containerId, partners) {
 
 /* STEP 10E: Safe duplicate merge helper only */
 function mergeDuplicatePartners(partners) {
-  const map = new Map();
-
-  (partners || []).forEach(p => {
-    const name = (p?.name || "").trim();
-    const region = getPartnerRegion(p);
-    const url = (p?.url || "").trim();
-
-    if (!name) return;
-
-    const key = `${name.toLowerCase()}|${region}`;
-
-    if (!map.has(key)) {
-      map.set(key, { ...p, region });
-      return;
-    }
-
-    const existing = map.get(key);
-
-    map.set(key, {
-      ...existing,
-      ...p,
-      name: existing.name || p.name,
-      region: existing.region || region,
-      url: existing.url || url,
-      category_key: existing.category_key || p.category_key || p.category,
-      category: existing.category || p.category || p.category_key,
-      network: existing.network || p.network,
-      tier: Number(existing.tier || p.tier || 99),
-      logo: existing.logo || p.logo || "",
-      description: existing.description || p.description || ""
-    });
-  });
-
-  return Array.from(map.values());
+  return mergeDuplicates(partners);
 }
 
 </script>
