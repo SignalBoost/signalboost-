@@ -7,6 +7,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -4099,32 +4100,36 @@
 
     let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
 
-    async function detectUserLanguage() {
-      const region = await detectUserRegion();
+
+    function detectLanguage(region) {
+      const normalizedRegion = normalizeRegion(region || "global");
       const map = {
-        br: "pt-BR",
-        pt: "pt",
-        pl: "pl",
+        br: "pt",
         mx: "es",
-        ar: "es",
-        es: "es",
-        latam: "es",
         us: "en",
-        ca: "en",
-        gb: "en",
         uk: "en",
+        gb: "en",
+        ca: "en",
         au: "en",
-        de: "de",
+        pl: "pl",
+        ru: "ru",
+        in: "hi",
         fr: "fr",
+        es: "es",
+        de: "de",
         it: "it",
         jp: "ja",
         kr: "ko",
         cn: "zh-CN",
-        zh: "zh-CN",
         tw: "zh-TW",
-        ru: "ru"
+        global: "en"
       };
-      return map[region] || "en";
+      return map[normalizedRegion] || "en";
+    }
+
+    async function detectUserLanguage() {
+      const region = await detectUserRegion();
+      return detectLanguage(region);
     }
 
     async function detectUserRegion() {
@@ -4150,24 +4155,39 @@
       return setActiveRegion("us");
     }
 
-    async function loadLanguage(lang) {
-      const builtInKey = lang === "pt-BR" ? "pt" : lang;
-      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
-      const externalCandidates = lang === builtInKey ? [lang] : [lang, builtInKey];
 
-      for (const candidate of externalCandidates) {
+    async function loadTranslations(lang) {
+      const normalizedLang = lang === "pt-BR" ? "pt" : lang;
+      const builtInBase = BUILT_IN_TRANSLATIONS.en || {};
+      const builtInLocal = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[normalizedLang] || {};
+      let translations = { ...builtInBase, ...builtInLocal };
+      const candidates = lang === normalizedLang ? [lang] : [lang, normalizedLang];
+
+      for (const candidate of candidates) {
         try {
           const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
-          if (res.ok) {
-            translations = { ...translations, ...(await res.json()) };
-            break;
-          }
-        } catch (e) {
-          console.info("Using built-in translations for", candidate);
+          if (!res.ok) throw new Error(`Missing translation file: ${candidate}`);
+          translations = { ...translations, ...(await res.json()) };
+          return translations;
+        } catch (err) {
+          console.warn(`⚠️ Falling back from ${candidate}: ${err.message}`);
         }
       }
 
-      ACTIVE_TRANSLATIONS = { ...BUILT_IN_TRANSLATIONS.en, ...translations };
+      if (lang !== "en") {
+        try {
+          const res = await fetch(`/i18n/en.json`, { cache: "no-store" });
+          if (res.ok) translations = { ...translations, ...(await res.json()) };
+        } catch (err) {
+          console.warn(`⚠️ Falling back to built-in English: ${err.message}`);
+        }
+      }
+
+      return translations;
+    }
+
+    function applyTranslations(translations, lang = document.documentElement.lang || "en") {
+      ACTIVE_TRANSLATIONS = { ...(BUILT_IN_TRANSLATIONS.en || {}), ...(translations || {}) };
 
       document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
@@ -4180,6 +4200,11 @@
       });
 
       document.documentElement.lang = lang;
+    }
+
+    async function loadLanguage(lang) {
+      const translations = await loadTranslations(lang);
+      applyTranslations(translations, lang);
     }
 
     async function initI18n(lang) {
@@ -4345,7 +4370,7 @@
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
-      const lang = await detectUserLanguage();
+      const lang = detectLanguage(region);
       await loadLanguage(lang);
       showDebug(region, lang);
 
@@ -4599,7 +4624,7 @@
 
     async function initSignalBoost() {
       const region = await detectUserRegion();
-      const lang = await detectUserLanguage();
+      const lang = detectLanguage(region);
 
       const allPartners = baseAvailablePartners();
       const partners = await loadPartners(region, allPartners);
