@@ -4994,6 +4994,33 @@ function getPartnerRegion(partner) {
   return normalizeRegion(partner?.region || "global");
 }
 
+
+/* STEP 10B: Safe partner filtering helpers only */
+function filterPartnersByRegion(partners, region) {
+  const selected = normalizeRegion(region);
+
+  return (partners || []).filter(p => {
+    const pRegion = getPartnerRegion(p);
+    return pRegion === selected || pRegion === "global";
+  });
+}
+
+function filterPartnersByCategorySafe(partners, categoryKey) {
+  const selected = normalizeCategory(categoryKey);
+
+  return (partners || []).filter(p => {
+    return getPartnerCategory(p) === selected;
+  });
+}
+
+function filterPartnersByTier(partners, tier = 1) {
+  const selectedTier = Number(tier);
+
+  return (partners || []).filter(p => {
+    return Number(p?.tier || 99) === selectedTier;
+  });
+}
+
 </script>
 
 </body>
