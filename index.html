@@ -4950,5 +4950,25 @@
     document.addEventListener("DOMContentLoaded", initSignalBoost);
   </script>
 
+  <script id="cache-buster-script">
+    document.addEventListener("DOMContentLoaded", () => {
+      const timestamp = Date.now();
+
+      document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
+        const href = link.getAttribute("href");
+        if (href && !href.includes("?v=")) {
+          link.setAttribute("href", `${href}?v=${timestamp}`);
+        }
+      });
+
+      document.querySelectorAll("script[src]").forEach(script => {
+        const src = script.getAttribute("src");
+        if (src && !src.includes("?v=")) {
+          script.setAttribute("src", `${src}?v=${timestamp}`);
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>
