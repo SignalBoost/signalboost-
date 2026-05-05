@@ -4913,6 +4913,46 @@ function renderColumn1Grouped(partners) {
   });
 }
 
+
+/* STEP 8 SAFE: Column 3 simple tier-sorted render */
+function renderColumn3Safe(partners) {
+  const col3 = document.getElementById("column3");
+  if (!col3) return;
+
+  col3.innerHTML = "";
+
+  if (!Array.isArray(partners) || partners.length === 0) {
+    col3.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
+    return;
+  }
+
+  const seen = new Set();
+
+  const top = partners
+    .slice()
+    .sort((a, b) => (a.tier || 99) - (b.tier || 99))
+    .filter(p => {
+      const key = `${p.name || ""}-${p.url || ""}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 8);
+
+  top.forEach(p => {
+    const item = document.createElement("a");
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.rel = "noopener noreferrer";
+    item.textContent = p.name || "Partner";
+    item.style.display = "block";
+    item.style.marginBottom = "6px";
+    item.style.textDecoration = "none";
+
+    col3.appendChild(item);
+  });
+}
+
 </script>
 
 </body>
