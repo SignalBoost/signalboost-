@@ -5751,5 +5751,70 @@ function mergeDuplicatePartners(partners) {
 })();
 </script>
 
+<script>
+/* SignalBoost deploy cache/debug helpers */
+(function () {
+  const COMMIT_HASH = "__COMMIT_HASH__";
+  window.SIGNALBOOST_COMMIT_HASH = COMMIT_HASH;
+
+  function assetVersion() {
+    return (COMMIT_HASH && COMMIT_HASH !== "__COMMIT_HASH__") ? COMMIT_HASH : String(Date.now());
+  }
+
+  function withVersion(url, version) {
+    try {
+      const parsed = new URL(url, window.location.href);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        parsed.searchParams.set("v", version);
+        return parsed.pathname + parsed.search + parsed.hash;
+      }
+    } catch (_) {}
+    return url;
+  }
+
+  function bustStaticAssetCache() {
+    const version = assetVersion();
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+      const href = link.getAttribute("href");
+      if (href && !href.includes("?v=")) link.setAttribute("href", withVersion(href, version));
+    });
+    document.querySelectorAll("script[src]").forEach(script => {
+      const src = script.getAttribute("src");
+      if (src && !src.includes("?v=")) script.setAttribute("src", withVersion(src, version));
+    });
+  }
+
+  window.showDebug = function showDebug(region, lang, commitHash, partners = [], errors = []) {
+    if (Array.isArray(commitHash)) {
+      errors = partners || [];
+      partners = commitHash;
+      commitHash = window.SIGNALBOOST_COMMIT_HASH || "local";
+    }
+
+    const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+    if (!box) return;
+
+    box.innerHTML = `
+      <strong>Region:</strong> ${region || "global"}<br>
+      <strong>Language:</strong> ${lang || navigator.language || "en"}<br>
+      <strong>Commit Hash:</strong> ${commitHash || window.SIGNALBOOST_COMMIT_HASH || "local"}<br>
+      <strong>Partners:</strong> ${(partners || []).length}<br>
+      <strong>Errors:</strong> ${(errors || []).length}
+    `;
+
+    const debugOn = new URLSearchParams(window.location.search).has("debug");
+    box.style.display = debugOn ? "block" : (box.id === "sb-debug" ? "none" : box.style.display || "none");
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    bustStaticAssetCache();
+    const info = window.__signalBoostFinalI18n || {};
+    if (new URLSearchParams(window.location.search).has("debug")) {
+      window.showDebug(info.region || (window.detectRegion && window.detectRegion()) || "global", info.lang || navigator.language, window.SIGNALBOOST_COMMIT_HASH, window.__signalBoostPartners || [], []);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
