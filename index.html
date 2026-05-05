@@ -1208,6 +1208,59 @@
       text-transform: uppercase;
     }
 
+
+    /* Mobile bottom navigation + responsive section scrolling */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: none;
+      justify-content: space-around;
+      background: #222;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      padding: 0.5rem;
+      z-index: 10001;
+    }
+
+    .bottom-nav button {
+      flex: 1;
+      padding: 0.85rem 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      background: none;
+      border: none;
+      color: #eee;
+      cursor: pointer;
+      font-family: system-ui, Arial, sans-serif;
+    }
+
+    .bottom-nav button:focus-visible {
+      outline: 2px solid #f5c542;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .bottom-nav {
+        display: flex;
+      }
+
+      body {
+        padding-bottom: 74px;
+      }
+
+      #stickyBar {
+        bottom: 74px;
+      }
+
+      #offersSection,
+      #videosSection,
+      #partnersSection {
+        scroll-margin-top: 58px;
+      }
+    }
+
 </style>
 </head>
 
@@ -1228,7 +1281,7 @@
   <div class="directory-menu" id="directoryMenu"></div>
 
   <div class="app">
-    <div class="column column-1">
+    <div class="column column-1" id="offersSection" tabindex="-1">
       <div class="column-1-controls">
         <div id="leftHeader" class="column-1-header" data-i18n="explore_offers">Explore offers</div>
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
@@ -1263,18 +1316,25 @@
       </div>
     </div>
 
-    <div class="column column-2">
+    <div class="column column-2" id="videosSection" tabindex="-1">
       <div id="magnetoColumn">
         <div id="heroFeedStatus" class="hero-feed-status"></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
 
-    <div class="column column-3">
+    <div class="column column-3" id="partnersSection" tabindex="-1">
       <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
       <div id="partnerChips" class="brand-grid"></div>
     </div>
   </div>
+
+
+  <nav class="bottom-nav" aria-label="Mobile section navigation">
+    <button type="button" data-target="offersSection">Offers</button>
+    <button type="button" data-target="videosSection">Videos</button>
+    <button type="button" data-target="partnersSection">Partners</button>
+  </nav>
 
   <div id="stickyBar">
     <div class="sticky-copy" id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
@@ -5444,6 +5504,25 @@ function renderUniquePartners(containerId, partners) {
 function mergeDuplicatePartners(partners) {
   return mergeDuplicates(partners);
 }
+
+
+// --- Mobile bottom-nav smooth scroll ---
+document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.querySelector(".bottom-nav");
+  if (!nav) return;
+
+  nav.addEventListener("click", e => {
+    const button = e.target.closest("button[data-target]");
+    if (!button) return;
+
+    const target = button.dataset.target;
+    const section = document.getElementById(target);
+    if (!section) return;
+
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    section.focus({ preventScroll: true });
+  });
+});
 
 </script>
 
