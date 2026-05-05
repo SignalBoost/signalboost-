@@ -6,6 +6,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -4383,6 +4384,113 @@
       return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
     }
 
+    function dedupePartnersByNameRegion(partners) {
+      const map = new Map();
+
+      (partners || []).forEach(p => {
+        if (!p || !p.name) return;
+        const region = normalizeRegion(p.region || "global");
+        const key = `${String(p.name).trim().toLowerCase()}|${region}`;
+
+        if (!map.has(key)) {
+          map.set(key, { ...p, region });
+          return;
+        }
+
+        const existing = map.get(key);
+        map.set(key, {
+          ...existing,
+          ...p,
+          name: existing.name || p.name,
+          region,
+          url: existing.url || p.url || "#",
+          category_key: existing.category_key || p.category_key || categoryKeyForPartner(p),
+          category: existing.category || p.category || p.category_key,
+          network: existing.network || p.network || "",
+          tier: Number(existing.tier || p.tier || 99),
+          logo: existing.logo || p.logo || "",
+          description: existing.description || p.description || ""
+        });
+      });
+
+      return Array.from(map.values());
+    }
+
+    function groupGlobalPartnersByCategory(partners) {
+      const grouped = {};
+
+      (partners || []).forEach(p => {
+        if (!usablePartner(p)) return;
+        if (normalizeRegion(p.region || "") !== "global") return;
+
+        const category = categoryKeySafe(p);
+        if (!grouped[category]) grouped[category] = [];
+        grouped[category].push(p);
+      });
+
+      return grouped;
+    }
+
+    function buildCuratedRegionalPartners(region, allPartners) {
+      const normalizedRegion = normalizeRegion(region || "global");
+      const all = (allPartners || baseAvailablePartners())
+        .map(p => ({ ...p, category_key: p.category_key || categoryKeyForPartner(p) }))
+        .filter(usablePartner);
+
+      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
+      const globalByCategory = groupGlobalPartnersByCategory(all);
+
+      if (!regional.length) {
+        return dedupePartnersByNameRegion(all.filter(p => partnerRegionMatches(p, "global")));
+      }
+
+      const combined = [];
+      regional.forEach(p => {
+        combined.push(p);
+        const category = categoryKeySafe(p);
+        (globalByCategory[category] || []).forEach(globalPartner => combined.push(globalPartner));
+      });
+
+      return dedupePartnersByNameRegion(combined);
+    }
+
+    function highlightDuplicates(partners) {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("debug")) return;
+
+      const overlay = document.getElementById("sb-debug") || document.getElementById("debug-overlay");
+      if (!overlay) return;
+
+      const seen = new Map();
+      const duplicates = [];
+
+      (partners || []).forEach(p => {
+        const key = `${String(p.name || "").trim().toLowerCase()}|${normalizeRegion(p.region || "global")}`;
+        if (!p.name) return;
+        if (seen.has(key)) duplicates.push(p);
+        else seen.set(key, p);
+      });
+
+      const section = document.createElement("div");
+      section.className = "debug-duplicates";
+      section.style.marginTop = "10px";
+      section.innerHTML = `<strong>⚠️ Duplicates (${duplicates.length})</strong><br>`;
+
+      if (!duplicates.length) {
+        section.insertAdjacentHTML("beforeend", `<span style="opacity:.75">None detected by name + region.</span>`);
+      } else {
+        duplicates.forEach(d => {
+          const el = document.createElement("div");
+          el.className = "duplicate-item";
+          el.textContent = `${d.name} [${normalizeRegion(d.region || "global")}]`;
+          el.style.color = "#ff6b6b";
+          section.appendChild(el);
+        });
+      }
+
+      overlay.appendChild(section);
+    }
+
     async function loadPartners(region, allPartners) {
       const normalizedRegion = normalizeRegion(region || "global") || "global";
 
@@ -4392,24 +4500,32 @@
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length) {
-            return data
+            const backendPartners = data
               .map(p => ({
                 ...p,
                 category_key: p.category_key || categoryKeyForPartner(p)
               }))
               .filter(usablePartner);
+
+            // Merge same-category global fallbacks when the backend returns strictly regional data.
+            const embeddedGlobal = groupGlobalPartnersByCategory(allPartners || baseAvailablePartners());
+            const combined = [];
+            backendPartners.forEach(p => {
+              combined.push(p);
+              if (normalizeRegion(p.region || "") !== "global") {
+                (embeddedGlobal[categoryKeySafe(p)] || []).forEach(g => combined.push(g));
+              }
+            });
+
+            return dedupePartnersByNameRegion(combined);
           }
         }
       } catch (e) {
         console.warn("/partners route unavailable; using embedded partnersData fallback", e);
       }
 
-      // Safe fallback: keep the old baseline behavior if backend is unavailable.
-      const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
-
-      if (regional.length > 0) return regional;
-      return all.filter(p => partnerRegionMatches(p, "global"));
+      // Safe fallback: strict regional isolation + same-category global fallback.
+      return buildCuratedRegionalPartners(normalizedRegion, allPartners || baseAvailablePartners());
     }
 
     function categoryKeySafe(partner) {
@@ -4447,9 +4563,8 @@
       // Column 1 should show global + regional non-travel partners.
       // This keeps useful global offers visible without duplicating travel header categories.
       const region = getRegion();
-      const source = baseAvailablePartners()
+      const source = dedupePartnersByNameRegion(partners || ACTIVE_PARTNERS || [])
         .filter(usablePartner)
-        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
         .filter(p => column1Set.has(categoryKeySafe(p)));
 
       const items = partnersFilteredBySearch(source);
@@ -4601,7 +4716,7 @@
       const lang = await detectUserLanguage();
 
       const allPartners = baseAvailablePartners();
-      const partners = await loadPartners(region, allPartners);
+      const partners = dedupePartnersByNameRegion(await loadPartners(region, allPartners));
       ACTIVE_PARTNERS = partners;
       window.ACTIVE_PARTNERS = partners;
 
@@ -4621,6 +4736,7 @@
       try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
       try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
       try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
+      try { highlightDuplicates(partners); } catch (e) { console.error("highlightDuplicates failed", e); }
       try { validatePartners(); } catch (e) {}
 
       const search = document.getElementById("partnerSearch");
@@ -5018,6 +5134,25 @@ function filterPartnersByTier(partners, tier = 1) {
   });
 }
 
+
+function renderUniquePartners(containerId, partners) {
+  const seen = new Set();
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  (partners || []).forEach(p => {
+    const key = `${String(p.name || "").toLowerCase()}|${normalizeRegion(p.region || "global")}`;
+    if (!p.name || seen.has(key)) return;
+    seen.add(key);
+
+    const el = document.createElement("div");
+    el.className = "partner-card";
+    el.textContent = p.name;
+    container.appendChild(el);
+  });
+}
 
 /* STEP 10E: Safe duplicate merge helper only */
 function mergeDuplicatePartners(partners) {
