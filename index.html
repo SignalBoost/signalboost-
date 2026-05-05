@@ -1177,10 +1177,8 @@
 
     .partner-chip {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
       min-height: 72px;
       padding: 12px;
       border-radius: 12px;
@@ -1196,69 +1194,6 @@
     .partner-chip:hover {
       border-color: rgba(245,197,66,0.30);
       transform: translateY(-2px);
-    }
-
-    .partner-chip .partner-meta {
-      display: block;
-      margin-top: 2px;
-      color: #9bb0c2;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-    }
-
-
-    /* Mobile bottom navigation + responsive section scrolling */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: none;
-      justify-content: space-around;
-      background: #222;
-      border-top: 1px solid rgba(255,255,255,0.10);
-      padding: 0.5rem;
-      z-index: 10001;
-    }
-
-    .bottom-nav button {
-      flex: 1;
-      padding: 0.85rem 0.5rem;
-      font-size: 0.95rem;
-      font-weight: 800;
-      background: none;
-      border: none;
-      color: #eee;
-      cursor: pointer;
-      font-family: system-ui, Arial, sans-serif;
-    }
-
-    .bottom-nav button:focus-visible {
-      outline: 2px solid #f5c542;
-      outline-offset: 2px;
-      border-radius: 8px;
-    }
-
-    @media (max-width: 768px) {
-      .bottom-nav {
-        display: flex;
-      }
-
-      body {
-        padding-bottom: 74px;
-      }
-
-      #stickyBar {
-        bottom: 74px;
-      }
-
-      #offersSection,
-      #videosSection,
-      #partnersSection {
-        scroll-margin-top: 58px;
-      }
     }
 
 </style>
@@ -1281,7 +1216,7 @@
   <div class="directory-menu" id="directoryMenu"></div>
 
   <div class="app">
-    <div class="column column-1" id="offersSection" tabindex="-1">
+    <div class="column column-1">
       <div class="column-1-controls">
         <div id="leftHeader" class="column-1-header" data-i18n="explore_offers">Explore offers</div>
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
@@ -1316,25 +1251,18 @@
       </div>
     </div>
 
-    <div class="column column-2" id="videosSection" tabindex="-1">
+    <div class="column column-2">
       <div id="magnetoColumn">
         <div id="heroFeedStatus" class="hero-feed-status"></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
 
-    <div class="column column-3" id="partnersSection" tabindex="-1">
+    <div class="column column-3">
       <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
       <div id="partnerChips" class="brand-grid"></div>
     </div>
   </div>
-
-
-  <nav class="bottom-nav" aria-label="Mobile section navigation">
-    <button type="button" data-target="offersSection">Offers</button>
-    <button type="button" data-target="videosSection">Videos</button>
-    <button type="button" data-target="partnersSection">Partners</button>
-  </nav>
 
   <div id="stickyBar">
     <div class="sticky-copy" id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
@@ -3355,6 +3283,11 @@
         const key = cardKeys[index];
         if (key && dict.amazonCards && dict.amazonCards[key]) card.textContent = dict.amazonCards[key];
       });
+
+      // Generic i18n pass for current and newly-rendered elements.
+      if (typeof applyTranslations === "function") {
+        applyTranslations(ACTIVE_TRANSLATIONS || {});
+      }
     }
 
     function headerPreferredRegions() {
@@ -4229,36 +4162,149 @@
       return setActiveRegion(detectRegion());
     }
 
-    async function loadLanguage(lang) {
-      const builtInKey = lang === "pt-BR" ? "pt" : lang;
-      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
-      const externalCandidates = lang === builtInKey ? [lang] : [lang, builtInKey];
+    function normalizeLanguageCode(lang) {
+      const raw = String(lang || "en").trim();
+      const lower = raw.toLowerCase();
+      if (lower === "pt-br" || lower === "br") return "pt";
+      if (lower === "zh-cn" || lower === "cn" || lower === "zh") return "zh-CN";
+      if (lower === "zh-tw" || lower === "tw") return "zh-TW";
+      if (lower === "gb" || lower === "uk" || lower === "us" || lower === "global") return "en";
+      if (lower === "mx" || lower === "latam" || lower === "es-es") return "es";
+      if (lower === "jp") return "ja";
+      if (lower === "kr") return "ko";
+      return lower;
+    }
 
-      for (const candidate of externalCandidates) {
-        try {
-          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
-          if (res.ok) {
-            translations = { ...translations, ...(await res.json()) };
-            break;
-          }
-        } catch (e) {
-          console.info("Using built-in translations for", candidate);
-        }
-      }
+    function detectLanguage(region) {
+      const map = {
+        br: "pt",
+        pt: "pt",
+        mx: "es",
+        latam: "es",
+        es: "es",
+        us: "en",
+        ca: "en",
+        gb: "en",
+        uk: "en",
+        global: "en",
+        pl: "pl",
+        ru: "ru",
+        in: "hi",
+        fr: "fr",
+        de: "de",
+        it: "it",
+        jp: "ja",
+        kr: "ko",
+        cn: "zh-CN",
+        zh: "zh-CN",
+        tw: "zh-TW"
+      };
 
-      ACTIVE_TRANSLATIONS = { ...BUILT_IN_TRANSLATIONS.en, ...translations };
+      if (region && map[String(region).toLowerCase()]) return map[String(region).toLowerCase()];
+
+      const browser = (navigator.language || "en").toLowerCase();
+      if (browser.startsWith("pt")) return "pt";
+      if (browser.startsWith("es")) return "es";
+      if (browser.startsWith("pl")) return "pl";
+      if (browser.startsWith("ru")) return "ru";
+      if (browser.startsWith("fr")) return "fr";
+      if (browser.startsWith("de")) return "de";
+      if (browser.startsWith("it")) return "it";
+      if (browser.startsWith("ja")) return "ja";
+      if (browser.startsWith("ko")) return "ko";
+      if (browser.startsWith("zh-tw")) return "zh-TW";
+      if (browser.startsWith("zh")) return "zh-CN";
+      return "en";
+    }
+
+    function applyTranslations(translations) {
+      const dict = { ...BUILT_IN_TRANSLATIONS.en, ...(translations || {}) };
+      ACTIVE_TRANSLATIONS = dict;
 
       document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
-        if (ACTIVE_TRANSLATIONS[key]) el.textContent = ACTIVE_TRANSLATIONS[key];
+        if (dict[key]) el.textContent = dict[key];
       });
 
       document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
         const key = el.getAttribute("data-i18n-placeholder");
-        if (ACTIVE_TRANSLATIONS[key]) el.setAttribute("placeholder", ACTIVE_TRANSLATIONS[key]);
+        if (dict[key]) el.setAttribute("placeholder", dict[key]);
       });
 
-      document.documentElement.lang = lang;
+      return dict;
+    }
+
+    function detectMissingTranslations(translations) {
+      const dict = translations || ACTIVE_TRANSLATIONS || {};
+      const missing = [];
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (!dict[key]) {
+          missing.push(key);
+          if (new URLSearchParams(window.location.search).has("debug")) {
+            el.style.outline = "2px solid red";
+            el.setAttribute("title", `⚠️ Missing translation: ${key}`);
+          }
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (!dict[key]) missing.push(key);
+      });
+
+      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+      if (overlay && new URLSearchParams(window.location.search).has("debug")) {
+        const old = overlay.querySelector(".debug-missing");
+        if (old) old.remove();
+
+        const missSection = document.createElement("div");
+        missSection.className = "debug-missing";
+        missSection.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
+        missing.forEach(k => {
+          const el = document.createElement("div");
+          el.className = "missing-item";
+          el.textContent = k;
+          el.style.color = "orange";
+          missSection.appendChild(el);
+        });
+        overlay.appendChild(missSection);
+      }
+
+      return Array.from(new Set(missing));
+    }
+
+    async function loadTranslations(lang) {
+      const normalized = normalizeLanguageCode(lang);
+      const builtInKey = normalized === "pt-BR" ? "pt" : normalized;
+      let translations = BUILT_IN_TRANSLATIONS[normalized] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
+
+      const candidates = Array.from(new Set([normalized, builtInKey, "en"].filter(Boolean)));
+
+      for (const candidate of candidates) {
+        try {
+          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
+          if (res.ok) {
+            const external = await res.json();
+            translations = { ...translations, ...external };
+            break;
+          }
+        } catch (err) {
+          console.info("Using built-in translations for", candidate);
+        }
+      }
+
+      return { ...BUILT_IN_TRANSLATIONS.en, ...translations };
+    }
+
+    async function loadLanguage(lang) {
+      const normalized = normalizeLanguageCode(lang);
+      const translations = await loadTranslations(normalized);
+      applyTranslations(translations);
+      document.documentElement.lang = normalized;
+      detectMissingTranslations(translations);
+      return translations;
     }
 
     async function initI18n(lang) {
@@ -4424,7 +4470,7 @@
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
-      const lang = await detectUserLanguage();
+      const lang = detectLanguage(region);
       await loadLanguage(lang);
       showDebug(region, lang);
 
@@ -4948,13 +4994,10 @@
 
 
 
-    // --- Column 2: resilient regional video feed with 45-minute session refresh ---
-    function getColumn2Container() {
-      // The real Column 2 list in this layout is #feedContainer.
-      // #column2 is kept as a compatibility fallback for older snippets.
-      return document.getElementById("feedContainer") || document.getElementById("column2");
-    }
-
+    // --- Column 2: resilient feed renderer with 45-minute session refresh ---
+    // The public page should not depend on /api/videos being present. The existing
+    // hero feed loader already tries configured endpoints and then falls back to
+    // embedded feed cards, so Column 2 always renders instead of showing an error.
     function youtubeRegionCode(region) {
       const normalized = normalizeRegion(region || "global");
       const map = {
@@ -4976,80 +5019,29 @@
     }
 
     async function renderColumn2(region) {
-      const col2 = getColumn2Container();
+      const container = document.getElementById("feedContainer");
       const status = document.getElementById("heroFeedStatus");
-      if (!col2) return;
-
-      col2.innerHTML = "";
-      if (status) status.textContent = "Loading regional videos...";
+      if (!container) return;
 
       try {
-        const res = await fetch(
-          `/api/videos?chart=mostPopular&regionCode=${encodeURIComponent(youtubeRegionCode(region))}&maxResults=10`,
-          { cache: "no-store" }
-        );
-
-        if (!res.ok) throw new Error(`Video API error: ${res.status}`);
-
-        const data = await res.json();
-
-        if (data.items?.length) {
-          buildVideoCards(data.items, col2);
-          if (status) status.textContent = "";
-          return;
-        }
-
-        console.warn("No regional videos returned; using built-in fallback feed.");
-      } catch (err) {
-        console.warn("Regional video API unavailable; using built-in fallback feed:", err);
-      }
-
-      try {
+        window.REGION = normalizeRegion(region || getRegion());
+        if (status) status.textContent = t().loadingVideos || "Loading current videos…";
         await renderFeed();
         if (status) status.textContent = "";
-      } catch (fallbackErr) {
-        console.error("❌ Column 2 fallback failed:", fallbackErr);
-        col2.innerHTML = `<div class="partners-empty">No videos available right now.</div>`;
-        if (status) status.textContent = "";
-      }
-    }
-
-    function buildVideoCards(videos, container) {
-      container.innerHTML = "";
-
-      (videos || []).slice(0, 10).forEach(v => {
-        const videoId = typeof v.id === "object" ? v.id.videoId : (v.videoId || v.id);
-        const snippet = v.snippet || {};
-        const title = snippet.title || v.title || "Regional video";
-        const channel = snippet.channelTitle || v.channel || "";
-
-        if (!videoId) return;
-
-        const card = document.createElement("div");
-        card.className = "feed-card video-card";
-
-        card.innerHTML = `
-          <div class="media-box">
-            <iframe
-              src="https://www.youtube.com/embed/${escapeHtml(videoId)}"
-              title="${escapeHtml(title)}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen>
-            </iframe>
-          </div>
-
-          <div class="feed-content">
-            <h3>${escapeHtml(title)}</h3>
-            <div class="feed-meta">${escapeHtml(channel)}</div>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-
-      if (!container.children.length) {
-        container.innerHTML = `<div class="partners-empty">No regional videos available.</div>`;
+      } catch (err) {
+        console.error("Column 2 feed fallback failed:", err);
+        const items = Array.isArray(fallbackHeroFeedItems) ? fallbackHeroFeedItems : [];
+        if (items.length) {
+          feedSourceItems = items.slice();
+          feedNextIndex = 0;
+          const firstBatch = getNextFeedBatch();
+          container.innerHTML = firstBatch.map((item, index) => renderFeedCard(item, index)).join("");
+          attachFeedTracking();
+          if (status) status.textContent = "";
+        } else {
+          container.innerHTML = `<div class="partners-empty">No videos available yet.</div>`;
+          if (status) status.textContent = "";
+        }
       }
     }
 
@@ -5068,7 +5060,7 @@
 
     async function initSignalBoost() {
       const region = await detectUserRegion();
-      const lang = await detectUserLanguage();
+      const lang = detectLanguage(region);
 
       const allPartners = baseAvailablePartners();
       const partners = await loadPartnersStrict(region);
@@ -5169,9 +5161,35 @@ function getVideoRegionChain(region) {
 }
 
 async function renderColumn2VideosOnly(region) {
-  return renderColumn2(region);
-}
+  const container = document.getElementById("feedContainer") || document.getElementById("column2");
+  const status = document.getElementById("heroFeedStatus");
+  if (!container) return;
 
+  container.innerHTML = "";
+  if (status) status.textContent = "Loading regional videos...";
+
+  const chain = getVideoRegionChain(region);
+
+  for (const r of chain) {
+    try {
+      const res = await fetch(`/videos?region=${encodeURIComponent(r)}&t=${Date.now()}`);
+      if (!res.ok) continue;
+
+      const videos = await res.json();
+
+      if (Array.isArray(videos) && videos.length > 0) {
+        buildColumn2VideoCards(videos, container);
+        if (status) status.textContent = `Videos for ${r}`;
+        return;
+      }
+    } catch (err) {
+      console.warn("Video fetch failed:", r, err);
+    }
+  }
+
+  container.innerHTML = `<div class="partners-empty">No videos available for this region yet.</div>`;
+  if (status) status.textContent = "No videos available.";
+}
 
 function buildColumn2VideoCards(videos, container) {
   container.innerHTML = "";
@@ -5216,7 +5234,8 @@ function buildColumn2VideoCards(videos, container) {
 }
 
 function scheduleColumn2Refresh(region) {
-  scheduleColumn2Session(region);
+  renderColumn2VideosOnly(region);
+  setInterval(() => renderColumn2VideosOnly(region), 900000);
 }
 
 
@@ -5505,25 +5524,231 @@ function mergeDuplicatePartners(partners) {
   return mergeDuplicates(partners);
 }
 
+</script>
 
-// --- Mobile bottom-nav smooth scroll ---
-document.addEventListener("DOMContentLoaded", () => {
-  const nav = document.querySelector(".bottom-nav");
-  if (!nav) return;
+<script>
+/* FINAL TRANSLATION FIX — single browser-safe i18n pass.
+   This intentionally runs after the older scripts so it overrides any legacy
+   applyI18N/buildTravelDirectory text that was resetting labels to English. */
+(function () {
+  const FINAL_I18N = {
+    en: {
+      brand_name: "SignalBoost", explore_offers: "Explore offers", search_placeholder: "Flights, hotels, eSIM, tours...",
+      marketplace: "Marketplace", products_tools: "Products & Tools", finance: "Finance", insurance: "Insurance & Claims",
+      travel_services: "Storage & Services", specialty_other: "Specialty & Other", partners: "Partners",
+      featured_service: "Explore a featured service picked for you.", view_more: "View More",
+      flights: "Flights", hotels: "Hotels", transfers: "Transfers & Transport", car_rentals: "Car Rentals", sim: "SIM & Connectivity", tours: "Tours & Activities"
+    },
+    es: {
+      brand_name: "SignalBoost", explore_offers: "Explorar ofertas", search_placeholder: "Vuelos, hoteles, eSIM, tours...",
+      marketplace: "Marketplace", products_tools: "Productos y herramientas", finance: "Finanzas", insurance: "Seguros y reclamaciones",
+      travel_services: "Almacenamiento y servicios", specialty_other: "Especialidad y otros", partners: "Socios",
+      featured_service: "Explora un servicio destacado elegido para ti.", view_more: "Ver más",
+      flights: "Vuelos", hotels: "Hoteles", transfers: "Traslados y transporte", car_rentals: "Alquiler de autos", sim: "SIM y conectividad", tours: "Tours y actividades"
+    },
+    pt: {
+      brand_name: "SignalBoost", explore_offers: "Explorar ofertas", search_placeholder: "Voos, hotéis, eSIM, passeios...",
+      marketplace: "Marketplace", products_tools: "Produtos e ferramentas", finance: "Finanças", insurance: "Seguros e reembolsos",
+      travel_services: "Armazenamento e serviços", specialty_other: "Especialidade e outros", partners: "Parceiros",
+      featured_service: "Explore um serviço em destaque escolhido para você.", view_more: "Ver mais",
+      flights: "Voos", hotels: "Hotéis", transfers: "Transfers e transporte", car_rentals: "Aluguel de carros", sim: "SIM e conectividade", tours: "Passeios e atividades"
+    },
+    pl: {
+      brand_name: "SignalBoost", explore_offers: "Przeglądaj oferty", search_placeholder: "Loty, hotele, eSIM, wycieczki...",
+      marketplace: "Marketplace", products_tools: "Produkty i narzędzia", finance: "Finanse", insurance: "Ubezpieczenia i roszczenia",
+      travel_services: "Przechowalnia i usługi", specialty_other: "Specjalne i inne", partners: "Partnerzy",
+      featured_service: "Sprawdź wyróżnioną usługę wybraną dla Ciebie.", view_more: "Zobacz więcej",
+      flights: "Loty", hotels: "Hotele", transfers: "Transfery i transport", car_rentals: "Wynajem aut", sim: "SIM i łączność", tours: "Wycieczki i atrakcje"
+    },
+    fr: {
+      brand_name: "SignalBoost", explore_offers: "Explorer les offres", search_placeholder: "Vols, hôtels, eSIM, visites...",
+      marketplace: "Marketplace", products_tools: "Produits et outils", finance: "Finance", insurance: "Assurance et réclamations",
+      travel_services: "Stockage et services", specialty_other: "Spécialité et autres", partners: "Partenaires",
+      featured_service: "Explorez un service mis en avant pour vous.", view_more: "Voir plus",
+      flights: "Vols", hotels: "Hôtels", transfers: "Transferts et transport", car_rentals: "Location de voitures", sim: "SIM et connectivité", tours: "Tours et activités"
+    },
+    de: {
+      brand_name: "SignalBoost", explore_offers: "Angebote entdecken", search_placeholder: "Flüge, Hotels, eSIM, Touren...",
+      marketplace: "Marktplatz", products_tools: "Produkte und Tools", finance: "Finanzen", insurance: "Versicherung und Ansprüche",
+      travel_services: "Gepäckaufbewahrung und Services", specialty_other: "Spezialangebote und Sonstiges", partners: "Partner",
+      featured_service: "Entdecken Sie einen ausgewählten Service.", view_more: "Mehr anzeigen",
+      flights: "Flüge", hotels: "Hotels", transfers: "Transfers und Transport", car_rentals: "Mietwagen", sim: "SIM und Konnektivität", tours: "Touren und Aktivitäten"
+    },
+    it: {
+      brand_name: "SignalBoost", explore_offers: "Esplora offerte", search_placeholder: "Voli, hotel, eSIM, tour...",
+      marketplace: "Marketplace", products_tools: "Prodotti e strumenti", finance: "Finanza", insurance: "Assicurazione e reclami",
+      travel_services: "Deposito e servizi", specialty_other: "Specialità e altro", partners: "Partner",
+      featured_service: "Esplora un servizio in evidenza scelto per te.", view_more: "Mostra di più",
+      flights: "Voli", hotels: "Hotel", transfers: "Transfer e trasporti", car_rentals: "Noleggio auto", sim: "SIM e connettività", tours: "Tour e attività"
+    },
+    ru: {
+      brand_name: "SignalBoost", explore_offers: "Смотреть предложения", search_placeholder: "Авиабилеты, отели, eSIM, туры...",
+      marketplace: "Маркетплейс", products_tools: "Товары и инструменты", finance: "Финансы", insurance: "Страхование и претензии",
+      travel_services: "Хранение и сервисы", specialty_other: "Специальное и другое", partners: "Партнеры",
+      featured_service: "Посмотрите рекомендуемый сервис.", view_more: "Подробнее",
+      flights: "Авиабилеты", hotels: "Отели", transfers: "Трансферы и транспорт", car_rentals: "Аренда авто", sim: "SIM и связь", tours: "Туры и активности"
+    }
+  };
 
-  nav.addEventListener("click", e => {
-    const button = e.target.closest("button[data-target]");
-    if (!button) return;
+  const CATEGORY_TO_KEY = {
+    "Flights & Meta Search": "flights",
+    "Hotels": "hotels",
+    "Transfers & Transport": "transfers",
+    "Car Rentals": "car_rentals",
+    "SIM & Connectivity": "sim",
+    "Tours & Activities": "tours",
+    "Marketplace": "marketplace",
+    "Products & Tools": "products_tools",
+    "Finance": "finance",
+    "Insurance & Claims": "insurance",
+    "Storage & Services": "travel_services",
+    "Specialty & Other": "specialty_other"
+  };
 
-    const target = button.dataset.target;
-    const section = document.getElementById(target);
-    if (!section) return;
+  function normalizeLang(lang) {
+    const l = String(lang || "en").toLowerCase();
+    if (l === "pt-br" || l.startsWith("pt")) return "pt";
+    if (l === "zh-cn" || l.startsWith("zh")) return "zh-CN";
+    if (l === "zh-tw") return "zh-TW";
+    if (l.startsWith("es")) return "es";
+    if (l.startsWith("pl")) return "pl";
+    if (l.startsWith("fr")) return "fr";
+    if (l.startsWith("de")) return "de";
+    if (l.startsWith("it")) return "it";
+    if (l.startsWith("ru")) return "ru";
+    if (l.startsWith("ja")) return "ja";
+    if (l.startsWith("ko")) return "ko";
+    return "en";
+  }
 
-    section.scrollIntoView({ behavior: "smooth", block: "start" });
-    section.focus({ preventScroll: true });
+  function detectFinalRegion() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("region")) return params.get("region").toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes("/pt-br") || path.includes("/br")) return "br";
+    if (path.includes("/pl")) return "pl";
+    if (path.includes("/es")) return "es";
+    if (path.includes("/fr")) return "fr";
+    if (path.includes("/de")) return "de";
+    if (path.includes("/it")) return "it";
+    if (path.includes("/ru")) return "ru";
+    if (window.ACTIVE_REGION) return String(window.ACTIVE_REGION).toLowerCase();
+    return "global";
+  }
+
+  function detectFinalLanguage(region) {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("lang")) return normalizeLang(params.get("lang"));
+    const map = { br: "pt", pt: "pt", mx: "es", latam: "es", es: "es", pl: "pl", fr: "fr", de: "de", it: "it", ru: "ru", us: "en", uk: "en", gb: "en", global: "en" };
+    if (map[region]) return map[region];
+    return normalizeLang(navigator.language || "en");
+  }
+
+  async function loadFinalTranslations(lang) {
+    let dict = { ...FINAL_I18N.en, ...(FINAL_I18N[lang] || {}) };
+    const candidates = Array.from(new Set([lang, lang === "pt" ? "pt-BR" : null, "en"].filter(Boolean)));
+    for (const candidate of candidates) {
+      try {
+        const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
+        if (res.ok) {
+          dict = { ...dict, ...(await res.json()) };
+          if (candidate !== "en") break;
+        }
+      } catch (_) {}
+    }
+    return dict;
+  }
+
+  function applyFinalTranslations(dict, lang, region) {
+    window.ACTIVE_TRANSLATIONS = { ...(window.ACTIVE_TRANSLATIONS || {}), ...dict };
+    document.documentElement.lang = lang;
+    document.documentElement.dataset.lang = lang;
+    document.documentElement.dataset.region = region;
+    document.documentElement.setAttribute("data-i18n-ready", "1");
+
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      if (dict[key]) el.textContent = dict[key];
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+      const key = el.getAttribute("data-i18n-placeholder");
+      if (dict[key]) el.setAttribute("placeholder", dict[key]);
+    });
+
+    const idMap = {
+      leftHeader: "explore_offers",
+      brandGridTitle: "partners",
+      stickyCopy: "featured_service",
+      stickyLink: "view_more"
+    };
+    Object.entries(idMap).forEach(([id, key]) => {
+      const el = document.getElementById(id);
+      if (el && dict[key]) el.textContent = dict[key];
+    });
+
+    document.querySelectorAll(".c1-group[data-cat] .c1-header").forEach(header => {
+      const cat = header.closest(".c1-group")?.getAttribute("data-cat");
+      if (cat && dict[cat]) header.textContent = dict[cat];
+    });
+
+    document.querySelectorAll(".directory-item").forEach(btn => {
+      const category = btn.dataset.category || "";
+      const key = CATEGORY_TO_KEY[category] || category;
+      const count = (btn.textContent.match(/\((\d+)\)/) || [null, ""])[1];
+      if (dict[key]) btn.textContent = count ? `${dict[key]} (${count})` : dict[key];
+    });
+
+    const menuTitle = document.querySelector(".directory-menu-title");
+    if (menuTitle) {
+      const raw = Object.keys(CATEGORY_TO_KEY).find(cat => menuTitle.textContent.includes(cat));
+      if (raw && dict[CATEGORY_TO_KEY[raw]]) menuTitle.textContent = dict[CATEGORY_TO_KEY[raw]];
+    }
+  }
+
+  function detectMissingFinalTranslations(dict) {
+    const missing = [];
+    document.querySelectorAll("[data-i18n], [data-i18n-placeholder]").forEach(el => {
+      const key = el.getAttribute("data-i18n") || el.getAttribute("data-i18n-placeholder");
+      if (key && !dict[key]) missing.push(key);
+    });
+    const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+    if (overlay && new URLSearchParams(window.location.search).has("debug")) {
+      const old = overlay.querySelector(".debug-missing");
+      if (old) old.remove();
+      const section = document.createElement("div");
+      section.className = "debug-missing";
+      section.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
+      Array.from(new Set(missing)).forEach(k => {
+        const item = document.createElement("div");
+        item.className = "missing-item";
+        item.style.color = "orange";
+        item.textContent = k;
+        section.appendChild(item);
+      });
+      overlay.appendChild(section);
+      overlay.style.display = "block";
+    }
+    return Array.from(new Set(missing));
+  }
+
+  async function runFinalI18n() {
+    const region = detectFinalRegion();
+    const lang = detectFinalLanguage(region);
+    const dict = await loadFinalTranslations(lang);
+    applyFinalTranslations(dict, lang, region);
+    detectMissingFinalTranslations(dict);
+    window.__signalBoostFinalI18n = { region, lang, dict };
+  }
+
+  window.runFinalI18n = runFinalI18n;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    runFinalI18n();
+    setTimeout(runFinalI18n, 75);
+    setTimeout(runFinalI18n, 350);
+    setTimeout(runFinalI18n, 1000);
   });
-});
-
+})();
 </script>
 
 </body>
