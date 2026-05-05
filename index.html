@@ -4478,7 +4478,11 @@
       if (ogDescription) ogDescription.setAttribute("content", profile.description);
     }
 
-    function showDebug(region, lang, partners = [], errors = []) {
+    function getCommitHash() {
+      return window.SIGNALBOOST_COMMIT_HASH || "__COMMIT_HASH__";
+    }
+
+    function showDebug(region, lang, commitHash = getCommitHash(), partners = [], errors = []) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
       const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
@@ -4486,19 +4490,21 @@
       box.innerHTML = `
         <strong>Region:</strong> ${escapeHtml(region)}<br>
         <strong>Language:</strong> ${escapeHtml(lang)}<br>
+        <strong>Commit Hash:</strong> ${escapeHtml(commitHash)}<br>
         <strong>Partners:</strong> ${Array.isArray(partners) ? partners.length : 0}<br>
         <strong>Errors:</strong> ${Array.isArray(errors) ? errors.length : 0}
       `;
       box.style.display = "block";
       console.log("Detected region:", region);
       console.log("Detected language:", lang);
+      console.log("Commit hash:", commitHash);
     }
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
       const lang = detectLanguage(region);
       await loadLanguage(lang);
-      showDebug(region, lang);
+      showDebug(region, lang, getCommitHash());
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
@@ -4921,7 +4927,7 @@
       window.ACTIVE_PARTNERS = partners;
 
       const translations = await initI18n(lang);
-      showDebug(region, lang, partners);
+      showDebug(region, lang, getCommitHash(), partners);
       try { detectMissingTranslations(translations); } catch (e) { console.error("detectMissingTranslations failed", e); }
       try {
         const params = new URLSearchParams(window.location.search);
@@ -4951,20 +4957,23 @@
   </script>
 
   <script id="cache-buster-script">
+    window.SIGNALBOOST_COMMIT_HASH = window.SIGNALBOOST_COMMIT_HASH || "__COMMIT_HASH__";
+
     document.addEventListener("DOMContentLoaded", () => {
-      const timestamp = Date.now();
+      const commitHash = window.SIGNALBOOST_COMMIT_HASH || "__COMMIT_HASH__";
+      const cacheVersion = commitHash === "__COMMIT_HASH__" ? Date.now() : commitHash;
 
       document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
         const href = link.getAttribute("href");
         if (href && !href.includes("?v=")) {
-          link.setAttribute("href", `${href}?v=${timestamp}`);
+          link.setAttribute("href", `${href}?v=${cacheVersion}`);
         }
       });
 
       document.querySelectorAll("script[src]").forEach(script => {
         const src = script.getAttribute("src");
         if (src && !src.includes("?v=")) {
-          script.setAttribute("src", `${src}?v=${timestamp}`);
+          script.setAttribute("src", `${src}?v=${cacheVersion}`);
         }
       });
     });
