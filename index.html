@@ -4571,19 +4571,27 @@
       const overlay = document.getElementById("sb-debug");
       if (!overlay) return;
 
+      const loaded = Array.isArray(partners) ? partners : [];
       const regional = (allPartners || []).filter(p => partnerRegionMatches(p, region));
       const global = (allPartners || []).filter(p => partnerRegionMatches(p, "global"));
-      const categories = [...new Set((partners || []).map(p => categoryKeySafe(p)))];
+      const categories = [...new Set(loaded.map(p => categoryKeySafe(p)))];
+      const bookingBR = loaded.some(p =>
+        String(p.name || "").toLowerCase().includes("booking") &&
+        normalizeRegion(p.region || "") === "br"
+      );
 
       overlay.innerHTML = `
         <strong>Region:</strong> ${escapeHtml(region)}<br>
         <strong>Language:</strong> ${escapeHtml(getLang())}<br>
-        <strong>Regional partners:</strong> ${regional.length}<br>
-        <strong>Global partners:</strong> ${global.length}<br>
-        <strong>Loaded partners:</strong> ${(partners || []).length}<br>
+        <strong>Loaded from /partners:</strong> ${loaded.length}<br>
+        <strong>Embedded regional count:</strong> ${regional.length}<br>
+        <strong>Embedded global count:</strong> ${global.length}<br>
+        <strong>Booking.com BR loaded:</strong> ${bookingBR ? "YES" : "NO"}<br>
         <strong>Fallback mode:</strong> ${regional.length === 0 ? "YES" : "NO"}<br><br>
         <strong>Categories loaded:</strong><br>
-        ${categories.map(c => `• ${escapeHtml(c)}`).join("<br>")}
+        ${categories.map(c => `• ${escapeHtml(c)}`).join("<br>")}<br><br>
+        <strong>First loaded partners:</strong><br>
+        ${loaded.slice(0, 12).map(p => `• ${escapeHtml(p.name || "Partner")} <span style="opacity:.7">(${escapeHtml(p.region || "")}, ${escapeHtml(categoryKeySafe(p))})</span>`).join("<br>")}
       `;
       overlay.style.display = "block";
     }
