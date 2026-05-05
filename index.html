@@ -5018,6 +5018,45 @@ function filterPartnersByTier(partners, tier = 1) {
   });
 }
 
+
+/* STEP 10E: Safe duplicate merge helper only */
+function mergeDuplicatePartners(partners) {
+  const map = new Map();
+
+  (partners || []).forEach(p => {
+    const name = (p?.name || "").trim();
+    const region = getPartnerRegion(p);
+    const url = (p?.url || "").trim();
+
+    if (!name) return;
+
+    const key = `${name.toLowerCase()}|${region}`;
+
+    if (!map.has(key)) {
+      map.set(key, { ...p, region });
+      return;
+    }
+
+    const existing = map.get(key);
+
+    map.set(key, {
+      ...existing,
+      ...p,
+      name: existing.name || p.name,
+      region: existing.region || region,
+      url: existing.url || url,
+      category_key: existing.category_key || p.category_key || p.category,
+      category: existing.category || p.category || p.category_key,
+      network: existing.network || p.network,
+      tier: Number(existing.tier || p.tier || 99),
+      logo: existing.logo || p.logo || "",
+      description: existing.description || p.description || ""
+    });
+  });
+
+  return Array.from(map.values());
+}
+
 </script>
 
 </body>
