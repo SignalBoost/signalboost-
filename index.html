@@ -1270,7 +1270,7 @@
     <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="view_more">View More</a>
   </div>
 
-  <div id="sb-debug" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
+  <div id="debug-overlay" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
 
   <script>
     const partnersData = [
@@ -4357,15 +4357,25 @@
       if (ogDescription) ogDescription.setAttribute("content", profile.description);
     }
 
-    function showDebug(region, lang) {
+    function showDebug(region, lang, partners = [], errors = []) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
-      const box = document.getElementById("sb-debug");
+
+      const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
       if (!box) return;
-      box.innerHTML = `<strong>Region:</strong> ${escapeHtml(region)}<br><strong>Language:</strong> ${escapeHtml(lang)}`;
+
+      box.innerHTML = `
+        <strong>Region:</strong> ${escapeHtml(region)}<br>
+        <strong>Language:</strong> ${escapeHtml(lang)}<br>
+        <strong>Partners:</strong> ${Array.isArray(partners) ? partners.length : 0}<br>
+        <strong>Errors:</strong> ${Array.isArray(errors) ? errors.length : 0}
+      `;
       box.style.display = "block";
+
       console.log("Detected region:", region);
       console.log("Detected language:", lang);
+      console.log("Loaded partners:", Array.isArray(partners) ? partners.length : 0);
+      console.log("Debug errors:", Array.isArray(errors) ? errors : []);
     }
 
     async function initializeInternationalization() {
@@ -4594,7 +4604,7 @@
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
 
-      const overlay = document.getElementById("sb-debug");
+      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
       if (!overlay) return;
 
       const loaded = Array.isArray(partners) ? partners : [];
@@ -4632,7 +4642,7 @@
       window.ACTIVE_PARTNERS = partners;
 
       await initI18n(lang);
-      showDebug(region, lang);
+      showDebug(region, lang, partners);
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
