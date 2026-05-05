@@ -9,7 +9,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2985,9 +2984,7 @@
     }
     const brandGrid = document.getElementById("partnerChips");
     const partnerSearch = document.getElementById("partnerSearch");
-    let ACTIVE_REGION = "mx";
-    const DEFAULT_REGION = "mx";
-    const DEFAULT_LANGUAGE = "es";
+    let ACTIVE_REGION = null;
 
     function normalizeRegion(value) {
       const raw = String(value || "").trim().toLowerCase();
@@ -3008,7 +3005,7 @@
 
     function setActiveRegion(value) {
       const normalized = normalizeRegion(value);
-      ACTIVE_REGION = REGION_CONFIG[normalized] ? normalized : DEFAULT_REGION;
+      ACTIVE_REGION = REGION_CONFIG[normalized] ? normalized : (normalized || "us");
       document.documentElement.dataset.region = ACTIVE_REGION;
       return ACTIVE_REGION;
     }
@@ -3019,7 +3016,7 @@
 
       if (lang.startsWith("pt-br") || lang === "pt") return "br";
       if (lang.startsWith("pl")) return "pl";
-      if (lang.startsWith("es")) return "mx";
+      if (lang.startsWith("es")) return "latam";
       if (lang.startsWith("en-gb")) return "gb";
       if (lang.startsWith("en-ca")) return "ca";
       if (lang.startsWith("en")) return "us";
@@ -3039,13 +3036,9 @@
       if (tz.includes("Taipei")) return "tw";
       if (tz.includes("Tokyo")) return "jp";
       if (tz.includes("Seoul")) return "kr";
-      if (tz.includes("Mexico")) return "mx";
-      if (tz.includes("Bogota")) return "co";
-      if (tz.includes("Lima")) return "pe";
-      if (tz.includes("Buenos_Aires")) return "ar";
-      if (tz.includes("Santiago")) return "cl";
+      if (tz.includes("Mexico") || tz.includes("Bogota") || tz.includes("Lima") || tz.includes("Buenos_Aires") || tz.includes("Santiago")) return "latam";
 
-      return DEFAULT_REGION;
+      return "us";
     }
 
     function getRegion() {
@@ -3069,7 +3062,7 @@
       if (ACTIVE_REGION && REGION_CONFIG[ACTIVE_REGION]) return ACTIVE_REGION;
 
       const detected = getLocaleRegion();
-      return REGION_CONFIG[detected] ? detected : DEFAULT_REGION;
+      return REGION_CONFIG[detected] ? detected : "us";
     }
 
     function getLang() {
@@ -4109,11 +4102,11 @@
     let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
 
 
-    // --- Language Mapping ---
     function detectLanguage(region) {
+      const normalizedRegion = normalizeRegion(region || "global");
       const map = {
-        mx: "es",
         br: "pt",
+        mx: "es",
         us: "en",
         uk: "en",
         gb: "en",
@@ -4121,17 +4114,18 @@
         au: "en",
         pl: "pl",
         ru: "ru",
+        in: "hi",
         fr: "fr",
-        it: "it",
+        es: "es",
         de: "de",
+        it: "it",
         jp: "ja",
         kr: "ko",
-        cn: "zh",
-        tw: "zh",
+        cn: "zh-CN",
+        tw: "zh-TW",
         global: "en"
       };
-
-      return map[normalizeRegion(region || "global")] || "en";
+      return map[normalizedRegion] || "en";
     }
 
     async function detectUserLanguage() {
@@ -4139,54 +4133,215 @@
       return detectLanguage(region);
     }
 
-    // --- Region Detection (locale-first) ---
+    // --- Region Detection (timezone-first, language fallback) ---
     function detectRegion() {
       const lang = (navigator.language || "").toLowerCase();
+      const languages = (navigator.languages || [navigator.language || ""])
+        .filter(Boolean)
+        .map(item => item.toLowerCase());
+      const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || "").toLowerCase();
 
-      if (lang.startsWith("es")) return setActiveRegion("mx");   // Spanish → Mexico/LatAm
-      if (lang.startsWith("pt")) return setActiveRegion("br");   // Portuguese → Brazil
-      if (lang.startsWith("pl")) return setActiveRegion("pl");   // Polish → Poland
-      if (lang.startsWith("ru")) return setActiveRegion("ru");   // Russian → Russia
-      if (lang.startsWith("fr")) return setActiveRegion("fr");   // French → France
-      if (lang.startsWith("it")) return setActiveRegion("it");   // Italian → Italy
-      if (lang.startsWith("de")) return setActiveRegion("de");   // German → Germany
-      if (lang.startsWith("ja")) return setActiveRegion("jp");   // Japanese → Japan
-      if (lang.startsWith("ko")) return setActiveRegion("kr");   // Korean → Korea
-      if (lang.startsWith("zh")) return setActiveRegion("cn");   // Chinese → China/Taiwan
-      if (lang.startsWith("en")) return setActiveRegion("us");   // English → US/UK
+      const hasLang = prefix => languages.some(item => item.startsWith(prefix));
 
-      return setActiveRegion("global"); // fallback
+      // Timezone/physical region first.
+      // This lets visitors load the native-language UI even if their browser is set to English.
+      const timezoneRules = [
+        {
+          region: "mx",
+          zones: [
+            "america/mexico_city",
+            "america/cancun",
+            "america/monterrey",
+            "america/merida",
+            "america/chihuahua",
+            "america/ciudad_juarez",
+            "america/mazatlan",
+            "america/hermosillo",
+            "america/tijuana",
+            "america/bahia_banderas"
+          ]
+        },
+        {
+          region: "br",
+          zones: [
+            "america/sao_paulo",
+            "america/rio_branco",
+            "america/noronha",
+            "america/belem",
+            "america/fortaleza",
+            "america/recife",
+            "america/araguaina",
+            "america/maceio",
+            "america/bahia",
+            "america/campo_grande",
+            "america/cuiaba",
+            "america/manaus",
+            "america/porto_velho",
+            "america/boa_vista",
+            "america/eirunepe"
+          ]
+        },
+        { region: "pl", zones: ["europe/warsaw"] },
+        {
+          region: "ru",
+          zones: [
+            "europe/moscow",
+            "europe/kaliningrad",
+            "europe/samara",
+            "asia/yekaterinburg",
+            "asia/omsk",
+            "asia/novosibirsk",
+            "asia/barnaul",
+            "asia/tomsk",
+            "asia/krasnoyarsk",
+            "asia/irkutsk",
+            "asia/chita",
+            "asia/yakutsk",
+            "asia/vladivostok",
+            "asia/magadan",
+            "asia/sakhalin",
+            "asia/srednekolymsk",
+            "asia/kamchatka",
+            "asia/anadyr"
+          ]
+        },
+        { region: "fr", zones: ["europe/paris"] },
+        { region: "de", zones: ["europe/berlin", "europe/busingen"] },
+        { region: "it", zones: ["europe/rome"] },
+        { region: "jp", zones: ["asia/tokyo"] },
+        { region: "kr", zones: ["asia/seoul"] },
+        { region: "tw", zones: ["asia/taipei"] },
+        {
+          region: "cn",
+          zones: [
+            "asia/shanghai",
+            "asia/urumqi",
+            "asia/chongqing",
+            "asia/harbin",
+            "asia/hong_kong",
+            "asia/macau"
+          ]
+        },
+        {
+          region: "us",
+          zones: [
+            "america/new_york",
+            "america/detroit",
+            "america/kentucky",
+            "america/indiana",
+            "america/chicago",
+            "america/north_dakota",
+            "america/denver",
+            "america/boise",
+            "america/phoenix",
+            "america/los_angeles",
+            "america/anchorage",
+            "america/juneau",
+            "america/sitka",
+            "america/metlakatla",
+            "america/yakutat",
+            "america/nome",
+            "america/adak",
+            "pacific/honolulu"
+          ]
+        },
+        { region: "gb", zones: ["europe/london"] },
+        {
+          region: "ca",
+          zones: [
+            "america/toronto",
+            "america/vancouver",
+            "america/edmonton",
+            "america/winnipeg",
+            "america/halifax",
+            "america/st_johns",
+            "america/regina",
+            "america/whitehorse",
+            "america/iqaluit",
+            "america/yellowknife",
+            "america/inuvik",
+            "america/dawson"
+          ]
+        },
+        {
+          region: "au",
+          zones: [
+            "australia/sydney",
+            "australia/melbourne",
+            "australia/brisbane",
+            "australia/perth",
+            "australia/adelaide",
+            "australia/darwin",
+            "australia/hobart",
+            "australia/broken_hill",
+            "australia/lord_howe"
+          ]
+        }
+      ];
+
+      for (const rule of timezoneRules) {
+        if (rule.zones.some(zone => tz === zone || tz.includes(zone))) {
+          return setActiveRegion(rule.region);
+        }
+      }
+
+      // Browser-language fallback.
+      if (hasLang("es")) return setActiveRegion("mx");
+      if (hasLang("pt")) return setActiveRegion("br");
+      if (hasLang("pl")) return setActiveRegion("pl");
+      if (hasLang("ru")) return setActiveRegion("ru");
+      if (hasLang("fr")) return setActiveRegion("fr");
+      if (hasLang("it")) return setActiveRegion("it");
+      if (hasLang("de")) return setActiveRegion("de");
+      if (hasLang("ja")) return setActiveRegion("jp");
+      if (hasLang("ko")) return setActiveRegion("kr");
+      if (hasLang("zh-tw") || hasLang("zh-hant")) return setActiveRegion("tw");
+      if (hasLang("zh")) return setActiveRegion("cn");
+      if (hasLang("en-gb")) return setActiveRegion("gb");
+      if (hasLang("en-ca")) return setActiveRegion("ca");
+      if (hasLang("en-au")) return setActiveRegion("au");
+      if (hasLang("en")) return setActiveRegion("us");
+
+      return setActiveRegion("global");
     }
 
     async function detectUserRegion() {
       const region = detectRegion();
-      console.log("🌎 Region:", region);
+      console.log("🌎 Detected region:", region);
       return region;
     }
 
-    // --- Load Translations ---
-    async function loadTranslations(lang) {
-      const builtInBase = BUILT_IN_TRANSLATIONS.en || {};
-      const builtInLocal = BUILT_IN_TRANSLATIONS[lang] || {};
 
-      try {
-        const res = await fetch(`/i18n/${lang}.json`, { cache: "no-store" });
-        if (!res.ok) throw new Error(`Missing translation file: ${lang}`);
-        return { ...builtInBase, ...builtInLocal, ...(await res.json()) };
-      } catch (err) {
-        console.warn(`⚠️ Falling back to English: ${err.message}`);
+    async function loadTranslations(lang) {
+      const normalizedLang = lang === "pt-BR" ? "pt" : lang;
+      const builtInBase = BUILT_IN_TRANSLATIONS.en || {};
+      const builtInLocal = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[normalizedLang] || {};
+      let translations = { ...builtInBase, ...builtInLocal };
+      const candidates = lang === normalizedLang ? [lang] : [lang, normalizedLang];
+
+      for (const candidate of candidates) {
         try {
-          const res = await fetch(`/i18n/en.json`, { cache: "no-store" });
-          if (!res.ok) throw new Error("Missing English translation file");
-          return { ...builtInBase, ...(await res.json()) };
-        } catch (fallbackErr) {
-          console.warn(`⚠️ Falling back to built-in English: ${fallbackErr.message}`);
-          return { ...builtInBase, ...builtInLocal };
+          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
+          if (!res.ok) throw new Error(`Missing translation file: ${candidate}`);
+          translations = { ...translations, ...(await res.json()) };
+          return translations;
+        } catch (err) {
+          console.warn(`⚠️ Falling back from ${candidate}: ${err.message}`);
         }
       }
+
+      if (lang !== "en") {
+        try {
+          const res = await fetch(`/i18n/en.json`, { cache: "no-store" });
+          if (res.ok) translations = { ...translations, ...(await res.json()) };
+        } catch (err) {
+          console.warn(`⚠️ Falling back to built-in English: ${err.message}`);
+        }
+      }
+
+      return translations;
     }
 
-    // --- Apply Translations ---
     function applyTranslations(translations, lang = document.documentElement.lang || "en") {
       ACTIVE_TRANSLATIONS = { ...(BUILT_IN_TRANSLATIONS.en || {}), ...(translations || {}) };
 
@@ -4201,7 +4356,6 @@
       });
 
       document.documentElement.lang = lang;
-      document.documentElement.setAttribute("data-i18n-ready", "1");
     }
 
     async function loadLanguage(lang) {
@@ -4360,10 +4514,14 @@
     }
 
     function showDebug(region, lang) {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("debug")) return;
       const box = document.getElementById("sb-debug");
       if (!box) return;
       box.innerHTML = `<strong>Region:</strong> ${escapeHtml(region)}<br><strong>Language:</strong> ${escapeHtml(lang)}`;
       box.style.display = "block";
+      console.log("Detected region:", region);
+      console.log("Detected language:", lang);
     }
 
     async function initializeInternationalization() {
