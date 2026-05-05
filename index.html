@@ -2984,7 +2984,9 @@
     }
     const brandGrid = document.getElementById("partnerChips");
     const partnerSearch = document.getElementById("partnerSearch");
-    let ACTIVE_REGION = null;
+    let ACTIVE_REGION = "mx";
+    const DEFAULT_REGION = "mx";
+    const DEFAULT_LANGUAGE = "es";
 
     function normalizeRegion(value) {
       const raw = String(value || "").trim().toLowerCase();
@@ -3005,7 +3007,7 @@
 
     function setActiveRegion(value) {
       const normalized = normalizeRegion(value);
-      ACTIVE_REGION = REGION_CONFIG[normalized] ? normalized : (normalized || "us");
+      ACTIVE_REGION = REGION_CONFIG[normalized] ? normalized : DEFAULT_REGION;
       document.documentElement.dataset.region = ACTIVE_REGION;
       return ACTIVE_REGION;
     }
@@ -3016,7 +3018,7 @@
 
       if (lang.startsWith("pt-br") || lang === "pt") return "br";
       if (lang.startsWith("pl")) return "pl";
-      if (lang.startsWith("es")) return "latam";
+      if (lang.startsWith("es")) return "mx";
       if (lang.startsWith("en-gb")) return "gb";
       if (lang.startsWith("en-ca")) return "ca";
       if (lang.startsWith("en")) return "us";
@@ -3036,9 +3038,13 @@
       if (tz.includes("Taipei")) return "tw";
       if (tz.includes("Tokyo")) return "jp";
       if (tz.includes("Seoul")) return "kr";
-      if (tz.includes("Mexico") || tz.includes("Bogota") || tz.includes("Lima") || tz.includes("Buenos_Aires") || tz.includes("Santiago")) return "latam";
+      if (tz.includes("Mexico")) return "mx";
+      if (tz.includes("Bogota")) return "co";
+      if (tz.includes("Lima")) return "pe";
+      if (tz.includes("Buenos_Aires")) return "ar";
+      if (tz.includes("Santiago")) return "cl";
 
-      return "us";
+      return DEFAULT_REGION;
     }
 
     function getRegion() {
@@ -3062,7 +3068,7 @@
       if (ACTIVE_REGION && REGION_CONFIG[ACTIVE_REGION]) return ACTIVE_REGION;
 
       const detected = getLocaleRegion();
-      return REGION_CONFIG[detected] ? detected : "us";
+      return REGION_CONFIG[detected] ? detected : DEFAULT_REGION;
     }
 
     function getLang() {
@@ -4125,7 +4131,7 @@
         tw: "zh-TW",
         global: "en"
       };
-      return map[normalizedRegion] || "en";
+      return map[normalizedRegion] || DEFAULT_LANGUAGE;
     }
 
     async function detectUserLanguage() {
@@ -4133,26 +4139,26 @@
       return detectLanguage(region);
     }
 
-    // --- Region Detection (baseline, locale-first) ---
+    // --- Region Detection (Mexico/Spanish default) ---
     function detectRegion() {
-      console.log("detectRegion called");
+      const params = new URLSearchParams(window.location.search);
+      const queryRegion = normalizeRegion(params.get("region"));
+      if (queryRegion && REGION_CONFIG[queryRegion]) return setActiveRegion(queryRegion);
 
-      const lang = (navigator.language || "").toLowerCase();
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes("/pl")) return setActiveRegion("pl");
+      if (path.includes("/pt-br") || path.includes("/br")) return setActiveRegion("br");
+      if (path.includes("/ru")) return setActiveRegion("ru");
+      if (path.includes("/zh-cn") || path.includes("/cn")) return setActiveRegion("cn");
+      if (path.includes("/zh-tw") || path.includes("/tw")) return setActiveRegion("tw");
+      if (path.includes("/es") || path.includes("/mx")) return setActiveRegion("mx");
+      if (path.includes("/fr")) return setActiveRegion("fr");
+      if (path.includes("/de")) return setActiveRegion("de");
+      if (path.includes("/it")) return setActiveRegion("it");
+      if (path.includes("/ja") || path.includes("/jp")) return setActiveRegion("jp");
+      if (path.includes("/ko") || path.includes("/kr")) return setActiveRegion("kr");
 
-      if (lang.startsWith("es")) return setActiveRegion("mx");   // Spanish → Mexico
-      if (lang.startsWith("pt")) return setActiveRegion("br");   // Portuguese → Brazil
-      if (lang.startsWith("pl")) return setActiveRegion("pl");   // Polish → Poland
-      if (lang.startsWith("ru")) return setActiveRegion("ru");   // Russian → Russia
-      if (lang.startsWith("fr")) return setActiveRegion("fr");   // French → France
-      if (lang.startsWith("de")) return setActiveRegion("de");   // German → Germany
-      if (lang.startsWith("it")) return setActiveRegion("it");   // Italian → Italy
-      if (lang.startsWith("ja")) return setActiveRegion("jp");   // Japanese → Japan
-      if (lang.startsWith("ko")) return setActiveRegion("kr");   // Korean → Korea
-      if (lang.startsWith("zh-tw") || lang.startsWith("zh-hant")) return setActiveRegion("tw");
-      if (lang.startsWith("zh")) return setActiveRegion("cn");   // Chinese → China
-      if (lang.startsWith("en")) return setActiveRegion("us");   // English → US/UK
-
-      return setActiveRegion("global"); // fallback
+      return setActiveRegion(DEFAULT_REGION);
     }
 
     async function detectUserRegion() {
