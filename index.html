@@ -4834,6 +4834,85 @@ function renderHeaderDropdown(partners) {
   }, { once: false });
 }
 
+
+/* STEP 7: Column 1 grouped accordion using existing .c1-group HTML */
+function normalizeColumn1Category(cat) {
+  const key = (cat || "").trim().toLowerCase();
+
+  const map = {
+    esim: "products_tools",
+    e_sim: "products_tools",
+    car_rentals: "travel_services",
+    cars: "travel_services",
+    storage: "travel_services",
+    services: "travel_services"
+  };
+
+  return map[key] || key || "specialty_other";
+}
+
+function renderColumn1Grouped(partners) {
+  const root = document.getElementById("column1");
+  if (!root) return;
+
+  const groups = root.querySelectorAll(".c1-group");
+
+  // If the baseline accordion structure is missing, fail safely.
+  if (!groups.length) {
+    root.innerHTML = '<div class="partners-empty">Column 1 groups not found.</div>';
+    return;
+  }
+
+  groups.forEach(group => {
+    const body = group.querySelector(".c1-body");
+    const header = group.querySelector(".c1-header");
+    if (body) body.innerHTML = "";
+    if (header) header.classList.remove("open", "active");
+    if (body) body.classList.remove("open");
+    group.style.display = "none";
+  });
+
+  (partners || []).forEach(p => {
+    const cat = normalizeColumn1Category(p.category_key || p.category);
+    const group = root.querySelector(`.c1-group[data-cat="${cat}"]`);
+    if (!group) return;
+
+    const body = group.querySelector(".c1-body");
+    if (!body) return;
+
+    const item = document.createElement("a");
+    item.className = "c1-partner";
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.rel = "noopener noreferrer";
+    item.textContent = p.name || "Partner";
+
+    const meta = document.createElement("span");
+    meta.className = "partner-meta";
+    meta.textContent = `${p.region || "global"} • ${p.network || ""}`;
+
+    item.appendChild(meta);
+    body.appendChild(item);
+    group.style.display = "block";
+  });
+
+  groups.forEach(group => {
+    const header = group.querySelector(".c1-header");
+    const body = group.querySelector(".c1-body");
+    if (!header || !body) return;
+
+    // Avoid duplicate click handlers by replacing node.
+    const freshHeader = header.cloneNode(true);
+    header.parentNode.replaceChild(freshHeader, header);
+
+    freshHeader.addEventListener("click", () => {
+      const isOpen = body.classList.toggle("open");
+      freshHeader.classList.toggle("open", isOpen);
+      freshHeader.classList.toggle("active", isOpen);
+    });
+  });
+}
+
 </script>
 
 </body>
