@@ -1389,7 +1389,7 @@
     </table>
   </section>
 
-  <div id="debug-overlay" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
+  <div id="debug-overlay" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none;max-width:320px;max-height:70vh;overflow-y:auto;"></div>
 
   <script>
     const partnersData = [
@@ -4220,30 +4220,39 @@
     let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
 
 
+    // --- Region Detection (baseline, locale-first) ---
+    function detectRegion() {
+      console.log("detectRegion called");
+      const lang = (navigator.language || "").toLowerCase();
+      let region = "global";
+
+      if (lang.startsWith("es")) region = "mx";   // Spanish → Mexico
+      else if (lang.startsWith("pt")) region = "br";   // Portuguese → Brazil
+      else if (lang.startsWith("pl")) region = "pl";   // Polish → Poland
+      else if (lang.startsWith("ru")) region = "ru";   // Russian → Russia
+      else if (lang.startsWith("fr")) region = "fr";   // French → France
+      else if (lang.startsWith("en")) region = "us";   // English → US/UK
+
+      if (typeof setActiveRegion === "function") setActiveRegion(region);
+      return region;
+    }
+
+    // --- Language Mapping ---
     function detectLanguage(region) {
-      const normalizedRegion = normalizeRegion(region || "global");
       const map = {
-        br: "pt",
         mx: "es",
+        br: "pt",
         us: "en",
         uk: "en",
         gb: "en",
-        ca: "en",
-        au: "en",
         pl: "pl",
         ru: "ru",
         in: "hi",
         fr: "fr",
         es: "es",
-        de: "de",
-        it: "it",
-        jp: "ja",
-        kr: "ko",
-        cn: "zh-CN",
-        tw: "zh-TW",
         global: "en"
       };
-      return map[normalizedRegion] || "en";
+      return map[region] || "en";
     }
 
     async function detectUserLanguage() {
@@ -4251,121 +4260,32 @@
       return detectLanguage(region);
     }
 
-    async function detectRegion() {
-      const urlParam = new URLSearchParams(window.location.search).get("region");
-      if (urlParam) {
-        const region = setActiveRegion(urlParam.toLowerCase());
-        console.log("🌎 Region detected via URL:", region);
-        return region;
-      }
-
-      const path = window.location.pathname.toLowerCase();
-      const pathRegion = getRegion();
-      if (path !== "/" && pathRegion) {
-        const region = setActiveRegion(pathRegion);
-        console.log("🌎 Region detected via path:", region);
-        return region;
-      }
-
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        if (res.ok) {
-          const data = await res.json();
-          const countryCode = String(data.country_code || "").toLowerCase();
-          const regionMap = {
-            mx: "mx",
-            br: "br",
-            us: "us",
-            ca: "ca",
-            pl: "pl",
-            ru: "ru",
-            in: "in",
-            fr: "fr",
-            es: "es",
-            gb: "gb",
-            uk: "gb"
-          };
-
-          if (regionMap[countryCode]) {
-            const region = setActiveRegion(regionMap[countryCode]);
-            console.log("🌎 Region detected via IP:", region);
-            return region;
-          }
-
-          const continentCode = String(data.continent_code || "").toLowerCase();
-          if (continentCode === "eu") {
-            const region = setActiveRegion("eu");
-            console.log("🌎 Region detected via IP continent:", region);
-            return region;
-          }
-          if (["ar", "bo", "cl", "co", "cr", "cu", "do", "ec", "gt", "hn", "ni", "pa", "pe", "py", "sv", "uy", "ve"].includes(countryCode)) {
-            const region = setActiveRegion("latam");
-            console.log("🌎 Region detected via IP LATAM:", region);
-            return region;
-          }
-        }
-      } catch (err) {
-        console.warn("⚠️ IP detection failed:", err.message);
-      }
-
-      const lang = (navigator.language || "").toLowerCase();
-      if (lang.startsWith("es")) return setActiveRegion("mx");
-      if (lang.startsWith("pt")) return setActiveRegion("br");
-      if (lang.startsWith("pl")) return setActiveRegion("pl");
-      if (lang.startsWith("ru")) return setActiveRegion("ru");
-      if (lang.startsWith("fr")) return setActiveRegion("fr");
-      if (lang.startsWith("en-gb")) return setActiveRegion("gb");
-      if (lang.startsWith("en-ca")) return setActiveRegion("ca");
-      if (lang.startsWith("en")) return setActiveRegion("us");
-      if (lang.startsWith("ja")) return setActiveRegion("jp");
-      if (lang.startsWith("de")) return setActiveRegion("de");
-      if (lang.startsWith("it")) return setActiveRegion("it");
-      if (lang.startsWith("ko")) return setActiveRegion("kr");
-      if (lang.startsWith("zh-tw")) return setActiveRegion("tw");
-      if (lang.startsWith("zh")) return setActiveRegion("cn");
-
-      console.log("🌎 Defaulting to global");
-      return setActiveRegion("global");
-    }
-
     async function detectUserRegion() {
-      const region = await detectRegion();
+      const region = detectRegion();
       console.log("🌎 Detected region:", region);
       return region;
     }
 
-
+    // --- Load Translations ---
     async function loadTranslations(lang) {
-      const normalizedLang = lang === "pt-BR" ? "pt" : lang;
-      const builtInBase = BUILT_IN_TRANSLATIONS.en || {};
-      const builtInLocal = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[normalizedLang] || {};
-      let translations = { ...builtInBase, ...builtInLocal };
-      const candidates = lang === normalizedLang ? [lang] : [lang, normalizedLang];
-
-      for (const candidate of candidates) {
-        try {
-          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
-          if (!res.ok) throw new Error(`Missing translation file: ${candidate}`);
-          translations = { ...translations, ...(await res.json()) };
-          return translations;
-        } catch (err) {
-          console.warn(`⚠️ Falling back from ${candidate}: ${err.message}`);
-        }
-      }
-
-      if (lang !== "en") {
+      try {
+        const res = await fetch(`/i18n/${lang}.json`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Missing translation file: ${lang}`);
+        return await res.json();
+      } catch (err) {
+        console.warn(`⚠️ Falling back to English: ${err.message}`);
         try {
           const res = await fetch(`/i18n/en.json`, { cache: "no-store" });
-          if (res.ok) translations = { ...translations, ...(await res.json()) };
-        } catch (err) {
-          console.warn(`⚠️ Falling back to built-in English: ${err.message}`);
+          if (res.ok) return await res.json();
+        } catch (fallbackErr) {
+          console.warn(`⚠️ Built-in English fallback used: ${fallbackErr.message}`);
         }
+        return BUILT_IN_TRANSLATIONS.en || {};
       }
-
-      return translations;
     }
 
-    function applyTranslations(translations, lang = document.documentElement.lang || "en") {
+    // --- Apply Translations ---
+    function applyTranslations(translations) {
       ACTIVE_TRANSLATIONS = { ...(BUILT_IN_TRANSLATIONS.en || {}), ...(translations || {}) };
 
       document.querySelectorAll("[data-i18n]").forEach(el => {
@@ -4377,19 +4297,21 @@
         const key = el.getAttribute("data-i18n-placeholder");
         if (ACTIVE_TRANSLATIONS[key]) el.setAttribute("placeholder", ACTIVE_TRANSLATIONS[key]);
       });
-
-      document.documentElement.lang = lang;
     }
 
     async function loadLanguage(lang) {
       const translations = await loadTranslations(lang);
-      applyTranslations(translations, lang);
+      applyTranslations(translations);
+      document.documentElement.lang = lang;
       return translations;
     }
 
+    // --- Init I18n ---
     async function initI18n(lang) {
       document.documentElement.setAttribute("data-i18n-ready", "0");
-      const translations = await loadLanguage(lang);
+      const selectedLang = lang || detectLanguage(detectRegion());
+      console.log("🌎 Region:", detectRegion(), "| 🗣️ Language:", selectedLang);
+      const translations = await loadLanguage(selectedLang);
       document.documentElement.setAttribute("data-i18n-ready", "1");
       return translations;
     }
@@ -4545,13 +4467,31 @@
     function showDebug(region, lang, commitHash = getCommitHash(), partners = [], errors = []) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
+
       const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
       if (!box) return;
+
+      const counts = {};
+      if (Array.isArray(partners)) {
+        partners.forEach(p => {
+          const cat = p.category_key || "uncategorized";
+          counts[cat] = (counts[cat] || 0) + 1;
+        });
+      }
+
+      const countsHtml = Object.entries(counts)
+        .map(([cat, num]) => `${escapeHtml(cat)}: ${num}`)
+        .join("<br>") || "None";
+
       box.innerHTML = `
         <strong>Region:</strong> ${escapeHtml(region)}<br>
         <strong>Language:</strong> ${escapeHtml(lang)}<br>
         <strong>Commit Hash:</strong> ${escapeHtml(commitHash)}<br>
-        <strong>Partners:</strong> ${Array.isArray(partners) ? partners.length : 0}<br>
+        <hr style="border:0;border-top:1px solid #555;margin:6px 0;">
+        <strong>Partner counts:</strong><br>
+        ${countsHtml}<br>
+        <hr style="border:0;border-top:1px solid #555;margin:6px 0;">
+        <strong>Total Partners:</strong> ${Array.isArray(partners) ? partners.length : 0}<br>
         <strong>Errors:</strong> ${Array.isArray(errors) ? errors.length : 0}
       `;
       box.style.display = "block";
@@ -4560,24 +4500,7 @@
       console.log("Commit hash:", commitHash);
     }
 
-    async function initializeInternationalization() {
-      const region = await detectRegion();
-      const lang = detectLanguage(region);
-      console.log("🌎 Region:", region, "| 🗣️ Language:", lang);
-      await loadLanguage(lang);
-      showDebug(region, lang, getCommitHash());
-
-      try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
-      try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
-      try { applyI18N(); } catch (e) { console.error("applyI18N external i18n refresh failed", e); }
-      try { buildTravelDirectory(); } catch (e) { console.error("buildTravelDirectory i18n refresh failed", e); }
-      initColumn1Accordion();
-    try { renderPartnersRail(); } catch (e) { console.error("renderPartnersRail i18n refresh failed", e); }
-      try { renderBrandGrid(); } catch (e) { console.error("renderBrandGrid i18n refresh failed", e); }
-      try { setFeatured(); } catch (e) { console.error("setFeatured i18n refresh failed", e); }
-    }
-
-    /* ---------------------------------------------------------
+/* ---------------------------------------------------------
        REGION-FIRST PARTNER ENGINE + FINAL BOOTSTRAP
        This block intentionally overrides the older mixed fallback renderers above.
        Rule: if a region has partners, show ONLY that region. If it has none,
