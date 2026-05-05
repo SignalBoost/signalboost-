@@ -4424,6 +4424,89 @@
       return mergeDuplicates(partners);
     }
 
+
+    function mergeAcrossRegions(partners) {
+      const merged = {};
+
+      (partners || []).forEach(p => {
+        if (!p || !p.name) return;
+        const key = String(p.name).trim().toLowerCase();
+        const region = normalizeRegion(p.region || "global");
+
+        if (!merged[key]) {
+          merged[key] = { ...p, region, regions: [region] };
+          return;
+        }
+
+        if (!merged[key].regions.includes(region)) {
+          merged[key].regions.push(region);
+        }
+
+        // Merge missing fields without overwriting the first/best offer.
+        Object.keys(p).forEach(field => {
+          if (!merged[key][field] || merged[key][field] === "") {
+            merged[key][field] = p[field];
+          }
+        });
+
+        merged[key].category_key = merged[key].category_key || p.category_key || categoryKeyForPartner(p);
+        merged[key].category = merged[key].category || p.category || p.category_key;
+        merged[key].network = merged[key].network || p.network || "";
+        merged[key].tier = Math.min(Number(merged[key].tier || 99), Number(p.tier || 99));
+        merged[key].logo = merged[key].logo || p.logo || "";
+      });
+
+      return Object.values(merged);
+    }
+
+    function validatePartners(partners) {
+      const requiredFields = ["name", "url", "category", "region", "network", "logo"];
+      const validRegions = ["br", "mx", "us", "pl", "ca", "eu", "latam", "global"];
+      const errors = [];
+
+      (partners || baseAvailablePartners()).forEach((p, index) => {
+        const entryErrors = [];
+
+        requiredFields.forEach(field => {
+          if (!p || !p[field] || p[field].toString().trim() === "") {
+            entryErrors.push(`Missing required field: ${field}`);
+          }
+        });
+
+        const region = normalizeRegion(p && p.region ? p.region : "");
+        if (!validRegions.includes(region)) {
+          entryErrors.push(`Invalid region: ${p && p.region ? p.region : "(empty)"}`);
+        }
+
+        if (p && p.tier !== undefined && !Number.isInteger(Number(p.tier))) {
+          entryErrors.push(`Tier must be an integer, got: ${p.tier}`);
+        }
+
+        if (entryErrors.length > 0) {
+          errors.push({
+            index,
+            name: (p && p.name) || "(unnamed)",
+            region: (p && p.region) || "(no region)",
+            issues: entryErrors
+          });
+        }
+      });
+
+      if (errors.length > 0) {
+        console.groupCollapsed(`❌ Partner validation failed: ${errors.length} issue group(s)`);
+        errors.forEach(e => {
+          console.groupCollapsed(`Partner [${e.index}] ${e.name} (${e.region})`);
+          e.issues.forEach(issue => console.error(issue));
+          console.groupEnd();
+        });
+        console.groupEnd();
+      } else {
+        console.log("✅ All partners passed validation");
+      }
+
+      return errors;
+    }
+
     function groupGlobalPartnersByCategory(partners) {
       const grouped = {};
 
@@ -4654,6 +4737,8 @@
 
           const item = document.createElement("div");
           item.className = "c1-partner";
+          item.dataset.name = p.name || "";
+          item.dataset.region = normalizeRegion(p.region || "global");
           item.innerHTML = `
             ${escapeHtml(p.name || "Partner")}
             <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
@@ -4687,18 +4772,27 @@
       const container = document.getElementById("partnerChips");
       if (!container) return;
 
-      const filtered = (partners || []).filter(p => normalizeRegion(p.region || "") === normalizeRegion(selectedRegion));
+      const filtered = (partners || []).filter(p => {
+        const r = normalizeRegion(p.region || "");
+        return r === normalizeRegion(selectedRegion) || r === "global";
+      });
 
       console.log("VISIBLE PARTNERS:", filtered.map(p => p.name));
 
-      const top = filtered
+      const top = mergeAcrossRegions(filtered)
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99))
         .slice(0, 12);
 
-      container.innerHTML = top.map(p => `
-        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-name="${escapeHtml(p.name || '')}" data-region="${escapeHtml(normalizeRegion(p.region || 'global'))}">${escapeHtml(p.name || 'Partner')}</a>
-      `).join("");
+      container.innerHTML = top.map(p => {
+        const regions = p.regions || [normalizeRegion(p.region || 'global')];
+        return `
+          <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-name="${escapeHtml(p.name || '')}" data-region="${escapeHtml(regions.join(','))}">
+            <span>${escapeHtml(p.name || 'Partner')}</span>
+            <span class="partner-meta">${escapeHtml(regions.join(', ').toUpperCase())}</span>
+          </a>
+        `;
+      }).join("");
 
       container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
     }
@@ -4782,7 +4876,7 @@
       try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
       try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
       try { highlightDuplicates(partners); } catch (e) { console.error("highlightDuplicates failed", e); }
-      try { validatePartners(); } catch (e) {}
+      try { validatePartners(allPartners); } catch (e) { console.error("validatePartners failed", e); }
 
       const search = document.getElementById("partnerSearch");
       if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
