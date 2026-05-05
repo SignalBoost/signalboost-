@@ -3034,6 +3034,29 @@
       return supported.has(lang) ? lang : "";
     }
 
+    function getForcedRegion() {
+      const params = new URLSearchParams(window.location.search);
+      const region = normalizeRegion(params.get("region") || params.get("country"));
+      return region && REGION_CONFIG[region] ? region : "";
+    }
+
+    function defaultRegionForLanguage(lang) {
+      const map = {
+        en: "us",
+        es: "mx",
+        pt: "br",
+        pl: "pl",
+        ru: "ru",
+        fr: "fr",
+        it: "it",
+        de: "de",
+        ja: "jp",
+        ko: "kr",
+        zh: "cn"
+      };
+      return map[normalizeLanguage(lang)] || DEFAULT_REGION;
+    }
+
     function setActiveLanguage(value) {
       ACTIVE_LANGUAGE = normalizeLanguage(value || "");
       if (ACTIVE_LANGUAGE) document.documentElement.dataset.lang = ACTIVE_LANGUAGE;
@@ -4671,8 +4694,17 @@
     }
 
     async function initSignalBoost() {
-      const region = await detectUserRegion();
       const forcedLang = getForcedLanguage();
+      const forcedRegion = getForcedRegion();
+
+      // Manual override behavior:
+      //   ?lang=en              -> full English/US experience
+      //   ?lang=en&region=mx    -> English text with Mexico offers
+      //   no params             -> automatic physical region + native language
+      const region = forcedRegion
+        ? setActiveRegion(forcedRegion)
+        : (forcedLang ? setActiveRegion(defaultRegionForLanguage(forcedLang)) : await detectUserRegion());
+
       const lang = forcedLang || detectLanguage(region);
       setActiveLanguage(lang);
 
