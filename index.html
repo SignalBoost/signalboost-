@@ -4659,32 +4659,118 @@ function renderColumn1Simple(partners) {
 }
 
 
-/* STEP 4: Simple Column 3 render only */
+/* STEP 4: Simple Column 3 (top partners) */
 function renderColumn3Simple(partners) {
-  const chips = document.getElementById("partnerChips") || document.getElementById("column3");
-  if (!chips) return;
+  const col3 = document.getElementById("column3");
+  if (!col3) return;
 
-  chips.innerHTML = "";
+  col3.innerHTML = "";
 
-  if (!Array.isArray(partners) || partners.length === 0) {
-    chips.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
-    return;
-  }
+  if (!Array.isArray(partners)) return;
 
-  const top = partners
-    .slice()
-    .sort((a, b) => (a.tier || 99) - (b.tier || 99))
-    .slice(0, 12);
+  const top = partners.slice(0, 8);
 
   top.forEach(p => {
-    const a = document.createElement("a");
-    a.className = chips.id === "partnerChips" ? "partner-chip" : "brand-tile";
-    a.href = p.url || "#";
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.textContent = p.name || "Partner";
-    chips.appendChild(a);
+    const item = document.createElement("a");
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.textContent = p.name;
+    item.style.display = "block";
+    item.style.marginBottom = "6px";
+    col3.appendChild(item);
   });
+}
+
+
+/* STEP 5: Column 2 videos ONLY */
+function getVideoRegionChain(region) {
+  const clean = (region || "global").toLowerCase();
+  const fallbackMap = {
+    br: ["latam"],
+    mx: ["latam"],
+    uk: ["eu"],
+    gb: ["eu"],
+    ca: ["us"]
+  };
+  return [clean, ...(fallbackMap[clean] || []), "global"];
+}
+
+async function renderColumn2VideosOnly(region) {
+  const container = document.getElementById("feedContainer") || document.getElementById("column2");
+  const status = document.getElementById("heroFeedStatus");
+  if (!container) return;
+
+  container.innerHTML = "";
+  if (status) status.textContent = "Loading regional videos...";
+
+  const chain = getVideoRegionChain(region);
+
+  for (const r of chain) {
+    try {
+      const res = await fetch(`/videos?region=${encodeURIComponent(r)}&t=${Date.now()}`);
+      if (!res.ok) continue;
+
+      const videos = await res.json();
+
+      if (Array.isArray(videos) && videos.length > 0) {
+        buildColumn2VideoCards(videos, container);
+        if (status) status.textContent = `Videos for ${r}`;
+        return;
+      }
+    } catch (err) {
+      console.warn("Video fetch failed:", r, err);
+    }
+  }
+
+  container.innerHTML = `<div class="partners-empty">No videos available for this region yet.</div>`;
+  if (status) status.textContent = "No videos available.";
+}
+
+function buildColumn2VideoCards(videos, container) {
+  container.innerHTML = "";
+
+  videos.slice(0, 12).forEach(v => {
+    const card = document.createElement("div");
+    card.className = "feed-card";
+
+    const title = v.title || "Video";
+    const channel = v.channel || "";
+    const thumbnail = v.thumbnail || "";
+    const url = v.url || "";
+    const videoId = v.videoId || v.id || "";
+
+    let media = "";
+
+    if (videoId) {
+      media = `
+        <iframe
+          src="https://www.youtube.com/embed/${videoId}"
+          title="${title}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      `;
+    } else if (url && url.includes("youtube")) {
+      media = `<a class="source-link" href="${url}" target="_blank" rel="noopener noreferrer">Open video</a>`;
+    } else if (thumbnail) {
+      media = `<img src="${thumbnail}" alt="${title}">`;
+    }
+
+    card.innerHTML = `
+      <div class="media-box">${media}</div>
+      <div class="feed-content">
+        <h3>${title}</h3>
+        <div class="feed-meta">${channel}</div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function scheduleColumn2Refresh(region) {
+  renderColumn2VideosOnly(region);
+  setInterval(() => renderColumn2VideosOnly(region), 900000);
 }
 
 </script>
