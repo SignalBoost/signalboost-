@@ -7,6 +7,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1177,8 +1178,10 @@
 
     .partner-chip {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 4px;
       min-height: 72px;
       padding: 12px;
       border-radius: 12px;
@@ -1194,6 +1197,88 @@
     .partner-chip:hover {
       border-color: rgba(245,197,66,0.30);
       transform: translateY(-2px);
+    }
+
+    .partner-chip .partner-meta {
+      display: block;
+      margin-top: 2px;
+      color: #9bb0c2;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+
+    /* Mobile bottom navigation + responsive section scrolling */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: none;
+      justify-content: space-around;
+      background: #222;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      padding: 0.5rem;
+      z-index: 10001;
+    }
+
+    .bottom-nav button {
+      flex: 1;
+      padding: 0.85rem 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      background: none;
+      border: none;
+      color: #eee;
+      cursor: pointer;
+      font-family: system-ui, Arial, sans-serif;
+    }
+
+    .bottom-nav button:focus-visible {
+      outline: 2px solid #f5c542;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .bottom-nav {
+        display: flex;
+      }
+
+      body {
+        padding-bottom: 74px;
+      }
+
+      #stickyBar {
+        bottom: 74px;
+      }
+
+      #offersSection,
+      #videosSection,
+      #partnersSection {
+        scroll-margin-top: 58px;
+      }
+    }
+
+
+    /* Debug overlay additions for translation checks */
+    #sb-debug .debug-missing,
+    #sb-debug .debug-duplicates {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.18);
+    }
+
+    #sb-debug h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+    }
+
+    #sb-debug .missing-item {
+      color: orange;
+      line-height: 1.35;
     }
 
 </style>
@@ -1216,7 +1301,7 @@
   <div class="directory-menu" id="directoryMenu"></div>
 
   <div class="app">
-    <div class="column column-1">
+    <div class="column column-1" id="offersSection" tabindex="-1">
       <div class="column-1-controls">
         <div id="leftHeader" class="column-1-header" data-i18n="explore_offers">Explore offers</div>
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
@@ -1251,18 +1336,25 @@
       </div>
     </div>
 
-    <div class="column column-2">
+    <div class="column column-2" id="videosSection" tabindex="-1">
       <div id="magnetoColumn">
         <div id="heroFeedStatus" class="hero-feed-status"></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
 
-    <div class="column column-3">
+    <div class="column column-3" id="partnersSection" tabindex="-1">
       <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
       <div id="partnerChips" class="brand-grid"></div>
     </div>
   </div>
+
+
+  <nav class="bottom-nav" aria-label="Mobile section navigation">
+    <button type="button" data-target="offersSection">Offers</button>
+    <button type="button" data-target="videosSection">Videos</button>
+    <button type="button" data-target="partnersSection">Partners</button>
+  </nav>
 
   <div id="stickyBar">
     <div class="sticky-copy" id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
@@ -3457,6 +3549,8 @@
         const body = group.querySelector(".c1-body");
         const item = document.createElement("div");
         item.className = "c1-partner";
+        item.dataset.name = p.name || "";
+        item.dataset.region = normalizeRegion(p.region || "global");
         item.innerHTML = `${escapeHtml(p.name)}<span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>`;
         item.onclick = () => {
           trackClick();
@@ -4127,6 +4221,23 @@
       return map[region] || "en";
     }
 
+    // --- Detect region from browser language ---
+    function detectRegion() {
+      const lang = (navigator.language || "").toLowerCase();
+
+      if (lang.startsWith("pt-br")) return "br";
+      if (lang.startsWith("es-mx")) return "mx";
+      if (lang.startsWith("en-us")) return "us";
+      if (lang.startsWith("en-gb")) return "gb";
+      if (lang.startsWith("pl")) return "pl";
+      if (lang.startsWith("ru")) return "ru";
+      if (lang.startsWith("hi")) return "in";
+      if (lang.startsWith("fr")) return "eu";
+      if (lang.startsWith("es-es")) return "es";
+
+      return "global";
+    }
+
     async function detectUserRegion() {
       const urlParam = new URLSearchParams(window.location.search).get("region");
       if (urlParam) return setActiveRegion(urlParam.toLowerCase());
@@ -4135,19 +4246,7 @@
       const path = window.location.pathname.toLowerCase();
       if (path !== "/" && pathRegion) return setActiveRegion(pathRegion);
 
-      const lang = (navigator.language || "").toLowerCase();
-      if (lang.startsWith("pt")) return setActiveRegion("br");
-      if (lang.startsWith("pl")) return setActiveRegion("pl");
-      if (lang.startsWith("es")) return setActiveRegion("mx");
-      if (lang.startsWith("ja")) return setActiveRegion("jp");
-      if (lang.startsWith("de")) return setActiveRegion("de");
-      if (lang.startsWith("fr")) return setActiveRegion("fr");
-      if (lang.startsWith("it")) return setActiveRegion("it");
-      if (lang.startsWith("ko")) return setActiveRegion("kr");
-      if (lang.startsWith("zh-tw")) return setActiveRegion("tw");
-      if (lang.startsWith("zh")) return setActiveRegion("cn");
-
-      return setActiveRegion("us");
+      return setActiveRegion(detectRegion());
     }
 
     async function loadLanguage(lang) {
@@ -4332,12 +4431,102 @@
       if (ogDescription) ogDescription.setAttribute("content", profile.description);
     }
 
-    function showDebug(region, lang) {
+    function detectLanguage(region) {
+      const map = {
+        br: "pt-BR",
+        mx: "es",
+        us: "en",
+        ca: "en",
+        gb: "en",
+        uk: "en",
+        pl: "pl",
+        ru: "ru",
+        in: "hi",
+        fr: "fr",
+        es: "es",
+        de: "de",
+        it: "it",
+        jp: "ja",
+        kr: "ko",
+        cn: "zh-CN",
+        tw: "zh-TW",
+        global: "en"
+      };
+      return map[normalizeRegion(region)] || "en";
+    }
+
+    function detectMissingTranslations(translations) {
+      const params = new URLSearchParams(window.location.search);
+      const debugEnabled = params.has("debug");
+      const missing = [];
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (!translations || !translations[key]) {
+          missing.push(key);
+
+          if (debugEnabled) {
+            el.style.outline = "2px solid red";
+            el.setAttribute("title", `⚠️ Missing translation: ${key}`);
+          }
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (!translations || !translations[key]) {
+          missing.push(key);
+
+          if (debugEnabled) {
+            el.style.outline = "2px solid red";
+            el.setAttribute("title", `⚠️ Missing translation: ${key}`);
+          }
+        }
+      });
+
+      if (debugEnabled) {
+        const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+        if (overlay) {
+          const oldSection = overlay.querySelector(".debug-missing");
+          if (oldSection) oldSection.remove();
+
+          const missSection = document.createElement("div");
+          missSection.className = "debug-missing";
+          missSection.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
+
+          if (!missing.length) {
+            const ok = document.createElement("div");
+            ok.textContent = "None detected.";
+            ok.style.opacity = ".75";
+            missSection.appendChild(ok);
+          }
+
+          [...new Set(missing)].forEach(k => {
+            const el = document.createElement("div");
+            el.className = "missing-item";
+            el.textContent = k;
+            missSection.appendChild(el);
+          });
+
+          overlay.appendChild(missSection);
+          overlay.style.display = "block";
+        }
+      }
+
+      return [...new Set(missing)];
+    }
+
+    function showDebug(region, lang, partners = [], errors = []) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
-      const box = document.getElementById("sb-debug");
+      const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
       if (!box) return;
-      box.innerHTML = `<strong>Region:</strong> ${escapeHtml(region)}<br><strong>Language:</strong> ${escapeHtml(lang)}`;
+      box.innerHTML = `
+        <strong>Region:</strong> ${escapeHtml(region)}<br>
+        <strong>Language:</strong> ${escapeHtml(lang)}<br>
+        <strong>Partners:</strong> ${Array.isArray(partners) ? partners.length : 0}<br>
+        <strong>Errors:</strong> ${Array.isArray(errors) ? errors.length : 0}
+      `;
       box.style.display = "block";
       console.log("Detected region:", region);
       console.log("Detected language:", lang);
@@ -4347,6 +4536,7 @@
       const region = await detectUserRegion();
       const lang = await detectUserLanguage();
       await loadLanguage(lang);
+      detectMissingTranslations(ACTIVE_TRANSLATIONS);
       showDebug(region, lang);
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
@@ -4384,33 +4574,288 @@
       return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
     }
 
-    async function loadPartners(region, allPartners) {
-      const normalizedRegion = normalizeRegion(region || "global") || "global";
+    function mergeDuplicates(partners) {
+      const merged = {};
 
-      // Step 1: backend is source of truth. Prefer /partners?region=...
-      try {
-        const res = await fetch(`/partners?region=${encodeURIComponent(normalizedRegion)}`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data) && data.length) {
-            return data
-              .map(p => ({
-                ...p,
-                category_key: p.category_key || categoryKeyForPartner(p)
-              }))
-              .filter(usablePartner);
-          }
+      (partners || []).forEach(p => {
+        if (!p || !p.name) return;
+
+        const region = normalizeRegion(p.region || "global");
+        const key = `${String(p.name).trim().toLowerCase()}|${region}`;
+
+        if (!merged[key]) {
+          merged[key] = { ...p, region };
+          return;
         }
-      } catch (e) {
-        console.warn("/partners route unavailable; using embedded partnersData fallback", e);
+
+        // Merge missing fields from duplicate without overwriting useful existing data.
+        Object.keys(p).forEach(field => {
+          if (!merged[key][field] || merged[key][field] === "") {
+            merged[key][field] = p[field];
+          }
+        });
+
+        merged[key].region = region;
+        merged[key].url = merged[key].url || p.url || "#";
+        merged[key].category_key = merged[key].category_key || p.category_key || categoryKeyForPartner(p);
+        merged[key].category = merged[key].category || p.category || p.category_key;
+        merged[key].network = merged[key].network || p.network || "";
+        merged[key].tier = Number(merged[key].tier || p.tier || 99);
+        merged[key].logo = merged[key].logo || p.logo || "";
+        merged[key].description = merged[key].description || p.description || "";
+      });
+
+      return Object.values(merged);
+    }
+
+    function dedupePartnersByNameRegion(partners) {
+      return mergeDuplicates(partners);
+    }
+
+
+    function mergeAcrossRegions(partners) {
+      const merged = {};
+
+      (partners || []).forEach(p => {
+        if (!p || !p.name) return;
+        const key = String(p.name).trim().toLowerCase();
+        const region = normalizeRegion(p.region || "global");
+
+        if (!merged[key]) {
+          merged[key] = { ...p, region, regions: [region] };
+          return;
+        }
+
+        if (!merged[key].regions.includes(region)) {
+          merged[key].regions.push(region);
+        }
+
+        // Merge missing fields without overwriting the first/best offer.
+        Object.keys(p).forEach(field => {
+          if (!merged[key][field] || merged[key][field] === "") {
+            merged[key][field] = p[field];
+          }
+        });
+
+        merged[key].category_key = merged[key].category_key || p.category_key || categoryKeyForPartner(p);
+        merged[key].category = merged[key].category || p.category || p.category_key;
+        merged[key].network = merged[key].network || p.network || "";
+        merged[key].tier = Math.min(Number(merged[key].tier || 99), Number(p.tier || 99));
+        merged[key].logo = merged[key].logo || p.logo || "";
+      });
+
+      return Object.values(merged);
+    }
+
+    function validatePartners(partners) {
+      const requiredFields = ["name", "url", "category", "region", "network", "logo"];
+      const validRegions = ["br", "mx", "us", "pl", "ca", "eu", "latam", "global"];
+      const errors = [];
+
+      (partners || baseAvailablePartners()).forEach((p, index) => {
+        const entryErrors = [];
+
+        requiredFields.forEach(field => {
+          if (!p || !p[field] || p[field].toString().trim() === "") {
+            entryErrors.push(`Missing required field: ${field}`);
+          }
+        });
+
+        const region = normalizeRegion(p && p.region ? p.region : "");
+        if (!validRegions.includes(region)) {
+          entryErrors.push(`Invalid region: ${p && p.region ? p.region : "(empty)"}`);
+        }
+
+        if (p && p.tier !== undefined && !Number.isInteger(Number(p.tier))) {
+          entryErrors.push(`Tier must be an integer, got: ${p.tier}`);
+        }
+
+        if (entryErrors.length > 0) {
+          errors.push({
+            index,
+            name: (p && p.name) || "(unnamed)",
+            region: (p && p.region) || "(no region)",
+            issues: entryErrors
+          });
+        }
+      });
+
+      if (errors.length > 0) {
+        console.groupCollapsed(`❌ Partner validation failed: ${errors.length} issue group(s)`);
+        errors.forEach(e => {
+          console.groupCollapsed(`Partner [${e.index}] ${e.name} (${e.region})`);
+          e.issues.forEach(issue => console.error(issue));
+          console.groupEnd();
+        });
+        console.groupEnd();
+      } else {
+        console.log("✅ All partners passed validation");
       }
 
-      // Safe fallback: keep the old baseline behavior if backend is unavailable.
-      const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
+      return errors;
+    }
 
-      if (regional.length > 0) return regional;
-      return all.filter(p => partnerRegionMatches(p, "global"));
+    function groupGlobalPartnersByCategory(partners) {
+      const grouped = {};
+
+      (partners || []).forEach(p => {
+        if (!usablePartner(p)) return;
+        if (normalizeRegion(p.region || "") !== "global") return;
+
+        const category = categoryKeySafe(p);
+        if (!grouped[category]) grouped[category] = [];
+        grouped[category].push(p);
+      });
+
+      return grouped;
+    }
+
+    function buildCuratedRegionalPartners(region, allPartners) {
+      const normalizedRegion = normalizeRegion(region || "global");
+      const all = (allPartners || baseAvailablePartners())
+        .map(p => ({ ...p, category_key: p.category_key || categoryKeyForPartner(p) }))
+        .filter(usablePartner);
+
+      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
+      const globalByCategory = groupGlobalPartnersByCategory(all);
+
+      if (!regional.length) {
+        return dedupePartnersByNameRegion(all.filter(p => partnerRegionMatches(p, "global")));
+      }
+
+      const combined = [];
+      regional.forEach(p => {
+        combined.push(p);
+        const category = categoryKeySafe(p);
+        (globalByCategory[category] || []).forEach(globalPartner => combined.push(globalPartner));
+      });
+
+      return dedupePartnersByNameRegion(combined);
+    }
+
+    function highlightDuplicatesInUI(partners) {
+      const params = new URLSearchParams(window.location.search);
+      const debugEnabled = params.has("debug");
+      const seen = new Map();
+      const duplicates = [];
+
+      (partners || []).forEach(p => {
+        if (!p || !p.name) return;
+        const key = `${String(p.name).trim().toLowerCase()}|${normalizeRegion(p.region || "global")}`;
+        if (seen.has(key)) {
+          duplicates.push(p);
+        } else {
+          seen.set(key, p);
+        }
+      });
+
+      // Highlight duplicates directly in the UI. Supports current sidebar/cards/chips.
+      duplicates.forEach(d => {
+        const name = cssEscape(String(d.name || ""));
+        const region = cssEscape(normalizeRegion(d.region || "global"));
+        const cards = document.querySelectorAll(
+          `.partner-card[data-name="${name}"][data-region="${region}"], .c1-partner[data-name="${name}"][data-region="${region}"], .partner-chip[data-name="${name}"][data-region="${region}"]`
+        );
+
+        cards.forEach(card => {
+          card.style.border = "2px solid red";
+          card.style.boxShadow = "0 0 5px red";
+          card.setAttribute("title", "⚠️ Duplicate partner detected");
+        });
+      });
+
+      // Also update debug overlay, but only when ?debug is present.
+      if (!debugEnabled) return;
+
+      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+      if (overlay) {
+        const oldSection = overlay.querySelector(".debug-duplicates");
+        if (oldSection) oldSection.remove();
+
+        const dupSection = document.createElement("div");
+        dupSection.className = "debug-duplicates";
+        dupSection.style.marginTop = "10px";
+        dupSection.innerHTML = `<h4 style="margin:0 0 6px">⚠️ Duplicates (${duplicates.length})</h4>`;
+
+        if (!duplicates.length) {
+          const empty = document.createElement("div");
+          empty.textContent = "None detected by name + region.";
+          empty.style.opacity = ".75";
+          dupSection.appendChild(empty);
+        }
+
+        duplicates.forEach(d => {
+          const el = document.createElement("div");
+          el.className = "duplicate-item";
+          el.textContent = `${d.name} [${normalizeRegion(d.region || "global")}]`;
+          el.style.color = "red";
+          dupSection.appendChild(el);
+        });
+
+        overlay.appendChild(dupSection);
+        overlay.style.display = "block";
+      }
+    }
+
+    function highlightDuplicates(partners) {
+      return highlightDuplicatesInUI(partners);
+    }
+
+    function cssEscape(value) {
+      if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(value);
+      return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    }
+
+
+    function normalizeLoadedPartners(partners, fallbackRegion) {
+      const normalizedRegion = normalizeRegion(fallbackRegion || "global") || "global";
+      return mergeDuplicates(
+        (partners || [])
+          .map(p => ({
+            ...p,
+            region: normalizeRegion(p.region || normalizedRegion),
+            category_key: p.category_key || categoryKeyForPartner(p)
+          }))
+          .filter(usablePartner)
+      );
+    }
+
+    function embeddedStrictPartners(region) {
+      const normalizedRegion = normalizeRegion(region || "global") || "global";
+      return normalizeLoadedPartners(
+        baseAvailablePartners().filter(p => normalizeRegion(p.region || "") === normalizedRegion),
+        normalizedRegion
+      );
+    }
+
+    // --- Strict loader: no global fallback ---
+    async function loadPartnersStrict(region) {
+      const normalizedRegion = normalizeRegion(region || "global") || "global";
+
+      try {
+        const res = await fetch(`/partners-${encodeURIComponent(normalizedRegion)}.json`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Region file not found: ${normalizedRegion}`);
+
+        const partners = await res.json();
+        if (!Array.isArray(partners)) throw new Error(`Invalid partners file format for region: ${normalizedRegion}`);
+
+        // Deduplicate before rendering. This stays strict: the file itself controls
+        // whether curated global partners are included. No runtime global fallback.
+        return normalizeLoadedPartners(partners, normalizedRegion);
+      } catch (err) {
+        console.warn(`⚠️ No partners file for region ${normalizedRegion}: ${err.message}`);
+
+        // Keep the UI usable in local/dev previews where partners-*.json files
+        // are not deployed yet. This uses ONLY embedded partners for the same
+        // region, so it still does not add global fallback partners.
+        return embeddedStrictPartners(normalizedRegion);
+      }
+    }
+
+    async function loadPartners(region, allPartners) {
+      // Strict isolation mode: load only /partners-{region}.json.
+      // No global fallback is applied here by design.
+      return loadPartnersStrict(region);
     }
 
     function categoryKeySafe(partner) {
@@ -4448,9 +4893,8 @@
       // Column 1 should show global + regional non-travel partners.
       // This keeps useful global offers visible without duplicating travel header categories.
       const region = getRegion();
-      const source = baseAvailablePartners()
+      const source = dedupePartnersByNameRegion(partners || ACTIVE_PARTNERS || [])
         .filter(usablePartner)
-        .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
         .filter(p => column1Set.has(categoryKeySafe(p)));
 
       const items = partnersFilteredBySearch(source);
@@ -4495,6 +4939,8 @@
 
           const item = document.createElement("div");
           item.className = "c1-partner";
+          item.dataset.name = p.name || "";
+          item.dataset.region = normalizeRegion(p.region || "global");
           item.innerHTML = `
             ${escapeHtml(p.name || "Partner")}
             <span class="partner-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
@@ -4528,18 +4974,32 @@
       const container = document.getElementById("partnerChips");
       if (!container) return;
 
-      const filtered = (partners || []).filter(p => normalizeRegion(p.region || "") === normalizeRegion(selectedRegion));
+      const filtered = (partners || []).filter(p => {
+        const r = normalizeRegion(p.region || "");
+        return r === normalizeRegion(selectedRegion) || r === "global";
+      });
 
       console.log("VISIBLE PARTNERS:", filtered.map(p => p.name));
 
-      const top = filtered
+      const top = mergeAcrossRegions(filtered)
         .slice()
         .sort((a, b) => (a.tier || 99) - (b.tier || 99))
         .slice(0, 12);
 
-      container.innerHTML = top.map(p => `
-        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">${escapeHtml(p.name || 'Partner')}</a>
-      `).join("");
+      if (!top.length) {
+        container.innerHTML = `<div class="partners-empty">No partners loaded for this region.</div>`;
+        return;
+      }
+
+      container.innerHTML = top.map(p => {
+        const regions = p.regions || [normalizeRegion(p.region || 'global')];
+        return `
+          <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-name="${escapeHtml(p.name || '')}" data-region="${escapeHtml(regions.join(','))}">
+            <span>${escapeHtml(p.name || 'Partner')}</span>
+            <span class="partner-meta">${escapeHtml(regions.join(', ').toUpperCase())}</span>
+          </a>
+        `;
+      }).join("");
 
       container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
     }
@@ -4597,17 +5057,139 @@
       overlay.style.display = "block";
     }
 
+
+
+    // --- Column 2: resilient regional video feed with 45-minute session refresh ---
+    function getColumn2Container() {
+      // The real Column 2 list in this layout is #feedContainer.
+      // #column2 is kept as a compatibility fallback for older snippets.
+      return document.getElementById("feedContainer") || document.getElementById("column2");
+    }
+
+    function youtubeRegionCode(region) {
+      const normalized = normalizeRegion(region || "global");
+      const map = {
+        br: "BR",
+        mx: "MX",
+        us: "US",
+        pl: "PL",
+        ca: "CA",
+        gb: "GB",
+        uk: "GB",
+        eu: "GB",
+        latam: "MX",
+        es: "ES",
+        ru: "RU",
+        in: "IN",
+        global: "US"
+      };
+      return map[normalized] || normalized.toUpperCase();
+    }
+
+    async function renderColumn2(region) {
+      const col2 = getColumn2Container();
+      const status = document.getElementById("heroFeedStatus");
+      if (!col2) return;
+
+      col2.innerHTML = "";
+      if (status) status.textContent = "Loading regional videos...";
+
+      try {
+        const res = await fetch(
+          `/api/videos?chart=mostPopular&regionCode=${encodeURIComponent(youtubeRegionCode(region))}&maxResults=10`,
+          { cache: "no-store" }
+        );
+
+        if (!res.ok) throw new Error(`Video API error: ${res.status}`);
+
+        const data = await res.json();
+
+        if (data.items?.length) {
+          buildVideoCards(data.items, col2);
+          if (status) status.textContent = "";
+          return;
+        }
+
+        console.warn("No regional videos returned; using built-in fallback feed.");
+      } catch (err) {
+        console.warn("Regional video API unavailable; using built-in fallback feed:", err);
+      }
+
+      try {
+        await renderFeed();
+        if (status) status.textContent = "";
+      } catch (fallbackErr) {
+        console.error("❌ Column 2 fallback failed:", fallbackErr);
+        col2.innerHTML = `<div class="partners-empty">No videos available right now.</div>`;
+        if (status) status.textContent = "";
+      }
+    }
+
+    function buildVideoCards(videos, container) {
+      container.innerHTML = "";
+
+      (videos || []).slice(0, 10).forEach(v => {
+        const videoId = typeof v.id === "object" ? v.id.videoId : (v.videoId || v.id);
+        const snippet = v.snippet || {};
+        const title = snippet.title || v.title || "Regional video";
+        const channel = snippet.channelTitle || v.channel || "";
+
+        if (!videoId) return;
+
+        const card = document.createElement("div");
+        card.className = "feed-card video-card";
+
+        card.innerHTML = `
+          <div class="media-box">
+            <iframe
+              src="https://www.youtube.com/embed/${escapeHtml(videoId)}"
+              title="${escapeHtml(title)}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="feed-content">
+            <h3>${escapeHtml(title)}</h3>
+            <div class="feed-meta">${escapeHtml(channel)}</div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      if (!container.children.length) {
+        container.innerHTML = `<div class="partners-empty">No regional videos available.</div>`;
+      }
+    }
+
+    function scheduleColumn2Session(region) {
+      renderColumn2(region);
+
+      if (window.__signalBoostColumn2Timer) {
+        clearInterval(window.__signalBoostColumn2Timer);
+      }
+
+      window.__signalBoostColumn2Timer = setInterval(() => {
+        console.log(`🔄 Session refresh for Column 2 (${region})`);
+        renderColumn2(region);
+      }, 45 * 60 * 1000);
+    }
+
     async function initSignalBoost() {
       const region = await detectUserRegion();
       const lang = await detectUserLanguage();
 
       const allPartners = baseAvailablePartners();
-      const partners = await loadPartners(region, allPartners);
+      const partners = await loadPartnersStrict(region);
       ACTIVE_PARTNERS = partners;
       window.ACTIVE_PARTNERS = partners;
 
       await initI18n(lang);
-      showDebug(region, lang);
+      const partnerValidationErrors = validatePartners(allPartners);
+      detectMissingTranslations(ACTIVE_TRANSLATIONS);
+      showDebug(region, lang, partners, partnerValidationErrors);
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
@@ -4620,16 +5202,442 @@
       try { renderColumn3(partners); } catch (e) { console.error("renderColumn3 failed", e); }
       try { updateHeaderCounts(partners); } catch (e) { console.error("updateHeaderCounts failed", e); }
       try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
-      try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
+      try { scheduleColumn2Session(region); } catch (e) { console.error("scheduleColumn2Session failed", e); }
       try { showDebugOverlay(region, partners, allPartners); } catch (e) { console.error("showDebugOverlay failed", e); }
-      try { validatePartners(); } catch (e) {}
+      try { highlightDuplicates(partners); } catch (e) { console.error("highlightDuplicates failed", e); }
+      try { if (!partnerValidationErrors) validatePartners(allPartners); } catch (e) { console.error("validatePartners failed", e); }
 
       const search = document.getElementById("partnerSearch");
       if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
     }
 
     document.addEventListener("DOMContentLoaded", initSignalBoost);
-  </script>
+  
+/* STEP 3 REAL: Simple Column 1 render only */
+function renderColumn1Simple(partners) {
+  const col1 = document.getElementById("column1");
+  if (!col1) return;
+
+  col1.innerHTML = "";
+
+  if (!Array.isArray(partners) || partners.length === 0) {
+    col1.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
+    return;
+  }
+
+  partners.forEach(p => {
+    const item = document.createElement("a");
+    item.className = "c1-partner";
+    item.dataset.name = p.name || "";
+    item.dataset.region = normalizeRegion(p.region || "global");
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.rel = "noopener noreferrer";
+    item.textContent = p.name || "Unnamed partner";
+
+    const meta = document.createElement("span");
+    meta.className = "partner-meta";
+    meta.textContent = `${p.region || "global"} • ${p.network || ""}`;
+
+    item.appendChild(meta);
+    col1.appendChild(item);
+  });
+}
+
+
+/* STEP 4: Simple Column 3 (top partners) */
+function renderColumn3Simple(partners) {
+  const col3 = document.getElementById("column3");
+  if (!col3) return;
+
+  col3.innerHTML = "";
+
+  if (!Array.isArray(partners)) return;
+
+  const top = partners.slice(0, 8);
+
+  top.forEach(p => {
+    const item = document.createElement("a");
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.textContent = p.name;
+    item.style.display = "block";
+    item.style.marginBottom = "6px";
+    col3.appendChild(item);
+  });
+}
+
+
+/* STEP 5: Column 2 videos ONLY */
+function getVideoRegionChain(region) {
+  const clean = (region || "global").toLowerCase();
+  const fallbackMap = {
+    br: ["latam"],
+    mx: ["latam"],
+    uk: ["eu"],
+    gb: ["eu"],
+    ca: ["us"]
+  };
+  return [clean, ...(fallbackMap[clean] || []), "global"];
+}
+
+async function renderColumn2VideosOnly(region) {
+  return renderColumn2(region);
+}
+
+
+function buildColumn2VideoCards(videos, container) {
+  container.innerHTML = "";
+
+  videos.slice(0, 12).forEach(v => {
+    const card = document.createElement("div");
+    card.className = "feed-card";
+
+    const title = v.title || "Video";
+    const channel = v.channel || "";
+    const thumbnail = v.thumbnail || "";
+    const url = v.url || "";
+    const videoId = v.videoId || v.id || "";
+
+    let media = "";
+
+    if (videoId) {
+      media = `
+        <iframe
+          src="https://www.youtube.com/embed/${videoId}"
+          title="${title}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      `;
+    } else if (url && url.includes("youtube")) {
+      media = `<a class="source-link" href="${url}" target="_blank" rel="noopener noreferrer">Open video</a>`;
+    } else if (thumbnail) {
+      media = `<img src="${thumbnail}" alt="${title}">`;
+    }
+
+    card.innerHTML = `
+      <div class="media-box">${media}</div>
+      <div class="feed-content">
+        <h3>${title}</h3>
+        <div class="feed-meta">${channel}</div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function scheduleColumn2Refresh(region) {
+  scheduleColumn2Session(region);
+}
+
+
+/* STEP 6: Header dropdown menu only */
+function renderHeaderDropdown(partners) {
+  const header = document.getElementById("travelDirectory");
+  const menu = document.getElementById("directoryMenu");
+  if (!header || !menu) return;
+
+  header.innerHTML = "";
+  menu.classList.remove("open");
+  menu.innerHTML = "";
+
+  if (!Array.isArray(partners) || partners.length === 0) {
+    return;
+  }
+
+  const categories = {};
+  partners.forEach(p => {
+    const cat = (p.category_key || p.category || "other").toLowerCase();
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(p);
+  });
+
+  Object.entries(categories).forEach(([cat, items]) => {
+    const btn = document.createElement("button");
+    btn.className = "directory-item has-menu";
+    btn.type = "button";
+    btn.textContent = `${cat} (${items.length})`;
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      document.querySelectorAll(".directory-item").forEach(el => {
+        el.classList.remove("active");
+      });
+
+      btn.classList.add("active");
+
+      menu.innerHTML = `
+        <div class="directory-menu-title">${cat} (${items.length})</div>
+        ${items.map(p => `
+          <a class="directory-menu-link" href="${p.url || "#"}" target="_blank" rel="noopener noreferrer">
+            ${p.name || "Partner"}
+            <span class="directory-menu-meta">${p.region || "global"} • ${p.network || ""}</span>
+          </a>
+        `).join("")}
+      `;
+
+      menu.classList.add("open");
+    });
+
+    header.appendChild(btn);
+  });
+
+  document.addEventListener("click", () => {
+    menu.classList.remove("open");
+    document.querySelectorAll(".directory-item").forEach(el => {
+      el.classList.remove("active");
+    });
+  }, { once: false });
+}
+
+
+/* STEP 7: Column 1 grouped accordion using existing .c1-group HTML */
+function normalizeColumn1Category(cat) {
+  const key = (cat || "").trim().toLowerCase();
+
+  const map = {
+    esim: "products_tools",
+    e_sim: "products_tools",
+    car_rentals: "travel_services",
+    cars: "travel_services",
+    storage: "travel_services",
+    services: "travel_services"
+  };
+
+  return map[key] || key || "specialty_other";
+}
+
+function renderColumn1Grouped(partners) {
+  const root = document.getElementById("column1");
+  if (!root) return;
+
+  const groups = root.querySelectorAll(".c1-group");
+
+  // If the baseline accordion structure is missing, fail safely.
+  if (!groups.length) {
+    root.innerHTML = '<div class="partners-empty">Column 1 groups not found.</div>';
+    return;
+  }
+
+  groups.forEach(group => {
+    const body = group.querySelector(".c1-body");
+    const header = group.querySelector(".c1-header");
+    if (body) body.innerHTML = "";
+    if (header) header.classList.remove("open", "active");
+    if (body) body.classList.remove("open");
+    group.style.display = "none";
+  });
+
+  (partners || []).forEach(p => {
+    const cat = normalizeColumn1Category(p.category_key || p.category);
+    const group = root.querySelector(`.c1-group[data-cat="${cat}"]`);
+    if (!group) return;
+
+    const body = group.querySelector(".c1-body");
+    if (!body) return;
+
+    const item = document.createElement("a");
+    item.className = "c1-partner";
+    item.dataset.name = p.name || "";
+    item.dataset.region = normalizeRegion(p.region || "global");
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.rel = "noopener noreferrer";
+    item.textContent = p.name || "Partner";
+
+    const meta = document.createElement("span");
+    meta.className = "partner-meta";
+    meta.textContent = `${p.region || "global"} • ${p.network || ""}`;
+
+    item.appendChild(meta);
+    body.appendChild(item);
+    group.style.display = "block";
+  });
+
+  groups.forEach(group => {
+    const header = group.querySelector(".c1-header");
+    const body = group.querySelector(".c1-body");
+    if (!header || !body) return;
+
+    // Avoid duplicate click handlers by replacing node.
+    const freshHeader = header.cloneNode(true);
+    header.parentNode.replaceChild(freshHeader, header);
+
+    freshHeader.addEventListener("click", () => {
+      const isOpen = body.classList.toggle("open");
+      freshHeader.classList.toggle("open", isOpen);
+      freshHeader.classList.toggle("active", isOpen);
+    });
+  });
+}
+
+
+/* STEP 8 SAFE: Column 3 simple tier-sorted render */
+function renderColumn3Safe(partners) {
+  const col3 = document.getElementById("column3");
+  if (!col3) return;
+
+  col3.innerHTML = "";
+
+  if (!Array.isArray(partners) || partners.length === 0) {
+    col3.innerHTML = '<div class="partners-empty">No partners loaded.</div>';
+    return;
+  }
+
+  const seen = new Set();
+
+  const top = partners
+    .slice()
+    .sort((a, b) => (a.tier || 99) - (b.tier || 99))
+    .filter(p => {
+      const key = `${p.name || ""}-${p.url || ""}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 8);
+
+  top.forEach(p => {
+    const item = document.createElement("a");
+    item.href = p.url || "#";
+    item.target = "_blank";
+    item.rel = "noopener noreferrer";
+    item.textContent = p.name || "Partner";
+    item.style.display = "block";
+    item.style.marginBottom = "6px";
+    item.style.textDecoration = "none";
+
+    col3.appendChild(item);
+  });
+}
+
+
+/* STEP 9 SAFE: Column 1 filter buttons */
+function attachColumn1Filter(partners) {
+  const buttons = document.querySelectorAll("#column1-filter button");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const cat = btn.dataset.cat;
+
+      if (cat === "all") {
+        renderColumn1Grouped(partners);
+        return;
+      }
+
+      const filtered = filterPartnersByCategorySafe(partners, cat);
+
+      renderColumn1Grouped(filtered);
+    });
+  });
+}
+
+
+/* STEP 10A: Safe normalization helpers only */
+function normalizeRegion(region) {
+  const raw = (region || "global").toString().trim().toLowerCase();
+  const aliases = {
+    usa: "us", unitedstates: "us", "united-states": "us",
+    uk: "gb", "united-kingdom": "gb",
+    poland: "pl", polska: "pl",
+    brazil: "br", brasil: "br",
+    "pt-br": "br",
+    mexico: "mx", "méxico": "mx",
+    india: "in",
+    spain: "es",
+    china: "cn", japan: "jp", korea: "kr", "south-korea": "kr"
+  };
+  return aliases[raw] || raw;
+}
+
+function normalizeCategory(cat) {
+  return (cat || "other").toString().trim().toLowerCase();
+}
+
+function getPartnerCategory(partner) {
+  return normalizeCategory(partner?.category_key || partner?.category || "other");
+}
+
+function getPartnerRegion(partner) {
+  return normalizeRegion(partner?.region || "global");
+}
+
+
+/* STEP 10B: Safe partner filtering helpers only */
+function filterPartnersByRegion(partners, region) {
+  const selected = normalizeRegion(region);
+
+  return (partners || []).filter(p => {
+    const pRegion = getPartnerRegion(p);
+    return pRegion === selected || pRegion === "global";
+  });
+}
+
+function filterPartnersByCategorySafe(partners, categoryKey) {
+  const selected = normalizeCategory(categoryKey);
+
+  return (partners || []).filter(p => {
+    return getPartnerCategory(p) === selected;
+  });
+}
+
+function filterPartnersByTier(partners, tier = 1) {
+  const selectedTier = Number(tier);
+
+  return (partners || []).filter(p => {
+    return Number(p?.tier || 99) === selectedTier;
+  });
+}
+
+
+function renderUniquePartners(containerId, partners) {
+  const seen = new Set();
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  (partners || []).forEach(p => {
+    const key = `${String(p.name || "").toLowerCase()}|${normalizeRegion(p.region || "global")}`;
+    if (!p.name || seen.has(key)) return;
+    seen.add(key);
+
+    const el = document.createElement("div");
+    el.className = "partner-card";
+    el.dataset.name = p.name || "";
+    el.dataset.region = normalizeRegion(p.region || "global");
+    el.textContent = p.name;
+    container.appendChild(el);
+  });
+}
+
+/* STEP 10E: Safe duplicate merge helper only */
+function mergeDuplicatePartners(partners) {
+  return mergeDuplicates(partners);
+}
+
+
+// --- Mobile bottom-nav smooth scroll ---
+document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.querySelector(".bottom-nav");
+  if (!nav) return;
+
+  nav.addEventListener("click", e => {
+    const button = e.target.closest("button[data-target]");
+    if (!button) return;
+
+    const target = button.dataset.target;
+    const section = document.getElementById(target);
+    if (!section) return;
+
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    section.focus({ preventScroll: true });
+  });
+});
+
+</script>
 
 </body>
 </html>
