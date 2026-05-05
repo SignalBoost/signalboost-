@@ -4773,6 +4773,67 @@ function scheduleColumn2Refresh(region) {
   setInterval(() => renderColumn2VideosOnly(region), 900000);
 }
 
+
+/* STEP 6: Header dropdown menu only */
+function renderHeaderDropdown(partners) {
+  const header = document.getElementById("travelDirectory");
+  const menu = document.getElementById("directoryMenu");
+  if (!header || !menu) return;
+
+  header.innerHTML = "";
+  menu.classList.remove("open");
+  menu.innerHTML = "";
+
+  if (!Array.isArray(partners) || partners.length === 0) {
+    return;
+  }
+
+  const categories = {};
+  partners.forEach(p => {
+    const cat = (p.category_key || p.category || "other").toLowerCase();
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(p);
+  });
+
+  Object.entries(categories).forEach(([cat, items]) => {
+    const btn = document.createElement("button");
+    btn.className = "directory-item has-menu";
+    btn.type = "button";
+    btn.textContent = `${cat} (${items.length})`;
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      document.querySelectorAll(".directory-item").forEach(el => {
+        el.classList.remove("active");
+      });
+
+      btn.classList.add("active");
+
+      menu.innerHTML = `
+        <div class="directory-menu-title">${cat} (${items.length})</div>
+        ${items.map(p => `
+          <a class="directory-menu-link" href="${p.url || "#"}" target="_blank" rel="noopener noreferrer">
+            ${p.name || "Partner"}
+            <span class="directory-menu-meta">${p.region || "global"} • ${p.network || ""}</span>
+          </a>
+        `).join("")}
+      `;
+
+      menu.classList.add("open");
+    });
+
+    header.appendChild(btn);
+  });
+
+  document.addEventListener("click", () => {
+    menu.classList.remove("open");
+    document.querySelectorAll(".directory-item").forEach(el => {
+      el.classList.remove("active");
+    });
+  }, { once: false });
+}
+
 </script>
 
 </body>
