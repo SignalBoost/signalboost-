@@ -4129,6 +4129,23 @@
       return map[region] || "en";
     }
 
+    // --- Detect region from browser language ---
+    function detectRegion() {
+      const lang = (navigator.language || "").toLowerCase();
+
+      if (lang.startsWith("pt-br")) return "br";
+      if (lang.startsWith("es-mx")) return "mx";
+      if (lang.startsWith("en-us")) return "us";
+      if (lang.startsWith("en-gb")) return "gb";
+      if (lang.startsWith("pl")) return "pl";
+      if (lang.startsWith("ru")) return "ru";
+      if (lang.startsWith("hi")) return "in";
+      if (lang.startsWith("fr")) return "eu";
+      if (lang.startsWith("es-es")) return "es";
+
+      return "global";
+    }
+
     async function detectUserRegion() {
       const urlParam = new URLSearchParams(window.location.search).get("region");
       if (urlParam) return setActiveRegion(urlParam.toLowerCase());
@@ -4137,19 +4154,7 @@
       const path = window.location.pathname.toLowerCase();
       if (path !== "/" && pathRegion) return setActiveRegion(pathRegion);
 
-      const lang = (navigator.language || "").toLowerCase();
-      if (lang.startsWith("pt")) return setActiveRegion("br");
-      if (lang.startsWith("pl")) return setActiveRegion("pl");
-      if (lang.startsWith("es")) return setActiveRegion("mx");
-      if (lang.startsWith("ja")) return setActiveRegion("jp");
-      if (lang.startsWith("de")) return setActiveRegion("de");
-      if (lang.startsWith("fr")) return setActiveRegion("fr");
-      if (lang.startsWith("it")) return setActiveRegion("it");
-      if (lang.startsWith("ko")) return setActiveRegion("kr");
-      if (lang.startsWith("zh-tw")) return setActiveRegion("tw");
-      if (lang.startsWith("zh")) return setActiveRegion("cn");
-
-      return setActiveRegion("us");
+      return setActiveRegion(detectRegion());
     }
 
     async function loadLanguage(lang) {
@@ -4619,41 +4624,55 @@
     }
 
 
-    async function loadPartners(region, allPartners) {
+    function normalizeLoadedPartners(partners, fallbackRegion) {
+      const normalizedRegion = normalizeRegion(fallbackRegion || "global") || "global";
+      return mergeDuplicates(
+        (partners || [])
+          .map(p => ({
+            ...p,
+            region: normalizeRegion(p.region || normalizedRegion),
+            category_key: p.category_key || categoryKeyForPartner(p)
+          }))
+          .filter(usablePartner)
+      );
+    }
+
+    function embeddedStrictPartners(region) {
+      const normalizedRegion = normalizeRegion(region || "global") || "global";
+      return normalizeLoadedPartners(
+        baseAvailablePartners().filter(p => normalizeRegion(p.region || "") === normalizedRegion),
+        normalizedRegion
+      );
+    }
+
+    // --- Strict loader: no global fallback ---
+    async function loadPartnersStrict(region) {
       const normalizedRegion = normalizeRegion(region || "global") || "global";
 
-      // Step 1: backend is source of truth. Prefer /partners?region=...
       try {
-        const res = await fetch(`/partners?region=${encodeURIComponent(normalizedRegion)}`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data) && data.length) {
-            const backendPartners = data
-              .map(p => ({
-                ...p,
-                category_key: p.category_key || categoryKeyForPartner(p)
-              }))
-              .filter(usablePartner);
+        const res = await fetch(`/partners-${encodeURIComponent(normalizedRegion)}.json`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Region file not found: ${normalizedRegion}`);
 
-            // Merge same-category global fallbacks when the backend returns strictly regional data.
-            const embeddedGlobal = groupGlobalPartnersByCategory(allPartners || baseAvailablePartners());
-            const combined = [];
-            backendPartners.forEach(p => {
-              combined.push(p);
-              if (normalizeRegion(p.region || "") !== "global") {
-                (embeddedGlobal[categoryKeySafe(p)] || []).forEach(g => combined.push(g));
-              }
-            });
+        const partners = await res.json();
+        if (!Array.isArray(partners)) throw new Error(`Invalid partners file format for region: ${normalizedRegion}`);
 
-            return dedupePartnersByNameRegion(combined);
-          }
-        }
-      } catch (e) {
-        console.warn("/partners route unavailable; using embedded partnersData fallback", e);
+        // Deduplicate before rendering. This stays strict: the file itself controls
+        // whether curated global partners are included. No runtime global fallback.
+        return normalizeLoadedPartners(partners, normalizedRegion);
+      } catch (err) {
+        console.warn(`⚠️ No partners file for region ${normalizedRegion}: ${err.message}`);
+
+        // Keep the UI usable in local/dev previews where partners-*.json files
+        // are not deployed yet. This uses ONLY embedded partners for the same
+        // region, so it still does not add global fallback partners.
+        return embeddedStrictPartners(normalizedRegion);
       }
+    }
 
-      // Safe fallback: strict regional isolation + same-category global fallback.
-      return buildCuratedRegionalPartners(normalizedRegion, allPartners || baseAvailablePartners());
+    async function loadPartners(region, allPartners) {
+      // Strict isolation mode: load only /partners-{region}.json.
+      // No global fallback is applied here by design.
+      return loadPartnersStrict(region);
     }
 
     function categoryKeySafe(partner) {
@@ -4784,6 +4803,11 @@
         .sort((a, b) => (a.tier || 99) - (b.tier || 99))
         .slice(0, 12);
 
+      if (!top.length) {
+        container.innerHTML = `<div class="partners-empty">No partners loaded for this region.</div>`;
+        return;
+      }
+
       container.innerHTML = top.map(p => {
         const regions = p.regions || [normalizeRegion(p.region || 'global')];
         return `
@@ -4855,7 +4879,7 @@
       const lang = await detectUserLanguage();
 
       const allPartners = baseAvailablePartners();
-      const partners = mergeDuplicates(await loadPartners(region, allPartners));
+      const partners = await loadPartnersStrict(region);
       ACTIVE_PARTNERS = partners;
       window.ACTIVE_PARTNERS = partners;
 
@@ -5235,7 +5259,19 @@ function attachColumn1Filter(partners) {
 
 /* STEP 10A: Safe normalization helpers only */
 function normalizeRegion(region) {
-  return (region || "global").toString().trim().toLowerCase();
+  const raw = (region || "global").toString().trim().toLowerCase();
+  const aliases = {
+    usa: "us", unitedstates: "us", "united-states": "us",
+    uk: "gb", "united-kingdom": "gb",
+    poland: "pl", polska: "pl",
+    brazil: "br", brasil: "br",
+    "pt-br": "br",
+    mexico: "mx", "méxico": "mx",
+    india: "in",
+    spain: "es",
+    china: "cn", japan: "jp", korea: "kr", "south-korea": "kr"
+  };
+  return aliases[raw] || raw;
 }
 
 function normalizeCategory(cat) {
