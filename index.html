@@ -1177,8 +1177,10 @@
 
     .partner-chip {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 4px;
       min-height: 72px;
       padding: 12px;
       border-radius: 12px;
@@ -1194,6 +1196,69 @@
     .partner-chip:hover {
       border-color: rgba(245,197,66,0.30);
       transform: translateY(-2px);
+    }
+
+    .partner-chip .partner-meta {
+      display: block;
+      margin-top: 2px;
+      color: #9bb0c2;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+
+    /* Mobile bottom navigation + responsive section scrolling */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: none;
+      justify-content: space-around;
+      background: #222;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      padding: 0.5rem;
+      z-index: 10001;
+    }
+
+    .bottom-nav button {
+      flex: 1;
+      padding: 0.85rem 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      background: none;
+      border: none;
+      color: #eee;
+      cursor: pointer;
+      font-family: system-ui, Arial, sans-serif;
+    }
+
+    .bottom-nav button:focus-visible {
+      outline: 2px solid #f5c542;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .bottom-nav {
+        display: flex;
+      }
+
+      body {
+        padding-bottom: 74px;
+      }
+
+      #stickyBar {
+        bottom: 74px;
+      }
+
+      #offersSection,
+      #videosSection,
+      #partnersSection {
+        scroll-margin-top: 58px;
+      }
     }
 
 </style>
@@ -1216,7 +1281,7 @@
   <div class="directory-menu" id="directoryMenu"></div>
 
   <div class="app">
-    <div class="column column-1">
+    <div class="column column-1" id="offersSection" tabindex="-1">
       <div class="column-1-controls">
         <div id="leftHeader" class="column-1-header" data-i18n="explore_offers">Explore offers</div>
         <input id="partnerSearch" class="column-1-search" type="text" placeholder="Flights, hotels, eSIM, tours..." data-i18n-placeholder="search_placeholder" />
@@ -1251,18 +1316,25 @@
       </div>
     </div>
 
-    <div class="column column-2">
+    <div class="column column-2" id="videosSection" tabindex="-1">
       <div id="magnetoColumn">
         <div id="heroFeedStatus" class="hero-feed-status"></div>
         <div id="feedContainer" class="feed-container"></div>
       </div>
     </div>
 
-    <div class="column column-3">
+    <div class="column column-3" id="partnersSection" tabindex="-1">
       <h2 id="brandGridTitle" data-i18n="partners">Partners</h2>
       <div id="partnerChips" class="brand-grid"></div>
     </div>
   </div>
+
+
+  <nav class="bottom-nav" aria-label="Mobile section navigation">
+    <button type="button" data-target="offersSection">Offers</button>
+    <button type="button" data-target="videosSection">Videos</button>
+    <button type="button" data-target="partnersSection">Partners</button>
+  </nav>
 
   <div id="stickyBar">
     <div class="sticky-copy" id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
@@ -3283,11 +3355,6 @@
         const key = cardKeys[index];
         if (key && dict.amazonCards && dict.amazonCards[key]) card.textContent = dict.amazonCards[key];
       });
-
-      // Generic i18n pass for current and newly-rendered elements.
-      if (typeof applyTranslations === "function") {
-        applyTranslations(ACTIVE_TRANSLATIONS || {});
-      }
     }
 
     function headerPreferredRegions() {
@@ -4162,149 +4229,36 @@
       return setActiveRegion(detectRegion());
     }
 
-    function normalizeLanguageCode(lang) {
-      const raw = String(lang || "en").trim();
-      const lower = raw.toLowerCase();
-      if (lower === "pt-br" || lower === "br") return "pt";
-      if (lower === "zh-cn" || lower === "cn" || lower === "zh") return "zh-CN";
-      if (lower === "zh-tw" || lower === "tw") return "zh-TW";
-      if (lower === "gb" || lower === "uk" || lower === "us" || lower === "global") return "en";
-      if (lower === "mx" || lower === "latam" || lower === "es-es") return "es";
-      if (lower === "jp") return "ja";
-      if (lower === "kr") return "ko";
-      return lower;
-    }
+    async function loadLanguage(lang) {
+      const builtInKey = lang === "pt-BR" ? "pt" : lang;
+      let translations = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
+      const externalCandidates = lang === builtInKey ? [lang] : [lang, builtInKey];
 
-    function detectLanguage(region) {
-      const map = {
-        br: "pt",
-        pt: "pt",
-        mx: "es",
-        latam: "es",
-        es: "es",
-        us: "en",
-        ca: "en",
-        gb: "en",
-        uk: "en",
-        global: "en",
-        pl: "pl",
-        ru: "ru",
-        in: "hi",
-        fr: "fr",
-        de: "de",
-        it: "it",
-        jp: "ja",
-        kr: "ko",
-        cn: "zh-CN",
-        zh: "zh-CN",
-        tw: "zh-TW"
-      };
-
-      if (region && map[String(region).toLowerCase()]) return map[String(region).toLowerCase()];
-
-      const browser = (navigator.language || "en").toLowerCase();
-      if (browser.startsWith("pt")) return "pt";
-      if (browser.startsWith("es")) return "es";
-      if (browser.startsWith("pl")) return "pl";
-      if (browser.startsWith("ru")) return "ru";
-      if (browser.startsWith("fr")) return "fr";
-      if (browser.startsWith("de")) return "de";
-      if (browser.startsWith("it")) return "it";
-      if (browser.startsWith("ja")) return "ja";
-      if (browser.startsWith("ko")) return "ko";
-      if (browser.startsWith("zh-tw")) return "zh-TW";
-      if (browser.startsWith("zh")) return "zh-CN";
-      return "en";
-    }
-
-    function applyTranslations(translations) {
-      const dict = { ...BUILT_IN_TRANSLATIONS.en, ...(translations || {}) };
-      ACTIVE_TRANSLATIONS = dict;
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (dict[key]) el.textContent = dict[key];
-      });
-
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-        const key = el.getAttribute("data-i18n-placeholder");
-        if (dict[key]) el.setAttribute("placeholder", dict[key]);
-      });
-
-      return dict;
-    }
-
-    function detectMissingTranslations(translations) {
-      const dict = translations || ACTIVE_TRANSLATIONS || {};
-      const missing = [];
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (!dict[key]) {
-          missing.push(key);
-          if (new URLSearchParams(window.location.search).has("debug")) {
-            el.style.outline = "2px solid red";
-            el.setAttribute("title", `⚠️ Missing translation: ${key}`);
-          }
-        }
-      });
-
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-        const key = el.getAttribute("data-i18n-placeholder");
-        if (!dict[key]) missing.push(key);
-      });
-
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-      if (overlay && new URLSearchParams(window.location.search).has("debug")) {
-        const old = overlay.querySelector(".debug-missing");
-        if (old) old.remove();
-
-        const missSection = document.createElement("div");
-        missSection.className = "debug-missing";
-        missSection.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
-        missing.forEach(k => {
-          const el = document.createElement("div");
-          el.className = "missing-item";
-          el.textContent = k;
-          el.style.color = "orange";
-          missSection.appendChild(el);
-        });
-        overlay.appendChild(missSection);
-      }
-
-      return Array.from(new Set(missing));
-    }
-
-    async function loadTranslations(lang) {
-      const normalized = normalizeLanguageCode(lang);
-      const builtInKey = normalized === "pt-BR" ? "pt" : normalized;
-      let translations = BUILT_IN_TRANSLATIONS[normalized] || BUILT_IN_TRANSLATIONS[builtInKey] || BUILT_IN_TRANSLATIONS.en;
-
-      const candidates = Array.from(new Set([normalized, builtInKey, "en"].filter(Boolean)));
-
-      for (const candidate of candidates) {
+      for (const candidate of externalCandidates) {
         try {
           const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
           if (res.ok) {
-            const external = await res.json();
-            translations = { ...translations, ...external };
+            translations = { ...translations, ...(await res.json()) };
             break;
           }
-        } catch (err) {
+        } catch (e) {
           console.info("Using built-in translations for", candidate);
         }
       }
 
-      return { ...BUILT_IN_TRANSLATIONS.en, ...translations };
-    }
+      ACTIVE_TRANSLATIONS = { ...BUILT_IN_TRANSLATIONS.en, ...translations };
 
-    async function loadLanguage(lang) {
-      const normalized = normalizeLanguageCode(lang);
-      const translations = await loadTranslations(normalized);
-      applyTranslations(translations);
-      document.documentElement.lang = normalized;
-      detectMissingTranslations(translations);
-      return translations;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (ACTIVE_TRANSLATIONS[key]) el.textContent = ACTIVE_TRANSLATIONS[key];
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (ACTIVE_TRANSLATIONS[key]) el.setAttribute("placeholder", ACTIVE_TRANSLATIONS[key]);
+      });
+
+      document.documentElement.lang = lang;
     }
 
     async function initI18n(lang) {
@@ -4470,7 +4424,7 @@
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
-      const lang = detectLanguage(region);
+      const lang = await detectUserLanguage();
       await loadLanguage(lang);
       showDebug(region, lang);
 
@@ -4994,10 +4948,13 @@
 
 
 
-    // --- Column 2: resilient feed renderer with 45-minute session refresh ---
-    // The public page should not depend on /api/videos being present. The existing
-    // hero feed loader already tries configured endpoints and then falls back to
-    // embedded feed cards, so Column 2 always renders instead of showing an error.
+    // --- Column 2: resilient regional video feed with 45-minute session refresh ---
+    function getColumn2Container() {
+      // The real Column 2 list in this layout is #feedContainer.
+      // #column2 is kept as a compatibility fallback for older snippets.
+      return document.getElementById("feedContainer") || document.getElementById("column2");
+    }
+
     function youtubeRegionCode(region) {
       const normalized = normalizeRegion(region || "global");
       const map = {
@@ -5019,29 +4976,80 @@
     }
 
     async function renderColumn2(region) {
-      const container = document.getElementById("feedContainer");
+      const col2 = getColumn2Container();
       const status = document.getElementById("heroFeedStatus");
-      if (!container) return;
+      if (!col2) return;
+
+      col2.innerHTML = "";
+      if (status) status.textContent = "Loading regional videos...";
 
       try {
-        window.REGION = normalizeRegion(region || getRegion());
-        if (status) status.textContent = t().loadingVideos || "Loading current videos…";
+        const res = await fetch(
+          `/api/videos?chart=mostPopular&regionCode=${encodeURIComponent(youtubeRegionCode(region))}&maxResults=10`,
+          { cache: "no-store" }
+        );
+
+        if (!res.ok) throw new Error(`Video API error: ${res.status}`);
+
+        const data = await res.json();
+
+        if (data.items?.length) {
+          buildVideoCards(data.items, col2);
+          if (status) status.textContent = "";
+          return;
+        }
+
+        console.warn("No regional videos returned; using built-in fallback feed.");
+      } catch (err) {
+        console.warn("Regional video API unavailable; using built-in fallback feed:", err);
+      }
+
+      try {
         await renderFeed();
         if (status) status.textContent = "";
-      } catch (err) {
-        console.error("Column 2 feed fallback failed:", err);
-        const items = Array.isArray(fallbackHeroFeedItems) ? fallbackHeroFeedItems : [];
-        if (items.length) {
-          feedSourceItems = items.slice();
-          feedNextIndex = 0;
-          const firstBatch = getNextFeedBatch();
-          container.innerHTML = firstBatch.map((item, index) => renderFeedCard(item, index)).join("");
-          attachFeedTracking();
-          if (status) status.textContent = "";
-        } else {
-          container.innerHTML = `<div class="partners-empty">No videos available yet.</div>`;
-          if (status) status.textContent = "";
-        }
+      } catch (fallbackErr) {
+        console.error("❌ Column 2 fallback failed:", fallbackErr);
+        col2.innerHTML = `<div class="partners-empty">No videos available right now.</div>`;
+        if (status) status.textContent = "";
+      }
+    }
+
+    function buildVideoCards(videos, container) {
+      container.innerHTML = "";
+
+      (videos || []).slice(0, 10).forEach(v => {
+        const videoId = typeof v.id === "object" ? v.id.videoId : (v.videoId || v.id);
+        const snippet = v.snippet || {};
+        const title = snippet.title || v.title || "Regional video";
+        const channel = snippet.channelTitle || v.channel || "";
+
+        if (!videoId) return;
+
+        const card = document.createElement("div");
+        card.className = "feed-card video-card";
+
+        card.innerHTML = `
+          <div class="media-box">
+            <iframe
+              src="https://www.youtube.com/embed/${escapeHtml(videoId)}"
+              title="${escapeHtml(title)}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="feed-content">
+            <h3>${escapeHtml(title)}</h3>
+            <div class="feed-meta">${escapeHtml(channel)}</div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      if (!container.children.length) {
+        container.innerHTML = `<div class="partners-empty">No regional videos available.</div>`;
       }
     }
 
@@ -5060,7 +5068,7 @@
 
     async function initSignalBoost() {
       const region = await detectUserRegion();
-      const lang = detectLanguage(region);
+      const lang = await detectUserLanguage();
 
       const allPartners = baseAvailablePartners();
       const partners = await loadPartnersStrict(region);
@@ -5161,35 +5169,9 @@ function getVideoRegionChain(region) {
 }
 
 async function renderColumn2VideosOnly(region) {
-  const container = document.getElementById("feedContainer") || document.getElementById("column2");
-  const status = document.getElementById("heroFeedStatus");
-  if (!container) return;
-
-  container.innerHTML = "";
-  if (status) status.textContent = "Loading regional videos...";
-
-  const chain = getVideoRegionChain(region);
-
-  for (const r of chain) {
-    try {
-      const res = await fetch(`/videos?region=${encodeURIComponent(r)}&t=${Date.now()}`);
-      if (!res.ok) continue;
-
-      const videos = await res.json();
-
-      if (Array.isArray(videos) && videos.length > 0) {
-        buildColumn2VideoCards(videos, container);
-        if (status) status.textContent = `Videos for ${r}`;
-        return;
-      }
-    } catch (err) {
-      console.warn("Video fetch failed:", r, err);
-    }
-  }
-
-  container.innerHTML = `<div class="partners-empty">No videos available for this region yet.</div>`;
-  if (status) status.textContent = "No videos available.";
+  return renderColumn2(region);
 }
+
 
 function buildColumn2VideoCards(videos, container) {
   container.innerHTML = "";
@@ -5234,8 +5216,7 @@ function buildColumn2VideoCards(videos, container) {
 }
 
 function scheduleColumn2Refresh(region) {
-  renderColumn2VideosOnly(region);
-  setInterval(() => renderColumn2VideosOnly(region), 900000);
+  scheduleColumn2Session(region);
 }
 
 
@@ -5523,6 +5504,25 @@ function renderUniquePartners(containerId, partners) {
 function mergeDuplicatePartners(partners) {
   return mergeDuplicates(partners);
 }
+
+
+// --- Mobile bottom-nav smooth scroll ---
+document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.querySelector(".bottom-nav");
+  if (!nav) return;
+
+  nav.addEventListener("click", e => {
+    const button = e.target.closest("button[data-target]");
+    if (!button) return;
+
+    const target = button.dataset.target;
+    const section = document.getElementById(target);
+    if (!section) return;
+
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    section.focus({ preventScroll: true });
+  });
+});
 
 </script>
 
