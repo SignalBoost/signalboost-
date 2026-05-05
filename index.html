@@ -4384,8 +4384,28 @@
     }
 
     async function loadPartners(region, allPartners) {
+      const normalizedRegion = normalizeRegion(region || "global") || "global";
+
+      // Step 1: backend is source of truth. Prefer /partners?region=...
+      try {
+        const res = await fetch(`/partners?region=${encodeURIComponent(normalizedRegion)}`, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length) {
+            return data
+              .map(p => ({
+                ...p,
+                category_key: p.category_key || categoryKeyForPartner(p)
+              }))
+              .filter(usablePartner);
+          }
+        }
+      } catch (e) {
+        console.warn("/partners route unavailable; using embedded partnersData fallback", e);
+      }
+
+      // Safe fallback: keep the old baseline behavior if backend is unavailable.
       const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const normalizedRegion = normalizeRegion(region || "us");
       const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
 
       if (regional.length > 0) return regional;
