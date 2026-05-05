@@ -4976,6 +4976,24 @@ function attachColumn1Filter(partners) {
   });
 }
 
+
+/* STEP 10A: Safe normalization helpers only */
+function normalizeRegion(region) {
+  return (region || "global").toString().trim().toLowerCase();
+}
+
+function normalizeCategory(cat) {
+  return (cat || "other").toString().trim().toLowerCase();
+}
+
+function getPartnerCategory(partner) {
+  return normalizeCategory(partner?.category_key || partner?.category || "other");
+}
+
+function getPartnerRegion(partner) {
+  return normalizeRegion(partner?.region || "global");
+}
+
 </script>
 
 </body>
