@@ -1198,57 +1198,73 @@
     }
 
 
-    .debug-missing, .debug-coverage {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255,255,255,0.18);
+    /* Translation Coverage Dashboard */
+    #translationCoverageDashboard {
+      display: none;
+      width: min(1000px, calc(100% - 32px));
+      margin: 16px auto 120px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #111;
+      color: #eee;
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    .debug-missing h4, .debug-coverage h4 {
-      margin: 0 0 6px;
-      font-size: 12px;
-      color: #fff;
+    #translationCoverageDashboard.open { display: block; }
+
+    #translationCoverageDashboard h1 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      line-height: 1.2;
     }
 
-    .missing-item {
-      color: orange;
-      line-height: 1.35;
+    #translationCoverageDashboard .coverage-note {
+      margin: 0;
+      color: rgba(255,255,255,0.68);
+      font-size: 13px;
+      line-height: 1.5;
     }
 
-    .coverage-item {
-      color: #9ee493;
-      line-height: 1.35;
-    }
-
-    .coverage-item.has-missing {
-      color: #f5c542;
-    }
-
-
-    .debug-workflow {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255,255,255,0.18);
-    }
-
-    .debug-workflow h4 {
-      margin: 0 0 6px;
-      font-size: 12px;
-      color: #fff;
-    }
-
-    .debug-workflow textarea {
+    #translationCoverageDashboard table {
       width: 100%;
-      min-height: 120px;
-      margin-top: 6px;
-      padding: 8px;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 8px;
-      background: rgba(0,0,0,0.35);
+      border-collapse: collapse;
+      margin-top: 2rem;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    #translationCoverageDashboard th,
+    #translationCoverageDashboard td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #333;
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    #translationCoverageDashboard th {
+      background: #222;
       color: #fff;
-      font-size: 11px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      resize: vertical;
+      font-weight: 800;
+    }
+
+    #translationCoverageDashboard .ok { color: #4caf50; font-weight: bold; }
+    #translationCoverageDashboard .fail { color: #f44336; font-weight: bold; }
+    #translationCoverageDashboard .missing-keys { color: #ffb74d; overflow-wrap: anywhere; }
+
+    @media (max-width: 768px) {
+      #translationCoverageDashboard {
+        width: calc(100% - 20px);
+        padding: 12px;
+        margin-bottom: 130px;
+        overflow-x: auto;
+      }
+
+      #translationCoverageDashboard h1 { font-size: 20px; }
+      #translationCoverageDashboard table { min-width: 680px; }
     }
 
 </style>
@@ -1323,6 +1339,42 @@
     <div class="sticky-copy" id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
     <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="view_more">View More</a>
   </div>
+
+
+  <section id="translationCoverageDashboard" aria-live="polite">
+    <h1>🌐 Translation Coverage Dashboard</h1>
+    <p class="coverage-note">Add <strong>?coverage</strong> or <strong>?debug</strong> to the URL to generate this report from the live <code>/i18n/*.json</code> files.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Language</th>
+          <th>Coverage</th>
+          <th>Missing Keys</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="translationCoverageRows">
+        <tr>
+          <td>Spanish (es)</td>
+          <td>100%</td>
+          <td>—</td>
+          <td class="ok">✅ Complete</td>
+        </tr>
+        <tr>
+          <td>Portuguese (pt)</td>
+          <td>95.8%</td>
+          <td class="missing-keys">nav_hotels, btn_checkout, msg_error</td>
+          <td class="fail">❌ Incomplete</td>
+        </tr>
+        <tr>
+          <td>Japanese (ja)</td>
+          <td>98.3%</td>
+          <td class="missing-keys">nav_tours, msg_success</td>
+          <td class="fail">❌ Incomplete</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
   <div id="debug-overlay" style="position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;z-index:99999;display:none"></div>
 
@@ -4416,10 +4468,8 @@
     function showDebug(region, lang, partners = [], errors = []) {
       const params = new URLSearchParams(window.location.search);
       if (!params.has("debug")) return;
-
       const box = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
       if (!box) return;
-
       box.innerHTML = `
         <strong>Region:</strong> ${escapeHtml(region)}<br>
         <strong>Language:</strong> ${escapeHtml(lang)}<br>
@@ -4427,147 +4477,15 @@
         <strong>Errors:</strong> ${Array.isArray(errors) ? errors.length : 0}
       `;
       box.style.display = "block";
-
       console.log("Detected region:", region);
       console.log("Detected language:", lang);
-      console.log("Loaded partners:", Array.isArray(partners) ? partners.length : 0);
-      console.log("Debug errors:", Array.isArray(errors) ? errors : []);
     }
-
-
-
-    function detectMissingTranslations(translations) {
-      const missing = [];
-      const source = translations || {};
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (!source[key]) {
-          missing.push(key);
-          el.style.outline = "2px solid red";
-          el.setAttribute("title", `⚠️ Missing translation: ${key}`);
-        } else {
-          el.style.outline = "";
-          if ((el.getAttribute("title") || "").startsWith("⚠️ Missing translation:")) {
-            el.removeAttribute("title");
-          }
-        }
-      });
-
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-      if (overlay) {
-        overlay.querySelectorAll(".debug-missing").forEach(el => el.remove());
-        const missSection = document.createElement("div");
-        missSection.className = "debug-missing";
-        missSection.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
-        missing.forEach(k => {
-          const el = document.createElement("div");
-          el.className = "missing-item";
-          el.textContent = k;
-          missSection.appendChild(el);
-        });
-        overlay.appendChild(missSection);
-      }
-
-      return missing;
-    }
-
-    async function loadTranslationFileForCoverage(lang) {
-      const normalizedLang = lang === "pt-BR" ? "pt" : lang;
-      const builtInLocal = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[normalizedLang] || {};
-      const candidates = lang === normalizedLang ? [lang] : [lang, normalizedLang];
-
-      for (const candidate of candidates) {
-        try {
-          const res = await fetch(`/i18n/${candidate}.json`, { cache: "no-store" });
-          if (res.ok) return { ...builtInLocal, ...(await res.json()) };
-        } catch (err) {
-          console.warn(`⚠️ Coverage check could not load ${candidate}: ${err.message}`);
-        }
-      }
-
-      return builtInLocal;
-    }
-
-    async function generateCoverageReport(langs = ["es", "pt", "fr", "de", "it", "pl", "ja", "ko", "zh-cn", "zh-tw", "ru"]) {
-      const base = await loadTranslationFileForCoverage("en");
-      const baseKeys = Object.keys(base);
-
-      const report = await Promise.all(langs.map(async lang => {
-        const translations = await loadTranslationFileForCoverage(lang);
-        const translatedKeys = Object.keys(translations);
-        const missing = baseKeys.filter(k => !translatedKeys.includes(k));
-        const coverage = baseKeys.length
-          ? ((translatedKeys.length / baseKeys.length) * 100).toFixed(1)
-          : "0.0";
-
-        return {
-          language: lang,
-          totalKeys: baseKeys.length,
-          translatedKeys: translatedKeys.length,
-          coverage: `${coverage}%`,
-          missing
-        };
-      }));
-
-      console.log("🌐 Translation Coverage Report");
-      report.forEach(r => {
-        console.log(`- ${r.language}: ${r.coverage} (${r.translatedKeys}/${r.totalKeys})`);
-        if (r.missing.length > 0) console.log(`  Missing: ${r.missing.join(", ")}`);
-      });
-
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-      if (overlay) {
-        overlay.querySelectorAll(".debug-coverage").forEach(el => el.remove());
-        const section = document.createElement("div");
-        section.className = "debug-coverage";
-        section.innerHTML = `<h4>🌐 Translation Coverage Report</h4>`;
-        report.forEach(r => {
-          const item = document.createElement("div");
-          item.className = `coverage-item${r.missing.length ? " has-missing" : ""}`;
-          item.textContent = `${r.language}: ${r.coverage} (${r.translatedKeys}/${r.totalKeys})`;
-          section.appendChild(item);
-        });
-        overlay.appendChild(section);
-        overlay.style.display = "block";
-      }
-
-      return report;
-    }
-
-
-    const TRANSLATION_COVERAGE_WORKFLOW = 'name: Translation Coverage\n\non:\n  push:\n    paths:\n      - "i18n/**"\n  pull_request:\n    paths:\n      - "i18n/**"\n\njobs:\n  coverage-check:\n    runs-on: ubuntu-latest\n\n    steps:\n      - name: Checkout repository\n        uses: actions/checkout@v4\n\n      - name: Setup Node.js\n        uses: actions/setup-node@v4\n        with:\n          node-version: 20\n\n      - name: Install dependencies\n        run: npm install\n\n      - name: Run translation coverage report\n        run: node coverage-report.js\n\n      - name: Fail if coverage < 100%\n        run: |\n          node coverage-report.js > coverage.txt\n          if grep -q "%" coverage.txt; then\n            if grep -q "Missing:" coverage.txt; then\n              echo "❌ Translation coverage incomplete"\n              cat coverage.txt\n              exit 1\n            else\n              echo "✅ Translation coverage complete"\n              cat coverage.txt\n            fi\n          fi\n';
-
-    function renderTranslationCoverageWorkflow() {
-      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
-      if (!overlay) return TRANSLATION_COVERAGE_WORKFLOW;
-
-      overlay.querySelectorAll(".debug-workflow").forEach(el => el.remove());
-      const section = document.createElement("div");
-      section.className = "debug-workflow";
-      section.innerHTML = `<h4>⚙️ GitHub Actions Workflow</h4><div style="color:#9ee493">Save as <strong>.github/workflows/translation-coverage.yml</strong></div>`;
-
-      const textarea = document.createElement("textarea");
-      textarea.readOnly = true;
-      textarea.value = TRANSLATION_COVERAGE_WORKFLOW;
-      section.appendChild(textarea);
-
-      overlay.appendChild(section);
-      overlay.style.display = "block";
-      return TRANSLATION_COVERAGE_WORKFLOW;
-    }
-
-    window.detectMissingTranslations = detectMissingTranslations;
-    window.generateCoverageReport = generateCoverageReport;
-    window.renderTranslationCoverageWorkflow = renderTranslationCoverageWorkflow;
-    window.TRANSLATION_COVERAGE_WORKFLOW = TRANSLATION_COVERAGE_WORKFLOW;
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
       const lang = detectLanguage(region);
-      const translations = await loadLanguage(lang);
+      await loadLanguage(lang);
       showDebug(region, lang);
-      try { detectMissingTranslations(translations); } catch (e) { console.error("detectMissingTranslations failed", e); }
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
@@ -4817,6 +4735,107 @@
       overlay.style.display = "block";
     }
 
+
+    function detectMissingTranslations(translations) {
+      const missing = [];
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (!translations || !translations[key]) {
+          missing.push(key);
+          el.style.outline = "2px solid red";
+          el.setAttribute("title", `⚠️ Missing translation: ${key}`);
+        }
+      });
+
+      const overlay = document.getElementById("debug-overlay") || document.getElementById("sb-debug");
+      if (overlay) {
+        overlay.querySelectorAll(".debug-missing").forEach(el => el.remove());
+        const missSection = document.createElement("div");
+        missSection.className = "debug-missing";
+        missSection.innerHTML = `<h4>⚠️ Missing Translations (${missing.length})</h4>`;
+        missing.forEach(k => {
+          const el = document.createElement("div");
+          el.className = "missing-item";
+          el.textContent = k;
+          el.style.color = "orange";
+          missSection.appendChild(el);
+        });
+        overlay.appendChild(missSection);
+      }
+
+      return missing;
+    }
+
+    const TRANSLATION_LANGUAGE_LABELS = {
+      es: "Spanish (es)",
+      pt: "Portuguese (pt)",
+      fr: "French (fr)",
+      de: "German (de)",
+      it: "Italian (it)",
+      pl: "Polish (pl)",
+      ja: "Japanese (ja)",
+      ko: "Korean (ko)",
+      "zh-cn": "Chinese Simplified (zh-cn)",
+      "zh-tw": "Chinese Traditional (zh-tw)",
+      ru: "Russian (ru)"
+    };
+
+    async function generateCoverageReport(langs = ["es", "pt", "fr", "de", "it", "pl", "ja", "ko", "zh-cn", "zh-tw", "ru"]) {
+      const base = await loadTranslations("en");
+      const baseKeys = Object.keys(base || {});
+
+      const report = [];
+      for (const lang of langs) {
+        const translations = await loadTranslations(lang);
+        const translatedKeys = Object.keys(translations || {});
+        const missing = baseKeys.filter(k => !translatedKeys.includes(k));
+        const coverageNumber = baseKeys.length ? ((baseKeys.length - missing.length) / baseKeys.length) * 100 : 100;
+
+        report.push({
+          language: lang,
+          label: TRANSLATION_LANGUAGE_LABELS[lang] || lang,
+          totalKeys: baseKeys.length,
+          translatedKeys: translatedKeys.length,
+          coverage: `${coverageNumber.toFixed(1)}%`,
+          missing
+        });
+      }
+
+      console.log("🌐 Translation Coverage Report");
+      report.forEach(r => {
+        console.log(`- ${r.language}: ${r.coverage} (${r.translatedKeys}/${r.totalKeys})`);
+        if (r.missing.length > 0) console.log(`  Missing: ${r.missing.join(", ")}`);
+      });
+
+      renderTranslationCoverageDashboard(report);
+      return report;
+    }
+
+    function renderTranslationCoverageDashboard(report = []) {
+      const dashboard = document.getElementById("translationCoverageDashboard");
+      const tbody = document.getElementById("translationCoverageRows");
+      if (!dashboard || !tbody) return;
+
+      tbody.innerHTML = report.map(r => {
+        const complete = !r.missing || r.missing.length === 0;
+        const missingText = complete ? "—" : r.missing.map(escapeHtml).join(", ");
+        return `
+          <tr>
+            <td>${escapeHtml(r.label || r.language)}</td>
+            <td>${escapeHtml(r.coverage || "0%")}</td>
+            <td class="${complete ? "" : "missing-keys"}">${missingText}</td>
+            <td class="${complete ? "ok" : "fail"}">${complete ? "✅ Complete" : "❌ Incomplete"}</td>
+          </tr>
+        `;
+      }).join("");
+
+      dashboard.classList.add("open");
+    }
+
+    window.generateCoverageReport = generateCoverageReport;
+    window.renderTranslationCoverageDashboard = renderTranslationCoverageDashboard;
+
     async function initSignalBoost() {
       const region = await detectUserRegion();
       const lang = detectLanguage(region);
@@ -4831,7 +4850,7 @@
       try { detectMissingTranslations(translations); } catch (e) { console.error("detectMissingTranslations failed", e); }
       try {
         const params = new URLSearchParams(window.location.search);
-        if (params.has("debug") || params.has("coverage")) { await generateCoverageReport(); renderTranslationCoverageWorkflow(); }
+        if (params.has("debug") || params.has("coverage")) await generateCoverageReport();
       } catch (e) { console.error("generateCoverageReport failed", e); }
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
