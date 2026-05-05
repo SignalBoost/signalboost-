@@ -4889,6 +4889,12 @@
 
 
     // --- Column 2: resilient regional video feed with 45-minute session refresh ---
+    function getColumn2Container() {
+      // The real Column 2 list in this layout is #feedContainer.
+      // #column2 is kept as a compatibility fallback for older snippets.
+      return document.getElementById("feedContainer") || document.getElementById("column2");
+    }
+
     function youtubeRegionCode(region) {
       const normalized = normalizeRegion(region || "global");
       const map = {
@@ -4910,41 +4916,40 @@
     }
 
     async function renderColumn2(region) {
-      const container = document.getElementById("feedContainer");
+      const col2 = getColumn2Container();
       const status = document.getElementById("heroFeedStatus");
-      if (!container) return;
+      if (!col2) return;
 
-      container.innerHTML = "";
+      col2.innerHTML = "";
       if (status) status.textContent = "Loading regional videos...";
 
-      // Primary: your /api/videos route when it exists.
-      // Fallback: the existing hybrid/static hero feed already built into this file.
       try {
         const res = await fetch(
           `/api/videos?chart=mostPopular&regionCode=${encodeURIComponent(youtubeRegionCode(region))}&maxResults=10`,
           { cache: "no-store" }
         );
 
-        if (!res.ok) throw new Error(`Video API failed: ${res.status}`);
+        if (!res.ok) throw new Error(`Video API error: ${res.status}`);
 
         const data = await res.json();
-        const videos = Array.isArray(data.items) ? data.items : [];
 
-        if (videos.length > 0) {
-          buildVideoCards(videos, container);
+        if (data.items?.length) {
+          buildVideoCards(data.items, col2);
           if (status) status.textContent = "";
           return;
         }
+
+        console.warn("No regional videos returned; using built-in fallback feed.");
       } catch (err) {
-        console.warn("Regional video API unavailable; using built-in feed fallback:", err);
+        console.warn("Regional video API unavailable; using built-in fallback feed:", err);
       }
 
       try {
         await renderFeed();
         if (status) status.textContent = "";
       } catch (fallbackErr) {
-        console.error("❌ Fallback feed failed:", fallbackErr);
-        container.innerHTML = `<div class="partners-empty">No videos available right now.</div>`;
+        console.error("❌ Column 2 fallback failed:", fallbackErr);
+        col2.innerHTML = `<div class="partners-empty">No videos available right now.</div>`;
         if (status) status.textContent = "";
       }
     }
@@ -4984,7 +4989,7 @@
       });
 
       if (!container.children.length) {
-        renderFeed();
+        container.innerHTML = `<div class="partners-empty">No regional videos available.</div>`;
       }
     }
 
