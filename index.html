@@ -106,26 +106,77 @@
     .small-title{font-size:13px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;margin-bottom:8px}
     #partnerSearch{width:100%;height:32px;background:#0d1117;color:#fff;border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:8px 10px}
 
-    #column1{height:calc(100vh - 116px);overflow-y:auto;padding:10px 8px 24px}
-    .column-category{margin-bottom:10px;border:1px solid rgba(255,255,255,.08);border-radius:9px;overflow:hidden;background:#1b2128}
+    #column1{
+      height:auto;
+      overflow:visible;
+      padding:10px 8px 24px;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      white-space:nowrap;
+      scrollbar-width:none;
+    }
+    #column1::-webkit-scrollbar{display:none}
+    .left{overflow:visible}
+    .column-category{
+      position:relative;
+      flex:0 0 auto;
+      margin:0;
+      border:none;
+      border-radius:0;
+      overflow:visible;
+      background:transparent;
+    }
     .column-category button{
-      background:#111;
+      background:none;
       color:#fff;
       border:none;
-      padding:10px 12px;
+      border-bottom:2px solid transparent;
+      padding:8px 10px;
       cursor:pointer;
-      width:100%;
+      width:auto;
       text-align:left;
+      font-size:14px;
       font-weight:900;
       display:flex;
-      justify-content:space-between;
+      justify-content:center;
       align-items:center;
+      gap:6px;
+      white-space:nowrap;
     }
-    .column-category button:hover{color:#f5c542;background:#192532}
-    .column-category ul{margin:0;padding:8px 0 8px 20px;list-style:none;background:#141a20}
-    .column-category ul li{padding:4px 0}
-    .column-category a{color:#fff;text-decoration:none;font-size:13px;font-weight:800}
-    .column-category a:hover{color:#f5c542}
+    .column-category button::after{content:'⌄';font-size:11px;margin-left:2px;color:#fff}
+    .column-category button:hover,.column-category:hover button{color:#f5c542;border-bottom-color:#f5c542}
+    .column-category ul{
+      display:none;
+      position:absolute;
+      top:100%;
+      left:0;
+      min-width:220px;
+      max-height:420px;
+      overflow:auto;
+      margin:0;
+      padding:8px 0;
+      list-style:none;
+      background:#222;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:0 0 10px 10px;
+      z-index:1002;
+      box-shadow:0 14px 28px rgba(0,0,0,.45);
+    }
+    .column-category:hover ul{display:block}
+    .column-category ul li{list-style:none;margin:0;padding:0}
+    .column-category a,.column-category .dropdown-empty{
+      display:block;
+      color:#fff;
+      padding:9px 14px;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .column-category a:hover{background:#232f3e;color:#f5c542}
+    .column-category .dropdown-empty{color:#9aa8b8}
+    .column-arrow{display:none}
 
     .main{
       position:relative;
@@ -209,7 +260,7 @@
       .dropdown-content{left:0;transform:none}
       .app{display:block;height:auto;padding-top:40px}
       .left,.right{border:0}
-      #column1{height:auto;max-height:none}
+      #column1{height:auto;max-height:none;overflow-x:auto;overflow-y:visible}
       .main{min-height:500px;padding:14px 10px 96px}
       .right{padding-bottom:40px}
       .feed-container{max-width:100%}
@@ -484,21 +535,18 @@
 
     function ColumnCategory(cat, partners, index, query){
       const displayKey=displayCategoryKey(cat);
+      const labelKey=canonicalCategoryKey(cat);
       const items=partners.filter(p=>
         displayCategoryKey(p.category_key)===displayKey &&
         (!query || (p.name+" "+(p.network||"")+" "+(p.description||"")).toLowerCase().includes(query))
       );
-      const open=false;
       return `
-        <div class="column-category" data-open="${open ? "1":"0"}">
-          <button type="button" onclick="toggleColumnCategory(this)">
-            <span>${esc(translatedCategory(canonicalCategoryKey(cat)))} (${items.length})</span>
-            <span class="column-arrow">${open ? "▼":"▶"}</span>
-          </button>
-          <ul style="display:${open ? "block":"none"}">
-            ${items.map(p=>`
+        <div class="column-category">
+          <button type="button">${esc(translatedCategory(labelKey))} (${items.length})</button>
+          <ul>
+            ${items.length ? items.map(p=>`
               <li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)} — ${esc(translatedCategory(canonicalCategoryKey(p.category_key)))}</a></li>
-            `).join("")}
+            `).join("") : `<li><span class="dropdown-empty">No partners</span></li>`}
           </ul>
         </div>`;
     }
