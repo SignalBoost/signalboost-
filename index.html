@@ -9,10 +9,10 @@
   <meta name="description" content="Find travel, marketplace and service offers by region." />
   <style>
     *{box-sizing:border-box} html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#0d1117;color:#fff} body{overflow:hidden} a{color:inherit}
-    .top{height:46px;background:#232f3e;display:grid;grid-template-columns:220px 1fr 220px;align-items:center;border-bottom:1px solid rgba(255,255,255,.1);position:fixed;inset:0 0 auto 0;z-index:10}
-    .logo{color:#f5c542;font-weight:900;padding-left:8px} .nav{display:flex;align-items:center;justify-content:center;gap:12px;white-space:nowrap;overflow-x:auto} .nav button{background:transparent;color:#fff;border:1px solid transparent;font-weight:800;cursor:pointer;padding:8px 10px;border-radius:4px} .nav button:hover{border-color:#fff}
-    .lang-switcher{display:flex;justify-content:flex-end;padding-right:8px} #lang-select{background:#0f1724;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:6px 10px;font-weight:700}
-    .app{display:grid;grid-template-columns:260px minmax(560px,1fr)260px;height:100vh;padding-top:46px} .col{min-height:0;overflow:hidden} .left,.right{background:#0f141b} .left{border-right:1px solid rgba(255,255,255,.08)} .right{border-left:1px solid rgba(255,255,255,.08);padding:20px}
+    .top{height:40px;background:#232f3e;display:grid;grid-template-columns:240px 1fr 0;align-items:center;border-bottom:1px solid rgba(255,255,255,.1);position:fixed;inset:0 0 auto 0;z-index:10}
+    .logo{color:#f5c542;font-weight:900;padding-left:2px;font-size:16px}.nav{display:flex;align-items:center;justify-content:space-evenly;gap:22px;white-space:nowrap;overflow-x:auto;height:100%}.nav button{height:100%;background:transparent;color:#fff;border:0;border-bottom:2px solid transparent;font-weight:900;cursor:pointer;padding:0 10px;border-radius:0;font-size:14px;white-space:nowrap}.nav button::after{content:'⌄';font-size:11px;margin-left:5px;color:#fff}.nav button:hover{color:#f5c542;border-bottom-color:#f5c542}.nav button.active{color:#f5c542;border-bottom-color:#f5c542}
+    .lang-switcher{display:none;justify-content:flex-end;padding-right:8px} #lang-select{background:#0f1724;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:6px 10px;font-weight:700}
+    .app{display:grid;grid-template-columns:260px minmax(560px,1fr)260px;height:100vh;padding-top:40px} .col{min-height:0;overflow:hidden} .left,.right{background:#0f141b} .left{border-right:1px solid rgba(255,255,255,.08)} .right{border-left:1px solid rgba(255,255,255,.08);padding:20px}
     .controls{padding:10px 8px 14px;border-bottom:1px solid rgba(255,255,255,.08)} .small-title{font-size:13px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;margin-bottom:8px} #partnerSearch{width:100%;height:32px;background:#0d1117;color:#fff;border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:8px 10px}
     #column1{height:calc(100vh - 116px);overflow-y:auto;padding:10px 8px 24px} .group{margin-bottom:10px;border:1px solid rgba(255,255,255,.08);border-radius:9px;overflow:hidden;background:#1b2128} .ghead{display:flex;gap:8px;align-items:center;padding:10px 12px;font-weight:900;cursor:pointer;background:#1b2128} .ghead::before{content:'▶';font-size:11px} .ghead.open{background:#192532} .ghead.open::before{content:'▼';color:#aee1ff} .gbody{display:none;background:#141a20;padding:10px 14px} .gbody.open{display:block} .partner-row{display:block;text-decoration:none;padding:8px 0;font-weight:900;line-height:1.15} .partner-row:hover{color:#f5c542} .meta{display:block;color:#8eb2d1;font-size:11px;margin-top:3px;font-weight:700;text-transform:lowercase}
     .main{position:relative;background:#0d1117;display:flex;align-items:flex-start;justify-content:center;padding:18px 18px 96px;overflow-y:auto;scroll-snap-type:y proximity;-webkit-overflow-scrolling:touch}.feed-container{width:100%;max-width:520px;display:flex;flex-direction:column;gap:22px}.feed-card{position:relative;display:block;text-decoration:none;border:1px solid rgba(245,197,66,.22);border-radius:22px;background:#111822;padding:10px;min-height:calc(100vh - 168px);transition:transform .18s ease,border-color .18s ease;cursor:pointer;scroll-snap-align:start;box-shadow:0 16px 42px rgba(0,0,0,.28)}.feed-card:hover{transform:translateY(-2px);border-color:rgba(245,197,66,.42)}.media{position:relative;aspect-ratio:9/16;height:min(76vh,760px);max-height:none;border-radius:18px;overflow:hidden;background:#0b0f14}.media img,.media video,.feed-video,.platform-frame{width:100%;height:100%;object-fit:cover;display:block;border:0}.media img{filter:brightness(.60)}.media.has-video img{filter:none}.media.has-embed{background:#000}.platform-frame{background:#000}.play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}.play span{width:74px;height:74px;border-radius:50%;background:#fff;color:#06101b;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900}.feed-content{position:absolute;left:20px;right:20px;bottom:22px;padding:16px 14px;border-radius:18px;background:linear-gradient(180deg,rgba(8,12,18,0),rgba(8,12,18,.78) 20%,rgba(8,12,18,.92));text-shadow:0 2px 14px rgba(0,0,0,.75);pointer-events:none}.feed-label{display:inline-block;margin-bottom:8px;padding:5px 9px;border:1px solid rgba(245,197,66,.22);border-radius:999px;background:rgba(245,197,66,.16);color:#f5c542;font-size:11px;font-weight:900;text-transform:uppercase}.feed-source{float:right;color:rgba(255,255,255,.82);font-size:11px;font-weight:900;text-transform:uppercase;margin-top:6px}.feed-content h3{clear:both;margin:0 0 8px;font-size:22px;line-height:1.15}.feed-content p{margin:0;color:rgba(255,255,255,.86);font-size:14px;line-height:1.4}.feed-loader{width:100%;padding:18px;text-align:center;color:#9aa8b8;font-size:12px}.feed-empty{width:100%;padding:30px;text-align:center;color:#9aa8b8;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:#111822}
@@ -20,9 +20,9 @@
     .right h2{text-align:center;margin:0 0 16px} #partnerChips{display:grid;grid-template-columns:repeat(2,1fr);gap:12px} .chip{min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid rgba(255,255,255,.08);background:#1b2128;border-radius:10px;padding:10px;font-weight:800;font-size:13px}
     #debug-overlay{position:fixed;right:10px;bottom:10px;background:rgba(0,0,0,.84);color:#fff;padding:10px 14px;border-radius:8px;font:13px monospace;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.35)}
     .empty{color:#9aa8b8;padding:16px;font-size:13px} html[data-i18n-ready="0"] body{opacity:0} html[data-i18n-ready="1"] body{opacity:1;transition:opacity .12s}
-    @media(max-width:900px){body{overflow:auto}.top{grid-template-columns:1fr auto;height:auto;min-height:46px}.nav{display:none}.app{display:block;height:auto;padding-top:46px}.left,.right{border:0}#column1{height:auto;max-height:none}.main{min-height:500px}.right{padding-bottom:40px}}
+    @media(max-width:900px){body{overflow:auto}.top{grid-template-columns:140px 1fr;height:40px;min-height:40px}.nav{display:flex;justify-content:flex-start}.app{display:block;height:auto;padding-top:40px}.left,.right{border:0}#column1{height:auto;max-height:none}.main{min-height:500px}.right{padding-bottom:40px}}
 
-    @media(max-width:900px){.app{display:block;height:auto;padding-top:46px}.main{padding:14px 10px 96px}.feed-container{max-width:100%}.feed-card{min-height:calc(100vh - 128px)}.media{height:calc(100vh - 150px);aspect-ratio:9/16}}
+    @media(max-width:900px){.app{display:block;height:auto;padding-top:40px}.main{padding:14px 10px 96px}.feed-container{max-width:100%}.feed-card{min-height:calc(100vh - 128px)}.media{height:calc(100vh - 150px);aspect-ratio:9/16}}
   </style>
 </head>
 <body>
@@ -50,11 +50,11 @@
     const ENGLISH_LOCKED = new Set(["us","uk","ot"]);
     const CATEGORY_ORDER = ["flights","hotels","marketplace","products_tools","finance","insurance","travel_services","car_rentals","tours","transfers","esim","specialty_other"];
     const BUILT_IN_TRANSLATIONS = {
-      en: {brand_name:"SignalBoost",explore_offers:"Explore offers",search_placeholder:"Flights, hotels, eSIM, tours...",partners:"Partners",featured_service:"Explore a featured service picked for you.",view_more:"View More",flights:"Flights",hotels:"Hotels",marketplace:"Marketplace",products_tools:"Products & Tools",finance:"Finance",insurance:"Insurance & Claims",travel_services:"Storage & Services",car_rentals:"Car Rentals",tours:"Tours & Activities",transfers:"Transfers",esim:"eSIM",specialty_other:"Specialty & Other"},
-      es: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Vuelos, hoteles, eSIM, tours...",partners:"Socios",featured_service:"Explora un servicio destacado elegido para ti.",view_more:"Ver más",flights:"Vuelos",hotels:"Hoteles",marketplace:"Marketplace",products_tools:"Productos y herramientas",finance:"Finanzas",insurance:"Seguros y reclamaciones",travel_services:"Almacenamiento y servicios",car_rentals:"Alquiler de coches",tours:"Tours y actividades",transfers:"Traslados",esim:"eSIM",specialty_other:"Especiales y otros"},
-      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, tours...",partners:"Parceiros",featured_service:"Explore um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e reclamações",travel_services:"Armazenamento e serviços",car_rentals:"Aluguel de carros",tours:"Tours e atividades",transfers:"Transfers",esim:"eSIM",specialty_other:"Especiais e outros"},
-      pl: {brand_name:"SignalBoost",explore_offers:"Przeglądaj oferty",search_placeholder:"Loty, hotele, eSIM, wycieczki...",partners:"Partnerzy",featured_service:"Sprawdź wybraną usługę.",view_more:"Zobacz więcej",flights:"Loty",hotels:"Hotele",marketplace:"Marketplace",products_tools:"Produkty i narzędzia",finance:"Finanse",insurance:"Ubezpieczenia i roszczenia",travel_services:"Przechowalnia i usługi",car_rentals:"Wynajem aut",tours:"Wycieczki",transfers:"Transfery",esim:"eSIM",specialty_other:"Inne"},
-      ru: {brand_name:"SignalBoost",explore_offers:"Смотреть предложения",search_placeholder:"Авиабилеты, отели, eSIM, туры...",partners:"Партнеры",featured_service:"Посмотрите выбранный сервис.",view_more:"Подробнее",flights:"Рейсы",hotels:"Отели",marketplace:"Marketplace",products_tools:"Продукты и инструменты",finance:"Финансы",insurance:"Страхование и претензии",travel_services:"Хранение и услуги",car_rentals:"Аренда авто",tours:"Туры",transfers:"Трансферы",esim:"eSIM",specialty_other:"Другое"}
+      en: {brand_name:"SignalBoost",explore_offers:"Explore offers",search_placeholder:"Flights, hotels, eSIM, tours...",partners:"Partners",featured_service:"Explore a featured service picked for you.",view_more:"View More",flights:"Flights",hotels:"Hotels",marketplace:"Marketplace",products_tools:"Products & Tools",finance:"Finance",insurance:"Insurance & Claims",travel_services:"Storage & Services",car_rentals:"Car Rentals",car_rental:"Car Rentals",tours:"Tours & Activities",transfers:"Transfers & Transport",esim:"SIM & Connectivity",sim:"SIM & Connectivity",specialty_other:"Specialty & Other"},
+      es: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Vuelos, hoteles, eSIM, tours...",partners:"Socios",featured_service:"Explora un servicio destacado elegido para ti.",view_more:"Ver más",flights:"Vuelos",hotels:"Hoteles",marketplace:"Marketplace",products_tools:"Productos y herramientas",finance:"Finanzas",insurance:"Seguros y reclamaciones",travel_services:"Almacenamiento y servicios",car_rentals:"Alquiler de coches",car_rental:"Alquiler de coches",tours:"Tours y actividades",transfers:"Traslados",esim:"SIM y conectividad",sim:"SIM y conectividad",specialty_other:"Especiales y otros"},
+      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, tours...",partners:"Parceiros",featured_service:"Explore um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e reclamações",travel_services:"Armazenamento e serviços",car_rentals:"Aluguel de carros",car_rental:"Aluguel de carros",tours:"Tours e atividades",transfers:"Transfers & Transport",esim:"SIM e conectividade",sim:"SIM e conectividade",specialty_other:"Especiais e outros"},
+      pl: {brand_name:"SignalBoost",explore_offers:"Przeglądaj oferty",search_placeholder:"Loty, hotele, eSIM, wycieczki...",partners:"Partnerzy",featured_service:"Sprawdź wybraną usługę.",view_more:"Zobacz więcej",flights:"Loty",hotels:"Hotele",marketplace:"Marketplace",products_tools:"Produkty i narzędzia",finance:"Finanse",insurance:"Ubezpieczenia i roszczenia",travel_services:"Przechowalnia i usługi",car_rentals:"Wynajem aut",car_rental:"Wynajem aut",tours:"Wycieczki",transfers:"Transfery",esim:"SIM i łączność",sim:"SIM i łączność",specialty_other:"Inne"},
+      ru: {brand_name:"SignalBoost",explore_offers:"Смотреть предложения",search_placeholder:"Авиабилеты, отели, eSIM, туры...",partners:"Партнеры",featured_service:"Посмотрите выбранный сервис.",view_more:"Подробнее",flights:"Рейсы",hotels:"Отели",marketplace:"Marketplace",products_tools:"Продукты и инструменты",finance:"Финансы",insurance:"Страхование и претензии",travel_services:"Хранение и услуги",car_rentals:"Аренда авто",car_rental:"Аренда авто",tours:"Туры",transfers:"Трансферы",esim:"SIM и связь",sim:"SIM и связь",specialty_other:"Другое"}
     };
     let ACTIVE_REGION = "ot", ACTIVE_LANGUAGE = "en", ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en, ACTIVE_PARTNERS = [];
 
@@ -144,16 +144,40 @@
     function visiblePartners(){
       const seen=new Set(); return mergePartners(ACTIVE_PARTNERS).filter(p=>partnerMatchesRegion(p,ACTIVE_REGION)).map(p=>partnerForRegion(p,ACTIVE_REGION)).filter(p=>{const k=normalizePartnerName(p.name)+'|'+p.category_key; if(seen.has(k))return false; seen.add(k); return true;}).sort((a,b)=>(a.tier||99)-(b.tier||99)||String(a.name).localeCompare(String(b.name)));
     }
+    const HEADER_CATEGORIES = ['flights','hotels','transfers','car_rentals','esim','tours'];
+    const HEADER_CATEGORY_ALIASES = {
+      car_rental: 'car_rentals',
+      car_rentals: 'car_rentals',
+      sim: 'esim',
+      esim: 'esim',
+      transfers: 'transfers'
+    };
+    function displayCategoryKey(key){ return HEADER_CATEGORY_ALIASES[key] || key; }
     function renderHeader(partners){
-      const nav=document.getElementById('travelDirectory'); const counts={}; partners.forEach(p=>counts[p.category_key]=(counts[p.category_key]||0)+1);
-      const cats=['flights','hotels']; nav.innerHTML=cats.map(c=>`<button>${esc(ACTIVE_TRANSLATIONS[c]||c)} (${counts[c]||0})</button>`).join('');
+      const nav=document.getElementById('travelDirectory');
+      if(!nav) return;
+      const counts={};
+      partners.forEach(p=>{
+        const key = displayCategoryKey(p.category_key);
+        counts[key]=(counts[key]||0)+1;
+      });
+      nav.innerHTML=HEADER_CATEGORIES.map(c=>`<button type="button" data-category="${esc(c)}">${esc(ACTIVE_TRANSLATIONS[c]||c)} (${counts[c]||0})</button>`).join('');
+      nav.querySelectorAll('button').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          nav.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          const category = btn.dataset.category;
+          const first = document.querySelector(`.feed-card[data-category="${CSS.escape(category)}"]`);
+          if(first) first.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+      });
     }
     function renderColumn1(partners){
       const q = (document.getElementById('partnerSearch')?.value || '').toLowerCase();
       const wrap = document.getElementById('column1');
       // Header owns Flights + Hotels. Column 1 shows the rest, so categories are not repeated.
-      const headerCats = new Set(['flights', 'hotels']);
-      const sidePartners = partners.filter(p => !headerCats.has(p.category_key));
+      const headerCats = new Set(HEADER_CATEGORIES);
+      const sidePartners = partners.filter(p => !headerCats.has(displayCategoryKey(p.category_key)));
       const cats = [...new Set([...CATEGORY_ORDER, ...sidePartners.map(p => p.category_key)])]
         .filter(c => sidePartners.some(p => p.category_key === c));
 
@@ -264,7 +288,7 @@
     function normalizeFeedItem(raw, i, partnerFallback){
       const p = raw || {};
       const partner = partnerFallback || p;
-      const category = p.category_key || p.category || partner.category_key || partner.category || 'marketplace';
+      const category = displayCategoryKey(p.category_key || p.category || partner.category_key || partner.category || 'marketplace');
       return {
         ...partner,
         ...p,
@@ -340,6 +364,7 @@
         card.tabIndex = 0;
         card.setAttribute('role', 'link');
         card.dataset.href = item.url || '#';
+        card.dataset.category = displayCategoryKey(item.category_key);
         card.innerHTML = `
           <div class="media ${media.type === 'video' ? 'has-video' : ''} ${media.type === 'embed' ? 'has-embed' : ''}">
             ${renderMedia(item)}
