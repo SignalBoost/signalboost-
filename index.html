@@ -287,7 +287,7 @@
     let COLUMN1_EXPANDED = false;
     const COLUMN1_PREVIEW_LIMIT = 5;
 
-    const headerCategories = ["flights","hotels","transfers","car_rental","sim","tours"];
+    const categories = ["flights","hotels","transfers","car_rental","sim","tours"];
 
     const HEADER_CATEGORY_ALIASES = {
       car_rental: "car_rentals",
@@ -304,7 +304,7 @@
     function canonicalCategoryKey(key){if(key==="car_rentals") return "car_rental"; if(key==="esim") return "sim"; return key;}
     function translatedCategory(cat){return ACTIVE_TRANSLATIONS[cat] || ACTIVE_TRANSLATIONS[displayCategoryKey(cat)] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(cat)] || cat;}
 
-    const NORMALIZED_HEADER_CATEGORIES = [...new Set(headerCategories.map(displayCategoryKey))];
+    const NORMALIZED_HEADER_CATEGORIES = [...new Set(categories.map(displayCategoryKey))];
     const MAIN_INDEX_CATEGORIES = [...new Set([...NORMALIZED_HEADER_CATEGORIES, ...CATEGORY_ORDER.map(displayCategoryKey)])];
 
     function normalizeRegion(value){
@@ -488,8 +488,7 @@
         displayCategoryKey(p.category_key)===displayKey &&
         (!query || (p.name+" "+(p.network||"")+" "+(p.description||"")).toLowerCase().includes(query))
       );
-      if(!items.length) return "";
-      const open=index===0;
+      const open=false;
       return `
         <div class="column-category" data-open="${open ? "1":"0"}">
           <button type="button" onclick="toggleColumnCategory(this)">
