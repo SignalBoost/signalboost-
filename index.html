@@ -20,7 +20,7 @@
       height:40px;
       background:#232f3e;
       display:grid;
-      grid-template-columns:240px 1fr 0;
+      grid-template-columns:240px 1fr 190px;
       align-items:center;
       border-bottom:1px solid rgba(255,255,255,.1);
       position:fixed;
@@ -97,6 +97,14 @@
 
     .lang-switcher{display:none;justify-content:flex-end;padding-right:8px}
     #lang-select{background:#0f1724;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:6px 10px;font-weight:700}
+
+    .translate-wrapper{display:flex;align-items:center;justify-content:flex-end;padding-right:8px;height:100%}
+    #google_translate_element{display:flex;align-items:center;justify-content:flex-end;max-width:185px;overflow:hidden}
+    .goog-te-gadget{color:transparent!important;font-size:0!important;font-family:Arial,sans-serif!important;line-height:1!important}
+    .goog-te-gadget span{display:none!important}
+    .goog-te-gadget .goog-te-combo{background:#0f1724;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:6px 8px;font-size:12px;font-weight:800;outline:none;cursor:pointer;max-width:170px}
+    .goog-te-banner-frame.skiptranslate,.skiptranslate iframe{display:none!important}
+    body{top:0!important}
 
     .app{display:grid;grid-template-columns:260px minmax(560px,1fr)260px;height:100vh;padding-top:40px}
     .col{min-height:0;overflow:hidden}
@@ -237,9 +245,7 @@
     #stickyBar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(720px,calc(100% - 24px));background:rgba(15,20,27,.96);border:1px solid rgba(245,197,66,.25);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;z-index:999}
     .sticky-link{color:#f5c542;text-decoration:none;font-weight:900}
     .right h2{text-align:center;margin:0 0 16px}
-    #partnerChips{display:block}
-    .column3{display:block}
-    .featured-card{display:block;text-decoration:none;border:1px solid rgba(245,197,66,.25);border-radius:16px;background:#111822;overflow:hidden;margin-bottom:16px;box-shadow:0 14px 28px rgba(0,0,0,.22)}
+    #partnerChips{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     .chip{min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid rgba(255,255,255,.08);background:#1b2128;border-radius:10px;padding:10px;font-weight:800;font-size:13px;text-decoration:none}
     .see-more-btn{width:100%;margin:8px 0 12px;padding:10px 12px;border:1px solid rgba(245,197,66,.35);border-radius:10px;background:#111;color:#f5c542;font-weight:900;cursor:pointer}
     .see-more-btn:hover{background:#192532}
@@ -258,7 +264,7 @@
 
     @media(max-width:900px){
       body{overflow:auto}
-      .top{grid-template-columns:140px 1fr;height:40px;min-height:40px}
+      .top{grid-template-columns:120px 1fr 150px;height:40px;min-height:40px}
       .navbar{justify-content:flex-start;overflow-x:auto}
       .nav-list{justify-content:flex-start;gap:12px;padding-left:8px}
       .dropdown-content{left:0;transform:none}
@@ -277,8 +283,8 @@
   <header class="top">
     <div class="logo" data-i18n="brand_name">SignalBoost</div>
     <nav class="navbar" id="travelDirectory"></nav>
-    <div class="lang-switcher" id="languageSwitcher">
-      <select id="lang-select" onchange="setLanguage(this.value)"></select>
+    <div class="translate-wrapper">
+      <div id="google_translate_element"></div>
     </div>
   </header>
 
@@ -695,35 +701,21 @@
       renderNextFeedBatch();
     }
 
-    function renderColumn3(){
-      const column=document.getElementById("partnerChips");
-      if(!column) return;
-
-      const featured=ACTIVE_PARTNERS.find(p=>
-        p.featured && Array.isArray(p.regions) && p.regions.includes(ACTIVE_REGION)
-      );
-
-      column.className="column column3";
-
-      if(!featured){
-        column.innerHTML=`<div class="empty">${esc(ACTIVE_TRANSLATIONS.featured_service || "No featured partner available.")}</div>`;
-        return;
-      }
-
-      const categoryLabel=ACTIVE_TRANSLATIONS[featured.category_key] || featured.category_label || featured.category_key;
-      const imageSrc=featured.thumbnail || featured.image || featured.logo || "";
-      const cardTag=featured.url ? "a" : "div";
-      const hrefAttrs=featured.url ? ` href="${esc(featured.url)}" target="_blank" rel="noopener"` : "";
-
-      column.innerHTML=`
-        <${cardTag} class="featured-card featured"${hrefAttrs}>
-          ${imageSrc ? `<img src="${esc(imageSrc)}" alt="${esc(featured.name)}" loading="lazy" onerror="this.style.display='none'">` : ""}
+    function renderRight(partners){
+      const chips=document.getElementById("partnerChips");
+      if(!chips) return;
+      const featured=partners.find(p=>p.featured) || partners.find(p=>(p.tier||99)===1) || partners[0];
+      const featuredHTML=featured ? `
+        <a class="featured" href="${esc(featured.url)}" target="_blank" rel="noopener">
+          ${(featured.thumbnail || featured.image || featured.logo) ? `<img src="${esc(featured.thumbnail || featured.image || featured.logo)}" alt="${esc(featured.name)}" loading="lazy" onerror="this.style.display='none'">` : ""}
           <div class="featured-body">
-            <h4>${esc(categoryLabel)}</h4>
+            <h4>${esc(translatedCategory(canonicalCategoryKey(featured.category_key)))}</h4>
             <p>${esc(featured.name)}</p>
-            <span>${esc(featured.description || "")}</span>
+            <span>${esc(featured.description || `Explore ${featured.name} offers.`)}</span>
           </div>
-        </${cardTag}>`;
+        </a>` : "";
+      const chipHTML=partners.slice(0,24).map(p=>`<a class="chip" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`).join("");
+      chips.innerHTML=`${featuredHTML}<div class="chips-title">${esc(ACTIVE_TRANSLATIONS.partners || "Partners")}</div>${chipHTML}`;
     }
 
     function renderSticky(partners){
@@ -739,7 +731,7 @@
       const partners=visiblePartners();
       renderHeader(partners);
       renderColumn1(partners);
-      renderColumn3();
+      renderRight(partners);
       renderSticky(partners);
       resetFeed(partners);
     }
@@ -762,5 +754,17 @@
 
     init();
   </script>
+  <script>
+    function googleTranslateElementInit(){
+      new google.translate.TranslateElement({
+        pageLanguage:'en',
+        includedLanguages:'en,es,pt,pl,ru',
+        autoDisplay:false,
+        layout:google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
