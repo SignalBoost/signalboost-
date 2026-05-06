@@ -1,62 +1,661 @@
-function Column1({ currentRegion, currentLanguage }) {
-  const regionPartners = partnersData.partners.filter(p =>
-    p.regions.includes(currentRegion)
-  );
 
-  return (
-    <div className="column column1">
-      {regionPartners.map(p => (
-        <div key={p.name}>
-          {p.name} — {translations[currentLanguage][p.category_key]}
-        </div>
-      ))}
-    </div>
-  );
-}
---------------
-function Column2Category({ cat, currentRegion, currentLanguage }) {
-  const [open, setOpen] = React.useState(false);
-  const partners = partnersData.partners.filter(p =>
-    p.category_key === cat && p.regions.includes(currentRegion)
-  );
 
-  return (
-    <div className="column-category">
-      <button onClick={() => setOpen(!open)}>
-        {translations[currentLanguage][cat]} ({partners.length})
-      </button>
-      {open && (
-        <ul>
-          {partners.map(p => {
-            const audio = new Audio(p.soundUrl);
-            return (
-              <li key={p.name} onClick={() => audio.play()}>
-                {p.name}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
-  );
-}
---------------------
-function Column3({ currentRegion }) {
-  const featured = partnersData.partners.find(p =>
-    p.featured && p.regions.includes(currentRegion)
-  );
 
-  return (
-    <div className="column column3">
-      {featured && (
-        <div className="featured">
-          <img src={featured.thumbnail} alt={featured.name} />
-          <h4>{translations["en"][featured.category_key]}</h4>
-          <p>{featured.name}</p>
-          <span>{featured.description}</span>
-        </div>
-      )}
+<!DOCTYPE html>
+<html lang="en" data-i18n-ready="0">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalBoost</title>
+  <meta name="description" content="Find travel, marketplace and service offers by region." />
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#0d1117;color:#fff}
+    body{overflow:hidden}
+    a{color:inherit}
+
+    .top{
+      height:40px;
+      background:#232f3e;
+      display:grid;
+      grid-template-columns:240px 1fr 0;
+      align-items:center;
+      border-bottom:1px solid rgba(255,255,255,.1);
+      position:fixed;
+      inset:0 0 auto 0;
+      z-index:1000;
+    }
+    .logo{color:#f5c542;font-weight:900;padding-left:2px;font-size:16px;white-space:nowrap}
+
+    .navbar{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:#111;
+      height:100%;
+      width:100%;
+      overflow:visible;
+    }
+    .nav-list{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:20px;
+      list-style:none;
+      margin:0;
+      padding:0;
+      height:100%;
+    }
+    .dropdown{position:relative;display:flex;align-items:center;height:100%}
+    .dropbtn{
+      height:100%;
+      background:none;
+      border:none;
+      border-bottom:2px solid transparent;
+      color:#fff;
+      cursor:pointer;
+      padding:0 10px;
+      font-size:14px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .dropbtn::after{content:'⌄';font-size:11px;margin-left:5px;color:#fff}
+    .dropbtn:hover,.dropdown:hover .dropbtn{color:#f5c542;border-bottom-color:#f5c542}
+    .dropdown-content{
+      display:none;
+      position:absolute;
+      top:100%;
+      left:50%;
+      transform:translateX(-50%);
+      background:#222;
+      min-width:190px;
+      max-height:420px;
+      overflow:auto;
+      z-index:1001;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:0 0 10px 10px;
+      box-shadow:0 14px 28px rgba(0,0,0,.45);
+      list-style:none;
+      margin:0;
+      padding:6px 0;
+    }
+    .dropdown:hover .dropdown-content{display:block}
+    .dropdown-content li{list-style:none;margin:0;padding:0}
+    .dropdown-content a,.dropdown-empty{
+      display:block;
+      color:#fff;
+      padding:9px 14px;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .dropdown-content a:hover{background:#232f3e;color:#f5c542}
+    .dropdown-empty{color:#9aa8b8}
+
+    .lang-switcher{display:none;justify-content:flex-end;padding-right:8px}
+    #lang-select{background:#0f1724;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:6px 10px;font-weight:700}
+
+    .app{display:grid;grid-template-columns:260px minmax(560px,1fr)260px;height:100vh;padding-top:40px}
+    .col{min-height:0;overflow:hidden}
+    .left,.right{background:#0f141b}
+    .left{border-right:1px solid rgba(255,255,255,.08)}
+    .right{border-left:1px solid rgba(255,255,255,.08);padding:20px;overflow-y:auto}
+
+    .controls{padding:10px 8px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .small-title{font-size:13px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;margin-bottom:8px}
+    #partnerSearch{width:100%;height:32px;background:#0d1117;color:#fff;border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:8px 10px}
+
+    #column1{height:calc(100vh - 116px);overflow-y:auto;padding:10px 8px 24px}
+    .column-category{margin-bottom:10px;border:1px solid rgba(255,255,255,.08);border-radius:9px;overflow:hidden;background:#1b2128}
+    .column-category button{
+      background:#111;
+      color:#fff;
+      border:none;
+      padding:10px 12px;
+      cursor:pointer;
+      width:100%;
+      text-align:left;
+      font-weight:900;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .column-category button:hover{color:#f5c542;background:#192532}
+    .column-category ul{margin:0;padding:8px 0 8px 20px;list-style:none;background:#141a20}
+    .column-category ul li{padding:4px 0}
+    .column-category a{color:#fff;text-decoration:none;font-size:13px;font-weight:800}
+    .column-category a:hover{color:#f5c542}
+
+    .main{
+      position:relative;
+      background:#0d1117;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:18px 18px 96px;
+      overflow-y:auto;
+      scroll-snap-type:y proximity;
+      -webkit-overflow-scrolling:touch;
+    }
+    .feed-container{width:100%;max-width:520px;display:flex;flex-direction:column;gap:22px}
+    .feed-card{
+      position:relative;
+      display:block;
+      text-decoration:none;
+      border:1px solid rgba(245,197,66,.22);
+      border-radius:22px;
+      background:#111822;
+      padding:10px;
+      min-height:calc(100vh - 168px);
+      transition:transform .18s ease,border-color .18s ease;
+      cursor:pointer;
+      scroll-snap-align:start;
+      box-shadow:0 16px 42px rgba(0,0,0,.28);
+    }
+    .feed-card:hover{transform:translateY(-2px);border-color:rgba(245,197,66,.42)}
+    .media{position:relative;aspect-ratio:9/16;height:min(76vh,760px);border-radius:18px;overflow:hidden;background:#0b0f14}
+    .media img,.media video,.feed-video,.platform-frame{width:100%;height:100%;object-fit:cover;display:block;border:0}
+    .media img{filter:brightness(.60)}
+    .media.has-video img{filter:none}
+    .media.has-embed{background:#000}
+    .platform-frame{background:#000}
+    .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+    .play span{width:74px;height:74px;border-radius:50%;background:#fff;color:#06101b;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900}
+
+    .feed-content{
+      position:absolute;
+      left:20px;
+      right:20px;
+      bottom:22px;
+      padding:16px 14px;
+      border-radius:18px;
+      background:linear-gradient(180deg,rgba(8,12,18,0),rgba(8,12,18,.78) 20%,rgba(8,12,18,.92));
+      text-shadow:0 2px 14px rgba(0,0,0,.75);
+      pointer-events:none;
+    }
+    .feed-label{display:inline-block;margin-bottom:8px;padding:5px 9px;border:1px solid rgba(245,197,66,.22);border-radius:999px;background:rgba(245,197,66,.16);color:#f5c542;font-size:11px;font-weight:900;text-transform:uppercase}
+    .feed-source{float:right;color:rgba(255,255,255,.82);font-size:11px;font-weight:900;text-transform:uppercase;margin-top:6px}
+    .feed-content h3{clear:both;margin:0 0 8px;font-size:22px;line-height:1.15}
+    .feed-content p{margin:0;color:rgba(255,255,255,.86);font-size:14px;line-height:1.4}
+    .feed-loader{width:100%;padding:18px;text-align:center;color:#9aa8b8;font-size:12px}
+    .feed-empty{width:100%;padding:30px;text-align:center;color:#9aa8b8;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:#111822}
+
+    #stickyBar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(720px,calc(100% - 24px));background:rgba(15,20,27,.96);border:1px solid rgba(245,197,66,.25);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;z-index:999}
+    .sticky-link{color:#f5c542;text-decoration:none;font-weight:900}
+    .right h2{text-align:center;margin:0 0 16px}
+    #partnerChips{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .chip{min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid rgba(255,255,255,.08);background:#1b2128;border-radius:10px;padding:10px;font-weight:800;font-size:13px;text-decoration:none}
+    .empty{color:#9aa8b8;padding:16px;font-size:13px}
+
+    #debug-overlay{position:fixed;right:10px;bottom:10px;background:rgba(0,0,0,.84);color:#fff;padding:10px 14px;border-radius:8px;font:13px monospace;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.35);display:none}
+    html[data-i18n-ready="0"] body{opacity:0}
+    html[data-i18n-ready="1"] body{opacity:1;transition:opacity .12s}
+
+    @media(max-width:900px){
+      body{overflow:auto}
+      .top{grid-template-columns:140px 1fr;height:40px;min-height:40px}
+      .navbar{justify-content:flex-start;overflow-x:auto}
+      .nav-list{justify-content:flex-start;gap:12px;padding-left:8px}
+      .dropdown-content{left:0;transform:none}
+      .app{display:block;height:auto;padding-top:40px}
+      .left,.right{border:0}
+      #column1{height:auto;max-height:none}
+      .main{min-height:500px;padding:14px 10px 96px}
+      .right{padding-bottom:40px}
+      .feed-container{max-width:100%}
+      .feed-card{min-height:calc(100vh - 128px)}
+      .media{height:calc(100vh - 150px);aspect-ratio:9/16}
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="logo" data-i18n="brand_name">SignalBoost</div>
+    <nav class="navbar" id="travelDirectory"></nav>
+    <div class="lang-switcher" id="languageSwitcher">
+      <select id="lang-select" onchange="setLanguage(this.value)"></select>
     </div>
-  );
-}
---------------------------
+  </header>
+
+  <div class="app">
+    <aside class="col left">
+      <div class="controls">
+        <div class="small-title" data-i18n="explore_offers">Explore offers</div>
+        <input id="partnerSearch" data-i18n-placeholder="search_placeholder" placeholder="Flights, hotels, eSIM, tours..." />
+      </div>
+      <div id="column1"></div>
+    </aside>
+
+    <main class="col main" id="magnetoColumn">
+      <div id="feedContainer" class="feed-container"></div>
+    </main>
+
+    <aside class="col right">
+      <h2 data-i18n="partners">Partners</h2>
+      <div id="partnerChips"></div>
+    </aside>
+  </div>
+
+  <div id="stickyBar">
+    <div id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
+    <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener" data-i18n="view_more">View More</a>
+  </div>
+
+  <div id="debug-overlay"></div>
+
+  <script>
+    window.addEventListener("error", function(e){
+      const box = document.getElementById("debug-overlay");
+      if(box){
+        box.style.display = "block";
+        box.textContent = "JS error: " + e.message + " @ " + e.lineno + ":" + e.colno;
+      }
+    });
+
+    const EMBEDDED_PARTNERS = {"partners":[{"name":"Alamo","regions":["ot"],"url":"https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Admitad","logo":"alamo.png","description":"Reliable car rentals for airport and city trips","tier":1,"regional_urls":{"ot":"https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/"}},{"name":"Localrent","regions":["ot"],"url":"https://localrent.tpo.lv/XS0CqdMP","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"localrent.png","description":"Explore Localrent offers.","tier":1,"regional_urls":{"ot":"https://localrent.tpo.lv/XS0CqdMP"}},{"name":"CVC","regions":["br"],"url":"https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/","category":"flights","category_key":"flights","category_label":"Flights","network":"Admitad","logo":"cvc.png","description":"Explore CVC offers.","tier":1,"regional_urls":{"br":"https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/"},"notes":"Admitad connected offer. Verify rules and allowed traffic."},{"name":"Kiwi","regions":["br","ot","es-latam","pl","us"],"url":"https://booking.tpo.lv/enwsEbCs","category":"flights","category_key":"flights","category_label":"Flights","network":"Travelpayouts","logo":"kiwi.png","description":"Explore Kiwi offers.","tier":1,"regional_urls":{"br":"https://booking.tpo.lv/enwsEbCs","ot":"https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806","es-latam":"https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806","pl":"https://booking.tpo.lv/enwsEbCs","us":"https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806"}},{"name":"Booking Brazil","regions":["br"],"url":"https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"bookingbrazil.png","description":"Explore Booking Brazil offers.","tier":1,"regional_urls":{"br":"https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806"}},{"name":"Trivago","regions":["br","ot","es-latam","us","pl"],"url":"https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"trivago.png","description":"Explore Trivago offers.","tier":1,"regional_urls":{"br":"https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806","ot":"https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806","es-latam":"https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806","us":"https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806","pl":"https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806"}},{"name":"AURAS Travel Insurance","regions":["ot"],"url":"https://ogsib.com/g/g86qhgosread273170bc102b8feede/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"aurastravelinsurance.png","description":"Travel with protection — simple & reliable insurance","tier":1,"regional_urls":{"ot":"https://ogsib.com/g/g86qhgosread273170bc102b8feede/"}},{"name":"AirHelp","regions":["br","ot"],"url":"https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"airhelp.png","description":"Explore AirHelp offers.","tier":1,"regional_urls":{"br":"https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/","ot":"https://airhelp.tpo.lv/EPrGDSO3"}},{"name":"EKTA Insurance","regions":["ot"],"url":"https://ektatraveling.tpo.lv/XWbZbj8S","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Travelpayouts","logo":"ektainsurance.png","description":"Explore EKTA Insurance offers.","tier":1,"regional_urls":{"ot":"https://ektatraveling.tpo.lv/XWbZbj8S"}},{"name":"Amazon","regions":["br","ot","pl","es-latam"],"url":"https://www.amazon.com.br/?tag=signalboostai-20","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Amazon","logo":"amazon.png","description":"Explore Amazon offers.","tier":1,"regional_urls":{"br":"https://www.amazon.com.br/?tag=signalboostai-20","ot":"https://www.amazon.com/?tag=signalboostai-20","pl":"https://www.amazon.pl/?tag=signalboostai-20","es-latam":"https://www.amazon.com.mx/?tag=signalboostai-20"}},{"name":"Proton VPN","regions":["ot"],"url":"https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"protonvpn.png","description":"Explore Proton VPN offers.","tier":1,"regional_urls":{"ot":"https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/"}},{"name":"Airalo","regions":["br","ot","pl"],"url":"https://airalo.tpo.lv/eXjKLiuw","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"airalo.png","description":"Explore Airalo offers.","tier":1,"regional_urls":{"br":"https://airalo.tpo.lv/eXjKLiuw","ot":"https://airalo.tpo.lv/eXjKLiuw","pl":"https://airalo.tpo.lv/eXjKLiuw"}},{"name":"SuperSim","regions":["br"],"url":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/","category":"sim","category_key":"sim","category_label":"eSIM","network":"Admitad","logo":"supersim.png","description":"Explore SuperSim offers.","tier":1,"regional_urls":{"br":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/"}},{"name":"Klook","regions":["ot","br"],"url":"https://klook.tpo.lv/pTp1NljF","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"klook.png","description":"Explore Klook offers.","tier":1,"regional_urls":{"ot":"https://klook.tpo.lv/pTp1NljF","br":"https://klook.tpo.lv/pTp1NljF"}},{"name":"Kiwitaxi","regions":["ot","pl"],"url":"https://kiwitaxi.tpo.lv/DVaqmgKo","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"kiwitaxi.png","description":"Explore Kiwitaxi offers.","tier":1,"regional_urls":{"ot":"https://kiwitaxi.tpo.lv/DVaqmgKo","pl":"https://kiwitaxi.tpo.lv/DVaqmgKo"}},{"name":"Welcome Pickups","regions":["ot","pl"],"url":"https://tpo.lv/XAJOoobr","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"welcomepickups.png","description":"Explore Welcome Pickups offers.","tier":1,"regional_urls":{"ot":"https://tpo.lv/XAJOoobr","pl":"https://tpo.lv/XAJOoobr"}},{"name":"Economybookings","regions":["ot"],"url":"https://economybookings.tpo.lv/jSFMPEPA","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"economybookings.png","description":"Explore Economybookings offers.","tier":2,"regional_urls":{"ot":"https://economybookings.tpo.lv/jSFMPEPA"}},{"name":"QEEQ","regions":["ot"],"url":"https://qeeq.tpo.lv/jklB4Pbm","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"qeeq.png","description":"Explore QEEQ offers.","tier":2,"regional_urls":{"ot":"https://qeeq.tpo.lv/jklB4Pbm"}},{"name":"Airalo","regions":["ot","br"],"url":"https://airalo.tpo.lv/eXjKLiuw","category":"esim","category_key":"esim","category_label":"eSIM","network":"Travelpayouts","logo":"airalo.png","description":"Explore Airalo offers.","tier":2,"regional_urls":{"ot":"https://airalo.tpo.lv/eXjKLiuw","br":"https://airalo.tpo.lv/eXjKLiuw"}},{"name":"JetPac","regions":["ot"],"url":"https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/","category":"esim","category_key":"esim","category_label":"eSIM","network":"Admitad","logo":"jetpac.png","description":"Explore JetPac offers.","tier":2,"regional_urls":{"ot":"https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/"}},{"name":"HolidayTaxis","regions":["ot"],"url":"https://holidaytaxis.tpo.lv/oHwpbrFt","category":"finance","category_key":"finance","category_label":"Finance","network":"Travelpayouts","logo":"holidaytaxis.png","description":"Explore HolidayTaxis offers.","tier":2,"regional_urls":{"ot":"https://holidaytaxis.tpo.lv/oHwpbrFt"}},{"name":"Kapitalwise","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806","category":"finance","category_key":"finance","category_label":"Finance","network":"Awin","logo":"kapitalwise.png","description":"Explore Kapitalwise offers.","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806"}},{"name":"Western Union","regions":["ot"],"url":"https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/","category":"finance","category_key":"finance","category_label":"Finance","network":"Admitad","logo":"westernunion.png","description":"Explore Western Union offers.","tier":2,"regional_urls":{"ot":"https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/"}},{"name":"Aviasales","regions":["ot"],"url":"https://aviasales.tpo.lv/VoWXgFFm","category":"flights","category_key":"flights","category_label":"Flights","network":"Travelpayouts","logo":"aviasales.png","description":"Explore Aviasales offers.","tier":2,"regional_urls":{"ot":"https://aviasales.tpo.lv/VoWXgFFm"},"notes":"Flights only. Avoid hotel flow."},{"name":"Kiwitaxi","regions":["ot"],"url":"https://kiwitaxi.tpo.lv/DVaqmgKo","category":"flights","category_key":"flights","category_label":"Flights","network":"Travelpayouts","logo":"kiwitaxi.png","description":"Explore Kiwitaxi offers.","tier":2,"regional_urls":{"ot":"https://kiwitaxi.tpo.lv/DVaqmgKo"}},{"name":"Lennuabi","regions":["ot"],"url":"https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/","category":"flights","category_key":"flights","category_label":"Flights","network":"Admitad","logo":"lennuabi.png","description":"Explore Lennuabi offers.","tier":2,"regional_urls":{"ot":"https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/"},"notes":"Many GEOs"},{"name":"H10 Hotels","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"h10hotels.png","description":"Explore H10 Hotels offers.","tier":2,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806"}},{"name":"Sirenis Hotels","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"sirenishotels.png","description":"Explore Sirenis Hotels offers.","tier":2,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806"}},{"name":"Travelking","regions":["pl"],"url":"https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Admitad","logo":"travelking.png","description":"Explore Travelking offers.","tier":2,"regional_urls":{"pl":"https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/"}},{"name":"Zenhotels","regions":["ot"],"url":"https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Admitad","logo":"zenhotels.png","description":"Explore Zenhotels offers.","tier":2,"regional_urls":{"ot":"https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/"}},{"name":"ACKO","regions":["ot"],"url":"https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"acko.png","description":"Explore ACKO offers.","tier":2,"regional_urls":{"ot":"https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/"}},{"name":"ICICI Lombard","regions":["ot"],"url":"https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"icicilombard.png","description":"Explore ICICI Lombard offers.","tier":2,"regional_urls":{"ot":"https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/"}},{"name":"Melhor Seguro","regions":["br"],"url":"https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Awin","logo":"melhorseguro.png","description":"Explore Melhor Seguro offers.","tier":2,"regional_urls":{"br":"https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806"}},{"name":"AliExpress","regions":["pl","ot"],"url":"https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"aliexpress.png","description":"Explore AliExpress offers.","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806","ot":"https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/"}},{"name":"Alibaba","regions":["ot"],"url":"https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Admitad","logo":"alibaba.png","description":"Explore Alibaba offers.","tier":2,"regional_urls":{"ot":"https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"}},{"name":"Bella Storia","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"bellastoria.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806"}},{"name":"Converse","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"converse.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806"}},{"name":"Miravia","regions":["es-latam"],"url":"https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Admitad","logo":"miravia.png","description":"Explore Miravia offers.","tier":2,"regional_urls":{"es-latam":"https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/"}},{"name":"TWOJEMEBLE","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"twojemeble.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806"}},{"name":"Weneve","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"weneve.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806"}},{"name":"AdGuard VPN","regions":["ot"],"url":"https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"adguardvpn.png","description":"Explore AdGuard VPN offers.","tier":2,"regional_urls":{"ot":"https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/"}},{"name":"Bloomcabin Poland","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"bloomcabinpoland.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806"}},{"name":"Cozeware","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"cozeware.png","description":"Explore Cozeware offers.","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806"}},{"name":"DAX","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"dax.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"}},{"name":"ESET","regions":["br"],"url":"https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"eset.png","description":"Explore ESET offers.","tier":2,"regional_urls":{"br":"https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/"}},{"name":"Envato","regions":["ot"],"url":"https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"envato.png","description":"Explore Envato offers.","tier":2,"regional_urls":{"ot":"https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/"}},{"name":"UdPower","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"udpower.png","description":"Smart gadgets and power solutions for everyday use","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806"}},{"name":"Saily","regions":["ot"],"url":"https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"saily.png","description":"Explore Saily offers.","tier":2,"regional_urls":{"ot":"https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629"}},{"name":"TurboVPN","regions":["ot"],"url":"https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/","category":"sim","category_key":"sim","category_label":"eSIM","network":"Admitad","logo":"turbovpn.png","description":"Secure your connection anywhere with VPN access","tier":2,"regional_urls":{"ot":"https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/"}},{"name":"Yesim","regions":["ot"],"url":"https://yesim.tpo.lv/3vIzBQts","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"yesim.png","description":"Explore Yesim offers.","tier":2,"regional_urls":{"ot":"https://yesim.tpo.lv/3vIzBQts"}},{"name":"GoCity","regions":["ot"],"url":"https://gocity.tpo.lv/Des5Cgov","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"gocity.png","description":"Explore GoCity offers.","tier":2,"regional_urls":{"ot":"https://gocity.tpo.lv/Des5Cgov"}},{"name":"Tiqets","regions":["ot","uk","us"],"url":"https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Awin","logo":"tiqets.png","description":"Explore Tiqets offers.","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806","uk":"https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806","us":"https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806"}},{"name":"WeGoTrip","regions":["ot"],"url":"https://wegotrip.tpo.lv/kKIF0gIW","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"wegotrip.png","description":"Explore WeGoTrip offers.","tier":2,"regional_urls":{"ot":"https://wegotrip.tpo.lv/kKIF0gIW"}},{"name":"GetTransfer","regions":["ot"],"url":"https://gettransfer.tpo.lv/Pb4p9ljm","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"gettransfer.png","description":"Explore GetTransfer offers.","tier":2,"regional_urls":{"ot":"https://gettransfer.tpo.lv/Pb4p9ljm"}},{"name":"Intui.travel","regions":["ot"],"url":"https://intui.tpo.lv/Rrx5VuN3","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"intui.travel.png","description":"Explore Intui.travel offers.","tier":2,"regional_urls":{"ot":"https://intui.tpo.lv/Rrx5VuN3"}},{"name":"Quero Passagem","regions":["br"],"url":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Admitad","logo":"queropassagem.png","description":"Explore Quero Passagem offers.","tier":2,"regional_urls":{"br":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/"},"notes":"Brazil bus/travel ticket partner"},{"name":"Radical Storage","regions":["ot","pl"],"url":"https://radicalstorage.tpo.lv/tna4hnly","category":"travel_services","category_key":"travel_services","category_label":"Storage & Services","network":"Travelpayouts","logo":"radicalstorage.png","description":"Explore Radical Storage offers.","tier":2,"regional_urls":{"ot":"https://radicalstorage.tpo.lv/tna4hnly","pl":"https://radicalstorage.tpo.lv/tna4hnly"}},{"name":"AutoEurope","regions":["ot"],"url":"https://autoeurope.tpo.lv/t84AzZbO","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"autoeurope.png","description":"Explore AutoEurope offers.","tier":3,"regional_urls":{"ot":"https://autoeurope.tpo.lv/t84AzZbO"}},{"name":"Europcar AU/NZ","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Awin","logo":"europcarau/.png","description":"Explore Europcar AU/NZ offers.","tier":3,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806"}},{"name":"GetRentacar","regions":["ot"],"url":"https://getrentacar.tpo.lv/OR2TWduQ","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"getrentacar.png","description":"Explore GetRentacar offers.","tier":3,"regional_urls":{"ot":"https://getrentacar.tpo.lv/OR2TWduQ"}},{"name":"Jumbo Car Costa Rica","regions":["es-latam"],"url":"https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Awin","logo":"jumbocarcostarica.png","description":"Explore Jumbo Car Costa Rica offers.","tier":3,"regional_urls":{"es-latam":"https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806"}},{"name":"Countabout","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806","category":"finance","category_key":"finance","category_label":"Finance","network":"Awin","logo":"countabout.png","description":"Explore Countabout offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806"}},{"name":"FileYourTaxes","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806","category":"finance","category_key":"finance","category_label":"Finance","network":"Awin","logo":"fileyourtaxes.png","description":"Explore FileYourTaxes offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806"}},{"name":"Você RH","regions":["br"],"url":"https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/","category":"finance","category_key":"finance","category_label":"Finance","network":"Admitad","logo":"vocêrh.png","description":"Explore Você RH offers.","tier":3,"regional_urls":{"br":"https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/"},"notes":"Use only in finance/career context."},{"name":"Quero Passagem","regions":["br"],"url":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/","category":"flights","category_key":"flights","category_label":"Flights","network":"Admitad","logo":"queropassagem.png","description":"BR offer","tier":3,"regional_urls":{"br":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/"}},{"name":"Compensair","regions":["ot"],"url":"https://compensair.tpo.lv/wxDDCITG","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Travelpayouts","logo":"compensair.png","description":"Explore Compensair offers.","tier":3,"regional_urls":{"ot":"https://compensair.tpo.lv/wxDDCITG"}},{"name":"Beetles Gel Polish","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"beetlesgelpolish.png","description":"PL offer","tier":3,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806"}},{"name":"Cybercart","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"cybercart.png","description":"PL offer","tier":3,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806"}},{"name":"Woodestic","regions":["ot"],"url":"https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Admitad","logo":"woodestic.png","description":"Explore Woodestic offers.","tier":3,"regional_urls":{"ot":"https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/"}},{"name":"Bodylab","regions":["ot"],"url":"https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"bodylab.png","description":"Explore Bodylab offers.","tier":3,"regional_urls":{"ot":"https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/"}},{"name":"Guldi","regions":["br"],"url":"https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"guldi.png","description":"Explore Guldi offers.","tier":3,"regional_urls":{"br":"https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/"},"notes":"Guldi (EN) Affiliate Program"},{"name":"Lingualeo","regions":["ot"],"url":"https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/?erid=5jtCeReLm1S3Xx3LfA8SFZ6","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"lingualeo.png","description":"Explore Lingualeo offers.","tier":3,"regional_urls":{"ot":"https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/?erid=5jtCeReLm1S3Xx3LfA8SFZ6"}},{"name":"PearlMountain Limited","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"pearlmountainlimited.png","description":"Explore PearlMountain Limited offers.","tier":3,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"}},{"name":"SuperBox","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"superbox.png","description":"Explore SuperBox offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806"}},{"name":"SuperSim","regions":["br"],"url":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"supersim.png","description":"BR offer","tier":3,"regional_urls":{"br":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/"}},{"name":"TikTok Lite","regions":["br"],"url":"https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"tiktoklite.png","description":"Explore TikTok Lite offers.","tier":3,"regional_urls":{"br":"https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/"},"notes":"CPI/CPA. Keep out of main travel UI unless rules allow this traffic."},{"name":"Valerion","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"valerion.png","description":"Explore Valerion offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806"}},{"name":"Drimsim","regions":["ot"],"url":"https://drimsim.tpo.lv/PGwr6JTr","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"drimsim.png","description":"Explore Drimsim offers.","tier":3,"regional_urls":{"ot":"https://drimsim.tpo.lv/PGwr6JTr"}},{"name":"Bunches","regions":["ot"],"url":"https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"bunches.png","description":"Explore Bunches offers.","tier":3,"regional_urls":{"ot":"https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/"}},{"name":"Delfin","regions":["ot"],"url":"https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/?erid=2bL9aMPo2e49hMef4rqyKUjZvt","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"delfin.png","description":"Explore Delfin offers.","tier":3,"regional_urls":{"ot":"https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/?erid=2bL9aMPo2e49hMef4rqyKUjZvt"}},{"name":"GGsel","regions":["ot"],"url":"https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/?erid=2bL9aMPo2e49hMef4phyrMWkN2","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"ggsel.png","description":"Explore GGsel offers.","tier":3,"regional_urls":{"ot":"https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/?erid=2bL9aMPo2e49hMef4phyrMWkN2"}},{"name":"IGP","regions":["ot"],"url":"https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"igp.png","description":"Explore IGP offers.","tier":3,"regional_urls":{"ot":"https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/"}},{"name":"LEA","regions":["ot"],"url":"https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"lea.png","description":"Explore LEA offers.","tier":3,"regional_urls":{"ot":"https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx"}},{"name":"cs2case","regions":["ot"],"url":"https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/?erid=2bL9aMPo2e49hMef4phyrL2RNS","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"cs2case.png","description":"Explore cs2case offers.","tier":3,"regional_urls":{"ot":"https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/?erid=2bL9aMPo2e49hMef4phyrL2RNS"}},{"name":"forcedrop","regions":["ot"],"url":"https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"forcedrop.png","description":"Explore forcedrop offers.","tier":3,"regional_urls":{"ot":"https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/"}},{"name":"ggpick","regions":["ot"],"url":"https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"ggpick.png","description":"Explore ggpick offers.","tier":3,"regional_urls":{"ot":"https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/"}},{"name":"Буквоед","regions":["ru"],"url":"https://heqgr.com/g/531a4560a6ad273170bc27ad1bb5fb/?erid=5jtCeReLm1S3Xx3LfAELCUa","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"буквоед.png","description":"Explore Буквоед offers.","tier":3,"regional_urls":{"ru":"https://heqgr.com/g/531a4560a6ad273170bc27ad1bb5fb/?erid=5jtCeReLm1S3Xx3LfAELCUa"}},{"name":"Читай-город","regions":["ru"],"url":"https://kjuzv.com/g/q6gfnfvsq0ad273170bca804937a48/?erid=MvGzQC98w3Z1gMq1kx5ACoy5","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"читай-город.png","description":"Explore Читай-город offers.","tier":3,"regional_urls":{"ru":"https://kjuzv.com/g/q6gfnfvsq0ad273170bca804937a48/?erid=MvGzQC98w3Z1gMq1kx5ACoy5"}},{"name":"BigBusTours","regions":["ot"],"url":"https://bigbustours.tpo.lv/grT1QWXA","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"bigbustours.png","description":"Explore BigBusTours offers.","tier":3,"regional_urls":{"ot":"https://bigbustours.tpo.lv/grT1QWXA"}},{"name":"BikesBooking","regions":["ot"],"url":"https://bikesbooking.tpo.lv/B3zIKanS","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"bikesbooking.png","description":"Explore BikesBooking offers.","tier":3,"regional_urls":{"ot":"https://bikesbooking.tpo.lv/B3zIKanS"}},{"name":"EatWith","regions":["ot"],"url":"https://eatwith.tpo.lv/BfAnpZNb","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"eatwith.png","description":"Explore EatWith offers.","tier":3,"regional_urls":{"ot":"https://eatwith.tpo.lv/BfAnpZNb"}},{"name":"Searadar","regions":["ot"],"url":"https://searadar.tpo.lv/TO4A5eBZ","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"searadar.png","description":"Explore Searadar offers.","tier":3,"regional_urls":{"ot":"https://searadar.tpo.lv/TO4A5eBZ"}},{"name":"Busbud","regions":["ot"],"url":"https://busbud.tpo.lv/h4C6YPFZ","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"busbud.png","description":"Explore Busbud offers.","tier":3,"regional_urls":{"ot":"https://busbud.tpo.lv/h4C6YPFZ"}},{"name":"HolidayTaxis","regions":["ot"],"url":"https://holidaytaxis.tpo.lv/oHwpbrFt","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"holidaytaxis.png","description":"Explore HolidayTaxis offers.","tier":3,"regional_urls":{"ot":"https://holidaytaxis.tpo.lv/oHwpbrFt"}}]};
+    const VALID_REGIONS = ["es-latam","br","us","uk","pl","ru","ot"];
+    const REGION_LANG = {"es-latam":"es",br:"pt",us:"en",uk:"en",pl:"pl",ru:"ru",ot:"en"};
+    const ENGLISH_LOCKED = new Set(["us","uk","ot"]);
+    const CATEGORY_ORDER = ["flights","hotels","marketplace","products_tools","finance","insurance","travel_services","car_rentals","tours","transfers","esim","specialty_other"];
+
+    const BUILT_IN_TRANSLATIONS = {
+      en: {brand_name:"SignalBoost",explore_offers:"Explore offers",search_placeholder:"Flights, hotels, eSIM, tours...",partners:"Partners",featured_service:"Explore a featured service picked for you.",view_more:"View More",flights:"Flights",hotels:"Hotels",marketplace:"Marketplace",products_tools:"Products & Tools",finance:"Finance",insurance:"Insurance & Claims",travel_services:"Storage & Services",car_rentals:"Car Rentals",car_rental:"Car Rentals",tours:"Tours & Activities",transfers:"Transfers & Transport",esim:"SIM & Connectivity",sim:"SIM & Connectivity",specialty_other:"Specialty & Other"},
+      es: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Vuelos, hoteles, eSIM, tours...",partners:"Socios",featured_service:"Explora un servicio destacado elegido para ti.",view_more:"Ver más",flights:"Vuelos",hotels:"Hoteles",marketplace:"Marketplace",products_tools:"Productos y herramientas",finance:"Finanzas",insurance:"Seguros y reclamaciones",travel_services:"Almacenamiento y servicios",car_rentals:"Alquiler de coches",car_rental:"Alquiler de coches",tours:"Tours y actividades",transfers:"Traslados",esim:"SIM y conectividad",sim:"SIM y conectividad",specialty_other:"Especiales y otros"},
+      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, tours...",partners:"Parceiros",featured_service:"Explore um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e reclamações",travel_services:"Armazenamento e serviços",car_rentals:"Aluguel de carros",car_rental:"Aluguel de carros",tours:"Tours e atividades",transfers:"Transfers & Transport",esim:"SIM e conectividade",sim:"SIM e conectividade",specialty_other:"Especiais e outros"},
+      pl: {brand_name:"SignalBoost",explore_offers:"Przeglądaj oferty",search_placeholder:"Loty, hotele, eSIM, wycieczki...",partners:"Partnerzy",featured_service:"Sprawdź wybraną usługę.",view_more:"Zobacz więcej",flights:"Loty",hotels:"Hotele",marketplace:"Marketplace",products_tools:"Produkty i narzędzia",finance:"Finanse",insurance:"Ubezpieczenia i roszczenia",travel_services:"Przechowalnia i usługi",car_rentals:"Wynajem aut",car_rental:"Wynajem aut",tours:"Wycieczki",transfers:"Transfery",esim:"SIM i łączność",sim:"SIM i łączność",specialty_other:"Inne"},
+      ru: {brand_name:"SignalBoost",explore_offers:"Смотреть предложения",search_placeholder:"Авиабилеты, отели, eSIM, туры...",partners:"Партнеры",featured_service:"Посмотрите выбранный сервис.",view_more:"Подробнее",flights:"Рейсы",hotels:"Отели",marketplace:"Marketplace",products_tools:"Продукты и инструменты",finance:"Финансы",insurance:"Страхование и претензии",travel_services:"Хранение и услуги",car_rentals:"Аренда авто",car_rental:"Аренда авто",tours:"Туры",transfers:"Трансферы",esim:"SIM и связь",sim:"SIM и связь",specialty_other:"Другое"}
+    };
+
+    let ACTIVE_REGION = "ot";
+    let ACTIVE_LANGUAGE = "en";
+    let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
+    let ACTIVE_PARTNERS = [];
+    let FEED_ITEMS = [];
+    let FEED_PAGE = 0;
+    const FEED_PAGE_SIZE = 5;
+    let FEED_LOADING = false;
+
+    const headerCategories = ["flights","hotels","transfers","car_rental","sim","tours"];
+
+    const HEADER_CATEGORY_ALIASES = {
+      car_rental: "car_rentals",
+      car_rentals: "car_rentals",
+      sim: "esim",
+      esim: "esim",
+      transfer: "transfers",
+      transfers: "transfers"
+    };
+
+    function esc(v){return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
+
+    function displayCategoryKey(key){return HEADER_CATEGORY_ALIASES[key] || key;}
+    function canonicalCategoryKey(key){if(key==="car_rentals") return "car_rental"; if(key==="esim") return "sim"; return key;}
+    function translatedCategory(cat){return ACTIVE_TRANSLATIONS[cat] || ACTIVE_TRANSLATIONS[displayCategoryKey(cat)] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(cat)] || cat;}
+
+    const NORMALIZED_HEADER_CATEGORIES = [...new Set(headerCategories.map(displayCategoryKey))];
+    const MAIN_INDEX_CATEGORIES = [...new Set([...NORMALIZED_HEADER_CATEGORIES, ...CATEGORY_ORDER.map(displayCategoryKey)])];
+
+    function normalizeRegion(value){
+      const v=String(value||"").toLowerCase().replace(/_/g,"-").trim();
+      if(["es-latam","latam","mx","ar","co","pe","cl","uy","py","bo","ec","ve","cr","pa","gt","hn","sv","ni","do","es"].includes(v)) return "es-latam";
+      if(["br","brazil","brasil","pt-br"].includes(v)) return "br";
+      if(["us","usa","united-states"].includes(v)) return "us";
+      if(["uk","gb","en-gb","united-kingdom"].includes(v)) return "uk";
+      if(v==="pl") return "pl";
+      if(v==="ru") return "ru";
+      return "ot";
+    }
+
+    function detectRegion(){
+      const params = new URLSearchParams(location.search);
+      if(params.get("region")) return normalizeRegion(params.get("region"));
+      const tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||"").toLowerCase();
+      const lang=((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();
+      if(/mexico|bogota|lima|buenos_aires|santiago|montevideo|madrid/.test(tz)) return "es-latam";
+      if(/sao_paulo|rio_branco|bahia|belem|fortaleza|recife|manaus/.test(tz)) return "br";
+      if(/new_york|chicago|denver|los_angeles|phoenix|anchorage|honolulu/.test(tz)) return "us";
+      if(/london/.test(tz)) return "uk";
+      if(/warsaw/.test(tz)) return "pl";
+      if(/moscow|kaliningrad|yekaterinburg|novosibirsk|vladivostok/.test(tz)) return "ru";
+      if(lang.startsWith("es")) return "es-latam";
+      if(lang.startsWith("pt")) return "br";
+      if(lang.startsWith("pl")) return "pl";
+      if(lang.startsWith("ru")) return "ru";
+      if(lang.startsWith("en-us")) return "us";
+      if(lang.startsWith("en-gb")||lang.startsWith("en-uk")) return "uk";
+      return "ot";
+    }
+
+    function detectLanguage(region){return REGION_LANG[normalizeRegion(region)] || "en";}
+    function getPreferredLanguage(region){
+      region=normalizeRegion(region);
+      if(ENGLISH_LOCKED.has(region)) return "en";
+      const p=new URLSearchParams(location.search).get("lang");
+      if(p==="en") return "en";
+      return detectLanguage(region);
+    }
+
+    async function loadTranslations(lang){
+      const base={...(BUILT_IN_TRANSLATIONS.en||{}),...(BUILT_IN_TRANSLATIONS[lang]||{})};
+      try{
+        const r=await fetch(`i18n/${lang}.json`,{cache:"no-store"});
+        if(r.ok) return {...base,...await r.json()};
+      }catch(e){}
+      return base;
+    }
+
+    function applyTranslations(t){
+      document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.getAttribute("data-i18n"); if(t[k]) el.textContent=t[k];});
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{const k=el.getAttribute("data-i18n-placeholder"); if(t[k]) el.setAttribute("placeholder",t[k]);});
+      document.documentElement.lang = ACTIVE_LANGUAGE;
+      document.documentElement.dataset.i18nReady = "1";
+    }
+
+    async function setLanguage(lang){
+      if(ENGLISH_LOCKED.has(ACTIVE_REGION)) lang="en";
+      const native=detectLanguage(ACTIVE_REGION);
+      if(lang!==native && lang!=="en") lang=native;
+      ACTIVE_LANGUAGE=lang;
+      ACTIVE_TRANSLATIONS=await loadTranslations(lang);
+      applyTranslations(ACTIVE_TRANSLATIONS);
+      setupLanguageSwitcher();
+      renderAll();
+    }
+    window.setLanguage=setLanguage;
+
+    function setupLanguageSwitcher(){
+      const w=document.getElementById("languageSwitcher"), s=document.getElementById("lang-select");
+      if(!w||!s) return;
+      if(ENGLISH_LOCKED.has(ACTIVE_REGION)){
+        s.innerHTML='<option value="en">English</option>';
+        s.value="en";
+        w.style.display="inline-flex";
+        return;
+      }
+      const native=detectLanguage(ACTIVE_REGION);
+      const labels={es:"Español",pt:"Português",pl:"Polski",ru:"Русский",en:"English"};
+      s.innerHTML=`<option value="${native}">${labels[native]||native}</option><option value="en">English</option>`;
+      s.value=ACTIVE_LANGUAGE;
+    }
+
+    function normalizePartnerRegions(p){return Array.isArray(p.regions) ? [...new Set(p.regions.map(normalizeRegion))] : [normalizeRegion(p.region||"ot")];}
+    function normalizePartnerName(name){return String(name||"").toLowerCase().replace(/\([^)]*\)/g,"").replace(/\.com/g,"").replace(/\b(global|ot|us|usa|uk|gb|mx|br|pl|eu|latam|es-latam|ru|ca|de|fr|it|es|ar|co|pe|cl|nz)\b/g,"").replace(/\s+/g," ").trim();}
+    function categoryKey(p){return displayCategoryKey(p.category_key || p.category || "marketplace");}
+
+    function mergePartners(arr){
+      const map=new Map();
+      (Array.isArray(arr)?arr:[]).forEach(p=>{
+        if(!p||!p.name||!p.url||p.status==="hold"||p.status==="disabled") return;
+        const c=categoryKey(p);
+        const key=normalizePartnerName(p.name)+"|"+c;
+        const regs=normalizePartnerRegions(p);
+        let e=map.get(key);
+        if(!e){e={...p,category_key:c,regions:[],regional_urls:{...(p.regional_urls||{})}};map.set(key,e);}
+        regs.forEach(r=>{if(!e.regions.includes(r))e.regions.push(r); if(!e.regional_urls[r]) e.regional_urls[r]=p.url;});
+        if((p.tier||99)<(e.tier||99)){["name","url","network","description","tier","category_label"].forEach(f=>{if(p[f])e[f]=p[f];});}
+      });
+      return [...map.values()];
+    }
+
+    function partnerMatchesRegion(p, region){return normalizePartnerRegions(p).includes(normalizeRegion(region));}
+
+    function partnerForRegion(p, region){
+      region=normalizeRegion(region);
+      const regs=normalizePartnerRegions(p);
+      const urls=p.regional_urls || {};
+      const key=categoryKey(p);
+      return {
+        ...p,
+        regions:regs,
+        matched_region:region,
+        region,
+        url:urls[region] || p.url || "#",
+        category_key:key,
+        category_label:ACTIVE_TRANSLATIONS[key] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(key)] || p.category_label || key,
+        description:p.description || ""
+      };
+    }
+
+    async function loadPartners(){
+      for(const endpoint of ["partners.json","/partners.json"]){
+        try{
+          const r=await fetch(endpoint,{cache:"no-store"});
+          if(r.ok){const d=await r.json(); return Array.isArray(d)?d:(d.partners||[]);}
+        }catch(e){}
+      }
+      return EMBEDDED_PARTNERS.partners || [];
+    }
+
+    function visiblePartners(){
+      const seen=new Set();
+      return mergePartners(ACTIVE_PARTNERS)
+        .filter(p=>partnerMatchesRegion(p,ACTIVE_REGION))
+        .map(p=>partnerForRegion(p,ACTIVE_REGION))
+        .filter(p=>{const k=normalizePartnerName(p.name)+"|"+displayCategoryKey(p.category_key); if(seen.has(k)) return false; seen.add(k); return true;})
+        .sort((a,b)=>(a.tier||99)-(b.tier||99)||String(a.name).localeCompare(String(b.name)));
+    }
+
+    function buildCategoryIndex(partners){
+      const index=Object.fromEntries(MAIN_INDEX_CATEGORIES.map(c=>[c,[]]));
+      (Array.isArray(partners)?partners:[]).forEach(p=>{
+        const c=displayCategoryKey(p.category_key || p.category || "marketplace");
+        if(!index[c]) index[c]=[];
+        index[c].push({...p,category_key:c});
+      });
+      return index;
+    }
+
+    function partnersForHeaderCategory(partners, cat){
+      const displayKey=displayCategoryKey(cat);
+      return partners.filter(p=>displayCategoryKey(p.category_key)===displayKey);
+    }
+
+    function HeaderCategory(cat, partners){
+      const items=partnersForHeaderCategory(partners, cat);
+      const label=translatedCategory(cat);
+      return `
+        <li class="dropdown">
+          <button class="dropbtn" type="button">${esc(label)} (${items.length})</button>
+          <ul class="dropdown-content">
+            ${items.length ? items.map(p=>`
+              <li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a></li>
+            `).join("") : `<li><span class="dropdown-empty">No partners</span></li>`}
+          </ul>
+        </li>`;
+    }
+
+    function renderHeader(partners){
+      const nav=document.getElementById("travelDirectory");
+      if(!nav) return;
+      nav.innerHTML=`<ul class="nav-list">${NORMALIZED_HEADER_CATEGORIES.map(cat=>HeaderCategory(cat, partners)).join("")}</ul>`;
+    }
+
+    function ColumnCategory(cat, partners, index, query){
+      const displayKey=displayCategoryKey(cat);
+      const items=partners.filter(p=>
+        displayCategoryKey(p.category_key)===displayKey &&
+        (!query || (p.name+" "+(p.network||"")+" "+(p.description||"")).toLowerCase().includes(query))
+      );
+      if(!items.length) return "";
+      const open=index===0;
+      return `
+        <div class="column-category" data-open="${open ? "1":"0"}">
+          <button type="button" onclick="toggleColumnCategory(this)">
+            <span>${esc(translatedCategory(canonicalCategoryKey(cat)))} (${items.length})</span>
+            <span class="column-arrow">${open ? "▼":"▶"}</span>
+          </button>
+          <ul style="display:${open ? "block":"none"}">
+            ${items.map(p=>`
+              <li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)} — ${esc(translatedCategory(canonicalCategoryKey(p.category_key)))}</a></li>
+            `).join("")}
+          </ul>
+        </div>`;
+    }
+
+    function toggleColumnCategory(button){
+      const box=button.closest(".column-category");
+      const list=box.querySelector("ul");
+      const arrow=box.querySelector(".column-arrow");
+      const isOpen=box.dataset.open==="1";
+      box.dataset.open=isOpen ? "0" : "1";
+      list.style.display=isOpen ? "none" : "block";
+      if(arrow) arrow.textContent=isOpen ? "▶" : "▼";
+    }
+    window.toggleColumnCategory=toggleColumnCategory;
+
+    function renderColumnPartners(currentRegion,currentLanguage,partners){
+      const regionPartners=partners.filter(p=>normalizePartnerRegions(p).includes(normalizeRegion(currentRegion)));
+      return `<div class="column">${regionPartners.map(p=>`<div>${esc(p.name)} — ${esc((BUILT_IN_TRANSLATIONS[currentLanguage]||ACTIVE_TRANSLATIONS)[canonicalCategoryKey(p.category_key)]||p.category_key)}</div>`).join("")}</div>`;
+    }
+
+    function renderColumn1(partners){
+      const q=(document.getElementById("partnerSearch")?.value || "").toLowerCase();
+      const wrap=document.getElementById("column1");
+      if(!wrap) return;
+      const headerCats=new Set(NORMALIZED_HEADER_CATEGORIES);
+      const sidePartners=partners.filter(p=>!headerCats.has(displayCategoryKey(p.category_key)));
+      const cats=MAIN_INDEX_CATEGORIES
+        .filter(c=>!headerCats.has(displayCategoryKey(c)))
+        .filter(c=>sidePartners.some(p=>displayCategoryKey(p.category_key)===displayCategoryKey(c)));
+      wrap.innerHTML=cats.map((cat,index)=>ColumnCategory(cat,sidePartners,index,q)).join("") || '<div class="empty">No sidebar partners for this region.</div>';
+    }
+
+    const FEED_IMAGES = [
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1491557345352-5929e343eb89?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=70"
+    ];
+
+    const HYBRID_VIDEO_POOL = [
+      {type:"video",source:"mp4",src:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"},
+      {type:"video",source:"webm",src:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"},
+      {type:"embed",source:"youtube",src:"https://www.youtube.com/embed/dQw4w9WgXcQ"}
+    ];
+
+    function buildFeedItems(partners){
+      const preferred=["flights","hotels","tours","transfers","sim","esim","car_rentals","travel_services","insurance","marketplace","products_tools"];
+      const sorted=[...partners].sort((a,b)=>{
+        const ai=preferred.indexOf(a.category_key), bi=preferred.indexOf(b.category_key);
+        return (ai<0?99:ai)-(bi<0?99:bi)||(a.tier||99)-(b.tier||99);
+      });
+      return sorted.map((p,i)=>{
+        const media=HYBRID_VIDEO_POOL[i%HYBRID_VIDEO_POOL.length];
+        return {
+          ...p,
+          feed_title:p.name,
+          feed_description:p.description || `Explore ${p.name} offers.`,
+          feed_image:FEED_IMAGES[i%FEED_IMAGES.length],
+          feed_media_type:media.type,
+          feed_source:media.source,
+          feed_video:media.src
+        };
+      });
+    }
+
+    function mediaHTML(item){
+      if(item.feed_media_type==="video"){
+        return `<div class="media has-video"><video class="feed-video" controls muted loop playsinline preload="metadata" poster="${esc(item.feed_image)}"><source src="${esc(item.feed_video)}"></video></div>`;
+      }
+      if(item.feed_media_type==="embed"){
+        return `<div class="media has-embed"><iframe class="platform-frame" src="${esc(item.feed_video)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+      }
+      return `<div class="media"><img src="${esc(item.feed_image)}" alt="${esc(item.feed_title)}" loading="lazy"><div class="play"><span>▶</span></div></div>`;
+    }
+
+    function renderNextFeedBatch(){
+      if(FEED_LOADING) return;
+      FEED_LOADING=true;
+      const container=document.getElementById("feedContainer");
+      if(!FEED_ITEMS.length){
+        container.innerHTML='<div class="feed-empty">No feed items for this region.</div>';
+        FEED_LOADING=false;
+        return;
+      }
+      const start=FEED_PAGE*FEED_PAGE_SIZE;
+      const batch=FEED_ITEMS.slice(start,start+FEED_PAGE_SIZE);
+      if(!batch.length){
+        FEED_PAGE=0;
+        FEED_LOADING=false;
+        renderNextFeedBatch();
+        return;
+      }
+      const frag=document.createDocumentFragment();
+      batch.forEach(item=>{
+        const card=document.createElement("article");
+        card.className="feed-card";
+        card.innerHTML=`
+          ${mediaHTML(item)}
+          <div class="feed-content">
+            <span class="feed-label">${esc(item.category_label || translatedCategory(item.category_key))}</span>
+            <span class="feed-source">${esc(item.feed_source || "feed")}</span>
+            <h3>${esc(item.feed_title)}</h3>
+            <p>${esc(item.feed_description)}</p>
+          </div>`;
+        card.addEventListener("click",e=>{
+          const tag=(e.target.tagName||"").toLowerCase();
+          if(["video","iframe","source","a","button"].includes(tag)) return;
+          window.open(item.url,"_blank","noopener");
+        });
+        frag.appendChild(card);
+      });
+      container.appendChild(frag);
+      FEED_PAGE++;
+      FEED_LOADING=false;
+    }
+
+    function resetFeed(partners){
+      FEED_ITEMS=buildFeedItems(partners);
+      FEED_PAGE=0;
+      const container=document.getElementById("feedContainer");
+      container.innerHTML="";
+      renderNextFeedBatch();
+      renderNextFeedBatch();
+    }
+
+    function renderRight(partners){
+      const chips=document.getElementById("partnerChips");
+      chips.innerHTML=partners.slice(0,24).map(p=>`<a class="chip" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`).join("");
+    }
+
+    function renderSticky(partners){
+      const p=partners[0];
+      if(!p) return;
+      document.getElementById("stickyCopy").textContent=p.description || `Explore ${p.name}.`;
+      const link=document.getElementById("stickyLink");
+      link.href=p.url;
+      link.textContent=ACTIVE_TRANSLATIONS.view_more || "View More";
+    }
+
+    function renderAll(){
+      const partners=visiblePartners();
+      renderHeader(partners);
+      renderColumn1(partners);
+      renderRight(partners);
+      renderSticky(partners);
+      resetFeed(partners);
+    }
+
+    document.getElementById("partnerSearch").addEventListener("input",()=>renderColumn1(visiblePartners()));
+    document.getElementById("magnetoColumn").addEventListener("scroll",e=>{
+      const el=e.currentTarget;
+      if(el.scrollTop+el.clientHeight>=el.scrollHeight-700) renderNextFeedBatch();
+    });
+
+    async function init(){
+      ACTIVE_REGION=detectRegion();
+      ACTIVE_LANGUAGE=getPreferredLanguage(ACTIVE_REGION);
+      ACTIVE_TRANSLATIONS=await loadTranslations(ACTIVE_LANGUAGE);
+      ACTIVE_PARTNERS=await loadPartners();
+      applyTranslations(ACTIVE_TRANSLATIONS);
+      setupLanguageSwitcher();
+      renderAll();
+    }
+
+    init();
+  </script>
+</body>
+</html>
