@@ -237,7 +237,9 @@
     #stickyBar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(720px,calc(100% - 24px));background:rgba(15,20,27,.96);border:1px solid rgba(245,197,66,.25);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;z-index:999}
     .sticky-link{color:#f5c542;text-decoration:none;font-weight:900}
     .right h2{text-align:center;margin:0 0 16px}
-    #partnerChips{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    #partnerChips{display:block}
+    .column3{display:block}
+    .featured-card{display:block;text-decoration:none;border:1px solid rgba(245,197,66,.25);border-radius:16px;background:#111822;overflow:hidden;margin-bottom:16px;box-shadow:0 14px 28px rgba(0,0,0,.22)}
     .chip{min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid rgba(255,255,255,.08);background:#1b2128;border-radius:10px;padding:10px;font-weight:800;font-size:13px;text-decoration:none}
     .see-more-btn{width:100%;margin:8px 0 12px;padding:10px 12px;border:1px solid rgba(245,197,66,.35);border-radius:10px;background:#111;color:#f5c542;font-weight:900;cursor:pointer}
     .see-more-btn:hover{background:#192532}
@@ -693,21 +695,35 @@
       renderNextFeedBatch();
     }
 
-    function renderRight(partners){
-      const chips=document.getElementById("partnerChips");
-      if(!chips) return;
-      const featured=partners.find(p=>p.featured) || partners.find(p=>(p.tier||99)===1) || partners[0];
-      const featuredHTML=featured ? `
-        <a class="featured" href="${esc(featured.url)}" target="_blank" rel="noopener">
-          ${(featured.thumbnail || featured.image || featured.logo) ? `<img src="${esc(featured.thumbnail || featured.image || featured.logo)}" alt="${esc(featured.name)}" loading="lazy" onerror="this.style.display='none'">` : ""}
+    function renderColumn3(){
+      const column=document.getElementById("partnerChips");
+      if(!column) return;
+
+      const featured=ACTIVE_PARTNERS.find(p=>
+        p.featured && Array.isArray(p.regions) && p.regions.includes(ACTIVE_REGION)
+      );
+
+      column.className="column column3";
+
+      if(!featured){
+        column.innerHTML=`<div class="empty">${esc(ACTIVE_TRANSLATIONS.featured_service || "No featured partner available.")}</div>`;
+        return;
+      }
+
+      const categoryLabel=ACTIVE_TRANSLATIONS[featured.category_key] || featured.category_label || featured.category_key;
+      const imageSrc=featured.thumbnail || featured.image || featured.logo || "";
+      const cardTag=featured.url ? "a" : "div";
+      const hrefAttrs=featured.url ? ` href="${esc(featured.url)}" target="_blank" rel="noopener"` : "";
+
+      column.innerHTML=`
+        <${cardTag} class="featured-card featured"${hrefAttrs}>
+          ${imageSrc ? `<img src="${esc(imageSrc)}" alt="${esc(featured.name)}" loading="lazy" onerror="this.style.display='none'">` : ""}
           <div class="featured-body">
-            <h4>${esc(translatedCategory(canonicalCategoryKey(featured.category_key)))}</h4>
+            <h4>${esc(categoryLabel)}</h4>
             <p>${esc(featured.name)}</p>
-            <span>${esc(featured.description || `Explore ${featured.name} offers.`)}</span>
+            <span>${esc(featured.description || "")}</span>
           </div>
-        </a>` : "";
-      const chipHTML=partners.slice(0,24).map(p=>`<a class="chip" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`).join("");
-      chips.innerHTML=`${featuredHTML}<div class="chips-title">${esc(ACTIVE_TRANSLATIONS.partners || "Partners")}</div>${chipHTML}`;
+        </${cardTag}>`;
     }
 
     function renderSticky(partners){
@@ -723,7 +739,7 @@
       const partners=visiblePartners();
       renderHeader(partners);
       renderColumn1(partners);
-      renderRight(partners);
+      renderColumn3();
       renderSticky(partners);
       resetFeed(partners);
     }
