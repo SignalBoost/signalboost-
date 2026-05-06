@@ -1,6 +1,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en" data-i18n-ready="0">
 <head>
@@ -318,13 +320,21 @@
     const REGION_LANG = {"es-latam":"es",br:"pt",us:"en",uk:"en",pl:"pl",ru:"ru",ot:"en"};
     const ENGLISH_LOCKED = new Set(["us","uk","ot"]);
     const CATEGORY_ORDER = ["flights","hotels","marketplace","products_tools","finance","insurance","travel_services","car_rentals","tours","transfers","esim","specialty_other"];
+    const column1Categories = [
+      "marketplace",
+      "products_tools",
+      "finance",
+      "insurance_claims",
+      "storage_services",
+      "specialty_other"
+    ];
 
     const BUILT_IN_TRANSLATIONS = {
-      en: {brand_name:"SignalBoost",explore_offers:"Explore offers",search_placeholder:"Flights, hotels, eSIM, tours...",partners:"Partners",featured_service:"Explore a featured service picked for you.",view_more:"View More",flights:"Flights",hotels:"Hotels",marketplace:"Marketplace",products_tools:"Products & Tools",finance:"Finance",insurance:"Insurance & Claims",travel_services:"Storage & Services",car_rentals:"Car Rentals",car_rental:"Car Rentals",tours:"Tours & Activities",transfers:"Transfers & Transport",esim:"SIM & Connectivity",sim:"SIM & Connectivity",specialty_other:"Specialty & Other"},
-      es: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Vuelos, hoteles, eSIM, tours...",partners:"Socios",featured_service:"Explora un servicio destacado elegido para ti.",view_more:"Ver más",flights:"Vuelos",hotels:"Hoteles",marketplace:"Marketplace",products_tools:"Productos y herramientas",finance:"Finanzas",insurance:"Seguros y reclamaciones",travel_services:"Almacenamiento y servicios",car_rentals:"Alquiler de coches",car_rental:"Alquiler de coches",tours:"Tours y actividades",transfers:"Traslados",esim:"SIM y conectividad",sim:"SIM y conectividad",specialty_other:"Especiales y otros"},
-      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, tours...",partners:"Parceiros",featured_service:"Explore um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e reclamações",travel_services:"Armazenamento e serviços",car_rentals:"Aluguel de carros",car_rental:"Aluguel de carros",tours:"Tours e atividades",transfers:"Transfers & Transport",esim:"SIM e conectividade",sim:"SIM e conectividade",specialty_other:"Especiais e outros"},
-      pl: {brand_name:"SignalBoost",explore_offers:"Przeglądaj oferty",search_placeholder:"Loty, hotele, eSIM, wycieczki...",partners:"Partnerzy",featured_service:"Sprawdź wybraną usługę.",view_more:"Zobacz więcej",flights:"Loty",hotels:"Hotele",marketplace:"Marketplace",products_tools:"Produkty i narzędzia",finance:"Finanse",insurance:"Ubezpieczenia i roszczenia",travel_services:"Przechowalnia i usługi",car_rentals:"Wynajem aut",car_rental:"Wynajem aut",tours:"Wycieczki",transfers:"Transfery",esim:"SIM i łączność",sim:"SIM i łączność",specialty_other:"Inne"},
-      ru: {brand_name:"SignalBoost",explore_offers:"Смотреть предложения",search_placeholder:"Авиабилеты, отели, eSIM, туры...",partners:"Партнеры",featured_service:"Посмотрите выбранный сервис.",view_more:"Подробнее",flights:"Рейсы",hotels:"Отели",marketplace:"Marketplace",products_tools:"Продукты и инструменты",finance:"Финансы",insurance:"Страхование и претензии",travel_services:"Хранение и услуги",car_rentals:"Аренда авто",car_rental:"Аренда авто",tours:"Туры",transfers:"Трансферы",esim:"SIM и связь",sim:"SIM и связь",specialty_other:"Другое"}
+      en: {brand_name:"SignalBoost",explore_offers:"Explore offers",search_placeholder:"Flights, hotels, eSIM, tours...",partners:"Partners",featured_service:"Explore a featured service picked for you.",view_more:"View More",flights:"Flights",hotels:"Hotels",marketplace:"Marketplace",products_tools:"Products & Tools",finance:"Finance",insurance:"Insurance & Claims",insurance_claims:"Insurance & Claims",travel_services:"Storage & Services",storage_services:"Storage & Services",car_rentals:"Car Rentals",car_rental:"Car Rentals",tours:"Tours & Activities",transfers:"Transfers & Transport",esim:"SIM & Connectivity",sim:"SIM & Connectivity",specialty_other:"Specialty & Other"},
+      es: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Vuelos, hoteles, eSIM, tours...",partners:"Socios",featured_service:"Explora un servicio destacado elegido para ti.",view_more:"Ver más",flights:"Vuelos",hotels:"Hoteles",marketplace:"Marketplace",products_tools:"Productos y herramientas",finance:"Finanzas",insurance:"Seguros y reclamaciones",insurance_claims:"Seguros y reclamaciones",travel_services:"Almacenamiento y servicios",storage_services:"Almacenamiento y servicios",car_rentals:"Alquiler de coches",car_rental:"Alquiler de coches",tours:"Tours y actividades",transfers:"Traslados",esim:"SIM y conectividad",sim:"SIM y conectividad",specialty_other:"Especiales y otros"},
+      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, tours...",partners:"Parceiros",featured_service:"Explore um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e reclamações",insurance_claims:"Seguros e reclamações",travel_services:"Armazenamento e serviços",storage_services:"Armazenamento e serviços",car_rentals:"Aluguel de carros",car_rental:"Aluguel de carros",tours:"Tours e atividades",transfers:"Transfers & Transport",esim:"SIM e conectividade",sim:"SIM e conectividade",specialty_other:"Especiais e outros"},
+      pl: {brand_name:"SignalBoost",explore_offers:"Przeglądaj oferty",search_placeholder:"Loty, hotele, eSIM, wycieczki...",partners:"Partnerzy",featured_service:"Sprawdź wybraną usługę.",view_more:"Zobacz więcej",flights:"Loty",hotels:"Hotele",marketplace:"Marketplace",products_tools:"Produkty i narzędzia",finance:"Finanse",insurance:"Ubezpieczenia i roszczenia",insurance_claims:"Ubezpieczenia i roszczenia",travel_services:"Przechowalnia i usługi",storage_services:"Przechowalnia i usługi",car_rentals:"Wynajem aut",car_rental:"Wynajem aut",tours:"Wycieczki",transfers:"Transfery",esim:"SIM i łączność",sim:"SIM i łączność",specialty_other:"Inne"},
+      ru: {brand_name:"SignalBoost",explore_offers:"Смотреть предложения",search_placeholder:"Авиабилеты, отели, eSIM, туры...",partners:"Партнеры",featured_service:"Посмотрите выбранный сервис.",view_more:"Подробнее",flights:"Рейсы",hotels:"Отели",marketplace:"Marketplace",products_tools:"Продукты и инструменты",finance:"Финансы",insurance:"Страхование и претензии",insurance_claims:"Страхование и претензии",travel_services:"Хранение и услуги",storage_services:"Хранение и услуги",car_rentals:"Аренда авто",car_rental:"Аренда авто",tours:"Туры",transfers:"Трансферы",esim:"SIM и связь",sim:"SIM и связь",specialty_other:"Другое"}
     };
 
     let ACTIVE_REGION = "ot";
@@ -346,7 +356,11 @@
       sim: "esim",
       esim: "esim",
       transfer: "transfers",
-      transfers: "transfers"
+      transfers: "transfers",
+      insurance: "insurance",
+      insurance_claims: "insurance",
+      travel_services: "travel_services",
+      storage_services: "travel_services"
     };
 
     function esc(v){return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
@@ -572,9 +586,9 @@
       const wrap=document.getElementById("column1");
       if(!wrap) return;
 
-      // Column 1 follows the main header category index and uses aliases so
-      // car_rental -> car_rentals and sim -> esim do not duplicate or miss data.
-      const html=NORMALIZED_HEADER_CATEGORIES.map((cat,index)=>ColumnCategory(cat,partners,index,q)).join("");
+      // Column 1 is the merged React category set, adapted for this standalone index.html.
+      // Aliases map insurance_claims -> insurance and storage_services -> travel_services.
+      const html=column1Categories.map((cat,index)=>ColumnCategory(cat,partners,index,q)).join("");
       wrap.innerHTML=html || '<div class="empty">No partners for this region.</div>';
     }
 
