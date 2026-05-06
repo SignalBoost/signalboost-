@@ -3359,10 +3359,12 @@
       // US homepage keeps the broad marketplace structure: US + global partners.
       // Localized markets use exact local partner tags only.
       const source = isDefaultUSRegion() ? partnersForCategory(category) : regionalPartnersForCategory(category);
-      return source
-        .filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p))
+      return dedupePartnersForDisplay(
+        source.filter(p => isDefaultUSRegion() || isPartnerStrictlyRegional(p)),
+        getRegion()
+      )
         .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || a.name.localeCompare(b.name));
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || String(a.name || "").localeCompare(String(b.name || "")));
     }
 
     function buildTravelDirectory() {
@@ -4464,12 +4466,96 @@
 
     let ACTIVE_PARTNERS = [];
 
+    function normalizePartnerName(name) {
+      return String(name || "")
+        .toLowerCase()
+        .replace(/\([^)]*\)/g, " ")
+        .replace(/(affiliate|program)/g, " ")
+        .replace(/(global|us|usa|united states|mx|mexico|br|brazil|pl|poland|eu|latam|ca|canada|gb|uk|de|fr|it|es|ar|co|pe|nz)/g, " ")
+        .replace(/\.com/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function sourcePartnerDeduplicationKey(partner) {
+      return [
+        partner.category_key || categoryKeyForPartner(partner),
+        normalizePartnerName(partner.name),
+        normalizeRegion(partner.region || "global")
+      ].join("|");
+    }
+
+    function findDuplicatePartners(partners) {
+      const seen = new Map();
+      const duplicates = [];
+
+      (partners || []).forEach(p => {
+        const normalized = {
+          ...p,
+          category_key: p.category_key || categoryKeyForPartner(p)
+        };
+        const key = sourcePartnerDeduplicationKey(normalized);
+
+        if (seen.has(key)) {
+          duplicates.push({
+            original: seen.get(key),
+            duplicate: normalized
+          });
+        } else {
+          seen.set(key, normalized);
+        }
+      });
+
+      return duplicates;
+    }
+
+    function cleanPartnersData(partners) {
+      const best = new Map();
+
+      const score = partner => {
+        const name = String(partner.name || "");
+        let value = 0;
+
+        // Lower tier is better.
+        value -= Number(partner.tier || 99) * 100;
+
+        // Prefer cleaner labels: Kiwi beats Kiwi US, GetTransfer beats GetTransfer Global.
+        if (!/(global|us|usa|mx|br|pl|eu|latam|ca|gb|uk|de|fr|it|es|ar|co|pe|nz)/i.test(name)) value += 20;
+        if (!/\.com/i.test(name)) value += 5;
+        value -= name.length / 100;
+
+        return value;
+      };
+
+      (partners || []).forEach(p => {
+        const normalized = {
+          ...p,
+          category_key: p.category_key || categoryKeyForPartner(p)
+        };
+        const key = sourcePartnerDeduplicationKey(normalized);
+        const current = best.get(key);
+
+        if (!current || score(normalized) > score(current)) {
+          best.set(key, normalized);
+        }
+      });
+
+      const cleaned = Array.from(best.values());
+      const duplicates = findDuplicatePartners(partners || []);
+
+      if (duplicates.length) {
+        console.warn("⚠️ Duplicate partners removed:", duplicates);
+      } else {
+        console.log("✅ No duplicate partners found");
+      }
+
+      return cleaned;
+    }
+
     function baseAvailablePartners() {
       const source = Array.isArray(partnersData) ? partnersData : [];
-      return source.map(p => ({
-        ...p,
-        category_key: p.category_key || categoryKeyForPartner(p)
-      }));
+      return cleanPartnersData(source);
     }
 
     function partnerRegionMatches(partner, region) {
@@ -4489,12 +4575,12 @@
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length) {
-            return data
+            return dedupePartnersForDisplay(data
               .map(p => ({
                 ...p,
                 category_key: p.category_key || categoryKeyForPartner(p)
               }))
-              .filter(usablePartner);
+              .filter(usablePartner), normalizedRegion);
           }
         }
       } catch (e) {
@@ -4505,8 +4591,78 @@
       const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
       const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
 
-      if (regional.length > 0) return regional;
-      return all.filter(p => partnerRegionMatches(p, "global"));
+      if (regional.length > 0) return dedupePartnersForDisplay(regional, normalizedRegion);
+      return dedupePartnersForDisplay(all.filter(p => partnerRegionMatches(p, "global")), normalizedRegion);
+    }
+
+
+    function canonicalPartnerName(name) {
+      return String(name || "Partner")
+        .toLowerCase()
+        .replace(/\([^)]*\)/g, " ")
+        .replace(/\b(affiliate|program)\b/g, " ")
+        .replace(/\b(global|us|usa|united states|mx|mexico|br|brazil|pl|poland|eu|latam|ca|canada|gb|uk|de|fr|it|es|ar|co|pe|nz)\b/g, " ")
+        .replace(/\.com\b/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+    }
+
+    function partnerDeduplicationKey(partner) {
+      const category = categoryKeySafe(partner);
+      const name = canonicalPartnerName(partner.name);
+      const url = String(partner.url || "")
+        .toLowerCase()
+        .replace(/^https?:\/\//, "")
+        .replace(/^www\./, "")
+        .replace(/[?#].*$/, "")
+        .replace(/\/$/, "");
+
+      // Prefer brand/name dedupe inside a category. URL is a fallback only,
+      // because the same partner often has different affiliate URLs per region.
+      return `${category}|${name || url}`;
+    }
+
+    function dedupePartnersForDisplay(items, activeRegion) {
+      const region = normalizeRegion(activeRegion || getRegion() || "global");
+      const best = new Map();
+
+      const score = item => {
+        const itemRegion = normalizeRegion(item.region || "global");
+        const itemName = String(item.name || "");
+        let value = 0;
+
+        // Exact regional partner wins over global fallback.
+        if (itemRegion === region) value += 1000;
+
+        // Useful broad fallbacks, but lower than exact local offers.
+        if (itemRegion === "global") value += 100;
+        if (region === "mx" && itemRegion === "latam") value += 90;
+        if (["de", "fr", "it", "es", "pl"].includes(region) && itemRegion === "eu") value += 90;
+
+        // Prefer clean names over duplicate labels like "Kiwi US" / "Trivago Global".
+        if (!/\b(global|us|usa|mx|br|pl|eu|latam|ca|gb|uk|de|fr|it|es|ar|co|pe|nz)\b/i.test(itemName)) value += 25;
+
+        // Lower tier is better.
+        value -= Number(item.tier || 99) * 10;
+
+        // Shorter clean label is usually the canonical one.
+        value -= itemName.length / 100;
+
+        return value;
+      };
+
+      (items || [])
+        .filter(usablePartner)
+        .forEach(partner => {
+          const key = partnerDeduplicationKey(partner).toLowerCase();
+          const current = best.get(key);
+
+          if (!current || score(partner) > score(current)) {
+            best.set(key, partner);
+          }
+        });
+
+      return Array.from(best.values());
     }
 
     function categoryKeySafe(partner) {
@@ -4544,10 +4700,10 @@
       // Column 1 should show global + regional non-travel partners.
       // This keeps useful global offers visible without duplicating travel header categories.
       const region = getRegion();
-      const source = baseAvailablePartners()
+      const source = dedupePartnersForDisplay(baseAvailablePartners()
         .filter(usablePartner)
         .filter(p => partnerRegionMatches(p, "global") || partnerRegionMatches(p, region))
-        .filter(p => column1Set.has(categoryKeySafe(p)));
+        .filter(p => column1Set.has(categoryKeySafe(p))), region);
 
       const items = partnersFilteredBySearch(source);
 
@@ -4582,7 +4738,7 @@
           const group = document.querySelector(`.c1-group[data-cat="${CSS.escape(categoryKey)}"]`);
           if (!group) return;
 
-          const dedupeKey = `${p.name}|${categoryKey}|${p.url}`.toLowerCase();
+          const dedupeKey = partnerDeduplicationKey(p).toLowerCase();
           if (seen.has(dedupeKey)) return;
           seen.add(dedupeKey);
 
@@ -4624,7 +4780,7 @@
       const container = document.getElementById("partnerChips");
       if (!container) return;
 
-      const filtered = (partners || []).filter(p => normalizeRegion(p.region || "") === normalizeRegion(selectedRegion));
+      const filtered = dedupePartnersForDisplay((partners || []).filter(p => normalizeRegion(p.region || "") === normalizeRegion(selectedRegion)), selectedRegion);
 
       console.log("VISIBLE PARTNERS:", filtered.map(p => p.name));
 
@@ -4650,7 +4806,7 @@
 
     function updateHeaderCounts(partners) {
       const counts = {};
-      (partners || []).forEach(p => {
+      dedupePartnersForDisplay(partners || [], getRegion()).forEach(p => {
         const key = categoryKeySafe(p);
         counts[key] = (counts[key] || 0) + 1;
       });
