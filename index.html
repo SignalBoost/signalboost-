@@ -186,6 +186,15 @@
     .right h2{text-align:center;margin:0 0 16px}
     #partnerChips{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     .chip{min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid rgba(255,255,255,.08);background:#1b2128;border-radius:10px;padding:10px;font-weight:800;font-size:13px;text-decoration:none}
+    .see-more-btn{width:100%;margin:8px 0 12px;padding:10px 12px;border:1px solid rgba(245,197,66,.35);border-radius:10px;background:#111;color:#f5c542;font-weight:900;cursor:pointer}
+    .see-more-btn:hover{background:#192532}
+    .featured{display:block;text-decoration:none;border:1px solid rgba(245,197,66,.25);border-radius:16px;background:#111822;overflow:hidden;margin-bottom:16px;box-shadow:0 14px 28px rgba(0,0,0,.22)}
+    .featured img{width:100%;height:138px;object-fit:cover;display:block;background:#0b0f14}
+    .featured-body{padding:12px}
+    .featured h4{margin:0 0 8px;color:#f5c542;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .featured p{margin:0 0 8px;font-weight:900;font-size:16px}
+    .featured span{display:block;color:rgba(255,255,255,.78);font-size:13px;line-height:1.35}
+    .chips-title{margin:6px 0 12px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;font-size:12px}
     .empty{color:#9aa8b8;padding:16px;font-size:13px}
 
     #debug-overlay{position:fixed;right:10px;bottom:10px;background:rgba(0,0,0,.84);color:#fff;padding:10px 14px;border-radius:8px;font:13px monospace;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.35);display:none}
@@ -275,6 +284,8 @@
     let FEED_PAGE = 0;
     const FEED_PAGE_SIZE = 5;
     let FEED_LOADING = false;
+    let COLUMN1_EXPANDED = false;
+    const COLUMN1_PREVIEW_LIMIT = 5;
 
     const headerCategories = ["flights","hotels","transfers","car_rental","sim","tours"];
 
@@ -515,11 +526,22 @@
       if(!wrap) return;
       const headerCats=new Set(NORMALIZED_HEADER_CATEGORIES);
       const sidePartners=partners.filter(p=>!headerCats.has(displayCategoryKey(p.category_key)));
+      const visibleSidePartners=(COLUMN1_EXPANDED || q) ? sidePartners : sidePartners.slice(0,COLUMN1_PREVIEW_LIMIT);
       const cats=MAIN_INDEX_CATEGORIES
         .filter(c=>!headerCats.has(displayCategoryKey(c)))
-        .filter(c=>sidePartners.some(p=>displayCategoryKey(p.category_key)===displayCategoryKey(c)));
-      wrap.innerHTML=cats.map((cat,index)=>ColumnCategory(cat,sidePartners,index,q)).join("") || '<div class="empty">No sidebar partners for this region.</div>';
+        .filter(c=>visibleSidePartners.some(p=>displayCategoryKey(p.category_key)===displayCategoryKey(c)));
+      const html=cats.map((cat,index)=>ColumnCategory(cat,visibleSidePartners,index,q)).join("") || '<div class="empty">No sidebar partners for this region.</div>';
+      const button=sidePartners.length>COLUMN1_PREVIEW_LIMIT && !q
+        ? `<button class="see-more-btn" type="button" onclick="toggleColumn1Expanded()">${COLUMN1_EXPANDED ? "Show less" : "See more…"}</button>`
+        : "";
+      wrap.innerHTML=html+button;
     }
+
+    function toggleColumn1Expanded(){
+      COLUMN1_EXPANDED=!COLUMN1_EXPANDED;
+      renderColumn1(visiblePartners());
+    }
+    window.toggleColumn1Expanded=toggleColumn1Expanded;
 
     const FEED_IMAGES = [
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=70",
@@ -618,7 +640,19 @@
 
     function renderRight(partners){
       const chips=document.getElementById("partnerChips");
-      chips.innerHTML=partners.slice(0,24).map(p=>`<a class="chip" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`).join("");
+      if(!chips) return;
+      const featured=partners.find(p=>p.featured) || partners.find(p=>(p.tier||99)===1) || partners[0];
+      const featuredHTML=featured ? `
+        <a class="featured" href="${esc(featured.url)}" target="_blank" rel="noopener">
+          ${(featured.thumbnail || featured.image || featured.logo) ? `<img src="${esc(featured.thumbnail || featured.image || featured.logo)}" alt="${esc(featured.name)}" loading="lazy" onerror="this.style.display='none'">` : ""}
+          <div class="featured-body">
+            <h4>${esc(translatedCategory(canonicalCategoryKey(featured.category_key)))}</h4>
+            <p>${esc(featured.name)}</p>
+            <span>${esc(featured.description || `Explore ${featured.name} offers.`)}</span>
+          </div>
+        </a>` : "";
+      const chipHTML=partners.slice(0,24).map(p=>`<a class="chip" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`).join("");
+      chips.innerHTML=`${featuredHTML}<div class="chips-title">${esc(ACTIVE_TRANSLATIONS.partners || "Partners")}</div>${chipHTML}`;
     }
 
     function renderSticky(partners){
