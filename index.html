@@ -674,7 +674,7 @@
         grid-template-columns: auto 1fr;
       }
 
-      .directory-right { display: none; }
+      .directory-right { display: flex; }
       .directory-center { justify-content: flex-start; }
 
       .app {
@@ -794,7 +794,7 @@
       }
 
       .directory-right {
-        display: none;
+        display: flex;
       }
 
       .directory-center {
@@ -1200,40 +1200,24 @@
 
 
     .lang-selector {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: flex-end;
+      display: inline-block;
+      margin-left: 8px;
     }
 
-    .lang-button {
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(13,17,23,0.65);
-      color: #fff;
-      border-radius: 8px;
-      padding: 6px 10px;
+    #lang-switcher {
+      max-width: 120px;
+      padding: 5px 8px;
       font-size: 12px;
-      font-weight: 800;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: #111827;
+      color: #fff;
       cursor: pointer;
-      line-height: 1;
-      white-space: nowrap;
+      outline: none;
     }
 
-    .lang-button:hover,
-    .lang-button.active {
-      border-color: rgba(245,197,66,0.75);
-      color: #f5c542;
-      background: rgba(245,197,66,0.08);
-    }
-
-    @media (max-width: 768px) {
-      .lang-selector { gap: 6px; }
-      .lang-button { padding: 5px 8px; font-size: 11px; }
-    }
-
-    @media (max-width: 768px) {
-      .directory-right { display: flex !important; }
-      .travel-directory-shell { grid-template-columns: auto 1fr auto; }
+    #lang-switcher:hover {
+      border-color: rgba(245,197,66,0.55);
     }
 
 </style>
@@ -1251,9 +1235,12 @@
     </div>
     <div class="directory-center" id="travelDirectory"></div>
     <div class="directory-right">
-      <div class="lang-selector" aria-label="Language selector">
-        <button id="langAutoBtn" class="lang-button" type="button" onclick="setLanguageChoice('auto')">🌎 Auto</button>
-        <button id="langEnglishBtn" class="lang-button" type="button" onclick="setLanguageChoice('en')">English</button>
+      <!-- Language Selector: native auto or English -->
+      <div class="lang-selector">
+        <select id="lang-switcher" aria-label="Language" onchange="setLanguage(this.value)">
+          <option id="native-language-option" value="auto">🌎 Auto</option>
+          <option value="en">🇺🇸 English</option>
+        </select>
       </div>
     </div>
   </div>
@@ -3029,6 +3016,94 @@
     const partnerSearch = document.getElementById("partnerSearch");
     let ACTIVE_REGION = null;
 
+
+    const LANGUAGE_LABELS = {
+      es: "🇪🇸 Español",
+      pt: "🇧🇷 Português",
+      "pt-BR": "🇧🇷 Português",
+      fr: "🇫🇷 Français",
+      de: "🇩🇪 Deutsch",
+      it: "🇮🇹 Italiano",
+      pl: "🇵🇱 Polski",
+      ru: "🇷🇺 Русский",
+      ja: "🇯🇵 日本語",
+      ko: "🇰🇷 한국어",
+      zh: "🇨🇳 中文",
+      "zh-CN": "🇨🇳 中文",
+      "zh-TW": "🇹🇼 繁體中文",
+      en: "🌎 Auto"
+    };
+
+    function normalizeLanguage(lang) {
+      const value = String(lang || "").trim();
+      const lower = value.toLowerCase();
+      if (lower === "br") return "pt";
+      if (lower === "cn") return "zh";
+      if (lower === "tw") return "zh";
+      if (lower === "pt-br") return "pt";
+      if (lower === "zh-cn") return "zh";
+      if (lower === "zh-tw") return "zh";
+      return lower || "en";
+    }
+
+    function getForcedLanguage() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("lang") || localStorage.getItem("preferredLanguage") || "";
+      const normalized = normalizeLanguage(raw);
+      return raw && normalized !== "auto" ? normalized : "";
+    }
+
+    function setActiveLanguage(lang) {
+      const safeLang = normalizeLanguage(lang || "en");
+      document.documentElement.dataset.lang = safeLang;
+      document.documentElement.lang = safeLang;
+      return safeLang;
+    }
+
+    async function setLanguage(lang) {
+      const url = new URL(window.location.href);
+
+      if (lang === "auto") {
+        localStorage.removeItem("preferredLanguage");
+        url.searchParams.delete("lang");
+        window.location.href = url.toString();
+        return;
+      }
+
+      const safeLang = normalizeLanguage(lang);
+      localStorage.setItem("preferredLanguage", safeLang);
+      url.searchParams.set("lang", safeLang);
+      window.history.replaceState({}, "", url.toString());
+
+      const translations = await loadTranslations(safeLang);
+      applyTranslations(translations, safeLang);
+      setActiveLanguage(safeLang);
+
+      const switcher = document.getElementById("lang-switcher");
+      if (switcher) switcher.value = safeLang;
+
+      try { applyInternationalSeo(); } catch (e) {}
+      try { buildTravelDirectory(); } catch (e) {}
+      try { renderColumn1(ACTIVE_PARTNERS); } catch (e) {}
+      try { renderColumn3(ACTIVE_PARTNERS); } catch (e) {}
+      try { setFeatured(); } catch (e) {}
+
+      console.log("🔄 Language switched to:", safeLang);
+    }
+
+    function syncLanguageSelector(region, lang) {
+      const detectedLanguage = normalizeLanguage(lang || detectLanguage(region || getRegion()));
+      const nativeOption = document.getElementById("native-language-option");
+      if (nativeOption) {
+        nativeOption.textContent = LANGUAGE_LABELS[detectedLanguage] || "🌎 Auto";
+      }
+
+      const switcher = document.getElementById("lang-switcher");
+      if (switcher) {
+        switcher.value = getForcedLanguage() || "auto";
+      }
+    }
+
     function normalizeRegion(value) {
       const raw = String(value || "").trim().toLowerCase();
       if (!raw) return "";
@@ -3108,42 +3183,8 @@
       return REGION_CONFIG[detected] ? detected : "us";
     }
 
-    function getForcedLanguage() {
-      const params = new URLSearchParams(window.location.search);
-      const fromUrl = String(params.get("lang") || "").trim().toLowerCase();
-      const fromStorage = String(localStorage.getItem("preferredLanguage") || "").trim().toLowerCase();
-      const candidate = fromUrl || fromStorage;
-      const valid = new Set(["en", "es", "pt", "pl", "ru", "fr", "de", "it", "ja", "ko", "zh"]);
-      return valid.has(candidate) ? candidate : "";
-    }
-
     function getLang() {
-      const forced = getForcedLanguage();
-      if (forced) return forced;
-      const region = getRegion();
-      return (REGION_CONFIG[region] && REGION_CONFIG[region].lang) || DEFAULT_LANGUAGE;
-    }
-
-    function setLanguageChoice(choice) {
-      const url = new URL(window.location.href);
-
-      if (choice === "en") {
-        localStorage.setItem("preferredLanguage", "en");
-        url.searchParams.set("lang", "en");
-      } else {
-        localStorage.removeItem("preferredLanguage");
-        url.searchParams.delete("lang");
-      }
-
-      window.location.href = url.toString();
-    }
-
-    function syncLanguageSelector() {
-      const forced = getForcedLanguage();
-      const autoBtn = document.getElementById("langAutoBtn");
-      const enBtn = document.getElementById("langEnglishBtn");
-      if (autoBtn) autoBtn.classList.toggle("active", !forced);
-      if (enBtn) enBtn.classList.toggle("active", forced === "en");
+      return REGION_CONFIG[getRegion()].lang;
     }
 
     function t() {
@@ -3409,7 +3450,7 @@
         ${partners.length ? partners.map(p => `
           <a class="directory-menu-link" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">
             <strong>${escapeHtml(p.name)}</strong>
-            <span class="directory-menu-meta">${escapeHtml([p.region, p.network].filter(Boolean).join(" • "))}</span>
+            <span class="directory-menu-meta">${escapeHtml([Array.isArray(p.regions) ? p.regions.join(", ") : p.region, p.network].filter(Boolean).join(" • "))}</span>
           </a>
         `).join("") : `<div class="directory-menu-link">No partners found.</div>`}
       `;
@@ -4212,24 +4253,37 @@
 
     // --- Region Detection (baseline, locale-first) ---
     function detectRegion() {
-      console.log("detectRegion called");
-
       const lang = (navigator.language || "").toLowerCase();
+      const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || "").toLowerCase();
 
-      if (lang.startsWith("es")) return setActiveRegion("mx");   // Spanish → Mexico
-      if (lang.startsWith("pt")) return setActiveRegion("br");   // Portuguese → Brazil
-      if (lang.startsWith("pl")) return setActiveRegion("pl");   // Polish → Poland
-      if (lang.startsWith("ru")) return setActiveRegion("ru");   // Russian → Russia
-      if (lang.startsWith("fr")) return setActiveRegion("fr");   // French → France
-      if (lang.startsWith("de")) return setActiveRegion("de");   // German → Germany
-      if (lang.startsWith("it")) return setActiveRegion("it");   // Italian → Italy
-      if (lang.startsWith("ja")) return setActiveRegion("jp");   // Japanese → Japan
-      if (lang.startsWith("ko")) return setActiveRegion("kr");   // Korean → Korea
+      // Timezone/physical region first, so users in Mexico get MX even with an English browser.
+      if (tz.includes("mexico") || tz.includes("cancun")) return setActiveRegion("mx");
+      if (tz.includes("sao_paulo") || tz.includes("rio_branco") || tz.includes("noronha") || tz.includes("belem") || tz.includes("fortaleza") || tz.includes("recife") || tz.includes("araguaina") || tz.includes("maceio") || tz.includes("bahia") || tz.includes("campo_grande") || tz.includes("cuiaba") || tz.includes("manaus") || tz.includes("porto_velho") || tz.includes("boa_vista") || tz.includes("eirunepe")) return setActiveRegion("br");
+      if (tz.includes("warsaw")) return setActiveRegion("pl");
+      if (tz.includes("moscow")) return setActiveRegion("ru");
+      if (tz.includes("paris")) return setActiveRegion("fr");
+      if (tz.includes("berlin")) return setActiveRegion("de");
+      if (tz.includes("rome")) return setActiveRegion("it");
+      if (tz.includes("tokyo")) return setActiveRegion("jp");
+      if (tz.includes("seoul")) return setActiveRegion("kr");
+      if (tz.includes("shanghai") || tz.includes("urumqi") || tz.includes("chongqing") || tz.includes("harbin") || tz.includes("hong_kong")) return setActiveRegion("cn");
+      if (tz.includes("taipei")) return setActiveRegion("tw");
+
+      // Browser-language fallback.
+      if (lang.startsWith("es")) return setActiveRegion("mx");
+      if (lang.startsWith("pt")) return setActiveRegion("br");
+      if (lang.startsWith("pl")) return setActiveRegion("pl");
+      if (lang.startsWith("ru")) return setActiveRegion("ru");
+      if (lang.startsWith("fr")) return setActiveRegion("fr");
+      if (lang.startsWith("it")) return setActiveRegion("it");
+      if (lang.startsWith("de")) return setActiveRegion("de");
+      if (lang.startsWith("ja")) return setActiveRegion("jp");
+      if (lang.startsWith("ko")) return setActiveRegion("kr");
       if (lang.startsWith("zh-tw") || lang.startsWith("zh-hant")) return setActiveRegion("tw");
-      if (lang.startsWith("zh")) return setActiveRegion("cn");   // Chinese → China
-      if (lang.startsWith("en")) return setActiveRegion("us");   // English → US/UK
+      if (lang.startsWith("zh")) return setActiveRegion("cn");
+      if (lang.startsWith("en")) return setActiveRegion("us");
 
-      return setActiveRegion("global"); // fallback
+      return setActiveRegion("global");
     }
 
     async function detectUserRegion() {
@@ -4240,11 +4294,11 @@
 
 
     async function loadTranslations(lang) {
-      const normalizedLang = lang === "pt-BR" ? "pt" : lang;
+      const normalizedLang = normalizeLanguage(lang);
       const builtInBase = BUILT_IN_TRANSLATIONS.en || {};
       const builtInLocal = BUILT_IN_TRANSLATIONS[lang] || BUILT_IN_TRANSLATIONS[normalizedLang] || {};
       let translations = { ...builtInBase, ...builtInLocal };
-      const candidates = lang === normalizedLang ? [lang] : [lang, normalizedLang];
+      const candidates = [...new Set([normalizeLanguage(lang), lang].filter(Boolean))];
 
       for (const candidate of candidates) {
         try {
@@ -4453,9 +4507,10 @@
 
     async function initializeInternationalization() {
       const region = await detectUserRegion();
-      const lang = getLang();
+      const lang = detectLanguage(region);
       await loadLanguage(lang);
       showDebug(region, lang);
+      try { syncLanguageSelector(region, lang); } catch (e) {}
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks region refresh failed", e); }
       try { applyInternationalSeo(); } catch (e) { console.error("applyInternationalSeo failed", e); }
@@ -4492,33 +4547,194 @@
       return partner && partner.status !== "hold" && partner.status !== "disabled" && partner.url;
     }
 
-    async function loadPartners(region, allPartners) {
+
+    function normalizePartnerName(name) {
+      return String(name || "")
+        .toLowerCase()
+        .replace(/\([^)]*\)/g, "")
+        .replace(/\.com/g, "")
+        .replace(/\b(global|us|usa|mx|br|pl|eu|latam|uk|gb|ca|de|fr|it|es|ru|nz|ar|co|pe|jp|kr|cn|tw)\b/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function mergeAcrossRegions(partners) {
+      const merged = {};
+
+      (Array.isArray(partners) ? partners : []).forEach(raw => {
+        if (!raw) return;
+
+        const p = {
+          ...raw,
+          category_key: raw.category_key || categoryKeyForPartner(raw),
+          region: normalizeRegion(raw.region || "global") || "global"
+        };
+
+        if (!usablePartner(p)) return;
+
+        const key = `${normalizePartnerName(p.name)}|${p.category_key}`;
+
+        if (!merged[key]) {
+          merged[key] = {
+            ...p,
+            canonical_name: normalizePartnerName(p.name),
+            regions: [p.region]
+          };
+          return;
+        }
+
+        const existing = merged[key];
+
+        if (!existing.regions.includes(p.region)) {
+          existing.regions.push(p.region);
+        }
+
+        // Prefer a non-global display name/URL, and prefer lower tier numbers.
+        const existingScore = (existing.region !== "global" ? 10 : 0) + (10 - (existing.tier || 9));
+        const currentScore = (p.region !== "global" ? 10 : 0) + (10 - (p.tier || 9));
+
+        if (currentScore > existingScore) {
+          merged[key] = {
+            ...existing,
+            ...p,
+            canonical_name: existing.canonical_name,
+            regions: existing.regions
+          };
+        }
+
+        Object.keys(p).forEach(field => {
+          if (
+            existing[field] === undefined ||
+            existing[field] === null ||
+            existing[field] === ""
+          ) {
+            existing[field] = p[field];
+          }
+        });
+      });
+
+      return Object.values(merged);
+    }
+
+    function filterPartners(region, partners) {
       const normalizedRegion = normalizeRegion(region || "global") || "global";
 
-      // Step 1: backend is source of truth. Prefer /partners?region=...
-      try {
-        const res = await fetch(`/partners?region=${encodeURIComponent(normalizedRegion)}`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data) && data.length) {
-            return data
-              .map(p => ({
-                ...p,
-                category_key: p.category_key || categoryKeyForPartner(p)
-              }))
-              .filter(usablePartner);
+      const regionalAliases = {
+        mx: ["latam", "global"],
+        br: ["latam", "global"],
+        ar: ["latam", "global"],
+        co: ["latam", "global"],
+        pe: ["latam", "global"],
+        cl: ["latam", "global"],
+        pl: ["eu", "global"],
+        de: ["eu", "global"],
+        fr: ["eu", "global"],
+        it: ["eu", "global"],
+        es: ["eu", "global"],
+        gb: ["global"],
+        uk: ["global"],
+        us: ["global"],
+        ca: ["global"],
+        au: ["global"],
+        jp: ["global"],
+        kr: ["global"],
+        cn: ["global"],
+        tw: ["global"],
+        ru: ["global"],
+        in: ["global"]
+      };
+
+      const allowedRegions = [normalizedRegion, ...(regionalAliases[normalizedRegion] || [])];
+      const seen = new Set();
+
+      return (Array.isArray(partners) ? partners : []).filter(partner => {
+        const regions = Array.isArray(partner.regions)
+          ? partner.regions.map(normalizeRegion)
+          : [normalizeRegion(partner.region || "global")];
+
+        if (!regions.some(r => allowedRegions.includes(r))) return false;
+
+        const dedupeKey = `${normalizePartnerName(partner.name)}|${categoryKeySafe(partner)}`;
+        if (seen.has(dedupeKey)) return false;
+        seen.add(dedupeKey);
+
+        return true;
+      });
+    }
+
+    function filterPartnersByCategory(partners, categoryKey) {
+      return (Array.isArray(partners) ? partners : []).filter(p => categoryKeySafe(p) === categoryKey);
+    }
+
+    function validatePartners(partners) {
+      const requiredFields = ["name", "url", "category_key", "regions", "network"];
+      const validRegions = ["mx", "br", "us", "uk", "gb", "ca", "au", "pl", "ru", "fr", "it", "de", "jp", "kr", "cn", "tw", "eu", "latam", "global", "ar", "co", "pe", "cl", "es", "in", "nz"];
+      const errors = [];
+
+      (Array.isArray(partners) ? partners : []).forEach((p, index) => {
+        const entryErrors = [];
+
+        requiredFields.forEach(field => {
+          if (
+            p[field] === undefined ||
+            p[field] === null ||
+            p[field] === "" ||
+            (Array.isArray(p[field]) && p[field].length === 0)
+          ) {
+            entryErrors.push(`Missing required field: ${field}`);
           }
+        });
+
+        if (!Array.isArray(p.regions)) {
+          entryErrors.push("regions must be an array");
+        } else {
+          p.regions.forEach(region => {
+            const normalized = normalizeRegion(region);
+            if (!validRegions.includes(normalized)) {
+              entryErrors.push(`Invalid region: ${region}`);
+            }
+          });
         }
-      } catch (e) {
-        console.warn("/partners route unavailable; using embedded partnersData fallback", e);
+
+        if (p.url && !/^https?:\/\//i.test(p.url)) {
+          entryErrors.push("Invalid URL");
+        }
+
+        if (entryErrors.length > 0) {
+          errors.push({ index, name: p.name || "(missing name)", errors: entryErrors });
+        }
+      });
+
+      if (errors.length > 0) {
+        console.warn("⚠️ Partner validation errors:", errors);
+      } else {
+        console.log("✅ All partners are valid");
       }
 
-      // Safe fallback: keep the old baseline behavior if backend is unavailable.
-      const all = (allPartners || baseAvailablePartners()).filter(usablePartner);
-      const regional = all.filter(p => partnerRegionMatches(p, normalizedRegion));
+      return errors;
+    }
 
-      if (regional.length > 0) return regional;
-      return all.filter(p => partnerRegionMatches(p, "global"));
+    async function loadPartners(region, allPartners) {
+      const normalizedRegion = normalizeRegion(region || "global") || "global";
+      let source = [];
+
+      try {
+        const res = await fetch("/partners.json", { cache: "no-store" });
+        if (res.ok) {
+          source = await res.json();
+        } else {
+          throw new Error(`partners.json returned ${res.status}`);
+        }
+      } catch (e) {
+        console.warn("/partners.json unavailable; using embedded partnersData fallback", e);
+        source = allPartners || baseAvailablePartners();
+      }
+
+      const cleanPartners = mergeAcrossRegions(source);
+      validatePartners(cleanPartners);
+
+      const regionalPartners = filterPartners(normalizedRegion, cleanPartners);
+      return regionalPartners.length ? regionalPartners : filterPartners("global", cleanPartners);
     }
 
     function categoryKeySafe(partner) {
@@ -4629,55 +4845,24 @@
       }
     }
 
-    function normalizePartnerName(name) {
-      return String(name || "")
-        .toLowerCase()
-        .replace(/\([^)]*\)/g, "")
-        .replace(/\.com/g, "")
-        .replace(/\b(global|us|usa|mx|br|pl|eu|latam|uk|gb|ca|de|fr|it|es|ru|nz|ar|co|pe|jp|kr|cn|tw)\b/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function partnerRegionList(partner) {
-      if (Array.isArray(partner && partner.regions)) {
-        return partner.regions.map(r => normalizeRegion(r || "global")).filter(Boolean);
-      }
-      return [normalizeRegion((partner && partner.region) || "global") || "global"];
-    }
-
-    function filterColumn3(region, partners) {
-      const normalizedRegion = normalizeRegion(region || "global") || "global";
-      const source = Array.isArray(partners) ? partners.filter(usablePartner) : [];
-
-      const exact = source.filter(p => partnerRegionList(p).includes(normalizedRegion));
-      const fallback = source.filter(p => partnerRegionList(p).includes("global"));
-      const candidates = exact.length ? exact : fallback;
-
-      const seen = new Set();
-      return candidates
-        .slice()
-        .sort((a, b) => (a.tier || 99) - (b.tier || 99) || String(a.name || "").localeCompare(String(b.name || "")))
-        .filter(p => {
-          const key = `${normalizePartnerName(p.name)}|${categoryKeySafe(p)}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-    }
-
     function renderColumn3(partners) {
       const selectedRegion = getRegion();
+      console.log("renderColumn3 CALLED", selectedRegion);
+
       const container = document.getElementById("partnerChips");
       if (!container) return;
 
-      const filtered = filterColumn3(selectedRegion, partners || ACTIVE_PARTNERS || []);
-      console.log("Column 3:", filtered.map(p => p.name).join(", "));
+      const filtered = Array.isArray(partners) ? partners : [];
 
-      const top = filtered.slice(0, 12);
+      console.log("VISIBLE PARTNERS:", filtered.map(p => p.name));
+
+      const top = filtered
+        .slice()
+        .sort((a, b) => (a.tier || 99) - (b.tier || 99))
+        .slice(0, 12);
 
       container.innerHTML = top.map(p => `
-        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(p.region || '')}">${escapeHtml(p.name || 'Partner')}</a>
+        <a class="partner-chip" href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener noreferrer" data-region="${escapeHtml(Array.isArray(p.regions) ? p.regions.join(',') : (p.region || ''))}">${escapeHtml(p.name || 'Partner')}</a>
       `).join("");
 
       container.querySelectorAll("a").forEach(a => a.addEventListener("click", trackClick));
@@ -4746,7 +4931,6 @@
       window.ACTIVE_PARTNERS = partners;
 
       await initI18n(lang);
-      syncLanguageSelector();
       showDebug(region, lang);
 
       try { hydrateAmazonLinks(); } catch (e) { console.error("hydrateAmazonLinks failed", e); }
@@ -4762,12 +4946,13 @@
       try { setFeatured(); } catch (e) { console.error("setFeatured failed", e); }
       try { await renderFeed(region); } catch (e) { console.error("renderFeed failed", e); }
       try { renderPartnerDebugOverlay(region, partners, allPartners); } catch (e) { console.error("renderPartnerDebugOverlay failed", e); }
-      try { validatePartners(); } catch (e) {}
+      try { validatePartners(partners); } catch (e) {}
 
       const search = document.getElementById("partnerSearch");
       if (search) search.addEventListener("input", () => renderColumn1(ACTIVE_PARTNERS));
     }
 
+    window.setLanguage = setLanguage;
     document.addEventListener("DOMContentLoaded", initSignalBoost);
   </script>
 
