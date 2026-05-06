@@ -524,21 +524,15 @@
       const q=(document.getElementById("partnerSearch")?.value || "").toLowerCase();
       const wrap=document.getElementById("column1");
       if(!wrap) return;
-      const headerCats=new Set(NORMALIZED_HEADER_CATEGORIES);
-      const sidePartners=partners.filter(p=>!headerCats.has(displayCategoryKey(p.category_key)));
-      const visibleSidePartners=(COLUMN1_EXPANDED || q) ? sidePartners : sidePartners.slice(0,COLUMN1_PREVIEW_LIMIT);
-      const cats=MAIN_INDEX_CATEGORIES
-        .filter(c=>!headerCats.has(displayCategoryKey(c)))
-        .filter(c=>visibleSidePartners.some(p=>displayCategoryKey(p.category_key)===displayCategoryKey(c)));
-      const html=cats.map((cat,index)=>ColumnCategory(cat,visibleSidePartners,index,q)).join("") || '<div class="empty">No sidebar partners for this region.</div>';
-      const button=sidePartners.length>COLUMN1_PREVIEW_LIMIT && !q
-        ? `<button class="see-more-btn" type="button" onclick="toggleColumn1Expanded()">${COLUMN1_EXPANDED ? "Show less" : "See more…"}</button>`
-        : "";
-      wrap.innerHTML=html+button;
+
+      // Column 1 follows the main header category index and uses aliases so
+      // car_rental -> car_rentals and sim -> esim do not duplicate or miss data.
+      const html=NORMALIZED_HEADER_CATEGORIES.map((cat,index)=>ColumnCategory(cat,partners,index,q)).join("");
+      wrap.innerHTML=html || '<div class="empty">No partners for this region.</div>';
     }
 
     function toggleColumn1Expanded(){
-      COLUMN1_EXPANDED=!COLUMN1_EXPANDED;
+      // Kept for backward compatibility with older builds that may call it.
       renderColumn1(visiblePartners());
     }
     window.toggleColumn1Expanded=toggleColumn1Expanded;
