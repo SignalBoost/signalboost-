@@ -8,14 +8,6 @@
     "tier": 2
   },
   {
-    "name": "Trivago PL",
-    "category_key": "hotels",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-    "tier": 2
-  },
-  {
     "name": "Kiwitaxi PL",
     "category_key": "transfers",
     "region": "pl",
