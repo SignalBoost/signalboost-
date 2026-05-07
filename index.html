@@ -418,24 +418,20 @@
     const REGION_LANG = {"es-latam":"es",br:"pt",us:"en",uk:"en",pl:"pl",ru:"ru",ot:"en"};
     const ENGLISH_LOCKED = new Set(["us","uk","ot"]);
     const CATEGORY_ORDER = ["flights","hotels","marketplace","products_tools","finance","insurance","travel_services","car_rentals","tours","transfers","esim","specialty_other"];
-    const column1Categories = [
-      "marketplace",
-      "products_tools",
-      "finance",
-      "insurance_claims",
-      "storage_services",
-      "specialty_other"
-    ];
+    const TRAVEL_HEADER_CATEGORIES = ["flights","hotels","transfers","car_rentals","esim","tours","insurance"];
+    const NON_TRAVEL_COLUMN_CATEGORIES = ["marketplace","products_tools","finance","travel_services","specialty_other"];
+    const TRAVEL_CATEGORY_SET = new Set(["flights","hotels","transfers","car_rentals","esim","tours","insurance"]);
+    const column1Categories = NON_TRAVEL_COLUMN_CATEGORIES;
 
     const CATEGORY_ICONS = {flights:"✈",hotels:"🏨",marketplace:"🛒",products_tools:"🧰",finance:"💳",insurance:"🛡",insurance_claims:"🛡",travel_services:"🧳",storage_services:"🧳",car_rentals:"🚗",tours:"🎟",transfers:"🚕",esim:"📱",sim:"📱",specialty_other:"✨"};
 
     const REGION_CONFIG = {
-      us: {flag:"🇺🇸", label:"United States", heroPartners:["Kiwi","Trivago","Tiqets","Proton VPN","Valerion","Countabout"], copy:{en:{kicker:"Premium US offers", title:"Smart travel and digital deals for the United States", desc:"High-value flights, hotels, tools and services curated for US visitors.", primary:"Explore US deals"}}},
-      br: {flag:"🇧🇷", label:"Brasil", heroPartners:["Booking Brazil","CVC","Kiwi","Melhor Seguro","Amazon","SuperSim"], copy:{pt:{kicker:"Ofertas no Brasil", title:"Hotéis, passagens e ofertas populares no Brasil", desc:"Parceiros fortes para viagem, marketplace, seguros e serviços digitais.", primary:"Ver ofertas do Brasil"}, en:{kicker:"Brazil deals", title:"Hotels, flights and marketplace deals for Brazil", desc:"Regional offers for travel, shopping, insurance and digital services.", primary:"View Brazil deals"}}},
-      pl: {flag:"🇵🇱", label:"Polska", heroPartners:["Travelking","Trivago","AliExpress","Tiqets","Airalo"], copy:{pl:{kicker:"Oferty w Polsce", title:"Praktyczne oferty podróżnicze i zakupowe dla Polski", desc:"Porównuj hotele, marketplace, narzędzia i usługi podróżne dostępne w Polsce.", primary:"Zobacz oferty"}, en:{kicker:"Poland offers", title:"Practical travel and shopping offers for Poland", desc:"Compare hotels, marketplace, tools and travel services available in Poland.", primary:"View Poland offers"}}},
+      us: {flag:"🇺🇸", label:"United States", heroPartners:["Kiwi","Trivago","Tiqets","H10 Hotels"], copy:{en:{kicker:"Premium US offers", title:"Smart travel and digital deals for the United States", desc:"High-value flights, hotels, tools and services curated for US visitors.", primary:"Explore US deals"}}},
+      br: {flag:"🇧🇷", label:"Brasil", heroPartners:["Booking Brazil","CVC","Kiwi","AirHelp","Klook"], copy:{pt:{kicker:"Ofertas no Brasil", title:"Hotéis, passagens e ofertas populares no Brasil", desc:"Parceiros fortes para viagem, marketplace, seguros e serviços digitais.", primary:"Ver ofertas do Brasil"}, en:{kicker:"Brazil deals", title:"Hotels, flights and marketplace deals for Brazil", desc:"Regional offers for travel, shopping, insurance and digital services.", primary:"View Brazil deals"}}},
+      pl: {flag:"🇵🇱", label:"Polska", heroPartners:["Travelking","Trivago","Kiwi","Airalo","Kiwitaxi","Welcome Pickups"], copy:{pl:{kicker:"Oferty w Polsce", title:"Praktyczne oferty podróżnicze i zakupowe dla Polski", desc:"Porównuj hotele, marketplace, narzędzia i usługi podróżne dostępne w Polsce.", primary:"Zobacz oferty"}, en:{kicker:"Poland offers", title:"Practical travel and shopping offers for Poland", desc:"Compare hotels, marketplace, tools and travel services available in Poland.", primary:"View Poland offers"}}},
       uk: {flag:"🇬🇧", label:"United Kingdom", heroPartners:["Tiqets","Trivago","Klook","Kiwi","Welcome Pickups"], copy:{en:{kicker:"UK travel picks", title:"Premium travel experiences and useful services for the UK", desc:"Hotels, tickets, transfers and smart services curated for UK visitors.", primary:"Explore UK picks"}}},
-      "es-latam": {flag:"🌎", label:"LATAM", heroPartners:["Kiwi","Trivago","Miravia","Airalo","Klook"], copy:{es:{kicker:"Ofertas en LATAM", title:"Viajes, hoteles y servicios digitales para LATAM", desc:"Ofertas para México y Latinoamérica, con recomendaciones rápidas y móviles.", primary:"Ver ofertas LATAM"}, en:{kicker:"LATAM offers", title:"Travel, hotels and digital services for LATAM", desc:"Regional offers for Mexico and Latin America.", primary:"View LATAM offers"}}},
-      ru: {flag:"🇷🇺", label:"RU", heroPartners:["Буквоед","Читай-город","GGsel"], copy:{ru:{kicker:"Региональные предложения", title:"Локальные предложения и цифровые сервисы", desc:"Региональная витрина партнеров, которую можно расширять позже.", primary:"Смотреть предложения"}, en:{kicker:"Regional offers", title:"Localized offers and digital services", desc:"A regional partner showcase that can grow when the market is appropriate.", primary:"View offers"}}},
+      "es-latam": {flag:"🌎", label:"LATAM", heroPartners:["Kiwi","Trivago","Airalo","Klook"], copy:{es:{kicker:"Ofertas en LATAM", title:"Viajes, hoteles y servicios digitales para LATAM", desc:"Ofertas para México y Latinoamérica, con recomendaciones rápidas y móviles.", primary:"Ver ofertas LATAM"}, en:{kicker:"LATAM offers", title:"Travel, hotels and digital services for LATAM", desc:"Regional offers for Mexico and Latin America.", primary:"View LATAM offers"}}},
+      ru: {flag:"🇷🇺", label:"RU", heroPartners:[], copy:{ru:{kicker:"Региональные предложения", title:"Локальные предложения и цифровые сервисы", desc:"Региональная витрина партнеров, которую можно расширять позже.", primary:"Смотреть предложения"}, en:{kicker:"Regional offers", title:"Localized offers and digital services", desc:"A regional partner showcase that can grow when the market is appropriate.", primary:"View offers"}}},
       ot: {flag:"🌍", label:"Global", heroPartners:["Kiwi","Trivago","Airalo","Klook","Proton VPN"], copy:{en:{kicker:"Global offers", title:"Travel, marketplace and service deals by region", desc:"Curated offers from global partners, filtered by your region and language.", primary:"Explore global deals"}}}
     };
 
@@ -458,7 +454,7 @@
     let COLUMN1_EXPANDED = false;
     const COLUMN1_PREVIEW_LIMIT = 5;
 
-    const categories = ["flights","hotels","transfers","car_rental","sim","tours"];
+    const categories = TRAVEL_HEADER_CATEGORIES;
 
     const HEADER_CATEGORY_ALIASES = {
       car_rental: "car_rentals",
@@ -479,7 +475,7 @@
     function canonicalCategoryKey(key){if(key==="car_rentals") return "car_rental"; if(key==="esim") return "sim"; return key;}
     function translatedCategory(cat){return ACTIVE_TRANSLATIONS[cat] || ACTIVE_TRANSLATIONS[displayCategoryKey(cat)] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(cat)] || cat;}
 
-    const NORMALIZED_HEADER_CATEGORIES = [...new Set(categories.map(displayCategoryKey))];
+    const NORMALIZED_HEADER_CATEGORIES = [...new Set(TRAVEL_HEADER_CATEGORIES.map(displayCategoryKey))];
     const MAIN_INDEX_CATEGORIES = [...new Set([...NORMALIZED_HEADER_CATEGORIES, ...CATEGORY_ORDER.map(displayCategoryKey)])];
 
     function normalizeRegion(value){
@@ -623,6 +619,14 @@
       return smartSortPartners(list);
     }
 
+    function isHeaderTravelPartner(p){
+      return TRAVEL_CATEGORY_SET.has(displayCategoryKey(p.category_key || p.category));
+    }
+
+    function travelPartnersOnly(partners){
+      return smartSortPartners((Array.isArray(partners)?partners:[]).filter(isHeaderTravelPartner));
+    }
+
     function buildCategoryIndex(partners){
       const index=Object.fromEntries(MAIN_INDEX_CATEGORIES.map(c=>[c,[]]));
       (Array.isArray(partners)?partners:[]).forEach(p=>{
@@ -635,7 +639,7 @@
 
     function partnersForHeaderCategory(partners, cat){
       const displayKey=displayCategoryKey(cat);
-      return partners.filter(p=>displayCategoryKey(p.category_key)===displayKey);
+      return partners.filter(p=>isHeaderTravelPartner(p) && displayCategoryKey(p.category_key)===displayKey);
     }
 
     function HeaderCategory(cat, partners){
@@ -655,7 +659,8 @@
     function renderHeader(partners){
       const nav=document.getElementById("travelDirectory");
       if(!nav) return;
-      nav.innerHTML=`<ul class="nav-list">${NORMALIZED_HEADER_CATEGORIES.map(cat=>HeaderCategory(cat, partners)).join("")}</ul>`;
+      const headerPartners=travelPartnersOnly(partners);
+      nav.innerHTML=`<ul class="nav-list">${NORMALIZED_HEADER_CATEGORIES.map(cat=>HeaderCategory(cat, headerPartners)).join("")}</ul>`;
     }
 
 
@@ -782,14 +787,14 @@
 
     function renderTrendingStrip(partners){
       const el=document.getElementById("trendingStrip"); if(!el)return;
-      const cfg=regionConfig(ACTIVE_REGION); const picks=preferredPartners(cfg.heroPartners,partners,8);
+      const cfg=regionConfig(ACTIVE_REGION); const travelPartners=travelPartnersOnly(partners); const picks=preferredPartners(cfg.heroPartners,travelPartners,8);
       if(!picks.length){el.innerHTML="";return;}
       const word=(ACTIVE_LANGUAGE==="pt"?"Em alta":ACTIVE_LANGUAGE==="pl"?"Popularne":ACTIVE_LANGUAGE==="es"?"Tendencias":ACTIVE_LANGUAGE==="ru"?"Популярное":"Trending");
       el.innerHTML=`<div class="trend-kicker">🔥 ${esc(word)} ${cfg.flag}</div><div class="trend-items">${picks.map(p=>`<a class="trend-pill" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'trending_strip')}>${esc(p.name)}</a>`).join("")}</div>`;
     }
     function renderRegionHero(partners){
       const el=document.getElementById("regionHero"); if(!el)return;
-      const cfg=regionConfig(ACTIVE_REGION); const copy=regionCopy(); const picks=preferredPartners(cfg.heroPartners,partners,3); const primary=picks[0];
+      const cfg=regionConfig(ACTIVE_REGION); const copy=regionCopy(); const travelPartners=travelPartnersOnly(partners); const picks=preferredPartners(cfg.heroPartners,travelPartners,3); const primary=picks[0];
       document.body.className=(document.body.className||"").replace(/\bregion-\S+/g,"").trim()+` region-${ACTIVE_REGION}`;
       el.innerHTML=`<div class="hero-copy"><div class="region-badge">${cfg.flag} ${esc(copy.kicker||cfg.label)}</div><h1>${esc(copy.title)}</h1><p>${esc(copy.desc)}</p><div class="hero-actions"><a class="primary-cta" href="${esc(primary?partnerUrl(primary):'#')}" target="_blank" rel="noopener"${primary?clickAttrs(primary,'hero_primary'):''}>${esc(copy.primary||'Explore deals')} →</a><a class="secondary-cta" href="?region=us&lang=en">English / US</a></div></div><div class="hero-partners">${picks.map(p=>`<a class="hero-mini-card" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'hero_partner')}><strong>${esc(p.name)}</strong><span>${esc(p.description||translatedCategory(p.category_key))}</span></a>`).join("")}</div>`;
     }
