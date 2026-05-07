@@ -48,14 +48,6 @@
     "tier": 2
   },
   {
-    "name": "Airalo PL",
-    "category_key": "sim",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://airalo.tpo.lv/eXjKLiuw",
-    "tier": 1
-  },
-  {
     "name": "Amazon PL",
     "category_key": "marketplace",
     "region": "pl",
