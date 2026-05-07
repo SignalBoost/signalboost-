@@ -39,6 +39,19 @@
     .pill:hover{border-color:rgba(245,197,66,.28);transform:translateY(-1px)}
     .pill.active{background:var(--gold);color:#10151d;border-color:var(--gold)}
     #column1{padding:10px 0 22px}
+    .category-grid{display:grid;grid-template-columns:1fr;gap:9px;margin:10px 12px 12px}
+    .category-tile{width:100%;border:1px solid rgba(255,255,255,.08);background:var(--card);color:#fff;border-radius:16px;padding:13px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,.10);transition:.16s ease}
+    .category-tile:hover{border-color:rgba(245,197,66,.32);transform:translateY(-1px);background:#151d28}
+    .category-tile.active{border-color:rgba(245,197,66,.60);background:rgba(245,197,66,.11)}
+    .category-tile-left{display:flex;align-items:center;gap:10px;min-width:0}
+    .category-tile-icon{font-size:18px;width:22px;text-align:center}
+    .category-tile-title{display:block;font-size:13px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .category-tile-count{font-size:11px;color:#111;background:var(--gold);border-radius:999px;padding:4px 8px;font-weight:900;flex:0 0 auto}
+    .selected-panel{margin:12px;border:1px solid rgba(245,197,66,.18);border-radius:18px;background:var(--card);overflow:hidden}
+    .selected-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .selected-panel-head strong{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:#c9d7e8}
+    .selected-close{border:0;background:rgba(255,255,255,.07);color:#fff;border-radius:999px;width:28px;height:28px;font-weight:900;cursor:pointer}
+    .selected-list{padding:8px}
     .sidebar-category{margin:10px 12px;border:1px solid rgba(255,255,255,.07);border-radius:17px;overflow:hidden;background:var(--card);box-shadow:0 10px 28px rgba(0,0,0,.12)}
     .sidebar-category-btn{width:100%;border:none;background:transparent;color:#fff;padding:14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left}
     .sidebar-category-left,.sidebar-category-right{display:flex;align-items:center;gap:10px;min-width:0}
@@ -207,10 +220,10 @@
       specialty_other:{icon:'✨', en:'Special Offers', 'pt-BR':'Ofertas Especiais', es:'Ofertas Especiales', pl:'Oferty specjalne'}
     };
     const I18N = {
-      en:{brand_name:'SignalBoost', nav_status:'Region-aware offers', explore_offers:'Explore offers', search_placeholder:'Search offers...', partners:'Partners', right_sub:'Featured for your selected region', featured_service:'Explore a featured service picked for you.', view_more:'View More', featured:'Featured', all:'All', travel:'Travel', local:'Local', more:'more partners', no_results:'No partners match your current filters.', hero_title:'Offers for {region}', hero_copy:'Browse trusted partners available in this region. Local matches appear first, global offers appear as fallback.', explore_region:'Explore region', show_all:'Show all', trending:'Trending', tier:'Tier', language_prompt_title:'Prefer English?', language_prompt_copy:'You can switch this page to English at any time.', language_prompt_keep:'Keep local language', language_prompt_english:'Switch to English'},
-      'pt-BR':{brand_name:'SignalBoost', nav_status:'Ofertas por região', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Parceiros', right_sub:'Destaques para a região selecionada', featured_service:'Explore um serviço em destaque escolhido para você.', view_more:'Ver Mais', featured:'Destaques', all:'Todos', travel:'Viagem', local:'Local', more:'mais parceiros', no_results:'Nenhum parceiro corresponde aos filtros atuais.', hero_title:'Ofertas para {region}', hero_copy:'Veja parceiros confiáveis disponíveis nesta região. Parceiros locais aparecem primeiro, ofertas globais aparecem como alternativa.', explore_region:'Explorar região', show_all:'Ver todos', trending:'Em alta', tier:'Nível', language_prompt_title:'Prefere inglês?', language_prompt_copy:'Você pode mudar esta página para inglês a qualquer momento.', language_prompt_keep:'Manter português', language_prompt_english:'Mudar para inglês'},
-      es:{brand_name:'SignalBoost', nav_status:'Ofertas por región', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Socios', right_sub:'Destacados para tu región seleccionada', featured_service:'Explora un servicio destacado elegido para ti.', view_more:'Ver más', featured:'Destacados', all:'Todos', travel:'Viajes', local:'Local', more:'socios más', no_results:'Ningún socio coincide con tus filtros.', hero_title:'Ofertas para {region}', hero_copy:'Explora socios confiables disponibles en esta región. Los locales aparecen primero y los globales como alternativa.', explore_region:'Explorar región', show_all:'Ver todos', trending:'Tendencias', tier:'Nivel', language_prompt_title:'¿Prefieres inglés?', language_prompt_copy:'Puedes cambiar esta página a inglés en cualquier momento.', language_prompt_keep:'Mantener español', language_prompt_english:'Cambiar a inglés'},
-      pl:{brand_name:'SignalBoost', nav_status:'Oferty według regionu', explore_offers:'Przeglądaj oferty', search_placeholder:'Szukaj ofert...', partners:'Partnerzy', right_sub:'Polecane dla wybranego regionu', featured_service:'Sprawdź wyróżnioną usługę wybraną dla Ciebie.', view_more:'Zobacz więcej', featured:'Polecane', all:'Wszystkie', travel:'Podróże', local:'Lokalne', more:'więcej partnerów', no_results:'Brak partnerów dla tych filtrów.', hero_title:'Oferty dla {region}', hero_copy:'Przeglądaj zaufanych partnerów dostępnych w tym regionie. Lokalne oferty są pierwsze, globalne jako rezerwa.', explore_region:'Przeglądaj region', show_all:'Pokaż wszystkie', trending:'Popularne', tier:'Poziom', language_prompt_title:'Wolisz angielski?', language_prompt_copy:'Możesz w każdej chwili przełączyć tę stronę na język angielski.', language_prompt_keep:'Zostań przy polskim', language_prompt_english:'Przełącz na angielski'}
+      en:{brand_name:'SignalBoost', nav_status:'Region-aware offers', explore_offers:'Explore offers', search_placeholder:'Search offers...', partners:'Partners', right_sub:'Featured for your selected region', featured_service:'Explore a featured service picked for you.', view_more:'View More', featured:'Featured', all:'All', travel:'Travel', local:'Local', more:'more partners', no_results:'No partners match your current filters.', hero_title:'Offers for {region}', hero_copy:'Browse trusted partners available in this region. Local matches appear first, global offers appear as fallback.', explore_region:'Explore region', show_all:'Show all', trending:'Trending', tier:'Tier', language_prompt_title:'Prefer English?', language_prompt_copy:'You can switch this page to English at any time.', language_prompt_keep:'Keep local language', language_prompt_english:'Switch to English', search_results:'Results'},
+      'pt-BR':{brand_name:'SignalBoost', nav_status:'Ofertas por região', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Parceiros', right_sub:'Destaques para a região selecionada', featured_service:'Explore um serviço em destaque escolhido para você.', view_more:'Ver Mais', featured:'Destaques', all:'Todos', travel:'Viagem', local:'Local', more:'mais parceiros', no_results:'Nenhum parceiro corresponde aos filtros atuais.', hero_title:'Ofertas para {region}', hero_copy:'Veja parceiros confiáveis disponíveis nesta região. Parceiros locais aparecem primeiro, ofertas globais aparecem como alternativa.', explore_region:'Explorar região', show_all:'Ver todos', trending:'Em alta', tier:'Nível', language_prompt_title:'Prefere inglês?', language_prompt_copy:'Você pode mudar esta página para inglês a qualquer momento.', language_prompt_keep:'Manter português', language_prompt_english:'Mudar para inglês', search_results:'Resultados'},
+      es:{brand_name:'SignalBoost', nav_status:'Ofertas por región', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Socios', right_sub:'Destacados para tu región seleccionada', featured_service:'Explora un servicio destacado elegido para ti.', view_more:'Ver más', featured:'Destacados', all:'Todos', travel:'Viajes', local:'Local', more:'socios más', no_results:'Ningún socio coincide con tus filtros.', hero_title:'Ofertas para {region}', hero_copy:'Explora socios confiables disponibles en esta región. Los locales aparecen primero y los globales como alternativa.', explore_region:'Explorar región', show_all:'Ver todos', trending:'Tendencias', tier:'Nivel', language_prompt_title:'¿Prefieres inglés?', language_prompt_copy:'Puedes cambiar esta página a inglés en cualquier momento.', language_prompt_keep:'Mantener español', language_prompt_english:'Cambiar a inglés', search_results:'Resultados'},
+      pl:{brand_name:'SignalBoost', nav_status:'Oferty według regionu', explore_offers:'Przeglądaj oferty', search_placeholder:'Szukaj ofert...', partners:'Partnerzy', right_sub:'Polecane dla wybranego regionu', featured_service:'Sprawdź wyróżnioną usługę wybraną dla Ciebie.', view_more:'Zobacz więcej', featured:'Polecane', all:'Wszystkie', travel:'Podróże', local:'Lokalne', more:'więcej partnerów', no_results:'Brak partnerów dla tych filtrów.', hero_title:'Oferty dla {region}', hero_copy:'Przeglądaj zaufanych partnerów dostępnych w tym regionie. Lokalne oferty są pierwsze, globalne jako rezerwa.', explore_region:'Przeglądaj region', show_all:'Pokaż wszystkie', trending:'Popularne', tier:'Poziom', language_prompt_title:'Wolisz angielski?', language_prompt_copy:'Możesz w każdej chwili przełączyć tę stronę na język angielski.', language_prompt_keep:'Zostań przy polskim', language_prompt_english:'Przełącz na angielski', search_results:'Wyniki'}
     };
     const REGION_LANGUAGE = {br:'pt-BR', pl:'pl', us:'en', uk:'en', ca:'en', au:'en', nz:'en', 'es-latam':'es', ot:'en'};
     const urlParams = new URLSearchParams(window.location.search);
@@ -219,7 +232,7 @@
     const initialRegion = (urlRegion && REGIONS.some(r=>r.key===urlRegion)) ? urlRegion : (savedRegion || 'br');
     const savedLang = localStorage.getItem('sb_lang');
     const initialLang = savedLang || REGION_LANGUAGE[initialRegion] || 'en';
-    const state = {region: initialRegion, lang: initialLang, filter: 'featured', search: '', expanded: new Set(), showAll: new Set()};
+    const state = {region: initialRegion, lang: initialLang, filter: 'featured', search: '', expanded: new Set(), showAll: new Set(), activeSidebarCategory: ''};
     const $ = sel => document.querySelector(sel);
     const el = (tag, cls, text) => { const n=document.createElement(tag); if(cls) n.className=cls; if(text!==undefined) n.textContent=text; return n; };
     const t = (key, vars={}) => (I18N[state.lang]?.[key] || I18N.en[key] || key).replace(/{(\w+)}/g, (_,k)=>vars[k]??'');
@@ -303,26 +316,50 @@
     }
     function renderPills(){
       const rp=$('#regionPills'); rp.innerHTML='';
-      REGIONS.forEach(r=>{ const b=el('button','pill'+(state.region===r.key?' active':''),r.label); b.onclick=()=>{state.region=r.key; localStorage.setItem('sb_region',r.key); if(!localStorage.getItem('sb_lang_manual')){ state.lang = REGION_LANGUAGE[r.key] || 'en'; } state.expanded.clear(); state.showAll.clear(); render(); showLanguagePrompt();}; rp.appendChild(b); });
+      REGIONS.forEach(r=>{ const b=el('button','pill'+(state.region===r.key?' active':''),r.label); b.onclick=()=>{state.region=r.key; localStorage.setItem('sb_region',r.key); if(!localStorage.getItem('sb_lang_manual')){ state.lang = REGION_LANGUAGE[r.key] || 'en'; } state.expanded.clear(); state.showAll.clear(); state.activeSidebarCategory=''; render(); showLanguagePrompt();}; rp.appendChild(b); });
       const fp=$('#filterPills'); fp.innerHTML='';
-      [['featured',t('featured')],['all',t('all')],['local',t('local')]].forEach(([k,label])=>{ const b=el('button','pill'+(state.filter===k?' active':''),label); b.onclick=()=>{state.filter=k; state.showAll.clear(); render();}; fp.appendChild(b); });
+      [['featured',t('featured')],['all',t('all')],['local',t('local')]].forEach(([k,label])=>{ const b=el('button','pill'+(state.filter===k?' active':''),label); b.onclick=()=>{state.filter=k; state.showAll.clear(); state.activeSidebarCategory=''; render();}; fp.appendChild(b); });
     }
     function renderSidebar(){
       const root=$('#column1'); root.innerHTML='';
       const groups = sidebarGroups();
       if(!groups.length){ root.appendChild(el('div','empty',t('no_results'))); return; }
-      groups.forEach(([key,items],idx)=>{
-        if(!state.expanded.has(key) && idx < 1) state.expanded.add(key);
-        const card=el('section','sidebar-category'); card.dataset.open = state.expanded.has(key) ? '1' : '0';
-        const btn=el('button','sidebar-category-btn');
-        btn.innerHTML = `<div class="sidebar-category-left"><span class="sidebar-icon">${CATEGORY_META[key]?.icon || '•'}</span><span class="cat-title">${categoryName(key)}</span></div><div class="sidebar-category-right"><span class="partner-count">${items.length}</span><span class="expand-icon">${card.dataset.open==='1'?'−':'+'}</span></div>`;
-        btn.onclick=()=>{ state.expanded.has(key) ? state.expanded.delete(key) : state.expanded.add(key); renderSidebar(); };
-        const wrap=el('div','sidebar-partners');
-        const shown = state.showAll.has(key) ? items : items.slice(0,3);
-        shown.forEach(p=>wrap.appendChild(partnerRow(p)));
-        if(items.length > shown.length){ const more=el('button','show-more-btn',`+ ${items.length-shown.length} ${t('more')}`); more.onclick=()=>{state.showAll.add(key); renderSidebar();}; wrap.appendChild(more); }
-        card.append(btn,wrap); root.appendChild(card);
+
+      if(state.search.trim()){
+        const results = sidebarPartners();
+        const panel = el('section','selected-panel');
+        const head = el('div','selected-panel-head');
+        head.innerHTML = `<strong>${t('search_results') || 'Results'} (${results.length})</strong><button class="selected-close" type="button" aria-label="Clear search">×</button>`;
+        head.querySelector('button').onclick = ()=>{ state.search=''; $('#partnerSearch').value=''; render(); };
+        const list = el('div','selected-list');
+        results.forEach(p=>list.appendChild(partnerRow(p)));
+        panel.append(head,list); root.appendChild(panel);
+        return;
+      }
+
+      const grid = el('div','category-grid');
+      groups.forEach(([key,items])=>{
+        const tile = el('button','category-tile'+(state.activeSidebarCategory===key?' active':''));
+        tile.type = 'button';
+        tile.innerHTML = `<span class="category-tile-left"><span class="category-tile-icon">${CATEGORY_META[key]?.icon || '•'}</span><span class="category-tile-title">${categoryName(key)}</span></span><span class="category-tile-count">${items.length}</span>`;
+        tile.onclick = ()=>{ state.activeSidebarCategory = state.activeSidebarCategory===key ? '' : key; renderSidebar(); };
+        grid.appendChild(tile);
       });
+      root.appendChild(grid);
+
+      if(state.activeSidebarCategory){
+        const found = groups.find(([key])=>key===state.activeSidebarCategory);
+        if(found){
+          const [key,items] = found;
+          const panel = el('section','selected-panel');
+          const head = el('div','selected-panel-head');
+          head.innerHTML = `<strong>${CATEGORY_META[key]?.icon || '•'} ${categoryName(key)} (${items.length})</strong><button class="selected-close" type="button" aria-label="Close">×</button>`;
+          head.querySelector('button').onclick = ()=>{ state.activeSidebarCategory=''; renderSidebar(); };
+          const list = el('div','selected-list');
+          items.forEach(p=>list.appendChild(partnerRow(p)));
+          panel.append(head,list); root.appendChild(panel);
+        }
+      }
     }
 
     function renderHeaderNav(){
