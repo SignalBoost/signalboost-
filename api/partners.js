@@ -1,730 +1,2454 @@
-[
-  {
-    "name": "Travelking PL",
-    "category_key": "hotels",
-    "region": "pl",
-    "network": "Admitad",
-    "url": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
-    "tier": 2
-  },
-  {
-    "name": "Welcome Pickups PL",
-    "category_key": "transfers",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://tpo.lv/XAJOoobr",
-    "tier": 2
-  },
-  {
-    "name": "Amazon PL",
-    "category_key": "marketplace",
-    "region": "pl",
-    "network": "Amazon",
-    "url": "https://www.amazon.pl/?tag=signalboostai-20",
-    "tier": 1
-  },
-  {
-    "name": "AliExpress PL",
-    "category_key": "marketplace",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Bella Storia PL",
-    "category_key": "marketplace",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Converse PL",
-    "category_key": "marketplace",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Cybercart PL",
-    "category_key": "marketplace",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "TWOJEMEBLE PL",
-    "category_key": "marketplace",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Weneve PL",
-    "category_key": "marketplace",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Bloomcabin Poland",
-    "category_key": "products_tools",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "DAX PL",
-    "category_key": "products_tools",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Swiat Supli PL",
-    "category_key": "products_tools",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Beetles Gel Polish",
-    "category_key": "products_tools",
-    "region": "pl",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806",
-    "tier": 3
-  },
-  {
-    "name": "CVC BR",
-    "category_key": "flights",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
-    "tier": 1
-  },
-  {
-    "name": "Kiwi BR",
-    "category_key": "flights",
-    "region": "br",
-    "network": "Travelpayouts",
-    "url": "https://booking.tpo.lv/enwsEbCs",
-    "tier": 1
-  },
-  {
-    "name": "Trivago BR",
-    "category_key": "hotels",
-    "region": "br",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "Quero Passagem BR",
-    "category_key": "transfers",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
-    "tier": 2
-  },
-  {
-    "name": "Airalo BR",
-    "category_key": "sim",
-    "region": "br",
-    "network": "Travelpayouts",
-    "url": "https://airalo.tpo.lv/eXjKLiuw",
-    "tier": 1
-  },
-  {
-    "name": "SuperSim BR",
-    "category_key": "sim",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
-    "tier": 1
-  },
-  {
-    "name": "Klook BR",
-    "category_key": "tours",
-    "region": "br",
-    "network": "Travelpayouts",
-    "url": "https://klook.tpo.lv/pTp1NljF",
-    "tier": 2
-  },
-  {
-    "name": "Amazon BR",
-    "category_key": "marketplace",
-    "region": "br",
-    "network": "Amazon",
-    "url": "https://www.amazon.com.br/?tag=signalboostai-20",
-    "tier": 1
-  },
-  {
-    "name": "ESET BR",
-    "category_key": "products_tools",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/",
-    "tier": 2
-  },
-  {
-    "name": "Guldi BR",
-    "category_key": "products_tools",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/",
-    "tier": 3
-  },
-  {
-    "name": "TikTok Lite BR",
-    "category_key": "products_tools",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/",
-    "tier": 3
-  },
-  {
-    "name": "Você RH BR",
-    "category_key": "finance",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
-    "tier": 3
-  },
-  {
-    "name": "AirHelp BR",
-    "category_key": "insurance",
-    "region": "br",
-    "network": "Admitad",
-    "url": "https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/",
-    "tier": 1
-  },
-  {
-    "name": "Melhor Seguro BR",
-    "category_key": "insurance",
-    "region": "br",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Kiwi US",
-    "category_key": "flights",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "Trivago US",
-    "category_key": "hotels",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "H10 Hotels US",
-    "category_key": "hotels",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Sirenis Hotels US",
-    "category_key": "hotels",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Tiqets US",
-    "category_key": "tours",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "SuperBox",
-    "category_key": "products_tools",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806",
-    "tier": 3
-  },
-  {
-    "name": "Valerion",
-    "category_key": "products_tools",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
-    "tier": 3
-  },
-  {
-    "name": "Countabout",
-    "category_key": "finance",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
-    "tier": 3
-  },
-  {
-    "name": "FileYourTaxes",
-    "category_key": "finance",
-    "region": "us",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
-    "tier": 3
-  },
-  {
-    "name": "Kiwi MX",
-    "category_key": "flights",
-    "region": "mx",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "Trivago MX",
-    "category_key": "hotels",
-    "region": "mx",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "Amazon MX",
-    "category_key": "marketplace",
-    "region": "mx",
-    "network": "Amazon",
-    "url": "https://www.amazon.com.mx/?tag=signalboostai-20",
-    "tier": 1
-  },
-  {
-    "name": "Trivago EU",
-    "category_key": "hotels",
-    "region": "eu",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "Tiqets EU",
-    "category_key": "tours",
-    "region": "eu",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Kiwi CA",
-    "category_key": "flights",
-    "region": "ca",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "Trivago LATAM",
-    "category_key": "hotels",
-    "region": "latam",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=105929&awinaffid=2834806",
-    "tier": 1
-  },
-  {
-    "name": "Jumbo Car Costa Rica",
-    "category_key": "travel_services",
-    "region": "latam",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
-    "tier": 3
-  },
-  {
-    "name": "Tiqets GB",
-    "category_key": "tours",
-    "region": "gb",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "Kiwi Global",
-    "category_key": "flights",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://booking.tpo.lv/enwsEbCs",
-    "tier": 1
-  },
-  {
-    "name": "Oman Air",
-    "category_key": "flights",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://lsuix.com/g/eh3q84z3tdad273170bcd820413c43/",
-    "tier": 1
-  },
-  {
-    "name": "Aviasales",
-    "category_key": "flights",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://aviasales.tpo.lv/VoWXgFFm",
-    "tier": 2
-  },
-  {
-    "name": "Zenhotels",
-    "category_key": "hotels",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
-    "tier": 2
-  },
-  {
-    "name": "Kiwitaxi Global",
-    "category_key": "transfers",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
-    "tier": 1
-  },
-  {
-    "name": "Welcome Pickups Global",
-    "category_key": "transfers",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://tpo.lv/XAJOoobr",
-    "tier": 1
-  },
-  {
-    "name": "GetTransfer Global",
-    "category_key": "transfers",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
-    "tier": 2
-  },
-  {
-    "name": "Intui.travel",
-    "category_key": "transfers",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://intui.tpo.lv/Rrx5VuN3",
-    "tier": 2
-  },
-  {
-    "name": "Busbud",
-    "category_key": "transfers",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://busbud.tpo.lv/h4C6YPFZ",
-    "tier": 3
-  },
-  {
-    "name": "HolidayTaxis Global",
-    "category_key": "transfers",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://holidaytaxis.tpo.lv/oHwpbrFt",
-    "tier": 3
-  },
-  {
-    "name": "Alamo",
-    "category_key": "travel_services",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
-    "tier": 1
-  },
-  {
-    "name": "Localrent",
-    "category_key": "travel_services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://localrent.tpo.lv/XS0CqdMP",
-    "tier": 1
-  },
-  {
-    "name": "Economybookings",
-    "category_key": "travel_services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://economybookings.tpo.lv/jSFMPEPA",
-    "tier": 2
-  },
-  {
-    "name": "QEEQ",
-    "category_key": "travel_services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://qeeq.tpo.lv/jklB4Pbm",
-    "tier": 2
-  },
-  {
-    "name": "Radical Storage Global",
-    "category_key": "travel_services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2
-  },
-  {
-    "name": "AutoEurope",
-    "category_key": "travel_services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://autoeurope.tpo.lv/t84AzZbO",
-    "tier": 3
-  },
-  {
-    "name": "GetRentacar",
-    "category_key": "travel_services",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://getrentacar.tpo.lv/OR2TWduQ",
-    "tier": 3
-  },
-  {
-    "name": "Airalo Global",
-    "category_key": "sim",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://airalo.tpo.lv/eXjKLiuw",
-    "tier": 1
-  },
-  {
-    "name": "Saily",
-    "category_key": "sim",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
-    "tier": 2
-  },
-  {
-    "name": "TurboVPN",
-    "category_key": "sim",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
-    "tier": 2
-  },
-  {
-    "name": "Yesim",
-    "category_key": "sim",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://yesim.tpo.lv/3vIzBQts",
-    "tier": 2
-  },
-  {
-    "name": "Drimsim",
-    "category_key": "sim",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://drimsim.tpo.lv/PGwr6JTr",
-    "tier": 3
-  },
-  {
-    "name": "Klook Global",
-    "category_key": "tours",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://klook.tpo.lv/pTp1NljF",
-    "tier": 1
-  },
-  {
-    "name": "GoCity",
-    "category_key": "tours",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://gocity.tpo.lv/Des5Cgov",
-    "tier": 2
-  },
-  {
-    "name": "WeGoTrip",
-    "category_key": "tours",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://wegotrip.tpo.lv/kKIF0gIW",
-    "tier": 2
-  },
-  {
-    "name": "BigBusTours",
-    "category_key": "tours",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://bigbustours.tpo.lv/grT1QWXA",
-    "tier": 3
-  },
-  {
-    "name": "BikesBooking",
-    "category_key": "tours",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://bikesbooking.tpo.lv/B3zIKanS",
-    "tier": 3
-  },
-  {
-    "name": "EatWith",
-    "category_key": "tours",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://eatwith.tpo.lv/BfAnpZNb",
-    "tier": 3
-  },
-  {
-    "name": "Searadar",
-    "category_key": "tours",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://searadar.tpo.lv/TO4A5eBZ",
-    "tier": 3
-  },
-  {
-    "name": "Amazon Global",
-    "category_key": "marketplace",
-    "region": "global",
-    "network": "Amazon",
-    "url": "https://www.amazon.com/?tag=signalboostai-20",
-    "tier": 1
-  },
-  {
-    "name": "Alibaba",
-    "category_key": "marketplace",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
-    "tier": 2
-  },
-  {
-    "name": "IGP Gifts",
-    "category_key": "marketplace",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/",
-    "tier": 3
-  },
-  {
-    "name": "Cyber Florist",
-    "category_key": "marketplace",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://yjfca.com/g/75nfprdgefad273170bc5a87002712/",
-    "tier": 4
-  },
-  {
-    "name": "King Koil",
-    "category_key": "marketplace",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
-    "tier": 4
-  },
-  {
-    "name": "Tsarbomba",
-    "category_key": "marketplace",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
-    "tier": 4
-  },
-  {
-    "name": "Xuchang Aixiu Hair Products",
-    "category_key": "marketplace",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
-    "tier": 4
-  },
-  {
-    "name": "Proton VPN",
-    "category_key": "products_tools",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
-    "tier": 1
-  },
-  {
-    "name": "Cozeware",
-    "category_key": "products_tools",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "UdPower",
-    "category_key": "products_tools",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "PearlMountain Limited",
-    "category_key": "products_tools",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
-    "tier": 3
-  },
-  {
-    "name": "Kapitalwise",
-    "category_key": "finance",
-    "region": "global",
-    "network": "Awin",
-    "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
-    "tier": 2
-  },
-  {
-    "name": "AURAS Travel Insurance",
-    "category_key": "insurance",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://ogsib.com/g/g86qhgosread273170bc102b8feede/",
-    "tier": 1
-  },
-  {
-    "name": "EKTA Insurance",
-    "category_key": "insurance",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://ektatraveling.tpo.lv/XWbZbj8S",
-    "tier": 1
-  },
-  {
-    "name": "ACKO",
-    "category_key": "insurance",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/",
-    "tier": 2
-  },
-  {
-    "name": "ICICI Lombard",
-    "category_key": "insurance",
-    "region": "global",
-    "network": "Admitad",
-    "url": "https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/",
-    "tier": 2
-  },
-  {
-    "name": "Compensair",
-    "category_key": "insurance",
-    "region": "global",
-    "network": "Travelpayouts",
-    "url": "https://compensair.tpo.lv/wxDDCITG",
-    "tier": 3
+{
+  "partners": [
+    {
+      "id": "aviasales",
+      "name": "Aviasales",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://aviasales.tpo.lv/VoWXgFFm",
+      "category": "flights",
+      "category_key": "flights",
+      "category_label": "Flights",
+      "network": "Travelpayouts",
+      "logo": "aviasales.png",
+      "description": "Search and compare flights worldwide with Aviasales.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://aviasales.tpo.lv/VoWXgFFm"
+      }
+    },
+    {
+      "id": "cvc",
+      "name": "CVC",
+      "regions": [
+        "br",
+        "ot"
+      ],
+      "url": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
+      "category": "flights",
+      "category_key": "flights",
+      "category_label": "Flights",
+      "network": "Admitad",
+      "logo": "cvc.png",
+      "description": "Find and book flights with CVC.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "br": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
+        "ot": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/"
+      }
+    },
+    {
+      "id": "kiwi",
+      "name": "Kiwi",
+      "regions": [
+        "us",
+        "br",
+        "pl",
+        "es-latam",
+        "ca",
+        "ot"
+      ],
+      "url": "https://booking.tpo.lv/enwsEbCs",
+      "category": "flights",
+      "category_key": "flights",
+      "category_label": "Flights",
+      "network": "Awin, Travelpayouts",
+      "logo": "kiwi.png",
+      "description": "Compare and book flights for regional and global trips.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
+        "es-latam": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
+        "br": "https://booking.tpo.lv/enwsEbCs",
+        "pl": "https://booking.tpo.lv/enwsEbCs",
+        "ot": "https://booking.tpo.lv/enwsEbCs",
+        "ca": "https://booking.tpo.lv/enwsEbCs"
+      }
+    },
+    {
+      "id": "oman-airlines",
+      "name": "Oman Airlines",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://lsuix.com/g/eh3q84z3tdad273170bcd820413c43/",
+      "category": "flights",
+      "category_key": "flights",
+      "category_label": "Flights",
+      "network": "Admitad",
+      "logo": "oman-airlines.png",
+      "description": "Flight offers and travel routes with Oman Airlines.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://lsuix.com/g/eh3q84z3tdad273170bcd820413c43/"
+      }
+    },
+    {
+      "id": "lastminute",
+      "name": "Lastminute",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
+      "category": "flights",
+      "category_key": "flights",
+      "category_label": "Flights",
+      "network": "Awin",
+      "logo": "lastminute.png",
+      "description": "Explore Lastminute offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "lennuabi",
+      "name": "Lennuabi",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/",
+      "category": "flights",
+      "category_key": "flights",
+      "category_label": "Flights",
+      "network": "Admitad",
+      "logo": "lennuabi.png",
+      "description": "Explore Lennuabi offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/"
+      }
+    },
+    {
+      "id": "booking-com-brazil",
+      "name": "Booking.com Brazil",
+      "regions": [
+        "br",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Awin",
+      "logo": "booking-com-brazil.png",
+      "description": "Book hotels in Brazil with Booking.com Brazil.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "br": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "travelking",
+      "name": "Travelking",
+      "regions": [
+        "pl",
+        "hu"
+      ],
+      "url": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Admitad",
+      "logo": "travelking.png",
+      "description": "Explore Travelking offers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "pl": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
+        "hu": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/"
+      }
+    },
+    {
+      "id": "trivago",
+      "name": "Trivago",
+      "regions": [
+        "us",
+        "br",
+        "pl",
+        "es-latam",
+        "de",
+        "nz",
+        "ar",
+        "co",
+        "pe",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Awin",
+      "logo": "trivago.png",
+      "description": "Compare hotel prices across major booking platforms.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "br": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "pl": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "es-latam": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "ar": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "co": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "de": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "nz": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+        "pe": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "h10-hotels",
+      "name": "H10 Hotels",
+      "regions": [
+        "us",
+        "ca"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Awin",
+      "logo": "h10-hotels.png",
+      "description": "Explore H10 Hotels offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+        "ca": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "planet-of-hotels",
+      "name": "Planet of Hotels",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Admitad",
+      "logo": "planet-of-hotels.png",
+      "description": "Explore Planet of Hotels offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/"
+      }
+    },
+    {
+      "id": "sirenis-hotels",
+      "name": "Sirenis Hotels",
+      "regions": [
+        "us",
+        "es-latam",
+        "ca"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Awin",
+      "logo": "sirenis-hotels.png",
+      "description": "Explore Sirenis Hotels offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+        "es-latam": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+        "ca": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "zenhotels",
+      "name": "Zenhotels",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Admitad",
+      "logo": "zenhotels.png",
+      "description": "Explore Zenhotels offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/"
+      }
+    },
+    {
+      "id": "nn-hotels",
+      "name": "NN Hotels",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=19428&awinaffid=2834806",
+      "category": "hotels",
+      "category_key": "hotels",
+      "category_label": "Hotels",
+      "network": "Awin",
+      "logo": "nn-hotels.png",
+      "description": "Explore NN Hotels offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=19428&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "airalo",
+      "name": "Airalo",
+      "regions": [
+        "us",
+        "br",
+        "pl",
+        "uk",
+        "es-latam",
+        "ot"
+      ],
+      "url": "https://airalo.tpo.lv/eXjKLiuw",
+      "category": "esim",
+      "category_key": "esim",
+      "category_label": "SIM & Connectivity",
+      "network": "Travelpayouts",
+      "logo": "airalo.png",
+      "description": "Stay connected worldwide with Airalo eSIMs.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://airalo.tpo.lv/eXjKLiuw",
+        "us": "https://airalo.tpo.lv/eXjKLiuw",
+        "br": "https://airalo.tpo.lv/eXjKLiuw",
+        "pl": "https://airalo.tpo.lv/eXjKLiuw",
+        "uk": "https://airalo.tpo.lv/eXjKLiuw",
+        "es-latam": "https://airalo.tpo.lv/eXjKLiuw"
+      }
+    },
+    {
+      "id": "drimsim",
+      "name": "Drimsim",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://drimsim.tpo.lv/PGwr6JTr",
+      "category": "esim",
+      "category_key": "esim",
+      "category_label": "SIM & Connectivity",
+      "network": "Travelpayouts",
+      "logo": "drimsim.png",
+      "description": "Global SIM card service with Drimsim.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://drimsim.tpo.lv/PGwr6JTr"
+      }
+    },
+    {
+      "id": "saily",
+      "name": "Saily",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
+      "category": "esim",
+      "category_key": "esim",
+      "category_label": "SIM & Connectivity",
+      "network": "Travelpayouts",
+      "logo": "saily.png",
+      "description": "Get global connectivity with Saily.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629"
+      }
+    },
+    {
+      "id": "the-bitjoy-esim",
+      "name": "The BitJoy eSIM",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
+      "category": "esim",
+      "category_key": "esim",
+      "category_label": "SIM & Connectivity",
+      "network": "Awin",
+      "logo": "bitjoy.png",
+      "description": "eSIM service for US and global travelers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "yesim",
+      "name": "Yesim",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://yesim.tpo.lv/3vIzBQts",
+      "category": "esim",
+      "category_key": "esim",
+      "category_label": "SIM & Connectivity",
+      "network": "Travelpayouts",
+      "logo": "yesim.png",
+      "description": "Buy eSIMs easily with Yesim.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://yesim.tpo.lv/3vIzBQts"
+      }
+    },
+    {
+      "id": "jetpac",
+      "name": "JetPac",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/",
+      "category": "esim",
+      "category_key": "esim",
+      "category_label": "SIM & Connectivity",
+      "network": "Admitad",
+      "logo": "jetpac.png",
+      "description": "Explore JetPac offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/"
+      }
+    },
+    {
+      "id": "klook",
+      "name": "Klook",
+      "regions": [
+        "us",
+        "br",
+        "uk",
+        "es-latam",
+        "ot"
+      ],
+      "url": "https://klook.tpo.lv/pTp1NljF",
+      "category": "tours",
+      "category_key": "tours",
+      "category_label": "Tours & Activities",
+      "network": "Travelpayouts",
+      "logo": "klook.png",
+      "description": "Discover and book tours with Klook.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://klook.tpo.lv/pTp1NljF",
+        "us": "https://klook.tpo.lv/pTp1NljF",
+        "br": "https://klook.tpo.lv/pTp1NljF",
+        "uk": "https://klook.tpo.lv/pTp1NljF",
+        "es-latam": "https://klook.tpo.lv/pTp1NljF"
+      }
+    },
+    {
+      "id": "tiqets",
+      "name": "Tiqets",
+      "regions": [
+        "us",
+        "uk",
+        "de",
+        "fr",
+        "it",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+      "category": "tours",
+      "category_key": "tours",
+      "category_label": "Tours & Activities",
+      "network": "Awin",
+      "logo": "tiqets.png",
+      "description": "Book tickets for museums and attractions with Tiqets.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+        "de": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+        "fr": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+        "it": "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
+        "uk": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "wegotrip",
+      "name": "WeGoTrip",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://wegotrip.tpo.lv/kKIF0gIW",
+      "category": "tours",
+      "category_key": "tours",
+      "category_label": "Tours & Activities",
+      "network": "Travelpayouts",
+      "logo": "wegotrip.png",
+      "description": "Book guided tours and experiences with WeGoTrip.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://wegotrip.tpo.lv/kKIF0gIW"
+      }
+    },
+    {
+      "id": "bikesbooking",
+      "name": "BikesBooking",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://bikesbooking.tpo.lv/B3zIKanS",
+      "category": "tours",
+      "category_key": "tours",
+      "category_label": "Tours & Activities",
+      "network": "Travelpayouts",
+      "logo": "bikesbooking.png",
+      "description": "Explore BikesBooking offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://bikesbooking.tpo.lv/B3zIKanS"
+      }
+    },
+    {
+      "id": "dombilet",
+      "name": "DomBilet",
+      "regions": [
+        "ru"
+      ],
+      "url": "https://ntzgd.com/g/lzgn53lu2cad273170bc328511f3b3/?erid=2bL9aMPo2e49hMef4rqyS2GjZ2",
+      "category": "tours",
+      "category_key": "tours",
+      "category_label": "Tours & Activities",
+      "network": "Admitad",
+      "logo": "dombilet.png",
+      "description": "Explore DomBilet offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ru": "https://ntzgd.com/g/lzgn53lu2cad273170bc328511f3b3/?erid=2bL9aMPo2e49hMef4rqyS2GjZ2"
+      }
+    },
+    {
+      "id": "go2africa",
+      "name": "Go2Africa",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
+      "category": "tours",
+      "category_key": "tours",
+      "category_label": "Tours & Activities",
+      "network": "Awin",
+      "logo": "go2africa.png",
+      "description": "Explore Go2Africa offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "searadar",
+      "name": "Searadar",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://searadar.tpo.lv/TO4A5eBZ",
+      "category": "tours",
+      "category_key": "tours",
+      "category_label": "Tours & Activities",
+      "network": "Travelpayouts",
+      "logo": "searadar.png",
+      "description": "Explore Searadar offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://searadar.tpo.lv/TO4A5eBZ"
+      }
+    },
+    {
+      "id": "kiwitaxi",
+      "name": "Kiwitaxi",
+      "regions": [
+        "pl",
+        "ot"
+      ],
+      "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+      "category": "transfers",
+      "category_key": "transfers",
+      "category_label": "Transfers",
+      "network": "Travelpayouts",
+      "logo": "kiwitaxi.png",
+      "description": "Explore Kiwitaxi offers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+        "pl": "https://kiwitaxi.tpo.lv/DVaqmgKo"
+      }
+    },
+    {
+      "id": "welcome-pickups",
+      "name": "Welcome Pickups",
+      "regions": [
+        "pl",
+        "ot"
+      ],
+      "url": "https://tpo.lv/XAJOoobr",
+      "category": "transfers",
+      "category_key": "transfers",
+      "category_label": "Transfers",
+      "network": "Travelpayouts",
+      "logo": "welcome-pickups.png",
+      "description": "Explore Welcome Pickups offers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://tpo.lv/XAJOoobr",
+        "pl": "https://tpo.lv/XAJOoobr"
+      }
+    },
+    {
+      "id": "gettransfer",
+      "name": "GetTransfer",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
+      "category": "transfers",
+      "category_key": "transfers",
+      "category_label": "Transfers",
+      "network": "Travelpayouts",
+      "logo": "gettransfer.png",
+      "description": "Explore GetTransfer offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://gettransfer.tpo.lv/Pb4p9ljm"
+      }
+    },
+    {
+      "id": "intui-travel",
+      "name": "Intui.travel",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://intui.tpo.lv/Rrx5VuN3",
+      "category": "transfers",
+      "category_key": "transfers",
+      "category_label": "Transfers",
+      "network": "Travelpayouts",
+      "logo": "intui-travel.png",
+      "description": "Explore Intui.travel offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://intui.tpo.lv/Rrx5VuN3"
+      }
+    },
+    {
+      "id": "quero-passagem",
+      "name": "Quero Passagem",
+      "regions": [
+        "br"
+      ],
+      "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
+      "category": "transfers",
+      "category_key": "transfers",
+      "category_label": "Transfers",
+      "network": "Admitad",
+      "logo": "queropassagem.png",
+      "description": "Bus and travel ticket offers for Brazil.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "br": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/"
+      }
+    },
+    {
+      "id": "carmel-car-limousine",
+      "name": "Carmel Car & Limousine",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806",
+      "category": "transfers",
+      "category_key": "transfers",
+      "category_label": "Transfers",
+      "network": "Awin",
+      "logo": "carmel-car-limousine.png",
+      "description": "Explore Carmel Car & Limousine offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "alamo",
+      "name": "Alamo",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Admitad",
+      "logo": "alamo.png",
+      "description": "Book car rentals with Alamo.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
+        "us": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/"
+      }
+    },
+    {
+      "id": "economybookings",
+      "name": "Economybookings",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://economybookings.tpo.lv/jSFMPEPA",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Travelpayouts",
+      "logo": "economybookings.png",
+      "description": "Book affordable car rentals with EconomyBookings.com.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://economybookings.tpo.lv/jSFMPEPA"
+      }
+    },
+    {
+      "id": "europcar",
+      "name": "Europcar",
+      "regions": [
+        "au",
+        "nz",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Awin",
+      "logo": "europcar.png",
+      "description": "Rent cars in Australia and New Zealand with Europcar.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "au": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+        "nz": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "getrentacar",
+      "name": "GetRentacar",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://getrentacar.tpo.lv/OR2TWduQ",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Travelpayouts",
+      "logo": "getrentacar.png",
+      "description": "Book cars online with GetRentacar.com.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://getrentacar.tpo.lv/OR2TWduQ"
+      }
+    },
+    {
+      "id": "jumbo-car-costa-rica",
+      "name": "Jumbo Car Costa Rica",
+      "regions": [
+        "us",
+        "es-latam",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Awin",
+      "logo": "jumbocar.png",
+      "description": "Rent cars in Costa Rica with Jumbo Car.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "es-latam": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "localrent",
+      "name": "Localrent",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://localrent.tpo.lv/XS0CqdMP",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Travelpayouts",
+      "logo": "localrent.png",
+      "description": "Rent cars worldwide with Localrent.com.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://localrent.tpo.lv/XS0CqdMP"
+      }
+    },
+    {
+      "id": "qeeq",
+      "name": "QEEQ",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://qeeq.tpo.lv/jklB4Pbm",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Travelpayouts",
+      "logo": "qeeq.png",
+      "description": "Find and book car rentals with QEEQ.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://qeeq.tpo.lv/jklB4Pbm"
+      }
+    },
+    {
+      "id": "vip-cars",
+      "name": "VIP Cars",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Awin",
+      "logo": "vipcars.png",
+      "description": "Book car rentals in the US with VIP Cars.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "allycar",
+      "name": "Allycar",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806",
+      "category": "car_rentals",
+      "category_key": "car_rentals",
+      "category_label": "Car Rentals",
+      "network": "Awin",
+      "logo": "allycar.png",
+      "description": "Explore Allycar offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "airhelp",
+      "name": "AirHelp",
+      "regions": [
+        "br",
+        "ot"
+      ],
+      "url": "https://airhelp.tpo.lv/EPrGDSO3",
+      "category": "insurance",
+      "category_key": "insurance",
+      "category_label": "Insurance & Claims",
+      "network": "Travelpayouts / Admitad",
+      "logo": "airhelp.png",
+      "description": "Explore AirHelp offers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://airhelp.tpo.lv/EPrGDSO3",
+        "br": "https://airhelp.tpo.lv/EPrGDSO3"
+      }
+    },
+    {
+      "id": "auras-travel-insurance",
+      "name": "AURAS Travel Insurance",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
+      "category": "insurance",
+      "category_key": "insurance",
+      "category_label": "Insurance & Claims",
+      "network": "Admitad",
+      "logo": "auras-travel-insurance.png",
+      "description": "Explore AURAS Travel Insurance offers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"
+      }
+    },
+    {
+      "id": "ekta",
+      "name": "EKTA",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://ektatraveling.tpo.lv/XWbZbj8S",
+      "category": "insurance",
+      "category_key": "insurance",
+      "category_label": "Insurance & Claims",
+      "network": "Travelpayouts",
+      "logo": "ekta.png",
+      "description": "Explore EKTA offers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://ektatraveling.tpo.lv/XWbZbj8S"
+      }
+    },
+    {
+      "id": "melhor-seguro",
+      "name": "Melhor Seguro",
+      "regions": [
+        "br"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806",
+      "category": "insurance",
+      "category_key": "insurance",
+      "category_label": "Insurance & Claims",
+      "network": "Awin",
+      "logo": "melhor-seguro.png",
+      "description": "Explore Melhor Seguro offers.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "br": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "acko",
+      "name": "ACKO",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/",
+      "category": "insurance",
+      "category_key": "insurance",
+      "category_label": "Insurance & Claims",
+      "network": "Admitad",
+      "logo": "acko.png",
+      "description": "Explore ACKO offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/"
+      }
+    },
+    {
+      "id": "icici-lombard",
+      "name": "ICICI Lombard",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/",
+      "category": "insurance",
+      "category_key": "insurance",
+      "category_label": "Insurance & Claims",
+      "network": "Admitad",
+      "logo": "icici-lombard.png",
+      "description": "Explore ICICI Lombard offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/"
+      }
+    },
+    {
+      "id": "compensair",
+      "name": "Compensair",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://compensair.tpo.lv/wxDDCITG",
+      "category": "insurance",
+      "category_key": "insurance",
+      "category_label": "Insurance & Claims",
+      "network": "Travelpayouts",
+      "logo": "compensair.png",
+      "description": "Explore Compensair offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://compensair.tpo.lv/wxDDCITG"
+      }
+    },
+    {
+      "id": "go-go-espana",
+      "name": "Go! Go! España",
+      "regions": [
+        "es-latam",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
+      "category": "travel_services",
+      "category_key": "travel_services",
+      "category_label": "Travel Services",
+      "network": "Awin",
+      "logo": "gogoespana.png",
+      "description": "Study abroad and cultural experiences with Go! Go! España.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "es-latam": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "evisa",
+      "name": "Evisa",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806",
+      "category": "travel_services",
+      "category_key": "travel_services",
+      "category_label": "Travel Services",
+      "network": "Awin",
+      "logo": "evisa.png",
+      "description": "Explore Evisa offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "radical-storage",
+      "name": "Radical Storage",
+      "regions": [
+        "pl",
+        "ot"
+      ],
+      "url": "https://radicalstorage.tpo.lv/tna4hnly",
+      "category": "travel_services",
+      "category_key": "travel_services",
+      "category_label": "Travel Services",
+      "network": "Travelpayouts",
+      "logo": "radical-storage.png",
+      "description": "Explore Radical Storage offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "ot": "https://radicalstorage.tpo.lv/tna4hnly",
+        "pl": "https://radicalstorage.tpo.lv/tna4hnly"
+      }
+    },
+    {
+      "id": "sem-parar-br",
+      "name": "Sem Parar BR",
+      "regions": [
+        "br"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=119233&awinaffid=2834806",
+      "category": "travel_services",
+      "category_key": "travel_services",
+      "category_label": "Travel Services",
+      "network": "Awin",
+      "logo": "sempararbr.png",
+      "description": "Road travel, toll, parking, and mobility services for Brazil.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": true,
+      "regional_urls": {
+        "br": "https://www.awin1.com/cread.php?awinmid=119233&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "alibaba",
+      "name": "Alibaba",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Admitad",
+      "logo": "alibaba.png",
+      "description": "Shop wholesale and retail products with Alibaba.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"
+      }
+    },
+    {
+      "id": "aliexpress",
+      "name": "AliExpress",
+      "regions": [
+        "pl",
+        "ot"
+      ],
+      "url": "https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin, Admitad",
+      "logo": "aliexpress.png",
+      "description": "Shop affordable products worldwide with AliExpress.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/",
+        "pl": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "amazon",
+      "name": "Amazon",
+      "regions": [
+        "us",
+        "br",
+        "pl",
+        "uk",
+        "es-latam",
+        "ot"
+      ],
+      "url": "https://www.amazon.com/?tag=signalboostai-20",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Amazon",
+      "logo": "amazon.png",
+      "description": "Shop regional and global products on Amazon.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "es-latam": "https://www.amazon.com.mx/?tag=signalboostai-20",
+        "br": "https://www.amazon.com.br/?tag=signalboostai-20",
+        "pl": "https://www.amazon.pl/?tag=signalboostai-20",
+        "us": "https://www.amazon.com/?tag=signalboostai-20",
+        "uk": "https://www.amazon.co.uk/?tag=signalboostai-20",
+        "ot": "https://www.amazon.com/?tag=signalboostai-20"
+      }
+    },
+    {
+      "id": "ladymakeup",
+      "name": "LadyMakeup",
+      "regions": [
+        "pl",
+        "ot"
+      ],
+      "url": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Admitad",
+      "logo": "ladymakeup.png",
+      "description": "Shop cosmetics and beauty products with LadyMakeup.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/",
+        "ot": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/"
+      }
+    },
+    {
+      "id": "miravia",
+      "name": "Miravia",
+      "regions": [
+        "es-latam",
+        "ot"
+      ],
+      "url": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Admitad",
+      "logo": "miravia.png",
+      "description": "Discover fashion and lifestyle products with Miravia.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "es-latam": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/",
+        "ot": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/"
+      }
+    },
+    {
+      "id": "bella-storia",
+      "name": "Bella Storia",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "bella-storia.png",
+      "description": "Explore Bella Storia offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "converse-pl",
+      "name": "Converse PL",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "converse-pl.png",
+      "description": "Explore Converse PL offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "swiat-supli-pl",
+      "name": "Swiat Supli PL",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "swiat-supli-pl.png",
+      "description": "Explore Swiat Supli PL offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "twojemeble-pl",
+      "name": "TWOJEMEBLE PL",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "twojemeble-pl.png",
+      "description": "Explore TWOJEMEBLE PL offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "weneve-pl",
+      "name": "Weneve PL",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "weneve-pl.png",
+      "description": "Explore Weneve PL offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "beetles-gel-polish",
+      "name": "Beetles Gel Polish",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "beetles-gel-polish.png",
+      "description": "Explore Beetles Gel Polish offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "cybercart-pl",
+      "name": "Cybercart PL",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "cybercart-pl.png",
+      "description": "Explore Cybercart PL offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "king-koil",
+      "name": "King Koil",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "king-koil.png",
+      "description": "Explore King Koil offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "oufer-body-jewelry",
+      "name": "OUFER BODY JEWELRY",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "oufer-body-jewelry.png",
+      "description": "Explore OUFER BODY JEWELRY offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "the-builder-market",
+      "name": "The Builder Market",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "the-builder-market.png",
+      "description": "Explore The Builder Market offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "woodestic",
+      "name": "Woodestic",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Admitad",
+      "logo": "woodestic.png",
+      "description": "Explore Woodestic offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/",
+        "us": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/"
+      }
+    },
+    {
+      "id": "xuchang-aixiu-hair-products",
+      "name": "Xuchang Aixiu Hair Products",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "xuchang-aixiu-hair-products.png",
+      "description": "Explore Xuchang Aixiu Hair Products offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "zlike-hair",
+      "name": "Zlike Hair",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Awin",
+      "logo": "zlike-hair.png",
+      "description": "Explore Zlike Hair offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "partner",
+      "name": "Читай-город",
+      "regions": [
+        "ru"
+      ],
+      "url": "https://kjuzv.com/g/q6gfnfvsq0ad273170bca804937a48/?erid=MvGzQC98w3Z1gMq1kx5ACoy5",
+      "category": "marketplace",
+      "category_key": "marketplace",
+      "category_label": "Marketplace",
+      "network": "Admitad",
+      "logo": "partner.png",
+      "description": "Explore Читай-город offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ru": "https://bednari.com/g/tsur35yw0tad273170bcff277dce71/?erid=5jtCeReNwxHpfQTEuVz11H1"
+      }
+    },
+    {
+      "id": "adguard-vpn",
+      "name": "AdGuard VPN",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "adguardvpn.png",
+      "description": "Protect your privacy with AdGuard VPN.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/"
+      }
+    },
+    {
+      "id": "bodylab",
+      "name": "bodylab",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "bodylab.png",
+      "description": "Health and fitness supplements from Bodylab.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/"
+      }
+    },
+    {
+      "id": "envato",
+      "name": "Envato",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "envato.png",
+      "description": "Creative assets and templates from Envato.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/"
+      }
+    },
+    {
+      "id": "lingualeo",
+      "name": "Lingualeo",
+      "regions": [
+        "ru",
+        "ot"
+      ],
+      "url": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/?erid=5jtCeReLm1S3Xx3LfA8SFZ6",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "lingualeo.png",
+      "description": "Learn languages online with Lingualeo.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ru": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/",
+        "ot": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/"
+      }
+    },
+    {
+      "id": "pearlmountain-limited",
+      "name": "PearlMountain Limited",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "pearlmountain.png",
+      "description": "Graphic design and creative tools from PearlMountain.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "proton-vpn",
+      "name": "Proton VPN",
+      "regions": [
+        "us",
+        "br",
+        "pl",
+        "uk",
+        "es-latam",
+        "ot"
+      ],
+      "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "protonvpn.png",
+      "description": "Secure your browsing with Proton VPN.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+        "us": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+        "br": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+        "pl": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+        "uk": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+        "es-latam": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/"
+      }
+    },
+    {
+      "id": "supersim",
+      "name": "SuperSim",
+      "regions": [
+        "br",
+        "ot"
+      ],
+      "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "supersim.png",
+      "description": "Affordable SIM services in Brazil and worldwide.",
+      "tier": 1,
+      "featured": true,
+      "travel_related": true,
+      "regional_urls": {
+        "br": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
+        "ot": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/"
+      }
+    },
+    {
+      "id": "bloomcabin-poland",
+      "name": "Bloomcabin Poland",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "bloomcabin-poland.png",
+      "description": "Explore Bloomcabin Poland offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "cozeware",
+      "name": "Cozeware",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "cozeware.png",
+      "description": "Explore Cozeware offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "dax-pl",
+      "name": "DAX PL",
+      "regions": [
+        "pl"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "dax-pl.png",
+      "description": "Explore DAX PL offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "pl": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "eset-br",
+      "name": "ESET BR",
+      "regions": [
+        "br"
+      ],
+      "url": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "eset-br.png",
+      "description": "Explore ESET BR offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "br": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/"
+      }
+    },
+    {
+      "id": "turbovpn",
+      "name": "TurboVPN",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "turbovpn.png",
+      "description": "Explore TurboVPN offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/"
+      }
+    },
+    {
+      "id": "udpower",
+      "name": "Udpower",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "udpower.png",
+      "description": "Explore Udpower offers.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "bimpy",
+      "name": "BiMPY",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "bimpy.png",
+      "description": "Explore BiMPY offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "guldi",
+      "name": "Guldi",
+      "regions": [
+        "br"
+      ],
+      "url": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "guldi.png",
+      "description": "Explore Guldi offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "br": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/"
+      }
+    },
+    {
+      "id": "superbox",
+      "name": "SuperBox",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "superbox.png",
+      "description": "Explore SuperBox offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "tiktok-lite",
+      "name": "TikTok Lite",
+      "regions": [
+        "br"
+      ],
+      "url": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Admitad",
+      "logo": "tiktok-lite.png",
+      "description": "Explore TikTok Lite offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "br": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/"
+      }
+    },
+    {
+      "id": "valerion",
+      "name": "Valerion",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
+      "category": "products_tools",
+      "category_key": "products_tools",
+      "category_label": "Products & Tools",
+      "network": "Awin",
+      "logo": "valerion.png",
+      "description": "Explore Valerion offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "countabout",
+      "name": "Countabout",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
+      "category": "finance",
+      "category_key": "finance",
+      "category_label": "Finance",
+      "network": "Awin",
+      "logo": "countabout.png",
+      "description": "Personal finance and budgeting with Countabout.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "fileyourtaxes",
+      "name": "FileYourTaxes",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
+      "category": "finance",
+      "category_key": "finance",
+      "category_label": "Finance",
+      "network": "Awin",
+      "logo": "fileyourtaxes.png",
+      "description": "File your taxes online with FileYourTaxes.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
+        "ot": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "kapitalwise",
+      "name": "Kapitalwise",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
+      "category": "finance",
+      "category_key": "finance",
+      "category_label": "Finance",
+      "network": "Awin",
+      "logo": "kapitalwise.png",
+      "description": "Financial planning and advisory services with Kapitalwise.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "western-union",
+      "name": "Western Union",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/",
+      "category": "finance",
+      "category_key": "finance",
+      "category_label": "Finance",
+      "network": "Admitad",
+      "logo": "westernunion.png",
+      "description": "Send and receive money worldwide with Western Union.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/"
+      }
+    },
+    {
+      "id": "pagbank",
+      "name": "PagBank",
+      "regions": [
+        "br"
+      ],
+      "url": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/",
+      "category": "finance",
+      "category_key": "finance",
+      "category_label": "Finance",
+      "network": "Admitad",
+      "logo": "pagbank.png",
+      "description": "Digital banking and payment offers for Brazil.",
+      "tier": 2,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "br": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/"
+      }
+    },
+    {
+      "id": "vocerh",
+      "name": "VoceRH",
+      "regions": [
+        "br"
+      ],
+      "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
+      "category": "finance",
+      "category_key": "finance",
+      "category_label": "Finance",
+      "network": "Admitad",
+      "logo": "vocerh.png",
+      "description": "Explore VoceRH offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "br": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/"
+      }
+    },
+    {
+      "id": "bunches",
+      "name": "Bunches",
+      "regions": [
+        "uk",
+        "ot"
+      ],
+      "url": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "bunches.png",
+      "description": "Send flowers and gifts in the UK with Bunches.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "uk": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/",
+        "ot": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/"
+      }
+    },
+    {
+      "id": "cs2case",
+      "name": "cs2case",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/?erid=2bL9aMPo2e49hMef4phyrL2RNS",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "cs2case.png",
+      "description": "Buy and sell CS2 cases with cs2case.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/"
+      }
+    },
+    {
+      "id": "delfin",
+      "name": "Delfin",
+      "regions": [
+        "ru",
+        "ot"
+      ],
+      "url": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/?erid=2bL9aMPo2e49hMef4rqyKUjZvt",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "delfin.png",
+      "description": "Russian specialty products with Delfin.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ru": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/",
+        "ot": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/"
+      }
+    },
+    {
+      "id": "forcedrop",
+      "name": "forcedrop",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "forcedrop.png",
+      "description": "Open cases and win items with forcedrop.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/"
+      }
+    },
+    {
+      "id": "ggpick",
+      "name": "ggpick",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "ggpick.png",
+      "description": "Gaming marketplace with ggpick.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/"
+      }
+    },
+    {
+      "id": "ggsel",
+      "name": "GGsel",
+      "regions": [
+        "ru",
+        "ot"
+      ],
+      "url": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/?erid=2bL9aMPo2e49hMef4phyrMWkN2",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "ggsel.png",
+      "description": "Digital goods marketplace with GGsel.",
+      "tier": 1,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ru": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/",
+        "ot": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/"
+      }
+    },
+    {
+      "id": "beverly-hills-md",
+      "name": "Beverly Hills MD",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Awin",
+      "logo": "beverly-hills-md.png",
+      "description": "Explore Beverly Hills MD offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "cyber-florist",
+      "name": "Cyber Florist",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://yjfca.com/g/75nfprdgefad273170bc5a87002712/",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "cyber-florist.png",
+      "description": "Explore Cyber Florist offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://yjfca.com/g/75nfprdgefad273170bc5a87002712/"
+      }
+    },
+    {
+      "id": "igp-gifts",
+      "name": "IGP Gifts",
+      "regions": [
+        "ot"
+      ],
+      "url": "https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "igp-gifts.png",
+      "description": "Explore IGP Gifts offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/"
+      }
+    },
+    {
+      "id": "lea",
+      "name": "LEA",
+      "regions": [
+        "ru"
+      ],
+      "url": "https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Admitad",
+      "logo": "lea.png",
+      "description": "Explore LEA offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ru": "https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx"
+      }
+    },
+    {
+      "id": "petpivot",
+      "name": "Petpivot",
+      "regions": [
+        "us"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=124898&awinaffid=2834806",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Awin",
+      "logo": "petpivot.png",
+      "description": "Explore Petpivot offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "us": "https://www.awin1.com/cread.php?awinmid=124898&awinaffid=2834806"
+      }
+    },
+    {
+      "id": "tsarbomba",
+      "name": "Tsarbomba",
+      "regions": [
+        "us",
+        "ot"
+      ],
+      "url": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
+      "category": "specialty_other",
+      "category_key": "specialty_other",
+      "category_label": "Specialty & Other",
+      "network": "Awin",
+      "logo": "tsarbomba.png",
+      "description": "Explore Tsarbomba offers.",
+      "tier": 3,
+      "featured": false,
+      "travel_related": false,
+      "regional_urls": {
+        "ot": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
+        "us": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806"
+      }
+    }
+  ],
+  "meta": {
+    "total_partners": 108,
+    "normalization": "strict regions, corrected US merchant tagging, category_key normalized, duplicate ids merged",
+    "us_corrections": [
+      "kapitalwise",
+      "king-koil",
+      "oufer-body-jewelry",
+      "woodestic",
+      "xuchang-aixiu-hair-products",
+      "zlike-hair",
+      "pearlmountain-limited",
+      "udpower",
+      "bimpy",
+      "tsarbomba"
+    ],
+    "change_log": [
+      {
+        "id": "kapitalwise",
+        "name": "Kapitalwise",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "king-koil",
+        "name": "King Koil",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "oufer-body-jewelry",
+        "name": "OUFER BODY JEWELRY",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "woodestic",
+        "name": "Woodestic",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "xuchang-aixiu-hair-products",
+        "name": "Xuchang Aixiu Hair Products",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "zlike-hair",
+        "name": "Zlike Hair",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "pearlmountain-limited",
+        "name": "PearlMountain Limited",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "udpower",
+        "name": "Udpower",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "bimpy",
+        "name": "BiMPY",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      },
+      {
+        "id": "tsarbomba",
+        "name": "Tsarbomba",
+        "change": "added_us_region",
+        "before": [
+          "ot"
+        ],
+        "after": [
+          "us",
+          "ot"
+        ]
+      }
+    ]
   }
-]
+}
