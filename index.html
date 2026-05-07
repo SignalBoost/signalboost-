@@ -601,13 +601,22 @@
     }
 
     async function loadPartners(){
+      // Always keep the embedded partner inventory as a safety base.
+      // If an external partners.json exists but is incomplete for a region,
+      // we merge it instead of replacing the embedded regional offers.
+      const embedded = EMBEDDED_PARTNERS.partners || [];
+      let remote = [];
       for(const endpoint of ["partners.json","/partners.json"]){
         try{
           const r=await fetch(endpoint,{cache:"no-store"});
-          if(r.ok){const d=await r.json(); return Array.isArray(d)?d:(d.partners||[]);}
+          if(r.ok){
+            const d=await r.json();
+            remote = Array.isArray(d) ? d : (d.partners || []);
+            break;
+          }
         }catch(e){}
       }
-      return EMBEDDED_PARTNERS.partners || [];
+      return mergePartners([...embedded, ...remote]);
     }
 
     function visiblePartners(){
