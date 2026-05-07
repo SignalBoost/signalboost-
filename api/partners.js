@@ -16,14 +16,6 @@
     "tier": 2
   },
   {
-    "name": "Radical Storage PL",
-    "category_key": "travel_services",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "tier": 2
-  },
-  {
     "name": "Amazon PL",
     "category_key": "marketplace",
     "region": "pl",
