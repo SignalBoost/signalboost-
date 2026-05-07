@@ -252,6 +252,13 @@
     .chips-title{margin:6px 0 12px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;font-size:12px}
     .empty{color:#9aa8b8;padding:16px;font-size:13px}
 
+
+    .sb-test-panel{position:fixed;left:10px;bottom:72px;z-index:9998;background:rgba(15,20,27,.96);border:1px solid rgba(245,197,66,.25);border-radius:14px;padding:10px;box-shadow:0 12px 28px rgba(0,0,0,.32);display:none;gap:6px;max-width:calc(100% - 20px)}
+    .sb-test-panel.is-visible{display:flex;flex-wrap:wrap}
+    .sb-test-panel a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.1);background:#111822;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900}
+    .sb-test-panel a:hover{border-color:rgba(245,197,66,.45);color:#f5c542}
+    .partner-card.is-priority,.rail-partner.is-priority,.chip.is-priority{border-color:rgba(245,197,66,.35)}
+
     #debug-overlay{position:fixed;right:10px;bottom:10px;background:rgba(0,0,0,.84);color:#fff;padding:10px 14px;border-radius:8px;font:13px monospace;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.35);display:none}
     html[data-i18n-ready="0"] body{opacity:0}
     html[data-i18n-ready="1"] body{opacity:1;transition:opacity .12s}
@@ -478,6 +485,7 @@
       applyTranslations(ACTIVE_TRANSLATIONS);
       setupLanguageSwitcher();
       renderAll();
+      if(window.dataLayer) window.dataLayer.push({event:'page_region_view',region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,path:location.pathname});
     }
     window.setLanguage=setLanguage;
 
@@ -546,11 +554,11 @@
 
     function visiblePartners(){
       const seen=new Set();
-      return mergePartners(ACTIVE_PARTNERS)
+      const list=mergePartners(ACTIVE_PARTNERS)
         .filter(p=>partnerMatchesRegion(p,ACTIVE_REGION))
         .map(p=>partnerForRegion(p,ACTIVE_REGION))
-        .filter(p=>{const k=normalizePartnerName(p.name)+"|"+displayCategoryKey(p.category_key); if(seen.has(k)) return false; seen.add(k); return true;})
-        .sort((a,b)=>(a.tier||99)-(b.tier||99)||String(a.name).localeCompare(String(b.name)));
+        .filter(p=>{const k=normalizePartnerName(p.name)+"|"+displayCategoryKey(p.category_key); if(seen.has(k)) return false; seen.add(k); return true;});
+      return smartSortPartners(list);
     }
 
     function buildCategoryIndex(partners){
@@ -576,7 +584,7 @@
           <button class="dropbtn" type="button">${esc(label)} (${items.length})</button>
           <ul class="dropdown-content">
             ${items.length ? items.map(p=>`
-              <li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a></li>
+              <li><a href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'top_nav')}>${esc(p.name)}</a></li>
             `).join("") : `<li><span class="dropdown-empty">No partners</span></li>`}
           </ul>
         </li>`;
@@ -599,14 +607,68 @@
       partners.forEach(p=>{if(out.length>=limit)return;if(!used.has(p.name)){out.push(p);used.add(p.name);}});
       return out.slice(0,limit);
     }
+    function clickKey(partner, placement){
+      return [ACTIVE_REGION, ACTIVE_LANGUAGE, placement || "unknown", partner?.name || "unknown", partner?.category_key || "unknown"].join("|");
+    }
+
+    function readClickCounts(){
+      try{return JSON.parse(localStorage.getItem('signalboost_click_counts') || '{}') || {};}catch(e){return {};}
+    }
+
+    function writeClickCounts(counts){
+      try{localStorage.setItem('signalboost_click_counts', JSON.stringify(counts));}catch(e){}
+    }
+
     function trackAffiliateClick(partner, placement){
-      const payload={event:"affiliate_click",partner:partner?.name||"unknown",category:partner?.category_key||"unknown",region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,placement:placement||"unknown",ts:Date.now()};
+      const payload={event:"affiliate_click",partner:partner?.name||"unknown",category:partner?.category_key||"unknown",region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,placement:placement||"unknown",path:location.pathname,ts:Date.now()};
       window.signalBoostClicks=window.signalBoostClicks||[]; window.signalBoostClicks.push(payload);
+      const counts=readClickCounts();
+      const specific=clickKey(partner, placement);
+      const partnerKey=[ACTIVE_REGION, partner?.name || "unknown"].join("|");
+      counts[specific]=(counts[specific]||0)+1;
+      counts[partnerKey]=(counts[partnerKey]||0)+1;
+      writeClickCounts(counts);
       if(window.gtag) window.gtag('event','affiliate_click',payload);
       if(window.dataLayer) window.dataLayer.push(payload);
       try{localStorage.setItem('signalboost_last_click',JSON.stringify(payload));}catch(e){}
+      return payload;
     }
-    function clickAttrs(p, placement){return ` data-partner="${esc(p.name)}" data-category="${esc(p.category_key)}" data-placement="${esc(placement)}" onclick="trackAffiliateClick({name:'${esc(String(p.name).replace(/'/g,"\\'"))}',category_key:'${esc(String(p.category_key).replace(/'/g,"\\'"))}'},'${esc(placement)}')"`;}
+    function encodedAttrValue(v){return encodeURIComponent(String(v ?? ""));}
+    function clickAttrs(p, placement){
+      const name=encodedAttrValue(p.name);
+      const category=encodedAttrValue(p.category_key);
+      const place=encodedAttrValue(placement);
+      return ` data-partner="${esc(p.name)}" data-category="${esc(p.category_key)}" data-placement="${esc(placement)}" onclick="trackAffiliateClick({name:decodeURIComponent('${name}'),category_key:decodeURIComponent('${category}')},decodeURIComponent('${place}'))"`;
+    }
+
+    function partnerPriorityScore(p){
+      const cfg=regionConfig(ACTIVE_REGION);
+      const heroNames=(cfg.heroPartners||[]).map(x=>String(x).toLowerCase());
+      const primaryCategories=(cfg.primaryCategories||[]).map(displayCategoryKey);
+      const counts=readClickCounts();
+      let score=0;
+      if(p.featured) score+=5000;
+      const heroIndex=heroNames.indexOf(String(p.name).toLowerCase());
+      if(heroIndex>=0) score+=4000-heroIndex*150;
+      const catIndex=primaryCategories.indexOf(displayCategoryKey(p.category_key));
+      if(catIndex>=0) score+=2500-catIndex*100;
+      score+=Math.max(0,1000-(p.tier||99)*80);
+      score+=(counts[[ACTIVE_REGION,p.name].join("|")]||0)*35;
+      return score;
+    }
+
+    function smartSortPartners(partners){
+      return [...partners].sort((a,b)=>
+        partnerPriorityScore(b)-partnerPriorityScore(a) ||
+        (a.tier||99)-(b.tier||99) ||
+        String(a.name).localeCompare(String(b.name))
+      );
+    }
+
+    function isPriorityPartner(p){
+      const cfg=regionConfig(ACTIVE_REGION);
+      return !!p.featured || (cfg.heroPartners||[]).some(n=>String(n).toLowerCase()===String(p.name).toLowerCase());
+    }
     function renderTrendingStrip(partners){
       const el=document.getElementById("trendingStrip"); if(!el)return;
       const cfg=regionConfig(ACTIVE_REGION); const picks=preferredPartners(cfg.heroPartners,partners,8);
@@ -628,14 +690,15 @@
       const items=partners.filter(p=>
         displayCategoryKey(p.category_key)===displayKey &&
         (!query || (p.name+" "+(p.network||"")+" "+(p.description||"")).toLowerCase().includes(query))
-      ).sort((a,b)=>(a.featured===b.featured?0:a.featured?-1:1)||(a.tier||99)-(b.tier||99)||String(a.name).localeCompare(String(b.name)));
+      );
+      const sortedItems=smartSortPartners(items);
       const open = index===0 || query ? "1" : "0";
       return `
         <div class="column-category" data-open="${open}">
           <button type="button" onclick="toggleColumnCategory(this)" aria-expanded="${open==='1'}"><span class="category-title"><span>${icon}</span><span>${esc(translatedCategory(labelKey))}</span></span><span class="category-count">${items.length}</span></button>
           <ul>
-            ${items.length ? items.map(p=>`
-              <li><a class="partner-card" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'left_sidebar')}><span><strong>${esc(p.name)}</strong><span>${esc(p.description || translatedCategory(canonicalCategoryKey(p.category_key)))}</span></span><em>${esc(ACTIVE_TRANSLATIONS.view_more || 'View')}</em></a></li>
+            ${sortedItems.length ? sortedItems.map(p=>`
+              <li><a class="partner-card ${isPriorityPartner(p)?'is-priority':''}" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'left_sidebar')}><span><strong>${esc(p.name)}</strong><span>${esc(p.description || translatedCategory(canonicalCategoryKey(p.category_key)))}</span></span><em>${esc(ACTIVE_TRANSLATIONS.view_more || 'View')}</em></a></li>
             `).join("") : `<li><span class="dropdown-empty">No partners</span></li>`}
           </ul>
         </div>`;
@@ -718,7 +781,7 @@
               muted
               loop
               playsinline
-              preload="auto"
+              preload="metadata"
               poster="${esc(item.feed_image)}"
               data-poster="${esc(item.feed_image)}"
               data-title="${esc(item.feed_title)}"
@@ -729,7 +792,7 @@
             <div class="play"><span>▶</span></div>
           </div>`;
       }
-      return `<div class="media"><img src="${esc(item.feed_image)}" alt="${esc(item.feed_title)}" loading="lazy"><div class="play"><span>▶</span></div></div>`;
+      return `<div class="media"><img src="${esc(item.feed_image)}" alt="${esc(item.feed_title)}" loading="lazy" decoding="async"><div class="play"><span>▶</span></div></div>`;
     }
 
     function setupFeedVideos(root=document){
@@ -872,14 +935,14 @@
       const featured=partners.find(p=>p.featured) || partners.find(p=>(p.tier||99)===1) || partners[0];
       const featuredHTML=featured ? `
         <a class="featured" href="${esc(partnerUrl(featured))}" target="_blank" rel="noopener"${clickAttrs(featured,'right_featured')}>
-          ${(featured.thumbnail || featured.image || featured.logo) ? `<img src="${esc(featured.thumbnail || featured.image || featured.logo)}" alt="${esc(featured.name)}" loading="lazy" onerror="this.style.display='none'">` : ""}
+          ${(featured.thumbnail || featured.image || featured.logo) ? `<img src="${esc(featured.thumbnail || featured.image || featured.logo)}" alt="${esc(featured.name)}" loading="lazy" decoding="async" onerror="this.style.display='none'">` : ""}
           <div class="featured-body">
             <h4>${esc(translatedCategory(canonicalCategoryKey(featured.category_key)))}</h4>
             <p>${esc(featured.name)}</p>
             <span>${esc(featured.description || `Explore ${featured.name} offers.`)}</span>
           </div>
         </a>` : "";
-      const chipHTML=partners.slice(0,24).map(p=>`<a class="chip" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'right_chip')}>${esc(p.name)}</a>`).join("");
+      const chipHTML=smartSortPartners(partners).slice(0,24).map(p=>`<a class="chip ${isPriorityPartner(p)?'is-priority':''}" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'right_chip')}>${esc(p.name)}</a>`).join("");
       chips.innerHTML=`${featuredHTML}<div class="chips-title">${esc(ACTIVE_TRANSLATIONS.partners || "Partners")}</div>${chipHTML}`;
     }
 
@@ -892,8 +955,38 @@
       link.textContent=ACTIVE_TRANSLATIONS.view_more || "View More";
     }
 
+
+    function renderRegionTestPanel(){
+      const params=new URLSearchParams(location.search);
+      const enabled=params.get('sbtest')==='1' || params.get('debug')==='1';
+      let panel=document.getElementById('sbTestPanel');
+      if(!panel){
+        panel=document.createElement('div');
+        panel.id='sbTestPanel';
+        panel.className='sb-test-panel';
+        document.body.appendChild(panel);
+      }
+      const tests=[
+        ['US','us','en'],['BR','br','pt'],['PL','pl','pl'],['UK','uk','en'],['LATAM','es-latam','es'],['RU','ru','ru'],['OT','ot','en']
+      ];
+      panel.classList.toggle('is-visible', enabled);
+      panel.innerHTML=tests.map(([label,region,lang])=>`<a href="?region=${region}&lang=${lang}&sbtest=1">${label}</a>`).join('');
+    }
+
+    function auditRegionSafety(partners){
+      const report={region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,partners:partners.length,missingUrls:partners.filter(p=>!partnerUrl(p)||partnerUrl(p)==='#').map(p=>p.name),emptyCategories:[]};
+      column1Categories.forEach(cat=>{
+        const key=displayCategoryKey(cat);
+        if(!partners.some(p=>displayCategoryKey(p.category_key)===key)) report.emptyCategories.push(cat);
+      });
+      window.signalBoostRegionAudit=report;
+      return report;
+    }
+
     function renderAll(){
       const partners=visiblePartners();
+      auditRegionSafety(partners);
+      renderRegionTestPanel();
       renderHeader(partners);
       renderTrendingStrip(partners);
       renderRegionHero(partners);
@@ -917,6 +1010,7 @@
       applyTranslations(ACTIVE_TRANSLATIONS);
       setupLanguageSwitcher();
       renderAll();
+      if(window.dataLayer) window.dataLayer.push({event:'page_region_view',region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,path:location.pathname});
     }
 
     init();
