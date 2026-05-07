@@ -224,9 +224,16 @@
     const el = (tag, cls, text) => { const n=document.createElement(tag); if(cls) n.className=cls; if(text!==undefined) n.textContent=text; return n; };
     const t = (key, vars={}) => (I18N[state.lang]?.[key] || I18N.en[key] || key).replace(/{(\w+)}/g, (_,k)=>vars[k]??'');
     const categoryName = key => CATEGORY_META[key]?.[state.lang] || CATEGORY_META[key]?.en || key.replace(/_/g,' ');
-    const partnerUrl = p => (p.regional_urls && (p.regional_urls[state.region] || p.regional_urls.ot)) || p.url || '#';
-    const partnerMatchesRegion = p => Array.isArray(p.regions) && (p.regions.includes(state.region) || p.regions.includes('ot'));
-    const isLocal = p => Array.isArray(p.regions) && p.regions.includes(state.region) && state.region !== 'ot';
+    // One strict source of truth for regional availability.
+    // A partner is visible ONLY when it is explicitly tagged for the selected region
+    // AND, when regional_urls exists, it has a URL for that exact region.
+    // No `ot` fallback is used for BR, PL, US, UK, etc.; `ot` appears only on the Global region.
+    const hasExactRegion = (p, region = state.region) => Array.isArray(p.regions) && p.regions.includes(region);
+    const hasExactRegionUrl = (p, region = state.region) => !p.regional_urls || !!p.regional_urls[region];
+    const partnerMatchesRegion = p => hasExactRegion(p) && hasExactRegionUrl(p);
+    const isLocal = partnerMatchesRegion;
+    const partnerUrl = p => (p.regional_urls && p.regional_urls[state.region]) || p.url || '#';
+    const partnerUrlExact = partnerUrl;
     const TRAVEL_KEYS = new Set(['flights','hotels','car_rentals','esim','insurance','tours','transfers','travel_services']);
     const isTravelPartner = p => p.travel_related || TRAVEL_KEYS.has(p.category_key);
     const cleanLogo = p => p.logo ? 'logos/' + p.logo : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#18202b"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#f5c542" font-family="Arial" font-size="28" font-weight="900">'+(p.name||'?').slice(0,1)+'</text></svg>');
@@ -263,7 +270,21 @@
         .sort((a,b)=> categorySort(a[0])-categorySort(b[0]) || categoryName(a[0]).localeCompare(categoryName(b[0])));
     }
     function sidebarGroups(){ return groupedPartners(baseFilteredPartners().filter(p => !isTravelPartner(p))); }
-    function travelGroups(){ return groupedPartners(baseFilteredPartners().filter(isTravelPartner)); }
+    function partnerHasExactRegion(p){
+      return partnerMatchesRegion(p);
+    }
+    function headerTravelPartners(){
+      const travel = ALL_PARTNERS.filter(p => isTravelPartner(p) && partnerMatchesRegion(p));
+      let list = travel;
+      if(state.filter === 'featured') list = list.filter(p=>p.featured || Number(p.tier) === 1);
+      if(state.filter === 'local') list = list.filter(partnerHasExactRegion);
+      if(state.search.trim()){
+        const q = state.search.trim().toLowerCase();
+        list = list.filter(p => [p.name,p.description,p.category_key,p.category_label,p.network].join(' ').toLowerCase().includes(q));
+      }
+      return list.sort((a,b)=>(a.tier||9)-(b.tier||9) || (a.name||'').localeCompare(b.name||''));
+    }
+    function travelGroups(){ return groupedPartners(headerTravelPartners()); }
     function categorySort(k){ return ['flights','hotels','esim','tours','transfers','car_rentals','insurance','marketplace','products_tools','finance','travel_services','specialty_other'].indexOf(k) < 0 ? 99 : ['flights','hotels','esim','tours','transfers','car_rentals','insurance','marketplace','products_tools','finance','travel_services','specialty_other'].indexOf(k); }
     function renderI18n(){
       document.documentElement.lang = state.lang;
@@ -302,7 +323,7 @@
       groups.forEach(([key,items])=>{
         const menu = el('div','travel-menu');
         const shown = items.slice(0,8);
-        menu.innerHTML = `<button class="travel-menu-btn" type="button"><span>${CATEGORY_META[key]?.icon || '•'}</span><span>${categoryName(key)}</span><span class="travel-count">${items.length}</span></button><div class="travel-dropdown"><div class="travel-header-row"><span class="travel-header-title">${categoryName(key)}</span><span class="travel-region">${region}</span></div>${shown.map(p=>`<a class="travel-link" href="${partnerUrl(p)}" target="_blank" rel="noopener"><img src="${cleanLogo(p)}" alt="" onerror="this.style.display='none'"><div><strong>${p.name}</strong><span>${p.description || p.network || ''}</span></div></a>`).join('')}</div>`;
+        menu.innerHTML = `<button class="travel-menu-btn" type="button"><span>${CATEGORY_META[key]?.icon || '•'}</span><span>${categoryName(key)}</span><span class="travel-count">${items.length}</span></button><div class="travel-dropdown"><div class="travel-header-row"><span class="travel-header-title">${categoryName(key)}</span><span class="travel-region">${region}</span></div>${shown.map(p=>`<a class="travel-link" href="${partnerUrlExact(p)}" target="_blank" rel="noopener"><img src="${cleanLogo(p)}" alt="" onerror="this.style.display='none'"><div><strong>${p.name}</strong><span>${p.description || p.network || ''}</span></div></a>`).join('')}</div>`;
         root.appendChild(menu);
       });
     }
