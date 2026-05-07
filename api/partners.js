@@ -1,13 +1,5 @@
 [
   {
-    "name": "Kiwi PL",
-    "category_key": "flights",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://booking.tpo.lv/enwsEbCs",
-    "tier": 1
-  },
-  {
     "name": "Travelking PL",
     "category_key": "hotels",
     "region": "pl",
