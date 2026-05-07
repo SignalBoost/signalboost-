@@ -423,17 +423,23 @@
     function renderSticky(){ const p=topPartners(1)[0]; if(!p) return; $('#stickyCopy').textContent = `${p.name} — ${categoryName(p.category_key)}`; $('#stickyLink').href=partnerUrl(p); $('#stickyLink').textContent=t('view_more'); }
     function render(){ renderI18n(); renderPills(); renderHeaderNav(); renderSidebar(); renderHero(); renderTrending(); renderFeed(); renderRight(); renderSticky(); showLanguagePrompt(); }
 
+    function languagePromptDismissKey(){
+      return 'sb_lang_prompt_dismissed_' + state.region;
+    }
+    function regionHasLocalLanguage(region = state.region){
+      return !!REGION_LANGUAGE[region] && REGION_LANGUAGE[region] !== 'en';
+    }
     function hideLanguagePrompt(remember=false){
       const box = $('#languagePrompt');
       if(box) box.dataset.open = '0';
-      if(remember) localStorage.setItem('sb_lang_prompt_dismissed','1');
+      if(remember) localStorage.setItem(languagePromptDismissKey(),'1');
     }
     function showLanguagePrompt(){
       const box = $('#languagePrompt');
       if(!box) return;
-      const dismissed = localStorage.getItem('sb_lang_prompt_dismissed') === '1';
-      if(state.lang !== 'en' && !dismissed){ box.dataset.open = '1'; }
-      else { box.dataset.open = '0'; }
+      const dismissedForRegion = localStorage.getItem(languagePromptDismissKey()) === '1';
+      const shouldPrompt = regionHasLocalLanguage() && state.lang !== 'en' && !dismissedForRegion;
+      box.dataset.open = shouldPrompt ? '1' : '0';
     }
     $('#languagePromptEnglish')?.addEventListener('click', ()=>{ state.lang='en'; localStorage.setItem('sb_lang','en'); localStorage.setItem('sb_lang_manual','1'); hideLanguagePrompt(true); render(); });
     $('#languagePromptKeep')?.addEventListener('click', ()=>hideLanguagePrompt(true));
