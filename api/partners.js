@@ -8,14 +8,6 @@
     "tier": 2
   },
   {
-    "name": "Kiwitaxi PL",
-    "category_key": "transfers",
-    "region": "pl",
-    "network": "Travelpayouts",
-    "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
-    "tier": 2
-  },
-  {
     "name": "Welcome Pickups PL",
     "category_key": "transfers",
     "region": "pl",
