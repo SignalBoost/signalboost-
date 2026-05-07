@@ -282,10 +282,21 @@
         .filter(([_, items]) => items.length > 0)
         .sort((a,b)=> categorySort(a[0])-categorySort(b[0]) || categoryName(a[0]).localeCompare(categoryName(b[0])));
     }
+    function promotedToHeader(p){
+      if(!partnerMatchesRegion(p)) return false;
+      if(state.region === 'us'){
+        return isTravelPartner(p) || p.featured || Number(p.tier || 9) <= 2;
+      }
+      return isTravelPartner(p);
+    }
     function sidebarPartners(){
       let list = ALL_PARTNERS.filter(p => partnerMatchesRegion(p) && !isTravelPartner(p));
+      // For the US market, promote strong non-travel partners into the header so Column 1 stays light.
+      if(state.region === 'us') list = list.filter(p => !promotedToHeader(p));
       if(state.search.trim()){
         const q = state.search.trim().toLowerCase();
+        // Search should still find every exact-region non-travel partner, even if it is promoted in the header.
+        list = ALL_PARTNERS.filter(p => partnerMatchesRegion(p) && !isTravelPartner(p));
         list = list.filter(p => [p.name,p.description,p.network,p.category_key,categoryName(p.category_key)].join(' ').toLowerCase().includes(q));
       }
       list.sort((a,b)=> Number(a.tier||9)-Number(b.tier||9) || String(a.name).localeCompare(String(b.name)));
@@ -295,18 +306,21 @@
     function partnerHasExactRegion(p){
       return partnerMatchesRegion(p);
     }
-    function headerTravelPartners(){
-      const travel = ALL_PARTNERS.filter(p => isTravelPartner(p) && partnerMatchesRegion(p));
-      let list = travel;
-      if(state.filter === 'featured') list = list.filter(p=>p.featured || Number(p.tier) === 1);
-      if(state.filter === 'local') list = list.filter(partnerHasExactRegion);
+    function headerPartners(){
+      let list = ALL_PARTNERS.filter(promotedToHeader);
+      // The header is a discovery area, not a filtered sidebar. For US it can include selected
+      // marketplace/tool/service partners; for other regions it remains travel-focused.
       if(state.search.trim()){
         const q = state.search.trim().toLowerCase();
         list = list.filter(p => [p.name,p.description,p.category_key,p.category_label,p.network].join(' ').toLowerCase().includes(q));
       }
-      return list.sort((a,b)=>(a.tier||9)-(b.tier||9) || (a.name||'').localeCompare(b.name||''));
+      return list.sort((a,b)=>
+        (Number(b.featured||0)-Number(a.featured||0)) ||
+        (Number(a.tier||9)-Number(b.tier||9)) ||
+        (a.name||'').localeCompare(b.name||'')
+      );
     }
-    function travelGroups(){ return groupedPartners(headerTravelPartners()); }
+    function travelGroups(){ return groupedPartners(headerPartners()); }
     function categorySort(k){ return ['flights','hotels','esim','tours','transfers','car_rentals','insurance','marketplace','products_tools','finance','travel_services','specialty_other'].indexOf(k) < 0 ? 99 : ['flights','hotels','esim','tours','transfers','car_rentals','insurance','marketplace','products_tools','finance','travel_services','specialty_other'].indexOf(k); }
     function renderI18n(){
       document.documentElement.lang = state.lang;
