@@ -846,10 +846,61 @@
       renderNextFeedBatch();
     }
 
+    const COLUMN3_MAX_PARTNERS = 8;
+    const COLUMN3_FAMOUS_BY_REGION = {
+      us:["Kiwi","Trivago","Airalo","Tiqets","H10 Hotels","Klook","Proton VPN","SafetyWing","Kiwitaxi"],
+      br:["Booking Brazil","Kiwi","Trivago","Airalo","Klook","Melhor Seguro","CVC","Amazon"],
+      pl:["Kiwi","Trivago","Travelking","Airalo","Tiqets","Kiwitaxi","Radical Storage","AliExpress"],
+      uk:["Tiqets","Trivago","Kiwi","Klook","Airalo","Welcome Pickups","Proton VPN"],
+      "es-latam":["Kiwi","Trivago","Airalo","Klook","Jumbo Car Costa Rica","Miravia","Amazon"],
+      ru:["Kiwi","Trivago"],
+      ot:["Kiwi","Trivago","Airalo","Klook","Proton VPN","Radical Storage","Welcome Pickups","Tiqets"]
+    };
+    const COLUMN3_TRUST_CATEGORIES = new Set(["flights","hotels","tours","transfers","car_rentals","esim","sim","insurance","travel_services","marketplace","products_tools"]);
+
+    function isColumn3EligiblePartner(p){
+      if(!p || !p.name || !p.url) return false;
+      const cat=displayCategoryKey(p.category_key || p.category || "");
+      return COLUMN3_TRUST_CATEGORIES.has(cat) || (p.tier||99)<=2 || p.featured;
+    }
+
+    function curatedColumn3Partners(partners){
+      const region=normalizeRegion(ACTIVE_REGION);
+      const whitelist=COLUMN3_FAMOUS_BY_REGION[region] || COLUMN3_FAMOUS_BY_REGION.ot;
+      const used=new Set();
+      const out=[];
+      const add=p=>{
+        if(!p || !isColumn3EligiblePartner(p)) return;
+        const id=partnerId(p);
+        if(used.has(id)) return;
+        used.add(id);
+        out.push(p);
+      };
+
+      whitelist.forEach(name=>{
+        const p=partners.find(x=>normalizePartnerName(x.name)===normalizePartnerName(name));
+        add(p);
+      });
+
+      [...partners]
+        .filter(isColumn3EligiblePartner)
+        .sort((a,b)=>{
+          const af=a.featured?0:1, bf=b.featured?0:1;
+          const at=a.tier||99, bt=b.tier||99;
+          const ac=COLUMN3_TRUST_CATEGORIES.has(displayCategoryKey(a.category_key))?0:1;
+          const bc=COLUMN3_TRUST_CATEGORIES.has(displayCategoryKey(b.category_key))?0:1;
+          return af-bf || at-bt || ac-bc || String(a.name).localeCompare(String(b.name));
+        })
+        .forEach(p=>{ if(out.length<COLUMN3_MAX_PARTNERS) add(p); });
+
+      return out.slice(0,COLUMN3_MAX_PARTNERS);
+    }
+
     function renderRight(partners){
       const chips=document.getElementById("partnerChips");
       if(!chips) return;
-      const featured=partners.find(p=>p.featured) || partners.find(p=>(p.tier||99)===1) || partners[0];
+      const curated=curatedColumn3Partners(partners);
+      const featured=curated.find(p=>p.featured) || curated.find(p=>(p.tier||99)===1) || curated[0] || partners[0];
       const featuredHTML=featured ? `
         <a class="featured" href="${esc(featured.url)}" target="_blank" rel="noopener">
           ${(featured.thumbnail || featured.image || featured.logo) ? `<img src="${esc(featured.thumbnail || featured.image || featured.logo)}" alt="${esc(featured.name)}" loading="lazy" onerror="this.style.display='none'">` : ""}
@@ -859,8 +910,14 @@
             <span>${esc(featured.description || `Explore ${featured.name} offers.`)}</span>
           </div>
         </a>` : "";
-      const chipHTML=partners.slice(0,24).map(p=>`<a class="chip" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`).join("");
-      chips.innerHTML=`${featuredHTML}<div class="chip-grid">${chipHTML}</div>`;
+      const featuredId=featured ? partnerId(featured) : "";
+      const chipHTML=curated
+        .filter(p=>partnerId(p)!==featuredId)
+        .slice(0,COLUMN3_MAX_PARTNERS)
+        .map(p=>`<a class="chip" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`)
+        .join("");
+      chips.innerHTML=`${featuredHTML}<div class="chips-title">${esc(ACTIVE_TRANSLATIONS.partners || "Partners")}</div><div class="chip-grid">${chipHTML}</div>`;
+      window.signalBoostColumn3Audit = curated.map(p=>({name:p.name,region:ACTIVE_REGION,category:p.category_key,tier:p.tier,featured:!!p.featured}));
     }
 
     function renderSticky(partners){
