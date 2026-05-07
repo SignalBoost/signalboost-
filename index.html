@@ -155,8 +155,8 @@
       display:none;
       position:static;
       min-width:0;
-      max-height:300px;
-      overflow:auto;
+      max-height:none;
+      overflow:visible;
       margin:0;
       padding:6px;
       list-style:none;
@@ -431,7 +431,7 @@
     const BUILT_IN_TRANSLATIONS = {
       en: {brand_name:"SignalBoost",explore_offers:"Explore offers",search_placeholder:"Flights, hotels, eSIM, tours...",partners:"Partners",featured_service:"Explore a featured service picked for you.",view_more:"View More",flights:"Flights",hotels:"Hotels",marketplace:"Marketplace",products_tools:"Products & Tools",finance:"Finance",insurance:"Insurance & Claims",insurance_claims:"Insurance & Claims",travel_services:"Storage & Services",storage_services:"Storage & Services",car_rentals:"Car Rentals",car_rental:"Car Rentals",tours:"Tours & Activities",transfers:"Transfers & Transport",esim:"SIM & Connectivity",sim:"SIM & Connectivity",specialty_other:"Specialty & Other"},
       es: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Vuelos, hoteles, eSIM, tours...",partners:"Socios",featured_service:"Explora un servicio destacado elegido para ti.",view_more:"Ver más",flights:"Vuelos",hotels:"Hoteles",marketplace:"Marketplace",products_tools:"Productos y herramientas",finance:"Finanzas",insurance:"Seguros y reclamaciones",insurance_claims:"Seguros y reclamaciones",travel_services:"Almacenamiento y servicios",storage_services:"Almacenamiento y servicios",car_rentals:"Alquiler de coches",car_rental:"Alquiler de coches",tours:"Tours y actividades",transfers:"Traslados",esim:"SIM y conectividad",sim:"SIM y conectividad",specialty_other:"Especiales y otros"},
-      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, tours...",partners:"Parceiros",featured_service:"Explore um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e reclamações",insurance_claims:"Seguros e reclamações",travel_services:"Armazenamento e serviços",storage_services:"Armazenamento e serviços",car_rentals:"Aluguel de carros",car_rental:"Aluguel de carros",tours:"Tours e atividades",transfers:"Transfers & Transport",esim:"SIM e conectividade",sim:"SIM e conectividade",specialty_other:"Especiais e outros"},
+      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, passeios...",partners:"Parceiros",featured_service:"Veja um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e indenizações",insurance_claims:"Seguros e indenizações",travel_services:"Guarda-volumes e serviços",storage_services:"Guarda-volumes e serviços",car_rentals:"Aluguel de carros",car_rental:"Aluguel de carros",tours:"Passeios e atividades",transfers:"Traslados e transporte",esim:"SIM e conectividade",sim:"SIM e conectividade",specialty_other:"Especiais e outros"},
       pl: {brand_name:"SignalBoost",explore_offers:"Przeglądaj oferty",search_placeholder:"Loty, hotele, eSIM, wycieczki...",partners:"Partnerzy",featured_service:"Sprawdź wybraną usługę.",view_more:"Zobacz więcej",flights:"Loty",hotels:"Hotele",marketplace:"Marketplace",products_tools:"Produkty i narzędzia",finance:"Finanse",insurance:"Ubezpieczenia i roszczenia",insurance_claims:"Ubezpieczenia i roszczenia",travel_services:"Przechowalnia i usługi",storage_services:"Przechowalnia i usługi",car_rentals:"Wynajem aut",car_rental:"Wynajem aut",tours:"Wycieczki",transfers:"Transfery",esim:"SIM i łączność",sim:"SIM i łączność",specialty_other:"Inne"},
       ru: {brand_name:"SignalBoost",explore_offers:"Смотреть предложения",search_placeholder:"Авиабилеты, отели, eSIM, туры...",partners:"Партнеры",featured_service:"Посмотрите выбранный сервис.",view_more:"Подробнее",flights:"Рейсы",hotels:"Отели",marketplace:"Marketplace",products_tools:"Продукты и инструменты",finance:"Финансы",insurance:"Страхование и претензии",insurance_claims:"Страхование и претензии",travel_services:"Хранение и услуги",storage_services:"Хранение и услуги",car_rentals:"Аренда авто",car_rental:"Аренда авто",tours:"Туры",transfers:"Трансферы",esim:"SIM и связь",sim:"SIM и связь",specialty_other:"Другое"}
     };
@@ -467,6 +467,26 @@
     function displayCategoryKey(key){return HEADER_CATEGORY_ALIASES[key] || key;}
     function canonicalCategoryKey(key){if(key==="car_rentals") return "car_rental"; if(key==="esim") return "sim"; return key;}
     function translatedCategory(cat){return ACTIVE_TRANSLATIONS[cat] || ACTIVE_TRANSLATIONS[displayCategoryKey(cat)] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(cat)] || cat;}
+
+    function partnerDescription(p){
+      const desc=String((p&&p.description)||"").trim();
+      const name=String((p&&p.name)||"").trim();
+      if(ACTIVE_LANGUAGE!=="pt") return desc;
+      const exact={
+        "Shop regional and global products on Amazon.":"Compre produtos regionais e globais na Amazon.",
+        "Secure your browsing with Proton VPN.":"Navegue com mais segurança com a Proton VPN.",
+        "Affordable SIM services in Brazil and worldwide.":"Serviços de SIM acessíveis no Brasil e no mundo.",
+        "Book affordable car rentals with EconomyBookings.com.":"Reserve aluguel de carros com bons preços na EconomyBookings.com.",
+        "Stay connected worldwide with Airalo eSIMs.":"Mantenha-se conectado no mundo todo com eSIMs da Airalo.",
+        "Discover and book tours with Klook.":"Descubra e reserve passeios com a Klook.",
+        "Compare hotel prices across major booking platforms.":"Compare preços de hotéis nas principais plataformas de reserva.",
+        "Compare and book flights for regional and global trips.":"Compare e reserve voos para viagens regionais e internacionais."
+      };
+      if(exact[desc]) return exact[desc];
+      const m=desc.match(/^Explore (.+?) offers\.?$/i);
+      if(m) return `Veja ofertas de ${name || m[1]}.`;
+      return desc;
+    }
 
     const NORMALIZED_HEADER_CATEGORIES = [...new Set(categories.map(displayCategoryKey))];
     const MAIN_INDEX_CATEGORIES = [...new Set([...NORMALIZED_HEADER_CATEGORIES, ...CATEGORY_ORDER.map(displayCategoryKey)])];
@@ -603,7 +623,7 @@
         url:urls[region] || p.url || "#",
         category_key:key,
         category_label:ACTIVE_TRANSLATIONS[key] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(key)] || p.category_label || key,
-        description:p.description || ""
+        description:partnerDescription(p) || ""
       };
     }
 
@@ -711,7 +731,7 @@
           </div>
         </div>
         <div class="hero-partners">
-          ${picks.map(p=>`<a class="hero-mini-card" href="${esc(p.url)}" target="_blank" rel="noopener"><strong>${esc(p.name)}</strong><span>${esc(p.description||translatedCategory(canonicalCategoryKey(p.category_key)))}</span></a>`).join("")}
+          ${picks.map(p=>`<a class="hero-mini-card" href="${esc(p.url)}" target="_blank" rel="noopener"><strong>${esc(p.name)}</strong><span>${esc(partnerDescription(p)||translatedCategory(canonicalCategoryKey(p.category_key)))}</span></a>`).join("")}
         </div>`;
     }
 
@@ -731,7 +751,7 @@
           </button>
           <ul>
             ${items.length ? items.map(p=>`
-              <li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}<br><small>${esc(p.description || translatedCategory(canonicalCategoryKey(p.category_key)))}</small></a></li>
+              <li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}<br><small>${esc(partnerDescription(p) || translatedCategory(canonicalCategoryKey(p.category_key)))}</small></a></li>
             `).join("") : `<li><span class="dropdown-empty">No partners</span></li>`}
           </ul>
         </div>`;
@@ -794,7 +814,7 @@
         return {
           ...p,
           feed_title:p.name,
-          feed_description:p.description || `Explore ${p.name} offers.`,
+          feed_description:partnerDescription(p) || (ACTIVE_LANGUAGE==="pt" ? `Veja ofertas de ${p.name}.` : `Explore ${p.name} offers.`),
           feed_image:FEED_IMAGES[i%FEED_IMAGES.length],
           feed_media_type:media.type,
           feed_source:media.source,
