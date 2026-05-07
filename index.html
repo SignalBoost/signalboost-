@@ -3,7 +3,8 @@
 <html lang="en" data-theme="dark" translate="no">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="google" content="notranslate" />
   <title>SignalBoost</title>
   <meta name="description" content="Find travel, marketplace and service offers by region." />
   <style>
@@ -144,7 +145,9 @@
     .language-prompt-close:hover{background:rgba(255,255,255,.08);color:#fff}
 
     @media(max-width:1050px){.app{grid-template-columns:280px minmax(520px,1fr)}.right{display:none}.top{grid-template-columns:230px 1fr 230px}}
-    @media(max-width:760px){body{overflow:auto}.top{grid-template-columns:1fr auto;height:auto;min-height:44px}.travel-header{order:3;flex:1 0 100%;height:42px;overflow-x:auto}.travel-dropdown{left:0;transform:none}.logo{padding:12px}.lang-switcher{padding:8px}.app{display:block;height:auto;padding-top:44px}.left{max-height:none;border-right:0;border-bottom:1px solid var(--line)}.sidebar-top{position:relative}.main{min-height:500px;padding:14px 10px 96px}.main-layout{max-width:100%}.trend-strip{border-radius:16px;align-items:flex-start;flex-direction:column}.hero-feed-row{display:block}.region-hero{position:relative;top:auto;min-height:auto;margin-bottom:16px;border-radius:20px}.region-hero h1{font-size:28px}.feed-container{max-width:100%}.feed-card{min-height:calc(100vh - 128px)}.media{height:calc(100vh - 150px);min-height:0;max-height:none;aspect-ratio:9/16}#stickyBar{bottom:10px;font-size:13px}}
+    @media(max-width:760px){
+      body{overflow:auto;padding-bottom:74px}.top{grid-template-columns:1fr auto;height:auto;min-height:50px;align-items:start}.logo{padding:13px 12px;font-size:16px}.lang-switcher{padding:8px}.select{max-width:116px;height:36px}.travel-header{grid-column:1 / -1;order:3;width:100%;height:48px;overflow-x:auto;overflow-y:hidden;background:#111;gap:6px;padding:0 8px;scrollbar-width:none}.travel-header::-webkit-scrollbar{display:none}.travel-menu{position:static;flex:0 0 auto}.travel-menu-btn{height:48px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:#18202b;padding:0 12px}.travel-menu:hover .travel-dropdown,.travel-menu:focus-within .travel-dropdown{display:none}.travel-menu.is-open .travel-dropdown{display:block}.travel-dropdown{position:fixed;left:10px;right:10px;top:98px;transform:none;width:auto;max-height:58vh;border-radius:18px;z-index:2500}.app{display:block;height:auto;padding-top:98px}.left{max-height:none;border-right:0;border-bottom:1px solid var(--line);padding-bottom:8px}.sidebar-top{position:relative;padding:12px}.region-pills,.filter-pills{padding-bottom:6px}.pill{padding:9px 12px}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 10px}.category-tile{min-height:54px}.selected-panel{margin:8px 10px 14px}.main{min-height:500px;padding:12px 10px 96px}.main-layout{max-width:100%}.trend-strip{border-radius:16px;align-items:flex-start;flex-direction:column}.hero-feed-row{display:block}.region-hero{position:relative;top:auto;min-height:auto;margin-bottom:14px;border-radius:20px;padding:18px}.region-hero h1{font-size:27px}.hero-actions{gap:8px}.primary-cta,.secondary-cta{flex:1;min-width:130px}.feed-container{max-width:100%;gap:16px}.feed-card{min-height:auto;border-radius:20px}.media{height:min(72vh,620px);min-height:420px;max-height:none;aspect-ratio:9/16}.feed-content{left:16px;right:16px;bottom:16px}.right{display:none}#stickyBar{left:10px;right:10px;bottom:10px;transform:none;width:auto;font-size:13px;padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));}.language-prompt{top:auto;left:10px;right:10px;bottom:84px;width:auto;border-radius:18px;padding:16px}.language-prompt-actions{justify-content:stretch}.language-prompt .prompt-primary,.language-prompt .prompt-secondary{flex:1}}
+    @media(max-width:430px){.category-grid{grid-template-columns:1fr}.media{min-height:390px;height:68vh}.travel-dropdown{top:98px}.feed-content h3{font-size:20px}}
   </style>
 </head>
 <body>
@@ -228,10 +231,43 @@
     const REGION_LANGUAGE = {br:'pt-BR', pl:'pl', us:'en', uk:'en', ca:'en', au:'en', nz:'en', 'es-latam':'es', ot:'en'};
     const urlParams = new URLSearchParams(window.location.search);
     const urlRegion = urlParams.get('region');
+    const isValidRegion = key => REGIONS.some(r=>r.key===key);
+    const langKeyForRegion = region => 'sb_lang_' + region;
+    const langManualKeyForRegion = region => 'sb_lang_manual_' + region;
+    function browserRegion(){
+      const lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+      if(lang.startsWith('pt-br')) return 'br';
+      if(lang.startsWith('pl')) return 'pl';
+      if(lang.startsWith('es')) return 'es-latam';
+      if(lang.startsWith('en-ca')) return 'ca';
+      if(lang.startsWith('en-gb')) return 'uk';
+      if(lang.startsWith('en-au')) return 'au';
+      if(lang.startsWith('en-nz')) return 'nz';
+      if(lang.startsWith('en-us')) return 'us';
+      return 'es-latam';
+    }
     const savedRegion = localStorage.getItem('sb_region');
-    const initialRegion = (urlRegion && REGIONS.some(r=>r.key===urlRegion)) ? urlRegion : (savedRegion || 'br');
-    const savedLang = localStorage.getItem('sb_lang');
-    const initialLang = savedLang || REGION_LANGUAGE[initialRegion] || 'en';
+    const savedRegionManual = localStorage.getItem('sb_region_manual') === '1';
+    // Ignore legacy auto-saved region values from older builds; they caused mobile users to inherit Brazil/Portuguese.
+    const initialRegion = (urlRegion && isValidRegion(urlRegion)) ? urlRegion : ((savedRegionManual && isValidRegion(savedRegion)) ? savedRegion : browserRegion());
+    function getSavedLang(region){
+      const regionalSaved = localStorage.getItem(langKeyForRegion(region));
+      if(regionalSaved && I18N[regionalSaved]) return regionalSaved;
+      const oldGlobal = localStorage.getItem('sb_lang');
+      // Legacy migration guard: never reuse Portuguese outside Brazil.
+      if(oldGlobal && I18N[oldGlobal]){
+        if(oldGlobal === 'pt-BR' && region !== 'br') return REGION_LANGUAGE[region] || 'en';
+        return oldGlobal;
+      }
+      return REGION_LANGUAGE[region] || 'en';
+    }
+    function saveLang(region, lang, manual=true){
+      localStorage.setItem(langKeyForRegion(region), lang);
+      if(manual) localStorage.setItem(langManualKeyForRegion(region), '1');
+      // Keep old key as a harmless compatibility fallback, but regional key is source of truth.
+      localStorage.setItem('sb_lang', lang);
+    }
+    const initialLang = getSavedLang(initialRegion);
     const state = {region: initialRegion, lang: initialLang, filter: 'featured', search: '', expanded: new Set(), showAll: new Set(), activeSidebarCategory: ''};
     const $ = sel => document.querySelector(sel);
     const el = (tag, cls, text) => { const n=document.createElement(tag); if(cls) n.className=cls; if(text!==undefined) n.textContent=text; return n; };
@@ -330,7 +366,7 @@
     }
     function renderPills(){
       const rp=$('#regionPills'); rp.innerHTML='';
-      REGIONS.forEach(r=>{ const b=el('button','pill'+(state.region===r.key?' active':''),r.label); b.onclick=()=>{state.region=r.key; localStorage.setItem('sb_region',r.key); if(!localStorage.getItem('sb_lang_manual')){ state.lang = REGION_LANGUAGE[r.key] || 'en'; } state.expanded.clear(); state.showAll.clear(); state.activeSidebarCategory=''; render(); showLanguagePrompt();}; rp.appendChild(b); });
+      REGIONS.forEach(r=>{ const b=el('button','pill'+(state.region===r.key?' active':''),r.label); b.onclick=()=>{state.region=r.key; localStorage.setItem('sb_region',r.key); localStorage.setItem('sb_region_manual','1'); state.lang = getSavedLang(r.key); if(!localStorage.getItem(langManualKeyForRegion(r.key))){ state.lang = REGION_LANGUAGE[r.key] || 'en'; } state.expanded.clear(); state.showAll.clear(); state.activeSidebarCategory=''; render(); showLanguagePrompt();}; rp.appendChild(b); });
       const fp=$('#filterPills'); fp.innerHTML='';
       [['featured',t('featured')],['all',t('all')],['local',t('local')]].forEach(([k,label])=>{ const b=el('button','pill'+(state.filter===k?' active':''),label); b.onclick=()=>{state.filter=k; state.showAll.clear(); state.activeSidebarCategory=''; render();}; fp.appendChild(b); });
     }
@@ -385,6 +421,13 @@
         const shown = items.slice(0,8);
         menu.innerHTML = `<button class="travel-menu-btn" type="button"><span>${CATEGORY_META[key]?.icon || '•'}</span><span>${categoryName(key)}</span><span class="travel-count">${items.length}</span></button><div class="travel-dropdown"><div class="travel-header-row"><span class="travel-header-title">${categoryName(key)}</span><span class="travel-region">${region}</span></div>${shown.map(p=>`<a class="travel-link" href="${partnerUrlExact(p)}" target="_blank" rel="noopener"><img src="${cleanLogo(p)}" alt="" onerror="this.style.display='none'"><div><strong>${p.name}</strong><span>${p.description || p.network || ''}</span></div></a>`).join('')}</div>`;
         root.appendChild(menu);
+        const btn = menu.querySelector('.travel-menu-btn');
+        btn?.addEventListener('click', (ev)=>{
+          if(!window.matchMedia('(max-width:760px)').matches) return;
+          ev.preventDefault();
+          document.querySelectorAll('.travel-menu.is-open').forEach(m=>{ if(m!==menu) m.classList.remove('is-open'); });
+          menu.classList.toggle('is-open');
+        });
       });
     }
     function partnerRow(p){
@@ -441,11 +484,16 @@
       const shouldPrompt = regionHasLocalLanguage() && state.lang !== 'en' && !dismissedForRegion;
       box.dataset.open = shouldPrompt ? '1' : '0';
     }
-    $('#languagePromptEnglish')?.addEventListener('click', ()=>{ state.lang='en'; localStorage.setItem('sb_lang','en'); localStorage.setItem('sb_lang_manual','1'); hideLanguagePrompt(true); render(); });
+    $('#languagePromptEnglish')?.addEventListener('click', ()=>{ state.lang='en'; saveLang(state.region,'en',true); hideLanguagePrompt(true); render(); });
     $('#languagePromptKeep')?.addEventListener('click', ()=>hideLanguagePrompt(true));
     $('#languagePromptClose')?.addEventListener('click', ()=>hideLanguagePrompt(true));
+
+    document.addEventListener('click', (ev)=>{
+      if(!window.matchMedia('(max-width:760px)').matches) return;
+      if(!ev.target.closest('.travel-menu')) document.querySelectorAll('.travel-menu.is-open').forEach(m=>m.classList.remove('is-open'));
+    });
     $('#partnerSearch').addEventListener('input', e=>{ state.search=e.target.value; renderSidebar(); renderHero(); renderTrending(); renderFeed(); renderRight(); renderSticky(); });
-    $('#langSelect').addEventListener('change', e=>{ state.lang=e.target.value; localStorage.setItem('sb_lang',state.lang); localStorage.setItem('sb_lang_manual','1'); hideLanguagePrompt(true); render(); });
+    $('#langSelect').addEventListener('change', e=>{ state.lang=e.target.value; saveLang(state.region,state.lang,true); hideLanguagePrompt(true); render(); });
     render();
   </script>
 </body>
