@@ -6,9 +6,6 @@
       "ot"
     ],
     "url": "https://aviasales.tpo.lv/VoWXgFFm",
-    "regional_urls": {
-      "ot": "https://aviasales.tpo.lv/VoWXgFFm"
-    },
     "category": "flights",
     "category_key": "flights",
     "category_label": "Flights",
@@ -18,10 +15,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://aviasales.tpo.lv/VoWXgFFm"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "cvc",
@@ -31,10 +32,6 @@
       "ot"
     ],
     "url": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
-    "regional_urls": {
-      "br": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
-      "ot": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/"
-    },
     "category": "flights",
     "category_key": "flights",
     "category_label": "Flights",
@@ -44,11 +41,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "br": "header",
-      "ot": "header"
+    "regional_urls": {
+      "br": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/",
+      "ot": "https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "kiwi",
@@ -61,15 +65,7 @@
       "ca",
       "ot"
     ],
-    "url": "https://booking.tpo.lv/enwsEbCs",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
-      "es-latam": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
-      "br": "https://booking.tpo.lv/enwsEbCs",
-      "pl": "https://booking.tpo.lv/enwsEbCs",
-      "ot": "https://booking.tpo.lv/enwsEbCs",
-      "ca": "https://booking.tpo.lv/enwsEbCs"
-    },
+    "url": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
     "category": "flights",
     "category_key": "flights",
     "category_label": "Flights",
@@ -79,14 +75,31 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "br": "header",
-      "pl": "header",
-      "es-latam": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806",
+      "br": "https://booking.tpo.lv/enwsEbCs",
+      "pl": "https://booking.tpo.lv/enwsEbCs",
+      "es-latam": "https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806",
+      "ca": "https://booking.tpo.lv/enwsEbCs",
+      "ot": "https://booking.tpo.lv/enwsEbCs"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "br": [
+        "header"
+      ],
+      "pl": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "oman-airlines",
@@ -95,9 +108,6 @@
       "ot"
     ],
     "url": "https://lsuix.com/g/eh3q84z3tdad273170bcd820413c43/",
-    "regional_urls": {
-      "ot": "https://lsuix.com/g/eh3q84z3tdad273170bcd820413c43/"
-    },
     "category": "flights",
     "category_key": "flights",
     "category_label": "Flights",
@@ -107,10 +117,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://lsuix.com/g/eh3q84z3tdad273170bcd820413c43/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "lastminute",
@@ -119,9 +133,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806"
-    },
     "category": "flights",
     "category_key": "flights",
     "category_label": "Flights",
@@ -131,10 +142,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://www.awin1.com/cread.php?awinmid=72767&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "lennuabi",
@@ -143,9 +158,6 @@
       "ot"
     ],
     "url": "https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/",
-    "regional_urls": {
-      "ot": "https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/"
-    },
     "category": "flights",
     "category_key": "flights",
     "category_label": "Flights",
@@ -155,10 +167,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "booking-com-brazil",
@@ -168,10 +184,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806",
-    "regional_urls": {
-      "br": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -181,11 +193,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "br": "header",
-      "ot": "header"
+    "regional_urls": {
+      "br": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "travelking",
@@ -195,10 +214,6 @@
       "hu"
     ],
     "url": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
-    "regional_urls": {
-      "pl": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
-      "hu": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -208,10 +223,15 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/",
+      "hu": "https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "trivago",
@@ -229,18 +249,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "br": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "pl": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "es-latam": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "ar": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "co": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "de": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "nz": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
-      "pe": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -250,14 +258,35 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "br": "header",
-      "pl": "header",
-      "es-latam": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "br": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "pl": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "es-latam": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "de": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "nz": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "ar": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "co": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "pe": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "br": [
+        "header"
+      ],
+      "pl": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "h10-hotels",
@@ -267,10 +296,6 @@
       "ca"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
-      "ca": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -280,21 +305,28 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "us": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806",
+      "ca": "https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ]
+    }
   },
   {
     "id": "planet-of-hotels",
     "name": "Planet of Hotels",
     "regions": [
+      "us",
+      "br",
+      "pl",
+      "es-latam",
+      "ru",
       "ot"
     ],
     "url": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
-    "regional_urls": {
-      "ot": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -304,15 +336,34 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "br": "header",
-      "pl": "header",
-      "es-latam": "header",
-      "ru": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
+      "br": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
+      "pl": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
+      "es-latam": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
+      "ru": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/",
+      "ot": "https://uhtkc.com/g/zhz7s51tziad273170bcd0cfe7b65a/"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "br": [
+        "header"
+      ],
+      "pl": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ],
+      "ru": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "sirenis-hotels",
@@ -323,11 +374,6 @@
       "ca"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
-      "es-latam": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
-      "ca": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -337,22 +383,32 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "es-latam": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+      "es-latam": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806",
+      "ca": "https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ]
+    }
   },
   {
     "id": "zenhotels",
     "name": "Zenhotels",
     "regions": [
+      "us",
+      "br",
+      "pl",
+      "es-latam",
+      "ru",
       "ot"
     ],
     "url": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
-    "regional_urls": {
-      "ot": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -362,15 +418,34 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "br": "header",
-      "pl": "header",
-      "es-latam": "header",
-      "ru": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
+      "br": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
+      "pl": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
+      "es-latam": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
+      "ru": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/",
+      "ot": "https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "br": [
+        "header"
+      ],
+      "pl": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ],
+      "ru": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "nn-hotels",
@@ -379,9 +454,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=19428&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=19428&awinaffid=2834806"
-    },
     "category": "hotels",
     "category_key": "hotels",
     "category_label": "Hotels",
@@ -391,10 +463,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "us": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=19428&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ]
+    }
   },
   {
     "id": "airalo",
@@ -408,14 +484,6 @@
       "ot"
     ],
     "url": "https://airalo.tpo.lv/eXjKLiuw",
-    "regional_urls": {
-      "ot": "https://airalo.tpo.lv/eXjKLiuw",
-      "us": "https://airalo.tpo.lv/eXjKLiuw",
-      "br": "https://airalo.tpo.lv/eXjKLiuw",
-      "pl": "https://airalo.tpo.lv/eXjKLiuw",
-      "uk": "https://airalo.tpo.lv/eXjKLiuw",
-      "es-latam": "https://airalo.tpo.lv/eXjKLiuw"
-    },
     "category": "esim",
     "category_key": "esim",
     "category_label": "SIM & Connectivity",
@@ -425,14 +493,31 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "br": "header",
-      "pl": "header",
-      "es-latam": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://airalo.tpo.lv/eXjKLiuw",
+      "br": "https://airalo.tpo.lv/eXjKLiuw",
+      "pl": "https://airalo.tpo.lv/eXjKLiuw",
+      "uk": "https://airalo.tpo.lv/eXjKLiuw",
+      "es-latam": "https://airalo.tpo.lv/eXjKLiuw",
+      "ot": "https://airalo.tpo.lv/eXjKLiuw"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "br": [
+        "header"
+      ],
+      "pl": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "drimsim",
@@ -441,9 +526,6 @@
       "ot"
     ],
     "url": "https://drimsim.tpo.lv/PGwr6JTr",
-    "regional_urls": {
-      "ot": "https://drimsim.tpo.lv/PGwr6JTr"
-    },
     "category": "esim",
     "category_key": "esim",
     "category_label": "SIM & Connectivity",
@@ -453,10 +535,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://drimsim.tpo.lv/PGwr6JTr"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "saily",
@@ -465,9 +551,6 @@
       "ot"
     ],
     "url": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629",
-    "regional_urls": {
-      "ot": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629"
-    },
     "category": "esim",
     "category_key": "esim",
     "category_label": "SIM & Connectivity",
@@ -477,10 +560,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "the-bitjoy-esim",
@@ -490,10 +577,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806"
-    },
     "category": "esim",
     "category_key": "esim",
     "category_label": "SIM & Connectivity",
@@ -503,11 +586,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=119369&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "yesim",
@@ -516,9 +606,6 @@
       "ot"
     ],
     "url": "https://yesim.tpo.lv/3vIzBQts",
-    "regional_urls": {
-      "ot": "https://yesim.tpo.lv/3vIzBQts"
-    },
     "category": "esim",
     "category_key": "esim",
     "category_label": "SIM & Connectivity",
@@ -528,10 +615,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://yesim.tpo.lv/3vIzBQts"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "jetpac",
@@ -540,9 +631,6 @@
       "ot"
     ],
     "url": "https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/",
-    "regional_urls": {
-      "ot": "https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/"
-    },
     "category": "esim",
     "category_key": "esim",
     "category_label": "SIM & Connectivity",
@@ -552,10 +640,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "klook",
@@ -568,13 +660,6 @@
       "ot"
     ],
     "url": "https://klook.tpo.lv/pTp1NljF",
-    "regional_urls": {
-      "ot": "https://klook.tpo.lv/pTp1NljF",
-      "us": "https://klook.tpo.lv/pTp1NljF",
-      "br": "https://klook.tpo.lv/pTp1NljF",
-      "uk": "https://klook.tpo.lv/pTp1NljF",
-      "es-latam": "https://klook.tpo.lv/pTp1NljF"
-    },
     "category": "tours",
     "category_key": "tours",
     "category_label": "Tours & Activities",
@@ -584,13 +669,27 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "br": "header",
-      "es-latam": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://klook.tpo.lv/pTp1NljF",
+      "br": "https://klook.tpo.lv/pTp1NljF",
+      "uk": "https://klook.tpo.lv/pTp1NljF",
+      "es-latam": "https://klook.tpo.lv/pTp1NljF",
+      "ot": "https://klook.tpo.lv/pTp1NljF"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "br": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "tiqets",
@@ -603,15 +702,7 @@
       "it",
       "ot"
     ],
-    "url": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
-      "de": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-      "fr": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
-      "it": "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
-      "uk": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806"
-    },
+    "url": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
     "category": "tours",
     "category_key": "tours",
     "category_label": "Tours & Activities",
@@ -621,11 +712,22 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806",
+      "uk": "https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806",
+      "de": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+      "fr": "https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806",
+      "it": "https://www.awin1.com/cread.php?awinmid=12427&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "wegotrip",
@@ -634,9 +736,6 @@
       "ot"
     ],
     "url": "https://wegotrip.tpo.lv/kKIF0gIW",
-    "regional_urls": {
-      "ot": "https://wegotrip.tpo.lv/kKIF0gIW"
-    },
     "category": "tours",
     "category_key": "tours",
     "category_label": "Tours & Activities",
@@ -646,10 +745,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://wegotrip.tpo.lv/kKIF0gIW"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "bikesbooking",
@@ -658,9 +761,6 @@
       "ot"
     ],
     "url": "https://bikesbooking.tpo.lv/B3zIKanS",
-    "regional_urls": {
-      "ot": "https://bikesbooking.tpo.lv/B3zIKanS"
-    },
     "category": "tours",
     "category_key": "tours",
     "category_label": "Tours & Activities",
@@ -670,10 +770,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://bikesbooking.tpo.lv/B3zIKanS"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "dombilet",
@@ -682,9 +786,6 @@
       "ru"
     ],
     "url": "https://ntzgd.com/g/lzgn53lu2cad273170bc328511f3b3/?erid=2bL9aMPo2e49hMef4rqyS2GjZ2",
-    "regional_urls": {
-      "ru": "https://ntzgd.com/g/lzgn53lu2cad273170bc328511f3b3/?erid=2bL9aMPo2e49hMef4rqyS2GjZ2"
-    },
     "category": "tours",
     "category_key": "tours",
     "category_label": "Tours & Activities",
@@ -694,10 +795,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ru": "header"
+    "regional_urls": {
+      "ru": "https://ntzgd.com/g/lzgn53lu2cad273170bc328511f3b3/?erid=2bL9aMPo2e49hMef4rqyS2GjZ2"
     },
-    "visibility_note": ""
+    "placements": {
+      "ru": [
+        "header"
+      ]
+    }
   },
   {
     "id": "go2africa",
@@ -706,9 +811,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806"
-    },
     "category": "tours",
     "category_key": "tours",
     "category_label": "Tours & Activities",
@@ -718,10 +820,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "us": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=24529&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ]
+    }
   },
   {
     "id": "searadar",
@@ -730,9 +836,6 @@
       "ot"
     ],
     "url": "https://searadar.tpo.lv/TO4A5eBZ",
-    "regional_urls": {
-      "ot": "https://searadar.tpo.lv/TO4A5eBZ"
-    },
     "category": "tours",
     "category_key": "tours",
     "category_label": "Tours & Activities",
@@ -742,10 +845,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://searadar.tpo.lv/TO4A5eBZ"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "kiwitaxi",
@@ -755,10 +862,6 @@
       "ot"
     ],
     "url": "https://kiwitaxi.tpo.lv/DVaqmgKo",
-    "regional_urls": {
-      "ot": "https://kiwitaxi.tpo.lv/DVaqmgKo",
-      "pl": "https://kiwitaxi.tpo.lv/DVaqmgKo"
-    },
     "category": "transfers",
     "category_key": "transfers",
     "category_label": "Transfers",
@@ -768,11 +871,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "pl": "header",
-      "ot": "header"
+    "regional_urls": {
+      "pl": "https://kiwitaxi.tpo.lv/DVaqmgKo",
+      "ot": "https://kiwitaxi.tpo.lv/DVaqmgKo"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "welcome-pickups",
@@ -782,10 +892,6 @@
       "ot"
     ],
     "url": "https://tpo.lv/XAJOoobr",
-    "regional_urls": {
-      "ot": "https://tpo.lv/XAJOoobr",
-      "pl": "https://tpo.lv/XAJOoobr"
-    },
     "category": "transfers",
     "category_key": "transfers",
     "category_label": "Transfers",
@@ -795,11 +901,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "pl": "header",
-      "ot": "header"
+    "regional_urls": {
+      "pl": "https://tpo.lv/XAJOoobr",
+      "ot": "https://tpo.lv/XAJOoobr"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "gettransfer",
@@ -808,9 +921,6 @@
       "ot"
     ],
     "url": "https://gettransfer.tpo.lv/Pb4p9ljm",
-    "regional_urls": {
-      "ot": "https://gettransfer.tpo.lv/Pb4p9ljm"
-    },
     "category": "transfers",
     "category_key": "transfers",
     "category_label": "Transfers",
@@ -820,10 +930,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://gettransfer.tpo.lv/Pb4p9ljm"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "intui-travel",
@@ -832,9 +946,6 @@
       "ot"
     ],
     "url": "https://intui.tpo.lv/Rrx5VuN3",
-    "regional_urls": {
-      "ot": "https://intui.tpo.lv/Rrx5VuN3"
-    },
     "category": "transfers",
     "category_key": "transfers",
     "category_label": "Transfers",
@@ -844,10 +955,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://intui.tpo.lv/Rrx5VuN3"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "quero-passagem",
@@ -856,9 +971,6 @@
       "br"
     ],
     "url": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/",
-    "regional_urls": {
-      "br": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/"
-    },
     "category": "transfers",
     "category_key": "transfers",
     "category_label": "Transfers",
@@ -868,10 +980,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "br": "header"
+    "regional_urls": {
+      "br": "https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "header"
+      ]
+    }
   },
   {
     "id": "carmel-car-limousine",
@@ -880,9 +996,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806"
-    },
     "category": "transfers",
     "category_key": "transfers",
     "category_label": "Transfers",
@@ -892,10 +1005,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "us": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=87897&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ]
+    }
   },
   {
     "id": "alamo",
@@ -905,10 +1022,6 @@
       "ot"
     ],
     "url": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
-    "regional_urls": {
-      "ot": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
-      "us": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -918,11 +1031,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/",
+      "ot": "https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "economybookings",
@@ -931,9 +1051,6 @@
       "ot"
     ],
     "url": "https://economybookings.tpo.lv/jSFMPEPA",
-    "regional_urls": {
-      "ot": "https://economybookings.tpo.lv/jSFMPEPA"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -943,10 +1060,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://economybookings.tpo.lv/jSFMPEPA"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "europcar",
@@ -957,11 +1078,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
-    "regional_urls": {
-      "au": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
-      "nz": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -971,10 +1087,16 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "au": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+      "nz": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "getrentacar",
@@ -983,9 +1105,6 @@
       "ot"
     ],
     "url": "https://getrentacar.tpo.lv/OR2TWduQ",
-    "regional_urls": {
-      "ot": "https://getrentacar.tpo.lv/OR2TWduQ"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -995,10 +1114,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://getrentacar.tpo.lv/OR2TWduQ"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "jumbo-car-costa-rica",
@@ -1009,11 +1132,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
-    "regional_urls": {
-      "es-latam": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -1023,12 +1141,22 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "es-latam": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+      "es-latam": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "es-latam": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "localrent",
@@ -1037,9 +1165,6 @@
       "ot"
     ],
     "url": "https://localrent.tpo.lv/XS0CqdMP",
-    "regional_urls": {
-      "ot": "https://localrent.tpo.lv/XS0CqdMP"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -1049,10 +1174,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://localrent.tpo.lv/XS0CqdMP"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "qeeq",
@@ -1061,9 +1190,6 @@
       "ot"
     ],
     "url": "https://qeeq.tpo.lv/jklB4Pbm",
-    "regional_urls": {
-      "ot": "https://qeeq.tpo.lv/jklB4Pbm"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -1073,10 +1199,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://qeeq.tpo.lv/jklB4Pbm"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "vip-cars",
@@ -1086,10 +1216,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -1099,11 +1225,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=125318&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "allycar",
@@ -1112,9 +1245,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806"
-    },
     "category": "car_rentals",
     "category_key": "car_rentals",
     "category_label": "Car Rentals",
@@ -1124,10 +1254,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://www.awin1.com/cread.php?awinmid=122406&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "airhelp",
@@ -1137,10 +1271,6 @@
       "ot"
     ],
     "url": "https://airhelp.tpo.lv/EPrGDSO3",
-    "regional_urls": {
-      "ot": "https://airhelp.tpo.lv/EPrGDSO3",
-      "br": "https://airhelp.tpo.lv/EPrGDSO3"
-    },
     "category": "insurance",
     "category_key": "insurance",
     "category_label": "Insurance & Claims",
@@ -1150,11 +1280,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "br": "header",
-      "ot": "header"
+    "regional_urls": {
+      "br": "https://airhelp.tpo.lv/EPrGDSO3",
+      "ot": "https://airhelp.tpo.lv/EPrGDSO3"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "auras-travel-insurance",
@@ -1163,9 +1300,6 @@
       "ot"
     ],
     "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
-    "regional_urls": {
-      "ot": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"
-    },
     "category": "insurance",
     "category_key": "insurance",
     "category_label": "Insurance & Claims",
@@ -1175,10 +1309,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "ekta",
@@ -1187,9 +1325,6 @@
       "ot"
     ],
     "url": "https://ektatraveling.tpo.lv/XWbZbj8S",
-    "regional_urls": {
-      "ot": "https://ektatraveling.tpo.lv/XWbZbj8S"
-    },
     "category": "insurance",
     "category_key": "insurance",
     "category_label": "Insurance & Claims",
@@ -1199,10 +1334,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://ektatraveling.tpo.lv/XWbZbj8S"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "melhor-seguro",
@@ -1211,9 +1350,6 @@
       "br"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806",
-    "regional_urls": {
-      "br": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806"
-    },
     "category": "insurance",
     "category_key": "insurance",
     "category_label": "Insurance & Claims",
@@ -1223,10 +1359,14 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "br": "header"
+    "regional_urls": {
+      "br": "https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "header"
+      ]
+    }
   },
   {
     "id": "acko",
@@ -1235,9 +1375,6 @@
       "ot"
     ],
     "url": "https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/",
-    "regional_urls": {
-      "ot": "https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/"
-    },
     "category": "insurance",
     "category_key": "insurance",
     "category_label": "Insurance & Claims",
@@ -1247,10 +1384,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "icici-lombard",
@@ -1259,9 +1400,6 @@
       "ot"
     ],
     "url": "https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/",
-    "regional_urls": {
-      "ot": "https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/"
-    },
     "category": "insurance",
     "category_key": "insurance",
     "category_label": "Insurance & Claims",
@@ -1271,10 +1409,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "compensair",
@@ -1283,9 +1425,6 @@
       "ot"
     ],
     "url": "https://compensair.tpo.lv/wxDDCITG",
-    "regional_urls": {
-      "ot": "https://compensair.tpo.lv/wxDDCITG"
-    },
     "category": "insurance",
     "category_key": "insurance",
     "category_label": "Insurance & Claims",
@@ -1295,10 +1434,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://compensair.tpo.lv/wxDDCITG"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "go-go-espana",
@@ -1308,10 +1451,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
-    "regional_urls": {
-      "es-latam": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806"
-    },
     "category": "travel_services",
     "category_key": "travel_services",
     "category_label": "Travel Services",
@@ -1321,11 +1460,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "es-latam": "header",
-      "ot": "header"
+    "regional_urls": {
+      "es-latam": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=116365&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "es-latam": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "evisa",
@@ -1334,9 +1480,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806"
-    },
     "category": "travel_services",
     "category_key": "travel_services",
     "category_label": "Travel Services",
@@ -1346,10 +1489,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://www.awin1.com/cread.php?awinmid=59809&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "radical-storage",
@@ -1359,10 +1506,6 @@
       "ot"
     ],
     "url": "https://radicalstorage.tpo.lv/tna4hnly",
-    "regional_urls": {
-      "ot": "https://radicalstorage.tpo.lv/tna4hnly",
-      "pl": "https://radicalstorage.tpo.lv/tna4hnly"
-    },
     "category": "travel_services",
     "category_key": "travel_services",
     "category_label": "Travel Services",
@@ -1372,11 +1515,18 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "pl": "header",
-      "ot": "header"
+    "regional_urls": {
+      "pl": "https://radicalstorage.tpo.lv/tna4hnly",
+      "ot": "https://radicalstorage.tpo.lv/tna4hnly"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "sem-parar-br",
@@ -1385,9 +1535,6 @@
       "br"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=119233&awinaffid=2834806",
-    "regional_urls": {
-      "br": "https://www.awin1.com/cread.php?awinmid=119233&awinaffid=2834806"
-    },
     "category": "travel_services",
     "category_key": "travel_services",
     "category_label": "Travel Services",
@@ -1397,10 +1544,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": true,
-    "placements": {
-      "br": "header"
+    "regional_urls": {
+      "br": "https://www.awin1.com/cread.php?awinmid=119233&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "header"
+      ]
+    }
   },
   {
     "id": "alibaba",
@@ -1409,9 +1560,6 @@
       "ot"
     ],
     "url": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/",
-    "regional_urls": {
-      "ot": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1421,10 +1569,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "header"
+    "regional_urls": {
+      "ot": "https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "aliexpress",
@@ -1433,11 +1585,7 @@
       "pl",
       "ot"
     ],
-    "url": "https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/",
-    "regional_urls": {
-      "ot": "https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/",
-      "pl": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806"
-    },
+    "url": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806",
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1447,11 +1595,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header",
-      "ot": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806",
+      "ot": "https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "amazon",
@@ -1465,14 +1620,6 @@
       "ot"
     ],
     "url": "https://www.amazon.com/?tag=signalboostai-20",
-    "regional_urls": {
-      "es-latam": "https://www.amazon.com.mx/?tag=signalboostai-20",
-      "br": "https://www.amazon.com.br/?tag=signalboostai-20",
-      "pl": "https://www.amazon.pl/?tag=signalboostai-20",
-      "us": "https://www.amazon.com/?tag=signalboostai-20",
-      "uk": "https://www.amazon.co.uk/?tag=signalboostai-20",
-      "ot": "https://www.amazon.com/?tag=signalboostai-20"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1482,14 +1629,31 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "visible-other",
-      "br": "visible-other",
-      "pl": "visible-other",
-      "es-latam": "visible-other",
-      "ot": "visible-other"
+    "regional_urls": {
+      "us": "https://www.amazon.com/?tag=signalboostai-20",
+      "br": "https://www.amazon.com.br/?tag=signalboostai-20",
+      "pl": "https://www.amazon.pl/?tag=signalboostai-20",
+      "uk": "https://www.amazon.co.uk/?tag=signalboostai-20",
+      "es-latam": "https://www.amazon.com.mx/?tag=signalboostai-20",
+      "ot": "https://www.amazon.com/?tag=signalboostai-20"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "visible-other"
+      ],
+      "br": [
+        "visible-other"
+      ],
+      "pl": [
+        "visible-other"
+      ],
+      "es-latam": [
+        "visible-other"
+      ],
+      "ot": [
+        "visible-other"
+      ]
+    }
   },
   {
     "id": "ladymakeup",
@@ -1499,10 +1663,6 @@
       "ot"
     ],
     "url": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/",
-    "regional_urls": {
-      "pl": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/",
-      "ot": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1512,11 +1672,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header",
-      "ot": "header"
+    "regional_urls": {
+      "pl": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/",
+      "ot": "https://ewwhk.com/g/vs6d47v5u0ad273170bcb971324a1b/"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "miravia",
@@ -1526,10 +1693,6 @@
       "ot"
     ],
     "url": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/",
-    "regional_urls": {
-      "es-latam": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/",
-      "ot": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1539,11 +1702,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "es-latam": "header",
-      "ot": "header"
+    "regional_urls": {
+      "es-latam": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/",
+      "ot": "https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/"
     },
-    "visibility_note": ""
+    "placements": {
+      "es-latam": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "bella-storia",
@@ -1552,9 +1722,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1564,10 +1731,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "converse-pl",
@@ -1576,9 +1747,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1588,10 +1756,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "swiat-supli-pl",
@@ -1600,9 +1772,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1612,10 +1781,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "twojemeble-pl",
@@ -1624,9 +1797,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1636,10 +1806,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "weneve-pl",
@@ -1648,9 +1822,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1660,10 +1831,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "beetles-gel-polish",
@@ -1672,9 +1847,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1684,10 +1856,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "cybercart-pl",
@@ -1696,9 +1872,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1708,10 +1881,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "header"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "header"
+      ]
+    }
   },
   {
     "id": "king-koil",
@@ -1721,10 +1898,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1734,11 +1907,18 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=115216&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "oufer-body-jewelry",
@@ -1748,10 +1928,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1761,11 +1937,18 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=91941&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "the-builder-market",
@@ -1774,9 +1957,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1786,10 +1966,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=114100&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ]
+    }
   },
   {
     "id": "woodestic",
@@ -1799,10 +1983,6 @@
       "ot"
     ],
     "url": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/",
-    "regional_urls": {
-      "ot": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/",
-      "us": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1812,11 +1992,18 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/",
+      "ot": "https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "xuchang-aixiu-hair-products",
@@ -1826,10 +2013,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1839,11 +2022,18 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=50899&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "zlike-hair",
@@ -1853,10 +2043,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806"
-    },
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1866,11 +2052,18 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=102013&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "partner",
@@ -1878,10 +2071,7 @@
     "regions": [
       "ru"
     ],
-    "url": "https://kjuzv.com/g/q6gfnfvsq0ad273170bca804937a48/?erid=MvGzQC98w3Z1gMq1kx5ACoy5",
-    "regional_urls": {
-      "ru": "https://bednari.com/g/tsur35yw0tad273170bcff277dce71/?erid=5jtCeReNwxHpfQTEuVz11H1"
-    },
+    "url": "https://bednari.com/g/tsur35yw0tad273170bcff277dce71/?erid=5jtCeReNwxHpfQTEuVz11H1",
     "category": "marketplace",
     "category_key": "marketplace",
     "category_label": "Marketplace",
@@ -1891,10 +2081,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ru": "header"
+    "regional_urls": {
+      "ru": "https://bednari.com/g/tsur35yw0tad273170bcff277dce71/?erid=5jtCeReNwxHpfQTEuVz11H1"
     },
-    "visibility_note": ""
+    "placements": {
+      "ru": [
+        "header"
+      ]
+    }
   },
   {
     "id": "adguard-vpn",
@@ -1903,9 +2097,6 @@
       "ot"
     ],
     "url": "https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/",
-    "regional_urls": {
-      "ot": "https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -1915,10 +2106,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "bodylab",
@@ -1927,9 +2122,6 @@
       "ot"
     ],
     "url": "https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/",
-    "regional_urls": {
-      "ot": "https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -1939,10 +2131,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "envato",
@@ -1951,9 +2147,6 @@
       "ot"
     ],
     "url": "https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/",
-    "regional_urls": {
-      "ot": "https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -1963,10 +2156,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "lingualeo",
@@ -1975,11 +2172,7 @@
       "ru",
       "ot"
     ],
-    "url": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/?erid=5jtCeReLm1S3Xx3LfA8SFZ6",
-    "regional_urls": {
-      "ru": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/",
-      "ot": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/"
-    },
+    "url": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/",
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -1989,11 +2182,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ru": "column1",
-      "ot": "column1"
+    "regional_urls": {
+      "ru": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/",
+      "ot": "https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ru": [
+        "column1"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "pearlmountain-limited",
@@ -2003,10 +2203,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2016,11 +2212,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "proton-vpn",
@@ -2034,14 +2237,6 @@
       "ot"
     ],
     "url": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
-    "regional_urls": {
-      "ot": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
-      "us": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
-      "br": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
-      "pl": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
-      "uk": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
-      "es-latam": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2051,14 +2246,31 @@
     "tier": 1,
     "featured": true,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "br": "column1",
-      "pl": "column1",
-      "es-latam": "column1",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+      "br": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+      "pl": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+      "uk": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+      "es-latam": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/",
+      "ot": "https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "br": [
+        "column1"
+      ],
+      "pl": [
+        "column1"
+      ],
+      "es-latam": [
+        "column1"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "supersim",
@@ -2068,10 +2280,6 @@
       "ot"
     ],
     "url": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
-    "regional_urls": {
-      "br": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
-      "ot": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2081,11 +2289,18 @@
     "tier": 1,
     "featured": true,
     "travel_related": true,
-    "placements": {
-      "br": "header",
-      "ot": "header"
+    "regional_urls": {
+      "br": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/",
+      "ot": "https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "header"
+      ],
+      "ot": [
+        "header"
+      ]
+    }
   },
   {
     "id": "bloomcabin-poland",
@@ -2094,9 +2309,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2106,10 +2318,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "column1"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "cozeware",
@@ -2118,9 +2334,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2130,10 +2343,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ]
+    }
   },
   {
     "id": "dax-pl",
@@ -2142,9 +2359,6 @@
       "pl"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806",
-    "regional_urls": {
-      "pl": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2154,10 +2368,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "pl": "column1"
+    "regional_urls": {
+      "pl": "https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "pl": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "eset-br",
@@ -2166,9 +2384,6 @@
       "br"
     ],
     "url": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/",
-    "regional_urls": {
-      "br": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2178,10 +2393,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "br": "column1"
+    "regional_urls": {
+      "br": "https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "turbovpn",
@@ -2190,9 +2409,6 @@
       "ot"
     ],
     "url": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/",
-    "regional_urls": {
-      "ot": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2202,10 +2418,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "udpower",
@@ -2215,10 +2435,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2228,11 +2444,18 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "bimpy",
@@ -2242,10 +2465,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2255,11 +2474,18 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "column1",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=20472&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "column1"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "guldi",
@@ -2268,9 +2494,6 @@
       "br"
     ],
     "url": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/",
-    "regional_urls": {
-      "br": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2280,10 +2503,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "br": "column1"
+    "regional_urls": {
+      "br": "https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "superbox",
@@ -2292,9 +2519,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2304,10 +2528,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "tiktok-lite",
@@ -2316,9 +2544,6 @@
       "br"
     ],
     "url": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/",
-    "regional_urls": {
-      "br": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2328,10 +2553,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "br": "column1"
+    "regional_urls": {
+      "br": "https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "valerion",
@@ -2340,9 +2569,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806"
-    },
     "category": "products_tools",
     "category_key": "products_tools",
     "category_label": "Products & Tools",
@@ -2352,10 +2578,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "countabout",
@@ -2365,10 +2595,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806"
-    },
     "category": "finance",
     "category_key": "finance",
     "category_label": "Finance",
@@ -2378,11 +2604,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "fileyourtaxes",
@@ -2392,10 +2625,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
-      "ot": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806"
-    },
     "category": "finance",
     "category_key": "finance",
     "category_label": "Finance",
@@ -2405,11 +2634,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "kapitalwise",
@@ -2419,10 +2655,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806"
-    },
     "category": "finance",
     "category_key": "finance",
     "category_label": "Finance",
@@ -2432,11 +2664,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "header",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "header"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "western-union",
@@ -2445,9 +2684,6 @@
       "ot"
     ],
     "url": "https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/",
-    "regional_urls": {
-      "ot": "https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/"
-    },
     "category": "finance",
     "category_key": "finance",
     "category_label": "Finance",
@@ -2457,10 +2693,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "pagbank",
@@ -2469,9 +2709,6 @@
       "br"
     ],
     "url": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/",
-    "regional_urls": {
-      "br": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/"
-    },
     "category": "finance",
     "category_key": "finance",
     "category_label": "Finance",
@@ -2481,10 +2718,14 @@
     "tier": 2,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "br": "column1"
+    "regional_urls": {
+      "br": "https://thevospad.com/g/mgqfc4ir6aad273170bc159272b420/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "vocerh",
@@ -2493,9 +2734,6 @@
       "br"
     ],
     "url": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/",
-    "regional_urls": {
-      "br": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/"
-    },
     "category": "finance",
     "category_key": "finance",
     "category_label": "Finance",
@@ -2505,10 +2743,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "br": "column1"
+    "regional_urls": {
+      "br": "https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/"
     },
-    "visibility_note": ""
+    "placements": {
+      "br": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "bunches",
@@ -2518,10 +2760,6 @@
       "ot"
     ],
     "url": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/",
-    "regional_urls": {
-      "uk": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/",
-      "ot": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2531,11 +2769,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1",
-      "uk": "column1"
+    "regional_urls": {
+      "uk": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/",
+      "ot": "https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ],
+      "uk": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "cs2case",
@@ -2543,10 +2788,7 @@
     "regions": [
       "ot"
     ],
-    "url": "https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/?erid=2bL9aMPo2e49hMef4phyrL2RNS",
-    "regional_urls": {
-      "ot": "https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/"
-    },
+    "url": "https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/",
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2556,10 +2798,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "delfin",
@@ -2568,11 +2814,7 @@
       "ru",
       "ot"
     ],
-    "url": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/?erid=2bL9aMPo2e49hMef4rqyKUjZvt",
-    "regional_urls": {
-      "ru": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/",
-      "ot": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/"
-    },
+    "url": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/",
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2582,11 +2824,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ru": "column1",
-      "ot": "column1"
+    "regional_urls": {
+      "ru": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/",
+      "ot": "https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ru": [
+        "column1"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "forcedrop",
@@ -2595,9 +2844,6 @@
       "ot"
     ],
     "url": "https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/",
-    "regional_urls": {
-      "ot": "https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2607,10 +2853,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "ggpick",
@@ -2619,9 +2869,6 @@
       "ot"
     ],
     "url": "https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/",
-    "regional_urls": {
-      "ot": "https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2631,10 +2878,14 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "ggsel",
@@ -2643,11 +2894,7 @@
       "ru",
       "ot"
     ],
-    "url": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/?erid=2bL9aMPo2e49hMef4phyrMWkN2",
-    "regional_urls": {
-      "ru": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/",
-      "ot": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/"
-    },
+    "url": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/",
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2657,11 +2904,18 @@
     "tier": 1,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ru": "column1",
-      "ot": "column1"
+    "regional_urls": {
+      "ru": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/",
+      "ot": "https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ru": [
+        "column1"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "beverly-hills-md",
@@ -2670,9 +2924,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2682,10 +2933,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=19369&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "cyber-florist",
@@ -2694,9 +2949,6 @@
       "ot"
     ],
     "url": "https://yjfca.com/g/75nfprdgefad273170bc5a87002712/",
-    "regional_urls": {
-      "ot": "https://yjfca.com/g/75nfprdgefad273170bc5a87002712/"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2706,10 +2958,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://yjfca.com/g/75nfprdgefad273170bc5a87002712/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "igp-gifts",
@@ -2718,9 +2974,6 @@
       "ot"
     ],
     "url": "https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/",
-    "regional_urls": {
-      "ot": "https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2730,10 +2983,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ot": "column1"
+    "regional_urls": {
+      "ot": "https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/"
     },
-    "visibility_note": ""
+    "placements": {
+      "ot": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "lea",
@@ -2742,9 +2999,6 @@
       "ru"
     ],
     "url": "https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx",
-    "regional_urls": {
-      "ru": "https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2754,10 +3008,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "ru": "column1"
+    "regional_urls": {
+      "ru": "https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx"
     },
-    "visibility_note": ""
+    "placements": {
+      "ru": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "petpivot",
@@ -2766,9 +3024,6 @@
       "us"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=124898&awinaffid=2834806",
-    "regional_urls": {
-      "us": "https://www.awin1.com/cread.php?awinmid=124898&awinaffid=2834806"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2778,10 +3033,14 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=124898&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "column1"
+      ]
+    }
   },
   {
     "id": "tsarbomba",
@@ -2791,10 +3050,6 @@
       "ot"
     ],
     "url": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
-    "regional_urls": {
-      "ot": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
-      "us": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806"
-    },
     "category": "specialty_other",
     "category_key": "specialty_other",
     "category_label": "Specialty & Other",
@@ -2804,10 +3059,17 @@
     "tier": 3,
     "featured": false,
     "travel_related": false,
-    "placements": {
-      "us": "column1",
-      "ot": "column1"
+    "regional_urls": {
+      "us": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806",
+      "ot": "https://www.awin1.com/cread.php?awinmid=109230&awinaffid=2834806"
     },
-    "visibility_note": ""
+    "placements": {
+      "us": [
+        "column1"
+      ],
+      "ot": [
+        "column1"
+      ]
+    }
   }
 ]
