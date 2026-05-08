@@ -335,19 +335,142 @@
     const categoryName = key => CATEGORY_META[key]?.[state.lang] || CATEGORY_META[key]?.en || key.replace(/_/g,' ');
 
     const CATEGORY_SEO_COPY = {
-      flights:'Compare flight booking tools, airline partners, and fare resources for regional and international travel.',
-      hotels:'Find hotel search platforms, stay deals, and accommodation partners for smarter trip planning.',
-      esim:'Stay connected with eSIM, SIM card, and mobile internet services for travelers and remote workers.',
-      tours:'Discover tours, attraction tickets, guided experiences, and activity platforms for your destination.',
-      transfers:'Book airport transfers, ride services, bus tickets, and local transport options for smoother arrivals.',
-      car_rentals:'Compare car rental platforms and mobility partners for flexible travel in your selected region.',
-      insurance:'Explore travel insurance, claim support, and protection services for safer trips.',
-      travel_services:'Access travel services including visas, luggage storage, tolls, road travel, and planning resources.',
-      marketplace:'Shop travel essentials, regional products, and marketplace offers from trusted shopping partners.',
-      products_tools:'Find useful tools, apps, gadgets, and digital products for travel, work, and everyday life.',
-      finance:'Discover finance, payments, money transfer, budgeting, and tax resources available by region.',
-      specialty_other:'Browse specialty offers, gifts, digital marketplaces, and additional regional partner services.'
+      en: {
+        flights:'Compare flight booking tools, airline partners, and fare resources for regional and international travel.',
+        hotels:'Find hotel search platforms, stay deals, and accommodation partners for smarter trip planning.',
+        esim:'Stay connected with eSIM, SIM card, and mobile internet services for travelers and remote workers.',
+        tours:'Discover tours, attraction tickets, guided experiences, and activity platforms for your destination.',
+        transfers:'Book airport transfers, ride services, bus tickets, and local transport options for smoother arrivals.',
+        car_rentals:'Compare car rental platforms and mobility partners for flexible travel in your selected region.',
+        insurance:'Explore travel insurance, claim support, and protection services for safer trips.',
+        travel_services:'Access travel services including visas, luggage storage, tolls, road travel, and planning resources.',
+        marketplace:'Shop travel essentials, regional products, and marketplace offers from trusted shopping partners.',
+        products_tools:'Find useful tools, apps, gadgets, and digital products for travel, work, and everyday life.',
+        finance:'Discover finance, payments, money transfer, budgeting, and tax resources available by region.',
+        specialty_other:'Browse specialty offers, gifts, digital marketplaces, and additional regional partner services.'
+      },
+      'pt-BR': {
+        flights:'Compare ferramentas de passagens aéreas, companhias e recursos de tarifas para viagens no Brasil e no exterior.',
+        hotels:'Encontre plataformas de hotéis, ofertas de hospedagem e parceiros de acomodação para planejar melhor sua viagem.',
+        esim:'Mantenha-se conectado com eSIM, chip internacional e internet móvel para viajantes e trabalhadores remotos.',
+        tours:'Descubra passeios, ingressos, experiências guiadas e atividades para o seu destino.',
+        transfers:'Reserve traslados, serviços de transporte, passagens de ônibus e opções locais para chegar com tranquilidade.',
+        car_rentals:'Compare plataformas de aluguel de carros e parceiros de mobilidade disponíveis para a sua região.',
+        insurance:'Explore seguros de viagem, suporte a reembolsos e serviços de proteção para viajar com mais segurança.',
+        travel_services:'Acesse serviços de viagem como vistos, guarda-volumes, pedágios, mobilidade e recursos de planejamento.',
+        marketplace:'Compre itens de viagem, produtos regionais e ofertas de marketplace de parceiros confiáveis.',
+        products_tools:'Encontre ferramentas, aplicativos, gadgets e produtos digitais úteis para viagem, trabalho e rotina.',
+        finance:'Descubra recursos de finanças, pagamentos, transferências, orçamento e impostos disponíveis por região.',
+        specialty_other:'Veja ofertas especiais, presentes, marketplaces digitais e outros parceiros regionais.'
+      },
+      es: {
+        flights:'Compara herramientas de vuelos, aerolíneas y recursos de tarifas para viajes regionales e internacionales.',
+        hotels:'Encuentra plataformas de hoteles, ofertas de alojamiento y socios para planificar mejor tu viaje.',
+        esim:'Mantente conectado con eSIM, tarjetas SIM e internet móvil para viajeros y trabajadores remotos.',
+        tours:'Descubre tours, entradas, experiencias guiadas y actividades para tu destino.',
+        transfers:'Reserva traslados, transporte local, autobuses y opciones de movilidad para llegar sin complicaciones.',
+        car_rentals:'Compara plataformas de alquiler de autos y socios de movilidad disponibles para tu región.',
+        insurance:'Explora seguros de viaje, soporte de reclamaciones y servicios de protección para viajar con más seguridad.',
+        travel_services:'Accede a servicios de viaje como visas, almacenamiento de equipaje, movilidad y recursos de planificación.',
+        marketplace:'Compra esenciales de viaje, productos regionales y ofertas de marketplace de socios confiables.',
+        products_tools:'Encuentra herramientas, apps, gadgets y productos digitales útiles para viajar, trabajar y ahorrar tiempo.',
+        finance:'Descubre recursos de finanzas, pagos, transferencias, presupuesto e impuestos disponibles por región.',
+        specialty_other:'Explora ofertas especiales, regalos, marketplaces digitales y socios regionales adicionales.'
+      },
+      pl: {
+        flights:'Porównuj narzędzia do rezerwacji lotów, partnerów lotniczych i oferty cenowe dla podróży regionalnych oraz międzynarodowych.',
+        hotels:'Znajdź platformy hotelowe, oferty noclegów i partnerów zakwaterowania, aby lepiej zaplanować podróż.',
+        esim:'Pozostań online dzięki eSIM, kartom SIM i mobilnemu internetowi dla podróżnych oraz osób pracujących zdalnie.',
+        tours:'Odkrywaj wycieczki, bilety, atrakcje i przewodniki dopasowane do Twojego kierunku podróży.',
+        transfers:'Rezerwuj transfery lotniskowe, przejazdy, bilety autobusowe i lokalny transport bez zbędnych komplikacji.',
+        car_rentals:'Porównuj wypożyczalnie samochodów i partnerów mobilności dostępnych w wybranym regionie.',
+        insurance:'Sprawdzaj ubezpieczenia podróżne, pomoc przy roszczeniach i usługi ochrony dla bezpieczniejszej podróży.',
+        travel_services:'Korzystaj z usług podróżnych, takich jak wizy, przechowalnia bagażu, opłaty drogowe i planowanie wyjazdu.',
+        marketplace:'Kupuj produkty podróżne, lokalne oferty i propozycje marketplace od zaufanych partnerów.',
+        products_tools:'Znajdź przydatne narzędzia, aplikacje, gadżety i produkty cyfrowe do podróży, pracy oraz codziennych zadań.',
+        finance:'Odkrywaj finanse, płatności, przelewy, budżetowanie i rozwiązania podatkowe dostępne regionalnie.',
+        specialty_other:'Przeglądaj oferty specjalne, prezenty, cyfrowe marketplace i dodatkowe usługi regionalne.'
+      },
+      ru: {
+        flights:'Сравнивайте сервисы для бронирования авиабилетов, авиакомпании и предложения для региональных и международных поездок.',
+        hotels:'Находите платформы для отелей, предложения по размещению и партнеров для более удобного планирования поездки.',
+        esim:'Оставайтесь на связи с eSIM, SIM-картами и мобильным интернетом для путешественников и удаленной работы.',
+        tours:'Открывайте экскурсии, билеты, мероприятия и впечатления для выбранного направления.',
+        transfers:'Бронируйте трансферы, местный транспорт, автобусные билеты и удобные варианты поездок.',
+        car_rentals:'Сравнивайте сервисы аренды автомобилей и партнеров мобильности, доступных в выбранном регионе.',
+        insurance:'Изучайте туристическое страхование, помощь с компенсациями и сервисы защиты для безопасных поездок.',
+        travel_services:'Используйте туристические услуги: визы, хранение багажа, дорожные сервисы и инструменты планирования.',
+        marketplace:'Покупайте товары для путешествий, региональные предложения и товары маркетплейсов от проверенных партнеров.',
+        products_tools:'Находите полезные инструменты, приложения, гаджеты и цифровые продукты для поездок, работы и повседневных задач.',
+        finance:'Изучайте финансовые сервисы, платежи, переводы, бюджетирование и налоговые инструменты по регионам.',
+        specialty_other:'Просматривайте специальные предложения, подарки, цифровые маркетплейсы и дополнительные региональные сервисы.'
+      }
     };
+    const REGION_SEO_NAME = {
+      en:{ot:'Global',us:'United States',br:'Brazil',pl:'Poland',ru:'Russia',uk:'United Kingdom',ca:'Canada',au:'Australia',nz:'New Zealand','es-latam':'LATAM'},
+      'pt-BR':{ot:'Global',us:'Estados Unidos',br:'Brasil',pl:'Polônia',ru:'Rússia',uk:'Reino Unido',ca:'Canadá',au:'Austrália',nz:'Nova Zelândia','es-latam':'LATAM'},
+      es:{ot:'Global',us:'Estados Unidos',br:'Brasil',pl:'Polonia',ru:'Rusia',uk:'Reino Unido',ca:'Canadá',au:'Australia',nz:'Nueva Zelanda','es-latam':'LATAM'},
+      pl:{ot:'Global',us:'USA',br:'Brazylia',pl:'Polski',ru:'Rosja',uk:'Wielka Brytania',ca:'Kanada',au:'Australia',nz:'Nowa Zelandia','es-latam':'LATAM'},
+      ru:{ot:'Глобальный',us:'США',br:'Бразилия',pl:'Польша',ru:'Россия',uk:'Великобритания',ca:'Канада',au:'Австралия',nz:'Новая Зеландия','es-latam':'LATAM'}
+    };
+    const SEO_TEXT = {
+      en:{
+        title:'SignalBoost: Smart Travel Tools, Deals & Booking Resources Worldwide',
+        intro:r=>'SignalBoost is an all-in-one hub for discovering travel tools, booking platforms, marketplaces, and money-saving resources across global regions. For '+r+', visitors can browse trusted partners, compare categories, and quickly open relevant services for flights, hotels, connectivity, transportation, activities, shopping, finance, and regional offers.',
+        explore:r=>'Explore SignalBoost categories in '+r,
+        partners:'Trusted regional partners',
+        partnersText:(r,n)=>'SignalBoost organizes partners by region and category so users can find relevant services faster. Current visible partners for '+r+' include '+(n || 'regional and global partner offers')+'.',
+        helpTitle:'How SignalBoost helps users find better travel resources',
+        helpText:'SignalBoost is built around high-intent discovery: travelers can compare booking tools, explore regional offers, open partner platforms, and find relevant services without searching across dozens of separate sites. The directory structure supports travel planning, marketplace discovery, digital tools, and regional browsing in one place.',
+        cards:[['Search-friendly categories','Flights, hotels, eSIMs, tours, transfers, car rentals, insurance, marketplace offers, products, finance, and specialty services are grouped for easier discovery.'],['Regional relevance','Partners are filtered by exact region so users see offers intended for their selected market.'],['Useful comparisons','Category pages and partner cards help visitors compare options before opening a booking or shopping platform.'],['Fresh marketplace structure','SignalBoost can expand with regional landing pages, partner pages, guides, and travel resources over time.']],
+        faqTitle:'Frequently asked questions', q1:'What is SignalBoost?', a1:'SignalBoost is a regional partner directory for travel tools, booking platforms, marketplace offers, finance resources, and digital services.', q2:'How are partners selected?', a2:'Partners are organized by supported region, category, affiliate network, and user relevance so visitors can find offers that match their market.', q3:'Does SignalBoost support multiple regions?', a3:'Yes. SignalBoost supports regional browsing for markets such as the United States, Brazil, Poland, Russia, the United Kingdom, LATAM, and Global availability.', endTitle:'Plan smarter and travel better', endText:'Use SignalBoost to compare partner resources, discover local and global offers, and reduce the time spent researching travel, shopping, finance, and digital tools.'
+      },
+      'pt-BR':{
+        title:'SignalBoost: Ferramentas de viagem, ofertas e recursos de reserva no mundo todo',
+        intro:r=>'O SignalBoost é um hub para descobrir ferramentas de viagem, plataformas de reserva, marketplaces e recursos para economizar em diferentes regiões. Para '+r+', os visitantes encontram parceiros confiáveis, comparam categorias e acessam rapidamente serviços de voos, hotéis, conectividade, transporte, passeios, compras, finanças e ofertas regionais.',
+        explore:r=>'Explore categorias do SignalBoost em '+r,
+        partners:'Parceiros regionais confiáveis',
+        partnersText:(r,n)=>'O SignalBoost organiza parceiros por região e categoria para que os usuários encontrem serviços relevantes com mais rapidez. Os parceiros visíveis para '+r+' incluem '+(n || 'ofertas regionais e globais')+'.',
+        helpTitle:'Como o SignalBoost ajuda a encontrar melhores recursos de viagem',
+        helpText:'O SignalBoost foi criado para descoberta rápida: viajantes podem comparar ferramentas de reserva, explorar ofertas regionais e acessar plataformas parceiras sem pesquisar em dezenas de sites diferentes.',
+        cards:[['Categorias fáceis de encontrar','Voos, hotéis, eSIMs, passeios, traslados, aluguel de carros, seguros, marketplace, produtos, finanças e serviços especiais ficam organizados para facilitar a descoberta.'],['Relevância regional','Os parceiros são filtrados por região para mostrar ofertas adequadas ao mercado selecionado.'],['Comparação útil','Categorias e cartões de parceiros ajudam visitantes a comparar opções antes de abrir uma plataforma de reserva ou compra.'],['Estrutura pronta para crescer','O SignalBoost pode expandir com páginas regionais, páginas de parceiros, guias e recursos de viagem.']],
+        faqTitle:'Perguntas frequentes', q1:'O que é o SignalBoost?', a1:'O SignalBoost é um diretório regional de parceiros para ferramentas de viagem, reservas, marketplaces, finanças e serviços digitais.', q2:'Como os parceiros são selecionados?', a2:'Os parceiros são organizados por região, categoria, rede de afiliados e relevância para o usuário.', q3:'O SignalBoost funciona em várias regiões?', a3:'Sim. O SignalBoost oferece navegação regional para mercados como Estados Unidos, Brasil, Polônia, Rússia, Reino Unido, LATAM e Global.', endTitle:'Planeje melhor e viaje melhor', endText:'Use o SignalBoost para comparar recursos de parceiros, descobrir ofertas locais e globais e reduzir o tempo gasto pesquisando ferramentas de viagem, compras, finanças e serviços digitais.'
+      },
+      es:{
+        title:'SignalBoost: herramientas de viaje, ofertas y recursos de reserva en todo el mundo',
+        intro:r=>'SignalBoost es un centro para descubrir herramientas de viaje, plataformas de reserva, marketplaces y recursos para ahorrar en distintas regiones. Para '+r+', los visitantes pueden explorar socios confiables, comparar categorías y abrir servicios relevantes de vuelos, hoteles, conectividad, transporte, actividades, compras, finanzas y ofertas regionales.',
+        explore:r=>'Explora categorías de SignalBoost en '+r,
+        partners:'Socios regionales confiables',
+        partnersText:(r,n)=>'SignalBoost organiza socios por región y categoría para que los usuarios encuentren servicios relevantes más rápido. Los socios visibles para '+r+' incluyen '+(n || 'ofertas regionales y globales')+'.',
+        helpTitle:'Cómo SignalBoost ayuda a encontrar mejores recursos de viaje',
+        helpText:'SignalBoost está diseñado para la búsqueda de alta intención: los viajeros pueden comparar herramientas de reserva, explorar ofertas regionales y abrir plataformas de socios sin revisar decenas de sitios.',
+        cards:[['Categorías fáciles de encontrar','Vuelos, hoteles, eSIMs, tours, traslados, alquiler de autos, seguros, marketplace, productos, finanzas y servicios especiales están organizados para facilitar la búsqueda.'],['Relevancia regional','Los socios se filtran por región exacta para mostrar ofertas adecuadas al mercado seleccionado.'],['Comparaciones útiles','Las categorías y tarjetas de socios ayudan a comparar opciones antes de abrir una plataforma de reserva o compra.'],['Estructura lista para crecer','SignalBoost puede expandirse con páginas regionales, páginas de socios, guías y recursos de viaje.']],
+        faqTitle:'Preguntas frecuentes', q1:'¿Qué es SignalBoost?', a1:'SignalBoost es un directorio regional de socios para herramientas de viaje, reservas, marketplaces, finanzas y servicios digitales.', q2:'¿Cómo se seleccionan los socios?', a2:'Los socios se organizan por región, categoría, red de afiliados y relevancia para el usuario.', q3:'¿SignalBoost funciona en varias regiones?', a3:'Sí. SignalBoost permite navegar por mercados como Estados Unidos, Brasil, Polonia, Rusia, Reino Unido, LATAM y Global.', endTitle:'Planifica mejor y viaja mejor', endText:'Usa SignalBoost para comparar recursos de socios, descubrir ofertas locales y globales y reducir el tiempo de búsqueda de herramientas de viaje, compras, finanzas y servicios digitales.'
+      },
+      pl:{
+        title:'SignalBoost: narzędzia podróżne, oferty i zasoby rezerwacyjne na świecie',
+        intro:r=>'SignalBoost to regionalny katalog, który pomaga odkrywać narzędzia podróżne, platformy rezerwacyjne, marketplace i sposoby oszczędzania. Dla '+r+' użytkownicy mogą przeglądać zaufanych partnerów, porównywać kategorie i szybko przechodzić do usług związanych z lotami, hotelami, internetem, transportem, atrakcjami, zakupami, finansami i ofertami regionalnymi.',
+        explore:r=>'Przeglądaj kategorie SignalBoost dla '+r,
+        partners:'Zaufani partnerzy regionalni',
+        partnersText:(r,n)=>'SignalBoost porządkuje partnerów według regionu i kategorii, aby użytkownicy szybciej znajdowali odpowiednie usługi. Widoczni partnerzy dla '+r+' to '+(n || 'oferty regionalne i globalne')+'.',
+        helpTitle:'Jak SignalBoost pomaga znaleźć lepsze zasoby podróżne',
+        helpText:'SignalBoost ułatwia szybkie odkrywanie ofert: podróżni mogą porównywać narzędzia rezerwacyjne, sprawdzać propozycje regionalne i otwierać platformy partnerów bez przeszukiwania wielu osobnych stron.',
+        cards:[['Kategorie przyjazne wyszukiwarkom','Loty, hotele, eSIM, wycieczki, transfery, wynajem samochodów, ubezpieczenia, marketplace, produkty, finanse i usługi specjalne są pogrupowane dla łatwiejszego odkrywania.'],['Znaczenie regionalne','Partnerzy są filtrowani według dokładnego regionu, aby pokazywać oferty przeznaczone dla wybranego rynku.'],['Pomocne porównania','Kategorie i karty partnerów pomagają porównać opcje przed przejściem do platformy rezerwacyjnej lub zakupowej.'],['Struktura gotowa do rozwoju','SignalBoost może rozwijać strony regionalne, strony partnerów, poradniki i zasoby podróżne.']],
+        faqTitle:'Najczęściej zadawane pytania', q1:'Czym jest SignalBoost?', a1:'SignalBoost to regionalny katalog partnerów obejmujący narzędzia podróżne, platformy rezerwacyjne, marketplace, finanse i usługi cyfrowe.', q2:'Jak wybierani są partnerzy?', a2:'Partnerzy są organizowani według obsługiwanego regionu, kategorii, sieci afiliacyjnej i przydatności dla użytkownika.', q3:'Czy SignalBoost obsługuje wiele regionów?', a3:'Tak. SignalBoost obsługuje przeglądanie regionalne dla takich rynków jak USA, Brazylia, Polska, Rosja, Wielka Brytania, LATAM i Global.', endTitle:'Planuj mądrzej i podróżuj lepiej', endText:'Korzystaj z SignalBoost, aby porównywać zasoby partnerów, odkrywać oferty lokalne i globalne oraz skracać czas wyszukiwania narzędzi podróżnych, zakupowych, finansowych i cyfrowych.'
+      },
+      ru:{
+        title:'SignalBoost: туристические инструменты, предложения и ресурсы бронирования по всему миру',
+        intro:r=>'SignalBoost — это региональный каталог для поиска туристических инструментов, платформ бронирования, маркетплейсов и ресурсов для экономии. Для региона '+r+' пользователи могут просматривать проверенных партнеров, сравнивать категории и быстро открывать сервисы для авиабилетов, отелей, связи, транспорта, развлечений, покупок, финансов и региональных предложений.',
+        explore:r=>'Категории SignalBoost для региона '+r,
+        partners:'Надежные региональные партнеры',
+        partnersText:(r,n)=>'SignalBoost распределяет партнеров по регионам и категориям, чтобы пользователи быстрее находили релевантные сервисы. Видимые партнеры для региона '+r+': '+(n || 'региональные и глобальные предложения')+'.',
+        helpTitle:'Как SignalBoost помогает находить лучшие ресурсы для путешествий',
+        helpText:'SignalBoost создан для быстрого поиска: путешественники могут сравнивать сервисы бронирования, изучать региональные предложения и открывать партнерские платформы без просмотра десятков отдельных сайтов.',
+        cards:[['Категории для поиска','Авиабилеты, отели, eSIM, туры, трансферы, аренда авто, страхование, маркетплейс, продукты, финансы и специальные сервисы сгруппированы для удобного поиска.'],['Региональная релевантность','Партнеры фильтруются по точному региону, чтобы показывать предложения для выбранного рынка.'],['Полезные сравнения','Категории и карточки партнеров помогают сравнить варианты перед переходом на платформу бронирования или покупок.'],['Структура для роста','SignalBoost может развиваться за счет региональных страниц, страниц партнеров, гидов и туристических ресурсов.']],
+        faqTitle:'Частые вопросы', q1:'Что такое SignalBoost?', a1:'SignalBoost — это региональный каталог партнеров для туристических инструментов, бронирования, маркетплейсов, финансов и цифровых сервисов.', q2:'Как выбираются партнеры?', a2:'Партнеры организованы по поддерживаемому региону, категории, партнерской сети и релевантности для пользователя.', q3:'Поддерживает ли SignalBoost несколько регионов?', a3:'Да. SignalBoost поддерживает региональный просмотр для США, Бразилии, Польши, России, Великобритании, LATAM и Global.', endTitle:'Планируйте умнее и путешествуйте лучше', endText:'Используйте SignalBoost, чтобы сравнивать партнерские ресурсы, находить местные и глобальные предложения и сокращать время поиска туристических, торговых, финансовых и цифровых инструментов.'
+      }
+    };
+    function seoLang(){ return SEO_TEXT[state.lang] ? state.lang : 'en'; }
     function partnerDescription(p){
       const raw = (p.description || '').trim();
       if(raw && !/^Explore\s.+\soffers\.?$/i.test(raw)) return raw;
@@ -355,25 +478,34 @@
       const network = p.network ? ` through ${p.network}` : '';
       return `${p.name} provides ${category} offers${network} for visitors in supported regions.`;
     }
-    function regionSeoName(){ return REGIONS.find(r=>r.key===state.region)?.label || state.region; }
+    function regionSeoName(){ return REGION_SEO_NAME[seoLang()]?.[state.region] || REGIONS.find(r=>r.key===state.region)?.label || state.region; }
+    function escapeHtml(value){ return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
     function renderSEO(){
       const root = $('#seoContent'); if(!root) return;
+      const lang = seoLang();
+      const copy = SEO_TEXT[lang];
       const region = regionSeoName();
       const visible = ALL_PARTNERS.filter(partnerMatchesRegion);
       const groups = groupedPartners(visible);
-      const groupCards = groups.slice(0,8).map(([key,items])=>`<article class="seo-card"><strong>${categoryName(key)}</strong><span>${CATEGORY_SEO_COPY[key] || `Explore ${items.length} trusted partners available for this region.`}</span></article>`).join('');
+      const categoryCopy = CATEGORY_SEO_COPY[lang] || CATEGORY_SEO_COPY.en;
+      const groupCards = groups.slice(0,8).map(([key,items])=>`<article class="seo-card"><strong>${escapeHtml(categoryName(key))}</strong><span>${escapeHtml(categoryCopy[key] || `Explore ${items.length} trusted partners available for this region.`)}</span></article>`).join('');
       const partnerNames = visible.slice(0,12).map(p=>p.name).join(', ');
-      root.innerHTML = `<h1>SignalBoost: Smart Travel Tools, Deals &amp; Booking Resources Worldwide</h1><p>SignalBoost is an all-in-one hub for discovering travel tools, booking platforms, marketplaces, and money-saving resources across global regions. For ${region}, visitors can browse trusted partners, compare categories, and quickly open relevant services for flights, hotels, connectivity, transportation, activities, shopping, finance, and regional offers.</p><h2>Explore SignalBoost categories in ${region}</h2><div class="seo-grid">${groupCards}</div><h2>Trusted regional partners</h2><p>SignalBoost organizes partners by region and category so users can find relevant services faster. Current visible partners for ${region} include ${partnerNames || 'regional and global partner offers'}.</p><h2>How SignalBoost helps users find better travel resources</h2><p>SignalBoost is built around high-intent discovery: travelers can compare booking tools, explore regional offers, open partner platforms, and find relevant services without searching across dozens of separate sites. The directory structure supports travel planning, marketplace discovery, digital tools, and regional browsing in one place.</p><div class="seo-grid"><article class="seo-card"><strong>Search-friendly categories</strong><span>Flights, hotels, eSIMs, tours, transfers, car rentals, insurance, marketplace offers, products, finance, and specialty services are grouped for easier discovery.</span></article><article class="seo-card"><strong>Regional relevance</strong><span>Partners are filtered by exact region so users see offers intended for their selected market.</span></article><article class="seo-card"><strong>Useful comparisons</strong><span>Category pages and partner cards help visitors compare options before opening a booking or shopping platform.</span></article><article class="seo-card"><strong>Fresh marketplace structure</strong><span>SignalBoost can expand with regional landing pages, partner pages, guides, and travel resources over time.</span></article></div><h2>Frequently asked questions</h2><h3>What is SignalBoost?</h3><p>SignalBoost is a regional partner directory for travel tools, booking platforms, marketplace offers, finance resources, and digital services.</p><h3>How are partners selected?</h3><p>Partners are organized by supported region, category, affiliate network, and user relevance so visitors can find offers that match their market.</p><h3>Does SignalBoost support multiple regions?</h3><p>Yes. SignalBoost supports regional browsing for markets such as the United States, Brazil, Poland, Russia, the United Kingdom, LATAM, and Global availability.</p><h2>Plan smarter and travel better</h2><p>Use SignalBoost to compare partner resources, discover local and global offers, and reduce the time spent researching travel, shopping, finance, and digital tools.</p>`;
+      const supportCards = copy.cards.map(([title,text])=>`<article class="seo-card"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(text)}</span></article>`).join('');
+      root.setAttribute('lang', lang === 'pt-BR' ? 'pt-BR' : lang);
+      root.innerHTML = `<h1>${escapeHtml(copy.title)}</h1><p>${escapeHtml(copy.intro(region))}</p><h2>${escapeHtml(copy.explore(region))}</h2><div class="seo-grid">${groupCards}</div><h2>${escapeHtml(copy.partners)}</h2><p>${escapeHtml(copy.partnersText(region, partnerNames))}</p><h2>${escapeHtml(copy.helpTitle)}</h2><p>${escapeHtml(copy.helpText)}</p><div class="seo-grid">${supportCards}</div><h2>${escapeHtml(copy.faqTitle)}</h2><h3>${escapeHtml(copy.q1)}</h3><p>${escapeHtml(copy.a1)}</p><h3>${escapeHtml(copy.q2)}</h3><p>${escapeHtml(copy.a2)}</p><h3>${escapeHtml(copy.q3)}</h3><p>${escapeHtml(copy.a3)}</p><h2>${escapeHtml(copy.endTitle)}</h2><p>${escapeHtml(copy.endText)}</p>`;
     }
     function renderSchema(){
       const node = $('#dynamicSeoSchema'); if(!node) return;
+      const lang = seoLang();
+      const copy = SEO_TEXT[lang];
       const region = regionSeoName();
       const visible = ALL_PARTNERS.filter(partnerMatchesRegion).slice(0,30);
       const schema = {
         '@context':'https://schema.org',
         '@type':'ItemList',
+        inLanguage: lang,
         name:`SignalBoost partners for ${region}`,
-        description:`Regional partner directory and travel tools for ${region}.`,
+        description: copy.intro(region),
         url:`https://www.signalboostapp.com/?region=${encodeURIComponent(state.region)}`,
         numberOfItems: visible.length,
         itemListElement: visible.map((p,i)=>({'@type':'ListItem',position:i+1,item:{'@type':'Organization',name:p.name,description:partnerDescription(p),url:partnerUrl(p)}}))
@@ -579,9 +711,9 @@
       $('#trendingStrip').innerHTML = `<span class="trend-kicker">${t('trending')}</span><div class="trend-items">${picks.map(p=>`<a class="trend-pill" href="${partnerUrl(p)}" target="_blank" rel="noopener">${p.name}</a>`).join('')}</div>`;
     }
     function renderFeed(){
-      const picks = topPartners(5);
+      const picks = topPartners(10);
       const imgs = ['https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=900&q=80'];
-      $('#feedContainer').innerHTML = picks.map((p,i)=>`<a class="feed-card" href="${partnerUrl(p)}" target="_blank" rel="noopener"><div class="media"><img src="${imgs[i%imgs.length]}" alt=""></div><div class="feed-content"><span class="feed-label">${categoryName(p.category_key)}</span><span class="feed-source">${p.network || ''}</span><h3>${p.name}</h3><p>${partnerDescription(p)}</p></div></a>`).join('');
+      $('#feedContainer').innerHTML = picks.map((p,i)=>`<a class="feed-card" href="${partnerUrl(p)}" target="_blank" rel="noopener"><div class="media"><img src="${imgs[i%imgs.length]}" alt="${p.name} travel partner offer" loading="lazy"></div><div class="feed-content"><span class="feed-label">${categoryName(p.category_key)}</span><span class="feed-source">${p.network || ''}</span><h3>${p.name}</h3><p>${partnerDescription(p)}</p></div></a>`).join('');
     }
     function renderRight(){
       const root=$('#partnerChips'); if(!root) return;
