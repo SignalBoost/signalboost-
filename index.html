@@ -314,7 +314,15 @@
     // No `ot` fallback is used for BR, PL, US, UK, etc.; `ot` appears only on the Global region.
     const hasExactRegion = (p, region = state.region) => Array.isArray(p.regions) && p.regions.includes(region);
     const hasExactRegionUrl = (p, region = state.region) => !p.regional_urls || !!p.regional_urls[region];
-    const partnerMatchesRegion = p => hasExactRegion(p) && hasExactRegionUrl(p);
+    const isUKOnlyPartner = p => {
+      if(!hasExactRegion(p, 'uk') || !hasExactRegionUrl(p, 'uk')) return false;
+      // UK currently has one true local/non-travel offer: Bunches.
+      // Do not pull broad/global travel or marketplace partners into the UK page.
+      if(p.id === 'bunches') return true;
+      const regions = Array.isArray(p.regions) ? p.regions : [];
+      return regions.includes('uk') && !p.travel_related && !TRAVEL_KEYS.has(p.category_key) && (regions.length <= 2);
+    };
+    const partnerMatchesRegion = p => state.region === 'uk' ? isUKOnlyPartner(p) : (hasExactRegion(p) && hasExactRegionUrl(p));
     const isLocal = partnerMatchesRegion;
     const partnerUrl = p => (p.regional_urls && p.regional_urls[state.region]) || p.url || '#';
     const partnerUrlExact = partnerUrl;
