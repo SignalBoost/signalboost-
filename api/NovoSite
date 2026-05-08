@@ -1,1019 +1,1263 @@
 
-
-
-
-
 <!DOCTYPE html>
-<html lang="en" data-i18n-ready="0">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignalBoost</title>
-  <meta name="description" content="Find travel, marketplace and service offers by region." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- Primary Meta Tags -->
+  <title>SignalBoost — Turn Customer Reviews Into Branded Content Automatically</title>
+  <meta name="description" content="SignalBoost transforms your customer reviews into polished, branded content automatically. Create consistent, authentic social proof without design work. Perfect for service businesses, local shops, and multi-location brands.">
+  <meta name="keywords" content="SignalBoost, automated review content, customer reviews, branded content generator, social proof automation, business reputation tools, review-to-content software">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#0d1117">
+
+  <link rel="canonical" href="https://www.signalboostapp.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SignalBoost — Automated Review-to-Content Tool">
+  <meta property="og:description" content="Automatically convert your customer reviews into branded content that builds trust and strengthens your business reputation.">
+  <meta property="og:url" content="https://www.signalboostapp.com/">
+  <meta property="og:image" content="https://www.signalboostapp.com/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SignalBoost — Turn Customer Reviews Into Branded Content Automatically">
+  <meta name="twitter:description" content="SignalBoost converts your customer reviews into polished, ready-to-use branded content with zero effort.">
+  <meta name="twitter:image" content="https://www.signalboostapp.com/og-image.jpg">
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SignalBoost",
+    "url": "https://www.signalboostapp.com/",
+    "description": "SignalBoost automatically transforms customer reviews into branded content, helping businesses showcase authentic social proof effortlessly.",
+    "applicationCategory": "MarketingApplication",
+    "operatingSystem": "Web",
+    "image": "https://www.signalboostapp.com/og-image.jpg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "SignalBoost"
+    }
+  }
+  </script>
   <style>
-    *{box-sizing:border-box}
-    html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#0d1117;color:#fff}
-    body{overflow:hidden}
-    a{color:inherit}
+/* --------------------------------------------------
+   SIGNALBOOST — PREMIUM SAAS DESIGN SYSTEM
+   -------------------------------------------------- */
 
-    .top{
-      height:40px;
-      background:#232f3e;
-      display:grid;
-      grid-template-columns:240px 1fr 0;
-      align-items:center;
-      border-bottom:1px solid rgba(255,255,255,.1);
-      position:fixed;
-      inset:0 0 auto 0;
-      z-index:1000;
-    }
-    .logo{color:#f5c542;font-weight:900;padding-left:2px;font-size:16px;white-space:nowrap}
+/* ROOT TOKENS */
+:root {
+  --sb-bg: #0d1117;
+  --sb-bg-alt: #11161d;
+  --sb-surface: #161b22;
+  --sb-surface-alt: #1c2129;
 
-    .navbar{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:#111;
-      height:100%;
-      width:100%;
-      overflow:visible;
-    }
-    .nav-list{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:20px;
-      list-style:none;
-      margin:0;
-      padding:0;
-      height:100%;
-    }
-    .dropdown{position:relative;display:flex;align-items:center;height:100%}
-    .dropbtn{
-      height:100%;
-      background:none;
-      border:none;
-      border-bottom:2px solid transparent;
-      color:#fff;
-      cursor:pointer;
-      padding:0 10px;
-      font-size:14px;
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .dropbtn::after{content:'⌄';font-size:11px;margin-left:5px;color:#fff}
-    .dropbtn:hover,.dropdown:hover .dropbtn{color:#f5c542;border-bottom-color:#f5c542}
-    .dropdown-content{
-      display:none;
-      position:absolute;
-      top:100%;
-      left:50%;
-      transform:translateX(-50%);
-      background:#222;
-      min-width:190px;
-      max-height:420px;
-      overflow:auto;
-      z-index:1001;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:0 0 10px 10px;
-      box-shadow:0 14px 28px rgba(0,0,0,.45);
-      list-style:none;
-      margin:0;
-      padding:6px 0;
-    }
-    .dropdown:hover .dropdown-content{display:block}
-    .dropdown-content li{list-style:none;margin:0;padding:0}
-    .dropdown-content a,.dropdown-empty{
-      display:block;
-      color:#fff;
-      padding:9px 14px;
-      text-decoration:none;
-      font-size:13px;
-      font-weight:800;
-      white-space:nowrap;
-    }
-    .dropdown-content a:hover{background:#232f3e;color:#f5c542}
-    .dropdown-empty{color:#9aa8b8}
+  --sb-text: #e6edf3;
+  --sb-text-muted: #9ba3ae;
+  --sb-text-soft: #7d8590;
 
-    .lang-switcher{display:none;justify-content:flex-end;padding-right:8px}
-    #lang-select{background:#0f1724;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:6px 10px;font-weight:700}
+  --sb-primary: #facc15;
+  --sb-primary-dark: #eab308;
+  --sb-primary-light: #fde047;
 
-    .app{display:grid;grid-template-columns:260px minmax(560px,1fr)260px;height:100vh;padding-top:40px}
-    .col{min-height:0;overflow:hidden}
-    .left,.right{background:#0f141b}
-    .left{border-right:1px solid rgba(255,255,255,.08)}
-    .right{border-left:1px solid rgba(255,255,255,.08);padding:20px;overflow-y:auto}
+  --sb-radius: 12px;
+  --sb-radius-lg: 18px;
 
-    .controls{padding:10px 8px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
-    .small-title{font-size:13px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;margin-bottom:8px}
-    #partnerSearch{width:100%;height:32px;background:#0d1117;color:#fff;border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:8px 10px}
+  --sb-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  --sb-shadow-soft: 0 4px 12px rgba(0,0,0,0.25);
 
-    #column1{
-      height:auto;
-      overflow:visible;
-      padding:10px 8px 24px;
-      display:flex;
-      align-items:flex-start;
-      gap:12px;
-      white-space:nowrap;
-      scrollbar-width:none;
-    }
-    #column1::-webkit-scrollbar{display:none}
-    .left{overflow:visible}
-    .column-category{
-      position:relative;
-      flex:0 0 auto;
-      margin:0;
-      border:none;
-      border-radius:0;
-      overflow:visible;
-      background:transparent;
-    }
-    .column-category button{
-      background:none;
-      color:#fff;
-      border:none;
-      border-bottom:2px solid transparent;
-      padding:8px 10px;
-      cursor:pointer;
-      width:auto;
-      text-align:left;
-      font-size:14px;
-      font-weight:900;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:6px;
-      white-space:nowrap;
-    }
-    .column-category button::after{content:'⌄';font-size:11px;margin-left:2px;color:#fff}
-    .column-category button:hover,.column-category:hover button{color:#f5c542;border-bottom-color:#f5c542}
-    .column-category ul{
-      display:none;
-      position:absolute;
-      top:100%;
-      left:0;
-      min-width:220px;
-      max-height:420px;
-      overflow:auto;
-      margin:0;
-      padding:8px 0;
-      list-style:none;
-      background:#222;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:0 0 10px 10px;
-      z-index:1002;
-      box-shadow:0 14px 28px rgba(0,0,0,.45);
-    }
-    .column-category:hover ul{display:block}
-    .column-category ul li{list-style:none;margin:0;padding:0}
-    .column-category a,.column-category .dropdown-empty{
-      display:block;
-      color:#fff;
-      padding:9px 14px;
-      text-decoration:none;
-      font-size:13px;
-      font-weight:800;
-      white-space:nowrap;
-    }
-    .column-category a:hover{background:#232f3e;color:#f5c542}
-    .column-category .dropdown-empty{color:#9aa8b8}
-    .column-arrow{display:none}
+  --sb-max-width: 1180px;
 
-    .main{
-      position:relative;
-      background:#0d1117;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:18px 18px 96px;
-      overflow-y:auto;
-      scroll-snap-type:y proximity;
-      -webkit-overflow-scrolling:touch;
-    }
-    .feed-container{width:100%;max-width:520px;display:flex;flex-direction:column;gap:22px}
-    .feed-card{
-      position:relative;
-      display:block;
-      text-decoration:none;
-      border:1px solid rgba(245,197,66,.22);
-      border-radius:22px;
-      background:#111822;
-      padding:10px;
-      min-height:calc(100vh - 168px);
-      transition:transform .18s ease,border-color .18s ease;
-      cursor:pointer;
-      scroll-snap-align:start;
-      box-shadow:0 16px 42px rgba(0,0,0,.28);
-    }
-    .feed-card:hover{transform:translateY(-2px);border-color:rgba(245,197,66,.42)}
-    .media{position:relative;aspect-ratio:9/16;height:min(76vh,760px);border-radius:18px;overflow:hidden;background:#0b0f14}
-    .media img,.media video,.feed-video,.platform-frame{width:100%;height:100%;object-fit:cover;display:block;border:0}
-    .media img{filter:brightness(.60)}
-    .media.has-video img{filter:none}
-    .media.has-embed{background:#000}
-    .platform-frame{background:#000}
-    .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-    .play span{width:74px;height:74px;border-radius:50%;background:#fff;color:#06101b;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900}
-    .video-toggle{position:absolute;right:14px;top:14px;width:44px;height:44px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.48);color:#fff;font-size:17px;font-weight:900;cursor:pointer;z-index:5;backdrop-filter:blur(6px)}
-    .video-toggle:hover{background:rgba(245,197,66,.92);color:#06101b}
+  --sb-space-1: 6px;
+  --sb-space-2: 10px;
+  --sb-space-3: 16px;
+  --sb-space-4: 24px;
+  --sb-space-5: 32px;
+  --sb-space-6: 48px;
+  --sb-space-7: 64px;
+}
 
-    .feed-content{
-      position:absolute;
-      left:20px;
-      right:20px;
-      bottom:22px;
-      padding:16px 14px;
-      border-radius:18px;
-      background:linear-gradient(180deg,rgba(8,12,18,0),rgba(8,12,18,.78) 20%,rgba(8,12,18,.92));
-      text-shadow:0 2px 14px rgba(0,0,0,.75);
-      pointer-events:auto;
-    }
-    .feed-label{display:inline-block;margin-bottom:8px;padding:5px 9px;border:1px solid rgba(245,197,66,.22);border-radius:999px;background:rgba(245,197,66,.16);color:#f5c542;font-size:11px;font-weight:900;text-transform:uppercase}
-    .feed-source{float:right;color:rgba(255,255,255,.82);font-size:11px;font-weight:900;text-transform:uppercase;margin-top:6px}
-    .feed-content h3{clear:both;margin:0 0 8px;font-size:22px;line-height:1.15}
-    .feed-content p{margin:0;color:rgba(255,255,255,.86);font-size:14px;line-height:1.4}
-    .feed-loader{width:100%;padding:18px;text-align:center;color:#9aa8b8;font-size:12px}
-    .feed-empty{width:100%;padding:30px;text-align:center;color:#9aa8b8;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:#111822}
+/* GLOBAL RESET */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  font-family: Inter, system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-    #stickyBar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(720px,calc(100% - 24px));background:rgba(15,20,27,.96);border:1px solid rgba(245,197,66,.25);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;z-index:999}
-    .sticky-link{color:#f5c542;text-decoration:none;font-weight:900}
-    .right h2{text-align:center;margin:0 0 16px}
-    #partnerChips{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .chip{min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid rgba(255,255,255,.08);background:#1b2128;border-radius:10px;padding:10px;font-weight:800;font-size:13px;text-decoration:none}
-    .see-more-btn{width:100%;margin:8px 0 12px;padding:10px 12px;border:1px solid rgba(245,197,66,.35);border-radius:10px;background:#111;color:#f5c542;font-weight:900;cursor:pointer}
-    .see-more-btn:hover{background:#192532}
-    .featured{display:block;text-decoration:none;border:1px solid rgba(245,197,66,.25);border-radius:16px;background:#111822;overflow:hidden;margin-bottom:16px;box-shadow:0 14px 28px rgba(0,0,0,.22)}
-    .featured img{width:100%;height:138px;object-fit:cover;display:block;background:#0b0f14}
-    .featured-body{padding:12px}
-    .featured h4{margin:0 0 8px;color:#f5c542;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
-    .featured p{margin:0 0 8px;font-weight:900;font-size:16px}
-    .featured span{display:block;color:rgba(255,255,255,.78);font-size:13px;line-height:1.35}
-    .chips-title{margin:6px 0 12px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;font-size:12px}
-    .empty{color:#9aa8b8;padding:16px;font-size:13px}
+.sb-container {
+  width: 100%;
+  max-width: var(--sb-max-width);
+  margin: 0 auto;
+  padding: 0 var(--sb-space-4);
+}
+
+/* --------------------------------------------------
+   NAVBAR
+   -------------------------------------------------- */
+.sb-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(13,17,23,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sb-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.sb-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--sb-primary);
+}
+
+.sb-nav-links a {
+  margin: 0 var(--sb-space-3);
+  color: var(--sb-text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: 0.2s ease;
+}
+
+.sb-nav-links a:hover {
+  color: var(--sb-primary);
+}
+
+/* --------------------------------------------------
+   BUTTONS
+   -------------------------------------------------- */
+.sb-btn {
+  display: inline-block;
+  padding: var(--sb-space-2) var(--sb-space-4);
+  border-radius: var(--sb-radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.25s ease;
+  font-size: 0.95rem;
+}
+
+.sb-btn-primary {
+  background: var(--sb-primary);
+  color: #000;
+  box-shadow: var(--sb-shadow-soft);
+}
+
+.sb-btn-primary:hover {
+  background: var(--sb-primary-dark);
+}
+
+.sb-btn-outline {
+  border: 1px solid var(--sb-primary);
+  color: var(--sb-primary);
+}
+
+.sb-btn-outline:hover {
+  background: var(--sb-primary);
+  color: #000;
+}
+
+.sb-btn-ghost {
+  color: var(--sb-text-muted);
+}
+
+.sb-btn-ghost:hover {
+  color: var(--sb-primary);
+}
+
+.sb-btn-full {
+  width: 100%;
+  text-align: center;
+}
+
+/* --------------------------------------------------
+   HERO
+   -------------------------------------------------- */
+.sb-hero {
+  padding: var(--sb-space-7) 0 var(--sb-space-6);
+  background: linear-gradient(180deg, #0d1117 0%, #11161d 100%);
+}
+
+.sb-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sb-space-6);
+  align-items: center;
+}
+
+.sb-hero-copy h1 {
+  font-size: 2.8rem;
+  line-height: 1.2;
+  margin-bottom: var(--sb-space-4);
+}
+
+.sb-hero-sub {
+  font-size: 1.15rem;
+  color: var(--sb-text-muted);
+  margin-bottom: var(--sb-space-5);
+}
+
+.sb-hero-tags {
+  margin-top: var(--sb-space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sb-space-2);
+}
+
+.sb-tag {
+  background: var(--sb-surface);
+  padding: var(--sb-space-1) var(--sb-space-3);
+  border-radius: var(--sb-radius);
+  font-size: 0.85rem;
+  color: var(--sb-text-soft);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* --------------------------------------------------
+   HERO VISUAL CARDS
+   -------------------------------------------------- */
+.sb-review-card,
+.sb-generated-card {
+  background: var(--sb-surface);
+  padding: var(--sb-space-4);
+  border-radius: var(--sb-radius-lg);
+  box-shadow: var(--sb-shadow);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.sb-review-stars {
+  color: var(--sb-primary);
+  font-size: 1.2rem;
+  margin-bottom: var(--sb-space-2);
+}
+
+.sb-generated-label {
+  font-size: 0.8rem;
+  color: var(--sb-primary);
+  margin-bottom: var(--sb-space-2);
+}
+
+.sb-generated-footer {
+  margin-top: var(--sb-space-3);
+  display: flex;
+  gap: var(--sb-space-2);
+}
+
+.sb-chip {
+  background: var(--sb-surface-alt);
+  padding: var(--sb-space-1) var(--sb-space-3);
+  border-radius: var(--sb-radius);
+  font-size: 0.8rem;
+}
+
+.sb-chip-primary {
+  background: var(--sb-primary);
+  color: #000;
+}
+
+/* --------------------------------------------------
+   SECTIONS
+   -------------------------------------------------- */
+.sb-section {
+  padding: var(--sb-space-7) 0;
+}
+
+.sb-section-alt {
+  background: var(--sb-bg-alt);
+}
+
+.sb-section-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto var(--sb-space-6);
+}
+
+.sb-section-header h2 {
+  font-size: 2rem;
+  margin-bottom: var(--sb-space-3);
+}
+
+.sb-section-header p {
+  color: var(--sb-text-muted);
+}
+
+/* --------------------------------------------------
+   GRIDS
+   -------------------------------------------------- */
+.sb-steps-grid,
+.sb-features-grid,
+.sb-gallery-grid,
+.sb-industries-grid,
+.sb-pricing-grid,
+.sb-faq-grid {
+  display: grid;
+  gap: var(--sb-space-5);
+}
+
+.sb-steps-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.sb-features-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.sb-gallery-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.sb-industries-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.sb-pricing-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.sb-faq-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* --------------------------------------------------
+   PRICING CARDS
+   -------------------------------------------------- */
+.sb-pricing-card {
+  background: var(--sb-surface);
+  padding: var(--sb-space-5);
+  border-radius: var(--sb-radius-lg);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: var(--sb-shadow-soft);
+}
+
+.sb-pricing-card-highlight {
+  border: 1px solid var(--sb-primary);
+  background: linear-gradient(180deg, #1c2129 0%, #161b22 100%);
+}
+
+/* --------------------------------------------------
+   FAQ
+   -------------------------------------------------- */
+.sb-faq-item {
+  background: var(--sb-surface);
+  padding: var(--sb-space-4);
+  border-radius: var(--sb-radius);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* --------------------------------------------------
+   CTA
+   -------------------------------------------------- */
+.sb-section-cta {
+  background: linear-gradient(180deg, #11161d 0%, #0d1117 100%);
+  padding: var(--sb-space-7) 0;
+}
+
+.sb-cta-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sb-space-5);
+}
+
+/* --------------------------------------------------
+   FOOTER
+   -------------------------------------------------- */
+.sb-footer {
+  padding: var(--sb-space-6) 0;
+  background: #0b0f14;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.sb-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sb-space-6);
+}
+
+.sb-footer-links h4 {
+  margin-bottom: var(--sb-space-2);
+  color: var(--sb-primary);
+}
+
+.sb-footer-links a {
+  display: block;
+  color: var(--sb-text-muted);
+  margin-bottom: var(--sb-space-2);
+  text-decoration: none;
+}
+
+.sb-footer-links a:hover {
+  color: var(--sb-primary);
+}
+
+/* --------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------- */
+@media (max-width: 900px) {
+  .sb-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sb-cta-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .sb-footer-inner {
+    flex-direction: column;
+  }
+}
 
 
-    .sb-test-panel{position:fixed;left:10px;bottom:72px;z-index:9998;background:rgba(15,20,27,.96);border:1px solid rgba(245,197,66,.25);border-radius:14px;padding:10px;box-shadow:0 12px 28px rgba(0,0,0,.32);display:none;gap:6px;max-width:calc(100% - 20px)}
-    .sb-test-panel.is-visible{display:flex;flex-wrap:wrap}
-    .sb-test-panel a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.1);background:#111822;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900}
-    .sb-test-panel a:hover{border-color:rgba(245,197,66,.45);color:#f5c542}
-    .partner-card.is-priority,.rail-partner.is-priority,.chip.is-priority{border-color:rgba(245,197,66,.35)}
+/* --------------------------------------------------
+   PRODUCTION COMPLETION FIXES
+   -------------------------------------------------- */
 
-    #debug-overlay{position:fixed;right:10px;bottom:10px;background:rgba(0,0,0,.84);color:#fff;padding:10px 14px;border-radius:8px;font:13px monospace;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.35);display:none}
-    html[data-i18n-ready="0"] body{opacity:0}
-    html[data-i18n-ready="1"] body{opacity:1;transition:opacity .12s}
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.sb-page {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.sb-nav-cta,
+.sb-hero-actions,
+.sb-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sb-space-3);
+  flex-wrap: wrap;
+}
+
+.sb-hero-visual {
+  display: grid;
+  gap: var(--sb-space-4);
+}
+
+.sb-review-text,
+.sb-generated-text,
+.sb-price-note,
+.sb-footer-brand p {
+  color: var(--sb-text-muted);
+}
+
+.sb-generated-card h3 {
+  font-size: 2rem;
+  line-height: 1.12;
+  margin: var(--sb-space-2) 0;
+}
+
+.sb-step,
+.sb-feature,
+.sb-gallery-card,
+.sb-industry {
+  background: var(--sb-surface);
+  padding: var(--sb-space-4);
+  border-radius: var(--sb-radius-lg);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: var(--sb-shadow-soft);
+}
+
+.sb-step-number {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--sb-primary);
+  color: #000;
+  border-radius: var(--sb-radius);
+  font-weight: 800;
+  margin-bottom: var(--sb-space-3);
+}
+
+.sb-feature h3,
+.sb-step h3,
+.sb-gallery-card h3,
+.sb-faq-item h3,
+.sb-pricing-card h3 {
+  margin-top: 0;
+}
+
+.sb-gallery-card {
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+}
+
+.sb-gallery-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(250,204,21,0.22), transparent 35%),
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.sb-gallery-card h3,
+.sb-gallery-card p {
+  position: relative;
+  z-index: 1;
+}
+
+.sb-gallery-square { aspect-ratio: 1 / 1; }
+.sb-gallery-portrait { aspect-ratio: 4 / 5; }
+.sb-gallery-landscape { aspect-ratio: 16 / 10; }
+
+.sb-pricing-card ul {
+  padding-left: 0;
+  list-style: none;
+  margin: var(--sb-space-4) 0;
+}
+
+.sb-pricing-card li {
+  margin-bottom: var(--sb-space-2);
+  color: var(--sb-text-muted);
+}
+
+.sb-pricing-card li::before {
+  content: "✓";
+  color: var(--sb-primary);
+  margin-right: 8px;
+  font-weight: 800;
+}
+
+.sb-cta-inner h2 {
+  font-size: 2.2rem;
+  line-height: 1.15;
+  margin: 0 0 var(--sb-space-3);
+}
+
+.sb-cta-inner p {
+  color: var(--sb-text-muted);
+  max-width: 620px;
+}
+
+.sb-footer-links {
+  display: flex;
+  gap: var(--sb-space-7);
+}
+
+.sb-footer-brand {
+  max-width: 360px;
+}
+
+@media (max-width: 900px) {
+  .sb-nav-inner {
+    height: auto;
+    min-height: 72px;
+    padding-top: var(--sb-space-3);
+    padding-bottom: var(--sb-space-3);
+    gap: var(--sb-space-3);
+  }
+
+  .sb-nav-links {
+    display: none;
+  }
+
+  .sb-nav-cta {
+    justify-content: flex-end;
+  }
+
+  .sb-hero-copy h1 {
+    font-size: 2.25rem;
+  }
+
+  .sb-footer-links {
+    gap: var(--sb-space-5);
+  }
+}
+
+@media (max-width: 560px) {
+  .sb-container {
+    padding: 0 var(--sb-space-3);
+  }
+
+  .sb-nav-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sb-nav-cta,
+  .sb-hero-actions,
+  .sb-cta-actions {
+    width: 100%;
+  }
+
+  .sb-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .sb-hero {
+    padding-top: var(--sb-space-6);
+  }
+
+  .sb-hero-copy h1 {
+    font-size: 2rem;
+  }
+
+  .sb-footer-links {
+    flex-direction: column;
+  }
+}
 
 
+/* --------------------------------------------------
+   PREMIUM SAAS ANIMATION SYSTEM
+   -------------------------------------------------- */
 
-    /* SignalBoost v2 conversion layer: vertical discovery + regional monetization */
-    .app{grid-template-columns:300px minmax(680px,1fr)320px}
-    .left{overflow-y:auto;overflow-x:hidden}
-    #column1{display:flex;flex-direction:column;gap:12px;white-space:normal;overflow:visible;padding:12px 10px 90px;height:auto}
-    .column-category{position:relative;width:100%;flex:0 0 auto;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:#111822;overflow:hidden;box-shadow:0 10px 24px rgba(0,0,0,.16)}
-    .column-category button{width:100%;background:linear-gradient(180deg,#151d28,#101822);border:0;color:#fff;padding:13px 14px;cursor:pointer;text-align:left;font-size:14px;font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:normal;border-bottom:1px solid rgba(255,255,255,.06)}
-    .column-category button::after{content:'+';font-size:17px;color:#f5c542;margin-left:auto}.column-category[data-open="1"] button::after{content:'–'}
-    .column-category button:hover{color:#f5c542;border-bottom-color:rgba(245,197,66,.18)}
-    .column-category ul{display:none;position:static;min-width:0;max-height:none;overflow:visible;margin:0;padding:8px;list-style:none;background:transparent;border:0;border-radius:0;box-shadow:none}.column-category[data-open="1"] ul{display:grid;gap:8px}
-    .column-category ul li{list-style:none;margin:0;padding:0}.column-category:hover ul{display:none}.column-category[data-open="1"]:hover ul{display:grid}
-    .partner-card{display:grid!important;grid-template-columns:1fr auto;gap:8px;align-items:center;color:#fff;padding:10px 10px!important;text-decoration:none;font-size:13px;font-weight:800;white-space:normal;border:1px solid rgba(255,255,255,.07);background:#0d1117;border-radius:12px;transition:.18s ease}.partner-card:hover{background:#192532;color:#fff;border-color:rgba(245,197,66,.35);transform:translateY(-1px)}
-    .partner-card strong{display:block;font-size:13px;line-height:1.2}.partner-card span{display:block;margin-top:3px;color:rgba(255,255,255,.62);font-size:11px;font-weight:700;line-height:1.25}.partner-card em{font-style:normal;color:#111;background:#f5c542;border-radius:999px;padding:6px 8px;font-size:11px;font-weight:900}
-    .category-title{display:flex;align-items:center;gap:8px}.category-count{margin-left:auto;color:#9aa8b8;font-size:12px}
-    .trend-strip{width:100%;max-width:820px;margin:0 auto 14px;padding:10px 12px;border:1px solid rgba(245,197,66,.18);border-radius:999px;background:rgba(17,24,34,.9);display:flex;align-items:center;gap:12px;overflow-x:auto;scrollbar-width:none}.trend-strip::-webkit-scrollbar{display:none}.trend-kicker{color:#f5c542;font-size:12px;font-weight:900;white-space:nowrap;text-transform:uppercase}.trend-items{display:flex;gap:8px}.trend-pill{display:inline-flex;white-space:nowrap;text-decoration:none;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900;color:#fff;transition:.18s ease}.trend-pill:hover{background:rgba(245,197,66,.15);border-color:rgba(245,197,66,.35);transform:translateY(-1px)}
-    .region-hero{width:100%;max-width:820px;margin:0 auto 20px;position:relative;overflow:hidden;border-radius:26px;border:1px solid rgba(245,197,66,.24);background:radial-gradient(circle at 10% 15%,rgba(245,197,66,.22),transparent 32%),linear-gradient(135deg,#152032,#0c1118);box-shadow:0 22px 52px rgba(0,0,0,.32);padding:24px;display:grid;grid-template-columns:1.25fr .75fr;gap:18px;align-items:end}.region-hero::after{content:"";position:absolute;inset:auto -80px -120px auto;width:330px;height:330px;border-radius:50%;background:rgba(245,197,66,.13);filter:blur(4px)}.hero-copy,.hero-partners{position:relative;z-index:1}.region-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:rgba(245,197,66,.16);border:1px solid rgba(245,197,66,.25);color:#f5c542;font-size:12px;font-weight:900;text-transform:uppercase;margin-bottom:14px}.region-hero h1{margin:0 0 10px;font-size:34px;line-height:1.05;letter-spacing:-.03em}.region-hero p{margin:0;color:rgba(255,255,255,.78);font-size:15px;line-height:1.45;max-width:620px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.primary-cta,.secondary-cta{display:inline-flex;align-items:center;justify-content:center;border-radius:14px;padding:11px 15px;text-decoration:none;font-weight:900;font-size:13px;transition:.18s ease}.primary-cta{background:#f5c542;color:#10151d;box-shadow:0 12px 28px rgba(245,197,66,.18)}.secondary-cta{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff}.primary-cta:hover,.secondary-cta:hover{transform:translateY(-2px)}.hero-partners{display:grid;gap:10px}.hero-mini-card{display:block;text-decoration:none;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px;backdrop-filter:blur(8px);transition:.18s ease}.hero-mini-card:hover{transform:translateX(-3px);border-color:rgba(245,197,66,.36);background:rgba(245,197,66,.10)}.hero-mini-card strong{display:block;font-size:14px;margin-bottom:4px}.hero-mini-card span{display:block;color:rgba(255,255,255,.7);font-size:12px;line-height:1.3}
-    body.region-br .region-hero{background:radial-gradient(circle at 10% 15%,rgba(255,204,0,.26),transparent 32%),linear-gradient(135deg,#16351d,#0c1118)}body.region-pl .region-hero{background:radial-gradient(circle at 10% 15%,rgba(245,197,66,.20),transparent 32%),linear-gradient(135deg,#202737,#0c1118)}body.region-uk .region-hero,body.region-us .region-hero{background:radial-gradient(circle at 10% 15%,rgba(245,197,66,.18),transparent 32%),linear-gradient(135deg,#17243a,#0c1118)}
-    .main{padding:16px 18px 96px}.feed-container{max-width:820px}.feed-card{min-height:auto}.feed-card .primary-cta{margin-top:14px;pointer-events:auto}.right{position:sticky;top:40px;height:calc(100vh - 40px);padding:16px}#partnerChips{display:grid;grid-template-columns:1fr;gap:14px}.rail-section-title{margin:6px 0 10px;color:#c9d7e8;text-transform:uppercase;font-weight:900;letter-spacing:.05em;font-size:12px}.rail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rail-partner{min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid rgba(255,255,255,.08);background:#1b2128;border-radius:12px;padding:8px;font-weight:900;font-size:12px;text-decoration:none;transition:.18s ease}.rail-partner:hover{transform:translateY(-2px);border-color:rgba(245,197,66,.35);color:#f5c542}.featured{border-radius:20px}.featured img{height:170px}.featured .primary-cta{width:100%;margin-top:12px}
+@keyframes sb-fade-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 
-    @media(max-width:900px){
-      body{overflow:auto}
-      .top{grid-template-columns:140px 1fr;height:40px;min-height:40px}
-      .navbar{justify-content:flex-start;overflow-x:auto}
-      .nav-list{justify-content:flex-start;gap:12px;padding-left:8px}
-      .dropdown-content{left:0;transform:none}
-      .app{display:block;height:auto;padding-top:40px}
-      .left,.right{border:0}
-      #column1{height:auto;max-height:none;overflow-x:visible;overflow-y:visible}
-      .region-hero{grid-template-columns:1fr;padding:18px}
-      .region-hero h1{font-size:27px}
-      .trend-strip{border-radius:16px;align-items:flex-start;flex-direction:column}
-      .app{grid-template-columns:1fr}
-      .right{position:static;height:auto}
-      .main{min-height:500px;padding:14px 10px 96px}
-      .right{padding-bottom:40px}
-      .feed-container{max-width:100%}
-      .feed-card{min-height:calc(100vh - 128px)}
-      .media{height:calc(100vh - 150px);aspect-ratio:9/16}
-    }
+@keyframes sb-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes sb-scale-in {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.sb-reveal > * {
+  opacity: 0;
+  animation: sb-fade-up 0.7s ease forwards;
+}
+
+.sb-reveal > *:nth-child(1) { animation-delay: 0.05s; }
+.sb-reveal > *:nth-child(2) { animation-delay: 0.15s; }
+.sb-reveal > *:nth-child(3) { animation-delay: 0.25s; }
+.sb-reveal > *:nth-child(4) { animation-delay: 0.35s; }
+.sb-reveal > *:nth-child(5) { animation-delay: 0.45s; }
+
+.sb-hero-copy {
+  opacity: 0;
+  animation: sb-fade-up 0.9s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.sb-hero-visual {
+  opacity: 0;
+  animation: sb-scale-in 0.9s ease forwards;
+  animation-delay: 0.35s;
+}
+
+.sb-feature,
+.sb-pricing-card,
+.sb-faq-item,
+.sb-gallery-card,
+.sb-step,
+.sb-industry {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.sb-feature:hover,
+.sb-pricing-card:hover,
+.sb-faq-item:hover,
+.sb-gallery-card:hover,
+.sb-step:hover,
+.sb-industry:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+  border-color: rgba(250,204,21,0.28);
+}
+
+.sb-btn {
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.sb-btn:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes sb-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(250,204,21,0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(250,204,21,0); }
+  100% { box-shadow: 0 0 0 0 rgba(250,204,21,0); }
+}
+
+.sb-nav-cta .sb-btn-primary,
+.sb-hero-actions .sb-btn-primary,
+.sb-pricing-card .sb-btn-primary,
+.sb-cta-actions .sb-btn-primary {
+  animation: sb-pulse 2.8s infinite;
+}
+
+.sb-section,
+.sb-section-alt {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.sb-section.sb-visible,
+.sb-section-alt.sb-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .sb-section,
+  .sb-section-alt,
+  .sb-hero-copy,
+  .sb-hero-visual,
+  .sb-reveal > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+  
+/* --------------------------------------------------
+   LIGHT MODE THEME + THEME TOGGLE + EARLY ACCESS FORM
+   -------------------------------------------------- */
+
+:root[data-theme="light"] {
+  --sb-bg: #ffffff;
+  --sb-bg-alt: #f7f8fa;
+  --sb-surface: #ffffff;
+  --sb-surface-alt: #f2f3f5;
+
+  --sb-text: #1a1f27;
+  --sb-text-muted: #4b5563;
+  --sb-text-soft: #6b7280;
+
+  --sb-primary: #facc15;
+  --sb-primary-dark: #eab308;
+  --sb-primary-light: #fde047;
+
+  --sb-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  --sb-shadow-soft: 0 4px 12px rgba(0,0,0,0.06);
+
+  --sb-border: rgba(0,0,0,0.08);
+}
+
+:root[data-theme="light"] body {
+  background: var(--sb-bg);
+}
+
+:root[data-theme="light"] .sb-nav {
+  background: rgba(255,255,255,0.85);
+  border-bottom: 1px solid var(--sb-border);
+}
+
+:root[data-theme="light"] .sb-hero {
+  background: linear-gradient(180deg, #ffffff 0%, #f7f8fa 100%);
+}
+
+:root[data-theme="light"] .sb-section-alt,
+:root[data-theme="light"] .sb-section-cta {
+  background: var(--sb-bg-alt);
+}
+
+:root[data-theme="light"] .sb-footer {
+  background: #f7f8fa;
+  border-top: 1px solid var(--sb-border);
+}
+
+:root[data-theme="light"] .sb-tag,
+:root[data-theme="light"] .sb-feature,
+:root[data-theme="light"] .sb-step,
+:root[data-theme="light"] .sb-industry,
+:root[data-theme="light"] .sb-pricing-card,
+:root[data-theme="light"] .sb-faq-item,
+:root[data-theme="light"] .sb-gallery-card,
+:root[data-theme="light"] .sb-review-card,
+:root[data-theme="light"] .sb-generated-card {
+  border: 1px solid var(--sb-border);
+}
+
+:root[data-theme="light"] .sb-review-card,
+:root[data-theme="light"] .sb-generated-card,
+:root[data-theme="light"] .sb-feature,
+:root[data-theme="light"] .sb-step,
+:root[data-theme="light"] .sb-industry,
+:root[data-theme="light"] .sb-pricing-card,
+:root[data-theme="light"] .sb-faq-item,
+:root[data-theme="light"] .sb-gallery-card {
+  background: var(--sb-surface);
+}
+
+:root[data-theme="light"] .sb-pricing-card-highlight {
+  background: linear-gradient(180deg, #ffffff 0%, #f7f8fa 100%);
+}
+
+.sb-theme-toggle {
+  background: var(--sb-surface);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 12px;
+  border-radius: var(--sb-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--sb-text);
+  transition: 0.25s ease;
+}
+
+.sb-theme-toggle:hover {
+  background: var(--sb-surface-alt);
+  transform: translateY(-2px);
+}
+
+:root[data-theme="light"] .sb-theme-toggle {
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.sb-cta-form {
+  flex: 1;
+  min-width: min(100%, 360px);
+}
+
+.sb-cta-form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.sb-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: var(--sb-radius);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: var(--sb-surface);
+  color: var(--sb-text);
+  font-size: 0.95rem;
+}
+
+.sb-input::placeholder {
+  color: var(--sb-text-soft);
+}
+
+.sb-input:focus {
+  outline: none;
+  border-color: var(--sb-primary);
+  box-shadow: 0 0 0 3px rgba(250,204,21,0.12);
+}
+
+.sb-cta-note {
+  font-size: 0.8rem;
+  color: var(--sb-text-muted);
+  margin: 0;
+}
+
+:root[data-theme="light"] .sb-input {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+@media (max-width: 700px) {
+  .sb-cta-form-row {
+    flex-direction: column;
+  }
+}
+
   </style>
 </head>
 <body>
-  <header class="top">
-    <div class="logo" data-i18n="brand_name">SignalBoost</div>
-    <nav class="navbar" id="travelDirectory"></nav>
-    <div class="lang-switcher" id="languageSwitcher">
-      <select id="lang-select" onchange="setLanguage(this.value)"></select>
-    </div>
-  </header>
+  <div class="sb-page">
 
-  <div class="app">
-    <aside class="col left">
-      <div class="controls">
-        <div class="small-title" data-i18n="explore_offers">Explore offers</div>
-        <input id="partnerSearch" data-i18n-placeholder="search_placeholder" placeholder="Flights, hotels, eSIM, tours..." />
+    <!-- NAVBAR -->
+    <header class="sb-nav">
+      <div class="sb-container sb-nav-inner">
+        <div class="sb-logo">SignalBoost</div>
+        <nav class="sb-nav-links">
+          <a href="#how-it-works">How it works</a>
+          <a href="#features">Features</a>
+          <a href="#examples">Examples</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <div class="sb-nav-cta">
+          <button id="sb-theme-toggle" class="sb-theme-toggle" type="button" aria-label="Toggle light and dark mode">
+            <span class="sb-theme-icon" aria-hidden="true">🌙</span>
+          </button>
+          <a href="#pricing" class="sb-btn sb-btn-outline">Pricing</a>
+          <a href="#cta" class="sb-btn sb-btn-primary">Start free</a>
+        </div>
       </div>
-      <div id="column1"></div>
-    </aside>
+    </header>
 
-    <main class="col main" id="magnetoColumn">
-      <section id="trendingStrip" class="trend-strip" aria-label="Trending offers"></section>
-      <section id="regionHero" class="region-hero" aria-label="Regional featured offers"></section>
-      <div id="feedContainer" class="feed-container"></div>
+    <!-- HERO -->
+    <main>
+      <section class="sb-hero">
+        <div class="sb-container sb-hero-grid">
+          <div class="sb-hero-copy">
+            <h1>Turn customer reviews into branded content automatically</h1>
+            <p class="sb-hero-sub">
+              SignalBoost transforms your real customer reviews into polished, ready‑to‑share branded content.
+              No design tools, no templates, no manual editing—just consistent, authentic social proof.
+            </p>
+
+            <div class="sb-hero-actions">
+              <a href="#cta" class="sb-btn sb-btn-primary">Start turning reviews into content</a>
+              <a href="#how-it-works" class="sb-btn sb-btn-ghost">See how it works</a>
+            </div>
+
+            <div class="sb-hero-tags">
+              <span class="sb-tag">Automated review detection</span>
+              <span class="sb-tag">Instant branded content</span>
+              <span class="sb-tag">Zero design skills needed</span>
+              <span class="sb-tag">Consistent social proof</span>
+            </div>
+          </div>
+
+          <div class="sb-hero-visual">
+            <div class="sb-review-card">
+              <div class="sb-review-stars">★★★★★</div>
+              <p class="sb-review-text">
+                “The team was fast, professional, and made the whole experience easy. I recommend them to anyone.”
+              </p>
+            </div>
+
+            <div class="sb-generated-card">
+              <p class="sb-generated-label">Generated design</p>
+              <h3>Real customers. Real trust. Real results.</h3>
+              <p class="sb-generated-text">
+                “Fast, professional, and easy from start to finish.”
+              </p>
+              <div class="sb-generated-footer">
+                <span class="sb-chip">Your brand</span>
+                <span class="sb-chip sb-chip-primary">Ready to share</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section id="how-it-works" class="sb-section sb-section-alt">
+        <div class="sb-container">
+          <header class="sb-section-header">
+            <h2>How SignalBoost works</h2>
+            <p>
+              From customer review to branded content in three simple steps.
+              SignalBoost removes the creative bottleneck so your best feedback becomes reusable content automatically.
+            </p>
+          </header>
+
+          <div class="sb-steps-grid">
+            <div class="sb-step">
+              <div class="sb-step-number">1</div>
+              <h3>Detect your best reviews</h3>
+              <p>SignalBoost identifies high‑quality customer reviews and prepares them for content generation.</p>
+            </div>
+
+            <div class="sb-step">
+              <div class="sb-step-number">2</div>
+              <h3>Transform into branded designs</h3>
+              <p>Each review becomes a clean, on‑brand visual using your colors, typography, and layout preferences.</p>
+            </div>
+
+            <div class="sb-step">
+              <div class="sb-step-number">3</div>
+              <h3>Get ready‑to‑share content</h3>
+              <p>Download or reuse your designs anywhere you communicate with customers.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section id="features" class="sb-section">
+        <div class="sb-container">
+          <header class="sb-section-header">
+            <h2>Built for consistent, authentic social proof</h2>
+            <p>Turn everyday customer feedback into a library of evergreen content.</p>
+          </header>
+
+          <div class="sb-features-grid">
+            <article class="sb-feature">
+              <h3>Automated review detection</h3>
+              <p>SignalBoost surfaces the reviews worth turning into content.</p>
+            </article>
+
+            <article class="sb-feature">
+              <h3>Brand‑aligned visuals</h3>
+              <p>Apply your brand colors, fonts, and tone automatically.</p>
+            </article>
+
+            <article class="sb-feature">
+              <h3>Multiple layout options</h3>
+              <p>Square, portrait, landscape, minimal, bold—choose what fits your channels.</p>
+            </article>
+
+            <article class="sb-feature">
+              <h3>Content library</h3>
+              <p>Build a reusable library of social proof for campaigns and landing pages.</p>
+            </article>
+
+            <article class="sb-feature">
+              <h3>Multi‑location support</h3>
+              <p>Showcase reviews from different locations while keeping your brand consistent.</p>
+            </article>
+
+            <article class="sb-feature">
+              <h3>Zero design skills required</h3>
+              <p>Anyone can generate high‑quality content in seconds.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXAMPLES -->
+      <section id="examples" class="sb-section sb-section-alt">
+        <div class="sb-container">
+          <header class="sb-section-header">
+            <h2>See what SignalBoost can generate</h2>
+            <p>Examples of how real customer reviews become on‑brand content.</p>
+          </header>
+
+          <div class="sb-gallery-grid">
+            <div class="sb-gallery-card sb-gallery-square">
+              <h3>Square layout</h3>
+              <p>Perfect for feed posts.</p>
+            </div>
+
+            <div class="sb-gallery-card sb-gallery-portrait">
+              <h3>Portrait layout</h3>
+              <p>Ideal for stories and vertical placements.</p>
+            </div>
+
+            <div class="sb-gallery-card sb-gallery-landscape">
+              <h3>Landscape layout</h3>
+              <p>Great for banners and embeds.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INDUSTRIES -->
+      <section id="industries" class="sb-section">
+        <div class="sb-container">
+          <header class="sb-section-header">
+            <h2>Works for any review‑driven business</h2>
+            <p>If your customers leave reviews, SignalBoost can turn them into content.</p>
+          </header>
+
+          <div class="sb-industries-grid">
+            <div class="sb-industry">Service businesses</div>
+            <div class="sb-industry">Local shops</div>
+            <div class="sb-industry">Hospitality</div>
+            <div class="sb-industry">Health & wellness</div>
+            <div class="sb-industry">Home services</div>
+            <div class="sb-industry">Professional services</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRICING -->
+      <section id="pricing" class="sb-section sb-section-alt">
+        <div class="sb-container">
+          <header class="sb-section-header">
+            <h2>Simple pricing for growing brands</h2>
+            <p>Start with the essentials, then scale your content output.</p>
+          </header>
+
+          <div class="sb-pricing-grid">
+            <div class="sb-pricing-card">
+              <h3>Starter</h3>
+              <p class="sb-price-note">For small teams and solo operators.</p>
+              <ul>
+                <li>Automated review detection</li>
+                <li>Branded content generation</li>
+                <li>Access to content library</li>
+              </ul>
+              <a href="#cta" class="sb-btn sb-btn-primary sb-btn-full">Get started</a>
+            </div>
+
+            <div class="sb-pricing-card sb-pricing-card-highlight">
+              <h3>Pro</h3>
+              <p class="sb-price-note">For multi‑location and growing brands.</p>
+              <ul>
+                <li>Everything in Starter</li>
+                <li>Advanced branding options</li>
+                <li>Multi‑location support</li>
+                <li>Priority processing</li>
+              </ul>
+              <a href="#cta" class="sb-btn sb-btn-primary sb-btn-full">Talk to us</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="sb-section">
+        <div class="sb-container">
+          <header class="sb-section-header">
+            <h2>Frequently asked questions</h2>
+            <p>Quick answers to common questions about SignalBoost.</p>
+          </header>
+
+          <div class="sb-faq-grid">
+            <article class="sb-faq-item">
+              <h3>Do I need design skills?</h3>
+              <p>No. SignalBoost handles all the design work automatically.</p>
+            </article>
+
+            <article class="sb-faq-item">
+              <h3>Does it work for my business?</h3>
+              <p>If your customers leave reviews, SignalBoost works for you.</p>
+            </article>
+
+            <article class="sb-faq-item">
+              <h3>Where can I use the content?</h3>
+              <p>Anywhere you communicate with customers: website, email, landing pages, and more.</p>
+            </article>
+
+            <article class="sb-faq-item">
+              <h3>Can I customize the look?</h3>
+              <p>Yes. You can configure brand colors, typography, and layout preferences.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINAL CTA -->
+      <section id="cta" class="sb-section sb-section-cta">
+        <div class="sb-container sb-cta-inner">
+          <div>
+            <h2>Turn your best reviews into your best content</h2>
+            <p>
+              Join the early access list and be the first to use SignalBoost to turn real customer reviews into branded content.
+            </p>
+          </div>
+
+          <form
+            class="sb-cta-form"
+            action="https://formspree.io/f/your-id-here"
+            method="POST"
+          >
+            <div class="sb-cta-form-row">
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="you@company.com"
+                class="sb-input"
+                aria-label="Email address"
+              />
+              <button type="submit" class="sb-btn sb-btn-primary">
+                Join early access
+              </button>
+            </div>
+            <p class="sb-cta-note">
+              No spam. We’ll only email you about SignalBoost updates and access.
+            </p>
+          </form>
+        </div>
+      </section>
     </main>
 
-    <aside class="col right">
-      <h2 data-i18n="partners">Partners</h2>
-      <div id="partnerChips"></div>
-    </aside>
-  </div>
+    <!-- FOOTER -->
+    <footer class="sb-footer">
+      <div class="sb-container sb-footer-inner">
+        <div class="sb-footer-brand">
+          <div class="sb-logo">SignalBoost</div>
+          <p>Turn customer reviews into branded content automatically.</p>
+        </div>
 
-  <div id="stickyBar">
-    <div id="stickyCopy" data-i18n="featured_service">Explore a featured service picked for you.</div>
-    <a id="stickyLink" class="sticky-link" href="#" target="_blank" rel="noopener" data-i18n="view_more">View More</a>
-  </div>
-
-  <div id="debug-overlay"></div>
-
-  <script>
-    window.addEventListener("error", function(e){
-      const box = document.getElementById("debug-overlay");
-      if(box){
-        box.style.display = "block";
-        box.textContent = "JS error: " + e.message + " @ " + e.lineno + ":" + e.colno;
-      }
-    });
-
-    const EMBEDDED_PARTNERS = {"partners":[{"name":"Alamo","regions":["ot"],"url":"https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Admitad","logo":"alamo.png","description":"Reliable car rentals for airport and city trips","tier":1,"regional_urls":{"ot":"https://codeaven.com/g/ect9jcqrbyad273170bc46fc09ba31/"}},{"name":"Localrent","regions":["ot"],"url":"https://localrent.tpo.lv/XS0CqdMP","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"localrent.png","description":"Explore Localrent offers.","tier":1,"regional_urls":{"ot":"https://localrent.tpo.lv/XS0CqdMP"}},{"name":"CVC","regions":["br"],"url":"https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/","category":"flights","category_key":"flights","category_label":"Flights","network":"Admitad","logo":"cvc.png","description":"Explore CVC offers.","tier":1,"regional_urls":{"br":"https://rkdro.com/g/xo8ehfl68mad273170bcafa41ba253/"},"notes":"Admitad connected offer. Verify rules and allowed traffic."},{"name":"Kiwi","regions":["br","ot","es-latam","pl","us"],"url":"https://booking.tpo.lv/enwsEbCs","category":"flights","category_key":"flights","category_label":"Flights","network":"Travelpayouts","logo":"kiwi.png","description":"Explore Kiwi offers.","tier":1,"regional_urls":{"br":"https://booking.tpo.lv/enwsEbCs","ot":"https://www.awin1.com/cread.php?awinmid=19859&awinaffid=2834806","es-latam":"https://www.awin1.com/cread.php?awinmid=20563&awinaffid=2834806","pl":"https://booking.tpo.lv/enwsEbCs","us":"https://www.awin1.com/cread.php?awinmid=19856&awinaffid=2834806"}},{"name":"Booking Brazil","regions":["br"],"url":"https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"bookingbrazil.png","description":"Explore Booking Brazil offers.","tier":1,"regional_urls":{"br":"https://www.awin1.com/cread.php?awinmid=18120&awinaffid=2834806"}},{"name":"Trivago","regions":["br","ot","es-latam","us","pl"],"url":"https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"trivago.png","description":"Explore Trivago offers.","tier":1,"regional_urls":{"br":"https://www.awin1.com/cread.php?awinmid=105937&awinaffid=2834806","ot":"https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806","es-latam":"https://www.awin1.com/cread.php?awinmid=105931&awinaffid=2834806","us":"https://www.awin1.com/cread.php?awinmid=66034&awinaffid=2834806","pl":"https://www.awin1.com/cread.php?awinmid=105923&awinaffid=2834806"}},{"name":"AURAS Travel Insurance","regions":["ot"],"url":"https://ogsib.com/g/g86qhgosread273170bc102b8feede/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"aurastravelinsurance.png","description":"Travel with protection — simple & reliable insurance","tier":1,"regional_urls":{"ot":"https://ogsib.com/g/g86qhgosread273170bc102b8feede/"}},{"name":"AirHelp","regions":["br","ot"],"url":"https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"airhelp.png","description":"Explore AirHelp offers.","tier":1,"regional_urls":{"br":"https://rzekl.com/g/ap539e660sad273170bcf76382dc8c/","ot":"https://airhelp.tpo.lv/EPrGDSO3"}},{"name":"EKTA Insurance","regions":["ot"],"url":"https://ektatraveling.tpo.lv/XWbZbj8S","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Travelpayouts","logo":"ektainsurance.png","description":"Explore EKTA Insurance offers.","tier":1,"regional_urls":{"ot":"https://ektatraveling.tpo.lv/XWbZbj8S"}},{"name":"Amazon","regions":["br","ot","pl","es-latam"],"url":"https://www.amazon.com.br/?tag=signalboostai-20","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Amazon","logo":"amazon.png","description":"Explore Amazon offers.","tier":1,"regional_urls":{"br":"https://www.amazon.com.br/?tag=signalboostai-20","ot":"https://www.amazon.com/?tag=signalboostai-20","pl":"https://www.amazon.pl/?tag=signalboostai-20","es-latam":"https://www.amazon.com.mx/?tag=signalboostai-20"}},{"name":"Proton VPN","regions":["ot"],"url":"https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"protonvpn.png","description":"Explore Proton VPN offers.","tier":1,"regional_urls":{"ot":"https://ntzgd.com/g/px9exodsjkad273170bc08612d8f27/"}},{"name":"Airalo","regions":["br","ot","pl"],"url":"https://airalo.tpo.lv/eXjKLiuw","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"airalo.png","description":"Explore Airalo offers.","tier":1,"regional_urls":{"br":"https://airalo.tpo.lv/eXjKLiuw","ot":"https://airalo.tpo.lv/eXjKLiuw","pl":"https://airalo.tpo.lv/eXjKLiuw"}},{"name":"SuperSim","regions":["br"],"url":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/","category":"sim","category_key":"sim","category_label":"eSIM","network":"Admitad","logo":"supersim.png","description":"Explore SuperSim offers.","tier":1,"regional_urls":{"br":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/"}},{"name":"Klook","regions":["ot","br"],"url":"https://klook.tpo.lv/pTp1NljF","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"klook.png","description":"Explore Klook offers.","tier":1,"regional_urls":{"ot":"https://klook.tpo.lv/pTp1NljF","br":"https://klook.tpo.lv/pTp1NljF"}},{"name":"Kiwitaxi","regions":["ot","pl"],"url":"https://kiwitaxi.tpo.lv/DVaqmgKo","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"kiwitaxi.png","description":"Explore Kiwitaxi offers.","tier":1,"regional_urls":{"ot":"https://kiwitaxi.tpo.lv/DVaqmgKo","pl":"https://kiwitaxi.tpo.lv/DVaqmgKo"}},{"name":"Welcome Pickups","regions":["ot","pl"],"url":"https://tpo.lv/XAJOoobr","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"welcomepickups.png","description":"Explore Welcome Pickups offers.","tier":1,"regional_urls":{"ot":"https://tpo.lv/XAJOoobr","pl":"https://tpo.lv/XAJOoobr"}},{"name":"Economybookings","regions":["ot"],"url":"https://economybookings.tpo.lv/jSFMPEPA","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"economybookings.png","description":"Explore Economybookings offers.","tier":2,"regional_urls":{"ot":"https://economybookings.tpo.lv/jSFMPEPA"}},{"name":"QEEQ","regions":["ot"],"url":"https://qeeq.tpo.lv/jklB4Pbm","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"qeeq.png","description":"Explore QEEQ offers.","tier":2,"regional_urls":{"ot":"https://qeeq.tpo.lv/jklB4Pbm"}},{"name":"Airalo","regions":["ot","br"],"url":"https://airalo.tpo.lv/eXjKLiuw","category":"esim","category_key":"esim","category_label":"eSIM","network":"Travelpayouts","logo":"airalo.png","description":"Explore Airalo offers.","tier":2,"regional_urls":{"ot":"https://airalo.tpo.lv/eXjKLiuw","br":"https://airalo.tpo.lv/eXjKLiuw"}},{"name":"JetPac","regions":["ot"],"url":"https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/","category":"esim","category_key":"esim","category_label":"eSIM","network":"Admitad","logo":"jetpac.png","description":"Explore JetPac offers.","tier":2,"regional_urls":{"ot":"https://wbbsv.com/g/aoxs44cafqad273170bc122206d6c4/"}},{"name":"HolidayTaxis","regions":["ot"],"url":"https://holidaytaxis.tpo.lv/oHwpbrFt","category":"finance","category_key":"finance","category_label":"Finance","network":"Travelpayouts","logo":"holidaytaxis.png","description":"Explore HolidayTaxis offers.","tier":2,"regional_urls":{"ot":"https://holidaytaxis.tpo.lv/oHwpbrFt"}},{"name":"Kapitalwise","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806","category":"finance","category_key":"finance","category_label":"Finance","network":"Awin","logo":"kapitalwise.png","description":"Explore Kapitalwise offers.","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=113822&awinaffid=2834806"}},{"name":"Western Union","regions":["ot"],"url":"https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/","category":"finance","category_key":"finance","category_label":"Finance","network":"Admitad","logo":"westernunion.png","description":"Explore Western Union offers.","tier":2,"regional_urls":{"ot":"https://kdbov.com/g/kryb7glvg7ad273170bca82f40b179/"}},{"name":"Aviasales","regions":["ot"],"url":"https://aviasales.tpo.lv/VoWXgFFm","category":"flights","category_key":"flights","category_label":"Flights","network":"Travelpayouts","logo":"aviasales.png","description":"Explore Aviasales offers.","tier":2,"regional_urls":{"ot":"https://aviasales.tpo.lv/VoWXgFFm"},"notes":"Flights only. Avoid hotel flow."},{"name":"Kiwitaxi","regions":["ot"],"url":"https://kiwitaxi.tpo.lv/DVaqmgKo","category":"flights","category_key":"flights","category_label":"Flights","network":"Travelpayouts","logo":"kiwitaxi.png","description":"Explore Kiwitaxi offers.","tier":2,"regional_urls":{"ot":"https://kiwitaxi.tpo.lv/DVaqmgKo"}},{"name":"Lennuabi","regions":["ot"],"url":"https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/","category":"flights","category_key":"flights","category_label":"Flights","network":"Admitad","logo":"lennuabi.png","description":"Explore Lennuabi offers.","tier":2,"regional_urls":{"ot":"https://cafxq.com/g/913bhutj0zad273170bca8b9cbb737/"},"notes":"Many GEOs"},{"name":"H10 Hotels","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"h10hotels.png","description":"Explore H10 Hotels offers.","tier":2,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=5280&awinaffid=2834806"}},{"name":"Sirenis Hotels","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Awin","logo":"sirenishotels.png","description":"Explore Sirenis Hotels offers.","tier":2,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=109948&awinaffid=2834806"}},{"name":"Travelking","regions":["pl"],"url":"https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Admitad","logo":"travelking.png","description":"Explore Travelking offers.","tier":2,"regional_urls":{"pl":"https://vxrlm.com/g/dquwu4q32had273170bc7eaf385c59/"}},{"name":"Zenhotels","regions":["ot"],"url":"https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/","category":"hotels","category_key":"hotels","category_label":"Hotels","network":"Admitad","logo":"zenhotels.png","description":"Explore Zenhotels offers.","tier":2,"regional_urls":{"ot":"https://qwpeg.com/g/qpi6kwbvr0ad273170bc2f6f9b0ac2/"}},{"name":"ACKO","regions":["ot"],"url":"https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"acko.png","description":"Explore ACKO offers.","tier":2,"regional_urls":{"ot":"https://tjzuh.com/g/yapee0pvwcad273170bcd745de94b6/"}},{"name":"ICICI Lombard","regions":["ot"],"url":"https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Admitad","logo":"icicilombard.png","description":"Explore ICICI Lombard offers.","tier":2,"regional_urls":{"ot":"https://tjzuh.com/g/77fgwqsklkad273170bc829ab83632/"}},{"name":"Melhor Seguro","regions":["br"],"url":"https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Awin","logo":"melhorseguro.png","description":"Explore Melhor Seguro offers.","tier":2,"regional_urls":{"br":"https://www.awin1.com/cread.php?awinmid=120992&awinaffid=2834806"}},{"name":"AliExpress","regions":["pl","ot"],"url":"https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"aliexpress.png","description":"Explore AliExpress offers.","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=12044&awinaffid=2834806","ot":"https://rzekl.com/g/1e8d114494ad273170bc16525dc3e8/"}},{"name":"Alibaba","regions":["ot"],"url":"https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Admitad","logo":"alibaba.png","description":"Explore Alibaba offers.","tier":2,"regional_urls":{"ot":"https://rzekl.com/g/pm1aev55clad273170bc219aa26f6f/"}},{"name":"Bella Storia","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"bellastoria.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=10351&awinaffid=2834806"}},{"name":"Converse","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"converse.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=21652&awinaffid=2834806"}},{"name":"Miravia","regions":["es-latam"],"url":"https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Admitad","logo":"miravia.png","description":"Explore Miravia offers.","tier":2,"regional_urls":{"es-latam":"https://sgkaa.com/g/7xeenx9ms2ad273170bc903dd028f6/"}},{"name":"TWOJEMEBLE","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"twojemeble.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=21015&awinaffid=2834806"}},{"name":"Weneve","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"weneve.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=19605&awinaffid=2834806"}},{"name":"AdGuard VPN","regions":["ot"],"url":"https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"adguardvpn.png","description":"Explore AdGuard VPN offers.","tier":2,"regional_urls":{"ot":"https://dhwnh.com/g/xc497owldvad273170bca9584d7a68/"}},{"name":"Bloomcabin Poland","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"bloomcabinpoland.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=119327&awinaffid=2834806"}},{"name":"Cozeware","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"cozeware.png","description":"Explore Cozeware offers.","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=123618&awinaffid=2834806"}},{"name":"DAX","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"dax.png","description":"Poland offer","tier":2,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=21762&awinaffid=2834806"}},{"name":"ESET","regions":["br"],"url":"https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"eset.png","description":"Explore ESET offers.","tier":2,"regional_urls":{"br":"https://rzekl.com/g/ad0wrqec9gad273170bc2ca1814dd2/"}},{"name":"Envato","regions":["ot"],"url":"https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"envato.png","description":"Explore Envato offers.","tier":2,"regional_urls":{"ot":"https://rkdro.com/g/asu3g6un0rad273170bc53f7fdfbf4/"}},{"name":"UdPower","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"udpower.png","description":"Smart gadgets and power solutions for everyday use","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=123956&awinaffid=2834806"}},{"name":"Saily","regions":["ot"],"url":"https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"saily.png","description":"Explore Saily offers.","tier":2,"regional_urls":{"ot":"https://tp.media/r?marker=715310&trs=513827&p=8979&u=https%3A%2F%2Fsaily.com&campaign_id=629"}},{"name":"TurboVPN","regions":["ot"],"url":"https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/","category":"sim","category_key":"sim","category_label":"eSIM","network":"Admitad","logo":"turbovpn.png","description":"Secure your connection anywhere with VPN access","tier":2,"regional_urls":{"ot":"https://grfpr.com/g/exe221unkpad273170bcddf84d4c0b/"}},{"name":"Yesim","regions":["ot"],"url":"https://yesim.tpo.lv/3vIzBQts","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"yesim.png","description":"Explore Yesim offers.","tier":2,"regional_urls":{"ot":"https://yesim.tpo.lv/3vIzBQts"}},{"name":"GoCity","regions":["ot"],"url":"https://gocity.tpo.lv/Des5Cgov","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"gocity.png","description":"Explore GoCity offers.","tier":2,"regional_urls":{"ot":"https://gocity.tpo.lv/Des5Cgov"}},{"name":"Tiqets","regions":["ot","uk","us"],"url":"https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Awin","logo":"tiqets.png","description":"Explore Tiqets offers.","tier":2,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=8616&awinaffid=2834806","uk":"https://www.awin1.com/cread.php?awinmid=12430&awinaffid=2834806","us":"https://www.awin1.com/cread.php?awinmid=12428&awinaffid=2834806"}},{"name":"WeGoTrip","regions":["ot"],"url":"https://wegotrip.tpo.lv/kKIF0gIW","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"wegotrip.png","description":"Explore WeGoTrip offers.","tier":2,"regional_urls":{"ot":"https://wegotrip.tpo.lv/kKIF0gIW"}},{"name":"GetTransfer","regions":["ot"],"url":"https://gettransfer.tpo.lv/Pb4p9ljm","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"gettransfer.png","description":"Explore GetTransfer offers.","tier":2,"regional_urls":{"ot":"https://gettransfer.tpo.lv/Pb4p9ljm"}},{"name":"Intui.travel","regions":["ot"],"url":"https://intui.tpo.lv/Rrx5VuN3","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"intui.travel.png","description":"Explore Intui.travel offers.","tier":2,"regional_urls":{"ot":"https://intui.tpo.lv/Rrx5VuN3"}},{"name":"Quero Passagem","regions":["br"],"url":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Admitad","logo":"queropassagem.png","description":"Explore Quero Passagem offers.","tier":2,"regional_urls":{"br":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/"},"notes":"Brazil bus/travel ticket partner"},{"name":"Radical Storage","regions":["ot","pl"],"url":"https://radicalstorage.tpo.lv/tna4hnly","category":"travel_services","category_key":"travel_services","category_label":"Storage & Services","network":"Travelpayouts","logo":"radicalstorage.png","description":"Explore Radical Storage offers.","tier":2,"regional_urls":{"ot":"https://radicalstorage.tpo.lv/tna4hnly","pl":"https://radicalstorage.tpo.lv/tna4hnly"}},{"name":"AutoEurope","regions":["ot"],"url":"https://autoeurope.tpo.lv/t84AzZbO","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"autoeurope.png","description":"Explore AutoEurope offers.","tier":3,"regional_urls":{"ot":"https://autoeurope.tpo.lv/t84AzZbO"}},{"name":"Europcar AU/NZ","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Awin","logo":"europcarau/.png","description":"Explore Europcar AU/NZ offers.","tier":3,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=10777&awinaffid=2834806"}},{"name":"GetRentacar","regions":["ot"],"url":"https://getrentacar.tpo.lv/OR2TWduQ","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Travelpayouts","logo":"getrentacar.png","description":"Explore GetRentacar offers.","tier":3,"regional_urls":{"ot":"https://getrentacar.tpo.lv/OR2TWduQ"}},{"name":"Jumbo Car Costa Rica","regions":["es-latam"],"url":"https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806","category":"car_rentals","category_key":"car_rentals","category_label":"Car Rentals","network":"Awin","logo":"jumbocarcostarica.png","description":"Explore Jumbo Car Costa Rica offers.","tier":3,"regional_urls":{"es-latam":"https://www.awin1.com/cread.php?awinmid=123066&awinaffid=2834806"}},{"name":"Countabout","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806","category":"finance","category_key":"finance","category_label":"Finance","network":"Awin","logo":"countabout.png","description":"Explore Countabout offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=35984&awinaffid=2834806"}},{"name":"FileYourTaxes","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806","category":"finance","category_key":"finance","category_label":"Finance","network":"Awin","logo":"fileyourtaxes.png","description":"Explore FileYourTaxes offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=71769&awinaffid=2834806"}},{"name":"Você RH","regions":["br"],"url":"https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/","category":"finance","category_key":"finance","category_label":"Finance","network":"Admitad","logo":"vocêrh.png","description":"Explore Você RH offers.","tier":3,"regional_urls":{"br":"https://kjuzv.com/g/wxghlxbcctad273170bca062c62e7a/"},"notes":"Use only in finance/career context."},{"name":"Quero Passagem","regions":["br"],"url":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/","category":"flights","category_key":"flights","category_label":"Flights","network":"Admitad","logo":"queropassagem.png","description":"BR offer","tier":3,"regional_urls":{"br":"https://bednari.com/g/97wv4t3aixad273170bc47756b85cb/"}},{"name":"Compensair","regions":["ot"],"url":"https://compensair.tpo.lv/wxDDCITG","category":"insurance","category_key":"insurance","category_label":"Insurance & Claims","network":"Travelpayouts","logo":"compensair.png","description":"Explore Compensair offers.","tier":3,"regional_urls":{"ot":"https://compensair.tpo.lv/wxDDCITG"}},{"name":"Beetles Gel Polish","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"beetlesgelpolish.png","description":"PL offer","tier":3,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=68958&awinaffid=2834806"}},{"name":"Cybercart","regions":["pl"],"url":"https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Awin","logo":"cybercart.png","description":"PL offer","tier":3,"regional_urls":{"pl":"https://www.awin1.com/cread.php?awinmid=122886&awinaffid=2834806"}},{"name":"Woodestic","regions":["ot"],"url":"https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/","category":"marketplace","category_key":"marketplace","category_label":"Marketplace","network":"Admitad","logo":"woodestic.png","description":"Explore Woodestic offers.","tier":3,"regional_urls":{"ot":"https://naiawork.com/g/do86ucnzhxad273170bcc586cc6aee/"}},{"name":"Bodylab","regions":["ot"],"url":"https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"bodylab.png","description":"Explore Bodylab offers.","tier":3,"regional_urls":{"ot":"https://ad.admitad.com/g/q51r4zfcu5ad273170bcfad1369401/"}},{"name":"Guldi","regions":["br"],"url":"https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"guldi.png","description":"Explore Guldi offers.","tier":3,"regional_urls":{"br":"https://bednari.com/g/p1zsxhi8clad273170bc3e86b72106/"},"notes":"Guldi (EN) Affiliate Program"},{"name":"Lingualeo","regions":["ot"],"url":"https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/?erid=5jtCeReLm1S3Xx3LfA8SFZ6","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"lingualeo.png","description":"Explore Lingualeo offers.","tier":3,"regional_urls":{"ot":"https://xcdus.com/g/e583077b63ad273170bcc814d4b7c0/?erid=5jtCeReLm1S3Xx3LfA8SFZ6"}},{"name":"PearlMountain Limited","regions":["ot"],"url":"https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"pearlmountainlimited.png","description":"Explore PearlMountain Limited offers.","tier":3,"regional_urls":{"ot":"https://www.awin1.com/cread.php?awinmid=90241&awinaffid=2834806"}},{"name":"SuperBox","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"superbox.png","description":"Explore SuperBox offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=81755&awinaffid=2834806"}},{"name":"SuperSim","regions":["br"],"url":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"supersim.png","description":"BR offer","tier":3,"regional_urls":{"br":"https://dhwnh.com/g/y9fhnvt3b0ad273170bcbc47462f0b/"}},{"name":"TikTok Lite","regions":["br"],"url":"https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Admitad","logo":"tiktoklite.png","description":"Explore TikTok Lite offers.","tier":3,"regional_urls":{"br":"https://sgkaa.com/g/4811p4g2ogad273170bc01ff74d73d/"},"notes":"CPI/CPA. Keep out of main travel UI unless rules allow this traffic."},{"name":"Valerion","regions":["us"],"url":"https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806","category":"products_tools","category_key":"products_tools","category_label":"Products & Tools","network":"Awin","logo":"valerion.png","description":"Explore Valerion offers.","tier":3,"regional_urls":{"us":"https://www.awin1.com/cread.php?awinmid=113200&awinaffid=2834806"}},{"name":"Drimsim","regions":["ot"],"url":"https://drimsim.tpo.lv/PGwr6JTr","category":"sim","category_key":"sim","category_label":"eSIM","network":"Travelpayouts","logo":"drimsim.png","description":"Explore Drimsim offers.","tier":3,"regional_urls":{"ot":"https://drimsim.tpo.lv/PGwr6JTr"}},{"name":"Bunches","regions":["ot"],"url":"https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"bunches.png","description":"Explore Bunches offers.","tier":3,"regional_urls":{"ot":"https://ad.admitad.com/g/6gzjdi8vgtad273170bc5e4e5f6ce4/"}},{"name":"Delfin","regions":["ot"],"url":"https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/?erid=2bL9aMPo2e49hMef4rqyKUjZvt","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"delfin.png","description":"Explore Delfin offers.","tier":3,"regional_urls":{"ot":"https://qwpeg.com/g/h8zcs7gtrbad273170bc2c4884e0d4/?erid=2bL9aMPo2e49hMef4rqyKUjZvt"}},{"name":"GGsel","regions":["ot"],"url":"https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/?erid=2bL9aMPo2e49hMef4phyrMWkN2","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"ggsel.png","description":"Explore GGsel offers.","tier":3,"regional_urls":{"ot":"https://xnmik.com/g/ngv70om7owad273170bc768e16fdce/?erid=2bL9aMPo2e49hMef4phyrMWkN2"}},{"name":"IGP","regions":["ot"],"url":"https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"igp.png","description":"Explore IGP offers.","tier":3,"regional_urls":{"ot":"https://tjzuh.com/g/bhq7k7hmcgad273170bc0451de8123/"}},{"name":"LEA","regions":["ot"],"url":"https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"lea.png","description":"Explore LEA offers.","tier":3,"regional_urls":{"ot":"https://heqgr.com/g/z50uttmnwlad273170bca96778db78/?erid=2bL9aMPo2e49hMef4rqyCzCPNx"}},{"name":"cs2case","regions":["ot"],"url":"https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/?erid=2bL9aMPo2e49hMef4phyrL2RNS","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"cs2case.png","description":"Explore cs2case offers.","tier":3,"regional_urls":{"ot":"https://sgkaa.com/g/u4m5udnhltad273170bc4e1b76ac97/?erid=2bL9aMPo2e49hMef4phyrL2RNS"}},{"name":"forcedrop","regions":["ot"],"url":"https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"forcedrop.png","description":"Explore forcedrop offers.","tier":3,"regional_urls":{"ot":"https://hvjjg.com/g/wnb50tmumwad273170bc6897aa2720/"}},{"name":"ggpick","regions":["ot"],"url":"https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"ggpick.png","description":"Explore ggpick offers.","tier":3,"regional_urls":{"ot":"https://rkdro.com/g/ja7n12si6wad273170bc15e49ef059/"}},{"name":"Буквоед","regions":["ru"],"url":"https://heqgr.com/g/531a4560a6ad273170bc27ad1bb5fb/?erid=5jtCeReLm1S3Xx3LfAELCUa","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"буквоед.png","description":"Explore Буквоед offers.","tier":3,"regional_urls":{"ru":"https://heqgr.com/g/531a4560a6ad273170bc27ad1bb5fb/?erid=5jtCeReLm1S3Xx3LfAELCUa"}},{"name":"Читай-город","regions":["ru"],"url":"https://kjuzv.com/g/q6gfnfvsq0ad273170bca804937a48/?erid=MvGzQC98w3Z1gMq1kx5ACoy5","category":"specialty_other","category_key":"specialty_other","category_label":"Specialty & Other","network":"Admitad","logo":"читай-город.png","description":"Explore Читай-город offers.","tier":3,"regional_urls":{"ru":"https://kjuzv.com/g/q6gfnfvsq0ad273170bca804937a48/?erid=MvGzQC98w3Z1gMq1kx5ACoy5"}},{"name":"BigBusTours","regions":["ot"],"url":"https://bigbustours.tpo.lv/grT1QWXA","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"bigbustours.png","description":"Explore BigBusTours offers.","tier":3,"regional_urls":{"ot":"https://bigbustours.tpo.lv/grT1QWXA"}},{"name":"BikesBooking","regions":["ot"],"url":"https://bikesbooking.tpo.lv/B3zIKanS","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"bikesbooking.png","description":"Explore BikesBooking offers.","tier":3,"regional_urls":{"ot":"https://bikesbooking.tpo.lv/B3zIKanS"}},{"name":"EatWith","regions":["ot"],"url":"https://eatwith.tpo.lv/BfAnpZNb","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"eatwith.png","description":"Explore EatWith offers.","tier":3,"regional_urls":{"ot":"https://eatwith.tpo.lv/BfAnpZNb"}},{"name":"Searadar","regions":["ot"],"url":"https://searadar.tpo.lv/TO4A5eBZ","category":"tours","category_key":"tours","category_label":"Tours & Activities","network":"Travelpayouts","logo":"searadar.png","description":"Explore Searadar offers.","tier":3,"regional_urls":{"ot":"https://searadar.tpo.lv/TO4A5eBZ"}},{"name":"Busbud","regions":["ot"],"url":"https://busbud.tpo.lv/h4C6YPFZ","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"busbud.png","description":"Explore Busbud offers.","tier":3,"regional_urls":{"ot":"https://busbud.tpo.lv/h4C6YPFZ"}},{"name":"HolidayTaxis","regions":["ot"],"url":"https://holidaytaxis.tpo.lv/oHwpbrFt","category":"transfers","category_key":"transfers","category_label":"Transfers","network":"Travelpayouts","logo":"holidaytaxis.png","description":"Explore HolidayTaxis offers.","tier":3,"regional_urls":{"ot":"https://holidaytaxis.tpo.lv/oHwpbrFt"}}]};
-    const VALID_REGIONS = ["es-latam","br","us","uk","pl","ru","ot"];
-    const REGION_LANG = {"es-latam":"es",br:"pt",us:"en",uk:"en",pl:"pl",ru:"ru",ot:"en"};
-    const ENGLISH_LOCKED = new Set(["us","uk","ot"]);
-    const CATEGORY_ORDER = ["flights","hotels","marketplace","products_tools","finance","insurance","travel_services","car_rentals","tours","transfers","esim","specialty_other"];
-    const column1Categories = [
-      "marketplace",
-      "products_tools",
-      "finance",
-      "insurance_claims",
-      "storage_services",
-      "specialty_other"
-    ];
-
-    const CATEGORY_ICONS = {flights:"✈",hotels:"🏨",marketplace:"🛒",products_tools:"🧰",finance:"💳",insurance:"🛡",insurance_claims:"🛡",travel_services:"🧳",storage_services:"🧳",car_rentals:"🚗",tours:"🎟",transfers:"🚕",esim:"📱",sim:"📱",specialty_other:"✨"};
-
-    const REGION_CONFIG = {
-      us: {flag:"🇺🇸", label:"United States", heroPartners:["Kiwi","Trivago","Tiqets","Proton VPN","Valerion","Countabout"], copy:{en:{kicker:"Premium US offers", title:"Smart travel and digital deals for the United States", desc:"High-value flights, hotels, tools and services curated for US visitors.", primary:"Explore US deals"}}},
-      br: {flag:"🇧🇷", label:"Brasil", heroPartners:["Booking Brazil","CVC","Kiwi","Melhor Seguro","Amazon","SuperSim"], copy:{pt:{kicker:"Ofertas no Brasil", title:"Hotéis, passagens e ofertas populares no Brasil", desc:"Parceiros fortes para viagem, marketplace, seguros e serviços digitais.", primary:"Ver ofertas do Brasil"}, en:{kicker:"Brazil deals", title:"Hotels, flights and marketplace deals for Brazil", desc:"Regional offers for travel, shopping, insurance and digital services.", primary:"View Brazil deals"}}},
-      pl: {flag:"🇵🇱", label:"Polska", heroPartners:["Travelking","Trivago","AliExpress","Tiqets","Airalo"], copy:{pl:{kicker:"Oferty w Polsce", title:"Praktyczne oferty podróżnicze i zakupowe dla Polski", desc:"Porównuj hotele, marketplace, narzędzia i usługi podróżne dostępne w Polsce.", primary:"Zobacz oferty"}, en:{kicker:"Poland offers", title:"Practical travel and shopping offers for Poland", desc:"Compare hotels, marketplace, tools and travel services available in Poland.", primary:"View Poland offers"}}},
-      uk: {flag:"🇬🇧", label:"United Kingdom", heroPartners:["Tiqets","Trivago","Klook","Kiwi","Welcome Pickups"], copy:{en:{kicker:"UK travel picks", title:"Premium travel experiences and useful services for the UK", desc:"Hotels, tickets, transfers and smart services curated for UK visitors.", primary:"Explore UK picks"}}},
-      "es-latam": {flag:"🌎", label:"LATAM", heroPartners:["Kiwi","Trivago","Miravia","Airalo","Klook"], copy:{es:{kicker:"Ofertas en LATAM", title:"Viajes, hoteles y servicios digitales para LATAM", desc:"Ofertas para México y Latinoamérica, con recomendaciones rápidas y móviles.", primary:"Ver ofertas LATAM"}, en:{kicker:"LATAM offers", title:"Travel, hotels and digital services for LATAM", desc:"Regional offers for Mexico and Latin America.", primary:"View LATAM offers"}}},
-      ru: {flag:"🇷🇺", label:"RU", heroPartners:["Буквоед","Читай-город","GGsel"], copy:{ru:{kicker:"Региональные предложения", title:"Локальные предложения и цифровые сервисы", desc:"Региональная витрина партнеров, которую можно расширять позже.", primary:"Смотреть предложения"}, en:{kicker:"Regional offers", title:"Localized offers and digital services", desc:"A regional partner showcase that can grow when the market is appropriate.", primary:"View offers"}}},
-      ot: {flag:"🌍", label:"Global", heroPartners:["Kiwi","Trivago","Airalo","Klook","Proton VPN"], copy:{en:{kicker:"Global offers", title:"Travel, marketplace and service deals by region", desc:"Curated offers from global partners, filtered by your region and language.", primary:"Explore global deals"}}}
-    };
-
-    const BUILT_IN_TRANSLATIONS = {
-      en: {brand_name:"SignalBoost",explore_offers:"Explore offers",search_placeholder:"Flights, hotels, eSIM, tours...",partners:"Partners",featured_service:"Explore a featured service picked for you.",view_more:"View More",flights:"Flights",hotels:"Hotels",marketplace:"Marketplace",products_tools:"Products & Tools",finance:"Finance",insurance:"Insurance & Claims",insurance_claims:"Insurance & Claims",travel_services:"Storage & Services",storage_services:"Storage & Services",car_rentals:"Car Rentals",car_rental:"Car Rentals",tours:"Tours & Activities",transfers:"Transfers & Transport",esim:"SIM & Connectivity",sim:"SIM & Connectivity",specialty_other:"Specialty & Other"},
-      es: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Vuelos, hoteles, eSIM, tours...",partners:"Socios",featured_service:"Explora un servicio destacado elegido para ti.",view_more:"Ver más",flights:"Vuelos",hotels:"Hoteles",marketplace:"Marketplace",products_tools:"Productos y herramientas",finance:"Finanzas",insurance:"Seguros y reclamaciones",insurance_claims:"Seguros y reclamaciones",travel_services:"Almacenamiento y servicios",storage_services:"Almacenamiento y servicios",car_rentals:"Alquiler de coches",car_rental:"Alquiler de coches",tours:"Tours y actividades",transfers:"Traslados",esim:"SIM y conectividad",sim:"SIM y conectividad",specialty_other:"Especiales y otros"},
-      pt: {brand_name:"SignalBoost",explore_offers:"Explorar ofertas",search_placeholder:"Voos, hotéis, eSIM, tours...",partners:"Parceiros",featured_service:"Explore um serviço em destaque escolhido para você.",view_more:"Ver mais",flights:"Voos",hotels:"Hotéis",marketplace:"Marketplace",products_tools:"Produtos e ferramentas",finance:"Finanças",insurance:"Seguros e reclamações",insurance_claims:"Seguros e reclamações",travel_services:"Armazenamento e serviços",storage_services:"Armazenamento e serviços",car_rentals:"Aluguel de carros",car_rental:"Aluguel de carros",tours:"Tours e atividades",transfers:"Transfers & Transport",esim:"SIM e conectividade",sim:"SIM e conectividade",specialty_other:"Especiais e outros"},
-      pl: {brand_name:"SignalBoost",explore_offers:"Przeglądaj oferty",search_placeholder:"Loty, hotele, eSIM, wycieczki...",partners:"Partnerzy",featured_service:"Sprawdź wybraną usługę.",view_more:"Zobacz więcej",flights:"Loty",hotels:"Hotele",marketplace:"Marketplace",products_tools:"Produkty i narzędzia",finance:"Finanse",insurance:"Ubezpieczenia i roszczenia",insurance_claims:"Ubezpieczenia i roszczenia",travel_services:"Przechowalnia i usługi",storage_services:"Przechowalnia i usługi",car_rentals:"Wynajem aut",car_rental:"Wynajem aut",tours:"Wycieczki",transfers:"Transfery",esim:"SIM i łączność",sim:"SIM i łączność",specialty_other:"Inne"},
-      ru: {brand_name:"SignalBoost",explore_offers:"Смотреть предложения",search_placeholder:"Авиабилеты, отели, eSIM, туры...",partners:"Партнеры",featured_service:"Посмотрите выбранный сервис.",view_more:"Подробнее",flights:"Рейсы",hotels:"Отели",marketplace:"Marketplace",products_tools:"Продукты и инструменты",finance:"Финансы",insurance:"Страхование и претензии",insurance_claims:"Страхование и претензии",travel_services:"Хранение и услуги",storage_services:"Хранение и услуги",car_rentals:"Аренда авто",car_rental:"Аренда авто",tours:"Туры",transfers:"Трансферы",esim:"SIM и связь",sim:"SIM и связь",specialty_other:"Другое"}
-    };
-
-    let ACTIVE_REGION = "ot";
-    let ACTIVE_LANGUAGE = "en";
-    let ACTIVE_TRANSLATIONS = BUILT_IN_TRANSLATIONS.en;
-    let ACTIVE_PARTNERS = [];
-    let FEED_ITEMS = [];
-    let FEED_PAGE = 0;
-    const FEED_PAGE_SIZE = 5;
-    let FEED_LOADING = false;
-    let COLUMN1_EXPANDED = false;
-    const COLUMN1_PREVIEW_LIMIT = 5;
-
-    const categories = ["flights","hotels","transfers","car_rental","sim","tours"];
-
-    const HEADER_CATEGORY_ALIASES = {
-      car_rental: "car_rentals",
-      car_rentals: "car_rentals",
-      sim: "esim",
-      esim: "esim",
-      transfer: "transfers",
-      transfers: "transfers",
-      insurance: "insurance",
-      insurance_claims: "insurance",
-      travel_services: "travel_services",
-      storage_services: "travel_services"
-    };
-
-    function esc(v){return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
-
-    function displayCategoryKey(key){return HEADER_CATEGORY_ALIASES[key] || key;}
-    function canonicalCategoryKey(key){if(key==="car_rentals") return "car_rental"; if(key==="esim") return "sim"; return key;}
-    function translatedCategory(cat){return ACTIVE_TRANSLATIONS[cat] || ACTIVE_TRANSLATIONS[displayCategoryKey(cat)] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(cat)] || cat;}
-
-    const NORMALIZED_HEADER_CATEGORIES = [...new Set(categories.map(displayCategoryKey))];
-    const MAIN_INDEX_CATEGORIES = [...new Set([...NORMALIZED_HEADER_CATEGORIES, ...CATEGORY_ORDER.map(displayCategoryKey)])];
-
-    function normalizeRegion(value){
-      const v=String(value||"").toLowerCase().replace(/_/g,"-").trim();
-      if(["es-latam","latam","mx","ar","co","pe","cl","uy","py","bo","ec","ve","cr","pa","gt","hn","sv","ni","do","es"].includes(v)) return "es-latam";
-      if(["br","brazil","brasil","pt-br"].includes(v)) return "br";
-      if(["us","usa","united-states"].includes(v)) return "us";
-      if(["uk","gb","en-gb","united-kingdom"].includes(v)) return "uk";
-      if(v==="pl") return "pl";
-      if(v==="ru") return "ru";
-      return "ot";
-    }
-
-    function detectRegion(){
-      const params = new URLSearchParams(location.search);
-      if(params.get("region")) return normalizeRegion(params.get("region"));
-      const tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||"").toLowerCase();
-      const lang=((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();
-      if(/mexico|bogota|lima|buenos_aires|santiago|montevideo|madrid/.test(tz)) return "es-latam";
-      if(/sao_paulo|rio_branco|bahia|belem|fortaleza|recife|manaus/.test(tz)) return "br";
-      if(/new_york|chicago|denver|los_angeles|phoenix|anchorage|honolulu/.test(tz)) return "us";
-      if(/london/.test(tz)) return "uk";
-      if(/warsaw/.test(tz)) return "pl";
-      if(/moscow|kaliningrad|yekaterinburg|novosibirsk|vladivostok/.test(tz)) return "ru";
-      if(lang.startsWith("es")) return "es-latam";
-      if(lang.startsWith("pt")) return "br";
-      if(lang.startsWith("pl")) return "pl";
-      if(lang.startsWith("ru")) return "ru";
-      if(lang.startsWith("en-us")) return "us";
-      if(lang.startsWith("en-gb")||lang.startsWith("en-uk")) return "uk";
-      return "ot";
-    }
-
-    function detectLanguage(region){return REGION_LANG[normalizeRegion(region)] || "en";}
-    function getPreferredLanguage(region){
-      region=normalizeRegion(region);
-      if(ENGLISH_LOCKED.has(region)) return "en";
-      const p=new URLSearchParams(location.search).get("lang");
-      if(p==="en") return "en";
-      return detectLanguage(region);
-    }
-
-    async function loadTranslations(lang){
-      const base={...(BUILT_IN_TRANSLATIONS.en||{}),...(BUILT_IN_TRANSLATIONS[lang]||{})};
-      try{
-        const r=await fetch(`i18n/${lang}.json`,{cache:"no-store"});
-        if(r.ok) return {...base,...await r.json()};
-      }catch(e){}
-      return base;
-    }
-
-    function applyTranslations(t){
-      document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.getAttribute("data-i18n"); if(t[k]) el.textContent=t[k];});
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{const k=el.getAttribute("data-i18n-placeholder"); if(t[k]) el.setAttribute("placeholder",t[k]);});
-      document.documentElement.lang = ACTIVE_LANGUAGE;
-      document.documentElement.dataset.i18nReady = "1";
-    }
-
-    async function setLanguage(lang){
-      if(ENGLISH_LOCKED.has(ACTIVE_REGION)) lang="en";
-      const native=detectLanguage(ACTIVE_REGION);
-      if(lang!==native && lang!=="en") lang=native;
-      ACTIVE_LANGUAGE=lang;
-      ACTIVE_TRANSLATIONS=await loadTranslations(lang);
-      applyTranslations(ACTIVE_TRANSLATIONS);
-      setupLanguageSwitcher();
-      renderAll();
-      if(window.dataLayer) window.dataLayer.push({event:'page_region_view',region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,path:location.pathname});
-    }
-    window.setLanguage=setLanguage;
-
-    function setupLanguageSwitcher(){
-      const w=document.getElementById("languageSwitcher"), s=document.getElementById("lang-select");
-      if(!w||!s) return;
-      if(ENGLISH_LOCKED.has(ACTIVE_REGION)){
-        s.innerHTML='<option value="en">English</option>';
-        s.value="en";
-        w.style.display="inline-flex";
-        return;
-      }
-      const native=detectLanguage(ACTIVE_REGION);
-      const labels={es:"Español",pt:"Português",pl:"Polski",ru:"Русский",en:"English"};
-      s.innerHTML=`<option value="${native}">${labels[native]||native}</option><option value="en">English</option>`;
-      s.value=ACTIVE_LANGUAGE;
-    }
-
-    function normalizePartnerRegions(p){return Array.isArray(p.regions) ? [...new Set(p.regions.map(normalizeRegion))] : [normalizeRegion(p.region||"ot")];}
-    function normalizePartnerName(name){return String(name||"").toLowerCase().replace(/\([^)]*\)/g,"").replace(/\.com/g,"").replace(/\b(global|ot|us|usa|uk|gb|mx|br|pl|eu|latam|es-latam|ru|ca|de|fr|it|es|ar|co|pe|cl|nz)\b/g,"").replace(/\s+/g," ").trim();}
-    function categoryKey(p){return displayCategoryKey(p.category_key || p.category || "marketplace");}
-
-    function mergePartners(arr){
-      const map=new Map();
-      (Array.isArray(arr)?arr:[]).forEach(p=>{
-        if(!p||!p.name||!p.url||p.status==="hold"||p.status==="disabled") return;
-        const c=categoryKey(p);
-        const key=normalizePartnerName(p.name)+"|"+c;
-        const regs=normalizePartnerRegions(p);
-        let e=map.get(key);
-        if(!e){e={...p,category_key:c,regions:[],regional_urls:{...(p.regional_urls||{})}};map.set(key,e);}
-        regs.forEach(r=>{if(!e.regions.includes(r))e.regions.push(r); if(!e.regional_urls[r]) e.regional_urls[r]=p.url;});
-        if((p.tier||99)<(e.tier||99)){["name","url","network","description","tier","category_label"].forEach(f=>{if(p[f])e[f]=p[f];});}
-      });
-      return [...map.values()];
-    }
-
-    function partnerMatchesRegion(p, region){return normalizePartnerRegions(p).includes(normalizeRegion(region));}
-
-    function partnerForRegion(p, region){
-      region=normalizeRegion(region);
-      const regs=normalizePartnerRegions(p);
-      const urls=p.regional_urls || {};
-      const key=categoryKey(p);
-      return {
-        ...p,
-        regions:regs,
-        matched_region:region,
-        region,
-        url:urls[region] || p.url || "#",
-        category_key:key,
-        category_label:ACTIVE_TRANSLATIONS[key] || ACTIVE_TRANSLATIONS[canonicalCategoryKey(key)] || p.category_label || key,
-        description:p.description || ""
-      };
-    }
-
-    async function loadPartners(){
-      for(const endpoint of ["partners.json","/partners.json"]){
-        try{
-          const r=await fetch(endpoint,{cache:"no-store"});
-          if(r.ok){const d=await r.json(); return Array.isArray(d)?d:(d.partners||[]);}
-        }catch(e){}
-      }
-      return EMBEDDED_PARTNERS.partners || [];
-    }
-
-    function visiblePartners(){
-      const seen=new Set();
-      const list=mergePartners(ACTIVE_PARTNERS)
-        .filter(p=>partnerMatchesRegion(p,ACTIVE_REGION))
-        .map(p=>partnerForRegion(p,ACTIVE_REGION))
-        .filter(p=>{const k=normalizePartnerName(p.name)+"|"+displayCategoryKey(p.category_key); if(seen.has(k)) return false; seen.add(k); return true;});
-      return smartSortPartners(list);
-    }
-
-    function buildCategoryIndex(partners){
-      const index=Object.fromEntries(MAIN_INDEX_CATEGORIES.map(c=>[c,[]]));
-      (Array.isArray(partners)?partners:[]).forEach(p=>{
-        const c=displayCategoryKey(p.category_key || p.category || "marketplace");
-        if(!index[c]) index[c]=[];
-        index[c].push({...p,category_key:c});
-      });
-      return index;
-    }
-
-    function partnersForHeaderCategory(partners, cat){
-      const displayKey=displayCategoryKey(cat);
-      return partners.filter(p=>displayCategoryKey(p.category_key)===displayKey);
-    }
-
-    function HeaderCategory(cat, partners){
-      const items=partnersForHeaderCategory(partners, cat);
-      const label=translatedCategory(cat);
-      return `
-        <li class="dropdown">
-          <button class="dropbtn" type="button">${esc(label)} (${items.length})</button>
-          <ul class="dropdown-content">
-            ${items.length ? items.map(p=>`
-              <li><a href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'top_nav')}>${esc(p.name)}</a></li>
-            `).join("") : `<li><span class="dropdown-empty">No partners</span></li>`}
-          </ul>
-        </li>`;
-    }
-
-    function renderHeader(partners){
-      const nav=document.getElementById("travelDirectory");
-      if(!nav) return;
-      nav.innerHTML=`<ul class="nav-list">${NORMALIZED_HEADER_CATEGORIES.map(cat=>HeaderCategory(cat, partners)).join("")}</ul>`;
-    }
-
-
-
-    function regionConfig(region){return REGION_CONFIG[normalizeRegion(region)] || REGION_CONFIG.ot;}
-    function regionCopy(){const cfg=regionConfig(ACTIVE_REGION);return (cfg.copy && (cfg.copy[ACTIVE_LANGUAGE] || cfg.copy.en)) || REGION_CONFIG.ot.copy.en;}
-    function partnerUrl(p){return (p && (p.url || (p.regional_urls && p.regional_urls[ACTIVE_REGION]))) || "#";}
-    function preferredPartners(names, partners, limit){
-      const out=[]; const used=new Set();
-      (names||[]).forEach(name=>{const found=partners.find(p=>String(p.name).toLowerCase()===String(name).toLowerCase()); if(found&&!used.has(found.name)){out.push(found);used.add(found.name);}});
-      partners.forEach(p=>{if(out.length>=limit)return;if(!used.has(p.name)){out.push(p);used.add(p.name);}});
-      return out.slice(0,limit);
-    }
-    function clickKey(partner, placement){
-      return [ACTIVE_REGION, ACTIVE_LANGUAGE, placement || "unknown", partner?.name || "unknown", partner?.category_key || "unknown"].join("|");
-    }
-
-    function readClickCounts(){
-      try{return JSON.parse(localStorage.getItem('signalboost_click_counts') || '{}') || {};}catch(e){return {};}
-    }
-
-    function writeClickCounts(counts){
-      try{localStorage.setItem('signalboost_click_counts', JSON.stringify(counts));}catch(e){}
-    }
-
-    function trackAffiliateClick(partner, placement){
-      const payload={event:"affiliate_click",partner:partner?.name||"unknown",category:partner?.category_key||"unknown",region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,placement:placement||"unknown",path:location.pathname,ts:Date.now()};
-      window.signalBoostClicks=window.signalBoostClicks||[]; window.signalBoostClicks.push(payload);
-      const counts=readClickCounts();
-      const specific=clickKey(partner, placement);
-      const partnerKey=[ACTIVE_REGION, partner?.name || "unknown"].join("|");
-      counts[specific]=(counts[specific]||0)+1;
-      counts[partnerKey]=(counts[partnerKey]||0)+1;
-      writeClickCounts(counts);
-      if(window.gtag) window.gtag('event','affiliate_click',payload);
-      if(window.dataLayer) window.dataLayer.push(payload);
-      try{localStorage.setItem('signalboost_last_click',JSON.stringify(payload));}catch(e){}
-      return payload;
-    }
-    function encodedAttrValue(v){return encodeURIComponent(String(v ?? ""));}
-    function clickAttrs(p, placement){
-      const name=encodedAttrValue(p.name);
-      const category=encodedAttrValue(p.category_key);
-      const place=encodedAttrValue(placement);
-      return ` data-partner="${esc(p.name)}" data-category="${esc(p.category_key)}" data-placement="${esc(placement)}" onclick="trackAffiliateClick({name:decodeURIComponent('${name}'),category_key:decodeURIComponent('${category}')},decodeURIComponent('${place}'))"`;
-    }
-
-    function partnerPriorityScore(p){
-      const cfg=regionConfig(ACTIVE_REGION);
-      const heroNames=(cfg.heroPartners||[]).map(x=>String(x).toLowerCase());
-      const primaryCategories=(cfg.primaryCategories||[]).map(displayCategoryKey);
-      const counts=readClickCounts();
-      let score=0;
-      if(p.featured) score+=5000;
-      const heroIndex=heroNames.indexOf(String(p.name).toLowerCase());
-      if(heroIndex>=0) score+=4000-heroIndex*150;
-      const catIndex=primaryCategories.indexOf(displayCategoryKey(p.category_key));
-      if(catIndex>=0) score+=2500-catIndex*100;
-      score+=Math.max(0,1000-(p.tier||99)*80);
-      score+=(counts[[ACTIVE_REGION,p.name].join("|")]||0)*35;
-      return score;
-    }
-
-    function smartSortPartners(partners){
-      return [...partners].sort((a,b)=>
-        partnerPriorityScore(b)-partnerPriorityScore(a) ||
-        (a.tier||99)-(b.tier||99) ||
-        String(a.name).localeCompare(String(b.name))
-      );
-    }
-
-    function isPriorityPartner(p){
-      const cfg=regionConfig(ACTIVE_REGION);
-      return !!p.featured || (cfg.heroPartners||[]).some(n=>String(n).toLowerCase()===String(p.name).toLowerCase());
-    }
-    function renderTrendingStrip(partners){
-      const el=document.getElementById("trendingStrip"); if(!el)return;
-      const cfg=regionConfig(ACTIVE_REGION); const picks=preferredPartners(cfg.heroPartners,partners,8);
-      if(!picks.length){el.innerHTML="";return;}
-      const word=(ACTIVE_LANGUAGE==="pt"?"Em alta":ACTIVE_LANGUAGE==="pl"?"Popularne":ACTIVE_LANGUAGE==="es"?"Tendencias":ACTIVE_LANGUAGE==="ru"?"Популярное":"Trending");
-      el.innerHTML=`<div class="trend-kicker">🔥 ${esc(word)} ${cfg.flag}</div><div class="trend-items">${picks.map(p=>`<a class="trend-pill" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'trending_strip')}>${esc(p.name)}</a>`).join("")}</div>`;
-    }
-    function renderRegionHero(partners){
-      const el=document.getElementById("regionHero"); if(!el)return;
-      const cfg=regionConfig(ACTIVE_REGION); const copy=regionCopy(); const picks=preferredPartners(cfg.heroPartners,partners,3); const primary=picks[0];
-      document.body.className=(document.body.className||"").replace(/\bregion-\S+/g,"").trim()+` region-${ACTIVE_REGION}`;
-      el.innerHTML=`<div class="hero-copy"><div class="region-badge">${cfg.flag} ${esc(copy.kicker||cfg.label)}</div><h1>${esc(copy.title)}</h1><p>${esc(copy.desc)}</p><div class="hero-actions"><a class="primary-cta" href="${esc(primary?partnerUrl(primary):'#')}" target="_blank" rel="noopener"${primary?clickAttrs(primary,'hero_primary'):''}>${esc(copy.primary||'Explore deals')} →</a><a class="secondary-cta" href="?region=us&lang=en">English / US</a></div></div><div class="hero-partners">${picks.map(p=>`<a class="hero-mini-card" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'hero_partner')}><strong>${esc(p.name)}</strong><span>${esc(p.description||translatedCategory(p.category_key))}</span></a>`).join("")}</div>`;
-    }
-
-    function ColumnCategory(cat, partners, index, query){
-      const displayKey=displayCategoryKey(cat);
-      const labelKey=canonicalCategoryKey(cat);
-      const icon=CATEGORY_ICONS[displayKey] || CATEGORY_ICONS[labelKey] || "•";
-      const items=partners.filter(p=>
-        displayCategoryKey(p.category_key)===displayKey &&
-        (!query || (p.name+" "+(p.network||"")+" "+(p.description||"")).toLowerCase().includes(query))
-      );
-      const sortedItems=smartSortPartners(items);
-      const open = index===0 || query ? "1" : "0";
-      return `
-        <div class="column-category" data-open="${open}">
-          <button type="button" onclick="toggleColumnCategory(this)" aria-expanded="${open==='1'}"><span class="category-title"><span>${icon}</span><span>${esc(translatedCategory(labelKey))}</span></span><span class="category-count">${items.length}</span></button>
-          <ul>
-            ${sortedItems.length ? sortedItems.map(p=>`
-              <li><a class="partner-card ${isPriorityPartner(p)?'is-priority':''}" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'left_sidebar')}><span><strong>${esc(p.name)}</strong><span>${esc(p.description || translatedCategory(canonicalCategoryKey(p.category_key)))}</span></span><em>${esc(ACTIVE_TRANSLATIONS.view_more || 'View')}</em></a></li>
-            `).join("") : `<li><span class="dropdown-empty">No partners</span></li>`}
-          </ul>
-        </div>`;
-    }
-
-    function toggleColumnCategory(button){
-      const box=button.closest(".column-category");
-      const list=box.querySelector("ul");
-      const arrow=box.querySelector(".column-arrow");
-      const isOpen=box.dataset.open==="1";
-      box.dataset.open=isOpen ? "0" : "1";
-      list.style.display=isOpen ? "none" : "block";
-      if(arrow) arrow.textContent=isOpen ? "▶" : "▼";
-    }
-    window.toggleColumnCategory=toggleColumnCategory;
-
-    function renderColumnPartners(currentRegion,currentLanguage,partners){
-      const regionPartners=partners.filter(p=>normalizePartnerRegions(p).includes(normalizeRegion(currentRegion)));
-      return `<div class="column">${regionPartners.map(p=>`<div>${esc(p.name)} — ${esc((BUILT_IN_TRANSLATIONS[currentLanguage]||ACTIVE_TRANSLATIONS)[canonicalCategoryKey(p.category_key)]||p.category_key)}</div>`).join("")}</div>`;
-    }
-
-    function renderColumn1(partners){
-      const q=(document.getElementById("partnerSearch")?.value || "").toLowerCase();
-      const wrap=document.getElementById("column1");
-      if(!wrap) return;
-
-      // Column 1 is the merged React category set, adapted for this standalone index.html.
-      // Aliases map insurance_claims -> insurance and storage_services -> travel_services.
-      const html=column1Categories.map((cat,index)=>ColumnCategory(cat,partners,index,q)).join("");
-      wrap.innerHTML=html || '<div class="empty">No partners for this region.</div>';
-    }
-
-    function toggleColumn1Expanded(){
-      // Kept for backward compatibility with older builds that may call it.
-      renderColumn1(visiblePartners());
-    }
-    window.toggleColumn1Expanded=toggleColumn1Expanded;
-
-    const FEED_IMAGES = [
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1491557345352-5929e343eb89?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=70"
-    ];
-
-    const HYBRID_VIDEO_POOL = [
-      {type:"video",source:"travel",src:"https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"},
-      {type:"video",source:"adventure",src:"https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"},
-      {type:"video",source:"offers",src:"https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"}
-    ];
-
-    function buildFeedItems(partners){
-      const preferred=["flights","hotels","tours","transfers","sim","esim","car_rentals","travel_services","insurance","marketplace","products_tools"];
-      const sorted=[...partners].sort((a,b)=>{
-        const ai=preferred.indexOf(a.category_key), bi=preferred.indexOf(b.category_key);
-        return (ai<0?99:ai)-(bi<0?99:bi)||(a.tier||99)-(b.tier||99);
-      });
-      return sorted.map((p,i)=>{
-        const media=HYBRID_VIDEO_POOL[i%HYBRID_VIDEO_POOL.length];
-        return {
-          ...p,
-          feed_title:p.name,
-          feed_description:p.description || `Explore ${p.name} offers.`,
-          feed_image:FEED_IMAGES[i%FEED_IMAGES.length],
-          feed_media_type:media.type,
-          feed_source:media.source,
-          feed_video:media.src
-        };
-      });
-    }
-
-    function mediaHTML(item){
-      if(item.feed_media_type==="video" && item.feed_video){
-        return `
-          <div class="media has-video">
-            <video
-              class="feed-video"
-              muted
-              loop
-              playsinline
-              preload="metadata"
-              poster="${esc(item.feed_image)}"
-              data-poster="${esc(item.feed_image)}"
-              data-title="${esc(item.feed_title)}"
-              onerror="this.closest('.media').innerHTML='<img src=&quot;${esc(item.feed_image)}&quot; alt=&quot;${esc(item.feed_title)}&quot; loading=&quot;lazy&quot;><div class=&quot;play&quot;><span>▶</span></div>'">
-              <source src="${esc(item.feed_video)}" type="video/mp4">
-            </video>
-            <button class="video-toggle" type="button" aria-label="Play or pause video">▶</button>
-            <div class="play"><span>▶</span></div>
-          </div>`;
-      }
-      return `<div class="media"><img src="${esc(item.feed_image)}" alt="${esc(item.feed_title)}" loading="lazy" decoding="async"><div class="play"><span>▶</span></div></div>`;
-    }
-
-    function setupFeedVideos(root=document){
-      const videos=[...root.querySelectorAll('.feed-video')];
-
-      function toggleVideo(video){
-        if(!video) return;
-        video.muted=true;
-        video.playsInline=true;
-        if(video.paused || video.ended){
-          video.play().catch(err=>{
-            const media=video.closest('.media');
-            if(media) media.classList.add('video-needs-user-action');
-            console.warn('Video play blocked or failed:', err);
-          });
-        }else{
-          video.pause();
-        }
-      }
-
-      videos.forEach(video=>{
-        video.muted=true;
-        video.playsInline=true;
-        video.setAttribute('playsinline','');
-        video.setAttribute('webkit-playsinline','');
-
-        const media=video.closest('.media');
-        const btn=media && media.querySelector('.video-toggle');
-        const playOverlay=media && media.querySelector('.play');
-
-        const sync=()=>{
-          const paused=video.paused || video.ended;
-          if(btn){
-            btn.textContent = paused ? '▶' : '❚❚';
-            btn.setAttribute('aria-label', paused ? 'Play video' : 'Pause video');
-          }
-          if(playOverlay) playOverlay.style.display = paused ? 'flex' : 'none';
-          if(media) media.classList.toggle('is-playing', !paused);
-        };
-
-        // The video area is reserved for opening the partner offer.
-        // Play/pause is controlled by the small video button only.
-        if(media){ media.style.cursor='pointer'; }
-
-        if(btn && !btn.dataset.videoBound){
-          btn.dataset.videoBound='1';
-          btn.addEventListener('click',e=>{
-            e.preventDefault();
-            e.stopPropagation();
-            toggleVideo(video);
-            setTimeout(sync,80);
-          });
-        }
-
-        video.addEventListener('click',e=>{
-          // Let the card/media handler open the partner offer.
-        });
-        video.addEventListener('play',sync);
-        video.addEventListener('pause',sync);
-        video.addEventListener('ended',sync);
-        sync();
-      });
-
-      if('IntersectionObserver' in window){
-        const io=new IntersectionObserver(entries=>{
-          entries.forEach(entry=>{
-            const video=entry.target;
-            if(entry.isIntersecting){ video.play().catch(()=>{}); }
-            else { video.pause(); }
-          });
-        },{threshold:.65});
-        videos.forEach(v=>io.observe(v));
-      }
-    }
-
-    function renderNextFeedBatch(){
-      if(FEED_LOADING) return;
-      FEED_LOADING=true;
-      const container=document.getElementById("feedContainer");
-      if(!FEED_ITEMS.length){
-        container.innerHTML='<div class="feed-empty">No feed items for this region.</div>';
-        FEED_LOADING=false;
-        return;
-      }
-      const start=FEED_PAGE*FEED_PAGE_SIZE;
-      const batch=FEED_ITEMS.slice(start,start+FEED_PAGE_SIZE);
-      if(!batch.length){
-        FEED_PAGE=0;
-        FEED_LOADING=false;
-        renderNextFeedBatch();
-        return;
-      }
-      const frag=document.createDocumentFragment();
-      batch.forEach(item=>{
-        const card=document.createElement("article");
-        card.className="feed-card";
-        card.innerHTML=`
-          ${mediaHTML(item)}
-          <div class="feed-content">
-            <span class="feed-label">${esc(item.category_label || translatedCategory(item.category_key))}</span>
-            <span class="feed-source">${esc(item.feed_source || "feed")}</span>
-            <h3>${esc(item.feed_title)}</h3>
-            <p>${esc(item.feed_description)}</p>
-            <a class="primary-cta" href="${esc(partnerUrl(item))}" target="_blank" rel="noopener"${clickAttrs(item,'feed_card')}>${esc(ACTIVE_TRANSLATIONS.view_more || "View More")} →</a>
-          </div>`;
-        const mediaEl=card.querySelector('.media');
-        if(mediaEl){
-          mediaEl.addEventListener('click',e=>{
-            if(e.target.closest('.video-toggle')) return;
-            trackAffiliateClick(item,'feed_video_area');
-            window.open(partnerUrl(item),'_blank','noopener');
-          });
-        }
-        card.addEventListener("click",e=>{
-          const tag=(e.target.tagName||"").toLowerCase();
-          if(["video","iframe","source","a","button"].includes(tag) || e.target.closest('.media')) return;
-          trackAffiliateClick(item,'feed_card_body');
-          window.open(partnerUrl(item),"_blank","noopener");
-        });
-        frag.appendChild(card);
-      });
-      container.appendChild(frag);
-      setupFeedVideos(container);
-      FEED_PAGE++;
-      FEED_LOADING=false;
-    }
-
-    function resetFeed(partners){
-      FEED_ITEMS=buildFeedItems(partners);
-      FEED_PAGE=0;
-      const container=document.getElementById("feedContainer");
-      container.innerHTML="";
-      renderNextFeedBatch();
-      renderNextFeedBatch();
-    }
-
-    function renderRight(partners){
-      const chips=document.getElementById("partnerChips");
-      if(!chips) return;
-      const featured=partners.find(p=>p.featured) || partners.find(p=>(p.tier||99)===1) || partners[0];
-      const featuredHTML=featured ? `
-        <a class="featured" href="${esc(partnerUrl(featured))}" target="_blank" rel="noopener"${clickAttrs(featured,'right_featured')}>
-          ${(featured.thumbnail || featured.image || featured.logo) ? `<img src="${esc(featured.thumbnail || featured.image || featured.logo)}" alt="${esc(featured.name)}" loading="lazy" decoding="async" onerror="this.style.display='none'">` : ""}
-          <div class="featured-body">
-            <h4>${esc(translatedCategory(canonicalCategoryKey(featured.category_key)))}</h4>
-            <p>${esc(featured.name)}</p>
-            <span>${esc(featured.description || `Explore ${featured.name} offers.`)}</span>
+        <div class="sb-footer-links">
+          <div>
+            <h4>Product</h4>
+            <a href="#how-it-works">How it works</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
           </div>
-        </a>` : "";
-      const chipHTML=smartSortPartners(partners).slice(0,24).map(p=>`<a class="chip ${isPriorityPartner(p)?'is-priority':''}" href="${esc(partnerUrl(p))}" target="_blank" rel="noopener"${clickAttrs(p,'right_chip')}>${esc(p.name)}</a>`).join("");
-      chips.innerHTML=`${featuredHTML}<div class="chips-title">${esc(ACTIVE_TRANSLATIONS.partners || "Partners")}</div>${chipHTML}`;
-    }
 
-    function renderSticky(partners){
-      const p=partners[0];
-      if(!p) return;
-      document.getElementById("stickyCopy").textContent=p.description || `Explore ${p.name}.`;
-      const link=document.getElementById("stickyLink");
-      link.href=partnerUrl(p);
-      link.textContent=ACTIVE_TRANSLATIONS.view_more || "View More";
-    }
+          <div>
+            <h4>Company</h4>
+            <a href="#faq">FAQ</a>
+          </div>
+        </div>
+      </div>
+    </footer>
 
+  </div>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var toggleBtn = document.getElementById("sb-theme-toggle");
 
-    function renderRegionTestPanel(){
-      const params=new URLSearchParams(location.search);
-      const enabled=params.get('sbtest')==='1' || params.get('debug')==='1';
-      let panel=document.getElementById('sbTestPanel');
-      if(!panel){
-        panel=document.createElement('div');
-        panel.id='sbTestPanel';
-        panel.className='sb-test-panel';
-        document.body.appendChild(panel);
+      function applyTheme(theme) {
+        root.setAttribute("data-theme", theme);
+        localStorage.setItem("sb-theme", theme);
+
+        if (toggleBtn) {
+          var icon = toggleBtn.querySelector(".sb-theme-icon");
+          if (icon) {
+            icon.textContent = theme === "light" ? "🌙" : "☀️";
+          }
+        }
       }
-      const tests=[
-        ['US','us','en'],['BR','br','pt'],['PL','pl','pl'],['UK','uk','en'],['LATAM','es-latam','es'],['RU','ru','ru'],['OT','ot','en']
-      ];
-      panel.classList.toggle('is-visible', enabled);
-      panel.innerHTML=tests.map(([label,region,lang])=>`<a href="?region=${region}&lang=${lang}&sbtest=1">${label}</a>`).join('');
-    }
 
-    function auditRegionSafety(partners){
-      const report={region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,partners:partners.length,missingUrls:partners.filter(p=>!partnerUrl(p)||partnerUrl(p)==='#').map(p=>p.name),emptyCategories:[]};
-      column1Categories.forEach(cat=>{
-        const key=displayCategoryKey(cat);
-        if(!partners.some(p=>displayCategoryKey(p.category_key)===key)) report.emptyCategories.push(cat);
+      var savedTheme = localStorage.getItem("sb-theme");
+      if (savedTheme === "light" || savedTheme === "dark") {
+        applyTheme(savedTheme);
+      }
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", function () {
+          var current = root.getAttribute("data-theme") || "dark";
+          var next = current === "dark" ? "light" : "dark";
+          applyTheme(next);
+        });
+      }
+
+      var sections = document.querySelectorAll(".sb-section, .sb-section-alt");
+
+      if (!("IntersectionObserver" in window)) {
+        sections.forEach(function(section) {
+          section.classList.add("sb-visible");
+        });
+        return;
+      }
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("sb-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      sections.forEach(function(section) {
+        observer.observe(section);
       });
-      window.signalBoostRegionAudit=report;
-      return report;
-    }
-
-    function renderAll(){
-      const partners=visiblePartners();
-      auditRegionSafety(partners);
-      renderRegionTestPanel();
-      renderHeader(partners);
-      renderTrendingStrip(partners);
-      renderRegionHero(partners);
-      renderColumn1(partners);
-      renderRight(partners);
-      renderSticky(partners);
-      resetFeed(partners);
-    }
-
-    document.getElementById("partnerSearch").addEventListener("input",()=>renderColumn1(visiblePartners()));
-    document.getElementById("magnetoColumn").addEventListener("scroll",e=>{
-      const el=e.currentTarget;
-      if(el.scrollTop+el.clientHeight>=el.scrollHeight-700) renderNextFeedBatch();
-    });
-
-    async function init(){
-      ACTIVE_REGION=detectRegion();
-      ACTIVE_LANGUAGE=getPreferredLanguage(ACTIVE_REGION);
-      ACTIVE_TRANSLATIONS=await loadTranslations(ACTIVE_LANGUAGE);
-      ACTIVE_PARTNERS=await loadPartners();
-      applyTranslations(ACTIVE_TRANSLATIONS);
-      setupLanguageSwitcher();
-      renderAll();
-      if(window.dataLayer) window.dataLayer.push({event:'page_region_view',region:ACTIVE_REGION,language:ACTIVE_LANGUAGE,path:location.pathname});
-    }
-
-    init();
+    })();
   </script>
 </body>
 </html>
