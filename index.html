@@ -104,6 +104,8 @@
     .feed-card:hover{transform:translateY(-2px);border-color:rgba(245,197,66,.42)}
     .media{position:relative;aspect-ratio:9/16;height:min(76vh,660px);border-radius:18px;overflow:hidden;background:#0b0f14}
     .media img{width:100%;height:100%;object-fit:cover;display:block;border:0;filter:brightness(.60)}
+    .media video{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.58)}
+    .video-badge{position:absolute;top:14px;right:14px;z-index:2;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);color:#fff;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900}
     .feed-content{position:absolute;left:20px;right:20px;bottom:22px;padding:16px 14px;border-radius:18px;background:linear-gradient(180deg,rgba(8,12,18,0),rgba(8,12,18,.78) 20%,rgba(8,12,18,.92));text-shadow:0 2px 14px rgba(0,0,0,.75);pointer-events:none}
     .feed-label{display:inline-block;margin-bottom:8px;padding:5px 9px;border:1px solid rgba(245,197,66,.22);border-radius:999px;background:rgba(245,197,66,.16);color:var(--gold);font-size:11px;font-weight:900;text-transform:uppercase}
     .feed-source{float:right;color:rgba(255,255,255,.82);font-size:11px;font-weight:900;text-transform:uppercase;margin-top:6px}
@@ -537,6 +539,16 @@
       a.innerHTML = `<img src="${cleanLogo(p)}" alt="" onerror="this.style.display='none'"/><div class="partner-row-main"><strong>${p.name || 'Partner'}</strong><span>${p.description || p.network || categoryName(p.category_key)}${localTxt}</span></div><span class="tier-badge">${t('tier')} ${p.tier || 1}</span>`;
       return a;
     }
+    function escapeHtml(value){
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+      }[ch]));
+    }
+
     function topPartners(n=6){
       let list = ALL_PARTNERS.filter(partnerMatchesRegion);
       if(state.search.trim()){
@@ -554,11 +566,89 @@
       const picks = topPartners(8);
       $('#trendingStrip').innerHTML = `<span class="trend-kicker">${t('trending')}</span><div class="trend-items">${picks.map(p=>`<a class="trend-pill" href="${partnerUrl(p)}" target="_blank" rel="noopener">${p.name}</a>`).join('')}</div>`;
     }
-    function renderFeed(){
-      const picks = topPartners(5);
-      const imgs = ['https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80','https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=900&q=80'];
-      $('#feedContainer').innerHTML = picks.map((p,i)=>`<a class="feed-card" href="${partnerUrl(p)}" target="_blank" rel="noopener"><div class="media"><img src="${imgs[i%imgs.length]}" alt=""></div><div class="feed-content"><span class="feed-label">${categoryName(p.category_key)}</span><span class="feed-source">${p.network || ''}</span><h3>${p.name}</h3><p>${p.description || 'Explore this offer for your selected region.'}</p></div></a>`).join('');
+    function discoveryPartners(limit=24){
+      let list = ALL_PARTNERS.filter(partnerMatchesRegion);
+      if(state.search.trim()){
+        const q = state.search.trim().toLowerCase();
+        list = list.filter(p => [p.name,p.description,p.network,p.category_key,categoryName(p.category_key)].join(' ').toLowerCase().includes(q));
+      }
+
+      const byCategory = new Map();
+      list.slice()
+        .sort((a,b)=>
+          (Number(a.tier || 9) - Number(b.tier || 9)) ||
+          (Number(b.featured || 0) - Number(a.featured || 0)) ||
+          String(a.name || '').localeCompare(String(b.name || ''))
+        )
+        .forEach(p => {
+          const key = p.category_key || 'specialty_other';
+          if(!byCategory.has(key)) byCategory.set(key, []);
+          byCategory.get(key).push(p);
+        });
+
+      const preferred = ['flights','hotels','esim','tours','transfers','car_rentals','insurance','travel_services','marketplace','products_tools','finance','specialty_other'];
+      const categories = preferred.filter(k => byCategory.has(k)).concat([...byCategory.keys()].filter(k => !preferred.includes(k)));
+
+      const feed = [];
+      let guard = 0;
+      while(feed.length < limit && categories.some(k => (byCategory.get(k) || []).length) && guard < 100){
+        for(const key of categories){
+          const bucket = byCategory.get(key) || [];
+          if(!bucket.length) continue;
+          const p = bucket.shift();
+          if(!feed.some(x => x.id === p.id)) feed.push(p);
+          if(feed.length >= limit) break;
+        }
+        guard++;
+      }
+      return feed;
     }
+
+    function renderFeed(){
+      const picks = discoveryPartners(24);
+      const videos = [
+        'https://assets.mixkit.co/videos/preview/mixkit-clouds-and-blue-sky-2408-large.mp4',
+        'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4',
+        'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beach-2571-large.mp4',
+        'https://assets.mixkit.co/videos/preview/mixkit-people-walking-in-a-city-4274-large.mp4',
+        'https://assets.mixkit.co/videos/preview/mixkit-road-in-the-middle-of-a-forest-3456-large.mp4',
+        'https://assets.mixkit.co/videos/preview/mixkit-view-of-a-city-at-sunset-5093-large.mp4'
+      ];
+      const posters = [
+        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=900&q=80'
+      ];
+
+      if(!picks.length){
+        $('#feedContainer').innerHTML = `<div class="empty">${t('no_results')}</div>`;
+        return;
+      }
+
+      $('#feedContainer').innerHTML = picks.map((p,i)=>{
+        const poster = posters[i % posters.length];
+        const video = videos[i % videos.length];
+        const badge = (Number(p.tier || 3) === 1 || !!p.featured) ? 'Featured' : 'Offer';
+        return `<a class="feed-card" href="${partnerUrl(p)}" target="_blank" rel="noopener">
+          <div class="media">
+            <video autoplay muted loop playsinline preload="metadata" poster="${poster}">
+              <source src="${video}" type="video/mp4">
+            </video>
+            <span class="video-badge">▶ ${badge}</span>
+          </div>
+          <div class="feed-content">
+            <span class="feed-label">${categoryName(p.category_key)}</span>
+            <span class="feed-source">${escapeHtml(p.network || '')}</span>
+            <h3>${escapeHtml(p.name || 'Partner')}</h3>
+            <p>${escapeHtml(p.description || 'Explore this offer for your selected region.')}</p>
+          </div>
+        </a>`;
+      }).join('');
+    }
+
     function renderRight(){
       const root=$('#partnerChips'); if(!root) return; let picks=topPartners(8);
       // US rule: Amazon is removed from the Marketplace header dropdown and shown
