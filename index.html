@@ -11,6 +11,8 @@
   <title>SignalBoost – Smart Travel Tools, Deals &amp; Booking Resources Worldwide</title>
   <meta name="description" content="SignalBoost helps travelers discover the best travel tools, booking platforms, and money-saving travel resources worldwide. Compare trusted partners, explore regional categories, and travel smarter." />
 
+  <!-- SEO deployment note: also publish /robots.txt and /sitemap.xml beside this file. Generated starter files are included with this export. -->
+
   <link rel="canonical" href="https://www.signalboostapp.com/" />
   <link rel="alternate" hreflang="x-default" href="https://www.signalboostapp.com/" />
   <link rel="alternate" hreflang="en" href="https://www.signalboostapp.com/?region=ot" />
@@ -21,6 +23,12 @@
   <link rel="alternate" hreflang="ru" href="https://www.signalboostapp.com/?region=ru" />
   <link rel="alternate" hreflang="es-419" href="https://www.signalboostapp.com/?region=es-latam" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+  <meta name="author" content="SignalBoost" />
+  <meta name="theme-color" content="#0d1117" />
+  <meta property="og:site_name" content="SignalBoost" />
+  <meta property="og:locale" content="en_US" />
+  <link rel="sitemap" type="application/xml" href="https://www.signalboostapp.com/sitemap.xml" />
   <meta property="og:title" content="SignalBoost – Smart Travel Tools &amp; Travel Deals" />
   <meta property="og:description" content="Discover travel tools, booking platforms, regional partner offers, and global deals in one place." />
   <meta property="og:type" content="website" />
@@ -30,6 +38,8 @@
   <meta name="twitter:title" content="SignalBoost – Smart Travel Tools &amp; Deals" />
   <meta name="twitter:description" content="Find travel tools, booking platforms, regional partners, and global deals." />
   <meta name="twitter:image" content="https://www.signalboostapp.com/og-image.jpg" />
+
+  <script type="application/ld+json" id="seoGraphSchema">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.signalboostapp.com/#organization","name":"SignalBoost","url":"https://www.signalboostapp.com/","logo":"https://www.signalboostapp.com/og-image.jpg","sameAs":[]},{"@type":"WebPage","@id":"https://www.signalboostapp.com/#webpage","url":"https://www.signalboostapp.com/","name":"SignalBoost – Smart Travel Tools, Deals & Booking Resources Worldwide","description":"SignalBoost helps travelers discover travel tools, booking platforms, regional partners, and money-saving resources worldwide.","isPartOf":{"@id":"https://www.signalboostapp.com/#website"},"about":{"@id":"https://www.signalboostapp.com/#organization"}},{"@type":"FAQPage","@id":"https://www.signalboostapp.com/#faq","mainEntity":[{"@type":"Question","name":"What is SignalBoost?","acceptedAnswer":{"@type":"Answer","text":"SignalBoost is a regional partner directory that helps travelers discover booking platforms, travel tools, marketplace offers, finance resources, and digital services by region."}},{"@type":"Question","name":"How does SignalBoost organize partners?","acceptedAnswer":{"@type":"Answer","text":"SignalBoost organizes partners by region and category, including flights, hotels, eSIM connectivity, tours, transfers, car rentals, insurance, marketplace offers, products and tools, finance, and specialty services."}},{"@type":"Question","name":"Can I browse SignalBoost by region?","acceptedAnswer":{"@type":"Answer","text":"Yes. SignalBoost supports regional browsing for markets such as the United States, Brazil, Poland, Russia, the United Kingdom, LATAM, and Global availability."}}]}]}</script>
   <script type="application/ld+json" id="staticSeoSchema">{"@context":"https://schema.org","@type":"WebSite","name":"SignalBoost","url":"https://www.signalboostapp.com/","description":"SignalBoost helps travelers discover travel tools, booking platforms, regional partners, and money-saving resources worldwide.","potentialAction":{"@type":"SearchAction","target":"https://www.signalboostapp.com/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
   <style>
     *{box-sizing:border-box}
@@ -56,7 +66,7 @@
     #partnerSearch:focus{border-color:rgba(245,197,66,.48);box-shadow:0 0 0 3px rgba(245,197,66,.08)}
     .region-pills,.filter-pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
     .region-pills::-webkit-scrollbar,.filter-pills::-webkit-scrollbar{display:none}
-    .region-pills{margin-top:10px}
+    .region-pills{display:none!important;margin-top:0}
     .filter-pills{margin-top:8px}
     .pill{border:1px solid rgba(255,255,255,.08);background:#18202b;color:#fff;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900;cursor:pointer;white-space:nowrap;transition:.16s ease}
     .pill:hover{border-color:rgba(245,197,66,.28);transform:translateY(-1px)}
@@ -197,7 +207,6 @@
       <div class="sidebar-top">
         <div class="small-title" data-i18n="explore_offers">Explore offers</div>
         <input id="partnerSearch" data-i18n-placeholder="search_placeholder" placeholder="Search offers..." />
-        <div class="region-pills" id="regionPills"></div>
         <div class="filter-pills" id="filterPills"></div>
       </div>
       <div id="column1"></div>
@@ -354,7 +363,7 @@
       const groups = groupedPartners(visible);
       const groupCards = groups.slice(0,8).map(([key,items])=>`<article class="seo-card"><strong>${categoryName(key)}</strong><span>${CATEGORY_SEO_COPY[key] || `Explore ${items.length} trusted partners available for this region.`}</span></article>`).join('');
       const partnerNames = visible.slice(0,12).map(p=>p.name).join(', ');
-      root.innerHTML = `<h1>SignalBoost: Smart Travel Tools, Deals &amp; Booking Resources Worldwide</h1><p>SignalBoost is an all-in-one hub for discovering travel tools, booking platforms, marketplaces, and money-saving resources across global regions. For ${region}, visitors can browse trusted partners, compare categories, and quickly open relevant services for flights, hotels, connectivity, transportation, activities, shopping, finance, and regional offers.</p><h2>Explore SignalBoost categories in ${region}</h2><div class="seo-grid">${groupCards}</div><h2>Trusted regional partners</h2><p>SignalBoost organizes partners by region and category so users can find relevant services faster. Current visible partners for ${region} include ${partnerNames || 'regional and global partner offers'}.</p><h2>Plan smarter and travel better</h2><p>Use SignalBoost to compare partner resources, discover local and global offers, and reduce the time spent researching travel, shopping, finance, and digital tools.</p>`;
+      root.innerHTML = `<h1>SignalBoost: Smart Travel Tools, Deals &amp; Booking Resources Worldwide</h1><p>SignalBoost is an all-in-one hub for discovering travel tools, booking platforms, marketplaces, and money-saving resources across global regions. For ${region}, visitors can browse trusted partners, compare categories, and quickly open relevant services for flights, hotels, connectivity, transportation, activities, shopping, finance, and regional offers.</p><h2>Explore SignalBoost categories in ${region}</h2><div class="seo-grid">${groupCards}</div><h2>Trusted regional partners</h2><p>SignalBoost organizes partners by region and category so users can find relevant services faster. Current visible partners for ${region} include ${partnerNames || 'regional and global partner offers'}.</p><h2>How SignalBoost helps users find better travel resources</h2><p>SignalBoost is built around high-intent discovery: travelers can compare booking tools, explore regional offers, open partner platforms, and find relevant services without searching across dozens of separate sites. The directory structure supports travel planning, marketplace discovery, digital tools, and regional browsing in one place.</p><div class="seo-grid"><article class="seo-card"><strong>Search-friendly categories</strong><span>Flights, hotels, eSIMs, tours, transfers, car rentals, insurance, marketplace offers, products, finance, and specialty services are grouped for easier discovery.</span></article><article class="seo-card"><strong>Regional relevance</strong><span>Partners are filtered by exact region so users see offers intended for their selected market.</span></article><article class="seo-card"><strong>Useful comparisons</strong><span>Category pages and partner cards help visitors compare options before opening a booking or shopping platform.</span></article><article class="seo-card"><strong>Fresh marketplace structure</strong><span>SignalBoost can expand with regional landing pages, partner pages, guides, and travel resources over time.</span></article></div><h2>Frequently asked questions</h2><h3>What is SignalBoost?</h3><p>SignalBoost is a regional partner directory for travel tools, booking platforms, marketplace offers, finance resources, and digital services.</p><h3>How are partners selected?</h3><p>Partners are organized by supported region, category, affiliate network, and user relevance so visitors can find offers that match their market.</p><h3>Does SignalBoost support multiple regions?</h3><p>Yes. SignalBoost supports regional browsing for markets such as the United States, Brazil, Poland, Russia, the United Kingdom, LATAM, and Global availability.</p><h2>Plan smarter and travel better</h2><p>Use SignalBoost to compare partner resources, discover local and global offers, and reduce the time spent researching travel, shopping, finance, and digital tools.</p>`;
     }
     function renderSchema(){
       const node = $('#dynamicSeoSchema'); if(!node) return;
@@ -481,8 +490,8 @@
       updateLanguageUI();
     }
     function renderPills(){
-      const rp=$('#regionPills'); rp.innerHTML='';
-      REGIONS.forEach(r=>{ const b=el('button','pill'+(state.region===r.key?' active':''),r.label); b.onclick=()=>{state.region=r.key; localStorage.setItem('sb_region',r.key); localStorage.setItem('sb_region_manual','1'); state.lang = getSavedLang(r.key); if(!localStorage.getItem(langManualKeyForRegion(r.key))){ state.lang = normalizeLangForRegion(r.key, REGION_LANGUAGE[r.key] || 'en'); } state.expanded.clear(); state.showAll.clear(); state.activeSidebarCategory=''; render(); showLanguagePrompt();}; rp.appendChild(b); });
+      const rp=$('#regionPills');
+      if (rp) rp.remove();
       const fp=$('#filterPills'); fp.innerHTML='';
       [['featured',t('featured')],['all',t('all')],['local',t('local')]].forEach(([k,label])=>{ const b=el('button','pill'+(state.filter===k?' active':''),label); b.onclick=()=>{state.filter=k; state.showAll.clear(); state.activeSidebarCategory=''; render();}; fp.appendChild(b); });
     }
