@@ -419,19 +419,35 @@
     }
     function promotedToHeader(p){
       if(!partnerMatchesRegion(p)) return false;
+
+      // Marketplace is never rendered in Column 1. For US, Marketplace lives in the
+      // header dropdown, except Amazon, which is intentionally placed in Column 3.
+      if((p.category_key || '').toLowerCase() === 'marketplace'){
+        return state.region === 'us' && (p.id || '').toLowerCase() !== 'amazon';
+      }
+
       if(state.region === 'us'){
         return isTravelPartner(p) || p.featured || Number(p.tier || 9) <= 2;
       }
       return isTravelPartner(p);
     }
     function sidebarPartners(){
-      let list = ALL_PARTNERS.filter(p => partnerMatchesRegion(p) && !isTravelPartner(p));
+      let list = ALL_PARTNERS.filter(p =>
+        partnerMatchesRegion(p) &&
+        !isTravelPartner(p) &&
+        (p.category_key || '').toLowerCase() !== 'marketplace'
+      );
       // For the US market, promote strong non-travel partners into the header so Column 1 stays light.
       if(state.region === 'us') list = list.filter(p => !promotedToHeader(p));
       if(state.search.trim()){
         const q = state.search.trim().toLowerCase();
-        // Search should still find every exact-region non-travel partner, even if it is promoted in the header.
-        list = ALL_PARTNERS.filter(p => partnerMatchesRegion(p) && !isTravelPartner(p));
+        // Search should still find every exact-region non-travel partner except Marketplace,
+        // because Marketplace is intentionally managed from the header/Column 3.
+        list = ALL_PARTNERS.filter(p =>
+          partnerMatchesRegion(p) &&
+          !isTravelPartner(p) &&
+          (p.category_key || '').toLowerCase() !== 'marketplace'
+        );
         list = list.filter(p => [p.name,p.description,p.network,p.category_key,categoryName(p.category_key)].join(' ').toLowerCase().includes(q));
       }
       list.sort((a,b)=> Number(a.tier||9)-Number(b.tier||9) || String(a.name).localeCompare(String(b.name)));
@@ -559,7 +575,17 @@
       $('#feedContainer').innerHTML = picks.map((p,i)=>`<a class="feed-card" href="${partnerUrl(p)}" target="_blank" rel="noopener"><div class="media"><img src="${imgs[i%imgs.length]}" alt=""></div><div class="feed-content"><span class="feed-label">${categoryName(p.category_key)}</span><span class="feed-source">${p.network || ''}</span><h3>${p.name}</h3><p>${partnerDescription(p)}</p></div></a>`).join('');
     }
     function renderRight(){
-      const root=$('#partnerChips'); if(!root) return; const picks=topPartners(8);
+      const root=$('#partnerChips'); if(!root) return;
+      let picks=topPartners(8);
+
+      // Amazon belongs in Column 3, not inside the Marketplace header dropdown.
+      const amazon = ALL_PARTNERS.find(p =>
+        (p.id || '').toLowerCase() === 'amazon' && partnerMatchesRegion(p)
+      );
+      if(amazon){
+        picks = [amazon, ...picks.filter(p => (p.id || '').toLowerCase() !== 'amazon')].slice(0,8);
+      }
+
       const main=picks[0];
       root.innerHTML = main ? `<a class="featured" href="${partnerUrl(main)}" target="_blank" rel="noopener"><img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=900&q=80" alt=""><div class="featured-body"><h4>${categoryName(main.category_key)}</h4><p>${main.name}</p><span>${main.description || main.network || ''}</span></div></a><div class="chip-grid">${picks.slice(1).map(p=>`<a class="chip" href="${partnerUrl(p)}" target="_blank" rel="noopener">${p.name}</a>`).join('')}</div>` : `<div class="empty">${t('no_results')}</div>`;
     }
