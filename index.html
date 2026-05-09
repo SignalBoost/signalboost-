@@ -4,6 +4,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark" translate="no">
 <head>
@@ -196,7 +198,7 @@
   </style>
 
   <style>
-    /* Production geo mode: region is selected silently from Vercel IP country. */
+    /* Production geo mode: region is selected silently from IP country, with browser language as final fallback. */
     #regionPills,
     #filterPills {
       display: none !important;
@@ -297,10 +299,10 @@
       specialty_other:{icon:'✨', en:'Special Offers', 'pt-BR':'Ofertas Especiais', es:'Ofertas Especiales', pl:'Oferty specjalne'}
     };
     const I18N = {
-      en:{brand_name:'SignalBoost', nav_status:'Region-aware offers', explore_offers:'Explore offers', search_placeholder:'Search offers...', partners:'Partners', right_sub:'Featured for your selected region', featured_service:'Explore a featured service picked for you.', view_more:'View More', featured:'Featured', all:'All', travel:'Travel', local:'Local', more:'more partners', no_results:'No partners match your current filters.', hero_title:'Offers for {region}', hero_copy:'Browse trusted partners available in this region. Local matches appear first, global offers appear as fallback.', explore_region:'Explore region', show_all:'Show all', trending:'Trending', tier:'Tier', language_prompt_title:'Choose language', language_prompt_copy:'Select the local language or English for this region.', language_prompt_keep:'Keep local language', language_prompt_english:'English', search_results:'Results'},
-      'pt-BR':{brand_name:'SignalBoost', nav_status:'Ofertas por região', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Parceiros', right_sub:'Destaques para a região selecionada', featured_service:'Explore um serviço em destaque escolhido para você.', view_more:'Ver Mais', featured:'Destaques', all:'Todos', travel:'Viagem', local:'Local', more:'mais parceiros', no_results:'Nenhum parceiro corresponde aos filtros atuais.', hero_title:'Ofertas para {region}', hero_copy:'Veja parceiros confiáveis disponíveis nesta região. Parceiros locais aparecem primeiro, ofertas globais aparecem como alternativa.', explore_region:'Explorar região', show_all:'Ver todos', trending:'Em alta', tier:'Nível', language_prompt_title:'Escolha o idioma', language_prompt_copy:'Selecione português ou inglês para esta região.', language_prompt_keep:'Português', language_prompt_english:'English', search_results:'Resultados'},
-      es:{brand_name:'SignalBoost', nav_status:'Ofertas por región', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Socios', right_sub:'Destacados para tu región seleccionada', featured_service:'Explora un servicio destacado elegido para ti.', view_more:'Ver más', featured:'Destacados', all:'Todos', travel:'Viajes', local:'Local', more:'socios más', no_results:'Ningún socio coincide con tus filtros.', hero_title:'Ofertas para {region}', hero_copy:'Explora socios confiables disponibles en esta región. Los locales aparecen primero y los globales como alternativa.', explore_region:'Explorar región', show_all:'Ver todos', trending:'Tendencias', tier:'Nivel', language_prompt_title:'Elige idioma', language_prompt_copy:'Selecciona español o inglés para esta región.', language_prompt_keep:'Español', language_prompt_english:'English', search_results:'Resultados'},
-      pl:{brand_name:'SignalBoost', nav_status:'Oferty według regionu', explore_offers:'Przeglądaj oferty', search_placeholder:'Szukaj ofert...', partners:'Partnerzy', right_sub:'Polecane dla wybranego regionu', featured_service:'Sprawdź wyróżnioną usługę wybraną dla Ciebie.', view_more:'Zobacz więcej', featured:'Polecane', all:'Wszystkie', travel:'Podróże', local:'Lokalne', more:'więcej partnerów', no_results:'Brak partnerów dla tych filtrów.', hero_title:'Oferty dla {region}', hero_copy:'Przeglądaj zaufanych partnerów dostępnych w tym regionie. Lokalne oferty są pierwsze, globalne jako rezerwa.', explore_region:'Przeglądaj regiony', show_all:'Pokaż wszystkie', trending:'Popularne', tier:'Poziom', language_prompt_title:'Wybierz język', language_prompt_copy:'Wybierz język lokalny lub angielski dla tego regionu.', language_prompt_keep:'Polski', language_prompt_english:'English', search_results:'Wyniki'}
+      en:{brand_name:'SignalBoost', nav_status:'Region-aware offers', explore_offers:'Explore offers', search_placeholder:'Search offers...', partners:'Partners', right_sub:'Featured for your selected region', featured_service:'Explore a featured service picked for you.', view_more:'View More', featured:'Featured', all:'All', travel:'Travel', local:'Local', more:'more partners', no_results:'No partners match your current filters.', hero_title:'Offers for {region}', hero_copy:'Browse trusted partners available in this region. Only partners tagged for this region are shown.', explore_region:'Explore region', show_all:'Show all', trending:'Trending', tier:'Tier', language_prompt_title:'Choose language', language_prompt_copy:'Select the local language or English for this region.', language_prompt_keep:'Keep local language', language_prompt_english:'English', search_results:'Results'},
+      'pt-BR':{brand_name:'SignalBoost', nav_status:'Ofertas por região', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Parceiros', right_sub:'Destaques para a região selecionada', featured_service:'Explore um serviço em destaque escolhido para você.', view_more:'Ver Mais', featured:'Destaques', all:'Todos', travel:'Viagem', local:'Local', more:'mais parceiros', no_results:'Nenhum parceiro corresponde aos filtros atuais.', hero_title:'Ofertas para {region}', hero_copy:'Veja parceiros confiáveis disponíveis nesta região. Apenas parceiros marcados para esta região são exibidos.', explore_region:'Explorar região', show_all:'Ver todos', trending:'Em alta', tier:'Nível', language_prompt_title:'Escolha o idioma', language_prompt_copy:'Selecione português ou inglês para esta região.', language_prompt_keep:'Português', language_prompt_english:'English', search_results:'Resultados'},
+      es:{brand_name:'SignalBoost', nav_status:'Ofertas por región', explore_offers:'Explorar ofertas', search_placeholder:'Buscar ofertas...', partners:'Socios', right_sub:'Destacados para tu región seleccionada', featured_service:'Explora un servicio destacado elegido para ti.', view_more:'Ver más', featured:'Destacados', all:'Todos', travel:'Viajes', local:'Local', more:'socios más', no_results:'Ningún socio coincide con tus filtros.', hero_title:'Ofertas para {region}', hero_copy:'Explora socios confiables disponibles en esta región. Solo se muestran socios etiquetados para esta región.', explore_region:'Explorar región', show_all:'Ver todos', trending:'Tendencias', tier:'Nivel', language_prompt_title:'Elige idioma', language_prompt_copy:'Selecciona español o inglés para esta región.', language_prompt_keep:'Español', language_prompt_english:'English', search_results:'Resultados'},
+      pl:{brand_name:'SignalBoost', nav_status:'Oferty według regionu', explore_offers:'Przeglądaj oferty', search_placeholder:'Szukaj ofert...', partners:'Partnerzy', right_sub:'Polecane dla wybranego regionu', featured_service:'Sprawdź wyróżnioną usługę wybraną dla Ciebie.', view_more:'Zobacz więcej', featured:'Polecane', all:'Wszystkie', travel:'Podróże', local:'Lokalne', more:'więcej partnerów', no_results:'Brak partnerów dla tych filtrów.', hero_title:'Oferty dla {region}', hero_copy:'Przeglądaj zaufanych partnerów dostępnych w tym regionie. Wyświetlani są tylko partnerzy przypisani do tego regionu.', explore_region:'Przeglądaj regiony', show_all:'Pokaż wszystkie', trending:'Popularne', tier:'Poziom', language_prompt_title:'Wybierz język', language_prompt_copy:'Wybierz język lokalny lub angielski dla tego regionu.', language_prompt_keep:'Polski', language_prompt_english:'English', search_results:'Wyniki'}
     };
     const REGION_LANGUAGE = {br:'pt-BR', pl:'pl', ru:'en', us:'en', uk:'en', ca:'en', au:'en', nz:'en', de:'en', fr:'en', it:'en', ar:'es', co:'es', pe:'es', 'es-latam':'es', ot:'en'};
     const LANG_LABELS = {en:'English','pt-BR':'Português',es:'Español',pl:'Polski'};
@@ -351,18 +353,53 @@
       return 'ot';
     }
 
+    function extractCountryCode(geo){
+      if(!geo || typeof geo !== 'object') return '';
+      return String(
+        geo.country ||
+        geo.countryCode ||
+        geo.country_code ||
+        geo.country_code2 ||
+        geo.location?.country ||
+        geo.geo?.country ||
+        ''
+      ).trim().toUpperCase();
+    }
+
+    function extractRegionKey(geo){
+      if(!geo || typeof geo !== 'object') return '';
+      const rawRegion = String(geo.region || geo.regionKey || geo.market || '').trim().toLowerCase();
+      if(isValidRegion(rawRegion)) return rawRegion;
+      const countryRegion = regionFromCountry(extractCountryCode(geo));
+      return isValidRegion(countryRegion) ? countryRegion : '';
+    }
+
+    async function fetchGeoJson(url){
+      const response = await fetch(url, {cache:'no-store'});
+      if(!response.ok) throw new Error(url + ' status ' + response.status);
+      return response.json();
+    }
+
     async function detectVercelRegion(){
       if(urlRegion && isValidRegion(urlRegion)) return urlRegion; // handy for testing: ?region=pl
-      try{
-        const response = await fetch('/api/geo', {cache:'no-store'});
-        if(!response.ok) throw new Error('geo status ' + response.status);
-        const geo = await response.json();
-        const detected = geo.region || regionFromCountry(geo.country);
-        return isValidRegion(detected) ? detected : browserRegion();
-      }catch(error){
-        console.warn('Geo detection unavailable; using browser fallback.', error);
-        return browserRegion();
+
+      const geoEndpoints = [
+        '/api/geo',
+        'https://ipapi.co/json/',
+        'https://ipwho.is/'
+      ];
+
+      for(const endpoint of geoEndpoints){
+        try{
+          const geo = await fetchGeoJson(endpoint);
+          const detected = extractRegionKey(geo);
+          if(isValidRegion(detected)) return detected;
+        }catch(error){
+          console.warn('Geo lookup failed for ' + endpoint, error);
+        }
       }
+
+      return browserRegion();
     }
 
     const initialRegion = (urlRegion && isValidRegion(urlRegion)) ? urlRegion : browserRegion();
