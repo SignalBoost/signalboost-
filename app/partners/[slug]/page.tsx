@@ -1,94 +1,195 @@
+// File: app/partners/[slug]/page.tsx
+//
+// Generates one static page per partner at build time.
+// e.g.  /partners/trivago   /partners/airalo   /partners/amazon
+//
+// Each page has:
+//  - Unique <title> and meta description
+//  - Open Graph tags
+//  - Schema.org Organization structured data
+//  - The partner details (logo, description, CTA, badges, regions)
+//  - Related partners in the same category
 
-// File: lib/partners.ts
-// Reads partner data from public/partners.json at build time.
-// This is a server-only module — never import in client components.
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import {
+  getAllPartners,
+  getPartnerById,
+  getRelatedPartners,
+  getCategoryLabel,
+  getRegionLabel,
+} from "@/lib/partners";
 
-import fs from "fs";
-import path from "path";
-
-export interface Partner {
-  id: string;
-  name: string;
-  regions: string[];
-  url: string;
-  category: string;
-  category_key: string;
-  category_label: string;
-  network: string;
-  logo: string;
-  description: string;
-  tier: number;
-  featured: boolean;
-  travel_related: boolean;
-  regional_urls: Record<string, string>;
-  placements: Record<string, string[]>;
+// ─── Static generation ────────────────────────────────────────────────────
+export async function generateStaticParams() {
+  return getAllPartners().map((p) => ({ slug: p.id }));
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  flights:         "Flights",
-  hotels:          "Hotels",
-  car_rentals:     "Car Rentals",
-  esim:            "eSIM & Connectivity",
-  insurance:       "Insurance & Claims",
-  tours:           "Tours & Activities",
-  transfers:       "Transfers",
-  marketplace:     "Marketplace",
-  products_tools:  "Products & Tools",
-  finance:         "Finance",
-  travel_services: "Travel Services",
-  specialty_other: "Specialty & Other",
-  health_fitness:  "Health & Fitness",
-  sports_outdoors: "Sports & Outdoors",
-};
+// ─── Per-page metadata ────────────────────────────────────────────────────
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const partner = getPartnerById(slug);
+  if (!partner) return {};
 
-export function getCategoryLabel(key: string): string {
-  return CATEGORY_LABELS[key] ?? key.replace(/_/g, " ");
+  const title = `${partner.name} — ${getCategoryLabel(partner.category_key)} | SignalBoost`;
+  const description =
+    partner.description ||
+    `Explore ${partner.name} offers on SignalBoost — available in ${partner.regions.map(getRegionLabel).join(", ")}.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://www.signalboostapp.com/partners/${partner.id}`,
+      siteName: "SignalBoost",
+      type: "website",
+    },
+    alternates: {
+      canonical: `https://www.signalboostapp.com/partners/${partner.id}`,
+    },
+  };
 }
 
-const REGION_LABELS: Record<string, string> = {
-  us:       "United States",
-  br:       "Brazil",
-  uk:       "United Kingdom",
-  pl:       "Poland",
-  ru:       "Russia",
-  "es-latam": "Latin America",
-  ca:       "Canada",
-  au:       "Australia",
-  nz:       "New Zealand",
-  de:       "Germany",
-  fr:       "France",
-  it:       "Italy",
-  ar:       "Argentina",
-  co:       "Colombia",
-  pe:       "Peru",
-  ot:       "Global",
-};
+// ─── Page component ───────────────────────────────────────────────────────
+export default async function PartnerPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const partner = getPartnerById(slug);
+  if (!partner) notFound();
 
-export function getRegionLabel(key: string): string {
-  return REGION_LABELS[key] ?? key.toUpperCase();
-}
+  const related = getRelatedPartners(partner);
+  const categoryLabel = getCategoryLabel(partner.category_key);
+  const initial = partner.name.charAt(0).toUpperCase();
+  const logoSrc = `/logos/${partner.logo}`;
 
-// Reads public/partners.json once per build/request on the server.
-export function getAllPartners(): Partner[] {
-  const filePath = path.join(process.cwd(), "public", "partners.json");
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const list: Partner[] = JSON.parse(raw);
-  // Deduplicate by id, keeping the first occurrence.
-  const seen = new Set<string>();
-  return list.filter((p) => {
-    if (seen.has(p.id)) return false;
-    seen.add(p.id);
-    return true;
-  });
-}
+  // Schema.org structured data for SEO
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: partner.name,
+    description: partner.description,
+    url: partner.url,
+    areaServed: partner.regions.map(getRegionLabel),
+  };
 
-export function getPartnerById(id: string): Partner | undefined {
-  return getAllPartners().find((p) => p.id === id);
-}
+  return (
+    <>
+      {/* Structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
 
-export function getRelatedPartners(partner: Partner, limit = 6): Partner[] {
-  return getAllPartners()
-    .filter((p) => p.id !== partner.id && p.category_key === partner.category_key)
-    .sort((a, b) => a.tier - b.tier)
-    .slice(0, limit);
+      {/* Header matching existing site */}
+      <header className="sb-header">
+        <a href="/" className="sb-logo">SignalBoost</a>
+        <a href="/" className="sb-back">← All offers</a>
+      </header>
+
+      <main className="partner-page">
+        {/* Main partner card */}
+        <div className="partner-card">
+          <div className="partner-top">
+            <div className="partner-logo">
+              {/* Try to load logo; fall back to initial if missing */}
+              <img
+                src={logoSrc}
+                alt={partner.name}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+              <span style={{ position: "absolute" }}>{initial}</span>
+            </div>
+            <div className="partner-meta">
+              <h1 className="partner-name">{partner.name}</h1>
+              <div className="partner-badges">
+                <span className="badge badge-gold">{categoryLabel}</span>
+                {partner.featured && (
+                  <span className="badge badge-outline">Featured</span>
+                )}
+                {partner.travel_related && (
+                  <span className="badge badge-outline">Travel</span>
+                )}
+                {partner.regions.slice(0, 3).map((r) => (
+                  <span key={r} className="badge badge-region">
+                    {getRegionLabel(r)}
+                  </span>
+                ))}
+                {partner.regions.length > 3 && (
+                  <span className="badge badge-outline">
+                    +{partner.regions.length - 3} more
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {partner.description && (
+            <p className="partner-description">{partner.description}</p>
+          )}
+
+          
+            href={partner.url}
+            className="partner-cta"
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+          >
+            Visit {partner.name} →
+          </a>
+
+          <hr className="partner-divider" />
+
+          <div className="partner-detail-grid">
+            <div className="detail-cell">
+              <div className="detail-label">Category</div>
+              <div className="detail-value">{categoryLabel}</div>
+            </div>
+            <div className="detail-cell">
+              <div className="detail-label">Network</div>
+              <div className="detail-value">{partner.network || "—"}</div>
+            </div>
+            <div className="detail-cell">
+              <div className="detail-label">Tier</div>
+              <div className="detail-value">Tier {partner.tier}</div>
+            </div>
+            <div className="detail-cell">
+              <div className="detail-label">Regions</div>
+              <div className="detail-value">{partner.regions.length} regions</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Related partners */}
+        {related.length > 0 && (
+          <section className="related-section">
+            <h2 className="related-title">More in {categoryLabel}</h2>
+            <div className="related-grid">
+              {related.map((r) => (
+                
+                  key={r.id}
+                  href={`/partners/${r.id}`}
+                  className="related-card"
+                >
+                  <div className="related-card-name">{r.name}</div>
+                  <div className="related-card-cat">
+                    {r.regions.map(getRegionLabel).slice(0, 2).join(" · ")}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+    </>
+  );
 }
