@@ -92,7 +92,7 @@ export default async function PartnerPage({
       {/* Header matching existing site */}
       <header className="sb-header">
         <a href="/" className="sb-logo">SignalBoost</a>
-        <a href="/" className="sb-back">← All offers</a>
+        <a href="/" className="sb-back">&larr; All offers</a>
       </header>
 
       <main className="partner-page">
@@ -144,7 +144,7 @@ export default async function PartnerPage({
             target="_blank"
             rel="noopener noreferrer sponsored"
           >
-            Visit {partner.name} →
+            Visit {partner.name} &rarr;
           </a>
 
           <hr className="partner-divider" />
