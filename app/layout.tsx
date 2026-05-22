@@ -1,6 +1,7 @@
 // File: app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
+import { I18nProvider } from "@/components/i18n/I18nProvider";
 
 export const metadata: Metadata = {
   title: "SignalBoost",
@@ -16,7 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <I18nProvider>{children}</I18nProvider>
+      </body>
     </html>
   );
 }
