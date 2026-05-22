@@ -83,24 +83,20 @@ export default async function PartnerPage({
 
   return (
     <>
-      {/* Structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      {/* Header matching existing site */}
       <header className="sb-header">
         <a href="/" className="sb-logo">SignalBoost</a>
         <a href="/" className="sb-back">All offers</a>
       </header>
 
       <main className="partner-page">
-        {/* Main partner card */}
         <div className="partner-card">
           <div className="partner-top">
             <div className="partner-logo">
-              {/* Try to load logo; fall back to initial if missing */}
               <img
                 src={logoSrc}
                 alt={partner.name}
@@ -144,7 +140,7 @@ export default async function PartnerPage({
             target="_blank"
             rel="noopener noreferrer sponsored"
           >
-            Visit {partner.name}
+            {"Visit " + partner.name}
           </a>
 
           <hr className="partner-divider" />
@@ -169,7 +165,6 @@ export default async function PartnerPage({
           </div>
         </div>
 
-        {/* Related partners */}
         {related.length > 0 && (
           <section className="related-section">
             <h2 className="related-title">More in {categoryLabel}</h2>
