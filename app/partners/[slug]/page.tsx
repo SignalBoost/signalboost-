@@ -1,14 +1,4 @@
 // File: app/partners/[slug]/page.tsx
-//
-// Generates one static page per partner at build time.
-// e.g.  /partners/trivago   /partners/airalo   /partners/amazon
-//
-// Each page has:
-//  - Unique <title> and meta description
-//  - Open Graph tags
-//  - Schema.org Organization structured data
-//  - The partner details (logo, description, CTA, badges, regions)
-//  - Related partners in the same category
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,12 +10,10 @@ import {
   getRegionLabel,
 } from "@/lib/partners";
 
-// ─── Static generation ────────────────────────────────────────────────────
 export async function generateStaticParams() {
   return getAllPartners().map((p) => ({ slug: p.id }));
 }
 
-// ─── Per-page metadata ────────────────────────────────────────────────────
 export async function generateMetadata({
   params,
 }: {
@@ -35,10 +23,15 @@ export async function generateMetadata({
   const partner = getPartnerById(slug);
   if (!partner) return {};
 
-  const title = `${partner.name} — ${getCategoryLabel(partner.category_key)} | SignalBoost`;
+  const title = `${partner.name} — ${getCategoryLabel(
+    partner.category_key
+  )} | SignalBoost`;
+
   const description =
     partner.description ||
-    `Explore ${partner.name} offers on SignalBoost — available in ${partner.regions.map(getRegionLabel).join(", ")}.`;
+    `Explore ${partner.name} offers on SignalBoost — available in ${partner.regions
+      .map(getRegionLabel)
+      .join(", ")}.`;
 
   return {
     title,
@@ -56,7 +49,6 @@ export async function generateMetadata({
   };
 }
 
-// ─── Page component ───────────────────────────────────────────────────────
 export default async function PartnerPage({
   params,
 }: {
@@ -64,6 +56,7 @@ export default async function PartnerPage({
 }) {
   const { slug } = await params;
   const partner = getPartnerById(slug);
+
   if (!partner) notFound();
 
   const related = getRelatedPartners(partner);
@@ -71,7 +64,6 @@ export default async function PartnerPage({
   const initial = partner.name.charAt(0).toUpperCase();
   const logoSrc = `/logos/${partner.logo}`;
 
-  // Schema.org structured data for SEO
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -89,8 +81,12 @@ export default async function PartnerPage({
       />
 
       <header className="sb-header">
-        <a href="/" className="sb-logo">SignalBoost</a>
-        <a href="/" className="sb-back">All offers</a>
+        <a href="/" className="sb-logo">
+          SignalBoost
+        </a>
+        <a href="/" className="sb-back">
+          All offers
+        </a>
       </header>
 
       <main className="partner-page">
@@ -106,21 +102,27 @@ export default async function PartnerPage({
               />
               <span style={{ position: "absolute" }}>{initial}</span>
             </div>
+
             <div className="partner-meta">
               <h1 className="partner-name">{partner.name}</h1>
+
               <div className="partner-badges">
                 <span className="badge badge-gold">{categoryLabel}</span>
+
                 {partner.featured && (
                   <span className="badge badge-outline">Featured</span>
                 )}
+
                 {partner.travel_related && (
                   <span className="badge badge-outline">Travel</span>
                 )}
+
                 {partner.regions.slice(0, 3).map((r) => (
                   <span key={r} className="badge badge-region">
                     {getRegionLabel(r)}
                   </span>
                 ))}
+
                 {partner.regions.length > 3 && (
                   <span className="badge badge-outline">
                     +{partner.regions.length - 3} more
@@ -134,13 +136,13 @@ export default async function PartnerPage({
             <p className="partner-description">{partner.description}</p>
           )}
 
-          
+          <a
             href={partner.url}
             className="partner-cta"
             target="_blank"
             rel="noopener noreferrer sponsored"
           >
-            {"Visit " + partner.name}
+            Visit {partner.name}
           </a>
 
           <hr className="partner-divider" />
@@ -150,17 +152,22 @@ export default async function PartnerPage({
               <div className="detail-label">Category</div>
               <div className="detail-value">{categoryLabel}</div>
             </div>
+
             <div className="detail-cell">
               <div className="detail-label">Network</div>
               <div className="detail-value">{partner.network || "—"}</div>
             </div>
+
             <div className="detail-cell">
               <div className="detail-label">Tier</div>
               <div className="detail-value">Tier {partner.tier}</div>
             </div>
+
             <div className="detail-cell">
               <div className="detail-label">Regions</div>
-              <div className="detail-value">{partner.regions.length} regions</div>
+              <div className="detail-value">
+                {partner.regions.length} regions
+              </div>
             </div>
           </div>
         </div>
@@ -168,9 +175,10 @@ export default async function PartnerPage({
         {related.length > 0 && (
           <section className="related-section">
             <h2 className="related-title">More in {categoryLabel}</h2>
+
             <div className="related-grid">
               {related.map((r) => (
-                
+                <a
                   key={r.id}
                   href={`/partners/${r.id}`}
                   className="related-card"
