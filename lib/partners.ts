@@ -1,7 +1,6 @@
 // File: lib/partners.ts
 // Reads partner data from public/partners.json at build time.
 // This is a server-only module — never import in client components.
-
 import fs from "fs";
 import path from "path";
 
@@ -16,6 +15,15 @@ export interface Partner {
   network: string;
   logo: string;
   description: string;
+  // Optional multilingual descriptions. Existing entries omit this and fall
+  // back to `description`; new entries (from the generator) include all 5.
+  description_i18n?: {
+    en?: string;
+    pt?: string;
+    es?: string;
+    pl?: string;
+    ru?: string;
+  };
   tier: number;
   featured: boolean;
   travel_related: boolean;
@@ -39,7 +47,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   health_fitness:  "Health & Fitness",
   sports_outdoors: "Sports & Outdoors",
 };
-
 export function getCategoryLabel(key: string): string {
   return CATEGORY_LABELS[key] ?? key.replace(/_/g, " ");
 }
@@ -62,7 +69,6 @@ const REGION_LABELS: Record<string, string> = {
   pe:       "Peru",
   ot:       "Global",
 };
-
 export function getRegionLabel(key: string): string {
   return REGION_LABELS[key] ?? key.toUpperCase();
 }
