@@ -63,6 +63,22 @@ export default function ConciergeThread({
       region,
       affiliateUrl: m.url,
     });
+    // Anonymous analytics ping (fire-and-forget; never blocks the click).
+    try {
+      fetch("/api/track/click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          partner_id: m.partner.id,
+          partner_name: m.partner.name,
+          query,
+          region,
+        }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      /* ignore */
+    }
     // The anchor's target/rel handle the actual navigation in a new tab.
   };
 
