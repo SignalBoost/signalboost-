@@ -184,6 +184,22 @@ export default function HomeApp() {
       intent: intent.category || undefined,
       destination: intent.destination || dest || undefined,
     });
+    // Anonymous analytics ping (fire-and-forget; never blocks the search).
+    try {
+      fetch("/api/track/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: rawQuery,
+          intent: intent.category || "",
+          region,
+          results_count: matches.length,
+        }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      /* ignore */
+    }
 
     // Show rule results immediately so the UI is responsive.
     const turnIndex = turns.length;
