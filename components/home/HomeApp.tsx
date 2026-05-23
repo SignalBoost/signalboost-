@@ -137,24 +137,83 @@ export default function HomeApp() {
     );
   };
 
-  const runQuery = (rawQuery: string) => {
+  // Map an AI /api/chat PartnerCard into the thread's MatchResult shape.
+  // We resolve the full HomePartner from the loaded list by id (so category_key,
+  // network and description_i18n render/localize correctly), but keep the AI's
+  // server-resolved affiliate `url` (revenue-safe, geo-correct).
+  const aiCardToMatch = (card: {
+    id?: string;
+    name?: string;
+    category?: string;
+    description?: string;
+    url?: string;
+  }) => {
+    const found = partners.find((p) => p.id === card.id);
+    const partner: HomePartner =
+      found ||
+      ({
+        id: card.id || card.url || "",
+        name: card.name || "",
+        category_key: "",
+        description: card.description || "",
+        regions: [region],
+      } as HomePartner);
+    return { partner, url: card.url || partnerUrl(partner, region), score: 1 };
+  };
+
+  const runQuery = async (rawQuery: string) => {
     // Intent continuity: if the query implies a follow-up ("hotel too") and we
     // have a remembered destination, append it for better matching.
     const dest = rememberedDestination();
     const enriched = dest && !new RegExp(dest, "i").test(rawQuery) ? `${rawQuery} ${dest}` : rawQuery;
 
-    const { intent, matches } = conciergeMatch(partners, region, enriched);
+    const { intent, matches, useAI } = conciergeMatch(partners, region, enriched);
     recordSearch({
       query: rawQuery,
       intent: intent.category || undefined,
       destination: intent.destination || dest || undefined,
     });
+
+    // Show rule results immediately so the UI is responsive.
+    const turnIndex = turns.length;
     setNoResults(matches.length === 0);
     setTurns((prev) => [
       ...prev,
       { query: rawQuery, responseLine: responseLineFor(matches.length, rawQuery), matches },
     ]);
     setView("concierge");
+
+    // If the rules were unsure (vague/conversational/mixed-language or no hit),
+    // ask the AI endpoint for a real understanding. It returns server-resolved
+    // affiliate URLs, so links stay revenue-safe. Degrade gracefully to the rule
+    // results if the call fails or returns nothing.
+    if (!useAI) return;
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [{ role: "user", content: rawQuery }], lang }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const cards = Array.isArray(data?.partners) ? data.partners : [];
+      if (cards.length === 0) return;
+      const aiMatches = cards.map(aiCardToMatch);
+      const aiLine =
+        typeof data?.reply === "string" && data.reply.trim()
+          ? data.reply.trim()
+          : responseLineFor(aiMatches.length, rawQuery);
+      setNoResults(false);
+      setTurns((prev) => {
+        const next = [...prev];
+        if (next[turnIndex]) {
+          next[turnIndex] = { query: rawQuery, responseLine: aiLine, matches: aiMatches };
+        }
+        return next;
+      });
+    } catch {
+      // Keep the rule results already shown.
+    }
   };
 
   const onChip = (category: string) => {
