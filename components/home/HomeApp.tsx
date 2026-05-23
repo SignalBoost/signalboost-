@@ -35,6 +35,7 @@ import ConciergeHero from "@/components/home/ConciergeHero";
 import ConciergeThread, { type Turn } from "@/components/home/ConciergeThread";
 import NudgeBubble from "@/components/home/NudgeBubble";
 import HomeSections from "@/components/home/HomeSections";
+import AdminBar from "@/components/home/AdminBar";
 
 type View = "concierge" | "browse";
 
@@ -267,6 +268,7 @@ export default function HomeApp() {
 
   return (
     <div className="sb-home">
+      <AdminBar />
       {/* CONCIERGE VIEW */}
       {view === "concierge" && (
         <>
