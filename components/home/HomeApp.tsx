@@ -81,6 +81,24 @@ export default function HomeApp() {
       key.replace(/_/g, " "),
     [lang]
   );
+  // Option C: prefer a real translated description (description_i18n[lang]);
+  // when absent, fall back to a TRANSLATED category line (never English).
+  const partnerDesc = useMemo(
+    () => (p: { description?: string; description_i18n?: Record<string, string>; category_key?: string; network?: string }) => {
+      const i18n = p.description_i18n;
+      const langKey = lang === "pt-BR" ? "pt" : lang; // i18n keys use 'pt'
+      if (i18n && typeof i18n[langKey] === "string" && i18n[langKey].trim()) {
+        return i18n[langKey];
+      }
+      if (i18n && typeof i18n.en === "string" && i18n.en.trim() && lang === "en") {
+        return i18n.en;
+      }
+      // No translation for this language -> translated category (in-language).
+      return categoryName(p.category_key || "");
+    },
+    [lang, categoryName]
+  );
+
   const regionLabel = (key: string) =>
     REGION_LABELS[lang]?.[key] || REGION_LABELS.en[key] || key;
   const regionTitleLabel = (key: string) =>
@@ -186,7 +204,7 @@ export default function HomeApp() {
                           <div className="partner-row-main">
                             <strong>{p.name}</strong>
                             <span>
-                              {p.description || p.network || categoryName(p.category_key || "")}
+                              {partnerDesc(p)}
                               {isLocal(p, region) ? " • " + t("local") : ""}
                             </span>
                           </div>
@@ -266,7 +284,7 @@ export default function HomeApp() {
                       <span className="feed-label">{categoryName(p.category_key || "")}</span>
                       <span className="feed-source">{p.network || ""}</span>
                       <h3>{p.name}</h3>
-                      <p>{p.description || ""}</p>
+                      <p>{partnerDesc(p)}</p>
                     </div>
                   </a>
                 ))}
@@ -290,7 +308,7 @@ export default function HomeApp() {
                 <div className="featured-body">
                   <h4>{categoryName(rightPicks[0].category_key || "")}</h4>
                   <p>{rightPicks[0].name}</p>
-                  <span>{rightPicks[0].description || rightPicks[0].network || ""}</span>
+                  <span>{partnerDesc(rightPicks[0])}</span>
                 </div>
               </a>
             )}
