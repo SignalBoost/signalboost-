@@ -23,7 +23,9 @@ export const maxDuration = 30;
 
 // If chat fails, the model string is the #1 thing to check. Override via env
 // to whatever current model your account has access to.
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
+// Hardcoded to a current model (claude-sonnet-4-5 was retired April 2026).
+// No env-var dependency, so a stale ANTHROPIC_MODEL can never override it.
+const MODEL = "claude-sonnet-4-6";
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
 type Lang = "en" | "pt" | "es" | "pl" | "ru";
