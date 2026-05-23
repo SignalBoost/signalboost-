@@ -41,6 +41,8 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
   finance: { icon: "💳", en: "Finance", "pt-BR": "Finanças", es: "Finanzas", pl: "Finanse", de: "Finanzen", fr: "Finance", it: "Finanza" },
   travel_services: { icon: "🧳", en: "Travel Services", "pt-BR": "Serviços de Viagem", es: "Servicios de Viaje", pl: "Usługi podróżne", de: "Reisedienste", fr: "Services de voyage", it: "Servizi di viaggio" },
   specialty_other: { icon: "✨", en: "Special Offers", "pt-BR": "Ofertas Especiais", es: "Ofertas Especiales", pl: "Oferty specjalne", de: "Sonderangebote", fr: "Offres spéciales", it: "Offerte speciali" },
+  health_fitness: { icon: "💪", en: "Health & Fitness", "pt-BR": "Saúde e Fitness", es: "Salud y Fitness", pl: "Zdrowie i fitness", de: "Gesundheit & Fitness", fr: "Santé et fitness", it: "Salute e fitness" },
+  sports_outdoors: { icon: "⛺", en: "Sports & Outdoors", "pt-BR": "Esportes e Ar Livre", es: "Deportes y Aire Libre", pl: "Sport i outdoor", de: "Sport & Outdoor", fr: "Sport et plein air", it: "Sport e outdoor" },
 };
 
 export const REGION_LABELS: Record<string, Record<string, string>> = {
