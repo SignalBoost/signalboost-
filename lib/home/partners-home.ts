@@ -22,6 +22,7 @@ export interface HomePartner {
   network?: string;
   logo?: string;
   description?: string;
+  description_i18n?: Record<string, string>;
   tier?: number;
   featured?: boolean;
   travel_related?: boolean;
