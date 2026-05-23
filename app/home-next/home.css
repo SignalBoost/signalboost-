@@ -137,3 +137,39 @@
 .sb-home .concierge-browse-all{margin-top:6px;border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .sb-home .concierge-browse-all:hover{color:var(--gold)}
 @media(max-width:760px){.sb-home .concierge-brand{font-size:26px}.sb-home .concierge-value{font-size:16px}.sb-home .concierge-input{font-size:16px}}
+
+/* ---- R5: Concierge thread (results / conversation) ---- */
+.sb-home .concierge-thread{width:100%;max-width:680px;margin:0 auto;padding:24px 18px 120px;display:flex;flex-direction:column;gap:22px}
+.sb-home .concierge-turn{display:flex;flex-direction:column;gap:12px}
+.sb-home .concierge-user-msg{align-self:flex-end;max-width:85%;background:linear-gradient(135deg,var(--gold),#d9a92e);color:#10151d;font-weight:800;font-size:14px;padding:10px 14px;border-radius:16px 16px 4px 16px}
+.sb-home .concierge-reply{align-self:flex-start;color:var(--soft);font-size:15px;line-height:1.45}
+.sb-home .concierge-cards{display:grid;gap:12px}
+.sb-home .concierge-card{position:relative;display:block;text-decoration:none;border:1px solid rgba(245,197,66,.22);border-radius:18px;background:var(--card);padding:16px 44px 16px 16px;transition:transform .15s ease,border-color .15s ease;box-shadow:var(--shadow);color:#fff}
+.sb-home .concierge-card:hover{transform:translateY(-2px);border-color:rgba(245,197,66,.45)}
+.sb-home .concierge-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.sb-home .concierge-card-cat{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--gold);background:rgba(245,197,66,.14);padding:4px 9px;border-radius:999px}
+.sb-home .concierge-card-net{font-size:10px;font-weight:900;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.sb-home .concierge-card-name{font-size:17px;font-weight:900;margin-bottom:4px}
+.sb-home .concierge-card-desc{font-size:13px;color:rgba(255,255,255,.78);line-height:1.4}
+.sb-home .concierge-card-cta{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:20px;font-weight:900}
+.sb-home .concierge-empty{color:var(--muted);font-size:14px;line-height:1.5;border:1px dashed rgba(255,255,255,.14);border-radius:14px;padding:16px}
+.sb-home .concierge-refine-wrap{position:sticky;bottom:14px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid rgba(245,197,66,.30);border-radius:16px;padding:6px 6px 6px 16px;box-shadow:var(--shadow);margin-top:6px}
+.sb-home .concierge-refine{flex:1;min-width:0;background:transparent;border:0;outline:none;color:#fff;font-size:15px;font-family:inherit;padding:10px 0}
+.sb-home .concierge-refine::placeholder{color:rgba(255,255,255,.45)}
+.sb-home .concierge-refine-send{flex:0 0 auto;width:40px;height:40px;border:0;border-radius:11px;background:linear-gradient(135deg,var(--gold),#d9a92e);color:#10151d;font-size:18px;font-weight:900;cursor:pointer}
+
+/* ---- R6: proactive nudge / returning greeting ---- */
+.sb-home .sb-nudge{position:fixed;left:18px;bottom:18px;z-index:2400;width:min(320px,calc(100vw - 36px));background:var(--card);border:1px solid rgba(245,197,66,.35);border-radius:18px;padding:16px 16px 14px;box-shadow:0 18px 44px rgba(0,0,0,.4);animation:sbNudgeIn .26s ease}
+@keyframes sbNudgeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sb-home .sb-nudge-close{position:absolute;top:8px;right:10px;border:0;background:transparent;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+.sb-home .sb-nudge-close:hover{color:#fff}
+.sb-home .sb-nudge-body{color:#fff;font-size:14px;line-height:1.45;padding-right:16px;margin-bottom:12px}
+.sb-home .sb-nudge-cta{width:100%;border:0;border-radius:11px;background:linear-gradient(135deg,var(--gold),#d9a92e);color:#10151d;font-size:13px;font-weight:900;padding:10px;cursor:pointer;transition:transform .12s ease}
+.sb-home .sb-nudge-cta:hover{transform:translateY(-1px)}
+
+/* ---- R7: concierge results wrapper + browse toggle bars ---- */
+.sb-home .concierge-results-wrap{max-width:680px;margin:0 auto;padding-top:14px}
+.sb-home .concierge-results-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 18px}
+.sb-home .browse-back-bar{padding:10px 14px}
+.sb-home .concierge-newsearch,.sb-home .concierge-browse-link{border:1px solid rgba(255,255,255,.12);background:#18202b;color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;transition:.15s ease}
+.sb-home .concierge-newsearch:hover,.sb-home .concierge-browse-link:hover{border-color:rgba(245,197,66,.4);color:var(--gold)}
