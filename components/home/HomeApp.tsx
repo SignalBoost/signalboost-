@@ -48,17 +48,26 @@ export default function HomeApp() {
   const [activeCategory, setActiveCategory] = useState("");
   const [promptOpen, setPromptOpen] = useState(false);
 
-  // Load partners.json (mirror current behavior).
+  // Load partners from the live API (Supabase-backed, with static JSON
+  // fallback inside the endpoint). Additions/edits/deletions in the database
+  // now appear on the site without a redeploy.
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/partners.json", { cache: "no-store" });
+        const res = await fetch("/api/partners", { cache: "no-store" });
         if (!res.ok) throw new Error(String(res.status));
         const data = await res.json();
         if (!cancelled) setPartners(normalizePartners(data));
       } catch {
-        if (!cancelled) setPartners([]);
+        // Last-ditch fallback: try the static file directly.
+        try {
+          const res2 = await fetch("/partners.json", { cache: "no-store" });
+          const data2 = await res2.json();
+          if (!cancelled) setPartners(normalizePartners(data2));
+        } catch {
+          if (!cancelled) setPartners([]);
+        }
       }
     })();
     return () => {
