@@ -130,6 +130,22 @@ export function conciergeMatch(
 ): ConciergeResult {
   const intent = detectIntent(rawQuery);
   const matches = scorePartners(all, region, intent, rawQuery);
-  const useAI = matches.length === 0 || intent.confidence < 0.4;
+  // Decide whether the rule matcher actually understood the query, or just
+  // returned weak keyword-overlap guesses. Signals that the rules FAILED:
+  //  - no matches at all, or
+  //  - low intent confidence, or
+  //  - the top match never got a real category lock (a true category hit
+  //    scores >= 10 in scorePartners; weak keyword-only hits score ~2-4), or
+  //  - the visitor clearly named a destination but no category locked in
+  //    (e.g. "quiero irme a paris, necesito un boleto de avion" -> the rules
+  //    grabbed generic travel partners instead of flights).
+  const topScore = matches.length ? matches[0].score : 0;
+  const weakTop = topScore < 8; // below a real category lock
+  const destNoCategory = Boolean(intent.destination) && !intent.category;
+  const useAI =
+    matches.length === 0 ||
+    intent.confidence < 0.4 ||
+    weakTop ||
+    destNoCategory;
   return { intent, matches, useAI };
 }
