@@ -24,6 +24,16 @@ export interface Partner {
     pl?: string;
     ru?: string;
   };
+  // Optional AI-generated growth pitch (SEO content), per language. Like
+  // description_i18n, existing entries omit it and the page simply renders
+  // nothing until it's filled in.
+  pitch_i18n?: {
+    en?: string;
+    pt?: string;
+    es?: string;
+    pl?: string;
+    ru?: string;
+  };
   tier: number;
   featured: boolean;
   travel_related: boolean;
