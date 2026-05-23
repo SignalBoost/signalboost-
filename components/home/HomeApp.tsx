@@ -34,6 +34,7 @@ import { getOrCreateMemory, recordSearch, rememberedDestination } from "@/lib/ho
 import ConciergeHero from "@/components/home/ConciergeHero";
 import ConciergeThread, { type Turn } from "@/components/home/ConciergeThread";
 import NudgeBubble from "@/components/home/NudgeBubble";
+import HomeSections from "@/components/home/HomeSections";
 
 type View = "concierge" | "browse";
 
@@ -261,13 +262,16 @@ export default function HomeApp() {
       {view === "concierge" && (
         <>
           {turns.length === 0 ? (
-            <ConciergeHero
-              lang={lang}
-              regionName={regionName}
-              onSubmit={runQuery}
-              onChip={onChip}
-              onBrowseAll={() => setView("browse")}
-            />
+            <>
+              <ConciergeHero
+                lang={lang}
+                regionName={regionName}
+                onSubmit={runQuery}
+                onChip={onChip}
+                onBrowseAll={() => setView("browse")}
+              />
+              <HomeSections lang={lang} onPopular={runQuery} />
+            </>
           ) : (
             <div className="concierge-results-wrap">
               <div className="concierge-results-bar">
