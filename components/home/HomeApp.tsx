@@ -73,11 +73,15 @@ export default function HomeApp() {
   // ---- i18n helpers ----
   const t = useMemo(
     () =>
-      (key: string, vars: Record<string, string> = {}) =>
-        (I18N[lang]?.[key] || I18N.en[key] || key).replace(
-          /{(\w+)}/g,
-          (_: string, k: string) => vars[k] ?? ""
-        ),
+      (key: string, varsOrFallback: Record<string, string> | string = {}) => {
+        // Second arg may be a vars object (for {region} substitution) or a
+        // plain string fallback. Normalize both.
+        const isFallback = typeof varsOrFallback === "string";
+        const vars: Record<string, string> = isFallback ? {} : varsOrFallback;
+        const fallback = isFallback ? (varsOrFallback as string) : key;
+        const raw = I18N[lang]?.[key] || I18N.en[key] || fallback;
+        return raw.replace(/{(\w+)}/g, (_: string, k: string) => vars[k] ?? "");
+      },
     [lang]
   );
   const categoryName = useMemo(
