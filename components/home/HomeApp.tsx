@@ -76,7 +76,7 @@ export default function HomeApp() {
   );
   const categoryName = useMemo(
     () => (key: string) =>
-      (CATEGORY_META[key] as Record<string, string>)?.[lang] ||
+      (CATEGORY_META[key] as unknown as Record<string, string>)?.[lang] ||
       CATEGORY_META[key]?.en ||
       key.replace(/_/g, " "),
     [lang]
