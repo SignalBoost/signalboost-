@@ -90,6 +90,7 @@ export function normalizeLangForRegion(region: string, lang: string): string {
 // MARKETING COPY — "AI-guided digital shopping mall" hero messaging.
 // Added as a separate merge step so the dense I18N lines above stay untouched.
 // These keys are read by ConciergeHero. Safe to edit wording here anytime.
+// (window_shopping + marquee_subtitle are read by PartnerMarquee.)
 // ============================================================================
 const HERO_COPY: Record<string, Dict> = {
   en: {
@@ -104,6 +105,8 @@ const HERO_COPY: Record<string, Dict> = {
     popular_title: "Popular right now",
     trust_line: "Connecting you with Booking.com, Aviasales, Amazon and 130+ trusted partners",
     soon: "soon",
+    window_shopping: "Window shopping",
+    marquee_subtitle: "Featuring brands you already trust",
   },
   "pt-BR": {
     mall_tagline: "Seu shopping digital guiado por IA",
@@ -117,6 +120,8 @@ const HERO_COPY: Record<string, Dict> = {
     popular_title: "Popular agora",
     trust_line: "Conectando você com Booking.com, Aviasales, Amazon e mais de 130 parceiros confiáveis",
     soon: "em breve",
+    window_shopping: "Vitrine",
+    marquee_subtitle: "Com marcas em que você já confia",
   },
   es: {
     mall_tagline: "Tu centro comercial digital guiado por IA",
@@ -130,6 +135,8 @@ const HERO_COPY: Record<string, Dict> = {
     popular_title: "Popular ahora",
     trust_line: "Te conectamos con Booking.com, Aviasales, Amazon y más de 130 socios confiables",
     soon: "pronto",
+    window_shopping: "Vitrina",
+    marquee_subtitle: "Con marcas en las que ya confías",
   },
   pl: {
     mall_tagline: "Twoje cyfrowe centrum handlowe z przewodnikiem AI",
@@ -143,6 +150,8 @@ const HERO_COPY: Record<string, Dict> = {
     popular_title: "Popularne teraz",
     trust_line: "Łączymy Cię z Booking.com, Aviasales, Amazon i ponad 130 zaufanymi partnerami",
     soon: "wkrótce",
+    window_shopping: "Witryna",
+    marquee_subtitle: "Marki, którym już ufasz",
   },
   de: {
     mall_tagline: "Dein KI-geführtes digitales Einkaufszentrum",
@@ -156,6 +165,8 @@ const HERO_COPY: Record<string, Dict> = {
     popular_title: "Jetzt beliebt",
     trust_line: "Wir verbinden dich mit Booking.com, Aviasales, Amazon und über 130 vertrauenswürdigen Partnern",
     soon: "bald",
+    window_shopping: "Schaufenster",
+    marquee_subtitle: "Mit Marken, denen du bereits vertraust",
   },
   fr: {
     mall_tagline: "Votre centre commercial digital guidé par IA",
@@ -169,6 +180,8 @@ const HERO_COPY: Record<string, Dict> = {
     popular_title: "Populaire en ce moment",
     trust_line: "Nous vous connectons à Booking.com, Aviasales, Amazon et plus de 130 partenaires de confiance",
     soon: "bientôt",
+    window_shopping: "Vitrine",
+    marquee_subtitle: "Avec des marques en qui vous avez déjà confiance",
   },
   it: {
     mall_tagline: "Il tuo centro commerciale digitale guidato dall'IA",
@@ -182,6 +195,8 @@ const HERO_COPY: Record<string, Dict> = {
     popular_title: "Popolare ora",
     trust_line: "Ti colleghiamo con Booking.com, Aviasales, Amazon e oltre 130 partner affidabili",
     soon: "presto",
+    window_shopping: "Vetrina",
+    marquee_subtitle: "Con marchi di cui ti fidi già",
   },
 };
 
