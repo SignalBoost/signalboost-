@@ -47,7 +47,7 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
               rel="noopener sponsored"
               className="fathom-glass-card-upgrade"
             >
-              <span style={{ color: "#e5e7eb", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
+              <span style={{ color: "#1d2733", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
                 {partner.name}
               </span>
             </a>
