@@ -27,25 +27,25 @@ export default function BrandMark() {
     >
       <style>{`
         @keyframes sbPulse {
-          0%   { transform: scale(.55); opacity: .9; }
-          70%  { opacity: .15; }
-          100% { transform: scale(1.25); opacity: 0; }
+          0%   { transform: scale(.4); opacity: .95; }
+          60%  { opacity: .3; }
+          100% { transform: scale(1.6); opacity: 0; }
         }
-        .sb-wave { transform-origin: 9px 18px; animation: sbPulse 2.4s ease-out infinite; }
+        .sb-wave { transform-origin: 8px 18px; animation: sbPulse 2.8s ease-out infinite; }
         .sb-wave.w2 { animation-delay: .8s; }
         .sb-wave.w3 { animation-delay: 1.6s; }
       `}</style>
 
-      <svg width="30" height="30" viewBox="0 0 36 36" fill="none" aria-hidden="true">
-        {/* pulsing signal arcs emitting from the dot */}
+      <svg width="32" height="30" viewBox="0 0 40 36" fill="none" aria-hidden="true">
+        {/* pulsing signal arcs radiating rightward from the dot */}
         <g stroke="#e0a425" strokeWidth="2.2" fill="none" strokeLinecap="round">
-          <path className="sb-wave" d="M9 9 A12 12 0 0 1 9 27" />
-          <path className="sb-wave w2" d="M9 5 A16 16 0 0 1 9 31" />
-          <path className="sb-wave w3" d="M9 2 A20 20 0 0 1 9 34" />
+          <path className="sb-wave" d="M8 11 A10 10 0 0 1 8 25" />
+          <path className="sb-wave w2" d="M8 7 A15 15 0 0 1 8 29" />
+          <path className="sb-wave w3" d="M8 3 A20 20 0 0 1 8 33" />
         </g>
         {/* the emitting dot */}
-        <circle cx="9" cy="18" r="4.6" fill="#e0a425" />
-        <circle cx="9" cy="18" r="1.8" fill="#1d2733" />
+        <circle cx="8" cy="18" r="4.4" fill="#e0a425" />
+        <circle cx="8" cy="18" r="1.7" fill="#1d2733" />
       </svg>
 
       <span
