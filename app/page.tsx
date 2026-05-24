@@ -4,7 +4,7 @@ import PartnerMarquee from "@/components/PartnerMarquee";
 import Footer from "@/components/Footer";
 import initialPartnersList from "@/public/partners.json";
 
-// Explicitly import your home style sheets to run our newly slowed native CSS animations
+// Force Next.js to apply our custom slow marquee keyframe loop animations
 import "./home.css"; 
 
 export default function HomePage() {
@@ -17,13 +17,58 @@ export default function HomePage() {
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "space-between",
-      paddingTop: "5rem",
-      paddingBottom: "2rem",
       position: "relative",
       overflow: "hidden",
       fontFamily: "system-ui, -apple-system, sans-serif"
     }}>
       
+      {/* --- PREMIUM NAVIGATION BAR / LOGO RESTORATION LAYER --- */}
+      <header style={{
+        width: "100%",
+        maxWidth: "80rem",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "1.5rem 2rem",
+        position: "absolute",
+        top: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 50
+      }}>
+        {/* Left Side: Restored Brand Identity Typography */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
+          <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em" }}>
+            signal<span style={{ color: "#f59e0b" }}>boost</span>
+          </span>
+        </div>
+
+        {/* Right Side: Restored Authentication Context Actions Menu */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <a href="/admin" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.85rem", padding: "0.5rem 0.75rem" }}>
+            ⚙️ Admin
+          </a>
+          <a href="/dashboard" style={{ 
+            backgroundColor: "#f59e0b", 
+            color: "#060913", 
+            textDecoration: "none", 
+            fontSize: "0.85rem", 
+            fontWeight: 600,
+            padding: "0.5rem 1rem", 
+            borderRadius: "9999px",
+            boxShadow: "0 4px 12px rgba(245, 158, 11, 0.2)"
+          }}>
+            Dashboard
+          </a>
+          <a href="/reset-password" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.85rem", padding: "0.5rem 0.75rem" }}>
+            Reset password
+          </a>
+          <a href="/logout" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.85rem", padding: "0.5rem 0.75rem" }}>
+            Log out
+          </a>
+        </div>
+      </header>
+
       {/* Premium Ambient Background Glow */}
       <div style={{
         position: "absolute",
@@ -50,7 +95,8 @@ export default function HomePage() {
         paddingRight: "1.5rem",
         zIndex: 10,
         width: "100%",
-        margin: "auto 0"
+        marginTop: "10rem", // Pushes content safely below the absolute header layout
+        marginBottom: "auto"
       }}>
         <h1 style={{ 
           fontSize: "3.5rem", 
@@ -110,8 +156,7 @@ export default function HomePage() {
             fontWeight: "bold",
             color: "#060913",
             fontSize: "1.1rem",
-            cursor: "pointer",
-            boxShadow: "0 4px 12px rgba(245, 158, 11, 0.3)"
+            cursor: "pointer"
           }}>
             →
           </button>
@@ -126,8 +171,7 @@ export default function HomePage() {
               border: "1px solid rgba(255, 255, 255, 0.08)",
               backgroundColor: "rgba(255, 255, 255, 0.03)",
               fontSize: "0.8rem",
-              color: "#d1d5db",
-              backdropFilter: "blur(4px)"
+              color: "#d1d5db"
             }}>
               {pill}
             </span>
@@ -137,7 +181,7 @@ export default function HomePage() {
 
       {/* Scrolling Window Shopping Layers loaded from partners.json */}
       {initialPartnersList && initialPartnersList.length > 0 && (
-        <div style={{ width: "100%", zIndex: 10, marginTop: "3rem" }}>
+        <div style={{ width: "100%", zIndex: 10, marginTop: "2rem" }}>
           <PartnerMarquee partnersData={initialPartnersList} />
         </div>
       )}
