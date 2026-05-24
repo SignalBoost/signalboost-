@@ -7,7 +7,6 @@ interface Partner {
   id: string;
   name: string;
   url: string;
-  category_label: string;
   tier: number;
   featured: boolean;
 }
@@ -17,7 +16,6 @@ interface MarqueeProps {
 }
 
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  // Balanced sorting logic split
   const { row1, row2 } = useMemo(() => {
     if (!partnersData || partnersData.length === 0) return { row1: [], row2: [] };
     const half = Math.ceil(partnersData.length / 2);
@@ -26,20 +24,33 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
 
   const renderRow = (items: Partner[], isReverse: boolean) => {
     if (items.length === 0) return null;
-    const scrollClass = isReverse ? "animate-marquee-rev" : "animate-marquee-fwd";
+    const animName = isReverse ? "animate-marquee-rev" : "animate-marquee-fwd";
 
     return (
-      <div className="relative flex w-full overflow-hidden my-2">
-        <div className={`flex gap-4 whitespace-nowrap py-2 ${scrollClass} hover:[animation-play-state:paused]`}>
+      <div className="marquee-wrapper" style={{ position: "relative", display: "flex", width: "100%", overflow: "hidden" }}>
+        <div className={animName} style={{ display: "flex", gap: "1rem", whiteSpace: "nowrap", padding: "0.75rem 0" }}>
           {[...items, ...items].map((partner, index) => (
             <a
-              key={`${partner.id}-${isReverse ? "rev" : "fwd"}-${index}`}
+              key={`${partner.id}-${isReverse ? "b" : "a"}-${index}`}
               href={partner.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center min-w-[160px] h-14 px-6 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-300 hover:border-amber-500/30 hover:bg-white/[0.06]"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: "160px",
+                height: "3.5rem",
+                padding: "0 1.5rem",
+                borderRadius: "0.75rem",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                backgroundColor: "rgba(255, 255, 255, 0.02)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                textDecoration: "none"
+              }}
             >
-              <span className="text-gray-300 font-medium text-sm tracking-wide">
+              <span style={{ color: "#e5e7eb", fontSize: "0.875rem", fontWeight: 500 }}>
                 {partner.name}
               </span>
             </a>
@@ -50,12 +61,12 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   };
 
   return (
-    <div className="w-full py-4 flex flex-col gap-1 overflow-hidden mt-6 z-10 relative">
-      <div className="text-center mb-2">
-        <span className="text-xs font-semibold tracking-widest text-amber-500/80 uppercase">
+    <div style={{ width: "100%", padding: "1rem 0", display: "flex", flexDirection: "column", gap: "0.25rem", overflow: "hidden" }}>
+      <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+        <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "rgba(245, 158, 11, 0.8)", letterSpacing: "0.1em" }}>
           WINDOW SHOPPING
         </span>
-        <h3 className="text-lg font-medium text-gray-400 mt-1">
+        <h3 style={{ fontSize: "1.125rem", fontWeight: 500, color: "#9ca3af", marginTop: "0.25rem" }}>
           Explore {partnersData.length}+ Integrated Regional Stores
         </h3>
       </div>
