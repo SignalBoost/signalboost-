@@ -1,69 +1,66 @@
 "use client";
 // File: components/PartnerMarquee.tsx
-// "Window Shopping" — a curated marquee of well-known brands only. This does
-// NOT show all partners; it shows a hand-picked list of recognizable names so
-// the hero looks premium. Every other partner is still fully available to users
-// through the concierge search / prompt — the marquee is just a showcase.
+// "Window Shopping" — scrolling rows of YOUR real partners, pulled from
+// Supabase (passed in as partnersData from HomeApp, which loads /api/partners).
+// No hardcoded brands. Names come straight from your data; links use each
+// partner's affiliate `url` (revenue-safe).
 //
-// Logos come from logo.dev (the post-Clearbit replacement). The publishable
-// token lives in the env var NEXT_PUBLIC_LOGO_DEV_TOKEN (set in Vercel). It is
-// a PUBLISHABLE key, so it is safe to expose in the browser. If the token is
-// missing, or a logo fails to load, the card falls back to showing the name
-// only — nothing breaks.
+// Logos come from logo.dev. logo.dev needs a clean brand domain (e.g.
+// "booking.com"). We use the partner's `domain` field if present, otherwise we
+// extract the domain from the partner's `url`. If logo.dev has no logo, the
+// card simply shows the name — nothing breaks.
 //
-// DARK THEME: card text is light and each logo sits on a small white chip so
-// dark brand marks stay visible against the dark glass cards.
-//
-// To add or remove a brand: edit the FEATURED_BRANDS array below. Each entry is
-// { name, domain, url }:
-//   - name   = text shown on the card
-//   - domain = used to fetch the real brand logo from logo.dev
-//   - url    = where the card links to (use your affiliate link if you have one)
+// The publishable token lives in NEXT_PUBLIC_LOGO_DEV_TOKEN (set in Vercel).
 import React from "react";
 import "./marquee.css";
 
-interface Brand {
+interface Partner {
+  id: string;
   name: string;
-  domain: string;
   url: string;
+  domain?: string; // optional clean domain for the logo, if your data has it
+  tier?: number;
+  featured?: boolean;
 }
-
-// --- Curated big-name brands shown in the marquee --------------------------
-// Edit this list freely. Keep it to the recognizable names you're proud of.
-const FEATURED_BRANDS: Brand[] = [
-  { name: "Booking.com", domain: "booking.com", url: "https://www.booking.com" },
-  { name: "Trivago", domain: "trivago.com", url: "https://www.trivago.com" },
-  { name: "Amazon", domain: "amazon.com", url: "https://www.amazon.com" },
-  { name: "Kiwi.com", domain: "kiwi.com", url: "https://www.kiwi.com" },
-  { name: "Tiqets", domain: "tiqets.com", url: "https://www.tiqets.com" },
-  { name: "Airalo", domain: "airalo.com", url: "https://www.airalo.com" },
-  { name: "Expedia", domain: "expedia.com", url: "https://www.expedia.com" },
-  { name: "Agoda", domain: "agoda.com", url: "https://www.agoda.com" },
-  { name: "GetYourGuide", domain: "getyourguide.com", url: "https://www.getyourguide.com" },
-  { name: "Hostelworld", domain: "hostelworld.com", url: "https://www.hostelworld.com" },
-  { name: "Discover Cars", domain: "discovercars.com", url: "https://www.discovercars.com" },
-  { name: "Saily", domain: "saily.com", url: "https://saily.com" },
-];
+interface MarqueeProps {
+  partnersData: Partner[];
+}
 
 // logo.dev publishable token (set in Vercel as NEXT_PUBLIC_LOGO_DEV_TOKEN).
 const LOGO_DEV_TOKEN = process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN || "";
 
-// Build a logo.dev image URL for a domain. If no token is configured we return
-// "" so the component renders a name-only card instead of a broken request.
+// Get a clean hostname (no www.) from a URL string. "" if unparseable.
+function domainFromUrl(url: string): string {
+  if (!url) return "";
+  try {
+    const u = new URL(url.startsWith("http") ? url : `https://${url}`);
+    return u.hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
+// Prefer an explicit domain field; otherwise derive it from the affiliate url.
+function partnerDomain(p: Partner): string {
+  if (p.domain && p.domain.trim()) return p.domain.trim().replace(/^www\./, "");
+  return domainFromUrl(p.url);
+}
+
+// Build a logo.dev image URL for a domain. "" if no token or no domain.
 function logoUrl(domain: string): string {
-  if (!LOGO_DEV_TOKEN) return "";
+  if (!LOGO_DEV_TOKEN || !domain) return "";
   return `https://img.logo.dev/${encodeURIComponent(domain)}?token=${LOGO_DEV_TOKEN}&size=128&format=png&retina=true`;
 }
 
-export default function PartnerMarquee() {
-  const list = FEATURED_BRANDS;
+export default function PartnerMarquee({ partnersData }: MarqueeProps) {
+  const list = partnersData || [];
   if (list.length === 0) return null;
 
   const halfLength = Math.ceil(list.length / 2);
   const topRow = list.slice(0, halfLength);
   const bottomRow = list.slice(halfLength);
 
-  const renderRow = (items: Brand[], isReverse: boolean, rowKeyIdentifier: string) => {
+  const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
     if (items.length === 0) return null;
     const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
     return (
@@ -79,12 +76,12 @@ export default function PartnerMarquee() {
         }}
       >
         <div className={animationClass}>
-          {[...items, ...items].map((brand, index) => {
-            const logo = logoUrl(brand.domain);
+          {[...items, ...items].map((partner, index) => {
+            const logo = logoUrl(partnerDomain(partner));
             return (
               <a
-                key={`${brand.domain}-${rowKeyIdentifier}-${index}`}
-                href={brand.url}
+                key={`${partner.id}-${rowKeyIdentifier}-${index}`}
+                href={partner.url}
                 target="_blank"
                 rel="noopener sponsored"
                 className="fathom-glass-card-upgrade"
@@ -119,7 +116,7 @@ export default function PartnerMarquee() {
                   </span>
                 )}
                 <span style={{ color: "#f5f6f8", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
-                  {brand.name}
+                  {partner.name}
                 </span>
               </a>
             );
