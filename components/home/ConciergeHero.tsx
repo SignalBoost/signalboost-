@@ -97,8 +97,15 @@ export default function ConciergeHero({
     "I'll help you find";
 
   return (
-    <section className="concierge-hero">
-      <div className="concierge-hero-inner">
+    // Inline overrides shrink the hero so everything below it (the marquee +
+    // sections) sits higher — this is what closes the "empty gap" above the
+    // marquee. paddingTop trims the top space, paddingBottom removes the slack
+    // under the hero, and the inner gap tightens the spacing between lines.
+    // These beat the .concierge-hero / .concierge-hero-inner rules in home.css
+    // without touching that file. Tune the three numbers to taste; delete the
+    // two style props to revert.
+    <section className="concierge-hero" style={{ paddingTop: "1.25rem", paddingBottom: 0 }}>
+      <div className="concierge-hero-inner" style={{ gap: "0.875rem" }}>
         <div className="concierge-brand">{t("brand_name", "SignalBoost")}</div>
 
         {/* THE HOOK */}
