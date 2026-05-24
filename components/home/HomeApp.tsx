@@ -300,9 +300,8 @@ export default function HomeApp() {
                 onChip={onChip}
                 onBrowseAll={() => setView("browse")}
               />
-              <HomeSections lang={lang} onPopular={runQuery} />
               {partners.length > 0 && (
-                <div style={{ width: "100%", padding: "1rem 0 4rem", zIndex: 2 }}>
+                <div style={{ width: "100%", padding: "1.5rem 0 2rem", zIndex: 2 }}>
                   <PartnerMarquee
                     partnersData={partners.map((p) => ({
                       id: p.id,
@@ -314,6 +313,7 @@ export default function HomeApp() {
                   />
                 </div>
               )}
+              <HomeSections lang={lang} onPopular={runQuery} />
             </>
           ) : (
             <div className="concierge-results-wrap">
