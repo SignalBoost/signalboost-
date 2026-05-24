@@ -2,24 +2,12 @@
 import React from "react";
 import PartnerMarquee from "@/components/PartnerMarquee";
 import Footer from "@/components/Footer";
+import initialPartnersList from "@/public/partners.json";
 
-// Force Next.js to apply the dynamic marquee keyframe animations
+// Explicitly import your home style sheets to run our newly slowed native CSS animations
 import "./home.css"; 
 
-// Import your server-side Supabase client configuration wrapper
-import { createClient } from "@/utils/supabase/server"; 
-
-export default async function HomePage() {
-  const supabase = createClient();
-
-  // Stream your live 132+ partners straight from your database row records
-  const { data: databasePartners } = await supabase
-    .from("partners")
-    .select("id, name, url, logo_url, tier, featured");
-
-  // Fallback data check array placeholder
-  const finalPartnersList = databasePartners || [];
-
+export default function HomePage() {
   return (
     <div style={{
       backgroundColor: "#060913",
@@ -36,7 +24,7 @@ export default async function HomePage() {
       fontFamily: "system-ui, -apple-system, sans-serif"
     }}>
       
-      {/* Background METAPHOR Glow accent layout fields */}
+      {/* Premium Ambient Background Glow */}
       <div style={{
         position: "absolute",
         top: 0,
@@ -51,7 +39,7 @@ export default async function HomePage() {
         zIndex: 0
       }} />
 
-      {/* Main Core View Area */}
+      {/* Main Hero Container */}
       <div style={{
         display: "flex",
         flexDirection: "column",
@@ -81,7 +69,7 @@ export default async function HomePage() {
           Tell me what you need and I’ll guide you to the right trusted partner — flights, hotels, eSIMs, cars and more, matched perfectly to your country.
         </p>
 
-        {/* Search Field Container Box */}
+        {/* Premium Frosted Search Container */}
         <div style={{
           width: "100%",
           maxWidth: "32rem",
@@ -122,13 +110,14 @@ export default async function HomePage() {
             fontWeight: "bold",
             color: "#060913",
             fontSize: "1.1rem",
-            cursor: "pointer"
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(245, 158, 11, 0.3)"
           }}>
             →
           </button>
         </div>
 
-        {/* Navigation Category Pills */}
+        {/* Category Badges */}
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.6rem" }}>
           {["✈️ Flights", "🏨 Hotels", "📶 eSIM & Internet", "🎟️ Tours & Activities", "🚗 Car Rentals", "🛒 Marketplace"].map((pill) => (
             <span key={pill} style={{
@@ -137,7 +126,8 @@ export default async function HomePage() {
               border: "1px solid rgba(255, 255, 255, 0.08)",
               backgroundColor: "rgba(255, 255, 255, 0.03)",
               fontSize: "0.8rem",
-              color: "#d1d5db"
+              color: "#d1d5db",
+              backdropFilter: "blur(4px)"
             }}>
               {pill}
             </span>
@@ -145,14 +135,15 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Dynamic Scroller Rows powered natively by the live DB query result */}
-      {finalPartnersList.length > 0 && (
+      {/* Scrolling Window Shopping Layers loaded from partners.json */}
+      {initialPartnersList && initialPartnersList.length > 0 && (
         <div style={{ width: "100%", zIndex: 10, marginTop: "3rem" }}>
-          <PartnerMarquee partnersData={finalPartnersList} />
+          <PartnerMarquee partnersData={initialPartnersList} />
         </div>
       )}
 
-      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, marginTop: "1rem" }}>
+      {/* Sub-text notice */}
+      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, marginTop: "1rem", letterSpacing: "0.02em" }}>
         Directly connecting you with Booking.com, Aviasales, Amazon and 130+ vetted global networks.
       </div>
 
