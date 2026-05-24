@@ -2,27 +2,27 @@
 import React from "react";
 
 export default function Footer() {
-  const columnStyle = { display: "flex", flexDirection: "column" as const, gap: "0.5rem" };
-  const linkStyle = { color: "#9ca3af", textDecoration: "none", fontSize: "0.75rem" };
-  const titleStyle = { fontSize: "0.75rem", fontWeight: 600, color: "#9ca3af", uppercase: true, marginBottom: "0.5rem", letterSpacing: "0.05em" };
+  const columnStyle = { display: "flex", flexDirection: "column" as const, gap: "0.6rem" };
+  const linkStyle = { color: "#9ca3af", textDecoration: "none", fontSize: "0.8rem", transition: "color 0.2s" };
+  const titleStyle = { fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", marginBottom: "0.5rem", letterSpacing: "0.1em" };
 
   return (
     <footer style={{
       width: "100%",
-      maxWidth: "64rem",
+      maxWidth: "56rem",
       margin: "4rem auto 0 auto",
-      borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-      paddingTop: "2rem",
-      paddingBottom: "3rem",
-      paddingLeft: "1rem",
-      paddingRight: "1rem",
+      borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+      paddingTop: "2.5rem",
+      paddingBottom: "2rem",
+      paddingLeft: "1.5rem",
+      paddingRight: "1.5rem",
       zIndex: 10,
       position: "relative"
     }}>
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-        gap: "2rem",
+        gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+        gap: "2.5rem",
         marginBottom: "2rem"
       }}>
         <div style={columnStyle}>
@@ -44,8 +44,8 @@ export default function Footer() {
         </div>
         <div style={columnStyle}>
           <h4 style={titleStyle}>PLATFORM</h4>
-          <span style={{ color: "#4b5563", fontSize: "0.75rem" }}>SignalBoost © 2026</span>
-          <span style={{ color: "#4b5563", fontSize: "0.75rem" }}>AI Digital Shopping Mall</span>
+          <span style={{ color: "#4b5563", fontSize: "0.8 * rem" }}>SignalBoost © 2026</span>
+          <span style={{ color: "#4b5563", fontSize: "0.8 * rem" }}>AI Digital Shopping Mall</span>
         </div>
       </div>
     </footer>
