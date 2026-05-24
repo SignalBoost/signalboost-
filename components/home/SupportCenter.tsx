@@ -1,4 +1,4 @@
-SupportCenter.tsx"use client";
+"use client";
 // File: components/home/SupportCenter.tsx
 // A reusable "Support Center" card for the SignalBoost home page. Styled to
 // match the dark frosted-glass theme (uses the same CSS variables from
