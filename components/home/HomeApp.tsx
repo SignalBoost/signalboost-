@@ -35,6 +35,7 @@ import ConciergeHero from "@/components/home/ConciergeHero";
 import ConciergeThread, { type Turn } from "@/components/home/ConciergeThread";
 import NudgeBubble from "@/components/home/NudgeBubble";
 import HomeSections from "@/components/home/HomeSections";
+import SupportCenter from "@/components/home/SupportCenter";
 import AdminBar from "@/components/home/AdminBar";
 import BrandMark from "@/components/home/BrandMark";
 import PartnerMarquee from "@/components/PartnerMarquee";
@@ -315,6 +316,7 @@ export default function HomeApp() {
                 </div>
               )}
               <HomeSections lang={lang} onPopular={runQuery} />
+              <SupportCenter lang={lang} />
             </>
           ) : (
             <div className="concierge-results-wrap">
