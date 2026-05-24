@@ -1,28 +1,27 @@
-{
-  "name": "signalboost-marketing",
-  "version": "0.1.1",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.33.1",
-    "@supabase/ssr": "^0.5.0",
-    "@supabase/supabase-js": "^2.49.0",
-    "@vercel/analytics": "^1.5.0",
-    "next": "^15.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "^15.0.0",
-    "typescript": "^5"
-  }
+// File: app/layout.tsx
+import type { Metadata } from "next";
+import "./globals.css";
+import { I18nProvider } from "@/components/i18n/I18nProvider";
+import { Analytics } from "@vercel/analytics/react";
+
+export const metadata: Metadata = {
+  title: "SignalBoost",
+  description:
+    "SignalBoost — geo-aware offers and trusted partners across flights, hotels, eSIM, tours, marketplace and more.",
+  metadataBase: new URL("https://www.signalboostapp.com"),
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <I18nProvider>{children}</I18nProvider>
+        <Analytics />
+      </body>
+    </html>
+  );
 }
