@@ -1,12 +1,4 @@
 // File: lib/home/concierge-match.ts
-// Rule engine FIRST (per brief). Pure, client-side, region-aware partner
-// matching over already-loaded partners. No AI call here — the homepage uses
-// the AI endpoint only when shouldUseAI() says the query is too vague/complex.
-//
-// Flow: query -> detectIntent (category + keywords + destination) ->
-//       score region-valid partners -> top 3–5.
-// Affiliate URL selection and the strict region rule are reused from
-// partners-home.ts so behavior matches the rest of the site exactly.
 
 import {
   type HomePartner,
@@ -14,138 +6,316 @@ import {
   partnerUrl,
 } from "@/lib/home/partners-home";
 
-// Category -> trigger keywords (multilingual-ish; cheap and effective).
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  flights: ["flight", "flights", "fly", "plane", "airline", "airfare", "ticket", "tickets", "voo", "voos", "passagem", "passagens", "vuelo", "vuelos", "boleto", "lot", "loty", "bilet"],
-  hotels: ["hotel", "hotels", "stay", "accommodation", "lodging", "hostel", "resort", "hospedagem", "hotel", "hoteles", "alojamiento", "nocleg", "hotele"],
-  car_rentals: ["car", "rental", "rent a car", "car rental", "vehicle", "drive", "aluguel de carro", "carro", "alquiler", "auto", "coche", "wynajem", "samochod"],
-  esim: ["esim", "sim", "data", "connectivity", "internet", "mobile data", "roaming", "chip", "conectividade", "conectividad", "datos"],
-  insurance: ["insurance", "claim", "claims", "travel insurance", "seguro", "seguros", "reembolso", "ubezpieczenie"],
-  tours: ["tour", "tours", "activity", "activities", "things to do", "excursion", "experience", "passeio", "passeios", "atividade", "tour", "actividad", "wycieczka", "atrakcje"],
-  transfers: ["transfer", "transfers", "airport transfer", "taxi", "pickup", "shuttle", "traslado", "transfer", "transfery"],
-  marketplace: ["buy", "shop", "shopping", "store", "marketplace", "product", "purchase", "comprar", "loja", "compras", "tienda", "kup", "sklep", "zakupy"],
-  products_tools: ["vpn", "software", "tool", "tools", "app", "subscription", "antivirus", "ferramenta", "herramienta", "narzedzie"],
-  finance: ["finance", "bank", "money", "payment", "tax", "budget", "transfer money", "financa", "banco", "dinheiro", "finanzas", "dinero", "finanse"],
-  travel_services: ["visa", "esim", "luggage", "storage", "travel service", "study abroad", "servico de viagem", "servicio de viaje", "usluga"],
-  health_fitness: ["fitness", "health", "supplement", "gym", "workout", "wellness", "saude", "salud", "zdrowie"],
-  sports_outdoors: ["sport", "sports", "outdoor", "outdoors", "cycling", "bike", "hiking", "camping", "esporte", "deporte", "sport"],
+const CATEGORY_KEYWORDS: Record<string,string[]> = {
+
+flights:[
+"flight","flights","fly","plane",
+"airline","airfare",
+"ticket","tickets",
+"voo","voos",
+"passagem","passagens",
+"vuelo","vuelos",
+"boleto","boletos",
+"avion","avião",
+"lot","loty","bilet"
+],
+
+hotels:[
+"hotel","hotels",
+"stay","accommodation",
+"lodging","hostel",
+"resort","alojamiento"
+],
+
+car_rentals:[
+"car","rental",
+"rent a car",
+"vehicle",
+"alquiler",
+"carro"
+],
+
+esim:[
+"esim","sim",
+"internet",
+"mobile data",
+"roaming"
+],
+
+tours:[
+"tour","tours",
+"activity",
+"activities",
+"excursion"
+],
+
+marketplace:[
+"buy","shop",
+"shopping",
+"store",
+"purchase",
+"comprar"
+]
+
 };
 
-// Common destination tokens we can lift out of a query for continuity.
-const DESTINATION_HINT = /\b(?:to|in|para|em|en|a|do)\s+([A-ZÁÉÍÓÚ][\w'-]+(?:\s+[A-ZÁÉÍÓÚ][\w'-]+){0,2})/;
+const NEGATIVE_MATCHES:Record<string,string[]>={
 
-export interface Intent {
-  category: string | null;
-  keywords: string[];
-  destination: string | null;
-  confidence: number; // 0..1 — low means consider AI fallback
+flights:[
+"esim",
+"car_rentals",
+"tours"
+],
+
+hotels:[
+"esim"
+],
+
+esim:[
+"flights",
+"hotels"
+]
+
+};
+
+export interface Intent{
+
+category:string|null
+keywords:string[]
+destination:string|null
+confidence:number
+
 }
 
-export function detectIntent(rawQuery: string): Intent {
-  const q = (rawQuery || "").toLowerCase().trim();
-  const keywords: string[] = [];
-  const scores: Record<string, number> = {};
+export function detectIntent(
+rawQuery:string
+):Intent{
 
-  for (const [cat, words] of Object.entries(CATEGORY_KEYWORDS)) {
-    for (const w of words) {
-      if (q.includes(w)) {
-        scores[cat] = (scores[cat] || 0) + 1;
-        keywords.push(w);
-      }
-    }
-  }
+const q=(rawQuery||"")
+.toLowerCase()
+.trim();
 
-  let category: string | null = null;
-  let best = 0;
-  for (const [cat, sc] of Object.entries(scores)) {
-    if (sc > best) {
-      best = sc;
-      category = cat;
-    }
-  }
+const scores:Record<string,number>={}
+const keywords:string[]=[]
 
-  // Destination: try a capitalized phrase from the ORIGINAL (case-preserving) query.
-  let destination: string | null = null;
-  const m = (rawQuery || "").match(DESTINATION_HINT);
-  if (m && m[1]) destination = m[1].trim();
+for(
+const [cat,words]
+of Object.entries(
+CATEGORY_KEYWORDS
+)
+){
 
-  // Confidence: did we land on a category at all, and how strongly?
-  const wordCount = q.split(/\s+/).filter(Boolean).length;
-  let confidence = 0;
-  if (category) confidence = Math.min(1, 0.5 + best * 0.2);
-  // Long, category-less queries are the AI-fallback case.
-  if (!category && wordCount > 6) confidence = 0.1;
+for(const w of words){
 
-  return { category, keywords: [...new Set(keywords)], destination, confidence };
+if(
+q.includes(
+w.toLowerCase()
+)
+){
+
+scores[cat]=
+(scores[cat]||0)+1
+
+keywords.push(w)
+
 }
 
-export interface MatchResult {
-  partner: HomePartner;
-  url: string;
-  score: number;
+}
+
+}
+
+let category=null
+let best=0
+
+for(
+const [cat,score]
+of Object.entries(scores)
+){
+
+if(score>best){
+
+best=score
+category=cat
+
+}
+
+}
+
+let confidence=
+category
+?Math.min(
+1,
+0.5+(best*.2)
+)
+:0
+
+return{
+
+category,
+keywords,
+destination:null,
+confidence
+
+}
+
+}
+
+export interface MatchResult{
+
+partner:HomePartner
+url:string
+score:number
+
 }
 
 export function scorePartners(
-  all: HomePartner[],
-  region: string,
-  intent: Intent,
-  rawQuery: string
-): MatchResult[] {
-  const q = (rawQuery || "").toLowerCase();
-  const visible = all.filter((p) => partnerMatchesRegion(p, region));
 
-  const scored = visible.map((p) => {
-    let score = 0;
-    if (intent.category && p.category_key === intent.category) score += 10;
-    // Name / description keyword overlap.
-    const hay = [p.name, p.description, p.network, p.category_key].join(" ").toLowerCase();
-    for (const kw of intent.keywords) if (hay.includes(kw)) score += 2;
-    // Direct token hits from the raw query (e.g. brand name).
-    if (p.name && q.includes(p.name.toLowerCase())) score += 6;
-    // Tier / featured nudges as gentle tiebreakers.
-    score += (p.featured ? 1.5 : 0) + (Number(p.tier) === 1 ? 1 : 0);
-    return { partner: p, url: partnerUrl(p, region), score };
-  });
+all:HomePartner[],
+region:string,
+intent:Intent,
+rawQuery:string
 
-  return scored
-    .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score || (a.partner.name || "").localeCompare(b.partner.name || ""))
-    .slice(0, 5);
+):MatchResult[]{
+
+const visible=
+all.filter(
+p=>
+partnerMatchesRegion(
+p,
+region
+)
+)
+
+const scored=
+visible.map(p=>{
+
+let score=0
+
+if(
+intent.category &&
+p.category_key===
+intent.category
+){
+
+score+=10
+
 }
 
-export interface ConciergeResult {
-  intent: Intent;
-  matches: MatchResult[];
-  useAI: boolean; // homepage should call the AI endpoint instead/as well
+const hay=[
+
+p.name,
+p.description,
+p.network,
+p.category_key
+
+]
+.join(" ")
+.toLowerCase()
+
+for(
+const kw of
+intent.keywords
+){
+
+if(
+hay.includes(
+kw
+)
+){
+
+score+=2
+
 }
 
-/**
- * Top-level rule match. If rules find good matches, return them. If the query
- * is vague/complex or yields nothing, flag useAI so the caller can fall back.
- */
+}
+
+if(
+
+intent.category &&
+NEGATIVE_MATCHES[
+intent.category
+]?.includes(
+p.category_key
+)
+
+){
+
+score-=8
+
+}
+
+score+=
+p.featured
+?1
+:0
+
+score+=
+Number(
+p.tier
+)===1
+?1
+:0
+
+return{
+
+partner:p,
+url:partnerUrl(
+p,
+region
+),
+score
+
+}
+
+})
+
+return scored
+
+.filter(
+r=>r.score>0
+)
+
+.sort(
+(a,b)=>
+b.score-a.score
+)
+
+.slice(
+0,
+5
+)
+
+}
+
 export function conciergeMatch(
-  all: HomePartner[],
-  region: string,
-  rawQuery: string
-): ConciergeResult {
-  const intent = detectIntent(rawQuery);
-  const matches = scorePartners(all, region, intent, rawQuery);
-  // Decide whether the rule matcher actually understood the query, or just
-  // returned weak keyword-overlap guesses. Signals that the rules FAILED:
-  //  - no matches at all, or
-  //  - low intent confidence, or
-  //  - the top match never got a real category lock (a true category hit
-  //    scores >= 10 in scorePartners; weak keyword-only hits score ~2-4), or
-  //  - the visitor clearly named a destination but no category locked in
-  //    (e.g. "quiero irme a paris, necesito un boleto de avion" -> the rules
-  //    grabbed generic travel partners instead of flights).
-  const topScore = matches.length ? matches[0].score : 0;
-  const weakTop = topScore < 8; // below a real category lock
-  const destNoCategory = Boolean(intent.destination) && !intent.category;
-  const useAI =
-    matches.length === 0 ||
-    intent.confidence < 0.4 ||
-    weakTop ||
-    destNoCategory;
-  return { intent, matches, useAI };
+
+all:HomePartner[],
+region:string,
+rawQuery:string
+
+){
+
+const intent=
+detectIntent(
+rawQuery
+)
+
+const matches=
+scorePartners(
+all,
+region,
+intent,
+rawQuery
+)
+
+return{
+
+intent,
+matches,
+useAI:
+matches.length===0 ||
+intent.confidence<0.4
+
+}
+
 }
