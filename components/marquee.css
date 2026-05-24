@@ -1,6 +1,6 @@
 /* File: components/marquee.css
    Styles for PartnerMarquee — scoped so it never affects the rest of the site.
-   Tuned for the LIGHT theme: defined white cards, dark readable text. */
+   DARK theme: dark frosted-glass cards (Fathom style), light readable text. */
 @keyframes productionScrollLeft {
   0% { transform: translate3d(0, 0, 0); }
   100% { transform: translate3d(-50%, 0, 0); }
@@ -35,16 +35,16 @@
   height: 4rem;
   padding: 0 1.5rem;
   border-radius: 1rem;
-  border: 1px solid rgba(40, 60, 90, 0.12);
-  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background-color: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 18px rgba(60, 90, 130, 0.10);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .fathom-glass-card-upgrade span {
-  color: #1d2733 !important;   /* dark, readable on the light cards */
+  color: #f5f6f8 !important;   /* light, readable on the dark glass cards */
   font-weight: 600;
 }
 /* Brand logo sitting to the left of the name. */
@@ -57,7 +57,7 @@
 }
 .fathom-glass-card-upgrade:hover {
   border-color: rgba(224, 164, 37, 0.55);
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.10);
   box-shadow: 0 8px 22px rgba(224, 164, 37, 0.18);
   transform: translateY(-2px);
 }
