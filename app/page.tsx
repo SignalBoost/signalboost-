@@ -4,52 +4,24 @@ import PartnerMarquee from "@/components/PartnerMarquee";
 import Footer from "@/components/Footer";
 import initialPartnersList from "@/public/partners.json";
 
-// Explicitly import your home style sheets for the slow keyframe animations
+// Explicitly import your home style sheets for the marquee keyframe loops
 import "./home.css"; 
 
 export default function HomePage() {
   return (
-    <div style={{
-      backgroundColor: "#060913",
-      minHeight: "100vh",
-      color: "#ffffff",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      position: "relative",
-      overflowX: "hidden",
-      fontFamily: "system-ui, -apple-system, sans-serif",
-      paddingTop: "8rem",  /* Gives plenty of space below your real top navbar */
-      paddingBottom: "2rem"
-    }}>
+    <div className="w-full flex flex-col items-center px-4" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
       
-      {/* Premium Ambient Background Glow */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "1000px",
-        height: "400px",
-        background: "linear-gradient(to bottom, rgba(245, 158, 11, 0.06), transparent)",
-        borderRadius: "50%",
-        filter: "blur(120px)",
-        pointerEvents: "none",
-        zIndex: 0
-      }} />
-
-      {/* Main Core View Area */}
+      {/* Main Content Hero Block */}
       <div style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
         maxWidth: "42rem",
-        paddingLeft: "1.5rem",
-        paddingRight: "1.5rem",
-        zIndex: 10,
         width: "100%",
-        marginBottom: "3rem"
+        paddingTop: "4rem",
+        paddingBottom: "2rem",
+        zIndex: 10
       }}>
         <h1 style={{ 
           fontSize: "3.5rem", 
@@ -67,7 +39,7 @@ export default function HomePage() {
           Tell me what you need and I’ll guide you to the right trusted partner — flights, hotels, eSIMs, cars and more, matched perfectly to your country.
         </p>
 
-        {/* Custom Search Bar Container */}
+        {/* Custom Search bar Container */}
         <div style={{
           width: "100%",
           maxWidth: "32rem",
@@ -130,15 +102,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* --- MARQUEE CONTAINER (Pushed to flow naturally, preventing vertical overflow clipping) --- */}
+      {/* --- Safe Marquee Display Area --- */}
       {initialPartnersList && initialPartnersList.length > 0 && (
-        <div style={{ width: "100%", zIndex: 10, padding: "2rem 0", contentVisibility: "auto" }}>
+        <div style={{ width: "100%", padding: "3rem 0", zIndex: 10 }}>
           <PartnerMarquee partnersData={initialPartnersList} />
         </div>
       )}
 
-      {/* Bottom Context Footprint */}
-      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, width: "100%", padding: "2rem 0 1rem 0" }}>
+      {/* Footer System Info */}
+      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, width: "100%", paddingBottom: "2rem" }}>
         Directly connecting you with Booking.com, Aviasales, Amazon and 130+ vetted global networks.
       </div>
 
