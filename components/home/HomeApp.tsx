@@ -303,13 +303,11 @@ export default function HomeApp() {
               {partners.length > 0 && (
                 <div style={{ width: "100%", padding: "1.5rem 0 2rem", zIndex: 2 }}>
                   <PartnerMarquee
+                    lang={lang}
                     partnersData={partners.map((p) => ({
                       id: p.id,
                       name: p.name,
                       url: partnerUrl(p, region),
-                      // pass a clean domain for the logo if your data has one;
-                      // the marquee falls back to deriving it from the url.
-                      domain: (p as { domain?: string }).domain,
                       tier: p.tier || 1,
                       featured: !!p.featured,
                     }))}
