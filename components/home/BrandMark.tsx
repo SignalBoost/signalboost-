@@ -1,12 +1,12 @@
-BrandMark.tsx// File: components/home/BrandMark.tsx
+"use client";
+
+// File: components/home/BrandMark.tsx
 // Top-left brand logo: the "signalboost" wordmark plus an animated
 // signal-emission mark — a gold dot with concentric arcs that pulse outward,
 // echoing the SaaS site's logo. Self-contained (inline styles + a tiny scoped
 // keyframes block), so it doesn't depend on home.css.
 //
 // Fixed to the top-left, above the hero, low z-index so it never blocks taps.
-
-"use client";
 
 export default function BrandMark() {
   return (
