@@ -107,6 +107,9 @@ const HERO_COPY: Record<string, Dict> = {
     soon: "soon",
     window_shopping: "Window shopping",
     marquee_subtitle: "Featuring brands you already trust",
+    support_center_title: "Support Center",
+    support_center_sub: "Need help? Reach our team and we'll get back to you.",
+    support_center_email_label: "Email us",
   },
   "pt-BR": {
     mall_tagline: "Seu shopping digital guiado por IA",
@@ -122,6 +125,9 @@ const HERO_COPY: Record<string, Dict> = {
     soon: "em breve",
     window_shopping: "Vitrine",
     marquee_subtitle: "Com marcas em que você já confia",
+    support_center_title: "Central de Suporte",
+    support_center_sub: "Precisa de ajuda? Fale com nossa equipe e responderemos.",
+    support_center_email_label: "Envie um e-mail",
   },
   es: {
     mall_tagline: "Tu centro comercial digital guiado por IA",
@@ -137,6 +143,9 @@ const HERO_COPY: Record<string, Dict> = {
     soon: "pronto",
     window_shopping: "Vitrina",
     marquee_subtitle: "Con marcas en las que ya confías",
+    support_center_title: "Centro de Soporte",
+    support_center_sub: "¿Necesitas ayuda? Escríbenos y te responderemos.",
+    support_center_email_label: "Escríbenos",
   },
   pl: {
     mall_tagline: "Twoje cyfrowe centrum handlowe z przewodnikiem AI",
@@ -152,6 +161,9 @@ const HERO_COPY: Record<string, Dict> = {
     soon: "wkrótce",
     window_shopping: "Witryna",
     marquee_subtitle: "Marki, którym już ufasz",
+    support_center_title: "Centrum Pomocy",
+    support_center_sub: "Potrzebujesz pomocy? Napisz do nas, a odpowiemy.",
+    support_center_email_label: "Napisz do nas",
   },
   de: {
     mall_tagline: "Dein KI-geführtes digitales Einkaufszentrum",
@@ -167,6 +179,9 @@ const HERO_COPY: Record<string, Dict> = {
     soon: "bald",
     window_shopping: "Schaufenster",
     marquee_subtitle: "Mit Marken, denen du bereits vertraust",
+    support_center_title: "Support-Center",
+    support_center_sub: "Brauchst du Hilfe? Schreib uns und wir melden uns.",
+    support_center_email_label: "Schreib uns",
   },
   fr: {
     mall_tagline: "Votre centre commercial digital guidé par IA",
@@ -182,6 +197,9 @@ const HERO_COPY: Record<string, Dict> = {
     soon: "bientôt",
     window_shopping: "Vitrine",
     marquee_subtitle: "Avec des marques en qui vous avez déjà confiance",
+    support_center_title: "Centre d'assistance",
+    support_center_sub: "Besoin d'aide ? Contactez notre équipe et nous vous répondrons.",
+    support_center_email_label: "Écrivez-nous",
   },
   it: {
     mall_tagline: "Il tuo centro commerciale digitale guidato dall'IA",
@@ -197,6 +215,9 @@ const HERO_COPY: Record<string, Dict> = {
     soon: "presto",
     window_shopping: "Vetrina",
     marquee_subtitle: "Con marchi di cui ti fidi già",
+    support_center_title: "Centro Assistenza",
+    support_center_sub: "Hai bisogno di aiuto? Scrivici e ti risponderemo.",
+    support_center_email_label: "Scrivici",
   },
 };
 
