@@ -18,7 +18,7 @@ interface MarqueeProps {
 }
 
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  // Sort into rows cleanly based on your database tier attributes
+  // Separate top tier anchors from longer tail operations cleanly
   const { row1, row2 } = useMemo(() => {
     if (!partnersData || partnersData.length === 0) {
       return { row1: [], row2: [] };
@@ -26,7 +26,6 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
     const anchors = partnersData.filter((p) => p.tier === 1 || p.featured === true);
     const specialties = partnersData.filter((p) => p.tier > 1 && !p.featured);
     
-    // Safety split check if sorting criteria returns empty sets
     if (anchors.length === 0) {
       const half = Math.ceil(partnersData.length / 2);
       return { row1: partnersData.slice(0, half), row2: partnersData.slice(half) };
@@ -34,10 +33,10 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
     return { row1: anchors, row2: specialties };
   }, [partnersData]);
 
-  // Clean name variants to query matching clear vectors
+  // Clean strings to request clear vectors from Brandfetch CDN engine safely
   const getCleanDomain = (name: string) => {
     let clean = name.toLowerCase().replace(/[^a-z0-9]/g, "");
-    if (clean.includes("brazil")) clean = "booking.com"; // smart handler for regional variants
+    if (clean.includes("brazil")) clean = "booking.com"; 
     return `${clean}.com`;
   };
 
@@ -54,7 +53,6 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
         }}
       >
         <div className={`flex gap-4 whitespace-nowrap py-3 ${tickerClass} hover:[animation-play-state:paused] transition-all`}>
-          {/* Double mapped render arrays guarantee smooth looping loops */}
           {[...items, ...items].map((partner, index) => {
             const domainString = getCleanDomain(partner.name);
             return (
@@ -67,10 +65,9 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
               >
                 <img
                   src={`https://cdn.brandfetch.io/${domainString}`}
-                  alt={`${partner.name} branding`}
+                  alt={`${partner.name} logo`}
                   className="max-h-7 max-w-[110px] object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
                   onError={(e) => {
-                    // Hidden switch gracefully loads raw textual string properties if missing vector CDN targets
                     e.currentTarget.style.display = "none";
                     const fallbackEl = e.currentTarget.nextSibling as HTMLElement;
                     if (fallbackEl) fallbackEl.style.display = "block";
