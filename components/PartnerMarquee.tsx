@@ -1,7 +1,7 @@
 // components/PartnerMarquee.tsx
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 
 interface Partner {
   id: string;
@@ -16,16 +16,17 @@ interface MarqueeProps {
 }
 
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  // Balanced data split to fill Row 1 and Row 2 perfectly
-  const { row1, row2 } = useMemo(() => {
-    if (!partnersData || partnersData.length === 0) return { row1: [], row2: [] };
-    const half = Math.ceil(partnersData.length / 2);
-    return { row1: partnersData.slice(0, half), row2: partnersData.slice(half) };
-  }, [partnersData]);
+  // Safe validation fallback check
+  const list = partnersData || [];
+  
+  // Split your dataset cleanly into two completely separate arrays
+  const halfLength = Math.ceil(list.length / 2);
+  const topRowPartners = list.slice(0, halfLength);
+  const bottomRowPartners = list.slice(halfLength);
 
-  const renderRow = (items: Partner[], isReverse: boolean) => {
+  const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
     if (items.length === 0) return null;
-    const scrollClassName = isReverse ? "force-marquee-right" : "force-marquee-left";
+    const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
 
     return (
       <div style={{ 
@@ -33,14 +34,15 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
         display: "flex", 
         width: "100%", 
         overflow: "hidden",
-        padding: "0.75rem 0",
+        padding: "0.5rem 0",
         WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
         maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)"
       }}>
-        <div className={scrollClassName}>
+        <div className={animationClass}>
+          {/* Loop twice to create a seamless infinite scrolling line */}
           {[...items, ...items].map((partner, index) => (
             <a
-              key={`${partner.id}-${isReverse ? "row-b" : "row-a"}-${index}`}
+              key={`${partner.id}-${rowKeyIdentifier}-${index}`}
               href={partner.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -62,21 +64,21 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   };
 
   return (
-    <div style={{ display: "block", width: "100%", overflow: "hidden" }}>
-      <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div style={{ textAlign: "center", marginBottom: "1rem" }}>
         <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.15em" }}>
           WINDOW SHOPPING
         </span>
         <h3 style={{ fontSize: "1.25rem", fontWeight: 500, color: "#9ca3af", marginTop: "0.25rem" }}>
-          Explore {partnersData.length}+ Integrated Regional Stores
+          Explore {list.length}+ Integrated Regional Stores
         </h3>
       </div>
 
-      {/* Render Row 1 going Forward */}
-      {renderRow(row1, false)}
+      {/* Force Top Row (Moving Left) */}
+      {renderRow(topRowPartners, false, "top-track")}
       
-      {/* Render Row 2 going Backward */}
-      {renderRow(row2, true)}
+      {/* Force Bottom Row (Moving Right) */}
+      {renderRow(bottomRowPartners, true, "bottom-track")}
     </div>
   );
 }
