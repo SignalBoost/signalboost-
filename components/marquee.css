@@ -1,6 +1,6 @@
 /* File: components/marquee.css
-   Styles for PartnerMarquee — scoped to its own classes so it never affects
-   the rest of the site. Imported directly by PartnerMarquee.tsx. */
+   Styles for PartnerMarquee — scoped so it never affects the rest of the site.
+   Tuned for the LIGHT theme: defined white cards, dark readable text. */
 
 @keyframes productionScrollLeft {
   0% { transform: translate3d(0, 0, 0); }
@@ -30,21 +30,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 180px;
-  height: 4.5rem;
+  min-width: 170px;
+  height: 4rem;
   padding: 0 1.5rem;
   border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background-color: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(40, 60, 90, 0.12);
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(60, 90, 130, 0.10);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.fathom-glass-card-upgrade span {
+  color: #1d2733 !important;   /* dark, readable on the light cards */
+  font-weight: 600;
+}
 .fathom-glass-card-upgrade:hover {
-  border-color: rgba(245, 158, 11, 0.4);
-  background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.1);
+  border-color: rgba(224, 164, 37, 0.55);
+  background-color: #ffffff;
+  box-shadow: 0 8px 22px rgba(224, 164, 37, 0.18);
   transform: translateY(-2px);
 }
