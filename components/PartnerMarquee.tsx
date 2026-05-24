@@ -11,6 +11,9 @@
 // missing, or a logo fails to load, the card falls back to showing the name
 // only — nothing breaks.
 //
+// DARK THEME: card text is light and each logo sits on a small white chip so
+// dark brand marks stay visible against the dark glass cards.
+//
 // To add or remove a brand: edit the FEATURED_BRANDS array below. Each entry is
 // { name, domain, url }:
 //   - name   = text shown on the card
@@ -87,19 +90,35 @@ export default function PartnerMarquee() {
                 className="fathom-glass-card-upgrade"
               >
                 {logo && (
-                  <img
-                    className="partner-logo"
-                    src={logo}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    onError={(e) => {
-                      // Logo failed -> hide it, leaving a clean name-only card.
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "30px",
+                      height: "30px",
+                      flexShrink: 0,
+                      borderRadius: "7px",
+                      background: "#fff", // white chip keeps dark logos visible on dark cards
+                      padding: "4px",
                     }}
-                  />
+                  >
+                    <img
+                      className="partner-logo"
+                      src={logo}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      style={{ width: "22px", height: "22px", objectFit: "contain", borderRadius: 0 }}
+                      onError={(e) => {
+                        // Logo failed -> hide the whole chip, leaving a name-only card.
+                        const chip = (e.currentTarget as HTMLImageElement).parentElement;
+                        if (chip) (chip as HTMLElement).style.display = "none";
+                      }}
+                    />
+                  </span>
                 )}
-                <span style={{ color: "#1d2733", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
+                <span style={{ color: "#f5f6f8", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
                   {brand.name}
                 </span>
               </a>
