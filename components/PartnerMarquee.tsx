@@ -1,50 +1,74 @@
-/* File: components/marquee.css
-   Styles for PartnerMarquee — scoped to its own classes so it never affects
-   the rest of the site. Imported directly by PartnerMarquee.tsx. */
+"use client";
+// File: components/PartnerMarquee.tsx
+// "Window Shopping" — two rows of partner store names scrolling in opposite
+// directions. Styles live in ./marquee.css (imported below) so they travel
+// with the component and never disturb the rest of the site.
+import React from "react";
+import "./marquee.css";
 
-@keyframes productionScrollLeft {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
+interface Partner {
+  id: string;
+  name: string;
+  url: string;
+  tier: number;
+  featured: boolean;
 }
-@keyframes productionScrollRight {
-  0% { transform: translate3d(-50%, 0, 0); }
-  100% { transform: translate3d(0, 0, 0); }
+interface MarqueeProps {
+  partnersData: Partner[];
 }
-.force-marquee-left {
-  display: flex;
-  gap: 1rem;
-  white-space: nowrap;
-  animation: productionScrollLeft 90s linear infinite;
-}
-.force-marquee-right {
-  display: flex;
-  gap: 1rem;
-  white-space: nowrap;
-  animation: productionScrollRight 90s linear infinite;
-}
-.force-marquee-left:hover,
-.force-marquee-right:hover {
-  animation-play-state: paused;
-}
-.fathom-glass-card-upgrade {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 180px;
-  height: 4.5rem;
-  padding: 0 1.5rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background-color: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
-  text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.fathom-glass-card-upgrade:hover {
-  border-color: rgba(245, 158, 11, 0.4);
-  background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.1);
-  transform: translateY(-2px);
+
+export default function PartnerMarquee({ partnersData }: MarqueeProps) {
+  const list = partnersData || [];
+  const halfLength = Math.ceil(list.length / 2);
+  const topRowPartners = list.slice(0, halfLength);
+  const bottomRowPartners = list.slice(halfLength);
+
+  const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
+    if (items.length === 0) return null;
+    const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
+    return (
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          width: "100%",
+          overflow: "hidden",
+          padding: "0.5rem 0",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+          maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+        }}
+      >
+        <div className={animationClass}>
+          {[...items, ...items].map((partner, index) => (
+            <a
+              key={`${partner.id}-${rowKeyIdentifier}-${index}`}
+              href={partner.url}
+              target="_blank"
+              rel="noopener sponsored"
+              className="fathom-glass-card-upgrade"
+            >
+              <span style={{ color: "#e5e7eb", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
+                {partner.name}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.15em" }}>
+          WINDOW SHOPPING
+        </span>
+        <h3 style={{ fontSize: "1.25rem", fontWeight: 500, color: "#9ca3af", marginTop: "0.25rem" }}>
+          Explore {list.length}+ Integrated Regional Stores
+        </h3>
+      </div>
+      {renderRow(topRowPartners, false, "top-track")}
+      {renderRow(bottomRowPartners, true, "bottom-track")}
+    </div>
+  );
 }
