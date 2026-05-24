@@ -4,7 +4,7 @@ import PartnerMarquee from "@/components/PartnerMarquee";
 import Footer from "@/components/Footer";
 import initialPartnersList from "@/public/partners.json";
 
-// Force Next.js to apply our custom slow marquee keyframe loop animations
+// Import your custom homepage stylesheet for the slow animations
 import "./home.css"; 
 
 export default function HomePage() {
@@ -22,7 +22,7 @@ export default function HomePage() {
       fontFamily: "system-ui, -apple-system, sans-serif"
     }}>
       
-      {/* --- PREMIUM NAVIGATION BAR / LOGO RESTORATION LAYER --- */}
+      {/* --- FIXED NAVIGATION BAR (Safe & Static Unclickable States) --- */}
       <header style={{
         width: "100%",
         maxWidth: "80rem",
@@ -36,40 +36,45 @@ export default function HomePage() {
         transform: "translateX(-50%)",
         zIndex: 50
       }}>
-        {/* Left Side: Restored Brand Identity Typography */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
+        {/* Left Side: Solid Brand Text */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em" }}>
             signal<span style={{ color: "#f59e0b" }}>boost</span>
           </span>
         </div>
 
-        {/* Right Side: Restored Authentication Context Actions Menu */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <a href="/admin" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.85rem", padding: "0.5rem 0.75rem" }}>
+        {/* Right Side: Clean Disabled Text Indicators to Avoid 404 Dead Ends */}
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <span style={{ color: "#4b5563", fontSize: "0.85rem", cursor: "not-allowed" }}>
             ⚙️ Admin
-          </a>
-          <a href="/dashboard" style={{ 
-            backgroundColor: "#f59e0b", 
+          </span>
+          
+          {/* Dashboard Rendered Strictly as an Unclickable Visual Layout Component */}
+          <div style={{ 
+            backgroundColor: "#rgba(245, 158, 11, 0.5)",
+            background: "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)",
             color: "#060913", 
-            textDecoration: "none", 
             fontSize: "0.85rem", 
-            fontWeight: 600,
-            padding: "0.5rem 1rem", 
+            fontWeight: 700,
+            padding: "0.5rem 1.25rem", 
             borderRadius: "9999px",
-            boxShadow: "0 4px 12px rgba(245, 158, 11, 0.2)"
+            opacity: 0.85,
+            cursor: "not-allowed",
+            userSelect: "none"
           }}>
             Dashboard
-          </a>
-          <a href="/reset-password" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.85rem", padding: "0.5rem 0.75rem" }}>
+          </div>
+
+          <span style={{ color: "#4b5563", fontSize: "0.85rem", cursor: "not-allowed" }}>
             Reset password
-          </a>
-          <a href="/logout" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.85rem", padding: "0.5rem 0.75rem" }}>
+          </span>
+          <span style={{ color: "#4b5563", fontSize: "0.85rem", cursor: "not-allowed" }}>
             Log out
-          </a>
+          </span>
         </div>
       </header>
 
-      {/* Premium Ambient Background Glow */}
+      {/* Ambient Background Lighting Accent */}
       <div style={{
         position: "absolute",
         top: 0,
@@ -77,14 +82,14 @@ export default function HomePage() {
         transform: "translateX(-50%)",
         width: "1000px",
         height: "400px",
-        background: "linear-gradient(to bottom, rgba(245, 158, 11, 0.08), transparent)",
+        background: "linear-gradient(to bottom, rgba(245, 158, 11, 0.06), transparent)",
         borderRadius: "50%",
         filter: "blur(120px)",
         pointerEvents: "none",
         zIndex: 0
       }} />
 
-      {/* Main Hero Container */}
+      {/* Main Core View Area */}
       <div style={{
         display: "flex",
         flexDirection: "column",
@@ -95,16 +100,15 @@ export default function HomePage() {
         paddingRight: "1.5rem",
         zIndex: 10,
         width: "100%",
-        marginTop: "10rem", // Pushes content safely below the absolute header layout
-        marginBottom: "auto"
+        marginTop: "9rem", 
+        marginBottom: "2rem"
       }}>
         <h1 style={{ 
           fontSize: "3.5rem", 
           fontWeight: 800, 
-          letterSpacing: "-0.02em",
+          letterSpacing: "-0.03em",
           color: "#f59e0b", 
-          marginBottom: "0.25rem",
-          textShadow: "0 0 40px rgba(245, 158, 11, 0.2)"
+          marginBottom: "0.5rem"
         }}>
           SignalBoost
         </h1>
@@ -115,7 +119,7 @@ export default function HomePage() {
           Tell me what you need and I’ll guide you to the right trusted partner — flights, hotels, eSIMs, cars and more, matched perfectly to your country.
         </p>
 
-        {/* Premium Frosted Search Container */}
+        {/* Custom Search bar Mock Container */}
         <div style={{
           width: "100%",
           maxWidth: "32rem",
@@ -155,14 +159,13 @@ export default function HomePage() {
             justifyContent: "center",
             fontWeight: "bold",
             color: "#060913",
-            fontSize: "1.1rem",
             cursor: "pointer"
           }}>
             →
           </button>
         </div>
 
-        {/* Category Badges */}
+        {/* Interface Category Badges */}
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.6rem" }}>
           {["✈️ Flights", "🏨 Hotels", "📶 eSIM & Internet", "🎟️ Tours & Activities", "🚗 Car Rentals", "🛒 Marketplace"].map((pill) => (
             <span key={pill} style={{
@@ -179,15 +182,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Scrolling Window Shopping Layers loaded from partners.json */}
+      {/* --- SCROLLER CONTAINER LAYER (Optimized Height Spacing) --- */}
       {initialPartnersList && initialPartnersList.length > 0 && (
-        <div style={{ width: "100%", zIndex: 10, marginTop: "2rem" }}>
+        <div style={{ width: "100%", zIndex: 10, marginTop: "auto", marginBottom: "auto" }}>
           <PartnerMarquee partnersData={initialPartnersList} />
         </div>
       )}
 
-      {/* Sub-text notice */}
-      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, marginTop: "1rem", letterSpacing: "0.02em" }}>
+      {/* Bottom context footprint footer row */}
+      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, width: "100%", padding: "1rem 0" }}>
         Directly connecting you with Booking.com, Aviasales, Amazon and 130+ vetted global networks.
       </div>
 
