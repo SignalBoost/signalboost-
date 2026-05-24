@@ -1,19 +1,21 @@
 // app/partners/[category]/page.tsx
 import React from "react";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import initialPartnersList from "@/public/partners.json";
 
+// Next.js 15 explicitly requires params to be typed as a Promise
 interface Props {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const { category } = params;
+  // Await the asynchronous params object before unpacking its parameters
+  const resolvedParams = await params;
+  const { category } = resolvedParams;
 
-  // 1. Filter out partners belonging exclusively to this path's category context
+  // Filter out partners belonging exclusively to this path's category context
   const filteredPartners = initialPartnersList.filter(
     (p) => p.category_key === category
   );
@@ -91,7 +93,7 @@ export default async function CategoryPage({ params }: Props) {
           </div>
         </section>
 
-        {/* --- GRID GRID DISPLAY CARDS LAYER (The User Window Shopping Interface) --- */}
+        {/* --- GRID DISPLAY CARDS LAYER (The User Window Shopping Interface) --- */}
         <section>
           <h2 className="text-xl font-semibold mb-6 text-gray-200">
             Available Integrated Storefronts
