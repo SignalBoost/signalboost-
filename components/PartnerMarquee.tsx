@@ -1,51 +1,56 @@
 "use client";
 // File: components/PartnerMarquee.tsx
-// "Window Shopping" — two rows of partner store names scrolling in opposite
-// directions. Styles live in ./marquee.css (imported below) so they travel
-// with the component and never disturb the rest of the site.
+// "Window Shopping" — a curated marquee of well-known brands only. This does
+// NOT show all partners; it shows a hand-picked list of recognizable names so
+// the hero looks premium. Every other partner is still fully available to users
+// through the concierge search / prompt — the marquee is just a showcase.
 //
-// Logos: auto-fetched per partner from Google's favicon service, using the
-// domain parsed out of each partner's affiliate `url`. If a link is a tracking
-// redirect (e.g. go.somenetwork.com) the favicon will reflect that domain, not
-// the partner — add a real `domain` field per partner later for a perfect match.
-// Any logo that can't load (bad/blocked/unparseable) hides itself via onError,
-// leaving a clean name-only card.
+// To add or remove a brand: edit the FEATURED_BRANDS array below. Each entry is
+// { name, domain, url }:
+//   - name   = text shown on the card
+//   - domain = used to fetch the real brand logo (logo.clearbit.com/<domain>)
+//   - url    = where the card links to (use your affiliate link if you have one)
+// If a logo ever fails to load, that card falls back to showing the name only.
 import React from "react";
 import "./marquee.css";
-interface Partner {
-  id: string;
+
+interface Brand {
   name: string;
+  domain: string;
   url: string;
-  tier: number;
-  featured: boolean;
-}
-interface MarqueeProps {
-  partnersData: Partner[];
 }
 
-// Pull a bare hostname (no www.) out of a URL string. Returns "" if it can't
-// be parsed, in which case we render no logo for that card.
-function domainFromUrl(url: string): string {
-  if (!url) return "";
-  try {
-    const u = new URL(url.startsWith("http") ? url : `https://${url}`);
-    return u.hostname.replace(/^www\./, "");
-  } catch {
-    return "";
-  }
+// --- Curated big-name brands shown in the marquee --------------------------
+// Edit this list freely. Keep it to the recognizable names you're proud of.
+const FEATURED_BRANDS: Brand[] = [
+  { name: "Booking.com", domain: "booking.com", url: "https://www.booking.com" },
+  { name: "Trivago", domain: "trivago.com", url: "https://www.trivago.com" },
+  { name: "Amazon", domain: "amazon.com", url: "https://www.amazon.com" },
+  { name: "Kiwi.com", domain: "kiwi.com", url: "https://www.kiwi.com" },
+  { name: "Tiqets", domain: "tiqets.com", url: "https://www.tiqets.com" },
+  { name: "Airalo", domain: "airalo.com", url: "https://www.airalo.com" },
+  { name: "Expedia", domain: "expedia.com", url: "https://www.expedia.com" },
+  { name: "Agoda", domain: "agoda.com", url: "https://www.agoda.com" },
+  { name: "GetYourGuide", domain: "getyourguide.com", url: "https://www.getyourguide.com" },
+  { name: "Hostelworld", domain: "hostelworld.com", url: "https://www.hostelworld.com" },
+  { name: "Discover Cars", domain: "discovercars.com", url: "https://www.discovercars.com" },
+  { name: "Saily", domain: "saily.com", url: "https://saily.com" },
+];
+
+// Clearbit returns a real brand logo PNG by domain.
+function logoUrl(domain: string): string {
+  return `https://logo.clearbit.com/${encodeURIComponent(domain)}`;
 }
 
-// Google's favicon service — reliable, CORS-friendly, rarely blocks hotlinking.
-function faviconUrl(domain: string): string {
-  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
-}
+export default function PartnerMarquee() {
+  const list = FEATURED_BRANDS;
+  if (list.length === 0) return null;
 
-export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  const list = partnersData || [];
   const halfLength = Math.ceil(list.length / 2);
-  const topRowPartners = list.slice(0, halfLength);
-  const bottomRowPartners = list.slice(halfLength);
-  const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
+  const topRow = list.slice(0, halfLength);
+  const bottomRow = list.slice(halfLength);
+
+  const renderRow = (items: Brand[], isReverse: boolean, rowKeyIdentifier: string) => {
     if (items.length === 0) return null;
     const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
     return (
@@ -61,39 +66,35 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
         }}
       >
         <div className={animationClass}>
-          {[...items, ...items].map((partner, index) => {
-            const domain = domainFromUrl(partner.url);
-            return (
-              <a
-                key={`${partner.id}-${rowKeyIdentifier}-${index}`}
-                href={partner.url}
-                target="_blank"
-                rel="noopener sponsored"
-                className="fathom-glass-card-upgrade"
-              >
-                {domain && (
-                  <img
-                    className="partner-logo"
-                    src={faviconUrl(domain)}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    onError={(e) => {
-                      // Hide any logo that fails to load -> clean name-only card.
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                )}
-                <span style={{ color: "#1d2733", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
-                  {partner.name}
-                </span>
-              </a>
-            );
-          })}
+          {[...items, ...items].map((brand, index) => (
+            <a
+              key={`${brand.domain}-${rowKeyIdentifier}-${index}`}
+              href={brand.url}
+              target="_blank"
+              rel="noopener sponsored"
+              className="fathom-glass-card-upgrade"
+            >
+              <img
+                className="partner-logo"
+                src={logoUrl(brand.domain)}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                onError={(e) => {
+                  // Logo failed -> hide it, leaving a clean name-only card.
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                }}
+              />
+              <span style={{ color: "#1d2733", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
+                {brand.name}
+              </span>
+            </a>
+          ))}
         </div>
       </div>
     );
   };
+
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1rem", marginTop: 0 }}>
       <div style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -101,11 +102,11 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
           WINDOW SHOPPING
         </span>
         <h3 style={{ fontSize: "1.25rem", fontWeight: 500, color: "#9ca3af", marginTop: "0.25rem" }}>
-          Explore {list.length}+ Integrated Regional Stores
+          Featuring brands you already trust
         </h3>
       </div>
-      {renderRow(topRowPartners, false, "top-track")}
-      {renderRow(bottomRowPartners, true, "bottom-track")}
+      {renderRow(topRow, false, "top-track")}
+      {renderRow(bottomRow, true, "bottom-track")}
     </div>
   );
 }
