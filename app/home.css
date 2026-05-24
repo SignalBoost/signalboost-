@@ -1,28 +1,59 @@
-/* ==========================================
-   SignalBoost Horizontal Marquee Animations
-   ========================================== */
-@keyframes continuousScrollFwd {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
+/* ========================================================
+   SIGNALBOOST CONCIERGE MARQUEE & DESIGN SYSTEM CORES
+   ======================================================== */
+
+@keyframes productionScrollLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
-@keyframes continuousScrollRev {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0%); }
+@keyframes productionScrollRight {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
-.animate-marquee-fwd {
-  animation: continuousScrollFwd 60s linear infinite;
+/* Force the horizontal rows to slide continuously */
+.force-marquee-left {
+  display: flex !important;
+  gap: 1rem !important;
+  white-space: nowrap !important;
+  animation: productionScrollLeft 50s linear infinite !important;
 }
 
-.animate-marquee-rev {
-  animation: continuousScrollRev 60s linear infinite;
+.force-marquee-right {
+  display: flex !important;
+  gap: 1rem !important;
+  white-space: nowrap !important;
+  animation: productionScrollRight 50s linear infinite !important;
 }
 
-/* Frosted glass template utility class */
-.fathom-glass-card {
-  background: rgba(255, 255, 255, 0.02) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+/* Pause the scrolling loop when a user hovers to explore a store */
+.force-marquee-left:hover,
+.force-marquee-right:hover {
+  animation-play-state: paused !important;
+}
+
+/* Bulletproof Fathom-Glass Styling Override */
+.fathom-glass-card-upgrade {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 180px !important;
+  height: 4.5rem !important;
+  padding: 0 1.5rem !important;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4) !important;
+  text-decoration: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.fathom-glass-card-upgrade:hover {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.1) !important;
+  transform: translateY(-2px) !important;
 }
