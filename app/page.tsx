@@ -1,21 +1,23 @@
-// File: app/page.tsx
-// The real homepage at signalboostapp.com (/).
-// Phase F flip: the React concierge homepage is now the site's front door,
-// replacing the old static public/index.html (kept as index.html.bak for
-// instant rollback). Thin server component: scoped styles + client app.
-//
-// Unlike the /home-next preview route, this one IS indexable (no robots noindex)
-// so search engines can crawl the homepage.
+// Example layout update logic inside your main home file
+import React from "react";
+import PartnerMarquee from "@/components/PartnerMarquee";
 
-import "./home-next/home.css";
-import HomeApp from "@/components/home/HomeApp";
+// Pull dataset from your local data stream array cleanly
+import initialPartnersList from "@/public/partners.json"; 
 
-export const metadata = {
-  title: "SignalBoost — Your AI-guided digital shopping mall",
-  description:
-    "Tell SignalBoost what you need and get guided to the right trusted partner — flights, hotels, eSIMs, rental cars and more, matched to your country.",
-};
+export default function HomeNextPage() {
+  return (
+    <div className="min-h-screen bg-[#060913] text-white flex flex-col items-center justify-between relative">
+      
+      {/* 1. KEEP YOUR EXISTING CONTAINER UNALTERED */}
+      {/* Your current header, search container fields, category pills go here */}
+      
+      {/* 2. ADD THE SAFELY CONTAINER MARQUEE LAYER DIRECTLY UNDER YOUR BUTTON PILLS */}
+      {initialPartnersList && initialPartnersList.length > 0 && (
+        <PartnerMarquee partnersData={initialPartnersList} />
+      )}
 
-export default function HomePage() {
-  return <HomeApp />;
+      {/* 3. KEEP YOUR BOTTOM ALERTS & RETENTION CARDS UNALTERED */}
+    </div>
+  );
 }
