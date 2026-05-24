@@ -11,11 +11,12 @@
 // logo.dev. Links still use the affiliate `url` (revenue-safe). Any brand whose
 // logo doesn't resolve falls back to a clean name-only card.
 //
-// To fix a wrong logo: correct that brand's domain in BRAND_DOMAINS below.
-// To add a newly-featured brand: add an id -> domain line.
+// Heading text ("Window shopping" + subtitle) is localized via the i18n keys
+// window_shopping / marquee_subtitle, using the `lang` prop from HomeApp.
 //
 // logo.dev publishable token lives in NEXT_PUBLIC_LOGO_DEV_TOKEN (set in Vercel).
 import React from "react";
+import { I18N } from "@/lib/home/i18n-home";
 import "./marquee.css";
 
 interface Partner {
@@ -27,11 +28,10 @@ interface Partner {
 }
 interface MarqueeProps {
   partnersData: Partner[];
+  lang?: string;
 }
 
 // --- Real brand domains for FEATURED partners (keyed by partner id) ----------
-// Maps your affiliate partners to their actual websites so logo.dev returns the
-// real brand logo instead of the affiliate network's icon.
 const BRAND_DOMAINS: Record<string, string> = {
   aviasales: "aviasales.com",
   cvc: "cvc.com.br",
@@ -73,16 +73,15 @@ const BRAND_DOMAINS: Record<string, string> = {
 // logo.dev publishable token (set in Vercel as NEXT_PUBLIC_LOGO_DEV_TOKEN).
 const LOGO_DEV_TOKEN = process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN || "";
 
-// Build a logo.dev image URL for a domain. "" if no token or no mapped domain
-// (so the card renders name-only instead of a wrong/generic logo).
 function logoUrl(domain: string): string {
   if (!LOGO_DEV_TOKEN || !domain) return "";
   return `https://img.logo.dev/${encodeURIComponent(domain)}?token=${LOGO_DEV_TOKEN}&size=128&format=png&retina=true`;
 }
 
-export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  // Show only featured partners that we have a real brand domain for. This keeps
-  // the marquee to recognizable brands with correct logos.
+export default function PartnerMarquee({ partnersData, lang = "en" }: MarqueeProps) {
+  // Localized heading text (falls back to English, then to a literal default).
+  const t = (key: string, fallback: string) => I18N[lang]?.[key] || I18N.en?.[key] || fallback;
+
   const list = (partnersData || []).filter((p) => p.featured && BRAND_DOMAINS[p.id]);
   if (list.length === 0) return null;
 
@@ -138,7 +137,6 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
                       loading="lazy"
                       style={{ width: "22px", height: "22px", objectFit: "contain", borderRadius: 0 }}
                       onError={(e) => {
-                        // Logo failed -> hide the whole chip, leaving a name-only card.
                         const chip = (e.currentTarget as HTMLImageElement).parentElement;
                         if (chip) (chip as HTMLElement).style.display = "none";
                       }}
@@ -159,11 +157,11 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1rem", marginTop: 0 }}>
       <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.15em" }}>
-          WINDOW SHOPPING
+        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+          {t("window_shopping", "Window shopping")}
         </span>
         <h3 style={{ fontSize: "1.25rem", fontWeight: 500, color: "#9ca3af", marginTop: "0.25rem" }}>
-          Featuring brands you already trust
+          {t("marquee_subtitle", "Featuring brands you already trust")}
         </h3>
       </div>
       {renderRow(topRow, false, "top-track")}
