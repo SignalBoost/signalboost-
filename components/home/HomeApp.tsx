@@ -37,6 +37,7 @@ import NudgeBubble from "@/components/home/NudgeBubble";
 import HomeSections from "@/components/home/HomeSections";
 import AdminBar from "@/components/home/AdminBar";
 import BrandMark from "@/components/home/BrandMark";
+import PartnerMarquee from "@/components/PartnerMarquee";
 
 type View = "concierge" | "browse";
 
@@ -300,6 +301,19 @@ export default function HomeApp() {
                 onBrowseAll={() => setView("browse")}
               />
               <HomeSections lang={lang} onPopular={runQuery} />
+              {partners.length > 0 && (
+                <div style={{ width: "100%", padding: "1rem 0 4rem", zIndex: 2 }}>
+                  <PartnerMarquee
+                    partnersData={partners.map((p) => ({
+                      id: p.id,
+                      name: p.name,
+                      url: partnerUrl(p, region),
+                      tier: p.tier || 1,
+                      featured: !!p.featured,
+                    }))}
+                  />
+                </div>
+              )}
             </>
           ) : (
             <div className="concierge-results-wrap">
