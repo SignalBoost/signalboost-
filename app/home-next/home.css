@@ -155,7 +155,9 @@
 @media(max-width:430px){.sb-home .category-grid{grid-template-columns:1fr}}
 
 /* ============ CONCIERGE HERO (centered landing) ============ */
-.sb-home .concierge-hero{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px 18px}
+/* min-height changed from 100vh -> auto so the hero only takes the space it
+   needs. This lifts everything below it (the marquee) up near the top. */
+.sb-home .concierge-hero{display:flex;align-items:center;justify-content:center;min-height:auto;padding:64px 18px 20px}
 .sb-home .concierge-hero-inner{width:100%;max-width:660px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px}
 .sb-home .concierge-brand{font-family:var(--display);font-size:46px;font-weight:900;color:var(--gold);letter-spacing:-.02em;line-height:1;text-shadow:0 2px 30px rgba(245,197,66,.25);animation:sbRise .7s cubic-bezier(.2,.7,.3,1) both}
 .sb-home .concierge-value{margin:0;font-size:19px;line-height:1.55;color:var(--soft);max-width:540px;animation:sbRise .7s cubic-bezier(.2,.7,.3,1) .08s both}
@@ -400,7 +402,7 @@
    Tighter spacing, fluid type, full-width input, comfortable tap targets.
    ============================================================================ */
 @media(max-width:520px){
-  .sb-home .concierge-hero{padding:24px 16px;min-height:auto;padding-top:48px}
+  .sb-home .concierge-hero{padding:24px 16px;min-height:auto;padding-top:40px}
   .sb-home .concierge-hero-inner{gap:16px}
   .sb-home .concierge-brand{font-size:34px}
   .sb-home .concierge-tagline{font-size:19px;margin-top:-2px}
