@@ -16,7 +16,7 @@ interface MarqueeProps {
 }
 
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  // Evenly split your 132+ dataset to populate two separate rows cleanly
+  // Balanced data split to fill Row 1 and Row 2 perfectly
   const { row1, row2 } = useMemo(() => {
     if (!partnersData || partnersData.length === 0) return { row1: [], row2: [] };
     const half = Math.ceil(partnersData.length / 2);
@@ -33,7 +33,7 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
         display: "flex", 
         width: "100%", 
         overflow: "hidden",
-        margin: "0.5rem 0",
+        padding: "0.75rem 0",
         WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
         maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)"
       }}>
@@ -62,8 +62,8 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   };
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "0.5rem", overflow: "hidden" }}>
-      <div style={{ textAlign: "center", marginBottom: "0.25rem" }}>
+    <div style={{ display: "block", width: "100%", overflow: "hidden" }}>
+      <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
         <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.15em" }}>
           WINDOW SHOPPING
         </span>
@@ -72,7 +72,10 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
         </h3>
       </div>
 
+      {/* Render Row 1 going Forward */}
       {renderRow(row1, false)}
+      
+      {/* Render Row 2 going Backward */}
       {renderRow(row2, true)}
     </div>
   );
