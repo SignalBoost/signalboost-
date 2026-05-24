@@ -1,7 +1,6 @@
 /* File: components/marquee.css
    Styles for PartnerMarquee — scoped so it never affects the rest of the site.
    Tuned for the LIGHT theme: defined white cards, dark readable text. */
-
 @keyframes productionScrollLeft {
   0% { transform: translate3d(0, 0, 0); }
   100% { transform: translate3d(-50%, 0, 0); }
@@ -10,17 +9,19 @@
   0% { transform: translate3d(-50%, 0, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
+/* Scroll speed: higher seconds = slower. Was 40s; now 70s (~half the pace).
+   Both rows use the same duration so the two rows stay visually matched. */
 .force-marquee-left {
   display: flex;
   gap: 1rem;
   white-space: nowrap;
-  animation: productionScrollLeft 40s linear infinite;
+  animation: productionScrollLeft 70s linear infinite;
 }
 .force-marquee-right {
   display: flex;
   gap: 1rem;
   white-space: nowrap;
-  animation: productionScrollRight 40s linear infinite;
+  animation: productionScrollRight 70s linear infinite;
 }
 .force-marquee-left:hover,
 .force-marquee-right:hover {
@@ -30,6 +31,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.6rem; /* space between the logo and the partner name */
   min-width: 170px;
   height: 4rem;
   padding: 0 1.5rem;
@@ -45,6 +47,16 @@
 .fathom-glass-card-upgrade span {
   color: #1d2733 !important;   /* dark, readable on the light cards */
   font-weight: 600;
+}
+/* Partner logo (favicon) sitting to the left of the name. flex-shrink:0 keeps
+   it from squashing; object-fit keeps non-square favicons tidy. If the image
+   fails to load, the component hides it (onError) so only the name shows. */
+.fathom-glass-card-upgrade .partner-logo {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  object-fit: contain;
 }
 .fathom-glass-card-upgrade:hover {
   border-color: rgba(224, 164, 37, 0.55);
