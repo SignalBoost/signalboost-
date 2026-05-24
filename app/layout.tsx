@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { I18nProvider } from "@/components/i18n/I18nProvider";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "SignalBoost",
