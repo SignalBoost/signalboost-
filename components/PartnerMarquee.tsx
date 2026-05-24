@@ -5,12 +5,17 @@
 // the hero looks premium. Every other partner is still fully available to users
 // through the concierge search / prompt — the marquee is just a showcase.
 //
+// Logos come from logo.dev (the post-Clearbit replacement). The publishable
+// token lives in the env var NEXT_PUBLIC_LOGO_DEV_TOKEN (set in Vercel). It is
+// a PUBLISHABLE key, so it is safe to expose in the browser. If the token is
+// missing, or a logo fails to load, the card falls back to showing the name
+// only — nothing breaks.
+//
 // To add or remove a brand: edit the FEATURED_BRANDS array below. Each entry is
 // { name, domain, url }:
 //   - name   = text shown on the card
-//   - domain = used to fetch the real brand logo (logo.clearbit.com/<domain>)
+//   - domain = used to fetch the real brand logo from logo.dev
 //   - url    = where the card links to (use your affiliate link if you have one)
-// If a logo ever fails to load, that card falls back to showing the name only.
 import React from "react";
 import "./marquee.css";
 
@@ -37,9 +42,14 @@ const FEATURED_BRANDS: Brand[] = [
   { name: "Saily", domain: "saily.com", url: "https://saily.com" },
 ];
 
-// Clearbit returns a real brand logo PNG by domain.
+// logo.dev publishable token (set in Vercel as NEXT_PUBLIC_LOGO_DEV_TOKEN).
+const LOGO_DEV_TOKEN = process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN || "";
+
+// Build a logo.dev image URL for a domain. If no token is configured we return
+// "" so the component renders a name-only card instead of a broken request.
 function logoUrl(domain: string): string {
-  return `https://logo.clearbit.com/${encodeURIComponent(domain)}`;
+  if (!LOGO_DEV_TOKEN) return "";
+  return `https://img.logo.dev/${encodeURIComponent(domain)}?token=${LOGO_DEV_TOKEN}&size=128&format=png&retina=true`;
 }
 
 export default function PartnerMarquee() {
@@ -66,30 +76,35 @@ export default function PartnerMarquee() {
         }}
       >
         <div className={animationClass}>
-          {[...items, ...items].map((brand, index) => (
-            <a
-              key={`${brand.domain}-${rowKeyIdentifier}-${index}`}
-              href={brand.url}
-              target="_blank"
-              rel="noopener sponsored"
-              className="fathom-glass-card-upgrade"
-            >
-              <img
-                className="partner-logo"
-                src={logoUrl(brand.domain)}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                onError={(e) => {
-                  // Logo failed -> hide it, leaving a clean name-only card.
-                  (e.currentTarget as HTMLImageElement).style.display = "none";
-                }}
-              />
-              <span style={{ color: "#1d2733", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
-                {brand.name}
-              </span>
-            </a>
-          ))}
+          {[...items, ...items].map((brand, index) => {
+            const logo = logoUrl(brand.domain);
+            return (
+              <a
+                key={`${brand.domain}-${rowKeyIdentifier}-${index}`}
+                href={brand.url}
+                target="_blank"
+                rel="noopener sponsored"
+                className="fathom-glass-card-upgrade"
+              >
+                {logo && (
+                  <img
+                    className="partner-logo"
+                    src={logo}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    onError={(e) => {
+                      // Logo failed -> hide it, leaving a clean name-only card.
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                )}
+                <span style={{ color: "#1d2733", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
+                  {brand.name}
+                </span>
+              </a>
+            );
+          })}
         </div>
       </div>
     );
