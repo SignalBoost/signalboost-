@@ -3,7 +3,7 @@ SignalBoost — Project Documentation
 Live site: https://signalboostapp.com
 Repo: github.com/SignalBoost/signalboost- (branch: `main`)
 Hosting: Vercel (auto-deploys on every commit to `main`)
-Last documented: 2026-05-23
+Last documented: 2026-05-24
 ---
 1. What SignalBoost Is
 SignalBoost is a geo-aware affiliate marketplace — positioned as "Your AI-guided digital shopping mall." A visitor lands on the homepage, tells an AI concierge what they need (e.g. "flights to Lima next month"), and gets matched to trusted affiliate partners that serve their region. When they click a partner, they go to that partner's site via an affiliate link; if they buy, SignalBoost earns a commission.
@@ -25,6 +25,8 @@ Auth	Supabase Auth (email + password)
 AI	Anthropic API (Claude), model `claude-sonnet-4-6`
 Hosting	Vercel
 Analytics	Custom (Supabase tables) + Vercel Web Analytics
+Partner logos	logo.dev (real brand logos by domain) — see §16
+Support email	ImprovMX forwarding + Gmail — see §17
 ---
 3. Architecture Overview
 ```
@@ -35,6 +37,10 @@ Visitor → Homepage (app/page.tsx → HomeApp)
             │
             ├─ search → concierge match (lib/home/concierge-match.ts) + optional AI (/api/chat)
             │     └─ logs search to /api/track/search → Supabase `partner_searches`
+            │
+            ├─ PartnerMarquee → scrolling logos of FEATURED partners (logo.dev)
+            │
+            ├─ SupportCenter → support email card (mailto support@signalboostapp.com)
             │
             └─ partner card click → opens affiliate URL in new tab
                   └─ logs click to /api/track/click → Supabase `partner_clicks`
@@ -47,19 +53,21 @@ Admin (you) → log in (/auth/login) → AdminBar appears on homepage (email-gat
 The homepage is a React client app mounted at the site root.
 `app/page.tsx` — the root route. Imports `./home-next/home.css` and mounts `<HomeApp />`. This is what `signalboostapp.com` serves. (Indexable for SEO.)
 `app/home-next/page.tsx` — an older PREVIEW route at `/home-next` (noindex). Same app, used for testing. The root (`app/page.tsx`) is the real one now.
-`app/home-next/home.css` — THE homepage stylesheet (~436 lines). Scoped under `.sb-home`. Defines colors via CSS variables at the top, the atmospheric background, animations, and all component styling. To change the whole look, edit the CSS variables at the top of this file.
-Homepage components (all in `components/home/`)
+`app/home-next/home.css` — THE homepage stylesheet. Scoped under `.sb-home`. Defines colors via CSS variables at the top, the atmospheric background, animations, and all component styling. To change the whole look, edit the CSS variables at the top of this file. **CURRENT THEME: dark (Fathom-style near-black `#0a0a0c` with gold accents and dark frosted-glass cards)** — see §15 Theme.
+Homepage components (all in `components/home/` unless noted)
 File	Purpose
-`HomeApp.tsx`	The main orchestrator (~577 lines). Holds state, fetches partners, runs searches (`runQuery`), switches between concierge/browse views. Renders everything below.
-`ConciergeHero.tsx`	The hero: "SignalBoost" wordmark, "Your AI-guided digital shopping mall" tagline, rotating "I'll help you find ___" line, search box with teaching placeholders, category door chips, trust line.
-
+`HomeApp.tsx`	The main orchestrator. Holds state, fetches partners, runs searches (`runQuery`), switches between concierge/browse views. Renders the hero, marquee, sections, support center, and everything below.
+`ConciergeHero.tsx`	The hero: "SignalBoost" wordmark, "Your AI-guided digital shopping mall" tagline, rotating "I'll help you find ___" line, search box with teaching placeholders, category door chips, trust line. NOTE: has inline `paddingTop`/`paddingBottom`/`gap` overrides on `.concierge-hero` and `.concierge-hero-inner` that shrink the hero so the marquee/sections sit higher.
 `ConciergeThread.tsx`	The search results: partner cards (`<a target="_blank" rel="sponsored">`), opens affiliate site in new tab, fires click analytics.
 `HomeSections.tsx`	Below-hero sections: "How it works" (4 steps) + "Popular right now" (tappable use-case pills that run searches).
+`SupportCenter.tsx`	**NEW (2026-05-24).** Reusable "Support Center" card (dark-themed, gold-accented glass). Currently shows the support email as a mailto row; built to grow (FAQ links, hours, contact form) by adding more `<SupportItem>` blocks. Localized heading via i18n. Takes a `lang` prop. See §18.
 `NudgeBubble.tsx`	Returning-visitor greeting + idle nudge. Has "Start fresh" button that clears saved memory.
 `AdminBar.tsx`	Floating top-right admin bar (⚙ Admin · Dashboard · Reset password · Log out). Only renders for admin email. Self-contained Supabase check with 3s timeout failsafe.
-`BrandMark.tsx`	Top-left logo: "signalboost" wordmark + animated signal-emission (pulsing gold arcs). Self-contained SVG + CSS animation.
+`BrandMark.tsx`	Top-left logo: "signalboost" wordmark + animated signal-emission (pulsing gold arcs). Self-contained SVG + CSS animation. **NOTE: "signal" text is light (`#f5f6f8`) for the dark theme; "boost" is gold.**
+`components/PartnerMarquee.tsx`	**NEW/REWORKED (2026-05-24).** NOT in the `home/` subfolder — lives directly in `components/`. Scrolling two-row logo marquee of FEATURED partners. Pulls partners via `partnersData` prop from HomeApp. Uses logo.dev for real brand logos. See §16.
+`components/marquee.css`	**NEW (2026-05-24).** Scoped styles for PartnerMarquee (dark glass cards, scroll animation @ 70s). Imported by PartnerMarquee.tsx.
 Theme / look-and-feel
-The current look is controlled entirely by the CSS variables at the top of `app/home-next/home.css`. Alternate themes were built and saved (in case of reverting): a dark version, a soft-charcoal version, a white version, and a light "frosted glass / happy" version. To swap themes, replace the variable block + background gradient at the top of `home.css`. Always keep a backup before swapping.
+The current look is controlled entirely by the CSS variables at the top of `app/home-next/home.css`. **As of 2026-05-24 the live theme is the DARK Fathom-style theme** (near-pure-black base `#0a0a0c`, light text `#f5f6f8`, gold `#e0a425` accents, dark frosted-glass cards). Alternate themes were built and saved (in case of reverting): a soft-charcoal version, a white version, and a light "frosted glass / happy" version. To swap themes, replace the variable block + background gradient at the top of `home.css`. Always keep a backup before swapping. NOTE: if swapping AWAY from dark, the marquee (`marquee.css` + inline colors in `PartnerMarquee.tsx`) and `BrandMark.tsx` ("signal" text color) also carry dark-theme colors and would need matching updates.
 ---
 5. Data & Database (Supabase)
 Supabase project ref: `dwchaygtxubufxkzfpne` (shared with the SaaS side).
@@ -70,6 +78,7 @@ Table	Purpose	Key columns
 `partner_searches`	Logged searches (anonymous)	id, query, intent, region, results_count, no_results
 RLS (Row Level Security) is DISABLED on these three (they're public-readable directory + anonymous logging). `affiliate_partners` has UNIQUE constraints on both `id` and `url` (two-lock duplicate prevention).
 Nested fields (`regions`, `regional_urls`, `placements`) are stored as JSON text (because CSV import is flat) and parsed back in code.
+IMPORTANT — partner `url` is an AFFILIATE REDIRECT (awin1.com, *.tpo.lv, admitad redirect domains), NOT the partner's real website. This matters for logos: you cannot derive a brand domain from `url`. The marquee uses a hardcoded id→domain map instead (see §16). If a real `domain` column is ever added to `affiliate_partners`, the marquee can be simplified to read it directly.
 Static fallback
 `public/partners.json` — the 132 partners as a static file. If Supabase is empty/unreachable, the site falls back to this so partners never disappear. Keep it roughly in sync with the DB as a safety net.
 How partners are loaded
@@ -114,6 +123,7 @@ Actual commissions/sales are NOT in this app — they're in the affiliate networ
 9. Internationalization (i18n)
 `lib/home/i18n-home.ts` — the homepage translation table (`I18N`) for all 7 languages, plus the marketing copy (tagline, sub, how-it-works steps, popular title, trust line). Region→language mapping (`REGION_LANGUAGE`).
 Partner descriptions can be localized via `description_i18n`.
+Marketing/extra copy is merged in via the `HERO_COPY` block at the bottom of the file (non-destructive merge into `I18N`). Keys added 2026-05-24: `window_shopping`, `marquee_subtitle` (PartnerMarquee heading), and `support_center_title`, `support_center_sub`, `support_center_email_label` (SupportCenter). All 7 languages.
 ---
 10. Key File Map (quick reference)
 ```
@@ -122,7 +132,7 @@ app/
   layout.tsx                       ← root layout + <Analytics/>
   home-next/
     page.tsx                       ← /home-next preview route (noindex)
-    home.css                       ← THE homepage stylesheet (theme lives here)
+    home.css                       ← THE homepage stylesheet (theme lives here; DARK as of 2026-05-24)
   auth/login/page.tsx              ← login/signup page
   admin/
     page.tsx                       ← admin hub (gated)
@@ -136,21 +146,24 @@ app/
     track/search/route.ts          ← log a search
 
 components/
+  PartnerMarquee.tsx               ← scrolling FEATURED-partner logo marquee (logo.dev)  [NOT in home/]
+  marquee.css                      ← scoped styles for the marquee
   home/
     HomeApp.tsx                    ← main orchestrator
-    ConciergeHero.tsx              ← hero
+    ConciergeHero.tsx              ← hero (has inline shrink overrides)
     ConciergeThread.tsx            ← results / partner cards
     HomeSections.tsx               ← how-it-works + popular
+    SupportCenter.tsx              ← support email card (reusable/expandable)  [NEW 2026-05-24]
     NudgeBubble.tsx                ← returning greeting / nudge
     AdminBar.tsx                   ← floating admin bar (gated)
-    BrandMark.tsx                  ← top-left animated logo
+    BrandMark.tsx                  ← top-left animated logo (light "signal" for dark theme)
   SiteHeader.tsx                   ← header for non-home pages (has admin link)
 
 lib/
   home/
     partners-source.ts             ← loadPartners() (DB + fallback)
     concierge-match.ts             ← matching logic
-    i18n-home.ts                   ← translations + marketing copy
+    i18n-home.ts                   ← translations + marketing copy (+ marquee/support keys)
     partners-home.ts               ← HomePartner type + helpers
     visitor-memory.ts              ← localStorage memory (recent searches)
   supabase/
@@ -170,6 +183,7 @@ Variable	Purpose
 `NEXT_PUBLIC_COOKIE_DOMAIN`	`.signalboostapp.com` (cross-subdomain login).
 `ADMIN_EMAILS`	Comma-separated admin emails (server-side gating). Owner cadomos@gmail.com is hardcoded as fallback.
 `NEXT_PUBLIC_ADMIN_EMAILS`	Same, for client-side admin checks.
+`NEXT_PUBLIC_LOGO_DEV_TOKEN`	**NEW (2026-05-24).** logo.dev PUBLISHABLE token (pk_...) used by PartnerMarquee to fetch real brand logos. Publishable key = safe to expose in the browser (it's a `NEXT_PUBLIC_` var on purpose). Read at build time, so a change requires a redeploy.
 The model is hardcoded as `claude-sonnet-4-6` in the chat route (no env var for it).
 ---
 12. How To Do Common Tasks
@@ -179,9 +193,13 @@ Manual: Supabase → Table Editor → `affiliate_partners` → Insert row (must 
 Delete a partner
 Supabase → Table Editor → `affiliate_partners` → tick the row → Delete.
 Change the homepage look/theme
-Edit the CSS variables at the top of `app/home-next/home.css` (the `.sb-home { --bg: ... }` block) and the background gradient just below it. Keep a backup first.
+Edit the CSS variables at the top of `app/home-next/home.css` (the `.sb-home { --bg: ... }` block) and the background gradient just below it. Keep a backup first. If changing brightness drastically, also revisit `marquee.css`, the inline colors in `PartnerMarquee.tsx`, and the "signal" color in `BrandMark.tsx`.
+Add a brand to the marquee / fix a wrong logo
+The marquee shows partners where `featured === true` AND there's an entry in the `BRAND_DOMAINS` map at the top of `components/PartnerMarquee.tsx`. To feature a new brand, add an `id: "realbrand.com"` line to that map (and ensure the partner is `featured` in the DB). To fix a wrong/generic logo, correct that brand's domain in the map. See §16.
 View analytics
 Log in → ⚙ Admin → Dashboard → Statistics (`/admin/stats`). For raw traffic, see the Vercel dashboard → Analytics tab.
+Manage support email
+See §17. Aliases are managed in the ImprovMX dashboard; forwarding DNS lives in Namecheap; outgoing "send as" is in Gmail settings.
 Deploy
 Just commit to `main` on GitHub. Vercel auto-builds and deploys. Tip: if a new npm dependency isn't installing, Vercel may be using the build cache — do a Redeploy with "Use existing Build Cache" UNCHECKED.
 ---
@@ -199,14 +217,55 @@ The homepage uses its own header/AdminBar, not `SiteHeader`. So the admin tab on
 `public/index.html` (old static homepage) is no longer served (the React `app/page.tsx` took over the root). It can be deleted/renamed to `index.html.bak` for tidiness.
 MCP vs API keys: evaluated and decided NOT to pivot to MCP. The site is human-facing with standard REST/key integrations; affiliate networks don't even offer MCP. MCP would only be a future optional add-on endpoint if exposing SignalBoost to external AI agents ever becomes a goal — never a rewrite.
 Build cache quirk: Vercel sometimes skips installing new packages ("up to date in 4s"). Fix: Redeploy without build cache.
-`"use client";` must be the FIRST line of any client component (before comments), or the build fails.
+`"use client";` must be the FIRST line of any client component (before comments), or the build fails. GOTCHA SEEN 2026-05-24: when pasting files into GitHub's web editor, the filename was accidentally pasted into the top of the file body (e.g. `SupportCenter.tsx"use client";`) which breaks the build. The first character of a client component must be the `"` of `"use client";` — nothing before it.
+File-swap gotcha (2026-05-24): pasting the wrong content into a file (e.g. CSS into the `.tsx`, or `.tsx` into the `.css`) broke builds twice. Rule of thumb: a `.tsx` client file starts with `"use client";`; a `.css` file starts with `/* ... */`.
+Clearbit logo API is DEAD (shut down 2026-12-08 after HubSpot acquisition). Do not use `logo.clearbit.com`. We use logo.dev instead — see §16.
 ---
 15. Roadmap / Next Steps (priority order)
-Logo marquee — partner logos gliding across the page (borrowed trust). Plan: Brandfetch Logo API (`https://cdn.brandfetch.io/<domain>?c=CLIENT_ID`, requires a free client ID). Needs a `domain` field per partner; real logos for big names + name-chip fallback for obscure ones. Plain CSS.
+Finish Gmail "Send mail as" — so support REPLIES go out from support@signalboostapp.com (and service@/saassupport@) instead of the personal Gmail. Needs Gmail 2FA + an App Password, then Gmail Settings → Accounts → "Send mail as" with smtp.gmail.com:587. Inbound forwarding already works (§17); this is the outbound half. DO BEFORE LAUNCH.
 SEO category pages — programmatic `app/partners/[category]/page.tsx` generating /partners/esim, /partners/car_rentals etc. from partner data, with comparison tables. The free-traffic engine. (Note: `app/partners/[slug]/page.tsx` may already exist — check before adding.)
 Manage-partners admin page — list with edit/delete buttons (currently "coming soon" placeholder in the hub; deletion done in Supabase for now).
 Duplicate-warning layer on the add form (warn on same link/similar name before saving — soft layer atop the DB unique constraints).
-Finalize the theme (light vs soft-dark vs frosted-glass — currently being decided).
+Verify marquee logo domains — a few BRAND_DOMAINS entries were best-guesses (Yesim, BitJoy/the-bitjoy-esim, AURAS, Skylark, CVC, Oman Air). Confirm each renders the correct logo; fix any wrong domain in the map.
+SaaS-side Support Center — reuse `SupportCenter.tsx` on saas.signalboostapp.com with the SaaS support address (service@ or saassupport@). Component can take the email as a prop when generalized.
+Optional invisible prompt-enhancement — wrap thin user input into stronger structured prompts server-side before generation (discussed as a fast-follow; pilot in one flow and measure regeneration/churn rather than build on faith).
 Email capture (opt-in signup for deal alerts) — only if/when list-building becomes a goal. No forced registration (kills traffic).
+---
+16. Partner Logo Marquee (logo.dev)  [ADDED 2026-05-24]
+What it is: a two-row scrolling "Window Shopping" marquee near the top of the homepage showing real brand logos of FEATURED partners. Borrowed-trust element.
+Files:
+  - `components/PartnerMarquee.tsx` — the component. Receives `partnersData` and `lang` props from HomeApp.
+  - `components/marquee.css` — scoped styles (dark glass cards; scroll animation duration 70s = slower; hover pauses).
+How it picks brands: filters `partnersData` to `featured === true` AND present in the `BRAND_DOMAINS` map (id → real brand domain) at the top of PartnerMarquee.tsx. This means it ONLY shows curated, recognizable featured brands — never the full 132, and never a brand without a known real domain.
+Why a domain map (important): partner `url` is an affiliate redirect, so a logo can't be derived from it (that produced wrong/generic logos). The map supplies each featured brand's REAL website (e.g. trivago → trivago.com) so logo.dev returns the correct logo. Links still use the affiliate `url` (revenue-safe).
+Logo source: logo.dev. URL form `https://img.logo.dev/<domain>?token=<NEXT_PUBLIC_LOGO_DEV_TOKEN>&size=128&format=png&retina=true`. Token is a publishable key in Vercel env (§11). Each logo sits on a small white chip so dark brand marks stay visible on the dark cards. `onError` hides a failed logo → clean name-only card. (Clearbit was the original plan/roadmap but its free API was shut down 2026-12-08; logo.dev replaced it.)
+Heading text: "WINDOW SHOPPING" + subtitle, localized via i18n keys `window_shopping` / `marquee_subtitle` (all 7 languages).
+Wiring: HomeApp renders `<PartnerMarquee lang={lang} partnersData={...} />` on the concierge landing view, inside a wrapper div, only when partners have loaded.
+To maintain: add/remove brands by editing the BRAND_DOMAINS map; fix a wrong logo by correcting that brand's domain there.
+---
+17. Support Email Infrastructure (ImprovMX)  [ADDED 2026-05-24]
+Goal: professional support addresses at the domain that forward to the owner's personal Gmail, while being able to tell which platform an inquiry is about.
+Provider chain: Namecheap (domain registrar + DNS) → ImprovMX (free email forwarding) → Gmail (cadomos@gmail.com, the destination inbox).
+Why ImprovMX: the domain's DNS is on Namecheap (NOT Vercel — Vercel only hosts the site). Vercel doesn't do email. ImprovMX forwards with no nameserver change.
+DNS records (in Namecheap → Advanced DNS):
+  - Mail Settings switched from "Email Forwarding" to "Custom MX".
+  - MX `@` → `mx1.improvmx.com` (priority 10)
+  - MX `@` → `mx2.improvmx.com` (priority 20)
+  - TXT `@` (SPF) → `v=spf1 include:spf.efwd.registrar-servers.com include:spf.improvmx.com ~all`  (keeps Namecheap's SPF + adds ImprovMX; ONE combined SPF record only)
+  - Untouched/kept: A `@`→76.76.21.21 (Vercel site), CNAME `saas`→cname.vercel-dns.com, CNAME `www`→cname.vercel-dns.com, TXT `@` admitad-verification.
+Aliases (in ImprovMX dashboard, all forward to cadomos@gmail.com):
+  - `support@signalboostapp.com`   → SignalBoost (this affiliate site)
+  - `service@signalboostapp.com`   → SaaS platform  (NOTE: owner considered renaming to `saassupport@` for clarity — confirm final name; whatever is live should be reflected on each platform's contact page)
+  - `*` (catch-all) also exists → forwards everything to the Gmail.
+How to tell platforms apart: each platform displays a DIFFERENT alias, so the email's "To:" line identifies the source platform. (Optional: Gmail filters can auto-label/color by destination address.)
+Status: INBOUND forwarding is live and tested (emails to the aliases arrive in Gmail). OUTBOUND "send as" (replies showing the support address) is NOT yet set up — see Roadmap §15 item 1.
+To manage: aliases in ImprovMX (app.improvmx.com); DNS in Namecheap (Advanced DNS); outbound in Gmail Settings → Accounts.
+---
+18. Support Center Card  [ADDED 2026-05-24]
+File: `components/home/SupportCenter.tsx`. Rendered by HomeApp on the concierge landing view (after HomeSections): `<SupportCenter lang={lang} />`.
+What it is: a dark-themed, gold-accented frosted-glass card titled "Support Center" containing the support email as a clickable mailto row (`support@signalboostapp.com`).
+Built to grow: contains a reusable internal `SupportItem` component and a commented example. To add FAQ links, hours, status, etc., add more `<SupportItem icon label value href />` blocks inside the card — no restructuring.
+i18n: heading/sub/label localized via keys `support_center_title`, `support_center_sub`, `support_center_email_label` (all 7 languages, in i18n-home.ts HERO_COPY).
+Email constant: `SUPPORT_EMAIL` at the top of the file (currently the SignalBoost address). For the SaaS site, reuse the component with that platform's address (could be generalized to a prop).
 ---
 End of document. Keep this file (`PROJECT.md`) updated as the system evolves so it stays the single source of truth.
