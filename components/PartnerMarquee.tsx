@@ -7,6 +7,7 @@ interface Partner {
   id: string;
   name: string;
   url: string;
+  logo_url?: string; // Stored securely inside your Supabase table rows
   tier: number;
   featured: boolean;
 }
@@ -16,30 +17,12 @@ interface MarqueeProps {
 }
 
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  // Balanced database split for row coordination
+  // Split data logically into two moving rows
   const { row1, row2 } = useMemo(() => {
     if (!partnersData || partnersData.length === 0) return { row1: [], row2: [] };
     const half = Math.ceil(partnersData.length / 2);
     return { row1: partnersData.slice(0, half), row2: partnersData.slice(half) };
   }, [partnersData]);
-
-  // Clean strings to request clean brand image visuals from the CDN
-  const getCleanDomain = (name: string) => {
-    let clean = name.toLowerCase()
-      .replace(" brazil", "")
-      .replace(" limited", "")
-      .replace(/[^a-z0-9]/g, "");
-    
-    if (clean === "bookingcom") return "booking.com";
-    if (clean === "lastminute") return "lastminute.com";
-    if (clean === "discovercars") return "discovercars.com";
-    if (clean === "westernunion") return "westernunion.com";
-    if (clean === "adguardvpn") return "adguard.com";
-    if (clean === "protonvpn") return "protonvpn.com";
-    if (clean === "turbovpn") return "turbovpn.com";
-    
-    return `${clean}.com`;
-  };
 
   const renderRow = (items: Partner[], isReverse: boolean) => {
     if (items.length === 0) return null;
@@ -55,55 +38,53 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
         maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)"
       }}>
         <div className={scrollClassName}>
-          {/* Loop twice to guarantee a smooth, seamless infinite visual scroll */}
-          {[...items, ...items].map((partner, index) => {
-            const domainString = getCleanDomain(partner.name);
-            return (
-              <a
-                key={`${partner.id}-${isReverse ? "row-b" : "row-a"}-${index}`}
-                href={partner.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fathom-glass-card-upgrade"
-              >
+          {[...items, ...items].map((partner, index) => (
+            <a
+              key={`${partner.id}-${isReverse ? "b" : "a"}-${index}`}
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="fathom-glass-card-upgrade"
+            >
+              {partner.logo_url ? (
                 <img
-                  src={`https://cdn.brandfetch.io/${domainString}?c=1dfad273170b`}
-                  alt={`${partner.name} storefront`}
+                  src={partner.logo_url}
+                  alt={`${partner.name} logo`}
                   style={{
-                    maxHeight: "1.75rem",
-                    maxWidth: "120px",
+                    maxHeight: "2rem",
+                    maxWidth: "130px",
                     objectFit: "contain",
-                    opacity: 0.35,
-                    filter: "grayscale(100%) brightness(200%)",
+                    opacity: 0.4,
+                    filter: "brightness(0) invert(1)", // Forces logos to match your white text theme perfectly
                     transition: "all 0.3s ease"
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.opacity = "1";
-                    e.currentTarget.style.filter = "grayscale(0%) brightness(100%)";
+                    e.currentTarget.style.filter = "none"; // Reveals full brand colors on hover
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = "0.35";
-                    e.currentTarget.style.filter = "grayscale(100%) brightness(200%)";
+                    e.currentTarget.style.opacity = "0.4";
+                    e.currentTarget.style.filter = "brightness(0) invert(1)";
                   }}
                   onError={(e) => {
-                    // Graceful fallback to pure typography if a logo link fails
+                    // Safety valve: if the database link breaks, fallback gracefully to text
                     e.currentTarget.style.display = "none";
-                    const fallbackLabel = e.currentTarget.nextSibling as HTMLElement;
-                    if (fallbackLabel) fallbackLabel.style.display = "inline";
+                    const fallbackText = e.currentTarget.nextSibling as HTMLElement;
+                    if (fallbackText) fallbackText.style.display = "inline";
                   }}
                 />
-                <span style={{ 
-                  display: "none", 
-                  color: "#e5e7eb", 
-                  fontSize: "0.9rem", 
-                  fontWeight: 500, 
-                  letterSpacing: "0.02em" 
-                }}>
-                  {partner.name}
-                </span>
-              </a>
-            );
-          })}
+              ) : null}
+              
+              <span style={{ 
+                display: partner.logo_url ? "none" : "inline", 
+                color: "#e5e7eb", 
+                fontSize: "0.9rem", 
+                fontWeight: 500 
+              }}>
+                {partner.name}
+              </span>
+            </a>
+          ))}
         </div>
       </div>
     );
