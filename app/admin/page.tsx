@@ -27,7 +27,7 @@ function adminList(): string[] {
 const TOOLS: { href: string; title: string; desc: string; ready: boolean }[] = [
   { href: "/admin/partners/add", title: "➕ Add a partner", desc: "Add a new affiliate partner. Goes live on the site instantly — no code.", ready: true },
   { href: "/admin/partners/manage", title: "🗂 Manage partners", desc: "View, edit, and delete existing partners.", ready: false },
-  { href: "/admin/stats", title: "📊 Statistics", desc: "Clicks, searches, regions — see what's working. (Coming soon.)", ready: false },
+  { href: "/admin/stats", title: "📊 Statistics", desc: "Clicks, searches, regions — see what's working.", ready: true },
 ];
 
 export default async function AdminHub() {
