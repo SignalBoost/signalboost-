@@ -1,16 +1,20 @@
 "use client";
 // File: components/PartnerMarquee.tsx
-// "Window Shopping" — scrolling rows of YOUR real partners, pulled from
-// Supabase (passed in as partnersData from HomeApp, which loads /api/partners).
-// No hardcoded brands. Names come straight from your data; links use each
-// partner's affiliate `url` (revenue-safe).
+// "Window Shopping" — scrolling rows of YOUR real FEATURED partners, pulled from
+// Supabase (passed in as partnersData from HomeApp). Only partners with
+// featured === true are shown — the recognizable brands. Every other partner is
+// still fully available to users through the concierge search / prompt.
 //
-// Logos come from logo.dev. logo.dev needs a clean brand domain (e.g.
-// "booking.com"). We use the partner's `domain` field if present, otherwise we
-// extract the domain from the partner's `url`. If logo.dev has no logo, the
-// card simply shows the name — nothing breaks.
+// Logos: the partner `url` is an AFFILIATE REDIRECT (awin1.com, tpo.lv, admitad
+// domains), so we can't derive a real brand domain from it. Instead we map each
+// partner id -> its real brand domain below (BRAND_DOMAINS) and feed THAT to
+// logo.dev. Links still use the affiliate `url` (revenue-safe). Any brand whose
+// logo doesn't resolve falls back to a clean name-only card.
 //
-// The publishable token lives in NEXT_PUBLIC_LOGO_DEV_TOKEN (set in Vercel).
+// To fix a wrong logo: correct that brand's domain in BRAND_DOMAINS below.
+// To add a newly-featured brand: add an id -> domain line.
+//
+// logo.dev publishable token lives in NEXT_PUBLIC_LOGO_DEV_TOKEN (set in Vercel).
 import React from "react";
 import "./marquee.css";
 
@@ -18,42 +22,68 @@ interface Partner {
   id: string;
   name: string;
   url: string;
-  domain?: string; // optional clean domain for the logo, if your data has it
-  tier?: number;
   featured?: boolean;
+  tier?: number;
 }
 interface MarqueeProps {
   partnersData: Partner[];
 }
 
+// --- Real brand domains for FEATURED partners (keyed by partner id) ----------
+// Maps your affiliate partners to their actual websites so logo.dev returns the
+// real brand logo instead of the affiliate network's icon.
+const BRAND_DOMAINS: Record<string, string> = {
+  aviasales: "aviasales.com",
+  cvc: "cvc.com.br",
+  "oman-airlines": "omanair.com",
+  "booking-com-brazil": "booking.com",
+  travelking: "travelking.pl",
+  trivago: "trivago.com",
+  airalo: "airalo.com",
+  drimsim: "drimsim.com",
+  saily: "saily.com",
+  "the-bitjoy-esim": "bitjoy.io",
+  yesim: "yesim.app",
+  klook: "klook.com",
+  tiqets: "tiqets.com",
+  wegotrip: "wegotrip.com",
+  kiwitaxi: "kiwitaxi.com",
+  "welcome-pickups": "welcomepickups.com",
+  alamo: "alamo.com",
+  economybookings: "economybookings.com",
+  europcar: "europcar.com",
+  getrentacar: "getrentacar.com",
+  "jumbo-car-costa-rica": "jumbocar.com",
+  localrent: "localrent.com",
+  qeeq: "qeeq.com",
+  "vip-cars": "vipcars.com",
+  airhelp: "airhelp.com",
+  "auras-travel-insurance": "aura.travel",
+  ekta: "ektatraveling.com",
+  "melhor-seguro": "melhorseguro.com",
+  "go-go-espana": "gogohispania.com",
+  "proton-vpn": "protonvpn.com",
+  supersim: "supersim.com.br",
+  "discover-cars": "discovercars.com",
+  "champions-travel": "championstravel.co.uk",
+  "vi-travel": "vitravel.com",
+  "skylark-travel-group": "skylark.com",
+};
+
 // logo.dev publishable token (set in Vercel as NEXT_PUBLIC_LOGO_DEV_TOKEN).
 const LOGO_DEV_TOKEN = process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN || "";
 
-// Get a clean hostname (no www.) from a URL string. "" if unparseable.
-function domainFromUrl(url: string): string {
-  if (!url) return "";
-  try {
-    const u = new URL(url.startsWith("http") ? url : `https://${url}`);
-    return u.hostname.replace(/^www\./, "");
-  } catch {
-    return "";
-  }
-}
-
-// Prefer an explicit domain field; otherwise derive it from the affiliate url.
-function partnerDomain(p: Partner): string {
-  if (p.domain && p.domain.trim()) return p.domain.trim().replace(/^www\./, "");
-  return domainFromUrl(p.url);
-}
-
-// Build a logo.dev image URL for a domain. "" if no token or no domain.
+// Build a logo.dev image URL for a domain. "" if no token or no mapped domain
+// (so the card renders name-only instead of a wrong/generic logo).
 function logoUrl(domain: string): string {
   if (!LOGO_DEV_TOKEN || !domain) return "";
   return `https://img.logo.dev/${encodeURIComponent(domain)}?token=${LOGO_DEV_TOKEN}&size=128&format=png&retina=true`;
 }
 
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  const list = partnersData || [];
+  // Show only featured partners that we have a real brand domain for. This keeps
+  // the marquee to recognizable brands with correct logos.
+  const list = (partnersData || []).filter((p) => p.featured && BRAND_DOMAINS[p.id]);
   if (list.length === 0) return null;
 
   const halfLength = Math.ceil(list.length / 2);
@@ -77,7 +107,7 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
       >
         <div className={animationClass}>
           {[...items, ...items].map((partner, index) => {
-            const logo = logoUrl(partnerDomain(partner));
+            const logo = logoUrl(BRAND_DOMAINS[partner.id]);
             return (
               <a
                 key={`${partner.id}-${rowKeyIdentifier}-${index}`}
