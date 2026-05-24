@@ -4,57 +4,133 @@ import PartnerMarquee from "@/components/PartnerMarquee";
 import Footer from "@/components/Footer";
 import initialPartnersList from "@/public/partners.json";
 
-// Import your custom homepage stylesheet explicitly to make sure it loads
-import "./home.css"; 
-
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#060913] text-white flex flex-col items-center justify-between pt-24 pb-12 relative overflow-hidden">
+    <div style={{
+      backgroundColor: "#060913",
+      minHeight: "screen",
+      color: "#ffffff",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingTop: "6rem",
+      paddingBottom: "3rem",
+      position: "relative",
+      overflow: "hidden",
+      fontFamily: "system-ui, -apple-system, sans-serif"
+    }}>
       
-      {/* Main Core Hero Content Area */}
-      <div className="flex flex-col items-center text-center max-w-3xl px-4 z-10 flex-grow justify-center w-full">
-        <h1 className="text-5xl font-bold tracking-tight text-amber-400 mb-2">
+      {/* Visual Background Lighting Accent */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "1000px",
+        height: "400px",
+        background: "linear-gradient(to bottom, rgba(245, 158, 11, 0.06), transparent)",
+        borderRadius: "50%",
+        filter: "blur(100px)",
+        pointerEvents: "none",
+        zIndex: 0
+      }} />
+
+      {/* Main Content Area */}
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        maxWidth: "48rem",
+        paddingLeft: "1rem",
+        paddingRight: "1rem",
+        zIndex: 10,
+        width: "100%"
+      }}>
+        <h1 style={{ fontSize: "3rem", fontWeight: 800, color: "#f59e0b", marginBottom: "0.5rem" }}>
           SignalBoost
         </h1>
-        <h2 className="text-2xl font-semibold text-gray-200 mb-6">
+        <h2 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#e5e7eb", marginBottom: "1.5rem" }}>
           Your AI-Guided Digital Shopping Mall
         </h2>
-        <p className="text-gray-400 text-base max-w-2xl leading-relaxed mb-8">
+        <p style={{ color: "#9ca3af", fontSize: "1.125rem", lineHeight: "1.75rem", marginBottom: "2rem" }}>
           Tell me what you need and I’ll guide you to the right trusted partner — flights, hotels, eSIMs, cars and more, matched perfectly to your country.
         </p>
 
-        {/* Your Original Functional Search Bar Input Structure */}
-        <div className="w-full max-w-xl bg-white/[0.03] border border-white/10 rounded-2xl p-2 flex items-center shadow-2xl mb-6 relative z-20">
+        {/* Beautiful Functional Search Container Block */}
+        <div style={{
+          width: "100%",
+          maxWidth: "36rem",
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          borderRadius: "1rem",
+          padding: "0.5rem",
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "1.5rem",
+          backdropFilter: "blur(12px)"
+        }}>
           <input 
             type="text" 
             placeholder='Try typing: "flights to Lima next month"' 
-            className="w-full bg-transparent border-none outline-none pl-4 text-sm text-gray-200 placeholder-gray-500"
+            style={{
+              width: "100%",
+              backgroundColor: "transparent",
+              border: "none",
+              outline: "none",
+              paddingLeft: "1rem",
+              fontSize: "0.875rem",
+              color: "#e5e7eb"
+            }}
             disabled
           />
-          <button className="h-10 w-10 bg-amber-500 rounded-xl flex items-center justify-center font-bold text-black">
+          <button style={{
+            height: "2.5rem",
+            width: "2.5rem",
+            backgroundColor: "#f59e0b",
+            border: "none",
+            borderRadius: "0.75rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "bold",
+            color: "#000000",
+            cursor: "pointer"
+          }}>
             →
           </button>
         </div>
 
-        {/* Live Category Pills */}
-        <div className="flex flex-wrap justify-center gap-2 max-w-xl text-xs text-gray-300">
-          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.02]">✈️ Flights</span>
-          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.02]">🏨 Hotels</span>
-          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.02]">📶 eSIM & Internet</span>
-          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.02]">🎟️ Tours & Activities</span>
-          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.02]">🚗 Car Rentals</span>
-          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.02]">🛒 Marketplace</span>
+        {/* Premium Category Badges Selection */}
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.5rem", maxWidth: "36rem" }}>
+          {["✈️ Flights", "🏨 Hotels", "📶 eSIM & Internet", "🎟️ Tours & Activities", "🚗 Car Rentals", "🛒 Marketplace"].map((pill) => (
+            <span key={pill} style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "9999px",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              backgroundColor: "rgba(255, 255, 255, 0.02)",
+              fontSize: "0.75rem",
+              color: "#d1d5db"
+            }}>
+              {pill}
+            </span>
+          ))}
         </div>
       </div>
 
-      {/* Dynamic Scroller Section wrapper container */}
+      {/* Dynamic Scroller Loops Layer */}
       {initialPartnersList && initialPartnersList.length > 0 && (
-        <div className="w-full z-10 my-8">
+        <div style={{ width: "100%", zIndex: 10, marginTop: "2rem", marginBottom: "2rem" }}>
           <PartnerMarquee partnersData={initialPartnersList} />
         </div>
       )}
 
-      {/* Footer System Links */}
+      {/* Trust Context Notice */}
+      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, marginBottom: "1rem" }}>
+        Directly connecting you with Booking.com, Aviasales, Amazon and 120+ vetted global networks.
+      </div>
+
       <Footer />
       
     </div>
