@@ -4,7 +4,7 @@ import PartnerMarquee from "@/components/PartnerMarquee";
 import Footer from "@/components/Footer";
 import initialPartnersList from "@/public/partners.json";
 
-// Import your custom homepage stylesheet for the slow animations
+// Explicitly import your home style sheets for the slow keyframe animations
 import "./home.css"; 
 
 export default function HomePage() {
@@ -16,65 +16,14 @@ export default function HomePage() {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      justifyContent: "space-between",
       position: "relative",
-      overflow: "hidden",
-      fontFamily: "system-ui, -apple-system, sans-serif"
+      overflowX: "hidden",
+      fontFamily: "system-ui, -apple-system, sans-serif",
+      paddingTop: "8rem",  /* Gives plenty of space below your real top navbar */
+      paddingBottom: "2rem"
     }}>
       
-      {/* --- FIXED NAVIGATION BAR (Safe & Static Unclickable States) --- */}
-      <header style={{
-        width: "100%",
-        maxWidth: "80rem",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "1.5rem 2rem",
-        position: "absolute",
-        top: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 50
-      }}>
-        {/* Left Side: Solid Brand Text */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em" }}>
-            signal<span style={{ color: "#f59e0b" }}>boost</span>
-          </span>
-        </div>
-
-        {/* Right Side: Clean Disabled Text Indicators to Avoid 404 Dead Ends */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ color: "#4b5563", fontSize: "0.85rem", cursor: "not-allowed" }}>
-            ⚙️ Admin
-          </span>
-          
-          {/* Dashboard Rendered Strictly as an Unclickable Visual Layout Component */}
-          <div style={{ 
-            backgroundColor: "#rgba(245, 158, 11, 0.5)",
-            background: "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)",
-            color: "#060913", 
-            fontSize: "0.85rem", 
-            fontWeight: 700,
-            padding: "0.5rem 1.25rem", 
-            borderRadius: "9999px",
-            opacity: 0.85,
-            cursor: "not-allowed",
-            userSelect: "none"
-          }}>
-            Dashboard
-          </div>
-
-          <span style={{ color: "#4b5563", fontSize: "0.85rem", cursor: "not-allowed" }}>
-            Reset password
-          </span>
-          <span style={{ color: "#4b5563", fontSize: "0.85rem", cursor: "not-allowed" }}>
-            Log out
-          </span>
-        </div>
-      </header>
-
-      {/* Ambient Background Lighting Accent */}
+      {/* Premium Ambient Background Glow */}
       <div style={{
         position: "absolute",
         top: 0,
@@ -100,8 +49,7 @@ export default function HomePage() {
         paddingRight: "1.5rem",
         zIndex: 10,
         width: "100%",
-        marginTop: "9rem", 
-        marginBottom: "2rem"
+        marginBottom: "3rem"
       }}>
         <h1 style={{ 
           fontSize: "3.5rem", 
@@ -119,7 +67,7 @@ export default function HomePage() {
           Tell me what you need and I’ll guide you to the right trusted partner — flights, hotels, eSIMs, cars and more, matched perfectly to your country.
         </p>
 
-        {/* Custom Search bar Mock Container */}
+        {/* Custom Search Bar Container */}
         <div style={{
           width: "100%",
           maxWidth: "32rem",
@@ -182,15 +130,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* --- SCROLLER CONTAINER LAYER (Optimized Height Spacing) --- */}
+      {/* --- MARQUEE CONTAINER (Pushed to flow naturally, preventing vertical overflow clipping) --- */}
       {initialPartnersList && initialPartnersList.length > 0 && (
-        <div style={{ width: "100%", zIndex: 10, marginTop: "auto", marginBottom: "auto" }}>
+        <div style={{ width: "100%", zIndex: 10, padding: "2rem 0", contentVisibility: "auto" }}>
           <PartnerMarquee partnersData={initialPartnersList} />
         </div>
       )}
 
-      {/* Bottom context footprint footer row */}
-      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, width: "100%", padding: "1rem 0" }}>
+      {/* Bottom Context Footprint */}
+      <div style={{ textAlign: "center", fontSize: "11px", color: "#4b5563", zIndex: 10, width: "100%", padding: "2rem 0 1rem 0" }}>
         Directly connecting you with Booking.com, Aviasales, Amazon and 130+ vetted global networks.
       </div>
 
