@@ -5,7 +5,6 @@
 // with the component and never disturb the rest of the site.
 import React from "react";
 import "./marquee.css";
-
 interface Partner {
   id: string;
   name: string;
@@ -16,13 +15,11 @@ interface Partner {
 interface MarqueeProps {
   partnersData: Partner[];
 }
-
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   const list = partnersData || [];
   const halfLength = Math.ceil(list.length / 2);
   const topRowPartners = list.slice(0, halfLength);
   const bottomRowPartners = list.slice(halfLength);
-
   const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
     if (items.length === 0) return null;
     const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
@@ -56,9 +53,11 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
       </div>
     );
   };
-
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    // marginTop pulls the whole marquee block up one line. It cancels the
+    // 1.5rem top padding of the wrapper in HomeApp.tsx, so it sits higher
+    // without overlapping the hero above. Delete this one property to revert.
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1rem", marginTop: "-1.5rem" }}>
       <div style={{ textAlign: "center", marginBottom: "1rem" }}>
         <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.15em" }}>
           WINDOW SHOPPING
