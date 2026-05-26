@@ -33,7 +33,6 @@ import { conciergeMatch } from "@/lib/home/concierge-match";
 import { getOrCreateMemory, recordSearch, rememberedDestination } from "@/lib/home/visitor-memory";
 import ConciergeHero from "@/components/home/ConciergeHero";
 import ConciergeThread, { type Turn } from "@/components/home/ConciergeThread";
-import NudgeBubble from "@/components/home/NudgeBubble";
 import HomeSections from "@/components/home/HomeSections";
 import SupportCenter from "@/components/home/SupportCenter";
 import AdminDot from "@/components/home/AdminDot";
@@ -580,7 +579,8 @@ export default function HomeApp() {
         </div>
       )}
 
-      {/* Proactive nudge + returning greeting */}
+      {/* Returning-visitor nudge removed per owner request (2026-05-25).
+          To restore it: re-add the import at the top and uncomment below.
       <NudgeBubble
         lang={lang}
         noResults={noResults}
@@ -589,6 +589,7 @@ export default function HomeApp() {
           newSearch();
         }}
       />
+      */}
 
       {/* Hidden login trigger (faint dot, bottom-right) → /auth/login */}
       <AdminDot />
