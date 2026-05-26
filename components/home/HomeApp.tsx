@@ -36,6 +36,7 @@ import ConciergeThread, { type Turn } from "@/components/home/ConciergeThread";
 import NudgeBubble from "@/components/home/NudgeBubble";
 import HomeSections from "@/components/home/HomeSections";
 import SupportCenter from "@/components/home/SupportCenter";
+import AdminDot from "@/components/home/AdminDot";
 import AdminBar from "@/components/home/AdminBar";
 import BrandMark from "@/components/home/BrandMark";
 import PartnerMarquee from "@/components/PartnerMarquee";
@@ -588,6 +589,9 @@ export default function HomeApp() {
           newSearch();
         }}
       />
+
+      {/* Hidden login trigger (faint dot, bottom-right) → /auth/login */}
+      <AdminDot />
     </div>
   );
 }
