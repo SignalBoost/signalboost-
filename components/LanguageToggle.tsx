@@ -4,21 +4,20 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "./i18n/useTranslation";
 
 export function LanguageToggle() {
-  // Ajustado estritamente para o contrato original e unificado do seu hook
   const { lang, setLang } = useTranslation();
 
   // Mantém estável a referência do idioma local do visitante (não-inglês)
   const [localTarget, setLocalTarget] = useState("es");
 
   useEffect(() => {
-    // Se o idioma inicial detectado não for inglês, fixa ele como o alvo alternável
+    // Se o idioma inicial detectado por IP/Região não for inglês, fixa ele como o alvo
     if (lang !== "en") {
       setLocalTarget(lang);
     }
   }, []);
 
   const handleToggle = () => {
-    // Alterna entre inglês e o locale regional ativo por IP/Middleware
+    // Alterna de forma limpa entre inglês e o locale regional ativo
     const nextLocale = lang === "en" ? localTarget : "en";
     setLang(nextLocale);
   };
