@@ -10,16 +10,35 @@ interface HomeAppProps {
   regionName?: string;
 }
 
-export default function HomeApp({ lang = "en", regionName = "" }: HomeAppProps) {
+export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
   const [activeChip, setActiveChip] = useState("all");
 
-  const currentLang = lang.split("-")[0] || "en";
+  // SISTEMA ROBUSTO DE DETECÇÃO DE LOCALE
+  // 1. Pega o parâmetro lang, remove espaços e transforma em minúsculo.
+  // 2. Se vier estilo "es-MX", quebra no hífen e pega apenas o "es".
+  // 3. Se não vier nada do Next.js, tenta ler o idioma nativo do navegador do usuário em tempo de execução.
+  const getNormalizedLang = (): string => {
+    if (lang) {
+      return lang.toLowerCase().split("-")[0].split("_")[0].trim();
+    }
+    if (typeof window !== "undefined" && window.navigator) {
+      const browserLang = window.navigator.language || (window.navigator as any).userLanguage;
+      if (browserLang) {
+        return browserLang.toLowerCase().split("-")[0].split("_")[0].trim();
+      }
+    }
+    return "en"; // Fallback final de segurança
+  };
+
+  const currentLang = getNormalizedLang();
+  
+  // Seleciona a tradução correspondente ou cai no inglês se for um idioma não mapeado
   const t = translations[currentLang] || translations["en"];
 
   return (
     <main style={styles.mainCanvas}>
       <ConciergeHero
-        lang={lang}
+        lang={currentLang}
         regionName={regionName}
         onSubmit={async () => {}}
         onChip={(cat) => setActiveChip(cat)}
@@ -79,7 +98,7 @@ export default function HomeApp({ lang = "en", regionName = "" }: HomeAppProps) 
   );
 }
 
-// Mapa de Locales Oficiais (en, es, pt, pl, ru)
+// Dicionário de Idiomas Oficiais (en, es, pt, pl, ru)
 const translations: Record<string, any> = {
   en: {
     trustBadge: "Trust Infrastructure",
