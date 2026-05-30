@@ -11,8 +11,7 @@ export default function Page() {
   return (
     <main className="sb-home">
       <div className="sb-home-bg" />
-      <HomeApp />
-      <PartnerMarquee />
+      <HomeApp afterHero={<PartnerMarquee />} />
     </main>
   );
 }

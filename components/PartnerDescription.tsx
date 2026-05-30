@@ -41,6 +41,10 @@ function localizedDescription(partner: Partner, lang: keyof I18n) {
   return partner.description_i18n?.[lang] || partner.description_i18n?.en || partner.description;
 }
 
+function partnerDetailHref(partner: Partner) {
+  return `/partners/${partner.id}`;
+}
+
 export default function PartnerDescription({
   partners: providedPartners,
   description,
@@ -52,6 +56,7 @@ export default function PartnerDescription({
   const categoryLabel = fallbackText(t("partner.category"), "Category");
   const visitLabel = fallbackText(t("partner.visit"), "Visit Node");
   const networkLabel = fallbackText(t("partner.network"), "Network");
+  const platformLabel = fallbackText(t("partner.platform"), "Platform");
 
   if (description || descriptionI18n) {
     const targetLang = lang as keyof I18n;
@@ -75,26 +80,39 @@ export default function PartnerDescription({
           {list.map((partner) => (
             <article key={partner.id} style={styles.card}>
               <div style={styles.cardTop}>
-                <span style={styles.logoWrap}>
-                  <img
-                    src={`/logos/${partner.logo}`}
-                    alt={`${partner.name} logo`}
-                    loading="lazy"
-                    style={styles.logo}
-                    onError={(event) => {
-                      event.currentTarget.style.display = "none";
-                      const fallback = event.currentTarget.nextElementSibling;
-                      if (fallback instanceof HTMLElement) fallback.style.display = "inline";
-                    }}
-                  />
-                  <span style={styles.logoFallback} aria-hidden="true">
-                    {partner.name.charAt(0).toUpperCase()}
+                <a
+                  href={partnerDetailHref(partner)}
+                  style={styles.logoLink}
+                  aria-label={`${partner.name} partner details`}
+                >
+                  <span style={styles.logoWrap}>
+                    <img
+                      src={`/logos/${partner.logo}`}
+                      alt={`${partner.name} logo`}
+                      loading="lazy"
+                      style={styles.logo}
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                        const fallback = event.currentTarget.nextElementSibling;
+                        if (fallback instanceof HTMLElement) fallback.style.display = "inline";
+                      }}
+                    />
+                    <span style={styles.logoFallback} aria-hidden="true">
+                      {partner.name.charAt(0).toUpperCase()}
+                    </span>
                   </span>
-                </span>
+                </a>
                 <div>
-                  <h2 style={styles.name}>{partner.name}</h2>
+                  <h2 style={styles.name}>
+                    <a href={partnerDetailHref(partner)} style={styles.nameLink}>
+                      {partner.name}
+                    </a>
+                  </h2>
                   <p style={styles.category}>
                     {categoryLabel}: {partner.category_label || partner.category}
+                  </p>
+                  <p style={styles.platform}>
+                    {platformLabel}: {partner.network || partner.category_label || partner.category}
                   </p>
                 </div>
               </div>
@@ -183,6 +201,11 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: "14px",
   },
+  logoLink: {
+    display: "inline-flex",
+    textDecoration: "none",
+    flexShrink: 0,
+  },
   logoWrap: {
     display: "inline-flex",
     alignItems: "center",
@@ -210,10 +233,19 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.2,
     margin: 0,
   },
+  nameLink: {
+    color: "inherit",
+    textDecoration: "none",
+  },
   category: {
     color: "#cbd5e1",
     fontSize: "13px",
     margin: "5px 0 0",
+  },
+  platform: {
+    color: "#94a3b8",
+    fontSize: "12px",
+    margin: "4px 0 0",
   },
   descText: {
     fontSize: "14px",

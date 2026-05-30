@@ -10,9 +10,10 @@ import useTranslation from "@/components/i18n/useTranslation";
 interface HomeAppProps {
   lang?: string;
   regionName?: string;
+  afterHero?: React.ReactNode;
 }
 
-export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
+export default function HomeApp({ lang, regionName = "", afterHero }: HomeAppProps) {
   const [activeChip, setActiveChip] = useState("all");
   const { t } = useTranslation();
 
@@ -25,6 +26,8 @@ export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
         onChip={(cat) => setActiveChip(cat)}
         onBrowseAll={() => setActiveChip("all")}
       />
+
+      {afterHero}
 
       <div style={styles.contentWrapper}>
         <div style={styles.sectionHeaderZone}>
