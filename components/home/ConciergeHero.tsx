@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { stationWorkflows, workflowConnectorSecurityNotes } from "@/lib/station-workflows";
 import useTranslation from "@/components/i18n/useTranslation";
+import partners from "@/partners.json";
 
 interface ConciergeHeroProps {
   lang?: string;
@@ -13,15 +14,36 @@ interface ConciergeHeroProps {
   onBrowseAll?: () => void;
 }
 
+type HeroPartner = {
+  id: string;
+  name: string;
+  logo?: string;
+  description?: string;
+  category_label?: string;
+  category?: string;
+  network?: string;
+  featured?: boolean;
+};
+
 function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
 
-const trialTasks = ["Payroll close check", "Campaign launch brief", "Contract risk scan"];
-const telemetryDeck = [
-  { label: "Sync health", value: "98.2%", detail: "QuickBooks + HubSpot nominal" },
-  { label: "Overdue invoices", value: "7", detail: "PayPal, Stripe, Square watch" },
-  { label: "Reply rate", value: "31%", detail: "Gmail/Outlook campaigns" },
+// Featured partners are now the hero's star. Falls back to the first few
+// partners if none are flagged featured, so the hero is never empty.
+const partnerList = partners as HeroPartner[];
+const heroPartners = (() => {
+  const featured = partnerList.filter((partner) => partner.featured);
+  return (featured.length ? featured : partnerList).slice(0, 6);
+})();
+
+// Quick-links that used to be scattered in navigation now live inside the
+// SaaS Station feature card. These route to the existing app pages.
+const stationTools = [
+  { label: "Calendar", href: "/calendar" },
+  { label: "Spreadsheets", href: "/spreadsheets" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "Outreach", href: "/outreach" },
 ];
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
@@ -34,6 +56,11 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     () => Array.from(new Set(stationWorkflows.flatMap((workflow) => workflow.connectors))),
     []
   );
+
+  // Keep the station card compact: show a handful of workflows inline.
+  const compactWorkflows = stationWorkflows.slice(0, 4);
+  const visibleConnectors = connectorList.slice(0, 6);
+  const extraConnectors = connectorList.length - visibleConnectors.length;
 
   const runWorkflowTask = (workflowSlug: string) => {
     const workflow = stationWorkflows.find((candidate) => candidate.slug === workflowSlug) || stationWorkflows[0];
@@ -49,127 +76,153 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   };
 
   return (
-    <section style={styles.heroSection} aria-labelledby="saas-station-hero-title">
+    <section style={styles.heroSection} aria-labelledby="partner-hero-title">
       <div style={styles.glowLeft} aria-hidden="true" />
       <div style={styles.glowRight} aria-hidden="true" />
       <div style={styles.gridOverlay} aria-hidden="true" />
 
-      <div className="concierge-hero-layout" style={styles.innerContainer}>
+      <div className="sb-hero-shell">
+        {/* ============ LEFT: PARTNERS — the hero / the star ============ */}
         <div style={styles.heroCopy}>
           <div style={styles.badgeContainer}>
             <span style={styles.badgePulse} />
-            <span style={styles.badgeText}>Gold cockpit • SaaS Station online</span>
+            <span style={styles.badgeText}>Trusted partner network</span>
           </div>
 
-          <h1 id="saas-station-hero-title" style={styles.mainHeading}>
-            {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
+          <h1 id="partner-hero-title" style={styles.mainHeading}>
+            {fallbackText(t("homepage.partnerHeroTitle"), "Trusted partners, all in one place")}
           </h1>
 
           <p style={styles.subtext}>
-            Concierge now guides payroll, close, growth, weekly reporting, tax, and contract workflows with
-            connector-backed telemetry, secure Supabase token vaulting, and cockpit-style trial gates.
+            {fallbackText(
+              t("homepage.partnerHeroSubtitle"),
+              "Vetted, affiliate-backed partners across flights, hotels, eSIM, tours, marketplace and more — with credibility badges you can trust and one Concierge to guide you."
+            )}
           </p>
 
-          <div style={styles.trialPanel} aria-label="Trial gating">
-            <div>
-              <span style={styles.trialEyebrow}>Trial gate</span>
-              <strong style={styles.trialTitle}>3 free tasks per workflow, then sign-up required</strong>
-            </div>
-            <div style={styles.trialDots} aria-hidden="true">
-              <span style={styles.trialDot} />
-              <span style={styles.trialDot} />
-              <span style={styles.trialDot} />
-            </div>
-          </div>
-
-          <ul style={styles.trialList} aria-label="Included free tasks">
-            {trialTasks.map((task) => (
-              <li key={task} style={styles.trialListItem}>{task}</li>
+          <div style={styles.partnerGrid} aria-label="Featured partners">
+            {heroPartners.map((partner) => (
+              <Link
+                key={partner.id}
+                href={`/partners/${partner.id}`}
+                style={styles.partnerCard}
+                aria-label={`${partner.name} partner`}
+              >
+                <span style={styles.partnerLogoBox}>
+                  {partner.logo ? (
+                    <img
+                      src={`/logos/${partner.logo}`}
+                      alt={`${partner.name} logo`}
+                      loading="lazy"
+                      style={styles.partnerLogoImg}
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    partner.name.charAt(0).toUpperCase()
+                  )}
+                </span>
+                <span style={styles.partnerCardCopy}>
+                  <span style={styles.partnerCardName}>{partner.name}</span>
+                  <span style={styles.partnerCardMeta}>
+                    {partner.category_label || partner.category || t("partner.category")}
+                    {" • "}
+                    {partner.network || t("partner.platform")}
+                  </span>
+                </span>
+              </Link>
             ))}
-          </ul>
-
-          <div style={styles.conciergePanel}>
-            <span style={styles.conciergeAvatar}>✦</span>
-            <span>
-              <strong style={styles.conciergeTitle}>Concierge guide</strong>
-              <span style={styles.conciergeCopy}>{activeWorkflow.conciergePrompt}</span>
-            </span>
           </div>
 
           <div style={styles.actionGroup}>
-            <button type="button" style={styles.brandButtonPrimary} onClick={() => runWorkflowTask(activeWorkflow.slug)}>
-              Run Concierge workflow
-            </button>
-            <Link href="/pricing" style={styles.brandButtonSecondary}>
-              Upgrade to Pro <span style={styles.arrow}>→</span>
+            <Link href="/marketplace" style={styles.brandButtonPrimary}>
+              Browse the marketplace
             </Link>
+            <Link href="/promote" style={styles.brandButtonSecondary}>
+              Become a partner <span style={styles.arrow}>→</span>
+            </Link>
+          </div>
+
+          <div style={styles.trustLine}>
+            <span style={styles.trustDot} />
+            Affiliate-backed credibility badges • Concierge-guided • Secure connector vault
           </div>
         </div>
 
-        <aside className="saas-station-panel" style={styles.stationPanel} aria-label="Your SaaS Stationary Station workflow cockpit">
+        {/* ============ RIGHT: SaaS STATION — compact feature card ============ */}
+        <aside
+          className="saas-station-panel"
+          style={styles.stationPanel}
+          aria-label="SaaS Stationary Station feature"
+        >
           <div style={styles.stationGlow} aria-hidden="true" />
-          <div style={styles.stationHeader}>
-            <span style={styles.stationEyebrow}>Live SMB telemetry</span>
-            <h2 style={styles.stationTitle}>Your SaaS Stationary Station</h2>
-            <p style={styles.stationSubtitle}>
-              Workflow modules sit in the hero panel with connector health, trial usage, and Concierge next steps.
-            </p>
-          </div>
 
-          <div style={styles.telemetryVisual} aria-label="Station telemetry visuals">
-            {telemetryDeck.map((item, index) => (
-              <div key={item.label} style={styles.telemetryCard}>
-                <span style={styles.telemetryCardLabel}>{item.label}</span>
-                <strong style={styles.telemetryCardValue}>{item.value}</strong>
-                <span style={styles.telemetryCardDetail}>{item.detail}</span>
-                <span style={{ ...styles.telemetryBeam, width: `${62 + index * 14}%` }} />
-              </div>
-            ))}
+          <div style={styles.stationHeader}>
+            <span style={styles.stationEyebrow}>Feature • SaaS Station</span>
+            <h2 style={styles.stationTitle}>
+              {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
+            </h2>
+            <p style={styles.stationSubtitle}>
+              Run payroll, close, growth, reporting, tax and contracts from one gold cockpit — with connector-backed
+              telemetry and trial gates.
+            </p>
           </div>
 
           <div style={styles.stationTelemetryStrip} aria-label="SaaS station telemetry">
             <span style={styles.telemetryDot} />
             <strong>98.2%</strong>
-            <span>{fallbackText(t("homepage.saasStationTelemetry"), "sync health across finance, CRM, email, payments, and contracts")}</span>
+            <span style={styles.telemetryStripText}>
+              {fallbackText(t("homepage.saasStationTelemetry"), "sync health across finance, CRM, email & payments")}
+            </span>
           </div>
 
           <div style={styles.connectorRail} aria-label="Connected SMB apps">
-            {connectorList.map((connector) => (
+            {visibleConnectors.map((connector) => (
               <span key={connector} style={styles.connectorPill}>{connector}</span>
+            ))}
+            {extraConnectors > 0 && <span style={styles.connectorPill}>+{extraConnectors}</span>}
+          </div>
+
+          {/* Calendar / Spreadsheets / Reviews / Outreach now live here */}
+          <div style={styles.toolsRow} aria-label="Station tools">
+            {stationTools.map((tool) => (
+              <Link key={tool.href} href={tool.href} style={styles.toolChip}>
+                {tool.label}
+              </Link>
             ))}
           </div>
 
-          <div style={styles.stationGrid}>
-            {stationWorkflows.map((workflow) => {
+          <div style={styles.compactWorkflowList} aria-label="Station workflows">
+            {compactWorkflows.map((workflow) => {
               const used = taskCounts[workflow.slug] || 0;
               return (
                 <button
                   type="button"
                   key={workflow.slug}
                   style={{
-                    ...styles.stationModuleCard,
-                    borderColor: `${workflow.accent}7a`,
-                    boxShadow: `0 18px 48px ${workflow.accent}20, inset 0 1px 0 rgba(255,255,255,.08)`,
+                    ...styles.compactWorkflowRow,
+                    borderColor: `${workflow.accent}55`,
                   }}
                   onClick={() => runWorkflowTask(workflow.slug)}
                   aria-label={`Run ${workflow.title} workflow task`}
                 >
-                  <span style={{ ...styles.stationModuleAccent, background: workflow.accent }} />
-                  <span style={styles.stationModuleTopline}>{workflow.connectors.join(" + ")}</span>
-                  <strong style={styles.stationModuleTitle}>{workflow.title}</strong>
-                  <span style={styles.stationModuleSignal}>{workflow.metric}</span>
-                  <span style={styles.stationModuleTelemetry}>{workflow.telemetry}</span>
-                  <span style={styles.trialCounter}>{used}/{workflow.trialLimit} free tasks used</span>
+                  <span style={{ ...styles.workflowAccent, background: workflow.accent }} />
+                  <span style={styles.workflowRowMain}>
+                    <strong style={styles.workflowRowTitle}>{workflow.title}</strong>
+                    <span style={styles.workflowRowMetric}>{workflow.metric}</span>
+                  </span>
+                  <span style={styles.workflowRowCounter}>{used}/{workflow.trialLimit}</span>
                 </button>
               );
             })}
           </div>
 
-          <div style={styles.securityPanel} aria-label="Secure Supabase token storage">
-            <strong style={styles.securityTitle}>Secure connector vault</strong>
-            {workflowConnectorSecurityNotes.map((note) => (
-              <span key={note} style={styles.securityNote}>{note}</span>
-            ))}
+          <div style={styles.stationFooter}>
+            <Link href="/dashboard" style={styles.stationCta}>
+              Open the station →
+            </Link>
+            <span style={styles.securityNote}>{workflowConnectorSecurityNotes[0]}</span>
           </div>
         </aside>
       </div>
@@ -191,6 +244,28 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </div>
         </div>
       )}
+
+      {/* Scoped responsive grid. Defined here (not in home.css) so the hero
+          collapses cleanly on tablets/phones without inline styles defeating
+          the media query. Partners dominate; the station is the smaller half. */}
+      <style>{`
+        .sb-hero-shell{
+          position:relative;
+          z-index:10;
+          display:grid;
+          grid-template-columns:minmax(0,1.35fr) minmax(0,0.65fr);
+          gap:44px;
+          align-items:center;
+          max-width:1240px;
+          margin:0 auto;
+        }
+        @media (max-width:1024px){
+          .sb-hero-shell{
+            grid-template-columns:1fr;
+            gap:34px;
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -202,16 +277,6 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "150px 24px 86px 24px",
     overflow: "hidden",
     borderBottom: "1px solid rgba(245, 197, 66, 0.13)",
-  },
-  innerContainer: {
-    position: "relative",
-    zIndex: 10,
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 0.86fr) minmax(420px, 1.14fr)",
-    gap: "34px",
-    alignItems: "center",
-    maxWidth: "1240px",
-    margin: "0 auto",
   },
   heroCopy: { textAlign: "left" },
   glowLeft: {
@@ -242,6 +307,8 @@ const styles: Record<string, React.CSSProperties> = {
     WebkitMaskImage: "radial-gradient(circle at 50% 38%, black, transparent 74%)",
     pointerEvents: "none",
   },
+
+  /* ---- badge ---- */
   badgeContainer: {
     display: "inline-flex",
     alignItems: "center",
@@ -266,85 +333,73 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "0.14em",
     textTransform: "uppercase",
   },
+
+  /* ---- hero headline / copy ---- */
   mainHeading: {
     color: "#fff",
-    fontSize: "clamp(48px, 7vw, 92px)",
-    lineHeight: 0.92,
-    letterSpacing: "-0.075em",
+    fontSize: "clamp(44px, 6vw, 84px)",
+    lineHeight: 0.95,
+    letterSpacing: "-0.045em",
     margin: "0 0 22px",
     textShadow: "0 0 44px rgba(245, 197, 66, 0.18)",
   },
   subtext: {
-    maxWidth: "650px",
+    maxWidth: "560px",
     color: "rgba(255, 255, 255, 0.72)",
     fontSize: "18px",
     lineHeight: 1.62,
-    margin: "0 0 24px",
+    margin: "0 0 30px",
   },
-  trialPanel: {
+
+  /* ---- featured partner grid (the star) ---- */
+  partnerGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: "12px",
+    marginBottom: "30px",
+  },
+  partnerCard: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: "16px",
-    maxWidth: "560px",
-    border: "1px solid rgba(245, 197, 66, 0.34)",
-    borderRadius: "22px",
-    background: "linear-gradient(135deg, rgba(245, 197, 66, 0.14), rgba(255,255,255,0.04))",
-    padding: "16px 18px",
-    boxShadow: "0 18px 54px rgba(245, 197, 66, 0.1)",
+    gap: "12px",
+    border: "1px solid rgba(245, 197, 66, 0.16)",
+    borderRadius: "16px",
+    padding: "13px",
+    background: "rgba(15, 15, 22, 0.72)",
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+    boxShadow: "0 14px 40px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.05)",
+    textDecoration: "none",
   },
-  trialEyebrow: {
-    display: "block",
-    color: "#f5c542",
-    fontSize: "11px",
-    fontWeight: 900,
-    letterSpacing: "0.16em",
-    textTransform: "uppercase",
-  },
-  trialTitle: { display: "block", color: "#fff", fontSize: "18px", marginTop: "3px" },
-  trialDots: { display: "flex", gap: "8px" },
-  trialDot: { width: "13px", height: "13px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 16px rgba(245,197,66,.55)" },
-  trialList: {
-    display: "grid",
-    gap: "8px",
-    listStyle: "none",
-    margin: "16px 0 16px",
-    padding: 0,
-    maxWidth: "560px",
-  },
-  trialListItem: {
-    color: "rgba(255,255,255,.78)",
-    border: "1px solid rgba(255,255,255,.08)",
-    borderRadius: "999px",
-    padding: "9px 13px",
-    background: "rgba(255,255,255,.035)",
-    fontSize: "14px",
-  },
-  conciergePanel: {
+  partnerLogoBox: {
+    width: "44px",
+    height: "44px",
+    flexShrink: 0,
+    borderRadius: "12px",
+    background: "#fff",
+    border: "1px solid rgba(245, 197, 66, 0.28)",
     display: "flex",
-    gap: "13px",
-    maxWidth: "560px",
-    border: "1px solid rgba(34,211,238,.22)",
-    borderRadius: "20px",
-    background: "rgba(34,211,238,.065)",
-    padding: "14px 16px",
-    marginBottom: "24px",
-  },
-  conciergeAvatar: {
-    display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "34px",
-    height: "34px",
-    borderRadius: "999px",
-    color: "#06121a",
-    background: "linear-gradient(135deg, #22d3ee, #f5c542)",
-    boxShadow: "0 0 24px rgba(34,211,238,.35)",
-    flexShrink: 0,
+    color: "#111827",
+    fontWeight: 900,
+    overflow: "hidden",
   },
-  conciergeTitle: { display: "block", color: "#fff", fontSize: "14px" },
-  conciergeCopy: { display: "block", color: "rgba(255,255,255,.66)", fontSize: "13px", lineHeight: 1.5, marginTop: "3px" },
-  actionGroup: { display: "flex", flexWrap: "wrap", gap: "12px" },
+  partnerLogoImg: { width: "30px", height: "30px", objectFit: "contain" },
+  partnerCardCopy: { display: "flex", flexDirection: "column", minWidth: 0 },
+  partnerCardName: { color: "#f8fafc", fontSize: "15px", fontWeight: 800 },
+  partnerCardMeta: {
+    color: "#dfa837",
+    fontSize: "11px",
+    fontWeight: 800,
+    marginTop: "3px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+
+  /* ---- CTAs ---- */
+  actionGroup: { display: "flex", flexWrap: "wrap", gap: "12px", marginBottom: "18px" },
   brandButtonPrimary: {
     display: "inline-flex",
     alignItems: "center",
@@ -354,7 +409,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: "linear-gradient(135deg, #f5c542, #dfa837)",
     color: "#11151c",
     minHeight: "48px",
-    padding: "0 22px",
+    padding: "0 24px",
     fontWeight: 900,
     boxShadow: "0 18px 42px rgba(245, 197, 66, 0.24)",
     cursor: "pointer",
@@ -375,92 +430,126 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
   },
   arrow: { color: "#f5c542" },
+  trustLine: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "9px",
+    color: "rgba(255,255,255,.55)",
+    fontSize: "12.5px",
+    fontWeight: 600,
+  },
+  trustDot: { width: "8px", height: "8px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 14px #34d399" },
+
+  /* ---- compact SaaS station feature card ---- */
   stationPanel: {
     position: "relative",
     overflow: "hidden",
-    border: "1px solid rgba(245, 197, 66, 0.34)",
-    borderRadius: "34px",
+    width: "100%",
+    maxWidth: "440px",
+    marginLeft: "auto",
+    border: "1px solid rgba(245, 197, 66, 0.30)",
+    borderRadius: "26px",
     background: "linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(4, 7, 13, 0.94))",
-    padding: "26px",
-    boxShadow: "0 26px 90px rgba(0,0,0,.42), 0 0 64px rgba(245, 197, 66, 0.13)",
+    padding: "22px",
+    boxShadow: "0 22px 70px rgba(0,0,0,.42), 0 0 48px rgba(245, 197, 66, 0.1)",
   },
   stationGlow: {
     position: "absolute",
     inset: "-35% -20% auto auto",
-    width: "320px",
-    height: "320px",
-    background: "radial-gradient(circle, rgba(245,197,66,.2), transparent 65%)",
+    width: "260px",
+    height: "260px",
+    background: "radial-gradient(circle, rgba(245,197,66,.18), transparent 65%)",
+    pointerEvents: "none",
   },
-  stationHeader: { position: "relative", zIndex: 1, marginBottom: "18px" },
+  stationHeader: { position: "relative", zIndex: 1, marginBottom: "14px" },
   stationEyebrow: {
     color: "#f5c542",
-    fontSize: "11px",
+    fontSize: "10px",
     fontWeight: 900,
     letterSpacing: "0.18em",
     textTransform: "uppercase",
   },
-  stationTitle: { color: "#fff", fontSize: "clamp(28px, 4vw, 44px)", lineHeight: 1, margin: "9px 0" },
-  stationSubtitle: { color: "rgba(255,255,255,.66)", fontSize: "15px", lineHeight: 1.55, margin: 0 },
-  telemetryVisual: {
-    position: "relative",
-    zIndex: 1,
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
-    gap: "10px",
-    marginBottom: "14px",
-  },
-  telemetryCard: {
-    position: "relative",
-    overflow: "hidden",
-    border: "1px solid rgba(245,197,66,.18)",
-    borderRadius: "18px",
-    padding: "13px",
-    background: "linear-gradient(135deg, rgba(255,255,255,.055), rgba(245,197,66,.045))",
-    minHeight: "112px",
-  },
-  telemetryCardLabel: { display: "block", color: "rgba(255,255,255,.52)", fontSize: "10px", fontWeight: 900, letterSpacing: ".11em", textTransform: "uppercase" },
-  telemetryCardValue: { display: "block", color: "#fff", fontSize: "26px", marginTop: "8px" },
-  telemetryCardDetail: { display: "block", color: "rgba(255,255,255,.58)", fontSize: "11px", lineHeight: 1.35, marginTop: "4px" },
-  telemetryBeam: { position: "absolute", left: "13px", bottom: "11px", height: "4px", borderRadius: "999px", background: "linear-gradient(90deg, #f5c542, rgba(34,211,238,.65))", boxShadow: "0 0 18px rgba(245,197,66,.45)" },
+  stationTitle: { color: "#fff", fontSize: "clamp(20px, 2.4vw, 26px)", lineHeight: 1.05, margin: "8px 0 6px" },
+  stationSubtitle: { color: "rgba(255,255,255,.62)", fontSize: "13px", lineHeight: 1.5, margin: 0 },
+
   stationTelemetryStrip: {
     position: "relative",
     zIndex: 1,
     display: "flex",
     alignItems: "center",
-    gap: "10px",
+    gap: "9px",
     border: "1px solid rgba(245, 197, 66, 0.22)",
     borderRadius: "999px",
-    padding: "10px 14px",
+    padding: "9px 13px",
     color: "rgba(255,255,255,.72)",
     background: "rgba(245,197,66,.07)",
-    marginBottom: "12px",
+    margin: "14px 0 12px",
+    fontSize: "13px",
   },
-  telemetryDot: { width: "9px", height: "9px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 18px #34d399" },
-  connectorRail: { position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" },
-  connectorPill: { color: "#f5c542", fontSize: "11px", fontWeight: 900, border: "1px solid rgba(245,197,66,.2)", borderRadius: "999px", padding: "7px 10px", background: "rgba(245,197,66,.055)" },
-  stationGrid: { position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "14px" },
-  stationModuleCard: {
-    position: "relative",
-    minHeight: "178px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-    textAlign: "left",
+  telemetryDot: { width: "9px", height: "9px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 18px #34d399", flexShrink: 0 },
+  telemetryStripText: { color: "rgba(255,255,255,.6)", fontSize: "12px", lineHeight: 1.35 },
+
+  connectorRail: { position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: "7px", marginBottom: "14px" },
+  connectorPill: {
+    color: "#f5c542",
+    fontSize: "10.5px",
+    fontWeight: 900,
+    border: "1px solid rgba(245,197,66,.2)",
+    borderRadius: "999px",
+    padding: "6px 9px",
+    background: "rgba(245,197,66,.055)",
+  },
+
+  toolsRow: { position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "14px" },
+  toolChip: {
+    display: "inline-flex",
+    alignItems: "center",
+    color: "#fff",
+    fontSize: "12px",
+    fontWeight: 800,
+    textDecoration: "none",
     border: "1px solid rgba(255,255,255,.12)",
-    borderRadius: "22px",
-    padding: "18px",
-    background: "rgba(3, 7, 18, 0.68)",
-    cursor: "pointer",
+    borderRadius: "10px",
+    padding: "8px 11px",
+    background: "rgba(255,255,255,.05)",
   },
-  stationModuleAccent: { width: "34px", height: "4px", borderRadius: "999px" },
-  stationModuleTopline: { color: "rgba(255,255,255,.55)", fontSize: "10px", fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase" },
-  stationModuleTitle: { color: "#fff", fontSize: "20px" },
-  stationModuleSignal: { color: "#f5c542", fontSize: "13px", fontWeight: 900, marginTop: "auto" },
-  stationModuleTelemetry: { color: "rgba(255,255,255,.52)", fontSize: "12px" },
-  trialCounter: { color: "rgba(34,211,238,.86)", fontSize: "11px", fontWeight: 900 },
-  securityPanel: { position: "relative", zIndex: 1, display: "grid", gap: "6px", border: "1px solid rgba(34,211,238,.16)", borderRadius: "18px", padding: "14px", marginTop: "14px", background: "rgba(34,211,238,.045)" },
-  securityTitle: { color: "#fff", fontSize: "13px" },
-  securityNote: { color: "rgba(255,255,255,.56)", fontSize: "11px", lineHeight: 1.35 },
+
+  compactWorkflowList: { position: "relative", zIndex: 1, display: "grid", gap: "8px", marginBottom: "16px" },
+  compactWorkflowRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "11px",
+    width: "100%",
+    textAlign: "left",
+    cursor: "pointer",
+    border: "1px solid rgba(255,255,255,.12)",
+    borderRadius: "14px",
+    padding: "11px 13px",
+    background: "rgba(3, 7, 18, 0.6)",
+  },
+  workflowAccent: { width: "4px", height: "30px", borderRadius: "999px", flexShrink: 0 },
+  workflowRowMain: { display: "flex", flexDirection: "column", minWidth: 0, flex: 1 },
+  workflowRowTitle: { color: "#fff", fontSize: "14px", fontWeight: 800 },
+  workflowRowMetric: { color: "#f5c542", fontSize: "11px", fontWeight: 800, marginTop: "2px" },
+  workflowRowCounter: { color: "rgba(34,211,238,.86)", fontSize: "11px", fontWeight: 900, flexShrink: 0 },
+
+  stationFooter: { position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "8px" },
+  stationCta: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "999px",
+    background: "linear-gradient(135deg, #f5c542, #dfa837)",
+    color: "#11151c",
+    minHeight: "44px",
+    padding: "0 18px",
+    fontWeight: 900,
+    fontSize: "13px",
+    textDecoration: "none",
+  },
+  securityNote: { color: "rgba(255,255,255,.5)", fontSize: "11px", lineHeight: 1.35, textAlign: "center" },
+
+  /* ---- trial modal (unchanged) ---- */
   modalBackdrop: { position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", background: "rgba(0,0,0,.72)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" },
   modalCard: { width: "min(520px, 100%)", border: "1px solid rgba(245,197,66,.38)", borderRadius: "28px", padding: "28px", background: "linear-gradient(180deg, rgba(17,24,39,.98), rgba(3,7,18,.98))", boxShadow: "0 0 80px rgba(245,197,66,.2)" },
   modalEyebrow: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" },
