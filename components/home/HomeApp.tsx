@@ -4,7 +4,7 @@ export {};
 
 import React, { useState } from "react";
 import ConciergeHero from "./ConciergeHero";
-import { useTranslation } from "@/components/i18n/useTranslation";
+import useTranslation from "@/components/i18n/useTranslation";
 
 interface HomeAppProps {
   lang?: string;
@@ -26,7 +26,6 @@ export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
       />
 
       <div style={styles.contentWrapper}>
-        {/* Seção: Vitrine de Marcas */}
         <div style={styles.sectionHeaderZone}>
           <span style={styles.sectionBadge}>{t('partner.featured')}</span>
           <h2 style={styles.sectionHeading}>{t('homepage.title')}</h2>
@@ -46,7 +45,6 @@ export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
           ))}
         </div>
 
-        {/* Seção: Como Funciona / Módulos SaaS */}
         <div style={styles.sectionSpacing}>
           <div style={styles.sectionHeaderZone}>
             <span style={styles.sectionBadge}>{t('partner.category')}</span>
