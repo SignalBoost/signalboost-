@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import en from '../../locales/en.json';
 import es from '../../locales/es.json';
 import pt from '../../locales/pt.json';
@@ -8,29 +8,42 @@ import ru from '../../locales/ru.json';
 
 const translations: Record<string, any> = { en, es, pt, pl, ru };
 type LocaleType = 'en' | 'es' | 'pt' | 'pl' | 'ru';
+const supported: LocaleType[] = ['en', 'es', 'pt', 'pl', 'ru'];
+
+function normalizeLocale(value?: string | null): LocaleType {
+  const lower = (value || '').toLowerCase();
+  if (lower.startsWith('es')) return 'es';
+  if (lower.startsWith('pt')) return 'pt';
+  if (lower.startsWith('pl')) return 'pl';
+  if (lower.startsWith('ru')) return 'ru';
+  return 'en';
+}
 
 function useTranslation() {
   const router = useRouter();
+  const pathname = usePathname();
   const [lang, setLangState] = useState<LocaleType>('en');
 
-  // Sincroniza o estado interno com a detecção automática por IP/Geolocalização do Next.js
   useEffect(() => {
-    if (router?.locale && ['en', 'es', 'pt', 'pl', 'ru'].includes(router.locale)) {
-      setLangState(router.locale as LocaleType);
-    }
-  }, [router?.locale]);
+    const saved = typeof window !== 'undefined' ? window.localStorage.getItem('signalboost_language') : null;
+    const browser = typeof navigator !== 'undefined' ? navigator.language : null;
+    const pathLocale = pathname?.split('/').find((part) => supported.includes(part as LocaleType));
+    setLangState(normalizeLocale(pathLocale || saved || browser));
+  }, [pathname]);
 
   function t(key: string): string {
-    const currentDict = translations[lang] || translations['en'];
-    // Suporte para busca profunda por ponto (ex: 'partner.featured')
+    const currentDict = translations[lang] || translations.en;
     return key.split('.').reduce((obj, k) => obj?.[k], currentDict) || key;
   }
 
   function setLang(newLocale: LocaleType) {
-    setLangState(newLocale);
-    if (router?.push) {
-      router.push(router.asPath, router.asPath, { locale: newLocale });
+    const safeLocale = supported.includes(newLocale) ? newLocale : 'en';
+    setLangState(safeLocale);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('signalboost_language', safeLocale);
+      window.localStorage.setItem('site-language', safeLocale);
     }
+    router.refresh();
   }
 
   return { t, lang, setLang };
