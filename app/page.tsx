@@ -1,8 +1,16 @@
-// Project: SignalBoost (main production repo)
-// Homepage cockpit
+import HomeApp from '../components/home/HomeApp';
+import './home-next/home.css';
 
-import HomeCockpit from '../components/home/HomeCockpit';
+export const metadata = {
+  title: 'SignalBoost — Your AI-guided digital shopping mall',
+  description: 'Tell our AI concierge what you need and get matched to trusted partners serving your region.',
+};
 
 export default function Page() {
-  return <HomeCockpit />;
+  return (
+    <main className="sb-home">
+      <div className="sb-home-bg" />
+      <HomeApp lang="en" />
+    </main>
+  );
 }
