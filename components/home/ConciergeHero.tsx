@@ -1,6 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { saasModules } from "@/lib/saas-modules";
+import useTranslation from "@/components/i18n/useTranslation";
 
 interface ConciergeHeroProps {
   lang?: string;
@@ -10,7 +13,17 @@ interface ConciergeHeroProps {
   onBrowseAll?: () => void;
 }
 
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
+
+const stationModuleSlugs = ["calendar", "spreadsheets", "reviews", "outreach"];
+
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
+  const { t } = useTranslation();
+  const stationModules = stationModuleSlugs
+    .map((slug) => saasModules.find((module) => module.slug === slug))
+    .filter((module): module is NonNullable<typeof module> => Boolean(module));
   const handleScrollToPortal = () => {
     window.location.href = "/promote";
   };
@@ -22,34 +35,81 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <div style={styles.glowRight} />
       <div style={styles.gridOverlay} />
 
-      <div style={styles.innerContainer}>
-        {/* Badge Interativo */}
-        <div style={styles.badgeContainer}>
-          <span style={styles.badgePulse} />
-          <span style={styles.badgeText}>SignalOffice Enterprise Portal v2.0</span>
+      <div className="concierge-hero-layout" style={styles.innerContainer}>
+        <div style={styles.heroCopy}>
+          {/* Badge Interativo */}
+          <div style={styles.badgeContainer}>
+            <span style={styles.badgePulse} />
+            <span style={styles.badgeText}>SignalOffice Enterprise Portal v2.0</span>
+          </div>
+
+          {/* Título Principal de Alto Impacto */}
+          <h1 style={styles.mainHeading}>
+            Decentralized Office Tools <br />
+            <span style={styles.gradientText}>For Elite Teams.</span>
+          </h1>
+          
+          {/* Subtítulo Sofisticado */}
+          <p style={styles.subtext}>
+            Secure your critical business guidelines, manage structural project workflows, 
+            and coordinate localized data vaults on an iron-clad platform designed for modern operators.
+          </p>
+
+          {/* Grupo de Ações Core */}
+          <div style={styles.actionGroup}>
+            <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
+              Open marketing tools
+            </button>
+            <a href="#features" style={styles.brandButtonSecondary}>
+              Explore Infrastructure <span style={styles.arrow}>→</span>
+            </a>
+          </div>
         </div>
 
-        {/* Título Principal de Alto Impacto */}
-        <h1 style={styles.mainHeading}>
-          Decentralized Office Tools <br />
-          <span style={styles.gradientText}>For Elite Teams.</span>
-        </h1>
-        
-        {/* Subtítulo Sofisticado */}
-        <p style={styles.subtext}>
-          Secure your critical business guidelines, manage structural project workflows, 
-          and coordinate localized data vaults on an iron-clad platform designed for modern operators.
-        </p>
+        <aside className="saas-station-panel" style={styles.stationPanel} aria-labelledby="saas-station-title">
+          <div style={styles.stationGlow} aria-hidden="true" />
+          <div style={styles.stationHeader}>
+            <span style={styles.stationEyebrow}>Live SaaS Command</span>
+            <h2 id="saas-station-title" style={styles.stationTitle}>
+              {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
+            </h2>
+            <p style={styles.stationSubtitle}>
+              {fallbackText(
+                t("homepage.saasStationSubtitle"),
+                "Calendar, spreadsheets, reviews, and outreach stay in one highlighted operating dock."
+              )}
+            </p>
+          </div>
 
-        {/* Grupo de Ações Core */}
-        <div style={styles.actionGroup}>
-          <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
-            Open marketing tools
-          </button>
-          <a href="#features" style={styles.brandButtonSecondary}>
-            Explore Infrastructure <span style={styles.arrow}>→</span>
-          </a>
-        </div>
+          <div style={styles.stationTelemetryStrip} aria-label="SaaS station telemetry">
+            <span style={styles.telemetryDot} />
+            <strong>98.2%</strong>
+            <span>{fallbackText(t("homepage.saasStationTelemetry"), "module sync health")}</span>
+          </div>
+
+          <div style={styles.stationGrid}>
+            {stationModules.map((module) => (
+              <Link
+                href={module.href}
+                key={module.slug}
+                style={{
+                  ...styles.stationModuleCard,
+                  borderColor: `${module.accent}66`,
+                  boxShadow: `0 18px 48px ${module.accent}18`,
+                }}
+              >
+                <span style={{ ...styles.stationModuleAccent, background: module.accent }} />
+                <span style={styles.stationModuleTopline}>
+                  {fallbackText(t(module.eyebrowKey), module.eyebrow)}
+                </span>
+                <strong style={styles.stationModuleTitle}>
+                  {fallbackText(t(module.titleKey), module.title)}
+                </strong>
+                <span style={styles.stationModuleSignal}>{module.signal}</span>
+              </Link>
+            ))}
+          </div>
+        </aside>
       </div>
     </section>
   );
@@ -67,8 +127,11 @@ const styles: Record<string, React.CSSProperties> = {
   innerContainer: {
     position: "relative",
     zIndex: 10,
-    maxWidth: "850px",
+    maxWidth: "1180px",
     margin: "0 auto"
+  },
+  heroCopy: {
+    textAlign: "left"
   },
   glowLeft: {
     position: "absolute",
@@ -139,12 +202,12 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#94a3b8",
     lineHeight: "1.6",
     maxWidth: "640px",
-    margin: "24px auto 0 auto"
+    margin: "24px 0 0"
   },
   actionGroup: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     gap: "16px",
     marginTop: "40px"
   },
@@ -176,5 +239,122 @@ const styles: Record<string, React.CSSProperties> = {
   },
   arrow: {
     transition: "transform 0.2s ease"
+  },
+  stationPanel: {
+    position: "relative",
+    minHeight: "560px",
+    overflow: "hidden",
+    padding: "30px",
+    borderRadius: "34px",
+    border: "1px solid rgba(223, 168, 55, 0.55)",
+    background: "linear-gradient(145deg, rgba(43, 30, 8, 0.92), rgba(8, 10, 16, 0.95) 58%, rgba(223, 168, 55, 0.14))",
+    boxShadow: "0 0 0 1px rgba(245, 197, 66, 0.14), 0 0 68px rgba(223, 168, 55, 0.24), 0 34px 100px rgba(0, 0, 0, 0.46)",
+    textAlign: "left"
+  },
+  stationGlow: {
+    position: "absolute",
+    inset: "-28% -22% auto auto",
+    width: "360px",
+    height: "360px",
+    borderRadius: "999px",
+    background: "radial-gradient(circle, rgba(245, 197, 66, 0.34), transparent 68%)",
+    filter: "blur(6px)",
+    pointerEvents: "none"
+  },
+  stationHeader: {
+    position: "relative",
+    zIndex: 1
+  },
+  stationEyebrow: {
+    color: "#f5c542",
+    fontSize: "11px",
+    fontWeight: 800,
+    letterSpacing: "0.2em",
+    textTransform: "uppercase"
+  },
+  stationTitle: {
+    color: "#fff7db",
+    fontSize: "clamp(34px, 4.5vw, 58px)",
+    lineHeight: 0.96,
+    letterSpacing: "-0.055em",
+    margin: "12px 0 16px",
+    maxWidth: "520px"
+  },
+  stationSubtitle: {
+    color: "rgba(255, 248, 220, 0.76)",
+    fontSize: "15px",
+    lineHeight: 1.55,
+    margin: 0,
+    maxWidth: "520px"
+  },
+  stationTelemetryStrip: {
+    position: "relative",
+    zIndex: 1,
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    margin: "26px 0",
+    padding: "13px 16px",
+    border: "1px solid rgba(245, 197, 66, 0.28)",
+    borderRadius: "999px",
+    background: "linear-gradient(90deg, rgba(245, 197, 66, 0.18), rgba(255, 255, 255, 0.045), rgba(245, 197, 66, 0.10))",
+    color: "rgba(255, 248, 220, 0.82)",
+    fontSize: "12px",
+    letterSpacing: "0.08em",
+    textTransform: "uppercase"
+  },
+  telemetryDot: {
+    width: "8px",
+    height: "8px",
+    borderRadius: "999px",
+    background: "#f5c542",
+    boxShadow: "0 0 18px #f5c542",
+    flexShrink: 0
+  },
+  stationGrid: {
+    position: "relative",
+    zIndex: 1,
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "14px"
+  },
+  stationModuleCard: {
+    position: "relative",
+    minHeight: "148px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    overflow: "hidden",
+    padding: "18px",
+    border: "1px solid rgba(245, 197, 66, 0.34)",
+    borderRadius: "22px",
+    background: "linear-gradient(180deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.045))",
+    color: "#ffffff",
+    textDecoration: "none",
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)"
+  },
+  stationModuleAccent: {
+    position: "absolute",
+    inset: "0 auto auto 0",
+    width: "100%",
+    height: "4px"
+  },
+  stationModuleTopline: {
+    color: "rgba(255, 255, 255, 0.62)",
+    fontSize: "10px",
+    fontWeight: 800,
+    letterSpacing: "0.13em",
+    textTransform: "uppercase"
+  },
+  stationModuleTitle: {
+    color: "#fff",
+    fontSize: "21px",
+    letterSpacing: "-0.035em"
+  },
+  stationModuleSignal: {
+    color: "#f8d777",
+    fontSize: "12px",
+    fontWeight: 800
   }
 };
