@@ -21,7 +21,7 @@ export function middleware(req: NextRequest) {
   if (hasLocale) return NextResponse.next();
 
   // Captura o país a partir do cabeçalho de borda da Vercel
-  const country = req.geo?.country || req.headers.get('x-vercel-ip-country') || 'US';
+  const country = req.headers.get('x-vercel-ip-country') || 'US';
 
   if (country === 'MX') {
     req.nextUrl.pathname = `/es${pathname}`;

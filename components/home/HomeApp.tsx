@@ -4,6 +4,7 @@ export {};
 
 import React, { useState } from "react";
 import ConciergeHero from "./ConciergeHero";
+import ModuleGrid from "@/components/ModuleGrid";
 import useTranslation from "@/components/i18n/useTranslation";
 
 interface HomeAppProps {
@@ -44,6 +45,8 @@ export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
             </div>
           ))}
         </div>
+
+        <ModuleGrid />
 
         <div style={styles.sectionSpacing}>
           <div style={styles.sectionHeaderZone}>
