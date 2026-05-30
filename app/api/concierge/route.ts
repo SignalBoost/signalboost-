@@ -25,6 +25,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Relative to app/api/concierge/ -> repo root /public/partners.json.
 // Static import => bundled into the function (no runtime fs read).
 import partnersData from "../../../public/partners.json";
+import { LANGUAGE_COOKIE, LEGACY_LANGUAGE_COOKIE, normalizeLocale } from "@/lib/i18n/language";
 
 export const runtime = "nodejs";
 
@@ -225,8 +226,9 @@ function handle(message: string, lang: Lang, region: string) {
   };
 }
 
-function resolveLang(value: unknown): Lang {
-  return LANGS.includes(value as Lang) ? (value as Lang) : "en";
+function resolveLang(value: unknown, req?: NextRequest): Lang {
+  if (LANGS.includes(value as Lang)) return value as Lang;
+  return normalizeLocale(req?.cookies.get(LANGUAGE_COOKIE)?.value || req?.cookies.get(LEGACY_LANGUAGE_COOKIE)?.value);
 }
 
 function messageFromBody(body: { message?: unknown; messages?: unknown }): string {
@@ -248,14 +250,14 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
-  const lang = resolveLang(body.lang);
+  const lang = resolveLang(body.lang, req);
   const region = regionFromRequest(req);
   return NextResponse.json(handle(messageFromBody(body), lang, region));
 }
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q") || "";
-  const lang = resolveLang(req.nextUrl.searchParams.get("lang"));
+  const lang = resolveLang(req.nextUrl.searchParams.get("lang"), req);
   const region = regionFromRequest(req);
   return NextResponse.json(handle(q, lang, region));
 }

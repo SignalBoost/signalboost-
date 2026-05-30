@@ -319,6 +319,37 @@ a {
   color: #fff;
 }
 
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  border: 1px solid rgba(245, 197, 66, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+.language-switcher__current {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+.language-switcher__select {
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  outline: none;
+  cursor: pointer;
+}
+.language-switcher__select option {
+  background: #05070b;
+  color: #fff;
+}
+
 .cockpit-page {
   position: relative;
   min-height: 100vh;
@@ -547,6 +578,7 @@ a {
 @media (max-width: 860px) {
   .site-header { align-items: flex-start; flex-direction: column; }
   .site-nav { width: 100%; margin-left: 0; }
+  .language-switcher { align-self: flex-end; }
   .concierge-band,
   .telemetry-strip { align-items: flex-start; flex-direction: column; }
   .pricing-card.featured { transform: none; }

@@ -13,8 +13,9 @@ export function middleware(req: NextRequest) {
 
   const country = (req.headers.get('x-vercel-ip-country') || '').toUpperCase();
   const hasSavedLanguage = Boolean(req.cookies.get('signalboost_language')?.value || req.cookies.get('site-language')?.value);
+  const hasManualLanguage = req.cookies.get('signalboost_language_manual')?.value === '1';
 
-  if (country === 'MX' && !hasSavedLanguage) {
+  if (country === 'MX' && !hasSavedLanguage && !hasManualLanguage) {
     response.cookies.set('signalboost_language', 'es', { path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 * 365 });
     response.cookies.set('site-language', 'es', { path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 * 365 });
   }
