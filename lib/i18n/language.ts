@@ -7,11 +7,11 @@ export const LEGACY_LANGUAGE_COOKIE = "site-language";
 export const MANUAL_LANGUAGE_COOKIE = "signalboost_language_manual";
 
 export const LOCALE_LABELS: Record<SupportedLocale, string> = {
-  en: "English",
-  es: "Spanish",
-  pt: "Portuguese",
-  pl: "Polish",
-  ru: "Russian",
+  en: "English (en)",
+  es: "Español (es)",
+  pt: "Português (pt)",
+  pl: "Polski (pl)",
+  ru: "Русский (ru)",
 };
 
 export function normalizeLocale(value: string | null | undefined): SupportedLocale {
