@@ -1,0 +1,106 @@
+/* ==========================================================================
+   SignalBoost - Professional Dark Premium Theme
+   ========================================================================== */
+
+.sb-home {
+  /* System Tokens */
+  --bg-main: #070709;          /* Ultra-deep, professional near-black */
+  --bg-surface: #0e0e12;       /* Subtle elevation for cards */
+  --bg-glass: rgba(14, 14, 18, 0.4); 
+  --border-subtle: rgba(255, 255, 255, 0.06); /* Clean, razor-sharp separation */
+  
+  /* Brand Accents */
+  --accent-gold: #dfa837;      /* Refined, metallic gold */
+  --accent-gold-hover: #f3be53;
+  --accent-gold-glow: rgba(223, 168, 55, 0.15);
+
+  /* Typography Colors */
+  --text-primary: #f4f4f6;     /* Off-white to prevent eye strain */
+  --text-secondary: #8e8e99;   /* Muted gray for meta/subtext */
+  --text-muted: #52525b;       /* Deep gray for footprints/borders */
+
+  /* Font Families */
+  --font-display: 'Fraunces', serif;
+  --font-ui: 'Outfit', sans-serif;
+  
+  /* Layout Base */
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Atmospheric subtle background depth */
+.sb-home-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at 50% -20%, rgba(223, 168, 55, 0.07) 0%, rgba(7, 7, 9, 0) 60%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Typography & Core Layout Refinements
+   ========================================================================== */
+
+.sb-home h1, 
+.sb-home .display-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text-primary);
+}
+
+.sb-home h2,
+.sb-home .section-title {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+.sb-home p,
+.sb-home .body-text {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Hero Section Layout (Replacing Inline Overrides)
+   ========================================================================== */
+
+.sb-home .concierge-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px 24px; 
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sb-home .concierge-hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px; 
+  width: 100%;
+  max-width: 760px;
+}
+
+.sb-home .hero-tagline {
+  font-size: 20px;
+  color: var(--text-secondary);
+  max-width: 540px;
+  margin: 0 auto;
+}
