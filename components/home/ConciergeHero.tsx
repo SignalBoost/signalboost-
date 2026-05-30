@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import StationaryStationHeroPanel from "./StationaryStationHeroPanel";
+import useTranslation from "@/components/i18n/useTranslation";
 
 interface ConciergeHeroProps {
   lang?: string;
@@ -11,6 +13,7 @@ interface ConciergeHeroProps {
 }
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
+  const { t } = useTranslation();
   const handleScrollToPortal = () => {
     window.location.href = "/promote";
   };
@@ -22,34 +25,43 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <div style={styles.glowRight} />
       <div style={styles.gridOverlay} />
 
-      <div style={styles.innerContainer}>
-        {/* Badge Interativo */}
-        <div style={styles.badgeContainer}>
-          <span style={styles.badgePulse} />
-          <span style={styles.badgeText}>SignalOffice Enterprise Portal v2.0</span>
-        </div>
+      <div style={styles.heroLayout}>
+        <div style={styles.innerContainer}>
+          {/* Badge Interativo */}
+          <div style={styles.badgeContainer}>
+            <span style={styles.badgePulse} />
+            <span style={styles.badgeText}>SignalOffice Enterprise Portal v2.0</span>
+          </div>
 
-        {/* Título Principal de Alto Impacto */}
-        <h1 style={styles.mainHeading}>
-          Decentralized Office Tools <br />
-          <span style={styles.gradientText}>For Elite Teams.</span>
-        </h1>
-        
-        {/* Subtítulo Sofisticado */}
-        <p style={styles.subtext}>
-          Secure your critical business guidelines, manage structural project workflows, 
-          and coordinate localized data vaults on an iron-clad platform designed for modern operators.
-        </p>
+          {/* Título Principal de Alto Impacto */}
+          <h1 style={styles.mainHeading}>
+            Decentralized Office Tools <br />
+            <span style={styles.gradientText}>For Elite Teams.</span>
+          </h1>
+          
+          {/* Subtítulo Sofisticado */}
+          <p style={styles.subtext}>
+            Secure your critical business guidelines, manage structural project workflows, 
+            and coordinate localized data vaults on an iron-clad platform designed for modern operators.
+          </p>
 
-        {/* Grupo de Ações Core */}
-        <div style={styles.actionGroup}>
-          <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
-            Open marketing tools
-          </button>
-          <a href="#features" style={styles.brandButtonSecondary}>
-            Explore Infrastructure <span style={styles.arrow}>→</span>
-          </a>
+          <p style={styles.conciergeCue}>
+            {t("station.conciergeHero").includes(".")
+              ? "Concierge is ready to guide your free Stationary Station tasks and prompt sign-up when the trial ends."
+              : t("station.conciergeHero")}
+          </p>
+
+          {/* Grupo de Ações Core */}
+          <div style={styles.actionGroup}>
+            <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
+              Open marketing tools
+            </button>
+            <a href="#features" style={styles.brandButtonSecondary}>
+              Explore Infrastructure <span style={styles.arrow}>→</span>
+            </a>
+          </div>
         </div>
+        <StationaryStationHeroPanel />
       </div>
     </section>
   );
@@ -64,11 +76,22 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
     borderBottom: "1px solid rgba(255, 255, 255, 0.03)"
   },
+  heroLayout: {
+    position: "relative",
+    zIndex: 10,
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))",
+    alignItems: "center",
+    gap: "48px",
+    maxWidth: "1240px",
+    margin: "0 auto"
+  },
   innerContainer: {
     position: "relative",
     zIndex: 10,
-    maxWidth: "850px",
-    margin: "0 auto"
+    maxWidth: "720px",
+    margin: "0",
+    textAlign: "left"
   },
   glowLeft: {
     position: "absolute",
@@ -139,14 +162,21 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#94a3b8",
     lineHeight: "1.6",
     maxWidth: "640px",
-    margin: "24px auto 0 auto"
+    margin: "24px 0 0 0"
+  },
+  conciergeCue: {
+    color: "#f6d27a",
+    fontSize: "14px",
+    lineHeight: 1.5,
+    margin: "18px 0 0 0"
   },
   actionGroup: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     gap: "16px",
-    marginTop: "40px"
+    marginTop: "40px",
+    flexWrap: "wrap"
   },
   brandButtonPrimary: {
     backgroundColor: "#dfa837",
