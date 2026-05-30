@@ -1,4 +1,85 @@
-// Dicionários de Tradução Locais Atualizados para o Core (en, es, pt, pl, ru)
+"use client";
+
+export {}; // Garante o escopo isolado do módulo para o parser do TypeScript
+
+import React, { useState } from "react";
+import ConciergeHero from "./ConciergeHero";
+
+interface HomeAppProps {
+  lang?: string;
+  regionName?: string;
+}
+
+export default function HomeApp({ lang = "en", regionName = "" }: HomeAppProps) {
+  const [activeChip, setActiveChip] = useState("all");
+
+  const currentLang = lang.split("-")[0] || "en";
+  const t = translations[currentLang] || translations["en"];
+
+  return (
+    <main style={styles.mainCanvas}>
+      <ConciergeHero
+        lang={lang}
+        regionName={regionName}
+        onSubmit={async () => {}}
+        onChip={(cat) => setActiveChip(cat)}
+        onBrowseAll={() => setActiveChip("all")}
+      />
+
+      <div style={styles.contentWrapper}>
+        {/* Seção: Vitrine de Marcas */}
+        <div style={styles.sectionHeaderZone}>
+          <span style={styles.sectionBadge}>{t.trustBadge}</span>
+          <h2 style={styles.sectionHeading}>{t.brandsTitle}</h2>
+        </div>
+
+        {/* Grid Glassmorphism de Marcas */}
+        <div style={styles.brandGrid}>
+          {brandPartners.map((partner, idx) => (
+            <div key={idx} style={styles.glassCard}>
+              <div style={styles.iconBox}>{partner.icon}</div>
+              <span style={styles.brandName}>{partner.name}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Seção: Cómo funciona */}
+        <div style={styles.sectionSpacing}>
+          <div style={styles.sectionHeaderZone}>
+            <span style={styles.sectionBadge}>{t.pipelineBadge}</span>
+            <h2 style={styles.sectionHeading}>{t.howItWorksTitle}</h2>
+          </div>
+          
+          <div style={styles.stepsGrid}>
+            {t.steps.map((step: { num: string; text: string }, idx: number) => (
+              <div key={idx} style={styles.stepGlassCard}>
+                <div style={styles.stepNumberBadge}>{step.num}</div>
+                <p style={styles.stepBodyText}>{step.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Seção: Popular ahora */}
+        <div style={styles.sectionSpacing}>
+          <div style={styles.sectionHeaderZone}>
+            <span style={styles.sectionBadge}>{t.trendingBadge}</span>
+            <h2 style={styles.sectionHeading}>{t.popularTitle}</h2>
+          </div>
+          
+          <div style={styles.pillFlexContainer}>
+            <button style={styles.interactivePill}>{t.pills.vuelos}</button>
+            <button style={styles.interactivePill}>{t.pills.esim}</button>
+            <button style={styles.interactivePill}>{t.pills.hoteles}</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  );
+}
+
+// Mapa de Locales Oficiais (en, es, pt, pl, ru)
 const translations: Record<string, any> = {
   en: {
     trustBadge: "Trust Infrastructure",
@@ -61,18 +142,55 @@ const translations: Record<string, any> = {
     ]
   },
   ru: {
-    trustBadge: "Infrastruktura Doveriya",
-    brandsTitle: "С брендами, которым вы уже доверяете",
-    pipelineBadge: "Konveyyer Ispolneniya",
-    howItWorksTitle: "Kak eto rabotayet",
-    trendingBadge: "Trendovyye Parametry",
-    popularTitle: "Populyarno seychas",
-    pills: { vuelos: "✈️ Reysy v Yevropu", esim: "🌐 eSIM dlya puteshestviy", hoteles: "🏨 Oteli v Brazilii" },
+    trustBadge: "Надежная инфраструктура",
+    brandsTitle: "С брендами, которым вы доверяете",
+    pipelineBadge: "Конвейер исполнения",
+    howItWorksTitle: "Как это работает",
+    trendingBadge: "Популярные параметры",
+    popularTitle: "Популярно сейчас",
+    pills: { vuelos: "✈️ Рейсы в Европу", esim: "🌐 eSIM для путешествий", hoteles: "🏨 Отели в Бразилии" },
     steps: [
-      { num: "01", text: "Skazhite mne, chto vam nuzhno" },
-      { num: "02", text: "YA ishchu nadezhnykh partnerov dlya vashego regiona" },
-      { num: "03", text: "Sravnite svoi varianty" },
-      { num: "04", text: "Vyberite i prodolzhayte" }
+      { num: "01", text: "Скажите мне, что вам нужно" },
+      { num: "02", text: "Я найду надежных партнеров для вашего региона" },
+      { num: "03", text: "Сравните доступные варианты" },
+      { num: "04", text: "Выберите оптимальный и продолжайте" }
     ]
   }
+};
+
+const brandPartners = [
+  { name: "WeGoTrip", icon: "🗺️" },
+  { name: "Kiwitaxi", icon: "🚕" },
+  { name: "Welcome Pickups", icon: "🤝" },
+  { name: "Alamo", icon: "🚘" },
+  { name: "Economybookings", icon: "📉" },
+  { name: "Aviasales", icon: "✈️" },
+  { name: "CVC", icon: "🧳" },
+  { name: "Oman Airlines", icon: "🦅" },
+  { name: "AirHelp", icon: "⚖️" },
+  { name: "AURAS Insurance", icon: "🛡️" },
+  { name: "EKTA", icon: "🌍" },
+  { name: "Melhor Seguro", icon: "🔒" },
+  { name: "Go! Go! España", icon: "🇪🇸" },
+  { name: "Proton VPN", icon: "🛡️" },
+  { name: "SuperSim", icon: "⚡" }
+];
+
+const styles: Record<string, React.CSSProperties> = {
+  mainCanvas: { backgroundColor: "#030305", minHeight: "100vh" },
+  contentWrapper: { maxWidth: "1200px", margin: "0 auto", padding: "80px 24px 120px 24px" },
+  sectionHeaderZone: { textAlign: "center", marginBottom: "48px" },
+  sectionBadge: { fontSize: "11px", fontWeight: 600, color: "#dfa837", letterSpacing: "0.2em", textTransform: "uppercase" },
+  sectionHeading: { fontSize: "28px", fontWeight: 600, color: "#ffffff", marginTop: "8px", letterSpacing: "-0.02em" },
+  sectionSpacing: { marginTop: "120px" },
+  brandGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" },
+  glassCard: { display: "flex", alignItems: "center", gap: "14px", backgroundColor: "rgba(15, 15, 22, 0.65)", border: "1px solid rgba(255, 255, 255, 0.05)", borderRadius: "14px", padding: "16px 20px", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)" },
+  iconBox: { backgroundColor: "rgba(255, 255, 255, 0.03)", width: "36px", height: "36px", borderRadius: "8px", display: "flex", alignItems: "center", justifyIntersect: "center", justifyContent: "center", border: "1px solid rgba(255, 255, 255, 0.05)" },
+  brandName: { fontSize: "14px", fontWeight: 500, color: "#e2e8f0" },
+  stepsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" },
+  stepGlassCard: { backgroundColor: "rgba(10, 10, 15, 0.4)", border: "1px solid rgba(255, 255, 255, 0.04)", padding: "32px 24px", borderRadius: "16px", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", textAlign: "left" },
+  stepNumberBadge: { width: "32px", height: "32px", backgroundColor: "rgba(223, 168, 55, 0.08)", border: "1px solid rgba(223, 168, 55, 0.25)", color: "#dfa837", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "13px", marginBottom: "20px" },
+  stepBodyText: { fontSize: "15px", color: "#94a3b8", fontWeight: 500, margin: 0, lineHeight: "1.6" },
+  pillFlexContainer: { display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "center" },
+  interactivePill: { backgroundColor: "rgba(20, 20, 25, 0.6)", border: "1px solid rgba(255, 255, 255, 0.06)", padding: "12px 26px", borderRadius: "9999px", fontSize: "14px", color: "#f1f5f9", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }
 };
