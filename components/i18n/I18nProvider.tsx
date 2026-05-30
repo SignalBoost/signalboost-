@@ -74,7 +74,10 @@ async function getInitialLanguage() {
     localStorage.getItem(LEGACY_LANGUAGE_COOKIE) ||
     readCookie(LANGUAGE_COOKIE) ||
     readCookie(LEGACY_LANGUAGE_COOKIE)
-  if (isSupportedLocale(saved)) {
+  const manualChoice =
+    localStorage.getItem('signalboost_language_prompted') === '1' ||
+    readCookie(MANUAL_LANGUAGE_COOKIE) === '1'
+  if (isSupportedLocale(saved) && (manualChoice || saved === 'en')) {
     return saved
   }
 

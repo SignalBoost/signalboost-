@@ -1,11 +1,12 @@
 "use client";
 
 import useTranslation from "@/components/i18n/useTranslation";
-import { LOCALE_LABELS, SUPPORTED_LOCALES, type SupportedLocale } from "@/lib/i18n/language";
+import { LOCALE_LABELS, type SupportedLocale } from "@/lib/i18n/language";
 
 export default function LanguageToggle() {
   const { lang, setLang } = useTranslation();
   const current = lang.toUpperCase();
+  const headerLocales: SupportedLocale[] = ["en", "es"];
 
   return (
     <label className="language-switcher" aria-label="Select site language">
@@ -15,7 +16,7 @@ export default function LanguageToggle() {
         value={lang}
         onChange={(event) => setLang(event.target.value as SupportedLocale)}
       >
-        {SUPPORTED_LOCALES.map((locale) => (
+        {headerLocales.map((locale) => (
           <option key={locale} value={locale}>
             {LOCALE_LABELS[locale]}
           </option>

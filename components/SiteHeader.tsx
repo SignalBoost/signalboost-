@@ -1,16 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import useTranslation from "@/components/i18n/useTranslation";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
+import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { key: "promote_business", path: "/promote" },
-  { key: "reviews", path: "/reviews" },
-  { key: "calendar", path: "/calendar" },
-  { key: "spreadsheets", path: "/spreadsheets" },
-  { key: "outreach", path: "/outreach" },
   { key: "assistant", path: "/assistant" },
   { key: "pricing", path: "/pricing" },
   { key: "executive", path: "/dashboard" },
@@ -22,14 +20,79 @@ function fallbackText(value: string, fallback: string) {
 
 const fallbackLabels: Record<string, string> = {
   promote_business: "Promote Business",
-  reviews: "Reviews",
-  calendar: "Calendar",
-  spreadsheets: "Spreadsheets",
-  outreach: "Outreach",
   assistant: "Personal Assistant",
   pricing: "Pricing",
   executive: "Executive",
 };
+
+const oauthProviders = ["google", "facebook", "github"] as const;
+
+function AuthControls() {
+  const [email, setEmail] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const hasSupabaseEnv = Boolean(
+      process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+
+    if (!hasSupabaseEnv) {
+      setReady(true);
+      return;
+    }
+
+    const supabase = createClient();
+    let mounted = true;
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      setEmail(data.session?.user.email ?? null);
+      setReady(true);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setEmail(session?.user.email ?? null);
+      setReady(true);
+    });
+
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
+
+  if (email) {
+    return (
+      <div className="site-auth" aria-label="Authenticated account controls">
+        <span className="site-auth__email" title={email}>{email}</span>
+        <button className="site-auth__button" type="button" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="site-auth" aria-label="Login with OAuth providers">
+      <Link className="site-auth__button" href="/auth/login" aria-busy={!ready}>
+        Login
+      </Link>
+      <div className="site-auth__providers" aria-label="OAuth providers">
+        {oauthProviders.map((provider) => (
+          <Link key={provider} className="site-auth__provider" href={`/api/auth/${provider}`}>
+            {provider.slice(0, 1).toUpperCase()}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function SiteHeader() {
   const pathname = usePathname() || "/";
@@ -51,7 +114,13 @@ export default function SiteHeader() {
           );
         })}
       </nav>
-      <LanguageToggle />
+      <div className="site-header-actions">
+        <Link className="site-concierge-link" href="/assistant">
+          Concierge
+        </Link>
+        <LanguageToggle />
+        <AuthControls />
+      </div>
     </header>
   );
 }

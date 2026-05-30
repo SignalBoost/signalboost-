@@ -9,8 +9,17 @@ function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
 
-export default function ModuleGrid() {
+interface ModuleGridProps {
+  slugs?: string[];
+}
+
+export default function ModuleGrid({ slugs }: ModuleGridProps) {
   const { t } = useTranslation();
+  const modules = slugs?.length
+    ? slugs
+        .map((slug) => saasModules.find((module) => module.slug === slug))
+        .filter((module): module is NonNullable<typeof module> => Boolean(module))
+    : saasModules;
 
   return (
     <section className="cockpit-section" aria-labelledby="modules-title">
@@ -20,7 +29,7 @@ export default function ModuleGrid() {
         <p>{fallbackText(t("modules.section.description"), "Promote, support, schedule, analyze, and follow up without leaving the SignalBoost cockpit.")}</p>
       </div>
       <div className="module-grid">
-        {saasModules.map((module) => (
+        {modules.map((module) => (
           <Link className="module-card" href={module.href} key={module.slug} style={{ "--module-accent": module.accent } as CSSProperties}>
             <div className="module-card-topline">
               <span>{fallbackText(t(module.eyebrowKey), module.eyebrow)}</span>

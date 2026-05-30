@@ -17,7 +17,7 @@ function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
 
-const stationModuleSlugs = ["calendar", "spreadsheets", "reviews", "outreach"];
+const stationModuleSlugs = ["promote", "assistant", "executive", "pricing"];
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const { t } = useTranslation();
@@ -37,32 +37,40 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 
       <div className="concierge-hero-layout" style={styles.innerContainer}>
         <div style={styles.heroCopy}>
-          {/* Badge Interativo */}
           <div style={styles.badgeContainer}>
             <span style={styles.badgePulse} />
-            <span style={styles.badgeText}>SignalOffice Enterprise Portal v2.0</span>
+            <span style={styles.badgeText}>Trial gate active · Live telemetry online</span>
           </div>
 
-          {/* Título Principal de Alto Impacto */}
           <h1 style={styles.mainHeading}>
-            Decentralized Office Tools <br />
-            <span style={styles.gradientText}>For Elite Teams.</span>
+            {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
           </h1>
-          
-          {/* Subtítulo Sofisticado */}
+
           <p style={styles.subtext}>
-            Secure your critical business guidelines, manage structural project workflows, 
-            and coordinate localized data vaults on an iron-clad platform designed for modern operators.
+            {fallbackText(
+              t("homepage.saasStationHeroCopy"),
+              "Start with Promote, hand work to your Personal Assistant, review Executive telemetry, and choose Pricing without losing context."
+            )}
           </p>
 
-          {/* Grupo de Ações Core */}
+          <div style={styles.trialGateCard} aria-label="Trial gate and telemetry">
+            <div>
+              <span style={styles.trialGateLabel}>Trial gate</span>
+              <strong style={styles.trialGateValue}>14 days unlocked</strong>
+            </div>
+            <div>
+              <span style={styles.trialGateLabel}>Telemetry</span>
+              <strong style={styles.trialGateValue}>98.2% healthy</strong>
+            </div>
+          </div>
+
           <div style={styles.actionGroup}>
             <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
-              Open marketing tools
+              Start with Promote
             </button>
-            <a href="#features" style={styles.brandButtonSecondary}>
-              Explore Infrastructure <span style={styles.arrow}>→</span>
-            </a>
+            <Link href="/pricing" style={styles.brandButtonSecondary}>
+              View Pricing <span style={styles.arrow}>→</span>
+            </Link>
           </div>
         </div>
 
@@ -76,7 +84,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             <p style={styles.stationSubtitle}>
               {fallbackText(
                 t("homepage.saasStationSubtitle"),
-                "Calendar, spreadsheets, reviews, and outreach stay in one highlighted operating dock."
+                "Promote, Personal Assistant, Executive telemetry, and Pricing stay in one highlighted operating dock."
               )}
             </p>
           </div>
@@ -105,7 +113,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 <strong style={styles.stationModuleTitle}>
                   {fallbackText(t(module.titleKey), module.title)}
                 </strong>
-                <span style={styles.stationModuleSignal}>{module.signal}</span>
+                <span style={styles.stationModuleSignal}>{module.telemetry}</span>
               </Link>
             ))}
           </div>
@@ -192,17 +200,37 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "-0.03em",
     margin: 0
   },
-  gradientText: {
-    background: "linear-gradient(135deg, #ffffff 30%, #dfa837 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent"
-  },
   subtext: {
     fontSize: "17px",
     color: "#94a3b8",
     lineHeight: "1.6",
     maxWidth: "640px",
     margin: "24px 0 0"
+  },
+  trialGateCard: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "12px",
+    maxWidth: "520px",
+    marginTop: "26px"
+  },
+  trialGateLabel: {
+    display: "block",
+    color: "#64748b",
+    fontSize: "11px",
+    fontWeight: 800,
+    letterSpacing: "0.14em",
+    textTransform: "uppercase",
+    marginBottom: "8px"
+  },
+  trialGateValue: {
+    display: "block",
+    color: "#fff7db",
+    border: "1px solid rgba(245, 197, 66, 0.18)",
+    background: "rgba(245, 197, 66, 0.07)",
+    borderRadius: "16px",
+    padding: "14px 16px",
+    fontSize: "16px"
   },
   actionGroup: {
     display: "flex",

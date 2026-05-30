@@ -118,6 +118,41 @@ export const saasModules: SaasModule[] = [
     features: ["Marketplace matching", "Task drafting", "Executive briefings"],
     automations: ["Next-best action", "Clarify-or-default prompts", "Cross-module memory"],
   },
+
+  {
+    slug: "executive",
+    titleKey: "modules.executive.title",
+    summaryKey: "modules.executive.summary",
+    eyebrowKey: "modules.executive.eyebrow",
+    title: "Executive",
+    eyebrow: "Command cockpit",
+    summary:
+      "Track KPIs, financials, CRM health, forecasting, and outreach telemetry from one executive view.",
+    signal: "98.2% cockpit health",
+    status: "Live",
+    telemetry: "Executive digest refreshed hourly",
+    href: "/dashboard",
+    accent: "#f97316",
+    features: ["KPI overview", "Revenue signals", "CRM readiness"],
+    automations: ["Executive briefings", "Forecast highlights", "Risk surfacing"],
+  },
+  {
+    slug: "pricing",
+    titleKey: "modules.pricing.title",
+    summaryKey: "modules.pricing.summary",
+    eyebrowKey: "modules.pricing.eyebrow",
+    title: "Pricing",
+    eyebrow: "Plan gate",
+    summary:
+      "Compare trial access, growth plans, and enterprise controls before activating your workspace.",
+    signal: "Trial gate ready",
+    status: "Open",
+    telemetry: "Plan recommendations synced",
+    href: "/pricing",
+    accent: "#c084fc",
+    features: ["Plan comparison", "Trial routing", "Enterprise controls"],
+    automations: ["Plan-fit prompts", "Upgrade nudges", "Billing handoff"],
+  },
 ];
 
 export const executivePanels = [
