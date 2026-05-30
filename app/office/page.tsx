@@ -76,7 +76,6 @@ export default function OfficeDashboard() {
     try {
       setIsSaving(true);
       
-      // Re-using our primary document POST endpoint with modification mapping
       const res = await fetch('/api/office/documents', {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
@@ -251,7 +250,7 @@ const styles: Record<string, React.CSSProperties> = {
   navItem: { display: 'flex', alignItems: 'center', width: '100%', padding: '12px', backgroundColor: 'transparent', border: 'none', borderRadius: '6px', color: '#8e8e99', textAlign: 'left', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' },
   navItemActive: { backgroundColor: 'rgba(255, 255, 255, 0.04)', color: '#f4f4f6', fontWeight: 500 },
   userFootprint: { display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' },
-  avatarPlaceholder: { width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#dfa837', color: '#070709', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: '13px' },
+  avatarPlaceholder: { width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#dfa837', color: '#070709', display: 'flex', alignItems: 'center', justifycontent: 'center', fontWeight: 600, fontSize: '13px' },
   userInfo: { display: 'flex', flexDirection: 'column' },
   userName: { fontSize: '13px', fontWeight: 500 },
   userRole: { fontSize: '11px', color: '#8e8e99' },
@@ -267,7 +266,7 @@ const styles: Record<string, React.CSSProperties> = {
   metricValue: { fontSize: '24px', fontWeight: 600 },
   tableWrapper: { backgroundColor: 'rgba(14, 14, 18, 0.4)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px', overflow: 'hidden' },
   documentTable: { width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' },
-  tableHeaderRow tableHeaderRow: { borderBottom: '1px solid rgba(255, 255, 255, 0.06)', backgroundColor: 'rgba(255, 255, 255, 0.01)' },
+  tableHeaderRow: { borderBottom: '1px solid rgba(255, 255, 255, 0.06)', backgroundColor: 'rgba(255, 255, 255, 0.01)' },
   tableHeaderCell: { padding: '16px', color: '#8e8e99', fontWeight: 500 },
   tableHeaderCellStyleRight: { padding: '16px', color: '#8e8e99', fontWeight: 500, textAlign: 'right' },
   tableBodyRow: { borderBottom: '1px solid rgba(255, 255, 255, 0.04)' },
@@ -284,4 +283,3 @@ const styles: Record<string, React.CSSProperties> = {
   canvasTitleInput: { backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', color: '#f4f4f6', fontSize: '24px', fontWeight: 600, paddingBottom: '12px', width: '100%', outline: 'none' },
   canvasTextArea: { backgroundColor: 'transparent', border: 'none', color: '#8e8e99', fontSize: '16px', lineHeight: '1.6', minHeight: '450px', width: '100%', resize: 'vertical', outline: 'none', fontFamily: 'inherit' }
 };
-    
