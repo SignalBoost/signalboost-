@@ -1,89 +1,58 @@
 "use client";
 // File: components/PartnerMarquee.tsx
-// "Window Shopping" — scrolling rows of YOUR real FEATURED partners, pulled from
-// Supabase (passed in as partnersData from HomeApp). Only partners with
-// featured === true are shown — the recognizable brands. Every other partner is
-// still fully available to users through the concierge search / prompt.
-//
-// Logos: the partner `url` is an AFFILIATE REDIRECT (awin1.com, tpo.lv, admitad
-// domains), so we can't derive a real brand domain from it. Instead we map each
-// partner id -> its real brand domain below (BRAND_DOMAINS) and feed THAT to
-// logo.dev. Links still use the affiliate `url` (revenue-safe). Any brand whose
-// logo doesn't resolve falls back to a clean name-only card.
-//
-// Heading text ("Window shopping" + subtitle) is localized via the i18n keys
-// window_shopping / marquee_subtitle, using the `lang` prop from HomeApp.
-//
-// logo.dev publishable token lives in NEXT_PUBLIC_LOGO_DEV_TOKEN (set in Vercel).
+
 import React from "react";
-import { I18N } from "@/lib/home/i18n-home";
+import partnersJson from "@/public/partners.json";
+import useTranslation from "./i18n/useTranslation";
 import "./marquee.css";
 
 interface Partner {
   id: string;
   name: string;
   url: string;
+  category: string;
+  category_label?: string;
+  logo: string;
+  description: string;
   featured?: boolean;
   tier?: number;
 }
+
 interface MarqueeProps {
-  partnersData: Partner[];
+  partnersData?: Partner[];
   lang?: string;
 }
 
-// --- Real brand domains for FEATURED partners (keyed by partner id) ----------
-const BRAND_DOMAINS: Record<string, string> = {
-  aviasales: "aviasales.com",
-  cvc: "cvc.com.br",
-  "oman-airlines": "omanair.com",
-  "booking-com-brazil": "booking.com",
-  travelking: "travelking.pl",
-  trivago: "trivago.com",
-  airalo: "airalo.com",
-  drimsim: "drimsim.com",
-  saily: "saily.com",
-  "the-bitjoy-esim": "bitjoy.io",
-  yesim: "yesim.app",
-  klook: "klook.com",
-  tiqets: "tiqets.com",
-  wegotrip: "wegotrip.com",
-  kiwitaxi: "kiwitaxi.com",
-  "welcome-pickups": "welcomepickups.com",
-  alamo: "alamo.com",
-  economybookings: "economybookings.com",
-  europcar: "europcar.com",
-  getrentacar: "getrentacar.com",
-  "jumbo-car-costa-rica": "jumbocar.com",
-  localrent: "localrent.com",
-  qeeq: "qeeq.com",
-  "vip-cars": "vipcars.com",
-  airhelp: "airhelp.com",
-  "auras-travel-insurance": "aura.travel",
-  ekta: "ektatraveling.com",
-  "melhor-seguro": "melhorseguro.com",
-  "go-go-espana": "gogohispania.com",
-  "proton-vpn": "protonvpn.com",
-  supersim: "supersim.com.br",
-  "discover-cars": "discovercars.com",
-  "champions-travel": "championstravel.co.uk",
-  "vi-travel": "vitravel.com",
-  "skylark-travel-group": "skylark.com",
-};
+const partners = partnersJson as Partner[];
 
-// logo.dev publishable token (set in Vercel as NEXT_PUBLIC_LOGO_DEV_TOKEN).
-const LOGO_DEV_TOKEN = process.env.NEXT_PUBLIC_LOGO_DEV_TOKEN || "";
-
-function logoUrl(domain: string): string {
-  if (!LOGO_DEV_TOKEN || !domain) return "";
-  return `https://img.logo.dev/${encodeURIComponent(domain)}?token=${LOGO_DEV_TOKEN}&size=128&format=png&retina=true`;
+function partnerLogoSrc(logo: string) {
+  return `/logos/${logo}`;
 }
 
-export default function PartnerMarquee({ partnersData, lang = "en" }: MarqueeProps) {
-  // Localized heading text (falls back to English, then to a literal default).
-  const t = (key: string, fallback: string) => I18N[lang]?.[key] || I18N.en?.[key] || fallback;
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
 
-  const list = (partnersData || []).filter((p) => p.featured && BRAND_DOMAINS[p.id]);
-  if (list.length === 0) return null;
+export default function PartnerMarquee({ partnersData }: MarqueeProps) {
+  const { t } = useTranslation();
+  const sourcePartners = partnersData?.length ? partnersData : partners;
+  const list = sourcePartners
+    .filter((partner) => partner.featured)
+    .sort((a, b) => (a.tier ?? 99) - (b.tier ?? 99));
+
+  const title = fallbackText(t("partner.title"), "Our Partners");
+  const empty = fallbackText(t("partner.empty"), "No partners available");
+
+  if (list.length === 0) {
+    return (
+      <section style={styles.wrapper} aria-labelledby="partner-marquee-title">
+        <div style={styles.header}>
+          <span style={styles.badge}>{title}</span>
+          <h3 id="partner-marquee-title" style={styles.heading}>{empty}</h3>
+        </div>
+      </section>
+    );
+  }
 
   const halfLength = Math.ceil(list.length / 2);
   const topRow = list.slice(0, halfLength);
@@ -92,80 +61,123 @@ export default function PartnerMarquee({ partnersData, lang = "en" }: MarqueePro
   const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
     if (items.length === 0) return null;
     const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
+
     return (
-      <div
-        style={{
-          position: "relative",
-          display: "flex",
-          width: "100%",
-          overflow: "hidden",
-          padding: "0.5rem 0",
-          WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-          maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-        }}
-      >
+      <div style={styles.rowMask}>
         <div className={animationClass}>
-          {[...items, ...items].map((partner, index) => {
-            const logo = logoUrl(BRAND_DOMAINS[partner.id]);
-            return (
-              <a
-                key={`${partner.id}-${rowKeyIdentifier}-${index}`}
-                href={partner.url}
-                target="_blank"
-                rel="noopener sponsored"
-                className="fathom-glass-card-upgrade"
-              >
-                {logo && (
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "30px",
-                      height: "30px",
-                      flexShrink: 0,
-                      borderRadius: "7px",
-                      background: "#fff", // white chip keeps dark logos visible on dark cards
-                      padding: "4px",
-                    }}
-                  >
-                    <img
-                      className="partner-logo"
-                      src={logo}
-                      alt=""
-                      aria-hidden="true"
-                      loading="lazy"
-                      style={{ width: "22px", height: "22px", objectFit: "contain", borderRadius: 0 }}
-                      onError={(e) => {
-                        const chip = (e.currentTarget as HTMLImageElement).parentElement;
-                        if (chip) (chip as HTMLElement).style.display = "none";
-                      }}
-                    />
-                  </span>
-                )}
-                <span style={{ color: "#f5f6f8", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.02em" }}>
-                  {partner.name}
+          {[...items, ...items].map((partner, index) => (
+            <a
+              key={`${partner.id}-${rowKeyIdentifier}-${index}`}
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="fathom-glass-card-upgrade"
+              aria-label={`${partner.name} — ${partner.category_label || partner.category}`}
+              title={partner.description}
+            >
+              <span style={styles.logoChip}>
+                <img
+                  className="partner-logo"
+                  src={partnerLogoSrc(partner.logo)}
+                  alt={`${partner.name} logo`}
+                  loading="lazy"
+                  style={styles.logoImage}
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                    const fallback = event.currentTarget.nextElementSibling;
+                    if (fallback instanceof HTMLElement) fallback.style.display = "inline";
+                  }}
+                />
+                <span style={styles.logoFallback} aria-hidden="true">
+                  {partner.name.charAt(0).toUpperCase()}
                 </span>
-              </a>
-            );
-          })}
+              </span>
+              <span style={styles.partnerName}>{partner.name}</span>
+            </a>
+          ))}
         </div>
       </div>
     );
   };
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1rem", marginTop: 0 }}>
-      <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f59e0b", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-          {t("window_shopping", "Window shopping")}
-        </span>
-        <h3 style={{ fontSize: "1.25rem", fontWeight: 500, color: "#9ca3af", marginTop: "0.25rem" }}>
-          {t("marquee_subtitle", "Featuring brands you already trust")}
+    <section style={styles.wrapper} aria-labelledby="partner-marquee-title">
+      <div style={styles.header}>
+        <span style={styles.badge}>{title}</span>
+        <h3 id="partner-marquee-title" style={styles.heading}>
+          {fallbackText(t("partner.marqueeSubtitle"), "Featured brands you can browse on SignalBoost")}
         </h3>
       </div>
       {renderRow(topRow, false, "top-track")}
       {renderRow(bottomRow, true, "bottom-track")}
-    </div>
+    </section>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  wrapper: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+    margin: "0 auto",
+    padding: "72px 0 24px",
+  },
+  header: {
+    textAlign: "center",
+    marginBottom: "1rem",
+    padding: "0 24px",
+  },
+  badge: {
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    color: "#f59e0b",
+    letterSpacing: "0.15em",
+    textTransform: "uppercase",
+  },
+  heading: {
+    fontSize: "1.25rem",
+    fontWeight: 500,
+    color: "#9ca3af",
+    marginTop: "0.25rem",
+  },
+  rowMask: {
+    position: "relative",
+    display: "flex",
+    width: "100%",
+    overflow: "hidden",
+    padding: "0.5rem 0",
+    WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+    maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+  },
+  logoChip: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "30px",
+    height: "30px",
+    flexShrink: 0,
+    borderRadius: "7px",
+    background: "#fff",
+    padding: "4px",
+    color: "#111827",
+    fontSize: "0.75rem",
+    fontWeight: 800,
+  },
+  logoImage: {
+    width: "22px",
+    height: "22px",
+    objectFit: "contain",
+    borderRadius: 0,
+  },
+  logoFallback: {
+    display: "none",
+    lineHeight: 1,
+  },
+  partnerName: {
+    color: "#f5f6f8",
+    fontSize: "0.9rem",
+    fontWeight: 500,
+    letterSpacing: "0.02em",
+  },
+};
