@@ -5,13 +5,12 @@ import { usePathname } from "next/navigation";
 import useTranslation from "@/components/i18n/useTranslation";
 
 const navItems = [
-  { key: "marketplace", path: "/" },
   { key: "promote_business", path: "/promote" },
   { key: "reviews", path: "/reviews" },
   { key: "calendar", path: "/calendar" },
   { key: "spreadsheets", path: "/spreadsheets" },
   { key: "outreach", path: "/outreach" },
-  { key: "concierge", path: "/assistant" },
+  { key: "assistant", path: "/assistant" },
   { key: "pricing", path: "/pricing" },
   { key: "executive", path: "/dashboard" },
 ];
@@ -21,13 +20,12 @@ function fallbackText(value: string, fallback: string) {
 }
 
 const fallbackLabels: Record<string, string> = {
-  marketplace: "Marketplace",
   promote_business: "Promote Business",
   reviews: "Reviews",
   calendar: "Calendar",
   spreadsheets: "Spreadsheets",
   outreach: "Outreach",
-  concierge: "Concierge",
+  assistant: "Personal Assistant",
   pricing: "Pricing",
   executive: "Executive",
 };
