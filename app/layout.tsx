@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { I18nProvider } from "@/components/i18n/I18nProvider";
 import { Analytics } from "@vercel/analytics/react";
+import SiteHeader from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "SignalBoost",
@@ -19,7 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <I18nProvider>{children}</I18nProvider>
+        <I18nProvider>
+          <SiteHeader />
+          {children}
+        </I18nProvider>
         <Analytics />
       </body>
     </html>

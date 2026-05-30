@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import AdminCockpit from "@/components/admin/AdminCockpit";
 
 const GOLD = "#f5c542";
 const DARK = "#0d1117";
@@ -85,6 +86,10 @@ export default async function AdminHub() {
               </div>
             )
           )}
+        </div>
+
+        <div style={{ marginTop: 34 }}>
+          <AdminCockpit />
         </div>
 
         <p style={{ color: MUTED, fontSize: 12, marginTop: 28 }}>

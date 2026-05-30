@@ -1,45 +1,39 @@
-// File: components/SiteHeader.tsx
-// Project: SignalBoost (main production repo)
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const navItems = [
+  { name: "Marketplace", path: "/" },
+  { name: "Promote Business", path: "/promote" },
+  { name: "Reviews", path: "/reviews" },
+  { name: "Calendar", path: "/calendar" },
+  { name: "Spreadsheets", path: "/spreadsheets" },
+  { name: "Outreach", path: "/outreach" },
+  { name: "Personal Assistant", path: "/assistant" },
+  { name: "Pricing", path: "/pricing" },
+  { name: "Executive", path: "/dashboard" },
+  { name: "Admin", path: "/admin" },
+];
 
 export default function SiteHeader() {
-  const router = useRouter();
-
-  const navItems = [
-    { name: 'Marketplace', path: '/marketplace' },
-    { name: 'Promote Business', path: '/promote' },
-    { name: 'Reviews', path: '/reviews' },
-    { name: 'Calendar', path: '/calendar' },
-    { name: 'Spreadsheets', path: '/spreadsheets' },
-    { name: 'Outreach', path: '/outreach' },
-    { name: 'Personal Assistant', path: '/assistant' },
-    { name: 'Admin', path: '/admin' }, // restricted access
-  ];
+  const pathname = usePathname() || "/";
 
   return (
-    <header className="bg-black bg-opacity-80 backdrop-blur-md px-6 py-3 flex items-center">
-      <div className="text-xl font-bold">
-        <span className="text-white">signal</span>
-        <span className="text-yellow-400">boost</span>
-      </div>
-      <nav className="ml-auto">
-        <ul className="flex space-x-6">
-          {navItems.map((item) => (
-            <li key={item.name}>
-              <Link href={item.path}>
-                <a
-                  className={`transition hover:text-cyan-400 ${
-                    router.pathname === item.path ? 'text-cyan-400' : 'text-white'
-                  }`}
-                >
-                  {item.name}
-                </a>
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <header className="site-header">
+      <Link className="site-brand" href="/" aria-label="SignalBoost home">
+        <span>signal</span>
+        <strong>boost</strong>
+      </Link>
+      <nav className="site-nav" aria-label="SignalBoost unified cockpit navigation">
+        {navItems.map((item) => {
+          const active = item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
+          return (
+            <Link key={item.path} className={active ? "active" : ""} href={item.path}>
+              {item.name}
+            </Link>
+          );
+        })}
       </nav>
     </header>
   );

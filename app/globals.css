@@ -263,3 +263,295 @@ a {
   .partner-name { font-size: 22px; }
   .partner-top { flex-direction: column; }
 }
+
+/* ── NASA-style unified cockpit shell ───────────────────────────────────── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 64px;
+  padding: 12px clamp(16px, 3vw, 36px);
+  border-bottom: 1px solid rgba(245, 197, 66, 0.16);
+  background: rgba(3, 5, 10, 0.86);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+
+.site-brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.site-brand strong { color: var(--gold); }
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.site-nav::-webkit-scrollbar { display: none; }
+.site-nav a {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  padding: 8px 11px;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.site-nav a:hover,
+.site-nav a.active {
+  border-color: rgba(245, 197, 66, 0.38);
+  background: rgba(245, 197, 66, 0.1);
+  color: #fff;
+}
+
+.cockpit-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(34, 211, 238, 0.14), transparent 30%),
+    radial-gradient(circle at 88% 0%, rgba(245, 197, 66, 0.16), transparent 34%),
+    linear-gradient(180deg, #04070d 0%, #0d1117 55%, #05070b 100%);
+  color: #fff;
+  padding-bottom: 96px;
+}
+.cockpit-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, #000, transparent 78%);
+}
+.cockpit-hero,
+.cockpit-section {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+.cockpit-hero {
+  display: grid;
+  place-items: center;
+  min-height: 430px;
+  padding: 76px 0 54px;
+  text-align: center;
+}
+.cockpit-orbit {
+  position: absolute;
+  width: min(640px, 84vw);
+  aspect-ratio: 1;
+  border: 1px solid rgba(245, 197, 66, 0.18);
+  border-radius: 999px;
+  box-shadow: inset 0 0 80px rgba(34, 211, 238, 0.08), 0 0 80px rgba(245, 197, 66, 0.08);
+}
+.cockpit-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: inherit;
+}
+.cockpit-eyebrow,
+.telemetry-label {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.cockpit-hero h1 {
+  max-width: 860px;
+  margin: 12px 0 16px;
+  font-size: clamp(42px, 7vw, 86px);
+  line-height: 0.94;
+  letter-spacing: -0.075em;
+}
+.cockpit-subtitle {
+  max-width: 760px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: clamp(17px, 2vw, 22px);
+}
+.cockpit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+.cockpit-primary,
+.cockpit-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  min-height: 44px;
+  padding: 0 18px;
+}
+.cockpit-primary {
+  background: var(--gold);
+  color: #11151c;
+  box-shadow: 0 18px 40px rgba(245, 197, 66, 0.2);
+}
+.cockpit-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+.cockpit-section { margin-top: 34px; }
+.cockpit-section-heading {
+  max-width: 720px;
+  margin-bottom: 22px;
+}
+.cockpit-section-heading h2,
+.concierge-band h2 {
+  margin: 8px 0;
+  font-size: clamp(28px, 4vw, 46px);
+  letter-spacing: -0.05em;
+}
+.cockpit-section-heading p,
+.concierge-band p,
+.executive-panel p,
+.module-card p,
+.pricing-card p,
+.module-detail-panel p {
+  color: rgba(255, 255, 255, 0.68);
+}
+.module-grid,
+.pricing-grid,
+.executive-grid,
+.module-detail,
+.admin-console {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.module-card,
+.pricing-card,
+.executive-panel,
+.module-detail-panel,
+.concierge-band,
+.telemetry-strip {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.78), rgba(7, 10, 17, 0.86));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(18px);
+}
+.module-card {
+  position: relative;
+  min-height: 248px;
+  padding: 22px;
+  overflow: hidden;
+}
+.module-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--module-accent, var(--gold));
+}
+.module-card-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.module-card-topline strong { color: var(--module-accent, var(--gold)); }
+.module-card h3,
+.pricing-card h2 {
+  margin: 32px 0 10px;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+.module-signal {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  color: var(--module-accent, var(--gold));
+  font-size: 13px;
+  font-weight: 900;
+}
+.module-detail-panel,
+.pricing-card,
+.executive-panel { padding: 24px; }
+.module-prime { border-color: color-mix(in srgb, var(--module-accent, var(--gold)) 45%, transparent); }
+.module-prime strong,
+.executive-panel strong,
+.pricing-card strong {
+  display: block;
+  margin: 10px 0;
+  color: #fff;
+  font-size: 34px;
+  letter-spacing: -0.05em;
+}
+.module-detail-panel ul,
+.pricing-card ul {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding-left: 18px;
+  color: rgba(255, 255, 255, 0.78);
+}
+.concierge-band,
+.telemetry-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px;
+}
+.pricing-card { position: relative; }
+.pricing-card.featured {
+  border-color: rgba(245, 197, 66, 0.46);
+  transform: translateY(-8px);
+}
+.pricing-ribbon {
+  border-radius: 999px;
+  background: rgba(245, 197, 66, 0.14);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  padding: 6px 10px;
+  text-transform: uppercase;
+}
+.telemetry-strip { align-items: stretch; }
+.telemetry-strip > div { flex: 1; }
+
+@media (max-width: 860px) {
+  .site-header { align-items: flex-start; flex-direction: column; }
+  .site-nav { width: 100%; margin-left: 0; }
+  .concierge-band,
+  .telemetry-strip { align-items: flex-start; flex-direction: column; }
+  .pricing-card.featured { transform: none; }
+}
+.admin-console {
+  width: 100%;
+  margin-top: 0;
+}

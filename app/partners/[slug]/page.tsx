@@ -11,9 +11,10 @@ import {
 } from "@/lib/partners";
 
 export async function generateStaticParams() {
-  return getAllPartners().map((p) => ({
-    slug: p.id,
-  }));
+  const partners = getAllPartners();
+  const partnerParams = partners.map((p) => ({ slug: p.id }));
+  const categoryParams = Array.from(new Set(partners.map((p) => p.category_key))).map((slug) => ({ slug }));
+  return [...partnerParams, ...categoryParams];
 }
 
 export async function generateMetadata({
@@ -24,7 +25,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const partner = getPartnerById(slug);
 
-  if (!partner) return {};
+  if (!partner) {
+    const categoryPartners = getAllPartners().filter((p) => p.category_key === slug);
+    if (categoryPartners.length === 0) return {};
+    const categoryLabel = getCategoryLabel(slug);
+    return {
+      title: `${categoryLabel} Providers & Partners | SignalBoost`,
+      description: `Compare trusted SignalBoost marketplace providers for ${categoryLabel}.`,
+      alternates: { canonical: `https://www.signalboostapp.com/partners/${slug}` },
+    };
+  }
 
   const categoryLabel = getCategoryLabel(
     partner.category_key
@@ -66,7 +76,7 @@ export default async function PartnerPage({
   const partner = getPartnerById(slug);
 
   if (!partner) {
-    notFound();
+    return <CategoryPage slug={slug} />;
   }
 
   const related = getRelatedPartners(partner);
@@ -291,5 +301,40 @@ export default async function PartnerPage({
         )}
       </main>
     </>
+  );
+}
+
+function CategoryPage({ slug }: { slug: string }) {
+  const filteredPartners = getAllPartners().filter((p) => p.category_key === slug);
+
+  if (filteredPartners.length === 0) {
+    notFound();
+  }
+
+  const categoryLabel = getCategoryLabel(slug);
+
+  return (
+    <main className="partner-page">
+      <section className="partner-card">
+        <div className="detail-label">SignalBoost Directory</div>
+        <h1 className="partner-name">Top Regional {categoryLabel} Providers & Partners</h1>
+        <p className="partner-description">
+          Compare premium, trusted global infrastructure operators and localized regional vendors for {categoryLabel.toLowerCase()}.
+        </p>
+      </section>
+
+      <section className="related-section">
+        <h2 className="related-title">Available Integrated Storefronts</h2>
+        <div className="related-grid">
+          {filteredPartners.map((partner) => (
+            <a className="related-card" href={`/partners/${partner.id}`} key={partner.id}>
+              <div className="related-card-name">{partner.name}</div>
+              <div className="related-card-cat">{partner.network} · Tier {partner.tier}</div>
+              <p>{partner.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
