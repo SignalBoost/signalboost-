@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '../../../../lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET() {
   try {
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json(updatedDoc, { status: 200 });
     }
 
-    // Direct standalone insertion to ensure transaction succeeds without strict FK bindings
+    // Direct standalone insertion
     const { data: newDoc, error } = await supabase
       .from('office_documents')
       .insert({
