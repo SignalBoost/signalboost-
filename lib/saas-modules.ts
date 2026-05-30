@@ -39,7 +39,7 @@ export const saasModules: SaasModule[] = [
     href: "/reviews",
     accent: "#7dd3fc",
     features: ["Review inbox", "Response drafts", "Escalation lanes"],
-    automations: ["AI tone matching", "Negative review alerts", "Weekly trust digest"],
+    automations: ["AI tone matching", "Fallback response drafts", "Weekly trust digest"],
   },
   {
     slug: "calendar",
@@ -53,7 +53,7 @@ export const saasModules: SaasModule[] = [
     href: "/calendar",
     accent: "#a78bfa",
     features: ["Booking board", "Launch windows", "Team handoffs"],
-    automations: ["Conflict detection", "Reminder sequences", "Concierge rescheduling"],
+    automations: ["Persistent conflict detection", "Fallback demo slots", "Concierge rescheduling"],
   },
   {
     slug: "spreadsheets",
@@ -67,7 +67,7 @@ export const saasModules: SaasModule[] = [
     href: "/spreadsheets",
     accent: "#34d399",
     features: ["Smart tables", "Import lanes", "Formula guardrails"],
-    automations: ["Anomaly detection", "CSV cleanup", "Forecast snapshots"],
+    automations: ["Anomaly detection", "CSV cleanup", "Demo-data forecast snapshots"],
   },
   {
     slug: "outreach",
@@ -81,7 +81,7 @@ export const saasModules: SaasModule[] = [
     href: "/outreach",
     accent: "#fb7185",
     features: ["Sequence cockpit", "Lead queues", "Partner scripts"],
-    automations: ["Follow-up timing", "CRM enrichment", "Conversation summaries"],
+    automations: ["Follow-up timing", "CRM enrichment", "Persistent conversation summaries"],
   },
   {
     slug: "assistant",
@@ -95,7 +95,7 @@ export const saasModules: SaasModule[] = [
     href: "/assistant",
     accent: "#22d3ee",
     features: ["Marketplace matching", "Task drafting", "Executive briefings"],
-    automations: ["Next-best action", "Meeting prep", "Cross-module memory"],
+    automations: ["Next-best action", "Clarify-or-default prompts", "Cross-module memory"],
   },
 ];
 
