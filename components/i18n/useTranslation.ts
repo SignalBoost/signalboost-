@@ -10,11 +10,11 @@ const translations: Record<string, any> = { en, es, pt, pl, ru };
 export function useTranslation() {
   const { locale, asPath, push } = useRouter();
   
-  // Contrato de interface original esperado pelos seus componentes (lang e setLang)
+  // Contrato oficial de propriedades esperado pelo ecossistema do SignalBoost
   const lang = locale || 'en';
   const tData = translations[lang] || translations['en'];
 
-  // Busca segura de chaves estruturadas por notação de ponto
+  // Busca reativa por notação de ponto (ex: 'navbar.calendar')
   const t = (keyString: string): string => {
     return keyString.split('.').reduce((obj, key) => obj?.[key], tData) || keyString;
   };
