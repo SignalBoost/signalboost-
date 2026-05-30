@@ -17,6 +17,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Path is relative to app/api/chat/ -> repo root /public/partners.json.
 // Static import => the data ships inside the serverless bundle.
 import partnersData from "../../../public/partners.json";
+import { LANGUAGE_COOKIE, LEGACY_LANGUAGE_COOKIE, normalizeLocale } from "@/lib/i18n/language";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -187,7 +188,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: "Invalid request.", partners: [] }, { status: 400 });
   }
 
-  const lang: Lang = LANGS.includes(body.lang as Lang) ? (body.lang as Lang) : "en";
+  const lang: Lang = LANGS.includes(body.lang as Lang)
+    ? (body.lang as Lang)
+    : normalizeLocale(req.cookies.get(LANGUAGE_COOKIE)?.value || req.cookies.get(LEGACY_LANGUAGE_COOKIE)?.value);
   const region = regionFromRequest(req);
 
   // Sanitize conversation: only user/assistant text, must start with a user turn.

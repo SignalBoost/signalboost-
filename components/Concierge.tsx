@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import useTranslation from "@/components/i18n/useTranslation";
 
 type ModuleName = "concierge" | "promote" | "calendar" | "reviews" | "spreadsheets" | "outreach";
 
@@ -52,6 +53,7 @@ function dataLabel(value: string | number | boolean | string[]) {
 }
 
 export default function Concierge() {
+  const { lang } = useTranslation();
   const [message, setMessage] = useState(STARTER);
   const [selectedModule, setSelectedModule] = useState<ModuleName | "auto">("auto");
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +90,7 @@ export default function Concierge() {
       const res = await fetch("/api/orchestrate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content, module: selectedModule }),
+        body: JSON.stringify({ message: content, module: selectedModule, lang }),
       });
       const data = (await res.json()) as OrchestrationResponse;
       setTurns((current) => [

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import useTranslation from "@/components/i18n/useTranslation";
+import LanguageToggle from "@/components/i18n/LanguageToggle";
 
 const navItems = [
   { key: "promote_business", path: "/promote" },
@@ -50,6 +51,7 @@ export default function SiteHeader() {
           );
         })}
       </nav>
+      <LanguageToggle />
     </header>
   );
 }
