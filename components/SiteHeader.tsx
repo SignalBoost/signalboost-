@@ -2,22 +2,39 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import useTranslation from "@/components/i18n/useTranslation";
 
 const navItems = [
-  { name: "Marketplace", path: "/" },
-  { name: "Promote Business", path: "/promote" },
-  { name: "Reviews", path: "/reviews" },
-  { name: "Calendar", path: "/calendar" },
-  { name: "Spreadsheets", path: "/spreadsheets" },
-  { name: "Outreach", path: "/outreach" },
-  { name: "Personal Assistant", path: "/assistant" },
-  { name: "Pricing", path: "/pricing" },
-  { name: "Executive", path: "/dashboard" },
-  { name: "Admin", path: "/admin" },
+  { key: "marketplace", path: "/" },
+  { key: "promote_business", path: "/promote" },
+  { key: "reviews", path: "/reviews" },
+  { key: "calendar", path: "/calendar" },
+  { key: "spreadsheets", path: "/spreadsheets" },
+  { key: "outreach", path: "/outreach" },
+  { key: "concierge", path: "/assistant" },
+  { key: "pricing", path: "/pricing" },
+  { key: "executive", path: "/dashboard" },
 ];
+
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
+
+const fallbackLabels: Record<string, string> = {
+  marketplace: "Marketplace",
+  promote_business: "Promote Business",
+  reviews: "Reviews",
+  calendar: "Calendar",
+  spreadsheets: "Spreadsheets",
+  outreach: "Outreach",
+  concierge: "Concierge",
+  pricing: "Pricing",
+  executive: "Executive",
+};
 
 export default function SiteHeader() {
   const pathname = usePathname() || "/";
+  const { t } = useTranslation();
 
   return (
     <header className="site-header">
@@ -30,7 +47,7 @@ export default function SiteHeader() {
           const active = item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
           return (
             <Link key={item.path} className={active ? "active" : ""} href={item.path}>
-              {item.name}
+              {fallbackText(t(`navbar.${item.key}`), fallbackLabels[item.key])}
             </Link>
           );
         })}

@@ -37,13 +37,23 @@ function normalizeLang(value: string | null) {
   return 'en'
 }
 
+function readCookie(name: string) {
+  if (typeof document === 'undefined') return null
+  const match = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${name}=`))
+  return match ? decodeURIComponent(match.split('=').slice(1).join('=')) : null
+}
+
 function getInitialLanguage() {
   if (typeof window === 'undefined') {
     return 'en'
   }
   const saved =
     localStorage.getItem('signalboost_language') ||
-    localStorage.getItem('site-language')
+    localStorage.getItem('site-language') ||
+    readCookie('signalboost_language') ||
+    readCookie('site-language')
   if (saved && SUPPORTED_LANGS.includes(saved)) {
     return saved
   }

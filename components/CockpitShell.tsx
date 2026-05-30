@@ -26,6 +26,9 @@ export function CockpitShell({
           <Link className="cockpit-secondary" href="/dashboard">
             Executive dashboard
           </Link>
+          <Link className="cockpit-secondary concierge-shell-link" href="/assistant">
+            Open Concierge
+          </Link>
         </div>
       </section>
       {children}

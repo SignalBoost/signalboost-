@@ -2,6 +2,7 @@ import { saasModules } from "@/lib/saas-modules";
 
 export type OrchestrationModule =
   | "concierge"
+  | "promote"
   | "calendar"
   | "reviews"
   | "spreadsheets"
@@ -44,6 +45,7 @@ type ModuleHandler = (message: string) => ModuleResult;
 
 const MODULE_LABELS: Record<OrchestrationModule, string> = {
   concierge: "Concierge",
+  promote: "Promote",
   calendar: "Calendar",
   reviews: "Reviews",
   spreadsheets: "Spreadsheets",
@@ -52,6 +54,7 @@ const MODULE_LABELS: Record<OrchestrationModule, string> = {
 
 const MODULE_TERMS: Record<OrchestrationModule, string[]> = {
   concierge: ["help", "assistant", "concierge", "what", "how", "explain", "answer", "recommend", "find"],
+  promote: ["promote", "marketing", "campaign", "advertise", "offer", "acquisition", "landing", "utm"],
   calendar: ["calendar", "schedule", "booking", "book", "meeting", "appointment", "reminder", "reschedule", "availability"],
   reviews: ["review", "reviews", "rating", "reputation", "feedback", "testimonial", "sentiment", "google"],
   spreadsheets: ["spreadsheet", "sheet", "csv", "rows", "table", "forecast", "budget", "data", "formula"],
@@ -114,6 +117,18 @@ const handlers: Record<OrchestrationModule, ModuleHandler> = {
       { mode: "persistent", matchedSaasModules: known }
     );
   },
+  promote(message) {
+    const text = normalize(message);
+    const regionFocus = ["mexico", "mx", "latam", "local", "geo"].some((term) => includesTerm(text, term));
+    return success(
+      "promote",
+      regionFocus
+        ? "Promote can launch geo-aware offers, partner placements, and localized campaign routing through signalboost-live."
+        : "Promote can turn marketplace intent into campaign briefs, offer cards, and measurable acquisition paths.",
+      ["Open campaign router", "Build offer card", "Attach UTM and partner conversion tracking"],
+      { liveBackend: "signalboost-live", regionFocus, campaignLift: "+24%" }
+    );
+  },
   calendar(message) {
     const dateHint = extractDateHint(message);
     return success(
@@ -158,6 +173,11 @@ const DEMO_FALLBACKS: Record<OrchestrationModule, Omit<ModuleResult, "module" | 
     summary: "Concierge fallback is active with clarification prompts, safe defaults, and general smart answers.",
     actions: ["Restate the goal", "Offer confirmation options", "Continue with a safe default"],
     data: { source: "demo", mode: "persistent" },
+  },
+  promote: {
+    summary: "Promote fallback is active with sample campaign briefs, offer cards, and UTM checks.",
+    actions: ["Create demo campaign", "Build offer card", "Validate UTM routing"],
+    data: { source: "demo", campaignLift: "+24%", liveBackend: "signalboost-live" },
   },
   calendar: {
     summary: "Calendar fallback is active with demo availability and reminder sequencing.",
