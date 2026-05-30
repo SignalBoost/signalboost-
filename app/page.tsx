@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <main className="sb-home">
       <div className="sb-home-bg" />
-      <HomeApp lang="en" />
+      <HomeApp />
     </main>
   );
 }
