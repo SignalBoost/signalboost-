@@ -10,111 +10,171 @@ interface ConciergeHeroProps {
   onBrowseAll?: () => void;
 }
 
-export default function ConciergeHero({
-  lang = "en",
-  regionName = "",
-  onSubmit,
-  onChip,
-  onBrowseAll
-}: ConciergeHeroProps) {
-  
+export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const handleScrollToPortal = () => {
     window.location.href = "/office";
   };
 
   return (
-    <section className="relative overflow-hidden py-24 lg:py-32" style={styles.heroWrapper}>
-      {/* Structural Ambient Glow Backdrop */}
-      <div className="absolute inset-0 pointer-events-none" style={styles.ambientGlow} />
+    <section style={styles.heroSection}>
+      {/* Background Glows Complexos para profundidade */}
+      <div style={styles.glowLeft} />
+      <div style={styles.glowRight} />
+      <div style={styles.gridOverlay} />
 
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 text-center">
-        <div className="mx-auto max-w-3xl">
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium mb-8" style={styles.statusBadge}>
-            <span style={styles.badgePulse} />
-            <span style={styles.badgeText}>SignalOffice Portal Live</span>
-          </div>
+      <div style={styles.innerContainer}>
+        {/* Badge Interativo */}
+        <div style={styles.badgeContainer}>
+          <span style={styles.badgePulse} />
+          <span style={styles.badgeText}>SignalOffice Enterprise Portal v2.0</span>
+        </div>
 
-          {/* Primary Marketing Pitch */}
-          <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-6xl" style={styles.mainTitle}>
-            Decentralized Office Tools for Elite Teams
-          </h1>
-          
-          <p className="mt-6 text-lg leading-8" style={styles.subtitleText}>
-            Secure your critical business guidelines, manage structural project workflows, and coordinate localized data vaults on an iron-clad platform designed for modern operators.
-          </p>
+        {/* Título Principal de Alto Impacto */}
+        <h1 style={styles.mainHeading}>
+          Decentralized Office Tools <br />
+          <span style={styles.gradientText}>For Elite Teams.</span>
+        </h1>
+        
+        {/* Subtítulo Sofisticado */}
+        <p style={styles.subtext}>
+          Secure your critical business guidelines, manage structural project workflows, 
+          and coordinate localized data vaults on an iron-clad platform designed for modern operators.
+        </p>
 
-          {/* Call to Actions */}
-          <div className="mt-10 flex items-center justify-center gap-x-6">
-            <button
-              onClick={handleScrollToPortal}
-              style={styles.primaryBtn}
-              className="transition-all duration-200 hover:opacity-90"
-            >
-              Enter Workspace Dashboard
-            </button>
-            <a 
-              href="#features" 
-              style={styles.secondaryLink}
-              className="text-sm font-semibold leading-6 transition-colors duration-200"
-            >
-              Learn More <span aria-hidden="true">→</span>
-            </a>
-          </div>
+        {/* Grupo de Ações Core */}
+        <div style={styles.actionGroup}>
+          <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
+            Enter Workspace Dashboard
+          </button>
+          <a href="#features" style={styles.brandButtonSecondary}>
+            Explore Infrastructure <span style={styles.arrow}>→</span>
+          </a>
         </div>
       </div>
     </section>
   );
 }
 
-// Polished CSS Visual Design System Coordinates
 const styles: Record<string, React.CSSProperties> = {
-  heroWrapper: {
-    backgroundColor: "#070709",
-    borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+  heroSection: {
+    position: "relative",
+    backgroundColor: "#030305",
+    padding: "160px 24px 100px 24px",
+    overflow: "hidden",
+    textAlign: "center",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.03)"
   },
-  ambientGlow: {
-    background: "radial-gradient(circle at 50% -20%, rgba(223, 168, 55, 0.08) 0%, transparent 60%)",
+  innerContainer: {
+    position: "relative",
+    zIndex: 10,
+    maxWidth: "850px",
+    margin: "0 auto"
   },
-  statusBadge: {
-    backgroundColor: "rgba(223, 168, 55, 0.06)",
+  glowLeft: {
+    position: "absolute",
+    top: "-10%",
+    left: "15%",
+    width: "400px",
+    height: "400px",
+    background: "radial-gradient(circle, rgba(223, 168, 55, 0.05) 0%, transparent 70%)",
+    pointerEvents: "none"
+  },
+  glowRight: {
+    position: "absolute",
+    top: "10%",
+    right: "15%",
+    width: "500px",
+    height: "500px",
+    background: "radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 60%)",
+    pointerEvents: "none"
+  },
+  gridOverlay: {
+    position: "absolute",
+    inset: 0,
+    backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px)",
+    backgroundSize: "40px 40px",
+    maskImage: "radial-gradient(circle at 50% 40%, black, transparent 70%)",
+    WebkitMaskImage: "radial-gradient(circle at 50% 40%, black, transparent 70%)",
+    pointerEvents: "none"
+  },
+  badgeContainer: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    backgroundColor: "rgba(223, 168, 55, 0.05)",
     border: "1px solid rgba(223, 168, 55, 0.15)",
+    padding: "6px 16px",
+    borderRadius: "9999px",
+    marginBottom: "32px"
   },
   badgePulse: {
     width: "6px",
     height: "6px",
     backgroundColor: "#dfa837",
     borderRadius: "50%",
-    boxShadow: "0 0 8px #dfa837",
+    boxShadow: "0 0 10px #dfa837"
   },
   badgeText: {
     color: "#dfa837",
-    letterSpacing: "0.03em",
-    fontFamily: "'Outfit', sans-serif",
+    fontSize: "12px",
+    fontWeight: 600,
+    letterSpacing: "0.05em",
+    textTransform: "uppercase"
   },
-  mainTitle: {
-    fontFamily: "'Outfit', sans-serif",
+  mainHeading: {
+    fontSize: "56px",
+    fontWeight: 700,
+    color: "#ffffff",
+    lineHeight: "1.1",
     letterSpacing: "-0.03em",
-    lineHeight: "1.15",
+    margin: 0
   },
-  subtitleText: {
-    color: "#8e8e99",
-    fontFamily: "'Outfit', sans-serif",
+  gradientText: {
+    background: "linear-gradient(135deg, #ffffff 30%, #dfa837 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent"
   },
-  primaryBtn: {
+  subtext: {
+    fontSize: "17px",
+    color: "#94a3b8",
+    lineHeight: "1.6",
+    maxWidth: "640px",
+    margin: "24px auto 0 auto"
+  },
+  actionGroup: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "16px",
+    marginTop: "40px"
+  },
+  brandButtonPrimary: {
     backgroundColor: "#dfa837",
-    color: "#070709",
-    padding: "12px 24px",
-    borderRadius: "6px",
-    fontWeight: 500,
+    color: "#030305",
+    border: "none",
+    padding: "14px 28px",
+    borderRadius: "8px",
+    fontWeight: 600,
     fontSize: "15px",
     cursor: "pointer",
-    border: "none",
-    fontFamily: "'Outfit', sans-serif",
+    boxShadow: "0 4px 20px rgba(223, 168, 55, 0.15)",
+    transition: "transform 0.2s ease"
   },
-  secondaryLink: {
-    color: "#f4f4f6",
-    fontFamily: "'Outfit', sans-serif",
+  brandButtonSecondary: {
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
+    color: "#f1f5f9",
+    border: "1px solid rgba(255, 255, 255, 0.08)",
+    padding: "14px 28px",
+    borderRadius: "8px",
+    fontWeight: 500,
+    fontSize: "15px",
     textDecoration: "none",
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    transition: "background 0.2s ease"
+  },
+  arrow: {
+    transition: "transform 0.2s ease"
   }
 };
