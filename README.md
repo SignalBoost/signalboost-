@@ -130,6 +130,13 @@ Add both URLs to **Supabase Dashboard → Authentication → URL Configuration �
 
 The app sends `flow=main` for the marketing site and `flow=saas` for the SaaS dashboard. Main-site sign-in defaults to `/promote` and blocks SaaS-only workbench paths from becoming post-login destinations. SaaS sign-in defaults to `/dashboard`.
 
+### Auth cookie scope
+
+Supabase auth cookies must stay scoped to the exact deployment host. Do **not** set `NEXT_PUBLIC_COOKIE_DOMAIN=.signalboostapp.com` or any shared parent-domain cookie setting in Vercel. The browser-side and server-side Supabase clients intentionally omit the cookie `Domain` attribute so:
+
+- `signalboostapp.com` cookies apply only to the marketing/partner site.
+- `saas.signalboostapp.com` cookies apply only to the SaaS cockpit.
+
 ### Optional hard separation with two Supabase projects
 
 For full isolation, create a second Supabase project for `signalboostapp.com` and keep the existing SaaS project for `saas.signalboostapp.com`:

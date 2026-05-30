@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import { createClient } from "@/lib/supabase/client";
+import { getAuthFlow, getDefaultPostAuthDestination, type AuthFlow } from "@/lib/supabase/auth-flows";
 
 // Navbar = consumer/marketing top level only. SaaS Station modules such as
 // Calendar, Spreadsheets, Reviews, and Outreach stay inside the SaaS cockpit.
@@ -22,9 +23,39 @@ const oauthProviders = [
   { label: "GitHub", path: "/api/auth/github" },
 ];
 
+function getHeaderAuthFlow(): AuthFlow {
+  if (typeof window === "undefined") {
+    return "main";
+  }
+
+  return getAuthFlow(window.location.hostname);
+}
+
+function getLoginHref(flow: AuthFlow) {
+  const params = new URLSearchParams({
+    flow,
+    next: getDefaultPostAuthDestination(flow),
+  });
+
+  return `/auth/login?${params.toString()}`;
+}
+
+function getOAuthHref(path: string, flow: AuthFlow) {
+  const params = new URLSearchParams({
+    flow,
+    next: getDefaultPostAuthDestination(flow),
+  });
+
+  return `${path}?${params.toString()}`;
+}
+
 function AuthControls() {
   const [user, setUser] = useState<User | null>(null);
+  const [flow, setFlow] = useState<AuthFlow>("main");
+  const loginHref = useMemo(() => getLoginHref(flow), [flow]);
   useEffect(() => {
+    setFlow(getHeaderAuthFlow());
+
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       return;
     }
@@ -59,7 +90,7 @@ function AuthControls() {
     <div className="site-auth" aria-label="Authentication and OAuth providers">
       <div className="site-auth__providers" aria-label="OAuth providers">
         {oauthProviders.map((provider) => (
-          <a key={provider.path} href={provider.path} className="site-auth__provider">
+          <a key={provider.path} href={getOAuthHref(provider.path, flow)} className="site-auth__provider">
             {provider.label}
           </a>
         ))}
@@ -72,7 +103,7 @@ function AuthControls() {
           </button>
         </div>
       ) : (
-        <Link className="site-auth__button site-auth__login" href="/auth/login">
+        <Link className="site-auth__button site-auth__login" href={loginHref}>
           Login
         </Link>
       )}
