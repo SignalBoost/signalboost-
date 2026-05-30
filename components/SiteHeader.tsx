@@ -2,22 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import useTranslation from "@/components/i18n/useTranslation";
 
 const navItems = [
-  { name: "Marketplace", path: "/" },
-  { name: "Promote Business", path: "/promote" },
-  { name: "Reviews", path: "/reviews" },
-  { name: "Calendar", path: "/calendar" },
-  { name: "Spreadsheets", path: "/spreadsheets" },
-  { name: "Outreach", path: "/outreach" },
-  { name: "Personal Assistant", path: "/assistant" },
-  { name: "Pricing", path: "/pricing" },
-  { name: "Executive", path: "/dashboard" },
-  { name: "Admin", path: "/admin" },
+  { key: "marketplace", path: "/" },
+  { key: "promote_business", path: "/promote" },
+  { key: "reviews", path: "/reviews" },
+  { key: "calendar", path: "/calendar" },
+  { key: "spreadsheets", path: "/spreadsheets" },
+  { key: "outreach", path: "/outreach" },
+  { key: "pricing", path: "/pricing" },
+  { key: "executive", path: "/dashboard" },
+  { key: "concierge", path: "/assistant" },
 ];
 
 export default function SiteHeader() {
   const pathname = usePathname() || "/";
+  const { t } = useTranslation();
 
   return (
     <header className="site-header">
@@ -29,8 +30,8 @@ export default function SiteHeader() {
         {navItems.map((item) => {
           const active = item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
           return (
-            <Link key={item.path} className={active ? "active" : ""} href={item.path}>
-              {item.name}
+            <Link key={item.key} className={active ? "active" : ""} href={item.path}>
+              {t(`navbar.${item.key}`)}
             </Link>
           );
         })}

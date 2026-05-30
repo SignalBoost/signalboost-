@@ -4,6 +4,7 @@ import "./globals.css";
 import { I18nProvider } from "@/components/i18n/I18nProvider";
 import { Analytics } from "@vercel/analytics/react";
 import SiteHeader from "@/components/SiteHeader";
+import Concierge from "@/components/Concierge";
 
 export const metadata: Metadata = {
   title: "SignalBoost",
@@ -23,6 +24,7 @@ export default function RootLayout({
         <I18nProvider>
           <SiteHeader />
           {children}
+          <Concierge />
         </I18nProvider>
         <Analytics />
       </body>
