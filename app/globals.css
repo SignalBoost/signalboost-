@@ -271,7 +271,7 @@ a {
   z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   min-height: 64px;
   padding: 12px clamp(16px, 3vw, 36px);
   border-bottom: 1px solid rgba(245, 197, 66, 0.16);
@@ -319,35 +319,87 @@ a {
   color: #fff;
 }
 
+.site-header__tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .language-switcher {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-left: 4px;
-  border: 1px solid rgba(245, 197, 66, 0.26);
+  gap: 3px;
+  margin-left: 0;
+  border: 1px solid rgba(245, 197, 66, 0.3);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);
-  padding: 4px 8px;
+  padding: 3px;
   white-space: nowrap;
 }
-.language-switcher__current {
-  color: var(--gold);
+.language-switcher__button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.66);
+  cursor: pointer;
   font-size: 11px;
   font-weight: 900;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
+  min-height: 28px;
+  padding: 0 9px;
 }
-.language-switcher__select {
-  border: 0;
-  background: transparent;
+.language-switcher__button.active {
+  background: var(--gold);
+  color: #11151c;
+  box-shadow: 0 0 18px rgba(245, 197, 66, 0.24);
+}
+
+.site-auth {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.site-auth__providers {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.site-auth__provider,
+.site-auth__button,
+.site-auth__label {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  min-height: 30px;
+  padding: 7px 10px;
+}
+.site-auth__provider {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.04);
+}
+.site-auth__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.site-auth__label {
+  border: 1px solid rgba(52, 211, 153, 0.26);
+  color: #86efac;
+  background: rgba(52, 211, 153, 0.08);
+}
+.site-auth__button {
+  border: 1px solid rgba(245, 197, 66, 0.34);
+  background: rgba(245, 197, 66, 0.12);
   color: #fff;
-  font-size: 12px;
-  font-weight: 800;
-  outline: none;
   cursor: pointer;
+  font-family: inherit;
 }
-.language-switcher__select option {
-  background: #05070b;
-  color: #fff;
+.site-auth__login {
+  display: inline-flex;
+  align-items: center;
 }
 
 .cockpit-page {
@@ -578,7 +630,8 @@ a {
 @media (max-width: 860px) {
   .site-header { align-items: flex-start; flex-direction: column; }
   .site-nav { width: 100%; margin-left: 0; }
-  .language-switcher { align-self: flex-end; }
+  .site-header__tools { width: 100%; justify-content: space-between; }
+  .site-auth { overflow-x: auto; max-width: 100%; }
   .concierge-band,
   .telemetry-strip { align-items: flex-start; flex-direction: column; }
   .pricing-card.featured { transform: none; }
@@ -1175,4 +1228,10 @@ a {
     flex-basis: auto;
     justify-content: flex-start;
   }
+}
+
+@media (max-width: 620px) {
+  .site-header__tools { align-items: flex-start; flex-direction: column; }
+  .site-auth { width: 100%; flex-wrap: wrap; }
+  .site-auth__providers { overflow-x: auto; max-width: 100%; }
 }

@@ -1,5 +1,5 @@
 import PartnerDescription from '@/components/PartnerDescription';
-import partners from '@/public/partners.json';
+import partners from '@/partners.json';
 
 export const metadata = {
   title: 'Our Partners | SignalBoost',

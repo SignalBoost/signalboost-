@@ -1,5 +1,5 @@
 // File: lib/partners.ts
-// Reads partner data from public/partners.json at build time.
+// Reads partner data from partners.json at build time.
 // This is a server-only module — never import in client components.
 import fs from "fs";
 import path from "path";
@@ -83,9 +83,9 @@ export function getRegionLabel(key: string): string {
   return REGION_LABELS[key] ?? key.toUpperCase();
 }
 
-// Reads public/partners.json once per build/request on the server.
+// Reads partners.json once per build/request on the server.
 export function getAllPartners(): Partner[] {
-  const filePath = path.join(process.cwd(), "public", "partners.json");
+  const filePath = path.join(process.cwd(), "partners.json");
   const raw = fs.readFileSync(filePath, "utf-8");
   const list: Partner[] = JSON.parse(raw);
   // Deduplicate by id, keeping the first occurrence.

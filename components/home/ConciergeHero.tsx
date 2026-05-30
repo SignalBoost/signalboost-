@@ -18,67 +18,80 @@ function fallbackText(value: string, fallback: string) {
 }
 
 const stationModuleSlugs = ["calendar", "spreadsheets", "reviews", "outreach"];
+const trialTasks = ["Generate an outreach brief", "Clean up a spreadsheet", "Schedule a review follow-up"];
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const { t } = useTranslation();
   const stationModules = stationModuleSlugs
     .map((slug) => saasModules.find((module) => module.slug === slug))
     .filter((module): module is NonNullable<typeof module> => Boolean(module));
-  const handleScrollToPortal = () => {
-    window.location.href = "/promote";
-  };
 
   return (
-    <section style={styles.heroSection}>
-      {/* Background Glows Complexos para profundidade */}
-      <div style={styles.glowLeft} />
-      <div style={styles.glowRight} />
-      <div style={styles.gridOverlay} />
+    <section style={styles.heroSection} aria-labelledby="saas-station-hero-title">
+      <div style={styles.glowLeft} aria-hidden="true" />
+      <div style={styles.glowRight} aria-hidden="true" />
+      <div style={styles.gridOverlay} aria-hidden="true" />
 
       <div className="concierge-hero-layout" style={styles.innerContainer}>
         <div style={styles.heroCopy}>
-          {/* Badge Interativo */}
           <div style={styles.badgeContainer}>
             <span style={styles.badgePulse} />
-            <span style={styles.badgeText}>SignalOffice Enterprise Portal v2.0</span>
+            <span style={styles.badgeText}>Gold cockpit • SaaS Station online</span>
           </div>
 
-          {/* Título Principal de Alto Impacto */}
-          <h1 style={styles.mainHeading}>
-            Decentralized Office Tools <br />
-            <span style={styles.gradientText}>For Elite Teams.</span>
+          <h1 id="saas-station-hero-title" style={styles.mainHeading}>
+            {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
           </h1>
-          
-          {/* Subtítulo Sofisticado */}
+
           <p style={styles.subtext}>
-            Secure your critical business guidelines, manage structural project workflows, 
-            and coordinate localized data vaults on an iron-clad platform designed for modern operators.
+            Calendar, Spreadsheets, Reviews, and Outreach are now the command center for office work —
+            with glowing telemetry, guided task flow, and affiliate credibility signals under one cockpit.
           </p>
 
-          {/* Grupo de Ações Core */}
+          <div style={styles.trialPanel} aria-label="Trial gating">
+            <div>
+              <span style={styles.trialEyebrow}>Trial gate</span>
+              <strong style={styles.trialTitle}>3 free tasks, then sign-up required</strong>
+            </div>
+            <div style={styles.trialDots} aria-hidden="true">
+              <span style={styles.trialDot} />
+              <span style={styles.trialDot} />
+              <span style={styles.trialDot} />
+            </div>
+          </div>
+
+          <ul style={styles.trialList} aria-label="Included free tasks">
+            {trialTasks.map((task) => (
+              <li key={task} style={styles.trialListItem}>{task}</li>
+            ))}
+          </ul>
+
           <div style={styles.actionGroup}>
-            <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
-              Open marketing tools
-            </button>
-            <a href="#features" style={styles.brandButtonSecondary}>
-              Explore Infrastructure <span style={styles.arrow}>→</span>
-            </a>
+            <Link href="/assistant" style={styles.brandButtonPrimary}>
+              Start free task run
+            </Link>
+            <Link href="/pricing" style={styles.brandButtonSecondary}>
+              Unlock station access <span style={styles.arrow}>→</span>
+            </Link>
           </div>
         </div>
 
-        <aside className="saas-station-panel" style={styles.stationPanel} aria-labelledby="saas-station-title">
+        <aside className="saas-station-panel" style={styles.stationPanel} aria-label="SaaS station telemetry cockpit">
           <div style={styles.stationGlow} aria-hidden="true" />
           <div style={styles.stationHeader}>
-            <span style={styles.stationEyebrow}>Live SaaS Command</span>
-            <h2 id="saas-station-title" style={styles.stationTitle}>
-              {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
-            </h2>
+            <span style={styles.stationEyebrow}>Live office telemetry</span>
+            <h2 style={styles.stationTitle}>Stationary SaaS Station</h2>
             <p style={styles.stationSubtitle}>
-              {fallbackText(
-                t("homepage.saasStationSubtitle"),
-                "Calendar, spreadsheets, reviews, and outreach stay in one highlighted operating dock."
-              )}
+              Four office modules stay prioritized before the workspace grid so visitors understand the flow first.
             </p>
+          </div>
+
+          <div style={styles.telemetryVisual} aria-hidden="true">
+            <span style={{ ...styles.telemetryBar, height: "52%" }} />
+            <span style={{ ...styles.telemetryBar, height: "72%" }} />
+            <span style={{ ...styles.telemetryBar, height: "44%" }} />
+            <span style={{ ...styles.telemetryBar, height: "86%" }} />
+            <span style={{ ...styles.telemetryBar, height: "64%" }} />
           </div>
 
           <div style={styles.stationTelemetryStrip} aria-label="SaaS station telemetry">
@@ -94,8 +107,8 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 key={module.slug}
                 style={{
                   ...styles.stationModuleCard,
-                  borderColor: `${module.accent}66`,
-                  boxShadow: `0 18px 48px ${module.accent}18`,
+                  borderColor: `${module.accent}7a`,
+                  boxShadow: `0 18px 48px ${module.accent}20, inset 0 1px 0 rgba(255,255,255,.08)`,
                 }}
               >
                 <span style={{ ...styles.stationModuleAccent, background: module.accent }} />
@@ -106,6 +119,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                   {fallbackText(t(module.titleKey), module.title)}
                 </strong>
                 <span style={styles.stationModuleSignal}>{module.signal}</span>
+                <span style={styles.stationModuleTelemetry}>{module.telemetry}</span>
               </Link>
             ))}
           </div>
@@ -119,173 +133,198 @@ const styles: Record<string, React.CSSProperties> = {
   heroSection: {
     position: "relative",
     backgroundColor: "#030305",
-    padding: "160px 24px 100px 24px",
+    padding: "150px 24px 86px 24px",
     overflow: "hidden",
-    textAlign: "center",
-    borderBottom: "1px solid rgba(255, 255, 255, 0.03)"
+    borderBottom: "1px solid rgba(245, 197, 66, 0.13)",
   },
   innerContainer: {
     position: "relative",
     zIndex: 10,
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 0.92fr) minmax(360px, 1.08fr)",
+    gap: "34px",
+    alignItems: "center",
     maxWidth: "1180px",
-    margin: "0 auto"
+    margin: "0 auto",
   },
-  heroCopy: {
-    textAlign: "left"
-  },
+  heroCopy: { textAlign: "left" },
   glowLeft: {
     position: "absolute",
-    top: "-10%",
-    left: "15%",
-    width: "400px",
-    height: "400px",
-    background: "radial-gradient(circle, rgba(223, 168, 55, 0.05) 0%, transparent 70%)",
-    pointerEvents: "none"
+    top: "-14%",
+    left: "8%",
+    width: "520px",
+    height: "520px",
+    background: "radial-gradient(circle, rgba(245, 197, 66, 0.16) 0%, transparent 68%)",
+    pointerEvents: "none",
   },
   glowRight: {
     position: "absolute",
-    top: "10%",
-    right: "15%",
-    width: "500px",
-    height: "500px",
-    background: "radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 60%)",
-    pointerEvents: "none"
+    top: "8%",
+    right: "8%",
+    width: "620px",
+    height: "620px",
+    background: "radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 62%)",
+    pointerEvents: "none",
   },
   gridOverlay: {
     position: "absolute",
     inset: 0,
-    backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px)",
-    backgroundSize: "40px 40px",
-    maskImage: "radial-gradient(circle at 50% 40%, black, transparent 70%)",
-    WebkitMaskImage: "radial-gradient(circle at 50% 40%, black, transparent 70%)",
-    pointerEvents: "none"
+    backgroundImage:
+      "linear-gradient(rgba(245, 197, 66, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 197, 66, 0.035) 1px, transparent 1px)",
+    backgroundSize: "44px 44px",
+    maskImage: "radial-gradient(circle at 50% 38%, black, transparent 74%)",
+    WebkitMaskImage: "radial-gradient(circle at 50% 38%, black, transparent 74%)",
+    pointerEvents: "none",
   },
   badgeContainer: {
     display: "inline-flex",
     alignItems: "center",
-    gap: "8px",
-    backgroundColor: "rgba(223, 168, 55, 0.05)",
-    border: "1px solid rgba(223, 168, 55, 0.15)",
-    padding: "6px 16px",
-    borderRadius: "9999px",
-    marginBottom: "32px"
+    gap: "10px",
+    border: "1px solid rgba(245, 197, 66, 0.32)",
+    background: "rgba(245, 197, 66, 0.08)",
+    borderRadius: "999px",
+    padding: "8px 13px",
+    marginBottom: "22px",
   },
   badgePulse: {
-    width: "6px",
-    height: "6px",
-    backgroundColor: "#dfa837",
-    borderRadius: "50%",
-    boxShadow: "0 0 10px #dfa837"
+    width: "8px",
+    height: "8px",
+    borderRadius: "999px",
+    background: "#f5c542",
+    boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)",
   },
   badgeText: {
-    color: "#dfa837",
-    fontSize: "12px",
-    fontWeight: 600,
-    letterSpacing: "0.05em",
-    textTransform: "uppercase"
+    color: "#f5c542",
+    fontSize: "11px",
+    fontWeight: 900,
+    letterSpacing: "0.14em",
+    textTransform: "uppercase",
   },
   mainHeading: {
-    fontSize: "56px",
-    fontWeight: 700,
-    color: "#ffffff",
-    lineHeight: "1.1",
-    letterSpacing: "-0.03em",
-    margin: 0
-  },
-  gradientText: {
-    background: "linear-gradient(135deg, #ffffff 30%, #dfa837 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent"
+    color: "#fff",
+    fontSize: "clamp(48px, 7vw, 92px)",
+    lineHeight: 0.92,
+    letterSpacing: "-0.075em",
+    margin: "0 0 22px",
+    textShadow: "0 0 44px rgba(245, 197, 66, 0.18)",
   },
   subtext: {
-    fontSize: "17px",
-    color: "#94a3b8",
-    lineHeight: "1.6",
-    maxWidth: "640px",
-    margin: "24px 0 0"
+    maxWidth: "650px",
+    color: "rgba(255, 255, 255, 0.72)",
+    fontSize: "18px",
+    lineHeight: 1.62,
+    margin: "0 0 24px",
   },
-  actionGroup: {
+  trialPanel: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     gap: "16px",
-    marginTop: "40px"
+    maxWidth: "560px",
+    border: "1px solid rgba(245, 197, 66, 0.34)",
+    borderRadius: "22px",
+    background: "linear-gradient(135deg, rgba(245, 197, 66, 0.14), rgba(255,255,255,0.04))",
+    padding: "16px 18px",
+    boxShadow: "0 18px 54px rgba(245, 197, 66, 0.1)",
   },
+  trialEyebrow: {
+    display: "block",
+    color: "#f5c542",
+    fontSize: "11px",
+    fontWeight: 900,
+    letterSpacing: "0.16em",
+    textTransform: "uppercase",
+  },
+  trialTitle: { display: "block", color: "#fff", fontSize: "18px", marginTop: "3px" },
+  trialDots: { display: "flex", gap: "8px" },
+  trialDot: { width: "13px", height: "13px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 16px rgba(245,197,66,.55)" },
+  trialList: {
+    display: "grid",
+    gap: "8px",
+    listStyle: "none",
+    margin: "16px 0 26px",
+    padding: 0,
+    maxWidth: "560px",
+  },
+  trialListItem: {
+    color: "rgba(255,255,255,.78)",
+    border: "1px solid rgba(255,255,255,.08)",
+    borderRadius: "999px",
+    padding: "9px 13px",
+    background: "rgba(255,255,255,.035)",
+    fontSize: "14px",
+  },
+  actionGroup: { display: "flex", flexWrap: "wrap", gap: "12px" },
   brandButtonPrimary: {
-    backgroundColor: "#dfa837",
-    color: "#030305",
-    border: "none",
-    padding: "14px 28px",
-    borderRadius: "8px",
-    fontWeight: 600,
-    fontSize: "15px",
-    cursor: "pointer",
-    boxShadow: "0 4px 20px rgba(223, 168, 55, 0.15)",
-    transition: "transform 0.2s ease"
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "999px",
+    background: "linear-gradient(135deg, #f5c542, #dfa837)",
+    color: "#11151c",
+    minHeight: "48px",
+    padding: "0 22px",
+    fontWeight: 900,
+    boxShadow: "0 18px 42px rgba(245, 197, 66, 0.24)",
   },
   brandButtonSecondary: {
-    backgroundColor: "rgba(255, 255, 255, 0.02)",
-    color: "#f1f5f9",
-    border: "1px solid rgba(255, 255, 255, 0.08)",
-    padding: "14px 28px",
-    borderRadius: "8px",
-    fontWeight: 500,
-    fontSize: "15px",
-    textDecoration: "none",
-    display: "flex",
+    display: "inline-flex",
     alignItems: "center",
-    gap: "6px",
-    transition: "background 0.2s ease"
+    justifyContent: "center",
+    gap: "8px",
+    border: "1px solid rgba(255,255,255,.14)",
+    borderRadius: "999px",
+    background: "rgba(255,255,255,.06)",
+    color: "#fff",
+    minHeight: "48px",
+    padding: "0 20px",
+    fontWeight: 900,
   },
-  arrow: {
-    transition: "transform 0.2s ease"
-  },
+  arrow: { color: "#f5c542" },
   stationPanel: {
     position: "relative",
-    minHeight: "560px",
     overflow: "hidden",
-    padding: "30px",
+    border: "1px solid rgba(245, 197, 66, 0.34)",
     borderRadius: "34px",
-    border: "1px solid rgba(223, 168, 55, 0.55)",
-    background: "linear-gradient(145deg, rgba(43, 30, 8, 0.92), rgba(8, 10, 16, 0.95) 58%, rgba(223, 168, 55, 0.14))",
-    boxShadow: "0 0 0 1px rgba(245, 197, 66, 0.14), 0 0 68px rgba(223, 168, 55, 0.24), 0 34px 100px rgba(0, 0, 0, 0.46)",
-    textAlign: "left"
+    background: "linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(4, 7, 13, 0.94))",
+    padding: "26px",
+    boxShadow: "0 26px 90px rgba(0,0,0,.42), 0 0 64px rgba(245, 197, 66, 0.13)",
   },
   stationGlow: {
     position: "absolute",
-    inset: "-28% -22% auto auto",
-    width: "360px",
-    height: "360px",
-    borderRadius: "999px",
-    background: "radial-gradient(circle, rgba(245, 197, 66, 0.34), transparent 68%)",
-    filter: "blur(6px)",
-    pointerEvents: "none"
+    inset: "-35% -20% auto auto",
+    width: "320px",
+    height: "320px",
+    background: "radial-gradient(circle, rgba(245,197,66,.2), transparent 65%)",
   },
-  stationHeader: {
-    position: "relative",
-    zIndex: 1
-  },
+  stationHeader: { position: "relative", zIndex: 1, marginBottom: "18px" },
   stationEyebrow: {
     color: "#f5c542",
     fontSize: "11px",
-    fontWeight: 800,
-    letterSpacing: "0.2em",
-    textTransform: "uppercase"
+    fontWeight: 900,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
   },
-  stationTitle: {
-    color: "#fff7db",
-    fontSize: "clamp(34px, 4.5vw, 58px)",
-    lineHeight: 0.96,
-    letterSpacing: "-0.055em",
-    margin: "12px 0 16px",
-    maxWidth: "520px"
+  stationTitle: { color: "#fff", fontSize: "clamp(28px, 4vw, 44px)", lineHeight: 1, margin: "9px 0" },
+  stationSubtitle: { color: "rgba(255,255,255,.66)", fontSize: "15px", lineHeight: 1.55, margin: 0 },
+  telemetryVisual: {
+    position: "relative",
+    zIndex: 1,
+    display: "flex",
+    alignItems: "end",
+    gap: "10px",
+    height: "92px",
+    border: "1px solid rgba(255,255,255,.08)",
+    borderRadius: "20px",
+    padding: "14px",
+    marginBottom: "14px",
+    background: "linear-gradient(135deg, rgba(255,255,255,.05), rgba(245,197,66,.055))",
   },
-  stationSubtitle: {
-    color: "rgba(255, 248, 220, 0.76)",
-    fontSize: "15px",
-    lineHeight: 1.55,
-    margin: 0,
-    maxWidth: "520px"
+  telemetryBar: {
+    flex: 1,
+    borderRadius: "999px 999px 6px 6px",
+    background: "linear-gradient(180deg, #f5c542, rgba(245,197,66,.16))",
+    boxShadow: "0 0 20px rgba(245,197,66,.3)",
   },
   stationTelemetryStrip: {
     position: "relative",
@@ -293,68 +332,29 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    margin: "26px 0",
-    padding: "13px 16px",
-    border: "1px solid rgba(245, 197, 66, 0.28)",
+    border: "1px solid rgba(245, 197, 66, 0.22)",
     borderRadius: "999px",
-    background: "linear-gradient(90deg, rgba(245, 197, 66, 0.18), rgba(255, 255, 255, 0.045), rgba(245, 197, 66, 0.10))",
-    color: "rgba(255, 248, 220, 0.82)",
-    fontSize: "12px",
-    letterSpacing: "0.08em",
-    textTransform: "uppercase"
+    padding: "10px 14px",
+    color: "rgba(255,255,255,.72)",
+    background: "rgba(245,197,66,.07)",
+    marginBottom: "16px",
   },
-  telemetryDot: {
-    width: "8px",
-    height: "8px",
-    borderRadius: "999px",
-    background: "#f5c542",
-    boxShadow: "0 0 18px #f5c542",
-    flexShrink: 0
-  },
-  stationGrid: {
-    position: "relative",
-    zIndex: 1,
-    display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-    gap: "14px"
-  },
+  telemetryDot: { width: "9px", height: "9px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 18px #34d399" },
+  stationGrid: { position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "14px" },
   stationModuleCard: {
     position: "relative",
-    minHeight: "148px",
+    minHeight: "158px",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
-    overflow: "hidden",
-    padding: "18px",
-    border: "1px solid rgba(245, 197, 66, 0.34)",
+    gap: "8px",
+    border: "1px solid rgba(255,255,255,.12)",
     borderRadius: "22px",
-    background: "linear-gradient(180deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.045))",
-    color: "#ffffff",
-    textDecoration: "none",
-    backdropFilter: "blur(16px)",
-    WebkitBackdropFilter: "blur(16px)"
+    padding: "18px",
+    background: "rgba(3, 7, 18, 0.68)",
   },
-  stationModuleAccent: {
-    position: "absolute",
-    inset: "0 auto auto 0",
-    width: "100%",
-    height: "4px"
-  },
-  stationModuleTopline: {
-    color: "rgba(255, 255, 255, 0.62)",
-    fontSize: "10px",
-    fontWeight: 800,
-    letterSpacing: "0.13em",
-    textTransform: "uppercase"
-  },
-  stationModuleTitle: {
-    color: "#fff",
-    fontSize: "21px",
-    letterSpacing: "-0.035em"
-  },
-  stationModuleSignal: {
-    color: "#f8d777",
-    fontSize: "12px",
-    fontWeight: 800
-  }
+  stationModuleAccent: { width: "34px", height: "4px", borderRadius: "999px" },
+  stationModuleTopline: { color: "rgba(255,255,255,.55)", fontSize: "10px", fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase" },
+  stationModuleTitle: { color: "#fff", fontSize: "20px" },
+  stationModuleSignal: { color: "#f5c542", fontSize: "13px", fontWeight: 900, marginTop: "auto" },
+  stationModuleTelemetry: { color: "rgba(255,255,255,.52)", fontSize: "12px" },
 };
