@@ -1,22 +1,22 @@
 "use client";
 
-import React from 'react';
-import useTranslation from '@/components/i18n/useTranslation';
+import { useI18n } from "@/components/i18n/I18nProvider";
 
-export default function LanguageToggle() {
-  const { lang, setLang } = useTranslation();
+const LOCALES = ["en", "es", "pt", "pl", "ru"] as const;
+
+export function LanguageToggle() {
+  const { lang, setLang } = useI18n();
 
   return (
-    <div style={styles.toggleContainer}>
-      {['en', 'es', 'pt', 'pl', 'ru'].map((loc) => (
+    <div className="sb-language-toggle" role="group" aria-label="Language selector">
+      {LOCALES.map((loc) => (
         <button
           key={loc}
-          onClick={() => setLang(loc as any)}
+          type="button"
+          onClick={() => setLang(loc)}
           disabled={lang === loc}
-          style={{
-            ...styles.toggleBtn,
-            ...(lang === loc ? styles.active : {})
-          }}
+          className={lang === loc ? "is-active" : ""}
+          aria-pressed={lang === loc}
         >
           {loc.toUpperCase()}
         </button>
@@ -25,30 +25,4 @@ export default function LanguageToggle() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  toggleContainer: {
-    display: 'flex',
-    gap: '6px',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    padding: '4px',
-    borderRadius: '8px',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    width: 'fit-content'
-  },
-  toggleBtn: {
-    backgroundColor: 'transparent',
-    color: '#94a3b8',
-    border: 'none',
-    padding: '6px 12px',
-    borderRadius: '6px',
-    fontSize: '12px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
-  },
-  active: {
-    backgroundColor: '#dfa837',
-    color: '#030305',
-    cursor: 'default'
-  }
-};
+export default LanguageToggle;
