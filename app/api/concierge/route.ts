@@ -1,10 +1,11 @@
 // → app/api/concierge/route.ts   (NEW endpoint — coexists with /api/chat)
 //
-// Rule-based, deterministic partner matcher. NO AI call here by design:
-// predictable > random. The AI intent layer comes later and only needs to
-// replace detectIntent() — the scorer and URL resolution stay the same.
+// Concierge AI gateway. When SIGNALBOOST_LIVE_AI_URL is configured, requests
+// are forwarded to the signalboost-live backend AI service with Calendar,
+// Spreadsheets, Reviews, and Outreach module capabilities. If that service is
+// unavailable, this route falls back to deterministic partner/module routing.
 //
-// Flow:  message -> detectIntent() -> scorePartner() over partners.json
+// Fallback flow: message -> detectIntent() -> scorePartner() over partners.json
 //        -> top matches -> server-resolved geo affiliate URLs
 //
 // Request (either shape works, so the existing widget is drop-in compatible):
@@ -18,7 +19,8 @@
 //     intent: { categories: string[] },          // detected category_keys
 //     reply: string,                              // deterministic, localized
 //     partners: PartnerCard[],                    // widget-compatible
-//     matches: (PartnerCard & { score: number })[]// same list + scores (debug)
+//     matches: (PartnerCard & { score: number })[],// same list + scores (debug)
+//     moduleActions: ModuleAction[]
 //   }
 
 import { NextRequest, NextResponse } from "next/server";
@@ -27,6 +29,10 @@ import { NextRequest, NextResponse } from "next/server";
 import partnersData from "../../../public/partners.json";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
+
+const LIVE_AI_URL = process.env.SIGNALBOOST_LIVE_AI_URL || "";
+const LIVE_AI_KEY = process.env.SIGNALBOOST_LIVE_API_KEY || "";
 
 type Lang = "en" | "pt" | "es" | "pl" | "ru";
 const LANGS: Lang[] = ["en", "pt", "es", "pl", "ru"];
@@ -52,6 +58,12 @@ interface PartnerCard {
   category: string;
   description: string;
   url: string;
+}
+
+interface ModuleAction {
+  id: string;
+  label: string;
+  href: string;
 }
 
 /* ---- Load partners (tolerate [] or { partners: [] }) ---------------------- */
@@ -190,11 +202,87 @@ const REPLY: Record<Lang, { found: string; none: string }> = {
   },
 };
 
+
+/* ---- SaaS module routing -------------------------------------------------- */
+const MODULES: { id: string; label: string; href: string; terms: string[] }[] = [
+  {
+    id: "calendar",
+    label: "Open Calendar",
+    href: "/calendar",
+    terms: ["calendar", "schedule", "booking", "appointment", "meeting", "agenda", "calendario", "cita", "reunion"],
+  },
+  {
+    id: "spreadsheets",
+    label: "Open Spreadsheets",
+    href: "/spreadsheets",
+    terms: ["spreadsheet", "spreadsheets", "sheet", "csv", "rows", "data", "forecast", "hoja", "hojas", "datos"],
+  },
+  {
+    id: "reviews",
+    label: "Open Reviews",
+    href: "/reviews",
+    terms: ["review", "reviews", "rating", "reputation", "feedback", "testimonial", "reseña", "reseñas", "opiniones"],
+  },
+  {
+    id: "outreach",
+    label: "Open Outreach",
+    href: "/outreach",
+    terms: ["outreach", "email", "campaign", "sequence", "lead", "follow-up", "prospect", "alcance", "campaña"],
+  },
+];
+
+function detectModules(message: string): ModuleAction[] {
+  const lower = message.toLowerCase();
+  return MODULES.filter((module) => module.terms.some((term) => hasTerm(lower, term))).map(
+    ({ id, label, href }) => ({ id, label, href })
+  );
+}
+
+async function forwardToLiveConcierge(req: NextRequest, body: { message?: unknown; messages?: unknown; lang?: unknown }) {
+  if (!LIVE_AI_URL) return null;
+
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    "x-signalboost-source": "signalboost-next",
+  };
+  if (LIVE_AI_KEY) headers.Authorization = `Bearer ${LIVE_AI_KEY}`;
+
+  const region = regionFromRequest(req);
+  const liveRes = await fetch(LIVE_AI_URL, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      ...body,
+      region,
+      modules: MODULES.map(({ terms, ...module }) => module),
+      capabilities: ["calendar", "spreadsheets", "reviews", "outreach"],
+    }),
+  });
+
+  if (!liveRes.ok) {
+    const detail = await liveRes.text().catch(() => "");
+    console.error("signalboost-live concierge error", liveRes.status, detail.slice(0, 600));
+    return null;
+  }
+
+  const data = await liveRes.json();
+  if (!data || typeof data !== "object") return null;
+  const query = messageFromBody(body);
+  const moduleActions = Array.isArray((data as { moduleActions?: unknown }).moduleActions)
+    ? (data as { moduleActions: ModuleAction[] }).moduleActions
+    : detectModules(query);
+
+  return {
+    ...(data as Record<string, unknown>),
+    moduleActions,
+  };
+}
+
 /* ---- Core handler --------------------------------------------------------- */
 function handle(message: string, lang: Lang, region: string) {
   const query = (message || "").trim();
   if (!query) {
-    return { query: "", intent: { categories: [] }, reply: REPLY[lang].none, partners: [], matches: [] };
+    return { query: "", intent: { categories: [] }, reply: REPLY[lang].none, partners: [], matches: [], moduleActions: [] };
   }
 
   const intents = detectIntent(query);
@@ -216,12 +304,18 @@ function handle(message: string, lang: Lang, region: string) {
 
   const partners: PartnerCard[] = matches.map(({ score, ...card }) => card);
 
+  const moduleActions = detectModules(query);
+  const moduleReply = moduleActions.length
+    ? ` I can also route this through ${moduleActions.map((action) => action.label.replace("Open ", "")).join(", ")}.`
+    : "";
+
   return {
     query,
     intent: { categories: intents },
-    reply: matches.length ? REPLY[lang].found : REPLY[lang].none,
+    reply: `${matches.length ? REPLY[lang].found : REPLY[lang].none}${moduleReply}`,
     partners,
     matches,
+    moduleActions,
   };
 }
 
@@ -248,6 +342,12 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
+  const live = await forwardToLiveConcierge(req, body).catch((error) => {
+    console.error("signalboost-live concierge request failed", error);
+    return null;
+  });
+  if (live) return NextResponse.json(live);
+
   const lang = resolveLang(body.lang);
   const region = regionFromRequest(req);
   return NextResponse.json(handle(messageFromBody(body), lang, region));

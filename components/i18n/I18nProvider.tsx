@@ -37,7 +37,7 @@ function normalizeLang(value: string | null) {
   return 'en'
 }
 
-function getInitialLanguage() {
+async function getInitialLanguage() {
   if (typeof window === 'undefined') {
     return 'en'
   }
@@ -46,6 +46,15 @@ function getInitialLanguage() {
     localStorage.getItem('site-language')
   if (saved && SUPPORTED_LANGS.includes(saved)) {
     return saved
+  }
+  try {
+    const geo = await fetch('/api/geo', { cache: 'no-store' })
+    if (geo.ok) {
+      const data = await geo.json()
+      if (data?.country === 'MX') return 'es'
+    }
+  } catch {
+    // Geo detection is a progressive enhancement; fall back to browser language.
   }
   const browser =
     navigator.languages?.[0] ||
@@ -72,7 +81,7 @@ export function I18nProvider({
 
   useEffect(() => {
     async function init() {
-      const initialLang = getInitialLanguage()
+      const initialLang = await getInitialLanguage()
       const loaded = await loadLanguage(initialLang)
       setLangState(initialLang)
       setDict(loaded)
