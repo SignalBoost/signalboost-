@@ -1,4 +1,5 @@
 import HomeApp from '../components/home/HomeApp';
+import PartnerMarquee from '../components/PartnerMarquee';
 import '../app/home-next/home.css';
 
 export const metadata = {
@@ -11,6 +12,7 @@ export default function Page() {
     <main className="sb-home">
       <div className="sb-home-bg" />
       <HomeApp />
+      <PartnerMarquee />
     </main>
   );
 }
