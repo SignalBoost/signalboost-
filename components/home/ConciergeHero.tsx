@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import { saasModules } from "@/lib/saas-modules";
+import { stationWorkflows, workflowConnectorSecurityNotes } from "@/lib/station-workflows";
 import useTranslation from "@/components/i18n/useTranslation";
 
 interface ConciergeHeroProps {
@@ -17,14 +17,36 @@ function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
 
-const stationModuleSlugs = ["calendar", "spreadsheets", "reviews", "outreach"];
-const trialTasks = ["Generate an outreach brief", "Clean up a spreadsheet", "Schedule a review follow-up"];
+const trialTasks = ["Payroll close check", "Campaign launch brief", "Contract risk scan"];
+const telemetryDeck = [
+  { label: "Sync health", value: "98.2%", detail: "QuickBooks + HubSpot nominal" },
+  { label: "Overdue invoices", value: "7", detail: "PayPal, Stripe, Square watch" },
+  { label: "Reply rate", value: "31%", detail: "Gmail/Outlook campaigns" },
+];
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const { t } = useTranslation();
-  const stationModules = stationModuleSlugs
-    .map((slug) => saasModules.find((module) => module.slug === slug))
-    .filter((module): module is NonNullable<typeof module> => Boolean(module));
+  const [taskCounts, setTaskCounts] = useState<Record<string, number>>({});
+  const [activeWorkflow, setActiveWorkflow] = useState(stationWorkflows[0]);
+  const [showTrialModal, setShowTrialModal] = useState(false);
+
+  const connectorList = useMemo(
+    () => Array.from(new Set(stationWorkflows.flatMap((workflow) => workflow.connectors))),
+    []
+  );
+
+  const runWorkflowTask = (workflowSlug: string) => {
+    const workflow = stationWorkflows.find((candidate) => candidate.slug === workflowSlug) || stationWorkflows[0];
+    const nextCount = (taskCounts[workflowSlug] || 0) + 1;
+    setActiveWorkflow(workflow);
+
+    if (nextCount > workflow.trialLimit) {
+      setShowTrialModal(true);
+      return;
+    }
+
+    setTaskCounts((current) => ({ ...current, [workflowSlug]: nextCount }));
+  };
 
   return (
     <section style={styles.heroSection} aria-labelledby="saas-station-hero-title">
@@ -44,14 +66,14 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </h1>
 
           <p style={styles.subtext}>
-            Calendar, Spreadsheets, Reviews, and Outreach are now the command center for office work —
-            with glowing telemetry, guided task flow, and affiliate credibility signals under one cockpit.
+            Concierge now guides payroll, close, growth, weekly reporting, tax, and contract workflows with
+            connector-backed telemetry, secure Supabase token vaulting, and cockpit-style trial gates.
           </p>
 
           <div style={styles.trialPanel} aria-label="Trial gating">
             <div>
               <span style={styles.trialEyebrow}>Trial gate</span>
-              <strong style={styles.trialTitle}>3 free tasks, then sign-up required</strong>
+              <strong style={styles.trialTitle}>3 free tasks per workflow, then sign-up required</strong>
             </div>
             <div style={styles.trialDots} aria-hidden="true">
               <span style={styles.trialDot} />
@@ -66,65 +88,109 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             ))}
           </ul>
 
+          <div style={styles.conciergePanel}>
+            <span style={styles.conciergeAvatar}>✦</span>
+            <span>
+              <strong style={styles.conciergeTitle}>Concierge guide</strong>
+              <span style={styles.conciergeCopy}>{activeWorkflow.conciergePrompt}</span>
+            </span>
+          </div>
+
           <div style={styles.actionGroup}>
-            <Link href="/assistant" style={styles.brandButtonPrimary}>
-              Start free task run
-            </Link>
+            <button type="button" style={styles.brandButtonPrimary} onClick={() => runWorkflowTask(activeWorkflow.slug)}>
+              Run Concierge workflow
+            </button>
             <Link href="/pricing" style={styles.brandButtonSecondary}>
-              Unlock station access <span style={styles.arrow}>→</span>
+              Upgrade to Pro <span style={styles.arrow}>→</span>
             </Link>
           </div>
         </div>
 
-        <aside className="saas-station-panel" style={styles.stationPanel} aria-label="SaaS station telemetry cockpit">
+        <aside className="saas-station-panel" style={styles.stationPanel} aria-label="Your SaaS Stationary Station workflow cockpit">
           <div style={styles.stationGlow} aria-hidden="true" />
           <div style={styles.stationHeader}>
-            <span style={styles.stationEyebrow}>Live office telemetry</span>
-            <h2 style={styles.stationTitle}>Stationary SaaS Station</h2>
+            <span style={styles.stationEyebrow}>Live SMB telemetry</span>
+            <h2 style={styles.stationTitle}>Your SaaS Stationary Station</h2>
             <p style={styles.stationSubtitle}>
-              Four office modules stay prioritized before the workspace grid so visitors understand the flow first.
+              Workflow modules sit in the hero panel with connector health, trial usage, and Concierge next steps.
             </p>
           </div>
 
-          <div style={styles.telemetryVisual} aria-hidden="true">
-            <span style={{ ...styles.telemetryBar, height: "52%" }} />
-            <span style={{ ...styles.telemetryBar, height: "72%" }} />
-            <span style={{ ...styles.telemetryBar, height: "44%" }} />
-            <span style={{ ...styles.telemetryBar, height: "86%" }} />
-            <span style={{ ...styles.telemetryBar, height: "64%" }} />
+          <div style={styles.telemetryVisual} aria-label="Station telemetry visuals">
+            {telemetryDeck.map((item, index) => (
+              <div key={item.label} style={styles.telemetryCard}>
+                <span style={styles.telemetryCardLabel}>{item.label}</span>
+                <strong style={styles.telemetryCardValue}>{item.value}</strong>
+                <span style={styles.telemetryCardDetail}>{item.detail}</span>
+                <span style={{ ...styles.telemetryBeam, width: `${62 + index * 14}%` }} />
+              </div>
+            ))}
           </div>
 
           <div style={styles.stationTelemetryStrip} aria-label="SaaS station telemetry">
             <span style={styles.telemetryDot} />
             <strong>98.2%</strong>
-            <span>{fallbackText(t("homepage.saasStationTelemetry"), "module sync health")}</span>
+            <span>{fallbackText(t("homepage.saasStationTelemetry"), "sync health across finance, CRM, email, payments, and contracts")}</span>
+          </div>
+
+          <div style={styles.connectorRail} aria-label="Connected SMB apps">
+            {connectorList.map((connector) => (
+              <span key={connector} style={styles.connectorPill}>{connector}</span>
+            ))}
           </div>
 
           <div style={styles.stationGrid}>
-            {stationModules.map((module) => (
-              <Link
-                href={module.href}
-                key={module.slug}
-                style={{
-                  ...styles.stationModuleCard,
-                  borderColor: `${module.accent}7a`,
-                  boxShadow: `0 18px 48px ${module.accent}20, inset 0 1px 0 rgba(255,255,255,.08)`,
-                }}
-              >
-                <span style={{ ...styles.stationModuleAccent, background: module.accent }} />
-                <span style={styles.stationModuleTopline}>
-                  {fallbackText(t(module.eyebrowKey), module.eyebrow)}
-                </span>
-                <strong style={styles.stationModuleTitle}>
-                  {fallbackText(t(module.titleKey), module.title)}
-                </strong>
-                <span style={styles.stationModuleSignal}>{module.signal}</span>
-                <span style={styles.stationModuleTelemetry}>{module.telemetry}</span>
-              </Link>
+            {stationWorkflows.map((workflow) => {
+              const used = taskCounts[workflow.slug] || 0;
+              return (
+                <button
+                  type="button"
+                  key={workflow.slug}
+                  style={{
+                    ...styles.stationModuleCard,
+                    borderColor: `${workflow.accent}7a`,
+                    boxShadow: `0 18px 48px ${workflow.accent}20, inset 0 1px 0 rgba(255,255,255,.08)`,
+                  }}
+                  onClick={() => runWorkflowTask(workflow.slug)}
+                  aria-label={`Run ${workflow.title} workflow task`}
+                >
+                  <span style={{ ...styles.stationModuleAccent, background: workflow.accent }} />
+                  <span style={styles.stationModuleTopline}>{workflow.connectors.join(" + ")}</span>
+                  <strong style={styles.stationModuleTitle}>{workflow.title}</strong>
+                  <span style={styles.stationModuleSignal}>{workflow.metric}</span>
+                  <span style={styles.stationModuleTelemetry}>{workflow.telemetry}</span>
+                  <span style={styles.trialCounter}>{used}/{workflow.trialLimit} free tasks used</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={styles.securityPanel} aria-label="Secure Supabase token storage">
+            <strong style={styles.securityTitle}>Secure connector vault</strong>
+            {workflowConnectorSecurityNotes.map((note) => (
+              <span key={note} style={styles.securityNote}>{note}</span>
             ))}
           </div>
         </aside>
       </div>
+
+      {showTrialModal && (
+        <div style={styles.modalBackdrop} role="dialog" aria-modal="true" aria-labelledby="station-trial-title">
+          <div style={styles.modalCard}>
+            <span style={styles.modalEyebrow}>Concierge says</span>
+            <h3 id="station-trial-title" style={styles.modalTitle}>Sign up to continue using your Stationary SaaS Station</h3>
+            <p style={styles.modalCopy}>
+              You have used the 3 free {activeWorkflow.title} tasks. Create an account to keep Concierge guidance,
+              connector sync, and telemetry history active.
+            </p>
+            <div style={styles.modalActions}>
+              <Link href="/auth/login" style={styles.brandButtonPrimary}>Sign Up</Link>
+              <Link href="/pricing" style={styles.brandButtonSecondary}>Upgrade to Pro</Link>
+              <button type="button" style={styles.modalDismiss} onClick={() => setShowTrialModal(false)}>Not now</button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -141,10 +207,10 @@ const styles: Record<string, React.CSSProperties> = {
     position: "relative",
     zIndex: 10,
     display: "grid",
-    gridTemplateColumns: "minmax(0, 0.92fr) minmax(360px, 1.08fr)",
+    gridTemplateColumns: "minmax(0, 0.86fr) minmax(420px, 1.14fr)",
     gap: "34px",
     alignItems: "center",
-    maxWidth: "1180px",
+    maxWidth: "1240px",
     margin: "0 auto",
   },
   heroCopy: { textAlign: "left" },
@@ -242,7 +308,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "grid",
     gap: "8px",
     listStyle: "none",
-    margin: "16px 0 26px",
+    margin: "16px 0 16px",
     padding: 0,
     maxWidth: "560px",
   },
@@ -254,18 +320,45 @@ const styles: Record<string, React.CSSProperties> = {
     background: "rgba(255,255,255,.035)",
     fontSize: "14px",
   },
+  conciergePanel: {
+    display: "flex",
+    gap: "13px",
+    maxWidth: "560px",
+    border: "1px solid rgba(34,211,238,.22)",
+    borderRadius: "20px",
+    background: "rgba(34,211,238,.065)",
+    padding: "14px 16px",
+    marginBottom: "24px",
+  },
+  conciergeAvatar: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "34px",
+    height: "34px",
+    borderRadius: "999px",
+    color: "#06121a",
+    background: "linear-gradient(135deg, #22d3ee, #f5c542)",
+    boxShadow: "0 0 24px rgba(34,211,238,.35)",
+    flexShrink: 0,
+  },
+  conciergeTitle: { display: "block", color: "#fff", fontSize: "14px" },
+  conciergeCopy: { display: "block", color: "rgba(255,255,255,.66)", fontSize: "13px", lineHeight: 1.5, marginTop: "3px" },
   actionGroup: { display: "flex", flexWrap: "wrap", gap: "12px" },
   brandButtonPrimary: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: "999px",
+    border: 0,
     background: "linear-gradient(135deg, #f5c542, #dfa837)",
     color: "#11151c",
     minHeight: "48px",
     padding: "0 22px",
     fontWeight: 900,
     boxShadow: "0 18px 42px rgba(245, 197, 66, 0.24)",
+    cursor: "pointer",
+    textDecoration: "none",
   },
   brandButtonSecondary: {
     display: "inline-flex",
@@ -279,6 +372,7 @@ const styles: Record<string, React.CSSProperties> = {
     minHeight: "48px",
     padding: "0 20px",
     fontWeight: 900,
+    textDecoration: "none",
   },
   arrow: { color: "#f5c542" },
   stationPanel: {
@@ -310,22 +404,24 @@ const styles: Record<string, React.CSSProperties> = {
   telemetryVisual: {
     position: "relative",
     zIndex: 1,
-    display: "flex",
-    alignItems: "end",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
     gap: "10px",
-    height: "92px",
-    border: "1px solid rgba(255,255,255,.08)",
-    borderRadius: "20px",
-    padding: "14px",
     marginBottom: "14px",
-    background: "linear-gradient(135deg, rgba(255,255,255,.05), rgba(245,197,66,.055))",
   },
-  telemetryBar: {
-    flex: 1,
-    borderRadius: "999px 999px 6px 6px",
-    background: "linear-gradient(180deg, #f5c542, rgba(245,197,66,.16))",
-    boxShadow: "0 0 20px rgba(245,197,66,.3)",
+  telemetryCard: {
+    position: "relative",
+    overflow: "hidden",
+    border: "1px solid rgba(245,197,66,.18)",
+    borderRadius: "18px",
+    padding: "13px",
+    background: "linear-gradient(135deg, rgba(255,255,255,.055), rgba(245,197,66,.045))",
+    minHeight: "112px",
   },
+  telemetryCardLabel: { display: "block", color: "rgba(255,255,255,.52)", fontSize: "10px", fontWeight: 900, letterSpacing: ".11em", textTransform: "uppercase" },
+  telemetryCardValue: { display: "block", color: "#fff", fontSize: "26px", marginTop: "8px" },
+  telemetryCardDetail: { display: "block", color: "rgba(255,255,255,.58)", fontSize: "11px", lineHeight: 1.35, marginTop: "4px" },
+  telemetryBeam: { position: "absolute", left: "13px", bottom: "11px", height: "4px", borderRadius: "999px", background: "linear-gradient(90deg, #f5c542, rgba(34,211,238,.65))", boxShadow: "0 0 18px rgba(245,197,66,.45)" },
   stationTelemetryStrip: {
     position: "relative",
     zIndex: 1,
@@ -337,24 +433,39 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "10px 14px",
     color: "rgba(255,255,255,.72)",
     background: "rgba(245,197,66,.07)",
-    marginBottom: "16px",
+    marginBottom: "12px",
   },
   telemetryDot: { width: "9px", height: "9px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 18px #34d399" },
-  stationGrid: { position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "14px" },
+  connectorRail: { position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" },
+  connectorPill: { color: "#f5c542", fontSize: "11px", fontWeight: 900, border: "1px solid rgba(245,197,66,.2)", borderRadius: "999px", padding: "7px 10px", background: "rgba(245,197,66,.055)" },
+  stationGrid: { position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "14px" },
   stationModuleCard: {
     position: "relative",
-    minHeight: "158px",
+    minHeight: "178px",
     display: "flex",
     flexDirection: "column",
     gap: "8px",
+    textAlign: "left",
     border: "1px solid rgba(255,255,255,.12)",
     borderRadius: "22px",
     padding: "18px",
     background: "rgba(3, 7, 18, 0.68)",
+    cursor: "pointer",
   },
   stationModuleAccent: { width: "34px", height: "4px", borderRadius: "999px" },
   stationModuleTopline: { color: "rgba(255,255,255,.55)", fontSize: "10px", fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase" },
   stationModuleTitle: { color: "#fff", fontSize: "20px" },
   stationModuleSignal: { color: "#f5c542", fontSize: "13px", fontWeight: 900, marginTop: "auto" },
   stationModuleTelemetry: { color: "rgba(255,255,255,.52)", fontSize: "12px" },
+  trialCounter: { color: "rgba(34,211,238,.86)", fontSize: "11px", fontWeight: 900 },
+  securityPanel: { position: "relative", zIndex: 1, display: "grid", gap: "6px", border: "1px solid rgba(34,211,238,.16)", borderRadius: "18px", padding: "14px", marginTop: "14px", background: "rgba(34,211,238,.045)" },
+  securityTitle: { color: "#fff", fontSize: "13px" },
+  securityNote: { color: "rgba(255,255,255,.56)", fontSize: "11px", lineHeight: 1.35 },
+  modalBackdrop: { position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", background: "rgba(0,0,0,.72)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" },
+  modalCard: { width: "min(520px, 100%)", border: "1px solid rgba(245,197,66,.38)", borderRadius: "28px", padding: "28px", background: "linear-gradient(180deg, rgba(17,24,39,.98), rgba(3,7,18,.98))", boxShadow: "0 0 80px rgba(245,197,66,.2)" },
+  modalEyebrow: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" },
+  modalTitle: { color: "#fff", fontSize: "30px", lineHeight: 1.05, margin: "10px 0 12px" },
+  modalCopy: { color: "rgba(255,255,255,.68)", fontSize: "15px", lineHeight: 1.6, margin: "0 0 22px" },
+  modalActions: { display: "flex", flexWrap: "wrap", gap: "10px" },
+  modalDismiss: { border: 0, background: "transparent", color: "rgba(255,255,255,.62)", fontWeight: 900, padding: "0 8px", cursor: "pointer" },
 };
