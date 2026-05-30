@@ -3,11 +3,14 @@ import type { Provider } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
 const OAUTH_PROVIDERS = ["google", "facebook", "github"] as const;
+
+// signalboost (marketing) is now fully independent from saas: it has its own
+// Supabase project and only ever returns to its own callback. saas runs from a
+// separate repo + its own Supabase project, so there is NO cross-domain
+// branching here anymore.
 const MAIN_AUTH_CALLBACK = "https://signalboostapp.com/auth/callback";
-const SAAS_AUTH_CALLBACK = "https://saas.signalboostapp.com/auth/callback";
 
 type OAuthProvider = (typeof OAUTH_PROVIDERS)[number];
-
 type RouteContext = {
   params: Promise<{ provider: string }>;
 };
@@ -26,17 +29,14 @@ function isSafeRelativePath(value: string | null) {
 
 function getCallbackUrl(request: Request) {
   const requestUrl = new URL(request.url);
-  const flow = requestUrl.searchParams.get("flow");
-  const isSaasFlow = flow === "saas" || requestUrl.hostname === "saas.signalboostapp.com";
-  const callbackUrl = new URL(
-    isLocalHost(requestUrl.hostname)
-      ? `${requestUrl.origin}/auth/callback`
-      : isSaasFlow
-        ? SAAS_AUTH_CALLBACK
-        : MAIN_AUTH_CALLBACK
-  );
-  const next = requestUrl.searchParams.get("next");
 
+  // Local dev returns to the running origin; production always returns to the
+  // signalboost callback. No saas branching.
+  const callbackUrl = new URL(
+    isLocalHost(requestUrl.hostname) ? `${requestUrl.origin}/auth/callback` : MAIN_AUTH_CALLBACK
+  );
+
+  const next = requestUrl.searchParams.get("next");
   if (isSafeRelativePath(next)) {
     callbackUrl.searchParams.set("next", next as string);
   }
