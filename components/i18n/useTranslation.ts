@@ -1,26 +1,22 @@
-// File: components/i18n/useTranslation.ts
-'use client'
-import { useI18n } from '@/components/i18n/I18nProvider'
+import { useRouter } from 'next/router';
+import en from '../../locales/en.json';
+import es from '../../locales/es.json';
+
+const translations: Record<string, any> = { en, es };
 
 export function useTranslation() {
-  const { dict, lang, setLang } = useI18n()
+  const { locale, asPath, push } = useRouter();
+  const currentLocale = locale || 'en';
+  const tData = translations[currentLocale] || translations['en'];
 
-  function t(key: string, fallback?: string): string {
-    // Walk the dot-path (e.g. "audio.title") through the nested dict,
-    // instead of looking for a flat key literally named "audio.title".
-    const value = key
-      .split('.')
-      .reduce<any>((acc, part) => {
-        if (acc && typeof acc === 'object' && part in acc) {
-          return acc[part]
-        }
-        return undefined
-      }, dict)
+  // Função de busca de chaves aninhadas por notação de ponto (ex: 'navbar.reviews')
+  const t = (keyString: string): string => {
+    return keyString.split('.').reduce((obj, key) => obj?.[key], tData) || keyString;
+  };
 
-    if (typeof value === 'string') return value
-    if (fallback) return fallback
-    return key
-  }
+  const changeLanguage = (newLocale: string) => {
+    push(asPath, asPath, { locale: newLocale });
+  };
 
-  return { t, lang, setLang, dict }
+  return { t, currentLocale, changeLanguage };
 }
