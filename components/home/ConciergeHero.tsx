@@ -19,6 +19,7 @@ type HeroPartner = {
   name: string;
   logo?: string;
   description?: string;
+  category_key?: string;
   category_label?: string;
   category?: string;
   network?: string;
@@ -29,21 +30,42 @@ function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
 
-// Featured partners are now the hero's star. Falls back to the first few
-// partners if none are flagged featured, so the hero is never empty.
+// ---- Hero partners: the star of the page ----------------------------------
+// Pick ONE featured partner per category so the hero shows the breadth of the
+// network (flights, hotels, eSIM, tours, transfers, car rentals...) instead of
+// six lookalikes. Falls back gracefully if there aren't 6 distinct categories.
 const partnerList = partners as HeroPartner[];
-const heroPartners = (() => {
-  const featured = partnerList.filter((partner) => partner.featured);
-  return (featured.length ? featured : partnerList).slice(0, 6);
+const heroPartners: HeroPartner[] = (() => {
+  const pool = partnerList.filter((p) => p.featured);
+  const source = pool.length ? pool : partnerList;
+  const seenCategory = new Set<string>();
+  const picked: HeroPartner[] = [];
+
+  for (const partner of source) {
+    const key = partner.category_key || partner.category || partner.id;
+    if (!seenCategory.has(key)) {
+      seenCategory.add(key);
+      picked.push(partner);
+    }
+    if (picked.length >= 6) break;
+  }
+  if (picked.length < 6) {
+    for (const partner of source) {
+      if (!picked.includes(partner)) picked.push(partner);
+      if (picked.length >= 6) break;
+    }
+  }
+  return picked.slice(0, 6);
 })();
 
-// Quick-links that used to be scattered in navigation now live inside the
-// SaaS Station feature card. These route to the existing app pages.
+// ---- Station tools: the pages that now live inside the SaaS Station --------
 const stationTools = [
-  { label: "Calendar", href: "/calendar" },
-  { label: "Spreadsheets", href: "/spreadsheets" },
-  { label: "Reviews", href: "/reviews" },
-  { label: "Outreach", href: "/outreach" },
+  { label: "Calendar", note: "Schedule & sync", href: "/calendar" },
+  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets" },
+  { label: "Reviews", note: "Reputation", href: "/reviews" },
+  { label: "Outreach", note: "Campaigns", href: "/outreach" },
+  { label: "Promote", note: "Marketing", href: "/promote" },
+  { label: "Personal Assistant", note: "AI tasks", href: "/assistant" },
 ];
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
@@ -57,8 +79,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     []
   );
 
-  // Keep the station card compact: show a handful of workflows inline.
-  const compactWorkflows = stationWorkflows.slice(0, 4);
+  const compactWorkflows = stationWorkflows.slice(0, 3);
   const visibleConnectors = connectorList.slice(0, 6);
   const extraConnectors = connectorList.length - visibleConnectors.length;
 
@@ -96,7 +117,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           <p style={styles.subtext}>
             {fallbackText(
               t("homepage.partnerHeroSubtitle"),
-              "Vetted, affiliate-backed partners across flights, hotels, eSIM, tours, marketplace and more — with credibility badges you can trust and one Concierge to guide you."
+              "Vetted, affiliate-backed partners across flights, hotels, eSIM, tours, car rentals and more — with credibility badges you can trust and one Concierge to guide you."
             )}
           </p>
 
@@ -127,8 +148,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                   <span style={styles.partnerCardName}>{partner.name}</span>
                   <span style={styles.partnerCardMeta}>
                     {partner.category_label || partner.category || t("partner.category")}
-                    {" • "}
-                    {partner.network || t("partner.platform")}
                   </span>
                 </span>
               </Link>
@@ -164,9 +183,19 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
             </h2>
             <p style={styles.stationSubtitle}>
-              Run payroll, close, growth, reporting, tax and contracts from one gold cockpit — with connector-backed
-              telemetry and trial gates.
+              Your traditional office tasks — calendar, spreadsheets, reviews, outreach, promotion and assistant — in one
+              gold cockpit with connector-backed telemetry.
             </p>
+          </div>
+
+          {/* Calendar / Spreadsheets / Reviews / Outreach — the station's core tools */}
+          <div style={styles.toolsGrid} aria-label="Station tools">
+            {stationTools.map((tool) => (
+              <Link key={tool.href} href={tool.href} style={styles.toolTile}>
+                <span style={styles.toolTileLabel}>{tool.label}</span>
+                <span style={styles.toolTileNote}>{tool.note}</span>
+              </Link>
+            ))}
           </div>
 
           <div style={styles.stationTelemetryStrip} aria-label="SaaS station telemetry">
@@ -184,15 +213,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             {extraConnectors > 0 && <span style={styles.connectorPill}>+{extraConnectors}</span>}
           </div>
 
-          {/* Calendar / Spreadsheets / Reviews / Outreach now live here */}
-          <div style={styles.toolsRow} aria-label="Station tools">
-            {stationTools.map((tool) => (
-              <Link key={tool.href} href={tool.href} style={styles.toolChip}>
-                {tool.label}
-              </Link>
-            ))}
-          </div>
-
           <div style={styles.compactWorkflowList} aria-label="Station workflows">
             {compactWorkflows.map((workflow) => {
               const used = taskCounts[workflow.slug] || 0;
@@ -200,10 +220,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 <button
                   type="button"
                   key={workflow.slug}
-                  style={{
-                    ...styles.compactWorkflowRow,
-                    borderColor: `${workflow.accent}55`,
-                  }}
+                  style={{ ...styles.compactWorkflowRow, borderColor: `${workflow.accent}55` }}
                   onClick={() => runWorkflowTask(workflow.slug)}
                   aria-label={`Run ${workflow.title} workflow task`}
                 >
@@ -246,8 +263,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       )}
 
       {/* Scoped responsive grid. Defined here (not in home.css) so the hero
-          collapses cleanly on tablets/phones without inline styles defeating
-          the media query. Partners dominate; the station is the smaller half. */}
+          collapses cleanly on tablets/phones. Partners dominate; station is smaller. */}
       <style>{`
         .sb-hero-shell{
           position:relative;
@@ -319,20 +335,8 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "8px 13px",
     marginBottom: "22px",
   },
-  badgePulse: {
-    width: "8px",
-    height: "8px",
-    borderRadius: "999px",
-    background: "#f5c542",
-    boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)",
-  },
-  badgeText: {
-    color: "#f5c542",
-    fontSize: "11px",
-    fontWeight: 900,
-    letterSpacing: "0.14em",
-    textTransform: "uppercase",
-  },
+  badgePulse: { width: "8px", height: "8px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)" },
+  badgeText: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" },
 
   /* ---- hero headline / copy ---- */
   mainHeading: {
@@ -343,21 +347,10 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "0 0 22px",
     textShadow: "0 0 44px rgba(245, 197, 66, 0.18)",
   },
-  subtext: {
-    maxWidth: "560px",
-    color: "rgba(255, 255, 255, 0.72)",
-    fontSize: "18px",
-    lineHeight: 1.62,
-    margin: "0 0 30px",
-  },
+  subtext: { maxWidth: "560px", color: "rgba(255, 255, 255, 0.72)", fontSize: "18px", lineHeight: 1.62, margin: "0 0 30px" },
 
   /* ---- featured partner grid (the star) ---- */
-  partnerGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "12px",
-    marginBottom: "30px",
-  },
+  partnerGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px", marginBottom: "30px" },
   partnerCard: {
     display: "flex",
     alignItems: "center",
@@ -387,16 +380,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   partnerLogoImg: { width: "30px", height: "30px", objectFit: "contain" },
   partnerCardCopy: { display: "flex", flexDirection: "column", minWidth: 0 },
-  partnerCardName: { color: "#f8fafc", fontSize: "15px", fontWeight: 800 },
-  partnerCardMeta: {
-    color: "#dfa837",
-    fontSize: "11px",
-    fontWeight: 800,
-    marginTop: "3px",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
+  partnerCardName: { color: "#f8fafc", fontSize: "15px", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  partnerCardMeta: { color: "#dfa837", fontSize: "11px", fontWeight: 800, marginTop: "3px" },
 
   /* ---- CTAs ---- */
   actionGroup: { display: "flex", flexWrap: "wrap", gap: "12px", marginBottom: "18px" },
@@ -430,14 +415,7 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
   },
   arrow: { color: "#f5c542" },
-  trustLine: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "9px",
-    color: "rgba(255,255,255,.55)",
-    fontSize: "12.5px",
-    fontWeight: 600,
-  },
+  trustLine: { display: "inline-flex", alignItems: "center", gap: "9px", color: "rgba(255,255,255,.55)", fontSize: "12.5px", fontWeight: 600 },
   trustDot: { width: "8px", height: "8px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 14px #34d399" },
 
   /* ---- compact SaaS station feature card ---- */
@@ -453,24 +431,28 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "22px",
     boxShadow: "0 22px 70px rgba(0,0,0,.42), 0 0 48px rgba(245, 197, 66, 0.1)",
   },
-  stationGlow: {
-    position: "absolute",
-    inset: "-35% -20% auto auto",
-    width: "260px",
-    height: "260px",
-    background: "radial-gradient(circle, rgba(245,197,66,.18), transparent 65%)",
-    pointerEvents: "none",
-  },
-  stationHeader: { position: "relative", zIndex: 1, marginBottom: "14px" },
-  stationEyebrow: {
-    color: "#f5c542",
-    fontSize: "10px",
-    fontWeight: 900,
-    letterSpacing: "0.18em",
-    textTransform: "uppercase",
-  },
+  stationGlow: { position: "absolute", inset: "-35% -20% auto auto", width: "260px", height: "260px", background: "radial-gradient(circle, rgba(245,197,66,.18), transparent 65%)", pointerEvents: "none" },
+  stationHeader: { position: "relative", zIndex: 1, marginBottom: "16px" },
+  stationEyebrow: { color: "#f5c542", fontSize: "10px", fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase" },
   stationTitle: { color: "#fff", fontSize: "clamp(20px, 2.4vw, 26px)", lineHeight: 1.05, margin: "8px 0 6px" },
   stationSubtitle: { color: "rgba(255,255,255,.62)", fontSize: "13px", lineHeight: 1.5, margin: 0 },
+
+  /* ---- station tools (Calendar / Spreadsheets / Reviews / Outreach) ---- */
+  toolsGrid: { position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9px", marginBottom: "16px" },
+  toolTile: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "2px",
+    textDecoration: "none",
+    border: "1px solid rgba(245,197,66,.18)",
+    borderRadius: "14px",
+    padding: "13px",
+    background: "rgba(245,197,66,.05)",
+    minHeight: "64px",
+    justifyContent: "center",
+  },
+  toolTileLabel: { color: "#fff", fontSize: "14px", fontWeight: 800 },
+  toolTileNote: { color: "rgba(255,255,255,.55)", fontSize: "11px", fontWeight: 600 },
 
   stationTelemetryStrip: {
     position: "relative",
@@ -483,36 +465,14 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "9px 13px",
     color: "rgba(255,255,255,.72)",
     background: "rgba(245,197,66,.07)",
-    margin: "14px 0 12px",
+    marginBottom: "12px",
     fontSize: "13px",
   },
   telemetryDot: { width: "9px", height: "9px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 18px #34d399", flexShrink: 0 },
   telemetryStripText: { color: "rgba(255,255,255,.6)", fontSize: "12px", lineHeight: 1.35 },
 
   connectorRail: { position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: "7px", marginBottom: "14px" },
-  connectorPill: {
-    color: "#f5c542",
-    fontSize: "10.5px",
-    fontWeight: 900,
-    border: "1px solid rgba(245,197,66,.2)",
-    borderRadius: "999px",
-    padding: "6px 9px",
-    background: "rgba(245,197,66,.055)",
-  },
-
-  toolsRow: { position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "14px" },
-  toolChip: {
-    display: "inline-flex",
-    alignItems: "center",
-    color: "#fff",
-    fontSize: "12px",
-    fontWeight: 800,
-    textDecoration: "none",
-    border: "1px solid rgba(255,255,255,.12)",
-    borderRadius: "10px",
-    padding: "8px 11px",
-    background: "rgba(255,255,255,.05)",
-  },
+  connectorPill: { color: "#f5c542", fontSize: "10.5px", fontWeight: 900, border: "1px solid rgba(245,197,66,.2)", borderRadius: "999px", padding: "6px 9px", background: "rgba(245,197,66,.055)" },
 
   compactWorkflowList: { position: "relative", zIndex: 1, display: "grid", gap: "8px", marginBottom: "16px" },
   compactWorkflowRow: {
