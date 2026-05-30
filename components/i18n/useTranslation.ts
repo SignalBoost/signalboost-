@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import en from '../../locales/en.json';
 import es from '../../locales/es.json';
 import pt from '../../locales/pt.json';
@@ -7,18 +9,33 @@ import pl from '../../locales/pl.json';
 import ru from '../../locales/ru.json';
 
 const translations: Record<string, any> = { en, es, pt, pl, ru };
-type LocaleType = 'en' | 'es' | 'pt' | 'pl' | 'ru';
+const supportedLocales = ['en', 'es', 'pt', 'pl', 'ru'] as const;
+type LocaleType = (typeof supportedLocales)[number];
+
+function isLocale(locale: string | null | undefined): locale is LocaleType {
+  return supportedLocales.includes(locale as LocaleType);
+}
+
+function localeFromPathname(pathname: string | null): LocaleType | null {
+  const firstSegment = pathname?.split('/').filter(Boolean)[0];
+  return isLocale(firstSegment) ? firstSegment : null;
+}
 
 function useTranslation() {
-  const router = useRouter();
+  const pathname = usePathname();
   const [lang, setLangState] = useState<LocaleType>('en');
 
-  // Sincroniza o estado interno com a detecção automática por IP/Geolocalização do Next.js
+  // Sincroniza o estado interno com o locale salvo ou com o prefixo ativo da URL.
   useEffect(() => {
-    if (router?.locale && ['en', 'es', 'pt', 'pl', 'ru'].includes(router.locale)) {
-      setLangState(router.locale as LocaleType);
+    const pathLocale = localeFromPathname(pathname);
+    const savedLocale = window.localStorage.getItem('signalboost-locale');
+
+    if (pathLocale) {
+      setLangState(pathLocale);
+    } else if (isLocale(savedLocale)) {
+      setLangState(savedLocale);
     }
-  }, [router?.locale]);
+  }, [pathname]);
 
   function t(key: string): string {
     const currentDict = translations[lang] || translations['en'];
@@ -28,9 +45,7 @@ function useTranslation() {
 
   function setLang(newLocale: LocaleType) {
     setLangState(newLocale);
-    if (router?.push) {
-      router.push(router.asPath, router.asPath, { locale: newLocale });
-    }
+    window.localStorage.setItem('signalboost-locale', newLocale);
   }
 
   return { t, lang, setLang };
