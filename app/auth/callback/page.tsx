@@ -3,6 +3,23 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+const MARKETING_HOME = "/marketplace";
+const SAAS_HOME = "/dashboard";
+
+function isSafeRelativePath(value: string | null) {
+  return Boolean(value?.startsWith("/") && !value.startsWith("//"));
+}
+
+function getPostAuthDestination(params: URLSearchParams) {
+  const next = params.get("next");
+
+  if (isSafeRelativePath(next)) {
+    return next as string;
+  }
+
+  return window.location.hostname === "saas.signalboostapp.com" ? SAAS_HOME : MARKETING_HOME;
+}
+
 export default function AuthCallbackPage() {
   const [error, setError] = useState<string | null>(null);
 
@@ -13,6 +30,7 @@ export default function AuthCallbackPage() {
       const supabase = createClient();
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
+      const destination = getPostAuthDestination(params);
 
       if (code) {
         const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
@@ -35,7 +53,7 @@ export default function AuthCallbackPage() {
       }
 
       if (data.session) {
-        window.location.replace("/dashboard");
+        window.location.replace(destination);
         return;
       }
 
