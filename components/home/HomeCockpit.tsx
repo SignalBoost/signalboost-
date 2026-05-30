@@ -1,5 +1,5 @@
-import HomeCockpit from '../components/home/HomeCockpit';
+"use client";
 
-export default function Page() {
-  return <HomeCockpit />;
+export default function HomeCockpitPlaceholder() {
+  return null;
 }
