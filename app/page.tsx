@@ -1,5 +1,5 @@
 import HomeApp from '../components/home/HomeApp';
-import './home-next/home.css';
+import '../app/home-next/home.css';
 
 export const metadata = {
   title: 'SignalBoost — Your AI-guided digital shopping mall',
