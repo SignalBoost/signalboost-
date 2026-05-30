@@ -1,4 +1,5 @@
-import SaasModulePage from "@/components/SaasModulePage";
+import Concierge from "@/components/Concierge";
+import { CockpitShell } from "@/components/CockpitShell";
 
 export const metadata = {
   title: "SignalBoost — Personal Assistant",
@@ -6,5 +7,13 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <SaasModulePage slug="assistant" />;
+  return (
+    <CockpitShell
+      eyebrow="Concierge AI core"
+      title="Persistent Concierge Intelligence"
+      subtitle="A shared-agency assistant that understands, routes, refines, and keeps SaaS workflows moving."
+    >
+      <Concierge />
+    </CockpitShell>
+  );
 }
