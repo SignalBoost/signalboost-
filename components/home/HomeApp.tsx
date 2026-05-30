@@ -1,9 +1,23 @@
 "use client";
 
-export {}; // Garante o escopo isolado do módulo para o parser do TypeScript
+export {};
 
 import React, { useState } from "react";
 import ConciergeHero from "./ConciergeHero";
+
+import enTranslations from "../../locales/en.json";
+import esTranslations from "../../locales/es.json";
+import plTranslations from "../../locales/pl.json";
+import ptTranslations from "../../locales/pt.json";
+import ruTranslations from "../../locales/ru.json";
+
+const localesMap: Record<string, any> = {
+  en: enTranslations,
+  es: esTranslations,
+  pl: plTranslations,
+  pt: ptTranslations,
+  ru: ruTranslations,
+};
 
 interface HomeAppProps {
   lang?: string;
@@ -13,27 +27,31 @@ interface HomeAppProps {
 export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
   const [activeChip, setActiveChip] = useState("all");
 
-  // SISTEMA ROBUSTO DE DETECÇÃO DE LOCALE
-  // 1. Pega o parâmetro lang, remove espaços e transforma em minúsculo.
-  // 2. Se vier estilo "es-MX", quebra no hífen e pega apenas o "es".
-  // 3. Se não vier nada do Next.js, tenta ler o idioma nativo do navegador do usuário em tempo de execução.
-  const getNormalizedLang = (): string => {
+  const getActiveLocale = (): string => {
     if (lang) {
       return lang.toLowerCase().split("-")[0].split("_")[0].trim();
     }
     if (typeof window !== "undefined" && window.navigator) {
-      const browserLang = window.navigator.language || (window.navigator as any).userLanguage;
+      const browserLang = window.navigator.language;
       if (browserLang) {
         return browserLang.toLowerCase().split("-")[0].split("_")[0].trim();
       }
     }
-    return "en"; // Fallback final de segurança
+    return "en";
   };
 
-  const currentLang = getNormalizedLang();
-  
-  // Seleciona a tradução correspondente ou cai no inglês se for um idioma não mapeado
-  const t = translations[currentLang] || translations["en"];
+  const currentLang = getActiveLocale();
+  const t = localesMap[currentLang] || localesMap["en"];
+
+  const contextualFallback: Record<string, any> = {
+    en: { trustBadge: "TRUST INFRASTRUCTURE", brandsTitle: "Brands you already trust", howTitle: "Execution Pipeline", popularTitle: "Popular now", step1: "State your operational payload parameters", step2: "Querying infrastructure and distributed networks", step3: "Compare optimization tiers", step4: "Execute node connectivity" },
+    es: { trustBadge: "INFRAESTRUCTURA DE CONFIANZA", brandsTitle: "Con marcas en las que ya confías", howTitle: "Cómo funciona", popularTitle: "Popular ahora", step1: "Dime qué necesitas", step2: "Busco socios confiables para tu región", step3: "Compara tus options", step4: "Elige y continúa" },
+    pt: { trustBadge: "INFRAESTRUTURA DE CONFIANÇA", brandsTitle: "Com marcas que você já confia", howTitle: "Como funciona", popularTitle: "Popular agora", step1: "Diga-me o que você precisa", step2: "Procuro parceiros confiáveis para sua região", step3: "Compare suas opções", step4: "Escolha e continue" },
+    pl: { trustBadge: "INFRASTRUKTURA ZAUFANIA", brandsTitle: "Z markami, którym już ufasz", howTitle: "Jak to działa", popularTitle: "Popularne teraz", step1: "Powiedz mi, czego potrzebujesz", step2: "Szukam zaufanych partnerów dla Twojego regionu", step3: "Porównaj swoje opcje", step4: "Wybierz i kontynuuj" },
+    ru: { trustBadge: "НАДЕЖНАЯ ИНФРАСТРУКТУРА", brandsTitle: "С брендами, которым вы доверяете", howTitle: "Как это работает", popularTitle: "Популярно сейчас", step1: "Скажите мне, что вам нужно", step2: "Я найду надежных партнеров для вашего региона", step3: "Сравните доступные варианты", step4: "Выберите оптимальный и продолжайте" }
+  };
+
+  const localCtx = contextualFallback[currentLang] || contextualFallback["en"];
 
   return (
     <main style={styles.mainCanvas}>
@@ -46,136 +64,75 @@ export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
       />
 
       <div style={styles.contentWrapper}>
-        {/* Seção: Vitrine de Marcas */}
         <div style={styles.sectionHeaderZone}>
-          <span style={styles.sectionBadge}>{t.trustBadge}</span>
-          <h2 style={styles.sectionHeading}>{t.brandsTitle}</h2>
+          <span style={styles.sectionBadge}>
+            {t.partner?.featured ? t.partner.featured.toUpperCase() : localCtx.trustBadge}
+          </span>
+          <h2 style={styles.sectionHeading}>
+            {localCtx.brandsTitle} ({t.partner?.allOffers || "Offers"})
+          </h2>
         </div>
 
-        {/* Grid Glassmorphism de Marcas */}
         <div style={styles.brandGrid}>
           {brandPartners.map((partner, idx) => (
             <div key={idx} style={styles.glassCard}>
               <div style={styles.iconBox}>{partner.icon}</div>
-              <span style={styles.brandName}>{partner.name}</span>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                <span style={styles.brandName}>{partner.name}</span>
+                <span style={{ fontSize: "11px", color: "#64748b" }}>
+                  {t.partner?.tier || "Tier"} • {t.partner?.travel || "Travel"}
+                </span>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Seção: Cómo funciona */}
         <div style={styles.sectionSpacing}>
           <div style={styles.sectionHeaderZone}>
-            <span style={styles.sectionBadge}>{t.pipelineBadge}</span>
-            <h2 style={styles.sectionHeading}>{t.howItWorksTitle}</h2>
+            <span style={styles.sectionBadge}>
+              {t.partner?.category ? t.partner.category.toUpperCase() : "PIPELINE"}
+            </span>
+            <h2 style={styles.sectionHeading}>{localCtx.howTitle}</h2>
           </div>
           
           <div style={styles.stepsGrid}>
-            {t.steps.map((step: { num: string; text: string }, idx: number) => (
-              <div key={idx} style={styles.stepGlassCard}>
-                <div style={styles.stepNumberBadge}>{step.num}</div>
-                <p style={styles.stepBodyText}>{step.text}</p>
-              </div>
-            ))}
+            <div style={styles.stepGlassCard}>
+              <div style={styles.stepNumberBadge}>01</div>
+              <p style={styles.stepBodyText}>{localCtx.step1}</p>
+            </div>
+            <div style={styles.stepGlassCard}>
+              <div style={styles.stepNumberBadge}>02</div>
+              <p style={styles.stepBodyText}>{localCtx.step2}</p>
+            </div>
+            <div style={styles.stepGlassCard}>
+              <div style={styles.stepNumberBadge}>03</div>
+              <p style={styles.stepBodyText}>{localCtx.step3}</p>
+            </div>
+            <div style={styles.stepGlassCard}>
+              <div style={styles.stepNumberBadge}>04</div>
+              <p style={styles.stepBodyText}>{localCtx.step4}</p>
+            </div>
           </div>
         </div>
 
-        {/* Seção: Popular ahora */}
         <div style={styles.sectionSpacing}>
           <div style={styles.sectionHeaderZone}>
-            <span style={styles.sectionBadge}>{t.trendingBadge}</span>
-            <h2 style={styles.sectionHeading}>{t.popularTitle}</h2>
+            <span style={styles.sectionBadge}>
+              {t.language?.label ? t.language.label.toUpperCase() : "REGIONS"}
+            </span>
+            <h2 style={styles.sectionHeading}>{localCtx.popularTitle}</h2>
           </div>
           
           <div style={styles.pillFlexContainer}>
-            <button style={styles.interactivePill}>{t.pills.vuelos}</button>
-            <button style={styles.interactivePill}>{t.pills.esim}</button>
-            <button style={styles.interactivePill}>{t.pills.hoteles}</button>
+            <button style={styles.interactivePill}>✈️ {t.partner?.travel || "Travel"}</button>
+            <button style={styles.interactivePill}>🌐 {t.language?.local || "Local"}</button>
+            <button style={styles.interactivePill}>⚙️ {t.partner?.network || "Network"}</button>
           </div>
         </div>
-
       </div>
     </main>
   );
 }
-
-// Dicionário de Idiomas Oficiais (en, es, pt, pl, ru)
-const translations: Record<string, any> = {
-  en: {
-    trustBadge: "Trust Infrastructure",
-    brandsTitle: "With brands you already trust",
-    pipelineBadge: "Execution Pipeline",
-    howItWorksTitle: "How it works",
-    trendingBadge: "Trending Parameters",
-    popularTitle: "Popular now",
-    pills: { vuelos: "✈️ Flights to Europe", esim: "🌐 eSIM for travel", hoteles: "🏨 Hotels in Brazil" },
-    steps: [
-      { num: "01", text: "Tell me what you need" },
-      { num: "02", text: "I search for reliable partners for your region" },
-      { num: "03", text: "Compare your options" },
-      { num: "04", text: "Choose and continue" }
-    ]
-  },
-  es: {
-    trustBadge: "Infraestructura de Confianza",
-    brandsTitle: "Con marcas en las que ya confías",
-    pipelineBadge: "Pipeline de Ejecución",
-    howItWorksTitle: "Cómo funciona",
-    trendingBadge: "Parámetros de Tendencia",
-    popularTitle: "Popular ahora",
-    pills: { vuelos: "✈️ Vuelos a Europa", esim: "🌐 eSIM para viajar", hoteles: "🏨 Hoteles en Brasil" },
-    steps: [
-      { num: "01", text: "Dime qué necesitas" },
-      { num: "02", text: "Busco socios confiables para tu región" },
-      { num: "03", text: "Compara tus opciones" },
-      { num: "04", text: "Elige y continúa" }
-    ]
-  },
-  pt: {
-    trustBadge: "Infraestrutura de Confiança",
-    brandsTitle: "Com marcas que você já confia",
-    pipelineBadge: "Pipeline de Execução",
-    howItWorksTitle: "Como funciona",
-    trendingBadge: "Parâmetros em Alta",
-    popularTitle: "Popular agora",
-    pills: { vuelos: "✈️ Voos para Europa", esim: "🌐 eSIM para viajar", hoteles: "🏨 Hotéis no Brasil" },
-    steps: [
-      { num: "01", text: "Diga-me o que você precisa" },
-      { num: "02", text: "Procuro parceiros confiáveis para sua região" },
-      { num: "03", text: "Compare suas opções" },
-      { num: "04", text: "Escolha e continue" }
-    ]
-  },
-  pl: {
-    trustBadge: "Infrastruktura Zaufania",
-    brandsTitle: "Z markami, którym już ufasz",
-    pipelineBadge: "Rurociąg Wykonawczy",
-    howItWorksTitle: "Jak to działa",
-    trendingBadge: "Trendy Parametry",
-    popularTitle: "Popularne teraz",
-    pills: { vuelos: "✈️ Loty do Europy", esim: "🌐 Karta eSIM na podróż", hoteles: "🏨 Hotele w Brazylii" },
-    steps: [
-      { num: "01", text: "Powiedz mi, czego potrzebujesz" },
-      { num: "02", text: "Szukam zaufanych partnerów dla Twojego regionu" },
-      { num: "03", text: "Porównaj swoje opcje" },
-      { num: "04", text: "Wybierz i kontynuuj" }
-    ]
-  },
-  ru: {
-    trustBadge: "Надежная инфраструктура",
-    brandsTitle: "С брендами, которым вы доверяете",
-    pipelineBadge: "Конвейер исполнения",
-    howItWorksTitle: "Как это работает",
-    trendingBadge: "Популярные параметры",
-    popularTitle: "Популярно сейчас",
-    pills: { vuelos: "✈️ Рейсы в Европу", esim: "🌐 eSIM для путешествий", hoteles: "🏨 Отели в Бразилии" },
-    steps: [
-      { num: "01", text: "Скажите мне, что вам нужно" },
-      { num: "02", text: "Я найду надежных партнеров для вашего региона" },
-      { num: "03", text: "Сравните доступные варианты" },
-      { num: "04", text: "Выберите оптимальный и продолжайте" }
-    ]
-  }
-};
 
 const brandPartners = [
   { name: "WeGoTrip", icon: "🗺️" },
@@ -202,9 +159,9 @@ const styles: Record<string, React.CSSProperties> = {
   sectionBadge: { fontSize: "11px", fontWeight: 600, color: "#dfa837", letterSpacing: "0.2em", textTransform: "uppercase" },
   sectionHeading: { fontSize: "28px", fontWeight: 600, color: "#ffffff", marginTop: "8px", letterSpacing: "-0.02em" },
   sectionSpacing: { marginTop: "120px" },
-  brandGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" },
+  brandGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "16px" },
   glassCard: { display: "flex", alignItems: "center", gap: "14px", backgroundColor: "rgba(15, 15, 22, 0.65)", border: "1px solid rgba(255, 255, 255, 0.05)", borderRadius: "14px", padding: "16px 20px", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)" },
-  iconBox: { backgroundColor: "rgba(255, 255, 255, 0.03)", width: "36px", height: "36px", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255, 255, 255, 0.05)" },
+  iconBox: { backgroundColor: "rgba(255, 255, 255, 0.03)", width: "36px", height: "36px", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255, 255, 255, 0.05)", flexShrink: 0 },
   brandName: { fontSize: "14px", fontWeight: 500, color: "#e2e8f0" },
   stepsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" },
   stepGlassCard: { backgroundColor: "rgba(10, 10, 15, 0.4)", border: "1px solid rgba(255, 255, 255, 0.04)", padding: "32px 24px", borderRadius: "16px", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", textAlign: "left" },
