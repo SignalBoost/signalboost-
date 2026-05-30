@@ -5,8 +5,8 @@ export {}; // Garante o escopo isolado do módulo para o parser do TypeScript
 import React, { useState } from "react";
 import ConciergeHero from "./ConciergeHero";
 
-// Importação do hook oficial de tradução do seu projeto
-import useTranslation from "@/components/i18n/useTranslation";
+// Correção: Importando como Named Export utilizando as chaves { useTranslation }
+import { useTranslation } from "@/components/i18n/useTranslation";
 
 interface HomeAppProps {
   lang?: string;
@@ -16,7 +16,7 @@ interface HomeAppProps {
 export default function HomeApp({ lang, regionName = "" }: HomeAppProps) {
   const [activeChip, setActiveChip] = useState("all");
   
-  // Consome as traduções reativas gerenciadas pelo next.config.js e middleware
+  // Consome as traduções reativas gerenciadas pelo seu sistema de i18n
   const { t } = useTranslation();
 
   return (
