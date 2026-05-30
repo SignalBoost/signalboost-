@@ -1,16 +1,10 @@
-import HomeApp from '../components/home/HomeApp';
-import '../app/home-next/home.css';
+import UnifiedHome from "@/components/UnifiedHome";
 
 export const metadata = {
-  title: 'SignalBoost — Your AI-guided digital shopping mall',
-  description: 'Tell our AI concierge what you need and get matched to trusted partners serving your region.',
+  title: "SignalBoost — Your AI-powered business hub + marketplace",
+  description: "Unified marketplace and SaaS tools for partners, business owners, and customers.",
 };
 
 export default function Page() {
-  return (
-    <main className="sb-home">
-      <div className="sb-home-bg" />
-      <HomeApp />
-    </main>
-  );
+  return <UnifiedHome />;
 }
