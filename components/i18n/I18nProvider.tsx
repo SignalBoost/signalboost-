@@ -47,6 +47,7 @@ function persistLanguage(value: string, manual = false) {
   writeLanguageCookie(LEGACY_LANGUAGE_COOKIE, value)
   if (manual) {
     localStorage.setItem('signalboost_language_prompted', '1')
+    localStorage.setItem(MANUAL_LANGUAGE_COOKIE, '1')
     writeLanguageCookie(MANUAL_LANGUAGE_COOKIE, '1')
   }
 }
@@ -74,7 +75,11 @@ async function getInitialLanguage() {
     localStorage.getItem(LEGACY_LANGUAGE_COOKIE) ||
     readCookie(LANGUAGE_COOKIE) ||
     readCookie(LEGACY_LANGUAGE_COOKIE)
-  if (isSupportedLocale(saved)) {
+  const hasManualLanguage =
+    localStorage.getItem(MANUAL_LANGUAGE_COOKIE) === '1' ||
+    readCookie(MANUAL_LANGUAGE_COOKIE) === '1'
+
+  if (hasManualLanguage && isSupportedLocale(saved)) {
     return saved
   }
 
@@ -94,6 +99,9 @@ async function getInitialLanguage() {
   const detected = normalizeLocale(detectLanguage())
   if (isSupportedLocale(detected)) {
     return detected
+  }
+  if (isSupportedLocale(saved)) {
+    return saved
   }
   return 'en'
 }

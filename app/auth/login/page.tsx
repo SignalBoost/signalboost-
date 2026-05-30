@@ -21,14 +21,52 @@ const TEXT = "#e6edf3";
 const MUTED = "#9aa8b8";
 
 const SOCIAL_PROVIDERS = [
-  { name: "Google", href: "/api/auth/google", className: "social-login-button social-login-google" },
-  { name: "Facebook", href: "/api/auth/facebook", className: "social-login-button social-login-facebook" },
-  { name: "GitHub", href: "/api/auth/github", className: "social-login-button social-login-github" },
+  { name: "Google", path: "/api/auth/google", className: "social-login-button social-login-google" },
+  { name: "Facebook", path: "/api/auth/facebook", className: "social-login-button social-login-facebook" },
+  { name: "GitHub", path: "/api/auth/github", className: "social-login-button social-login-github" },
 ];
+
+function isSafeRelativePath(value: string | null) {
+  return Boolean(value?.startsWith("/") && !value.startsWith("//"));
+}
+
+function getDefaultDestination() {
+  if (typeof window !== "undefined" && window.location.hostname === "saas.signalboostapp.com") {
+    return "/dashboard";
+  }
+
+  return "/marketplace";
+}
+
+function getEmailRedirectTo(next: string) {
+  const callbackOrigin =
+    window.location.hostname === "saas.signalboostapp.com"
+      ? "https://saas.signalboostapp.com"
+      : window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? window.location.origin
+        : "https://signalboostapp.com";
+
+  return `${callbackOrigin}/auth/callback?next=${encodeURIComponent(next)}`;
+}
+
+function getSocialLoginHref(path: string, next: string) {
+  const params = new URLSearchParams();
+
+  if (isSafeRelativePath(next)) {
+    params.set("next", next);
+  }
+
+  if (typeof window !== "undefined" && window.location.hostname === "saas.signalboostapp.com") {
+    params.set("flow", "saas");
+  }
+
+  const query = params.toString();
+  return query ? `${path}?${query}` : path;
+}
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [next, setNext] = useState("/");
+  const [next, setNext] = useState("/marketplace");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -39,7 +77,7 @@ export default function LoginPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("mode") === "signup") setMode("signup");
     const n = params.get("next");
-    if (n && n.startsWith("/")) setNext(n);
+    setNext(isSafeRelativePath(n) ? (n as string) : getDefaultDestination());
     if (params.get("error")) setError("Sign-in failed. Please try again.");
   }, []);
 
@@ -59,7 +97,7 @@ export default function LoginPage() {
           email: email.trim(),
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+            emailRedirectTo: getEmailRedirectTo(next),
           },
         });
         if (error) throw error;
@@ -137,7 +175,7 @@ export default function LoginPage() {
 
         <div className="social-login-stack" aria-label="Social login options">
           {SOCIAL_PROVIDERS.map((provider) => (
-            <a key={provider.name} href={provider.href} className={provider.className}>
+            <a key={provider.name} href={getSocialLoginHref(provider.path, next)} className={provider.className}>
               Continue with {provider.name}
             </a>
           ))}

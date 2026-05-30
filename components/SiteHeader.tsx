@@ -8,11 +8,8 @@ import LanguageToggle from "@/components/i18n/LanguageToggle";
 import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
+  { label: "Marketplace", path: "/marketplace" },
   { label: "Promote", path: "/promote" },
-  { label: "Reviews", path: "/reviews" },
-  { label: "Calendar", path: "/calendar" },
-  { label: "Spreadsheets", path: "/spreadsheets" },
-  { label: "Outreach", path: "/outreach" },
   { label: "Personal Assistant", path: "/assistant" },
   { label: "Pricing", path: "/pricing" },
   { label: "Executive", path: "/dashboard" },
@@ -50,6 +47,13 @@ function AuthControls() {
     };
   }, []);
 
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    window.location.assign("/");
+  }
+
   return (
     <div className="site-auth" aria-label="Authentication and OAuth providers">
       <div className="site-auth__providers" aria-label="OAuth providers">
@@ -60,12 +64,12 @@ function AuthControls() {
         ))}
       </div>
       {user ? (
-        <form action="/auth/signout" method="post" className="site-auth__state">
+        <div className="site-auth__state">
           <span className="site-auth__label">Logged in</span>
-          <button type="submit" className="site-auth__button">
+          <button type="button" className="site-auth__button" onClick={() => void handleLogout()}>
             Logout
           </button>
-        </form>
+        </div>
       ) : (
         <Link className="site-auth__button site-auth__login" href="/auth/login">
           Login
