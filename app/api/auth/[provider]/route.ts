@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import type { Provider } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthFlow, getProductionCallbackUrl, isLocalHost, normalizePostAuthDestination } from "@/lib/supabase/auth-flows";
 
 const OAUTH_PROVIDERS = ["google", "facebook", "github"] as const;
-
-// signalboost (marketing) is now fully independent from saas: it has its own
-// Supabase project and only ever returns to its own callback. saas runs from a
-// separate repo + its own Supabase project, so there is NO cross-domain
-// branching here anymore.
-const MAIN_AUTH_CALLBACK = "https://signalboostapp.com/auth/callback";
 
 type OAuthProvider = (typeof OAUTH_PROVIDERS)[number];
 type RouteContext = {
@@ -19,27 +14,18 @@ function isOAuthProvider(provider: string): provider is OAuthProvider {
   return OAUTH_PROVIDERS.includes(provider as OAuthProvider);
 }
 
-function isLocalHost(hostname: string) {
-  return hostname === "localhost" || hostname === "127.0.0.1" || hostname.endsWith(".local");
-}
-
-function isSafeRelativePath(value: string | null) {
-  return Boolean(value?.startsWith("/") && !value.startsWith("//"));
-}
-
 function getCallbackUrl(request: Request) {
   const requestUrl = new URL(request.url);
-
-  // Local dev returns to the running origin; production always returns to the
-  // signalboost callback. No saas branching.
+  const flow = getAuthFlow(requestUrl.hostname, requestUrl.searchParams.get("flow"));
   const callbackUrl = new URL(
-    isLocalHost(requestUrl.hostname) ? `${requestUrl.origin}/auth/callback` : MAIN_AUTH_CALLBACK
+    isLocalHost(requestUrl.hostname) ? `${requestUrl.origin}/auth/callback` : getProductionCallbackUrl(flow)
   );
 
-  const next = requestUrl.searchParams.get("next");
-  if (isSafeRelativePath(next)) {
-    callbackUrl.searchParams.set("next", next as string);
-  }
+  callbackUrl.searchParams.set("flow", flow);
+  callbackUrl.searchParams.set(
+    "next",
+    normalizePostAuthDestination(requestUrl.searchParams.get("next"), flow)
+  );
 
   return callbackUrl.toString();
 }

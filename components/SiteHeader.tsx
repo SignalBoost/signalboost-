@@ -7,15 +7,13 @@ import type { User } from "@supabase/supabase-js";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import { createClient } from "@/lib/supabase/client";
 
-// Navbar = consumer/marketing top level only.
-// Marketplace = the partner product. Workspace = the SaaS Station hub (where all
-// office tasks now live). Pricing = plans. Individual office tasks (Calendar,
-// Spreadsheets, Reviews, Outreach, Promote, Personal Assistant) live inside the
-// SaaS Station, not in the navbar.
+// Navbar = consumer/marketing top level only. SaaS Station modules such as
+// Calendar, Spreadsheets, Reviews, and Outreach stay inside the SaaS cockpit.
 const navItems = [
-  { label: "Marketplace", path: "/marketplace" },
-  { label: "Workspace", path: "/dashboard" },
+  { label: "Promote", path: "/promote" },
+  { label: "Personal Assistant", path: "/assistant" },
   { label: "Pricing", path: "/pricing" },
+  { label: "Executive", path: "/dashboard" },
 ];
 
 const oauthProviders = [
