@@ -1,7 +1,8 @@
 // File: components/PartnerPitch.tsx
+
 'use client'
 
-import { useTranslation } from '@/components/i18n/useTranslation'
+import useTranslation from '@/components/i18n/useTranslation'
 
 type I18n = {
   en?: string
