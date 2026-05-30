@@ -267,4 +267,21 @@ const styles: Record<string, React.CSSProperties> = {
   metricValue: { fontSize: '24px', fontWeight: 600 },
   tableWrapper: { backgroundColor: 'rgba(14, 14, 18, 0.4)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px', overflow: 'hidden' },
   documentTable: { width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' },
-  tableHeaderRow
+  tableHeaderRow tableHeaderRow: { borderBottom: '1px solid rgba(255, 255, 255, 0.06)', backgroundColor: 'rgba(255, 255, 255, 0.01)' },
+  tableHeaderCell: { padding: '16px', color: '#8e8e99', fontWeight: 500 },
+  tableHeaderCellStyleRight: { padding: '16px', color: '#8e8e99', fontWeight: 500, textAlign: 'right' },
+  tableBodyRow: { borderBottom: '1px solid rgba(255, 255, 255, 0.04)' },
+  tableCellTitle: { padding: '16px', fontWeight: 500 },
+  tableCellText: { padding: '16px', color: '#8e8e99' },
+  tableCellActions: { padding: '16px', textAlign: 'right', display: 'flex', justifyContent: 'end', gap: '8px' },
+  inlineActionButton: { backgroundColor: 'transparent', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#f4f4f6', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' },
+  emptyStateCard: { textAlign: 'center', padding: '60px 20px', backgroundColor: 'rgba(14, 14, 18, 0.4)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px' },
+  
+  /* Canvas Layout Specifications */
+  editorCanvas: { display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' },
+  canvasHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' },
+  canvasInputs: { display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', backgroundColor: 'rgba(14, 14, 18, 0.4)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '32px', borderRadius: '8px' },
+  canvasTitleInput: { backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', color: '#f4f4f6', fontSize: '24px', fontWeight: 600, paddingBottom: '12px', width: '100%', outline: 'none' },
+  canvasTextArea: { backgroundColor: 'transparent', border: 'none', color: '#8e8e99', fontSize: '16px', lineHeight: '1.6', minHeight: '450px', width: '100%', resize: 'vertical', outline: 'none', fontFamily: 'inherit' }
+};
+    
