@@ -13,6 +13,7 @@ interface Partner {
   category: string;
   category_label?: string;
   logo: string;
+  network?: string;
   description: string;
   featured?: boolean;
   tier?: number;
@@ -27,6 +28,10 @@ const partners = partnersJson as Partner[];
 
 function partnerLogoSrc(logo: string) {
   return `/logos/${logo}`;
+}
+
+function partnerDetailHref(partner: Partner) {
+  return `/partners/${partner.id}`;
 }
 
 function fallbackText(value: string, fallback: string) {
@@ -68,11 +73,9 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
           {[...items, ...items].map((partner, index) => (
             <a
               key={`${partner.id}-${rowKeyIdentifier}-${index}`}
-              href={partner.url}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
+              href={partnerDetailHref(partner)}
               className="fathom-glass-card-upgrade"
-              aria-label={`${partner.name} — ${partner.category_label || partner.category}`}
+              aria-label={`${partner.name} — ${partner.network || partner.category_label || partner.category}`}
               title={partner.description}
             >
               <span style={styles.logoChip}>
@@ -92,7 +95,10 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
                   {partner.name.charAt(0).toUpperCase()}
                 </span>
               </span>
-              <span style={styles.partnerName}>{partner.name}</span>
+              <span style={styles.partnerCopy}>
+                <span style={styles.partnerName}>{partner.name}</span>
+                <span style={styles.partnerPlatform}>{partner.network || partner.category_label || partner.category}</span>
+              </span>
             </a>
           ))}
         </div>
@@ -174,10 +180,23 @@ const styles: Record<string, React.CSSProperties> = {
     display: "none",
     lineHeight: 1,
   },
+  partnerCopy: {
+    display: "inline-flex",
+    flexDirection: "column",
+    gap: "2px",
+    minWidth: 0,
+  },
   partnerName: {
     color: "#f5f6f8",
     fontSize: "0.9rem",
-    fontWeight: 500,
+    fontWeight: 600,
     letterSpacing: "0.02em",
+    lineHeight: 1.1,
+  },
+  partnerPlatform: {
+    color: "#94a3b8",
+    fontSize: "0.68rem",
+    fontWeight: 500,
+    lineHeight: 1.1,
   },
 };
