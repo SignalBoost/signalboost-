@@ -1,39 +1,82 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import useTranslation from "@/components/i18n/useTranslation";
+import type { User } from "@supabase/supabase-js";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
+import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
-  { key: "promote_business", path: "/promote" },
-  { key: "reviews", path: "/reviews" },
-  { key: "calendar", path: "/calendar" },
-  { key: "spreadsheets", path: "/spreadsheets" },
-  { key: "outreach", path: "/outreach" },
-  { key: "assistant", path: "/assistant" },
-  { key: "pricing", path: "/pricing" },
-  { key: "executive", path: "/dashboard" },
+  { label: "Promote", path: "/promote" },
+  { label: "Reviews", path: "/reviews" },
+  { label: "Calendar", path: "/calendar" },
+  { label: "Spreadsheets", path: "/spreadsheets" },
+  { label: "Outreach", path: "/outreach" },
+  { label: "Personal Assistant", path: "/assistant" },
+  { label: "Pricing", path: "/pricing" },
+  { label: "Executive", path: "/dashboard" },
 ];
 
-function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
-}
+const oauthProviders = [
+  { label: "Google", path: "/api/auth/google" },
+  { label: "Facebook", path: "/api/auth/facebook" },
+  { label: "GitHub", path: "/api/auth/github" },
+];
 
-const fallbackLabels: Record<string, string> = {
-  promote_business: "Promote Business",
-  reviews: "Reviews",
-  calendar: "Calendar",
-  spreadsheets: "Spreadsheets",
-  outreach: "Outreach",
-  assistant: "Personal Assistant",
-  pricing: "Pricing",
-  executive: "Executive",
-};
+function AuthControls() {
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return;
+    }
+
+    const supabase = createClient();
+    let mounted = true;
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (mounted) {
+        setUser(data.user ?? null);
+      }
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  return (
+    <div className="site-auth" aria-label="Authentication and OAuth providers">
+      <div className="site-auth__providers" aria-label="OAuth providers">
+        {oauthProviders.map((provider) => (
+          <a key={provider.path} href={provider.path} className="site-auth__provider">
+            {provider.label}
+          </a>
+        ))}
+      </div>
+      {user ? (
+        <form action="/auth/signout" method="post" className="site-auth__state">
+          <span className="site-auth__label">Logged in</span>
+          <button type="submit" className="site-auth__button">
+            Logout
+          </button>
+        </form>
+      ) : (
+        <Link className="site-auth__button site-auth__login" href="/auth/login">
+          Login
+        </Link>
+      )}
+    </div>
+  );
+}
 
 export default function SiteHeader() {
   const pathname = usePathname() || "/";
-  const { t } = useTranslation();
 
   return (
     <header className="site-header">
@@ -41,17 +84,20 @@ export default function SiteHeader() {
         <span>signal</span>
         <strong>boost</strong>
       </Link>
-      <nav className="site-nav" aria-label="SignalBoost unified cockpit navigation">
+      <nav className="site-nav" aria-label="SignalBoost office module navigation">
         {navItems.map((item) => {
           const active = item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
           return (
             <Link key={item.path} className={active ? "active" : ""} href={item.path}>
-              {fallbackText(t(`navbar.${item.key}`), fallbackLabels[item.key])}
+              {item.label}
             </Link>
           );
         })}
       </nav>
-      <LanguageToggle />
+      <div className="site-header__tools">
+        <LanguageToggle />
+        <AuthControls />
+      </div>
     </header>
   );
 }
