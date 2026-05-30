@@ -25,10 +25,20 @@ import { NextRequest, NextResponse } from "next/server";
 // Relative to app/api/concierge/ -> repo root /public/partners.json.
 // Static import => bundled into the function (no runtime fs read).
 import partnersData from "../../../public/partners.json";
+import {
+  buildAiRecommendation,
+  detectConciergeModule,
+  detectConciergeOutcome,
+  seedConciergeLogs,
+  summarizeConciergeTelemetry,
+  type ConciergeLogEntry,
+  type SupportedLang,
+  type UserRole,
+} from "@/lib/mission-control/concierge";
 
 export const runtime = "nodejs";
 
-type Lang = "en" | "pt" | "es" | "pl" | "ru";
+type Lang = SupportedLang;
 const LANGS: Lang[] = ["en", "pt", "es", "pl", "ru"];
 
 interface Partner {
@@ -104,6 +114,11 @@ const INTENT_RULES: { category: string; terms: string[] }[] = [
   { category: "travel_services", terms: ["visa", "passport", "booking", "itinerary", "esta", "passaporte", "pasaporte", "wiza", "viza"] },
   { category: "health_fitness", terms: ["health", "fitness", "gym", "workout", "wellness", "nutrition", "exercise", "saude", "salud", "zdrowie", "zdorovye"] },
   { category: "sports_outdoors", terms: ["sport", "sports", "outdoor", "outdoors", "hiking", "camping", "ski", "running", "bike", "esporte", "deporte", "sporty", "sport"] },
+  { category: "saas_reviews", terms: ["reviews", "review", "testimonial", "rating", "reputation", "reseñas", "avaliacoes", "opinie", "otzyvy"] },
+  { category: "saas_calendar", terms: ["calendar", "schedule", "meeting", "availability", "agenda", "calendario", "kalendarz", "kalendar"] },
+  { category: "saas_spreadsheets", terms: ["spreadsheet", "spreadsheets", "sheet", "table", "csv", "report", "planilha", "hoja", "arkusz", "tablitsa"] },
+  { category: "saas_promote", terms: ["promote", "promotion", "campaign", "coupon", "offer", "discount", "promocao", "promocion", "kampania", "aktsiya"] },
+  { category: "saas_outreach", terms: ["outreach", "email", "notify", "notification", "social", "partners", "divulgacao", "alcance", "powiadom", "rassylka"] },
 ];
 
 // ASCII terms use word boundaries; accented / non-ASCII fall back to substring.
@@ -191,10 +206,37 @@ const REPLY: Record<Lang, { found: string; none: string }> = {
 };
 
 /* ---- Core handler --------------------------------------------------------- */
-function handle(message: string, lang: Lang, region: string) {
+const telemetryStore: ConciergeLogEntry[] = [...seedConciergeLogs];
+
+function resolveRole(value: unknown): UserRole {
+  if (["partner", "business_owner", "customer", "admin", "owner"].includes(value as string)) return value as UserRole;
+  return "customer";
+}
+
+function logConciergeInteraction(entry: Omit<ConciergeLogEntry, "id" | "timestamp">) {
+  const log: ConciergeLogEntry = {
+    ...entry,
+    id: `cl-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    timestamp: new Date().toISOString(),
+  };
+  telemetryStore.unshift(log);
+  if (telemetryStore.length > 200) telemetryStore.length = 200;
+  return log;
+}
+
+function telemetryPayload() {
+  return {
+    logs: telemetryStore,
+    summary: summarizeConciergeTelemetry(telemetryStore),
+    refreshedAt: new Date().toISOString(),
+  };
+}
+
+function handle(message: string, lang: Lang, region: string, userRole: UserRole = "customer") {
+  const startedAt = Date.now();
   const query = (message || "").trim();
   if (!query) {
-    return { query: "", intent: { categories: [] }, reply: REPLY[lang].none, partners: [], matches: [] };
+    return { query: "", intent: { categories: [] }, reply: REPLY[lang].none, partners: [], matches: [], telemetry: null };
   }
 
   const intents = detectIntent(query);
@@ -216,12 +258,28 @@ function handle(message: string, lang: Lang, region: string) {
 
   const partners: PartnerCard[] = matches.map(({ score, ...card }) => card);
 
+  const moduleAccessed = detectConciergeModule(query);
+  const outcome = detectConciergeOutcome(query);
+  const aiRecommendation = buildAiRecommendation(query, lang);
+  const responseTimeMs = Math.max(24, Date.now() - startedAt + 180 + Math.round(query.length * 2.4));
+  const telemetry = logConciergeInteraction({
+    queryText: query,
+    userRole,
+    moduleAccessed,
+    responseTimeMs,
+    outcome,
+    aiRecommendation,
+    locale: lang,
+  });
+
   return {
     query,
-    intent: { categories: intents },
-    reply: matches.length ? REPLY[lang].found : REPLY[lang].none,
+    intent: { categories: intents, module: moduleAccessed },
+    reply: matches.length ? REPLY[lang].found : `${REPLY[lang].none} ${aiRecommendation}`,
     partners,
     matches,
+    telemetry,
+    aiRecommendation,
   };
 }
 
@@ -242,20 +300,25 @@ function messageFromBody(body: { message?: unknown; messages?: unknown }): strin
 
 /* ========================================================================== */
 export async function POST(req: NextRequest) {
-  let body: { message?: unknown; messages?: unknown; lang?: unknown };
+  let body: { message?: unknown; messages?: unknown; lang?: unknown; role?: unknown; userRole?: unknown };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
   const lang = resolveLang(body.lang);
+  const role = resolveRole(body.userRole || body.role);
   const region = regionFromRequest(req);
-  return NextResponse.json(handle(messageFromBody(body), lang, region));
+  return NextResponse.json(handle(messageFromBody(body), lang, region, role));
 }
 
 export async function GET(req: NextRequest) {
+  if (req.nextUrl.searchParams.get("telemetry") === "1") {
+    return NextResponse.json(telemetryPayload());
+  }
   const q = req.nextUrl.searchParams.get("q") || "";
   const lang = resolveLang(req.nextUrl.searchParams.get("lang"));
+  const role = resolveRole(req.nextUrl.searchParams.get("role"));
   const region = regionFromRequest(req);
-  return NextResponse.json(handle(q, lang, region));
+  return NextResponse.json(handle(q, lang, region, role));
 }
