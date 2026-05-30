@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import ConciergeHero from "./ConciergeHero";
 
 interface HomeAppProps {
-  lang: string;
-  regionName: string;
+  lang?: string;
+  regionName?: string;
 }
 
-export default function HomeApp({ lang, regionName }: HomeAppProps) {
+export default function HomeApp({ lang = "en", regionName = "" }: HomeAppProps) {
   const [activeChip, setActiveChip] = useState("all");
 
   // Handlers para os parâmetros do Hero
