@@ -75,7 +75,7 @@ export default function OfficeDashboard() {
           </div>
           <div style={styles.metricCard}>
             <div style={styles.metricLabel}>Workspace Status</div>
-            <div style={styles.metricValue} style={{...styles.metricValue, color: '#10b981'}}>Operational</div>
+            <div style={{...styles.metricValue, color: '#10b981'}}>Operational</div>
           </div>
         </section>
 
@@ -217,7 +217,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   headerBar: {
     display: 'flex',
-    justifyContent: 'between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: '40px',
   },
