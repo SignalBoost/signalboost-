@@ -9,10 +9,6 @@ import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { label: "Promote", path: "/promote" },
-  { label: "Reviews", path: "/reviews" },
-  { label: "Calendar", path: "/calendar" },
-  { label: "Spreadsheets", path: "/spreadsheets" },
-  { label: "Outreach", path: "/outreach" },
   { label: "Personal Assistant", path: "/assistant" },
   { label: "Pricing", path: "/pricing" },
   { label: "Executive", path: "/dashboard" },

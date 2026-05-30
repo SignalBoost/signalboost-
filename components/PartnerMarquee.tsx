@@ -2,7 +2,7 @@
 // File: components/PartnerMarquee.tsx
 
 import React from "react";
-import partnersJson from "@/public/partners.json";
+import partnersJson from "@/partners.json";
 import useTranslation from "./i18n/useTranslation";
 import "./marquee.css";
 
@@ -98,6 +98,7 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
               <span style={styles.partnerCopy}>
                 <span style={styles.partnerName}>{partner.name}</span>
                 <span style={styles.partnerPlatform}>{partner.network || partner.category_label || partner.category}</span>
+                <span style={styles.partnerDescription}>{partner.description}</span>
               </span>
             </a>
           ))}
@@ -198,5 +199,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "0.68rem",
     fontWeight: 500,
     lineHeight: 1.1,
+  },
+  partnerDescription: {
+    color: "rgba(255, 255, 255, 0.58)",
+    fontSize: "0.66rem",
+    fontWeight: 500,
+    lineHeight: 1.25,
+    maxWidth: "190px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
 };

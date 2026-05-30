@@ -329,30 +329,37 @@ a {
 .language-switcher {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 8px;
   margin-left: 0;
   border: 1px solid rgba(245, 197, 66, 0.3);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);
-  padding: 3px;
+  padding: 4px 8px 4px 11px;
   white-space: nowrap;
 }
-.language-switcher__button {
+.language-switcher__label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.language-switcher__select {
+  min-height: 30px;
   border: 0;
   border-radius: 999px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.66);
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  min-height: 28px;
-  padding: 0 9px;
-}
-.language-switcher__button.active {
   background: var(--gold);
   color: #11151c;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 0 26px 0 10px;
   box-shadow: 0 0 18px rgba(245, 197, 66, 0.24);
+}
+.language-switcher__select:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .site-auth {

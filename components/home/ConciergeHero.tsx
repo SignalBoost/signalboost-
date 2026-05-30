@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { stationWorkflows, workflowConnectorSecurityNotes } from "@/lib/station-workflows";
+import { saasModules } from "@/lib/saas-modules";
 import useTranslation from "@/components/i18n/useTranslation";
 
 interface ConciergeHeroProps {
@@ -17,7 +18,9 @@ function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
 
-const trialTasks = ["Payroll close check", "Campaign launch brief", "Contract risk scan"];
+const trialTasks = ["Review response triage", "Calendar conflict check", "Spreadsheet import audit", "Outreach sequence draft"];
+const stationModuleSlugs = new Set(["calendar", "spreadsheets", "reviews", "outreach"]);
+const stationaryModules = saasModules.filter((module) => stationModuleSlugs.has(module.slug));
 const telemetryDeck = [
   { label: "Sync health", value: "98.2%", detail: "QuickBooks + HubSpot nominal" },
   { label: "Overdue invoices", value: "7", detail: "PayPal, Stripe, Square watch" },
@@ -27,7 +30,7 @@ const telemetryDeck = [
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const { t } = useTranslation();
   const [taskCounts, setTaskCounts] = useState<Record<string, number>>({});
-  const [activeWorkflow, setActiveWorkflow] = useState(stationWorkflows[0]);
+  const [activeModule, setActiveModule] = useState(stationaryModules[0]);
   const [showTrialModal, setShowTrialModal] = useState(false);
 
   const connectorList = useMemo(
@@ -35,17 +38,18 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     []
   );
 
-  const runWorkflowTask = (workflowSlug: string) => {
-    const workflow = stationWorkflows.find((candidate) => candidate.slug === workflowSlug) || stationWorkflows[0];
-    const nextCount = (taskCounts[workflowSlug] || 0) + 1;
-    setActiveWorkflow(workflow);
+  const runStationModuleTask = (moduleSlug: string, event?: React.MouseEvent<HTMLAnchorElement>) => {
+    const module = stationaryModules.find((candidate) => candidate.slug === moduleSlug) || stationaryModules[0];
+    const nextCount = (taskCounts[moduleSlug] || 0) + 1;
+    setActiveModule(module);
 
-    if (nextCount > workflow.trialLimit) {
+    if (nextCount > 3) {
+      event?.preventDefault();
       setShowTrialModal(true);
       return;
     }
 
-    setTaskCounts((current) => ({ ...current, [workflowSlug]: nextCount }));
+    setTaskCounts((current) => ({ ...current, [moduleSlug]: nextCount }));
   };
 
   return (
@@ -70,36 +74,18 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             connector-backed telemetry, secure Supabase token vaulting, and cockpit-style trial gates.
           </p>
 
-          <div style={styles.trialPanel} aria-label="Trial gating">
-            <div>
-              <span style={styles.trialEyebrow}>Trial gate</span>
-              <strong style={styles.trialTitle}>3 free tasks per workflow, then sign-up required</strong>
-            </div>
-            <div style={styles.trialDots} aria-hidden="true">
-              <span style={styles.trialDot} />
-              <span style={styles.trialDot} />
-              <span style={styles.trialDot} />
-            </div>
-          </div>
-
-          <ul style={styles.trialList} aria-label="Included free tasks">
-            {trialTasks.map((task) => (
-              <li key={task} style={styles.trialListItem}>{task}</li>
-            ))}
-          </ul>
-
           <div style={styles.conciergePanel}>
             <span style={styles.conciergeAvatar}>✦</span>
             <span>
               <strong style={styles.conciergeTitle}>Concierge guide</strong>
-              <span style={styles.conciergeCopy}>{activeWorkflow.conciergePrompt}</span>
+              <span style={styles.conciergeCopy}>Ready to route {activeModule.title} through telemetry, trial usage, and Concierge follow-up.</span>
             </span>
           </div>
 
           <div style={styles.actionGroup}>
-            <button type="button" style={styles.brandButtonPrimary} onClick={() => runWorkflowTask(activeWorkflow.slug)}>
-              Run Concierge workflow
-            </button>
+            <Link href={activeModule.href} style={styles.brandButtonPrimary} onClick={(event) => runStationModuleTask(activeModule.slug, event)}>
+              Open {activeModule.title}
+            </Link>
             <Link href="/pricing" style={styles.brandButtonSecondary}>
               Upgrade to Pro <span style={styles.arrow}>→</span>
             </Link>
@@ -133,6 +119,24 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             <span>{fallbackText(t("homepage.saasStationTelemetry"), "sync health across finance, CRM, email, payments, and contracts")}</span>
           </div>
 
+          <div style={styles.trialPanel} aria-label="Stationary module trial gating">
+            <div>
+              <span style={styles.trialEyebrow}>Trial gate</span>
+              <strong style={styles.trialTitle}>3 free actions per Stationary module, then sign-up required</strong>
+            </div>
+            <div style={styles.trialDots} aria-hidden="true">
+              <span style={styles.trialDot} />
+              <span style={styles.trialDot} />
+              <span style={styles.trialDot} />
+            </div>
+          </div>
+
+          <ul style={styles.trialList} aria-label="Included Stationary module trial tasks">
+            {trialTasks.map((task) => (
+              <li key={task} style={styles.trialListItem}>{task}</li>
+            ))}
+          </ul>
+
           <div style={styles.connectorRail} aria-label="Connected SMB apps">
             {connectorList.map((connector) => (
               <span key={connector} style={styles.connectorPill}>{connector}</span>
@@ -140,27 +144,28 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </div>
 
           <div style={styles.stationGrid}>
-            {stationWorkflows.map((workflow) => {
-              const used = taskCounts[workflow.slug] || 0;
+            {stationaryModules.map((module) => {
+              const used = taskCounts[module.slug] || 0;
               return (
-                <button
-                  type="button"
-                  key={workflow.slug}
+                <Link
+                  key={module.slug}
+                  href={module.href}
                   style={{
                     ...styles.stationModuleCard,
-                    borderColor: `${workflow.accent}7a`,
-                    boxShadow: `0 18px 48px ${workflow.accent}20, inset 0 1px 0 rgba(255,255,255,.08)`,
+                    borderColor: `${module.accent}7a`,
+                    boxShadow: `0 18px 48px ${module.accent}20, inset 0 1px 0 rgba(255,255,255,.08)`,
                   }}
-                  onClick={() => runWorkflowTask(workflow.slug)}
-                  aria-label={`Run ${workflow.title} workflow task`}
+                  onClick={(event) => runStationModuleTask(module.slug, event)}
+                  aria-label={`Open ${module.title} Stationary module`}
                 >
-                  <span style={{ ...styles.stationModuleAccent, background: workflow.accent }} />
-                  <span style={styles.stationModuleTopline}>{workflow.connectors.join(" + ")}</span>
-                  <strong style={styles.stationModuleTitle}>{workflow.title}</strong>
-                  <span style={styles.stationModuleSignal}>{workflow.metric}</span>
-                  <span style={styles.stationModuleTelemetry}>{workflow.telemetry}</span>
-                  <span style={styles.trialCounter}>{used}/{workflow.trialLimit} free tasks used</span>
-                </button>
+                  <span style={{ ...styles.stationModuleAccent, background: module.accent }} />
+                  <span style={styles.stationModuleTopline}>{module.eyebrow}</span>
+                  <strong style={styles.stationModuleTitle}>{module.title}</strong>
+                  <span style={styles.stationModuleSummary}>{module.summary}</span>
+                  <span style={styles.stationModuleSignal}>{module.signal}</span>
+                  <span style={styles.stationModuleTelemetry}>{module.telemetry}</span>
+                  <span style={styles.trialCounter}>{used}/3 free actions used</span>
+                </Link>
               );
             })}
           </div>
@@ -180,7 +185,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             <span style={styles.modalEyebrow}>Concierge says</span>
             <h3 id="station-trial-title" style={styles.modalTitle}>Sign up to continue using your Stationary SaaS Station</h3>
             <p style={styles.modalCopy}>
-              You have used the 3 free {activeWorkflow.title} tasks. Create an account to keep Concierge guidance,
+              You have used the 3 free {activeModule.title} actions. Create an account to keep Concierge guidance,
               connector sync, and telemetry history active.
             </p>
             <div style={styles.modalActions}>
@@ -451,10 +456,13 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "18px",
     background: "rgba(3, 7, 18, 0.68)",
     cursor: "pointer",
+    color: "inherit",
+    textDecoration: "none",
   },
   stationModuleAccent: { width: "34px", height: "4px", borderRadius: "999px" },
   stationModuleTopline: { color: "rgba(255,255,255,.55)", fontSize: "10px", fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase" },
   stationModuleTitle: { color: "#fff", fontSize: "20px" },
+  stationModuleSummary: { color: "rgba(255,255,255,.64)", fontSize: "12px", lineHeight: 1.4 },
   stationModuleSignal: { color: "#f5c542", fontSize: "13px", fontWeight: 900, marginTop: "auto" },
   stationModuleTelemetry: { color: "rgba(255,255,255,.52)", fontSize: "12px" },
   trialCounter: { color: "rgba(34,211,238,.86)", fontSize: "11px", fontWeight: 900 },
