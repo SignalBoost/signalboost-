@@ -17,23 +17,21 @@ export default function OfficeDashboard() {
   const [documents, setDocuments] = useState<DocumentType[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Workspace Editing Engine States
   const [selectedDoc, setSelectedDoc] = useState<DocumentType | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editBody, setEditBody] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Core API Fetch Action
   const fetchDocuments = async () => {
     try {
       setLoading(true);
       const res = await fetch('/api/office/documents');
       if (res.ok) {
         const data = await res.json();
-        setDocuments(data);
+        setDocuments(data || []);
       }
     } catch (err) {
-      console.error("Failed fetching documents from Supabase:", err);
+      console.error("Supabase link error:", err);
     } finally {
       setLoading(false);
     }
@@ -43,9 +41,11 @@ export default function OfficeDashboard() {
     fetchDocuments();
   }, []);
 
-  // Handle Creating a New Live Row
-  const handleCreateDocument = async () => {
-    const docTitle = prompt("Enter Document Title:", "Untitled Document");
+  const handleCreateDocument = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const docTitle = window.prompt("Enter Document Title:", "Untitled Document");
     if (!docTitle) return;
 
     try {
@@ -59,23 +59,20 @@ export default function OfficeDashboard() {
         fetchDocuments();
       }
     } catch (err) {
-      console.error("Error creating document:", err);
+      console.error("Write execution failed:", err);
     }
   };
 
-  // Open the Editor Canvas
   const startEditing = (doc: DocumentType) => {
     setSelectedDoc(doc);
     setEditTitle(doc.title);
     setEditBody(doc.content_json?.bodyText || '');
   };
 
-  // Save changes to database via PUT/POST override handler
   const handleSaveChanges = async () => {
     if (!selectedDoc) return;
     try {
       setIsSaving(true);
-      
       const res = await fetch('/api/office/documents', {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
@@ -91,7 +88,7 @@ export default function OfficeDashboard() {
         fetchDocuments();
       }
     } catch (err) {
-      console.error("Failed to commit document mutations:", err);
+      console.error("Mutation failed:", err);
     } finally {
       setIsSaving(false);
     }
@@ -99,7 +96,6 @@ export default function OfficeDashboard() {
 
   return (
     <div className="office-portal-container" style={styles.portalContainer}>
-      {/* Lateral Structural Workspace Navigation */}
       <aside className="office-sidebar" style={styles.sidebar}>
         <div className="workspace-brand" style={styles.brandZone}>
           <span style={styles.brandIcon}>⚡</span>
@@ -136,10 +132,8 @@ export default function OfficeDashboard() {
         </div>
       </aside>
 
-      {/* Primary Workspace Activity Hub */}
       <main className="office-main-content" style={styles.mainContent}>
         {selectedDoc ? (
-          /* High-Fidelity Rich Text Document Canvas Panel */
           <div style={styles.editorCanvas}>
             <header style={styles.canvasHeader}>
               <button onClick={() => setSelectedDoc(null)} style={styles.secondaryButton}>
@@ -156,30 +150,31 @@ export default function OfficeDashboard() {
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 style={styles.canvasTitleInput}
-                placeholder="Document Title"
               />
               <textarea
                 value={editBody}
                 onChange={(e) => setEditBody(e.target.value)}
                 style={styles.canvasTextArea}
-                placeholder="Begin crafting your workspace data, notes, or business criteria here..."
+                placeholder="Begin crafting your workspace data..."
               />
             </div>
           </div>
         ) : (
-          /* Core Data Vault List Render */
           <>
             <header style={styles.headerBar}>
               <div>
                 <h1 style={styles.pageTitle}>Workspace Dashboard</h1>
                 <p style={styles.pageSubtitle}>Manage your decentralized office tools and secure document vaults.</p>
               </div>
-              <button onClick={handleCreateDocument} style={styles.primaryActionButton}>
+              <button 
+                type="button"
+                onClick={handleCreateDocument} 
+                style={styles.primaryActionButton}
+              >
                 + New Document
               </button>
             </header>
 
-            {/* Analytical Aggregates Section */}
             <section style={styles.metricsGrid}>
               <div style={styles.metricCard}>
                 <div style={styles.metricLabel}>Active Documents</div>
@@ -229,7 +224,7 @@ export default function OfficeDashboard() {
             {activeTab !== 'documents' && (
               <div style={styles.emptyStateCard}>
                 <h3>Module Coming Soon</h3>
-                <p style={{color: '#8e8e99'}}>The database architecture is live. This UI view is currently being provisioned.</p>
+                <p style={{color: '#8e8e99'}}>The database architecture is live.</p>
               </div>
             )}
           </>
@@ -239,7 +234,6 @@ export default function OfficeDashboard() {
   );
 }
 
-// Inline Style Tokens for Zero-Configuration Compilation
 const styles: Record<string, React.CSSProperties> = {
   portalContainer: { display: 'flex', minHeight: '100vh', backgroundColor: '#070709', color: '#f4f4f6', fontFamily: "'Outfit', sans-serif" },
   sidebar: { width: '260px', backgroundColor: '#0e0e12', borderRight: '1px solid rgba(255, 255, 255, 0.06)', display: 'flex', flexDirection: 'column', padding: '24px 16px' },
@@ -250,7 +244,7 @@ const styles: Record<string, React.CSSProperties> = {
   navItem: { display: 'flex', alignItems: 'center', width: '100%', padding: '12px', backgroundColor: 'transparent', border: 'none', borderRadius: '6px', color: '#8e8e99', textAlign: 'left', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' },
   navItemActive: { backgroundColor: 'rgba(255, 255, 255, 0.04)', color: '#f4f4f6', fontWeight: 500 },
   userFootprint: { display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' },
-  avatarPlaceholder: { width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#dfa837', color: '#070709', display: 'flex', alignItems: 'center', justifycontent: 'center', fontWeight: 600, fontSize: '13px' },
+  avatarPlaceholder: { width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#dfa837', color: '#070709', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: '13px' },
   userInfo: { display: 'flex', flexDirection: 'column' },
   userName: { fontSize: '13px', fontWeight: 500 },
   userRole: { fontSize: '11px', color: '#8e8e99' },
@@ -275,8 +269,6 @@ const styles: Record<string, React.CSSProperties> = {
   tableCellActions: { padding: '16px', textAlign: 'right', display: 'flex', justifyContent: 'end', gap: '8px' },
   inlineActionButton: { backgroundColor: 'transparent', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#f4f4f6', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' },
   emptyStateCard: { textAlign: 'center', padding: '60px 20px', backgroundColor: 'rgba(14, 14, 18, 0.4)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px' },
-  
-  /* Canvas Layout Specifications */
   editorCanvas: { display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' },
   canvasHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' },
   canvasInputs: { display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', backgroundColor: 'rgba(14, 14, 18, 0.4)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '32px', borderRadius: '8px' },
