@@ -45,7 +45,21 @@ function readCookie(name: string) {
   return match ? decodeURIComponent(match.split('=').slice(1).join('=')) : null
 }
 
-function getInitialLanguage() {
+async function detectMexicoLanguage() {
+  if (typeof window === 'undefined') return null
+
+  try {
+    const res = await fetch('/api/geo', { cache: 'no-store' })
+    if (!res.ok) return null
+
+    const data = (await res.json()) as { country?: string }
+    return data.country?.toUpperCase() === 'MX' ? 'es' : null
+  } catch {
+    return null
+  }
+}
+
+async function getInitialLanguage() {
   if (typeof window === 'undefined') {
     return 'en'
   }
@@ -57,6 +71,12 @@ function getInitialLanguage() {
   if (saved && SUPPORTED_LANGS.includes(saved)) {
     return saved
   }
+
+  const countryLang = await detectMexicoLanguage()
+  if (countryLang && SUPPORTED_LANGS.includes(countryLang)) {
+    return countryLang
+  }
+
   const browser =
     navigator.languages?.[0] ||
     navigator.language ||
@@ -82,7 +102,7 @@ export function I18nProvider({
 
   useEffect(() => {
     async function init() {
-      const initialLang = getInitialLanguage()
+      const initialLang = await getInitialLanguage()
       const loaded = await loadLanguage(initialLang)
       setLangState(initialLang)
       setDict(loaded)
