@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "validate:conflicts": "node scripts/validate-conflict-cleanup.mjs"
+    "validate:conflicts": "node scripts/validate-conflict-cleanup.mjs",
+    "test:qa": "node tests/qa/saas-i18n-regression.mjs",
+    "test:playwright": "playwright test tests/playwright/saas-cockpit.spec.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.33.1",

@@ -64,6 +64,28 @@ const PARTNERS: Partner[] = (() => {
   return [];
 })();
 
+interface SaasCard extends PartnerCard {
+  module: string;
+  telemetry: string;
+}
+
+const SAAS_MODULES: Record<string, { href: string; terms: string[]; telemetry: string; labels: Record<Lang, string>; replies: Record<Lang, string> }> = {
+  promote: { href: "/promote", telemetry: "campaign_builder", terms: ["promote", "campaign", "marketing", "ads", "promocionar", "campanha", "kampania", "продвижение"], labels: { en: "Promote Business", es: "Promocionar negocio", pt: "Promover negócio", pl: "Promuj firmę", ru: "Продвижение бизнеса" }, replies: { en: "Open Promote Business to build campaigns, inspect analytics, and log outreach telemetry.", es: "Abre Promocionar negocio para crear campañas, revisar analíticas y registrar telemetría.", pt: "Abra Promover negócio para criar campanhas, ver análises e registrar telemetria.", pl: "Otwórz Promuj firmę, aby tworzyć kampanie, analizować dane i logować telemetrię.", ru: "Откройте Продвижение бизнеса для кампаний, аналитики и телеметрии." } },
+  reviews: { href: "/reviews", telemetry: "reviews_sentiment_moderation", terms: ["review", "reviews", "rating", "sentiment", "moderation", "reseña", "avalia", "opinia", "отзыв"], labels: { en: "Reviews", es: "Reseñas", pt: "Avaliações", pl: "Opinie", ru: "Отзывы" }, replies: { en: "Reviews can collect 1–5 star feedback, analyze sentiment, moderate risk, and trigger testimonial campaigns.", es: "Reseñas recopila estrellas, analiza sentimiento, modera riesgos y activa campañas testimoniales.", pt: "Avaliações coleta notas, analisa sentimento, modera riscos e aciona campanhas de depoimentos.", pl: "Opinie zbierają oceny, analizują sentyment, moderują ryzyko i uruchamiają kampanie testimoniali.", ru: "Отзывы собирают оценки, анализируют тональность, модерируют риски и запускают кампании." } },
+  calendar: { href: "/calendar", telemetry: "calendar_reminders", terms: ["calendar", "schedule", "reminder", "event", "calendario", "kalendarz", "календар"], labels: { en: "Calendar", es: "Calendario", pt: "Calendário", pl: "Kalendarz", ru: "Календарь" }, replies: { en: "Calendar coordinates events, reminders, and locale-aware scheduling.", es: "Calendario coordina eventos, recordatorios y fechas regionales.", pt: "Calendário coordena eventos, lembretes e datas locais.", pl: "Kalendarz koordynuje wydarzenia, przypomnienia i formaty lokalne.", ru: "Календарь координирует события, напоминания и локальные даты." } },
+  spreadsheets: { href: "/spreadsheets", telemetry: "collaborative_tables", terms: ["spreadsheet", "sheet", "table", "csv", "planilha", "hoja", "arkusz", "таблиц"], labels: { en: "Spreadsheets", es: "Hojas de cálculo", pt: "Planilhas", pl: "Arkusze kalkulacyjne", ru: "Таблицы" }, replies: { en: "Spreadsheets manages collaborative tables, sharing, activity feeds, and forecast snapshots.", es: "Hojas gestiona tablas colaborativas, uso compartido y pronósticos.", pt: "Planilhas gerencia tabelas colaborativas, compartilhamento e previsões.", pl: "Arkusze obsługują tabele współdzielone, udostępnianie i prognozy.", ru: "Таблицы управляют совместными данными, доступом и прогнозами." } },
+  outreach: { href: "/outreach", telemetry: "outreach_crm", terms: ["outreach", "email", "crm", "lead", "campaign", "alcance", "zasięg", "охват"], labels: { en: "Outreach", es: "Alcance", pt: "Alcance", pl: "Zasięg", ru: "Охват" }, replies: { en: "Outreach launches social, email, partner, and promotional campaigns while updating CRM stages.", es: "Alcance lanza campañas sociales, emails, socios y promociones con CRM.", pt: "Alcance lança campanhas sociais, e-mails, parceiros e promoções com CRM.", pl: "Zasięg uruchamia kampanie social, e-mail, partnerskie i CRM.", ru: "Охват запускает social, email, партнёрские и CRM-кампании." } },
+  assistant: { href: "/assistant", telemetry: "personal_assistant", terms: ["assistant", "task", "productivity", "remind", "asistente", "assistente", "asystent", "ассистент"], labels: { en: "Personal Assistant", es: "Asistente personal", pt: "Assistente pessoal", pl: "Osobisty asystent", ru: "Личный помощник" }, replies: { en: "Personal Assistant manages tasks, reminders, productivity insights, and cross-module guidance.", es: "Asistente personal gestiona tareas, recordatorios, productividad y guía entre módulos.", pt: "Assistente pessoal gerencia tarefas, lembretes, produtividade e orientação entre módulos.", pl: "Osobisty asystent zarządza zadaniami, przypomnieniami i produktywnością.", ru: "Личный помощник управляет задачами, напоминаниями и продуктивностью." } },
+  pricing: { href: "/pricing", telemetry: "saas_pricing", terms: ["pricing", "price", "subscription", "cost", "precio", "preço", "cennik", "цена"], labels: { en: "Pricing", es: "Precios", pt: "Preços", pl: "Cennik", ru: "Цены" }, replies: { en: "Pricing lists Website Optimization ($29/mo), Podcast Studio ($19/mo), Reviews ($15/mo), Calendar ($10/mo), Spreadsheets ($12/mo), Outreach ($20/mo), and Personal Assistant ($25/mo).", es: "Precios muestra Web (29 US$/mes), Podcast (19), Reseñas (15), Calendario (10), Hojas (12), Alcance (20) y Asistente (25).", pt: "Preços mostra Site (US$29/mês), Podcast (19), Avaliações (15), Calendário (10), Planilhas (12), Alcance (20) e Assistente (25).", pl: "Cennik zawiera stronę (29 USD/mies.), podcast (19), opinie (15), kalendarz (10), arkusze (12), zasięg (20) i asystenta (25).", ru: "Цены: сайт ($29/мес), подкаст (19), отзывы (15), календарь (10), таблицы (12), охват (20), помощник (25)." } },
+};
+
+function detectSaasModules(message: string): string[] {
+  const m = message.toLowerCase();
+  return Object.entries(SAAS_MODULES)
+    .filter(([, module]) => module.terms.some((term) => hasTerm(m, term.toLowerCase())))
+    .map(([slug]) => slug);
+}
+
 /* ---- Geo region (for which regional affiliate URL to serve) --------------- */
 const COUNTRY_TO_REGION: Record<string, string> = {
   US: "us", BR: "br", GB: "uk", UK: "uk", PL: "pl", RU: "ru",
@@ -198,6 +220,31 @@ function handle(message: string, lang: Lang, region: string) {
   }
 
   const intents = detectIntent(query);
+  const saasIntents = detectSaasModules(query);
+
+  if (saasIntents.length > 0) {
+    const modules = saasIntents.slice(0, 5).map((slug) => {
+      const module = SAAS_MODULES[slug];
+      return {
+        id: `saas-${slug}`,
+        module: slug,
+        name: module.labels[lang],
+        category: "SignalBoost SaaS",
+        description: module.replies[lang],
+        url: module.href,
+        telemetry: module.telemetry,
+      } satisfies SaasCard;
+    });
+
+    return {
+      query,
+      intent: { categories: [...intents, ...saasIntents.map((slug) => `saas:${slug}`)] },
+      reply: modules[0]?.description || REPLY[lang].found,
+      partners: modules,
+      matches: modules.map((module, index) => ({ ...module, score: 9.9 - index })),
+      telemetry: { console: "Admin Console", event: "concierge_saas_route", modules: saasIntents },
+    };
+  }
 
   const ranked = PARTNERS
     .map((partner) => ({ partner, score: scorePartner(query, intents, partner, region) }))
