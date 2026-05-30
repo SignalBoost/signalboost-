@@ -1,9 +1,7 @@
 "use client";
 
-export {}; // Garante o escopo isolado do módulo para o parser do TypeScript
-
 import React from "react";
-import { useTranslation } from "./i18n/useTranslation";
+import useTranslation from "./i18n/useTranslation";
 
 interface I18n {
   en?: string;
@@ -15,7 +13,7 @@ interface I18n {
 
 export default function PartnerDescription({
   description,
-  descriptionI18n
+  descriptionI18n,
 }: {
   description?: string;
   descriptionI18n?: I18n;
@@ -27,14 +25,11 @@ export default function PartnerDescription({
       const targetLang = lang as keyof I18n;
       return descriptionI18n[targetLang] || descriptionI18n.en || description || "";
     }
+
     return description || "";
   };
 
-  return (
-    <p style={styles.descText}>
-      {resolve()}
-    </p>
-  );
+  return <p style={styles.descText}>{resolve()}</p>;
 }
 
 const styles: Record<string, React.CSSProperties> = {
@@ -42,6 +37,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "14px",
     lineHeight: "1.6",
     color: "#94a3b8",
-    margin: 0
-  }
+    margin: 0,
+  },
 };
