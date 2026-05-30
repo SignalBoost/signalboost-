@@ -1,4 +1,5 @@
 import PartnerDescription from '@/components/PartnerDescription';
+import partners from '@/public/partners.json';
 
 export const metadata = {
   title: 'Our Partners | SignalBoost',
@@ -6,5 +7,5 @@ export const metadata = {
 };
 
 export default function PartnersPage() {
-  return <PartnerDescription />;
+  return <PartnerDescription partners={partners} />;
 }

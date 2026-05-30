@@ -52,6 +52,7 @@ export default function PartnerDescription({
 }: PartnerDescriptionProps) {
   const { t, lang } = useTranslation();
   const title = fallbackText(t("partner.title"), "Our Partners");
+  const directoryTitle = fallbackText(t("partner.directoryTitle"), "Partner Directory");
   const empty = fallbackText(t("partner.empty"), "No partners available");
   const categoryLabel = fallbackText(t("partner.category"), "Category");
   const visitLabel = fallbackText(t("partner.visit"), "Visit Node");
@@ -70,7 +71,7 @@ export default function PartnerDescription({
     <section style={styles.section} aria-labelledby="partner-description-title">
       <div style={styles.header}>
         <span style={styles.eyebrow}>{title}</span>
-        <h1 id="partner-description-title" style={styles.title}>{title}</h1>
+        <h1 id="partner-description-title" style={styles.title}>{directoryTitle}</h1>
       </div>
 
       {list.length === 0 ? (
