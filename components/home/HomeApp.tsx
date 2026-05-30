@@ -27,7 +27,7 @@ type HomepagePartner = {
   featured?: boolean;
 };
 
-export default function HomeApp({ lang, regionName = "", afterHero }: HomeAppProps) {
+export default function HomeApp({ afterHero }: HomeAppProps) {
   const { t } = useTranslation();
 
   // Browse-by-category: derived live from partners.json (insertion order
@@ -50,13 +50,7 @@ export default function HomeApp({ lang, regionName = "", afterHero }: HomeAppPro
 
   return (
     <main style={styles.mainCanvas}>
-      <ConciergeHero
-        lang={lang}
-        regionName={regionName}
-        onSubmit={async () => {}}
-        onChip={() => {}}
-        onBrowseAll={() => {}}
-      />
+      <ConciergeHero />
 
       {afterHero}
 
