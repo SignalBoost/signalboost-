@@ -1,45 +1,36 @@
-// → lib/supabase/middleware.ts
-//
-// Refreshes the Supabase session on each request and rewrites the auth cookies
-// with the .signalboostapp.com domain so the SaaS subdomain can read them.
-// Do NOT add logic between createServerClient() and getUser() — it must run
-// back-to-back or session refresh becomes unreliable.
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-const COOKIE_DOMAIN = process.env.NEXT_PUBLIC_COOKIE_DOMAIN; // ".signalboostapp.com"
+  // Ignora arquivos estáticos, rotas de API e frameworks internos do Next.js
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next();
+  }
 
-export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, {
-              ...options,
-              ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
-              path: "/",
-              sameSite: "lax",
-              secure: process.env.NODE_ENV === "production",
-            })
-          );
-        },
-      },
-    }
+  // Verifica se a rota já possui prefixo de locale ativo
+  const hasLocale = ['/en', '/es'].some(
+    (loc) => pathname.startsWith(`${loc}/`) || pathname === loc
   );
 
-  // Touch the session to trigger a refresh when needed.
-  await supabase.auth.getUser();
+  if (hasLocale) return NextResponse.next();
 
-  return supabaseResponse;
+  // Captura o país a partir do cabeçalho de borda da Vercel
+  const country = req.geo?.country || req.headers.get('x-vercel-ip-country') || 'US';
+
+  if (country === 'MX') {
+    req.nextUrl.pathname = `/es${pathname}`;
+    return NextResponse.redirect(req.nextUrl);
+  }
+
+  return NextResponse.next();
 }
+
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};
