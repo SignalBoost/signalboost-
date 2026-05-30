@@ -20,6 +20,12 @@ const BORDER = "#1e2630";
 const TEXT = "#e6edf3";
 const MUTED = "#9aa8b8";
 
+const SOCIAL_PROVIDERS = [
+  { name: "Google", href: "/api/auth/google", className: "social-login-button social-login-google" },
+  { name: "Facebook", href: "/api/auth/facebook", className: "social-login-button social-login-facebook" },
+  { name: "GitHub", href: "/api/auth/github", className: "social-login-button social-login-github" },
+];
+
 export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [next, setNext] = useState("/");
@@ -128,6 +134,18 @@ export default function LoginPage() {
             ? "One account works across the site and the app."
             : "Log in to continue to SignalBoost."}
         </p>
+
+        <div className="social-login-stack" aria-label="Social login options">
+          {SOCIAL_PROVIDERS.map((provider) => (
+            <a key={provider.name} href={provider.href} className={provider.className}>
+              Continue with {provider.name}
+            </a>
+          ))}
+        </div>
+
+        <div className="login-divider" role="presentation">
+          <span>or continue with email</span>
+        </div>
 
         <label style={labelStyle}>Email</label>
         <input
