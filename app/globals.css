@@ -1103,3 +1103,44 @@ a {
 .auth-callback-error {
   color: #f8857a !important;
 }
+
+.module-backend-panel {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px;
+}
+.module-backend-panel h2 {
+  margin: 8px 0 10px;
+  letter-spacing: -0.04em;
+}
+.module-backend-panel p:not(.cockpit-eyebrow) {
+  color: rgba(255, 255, 255, 0.7);
+}
+.module-backend-grid {
+  display: flex;
+  flex: 0 1 460px;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.module-backend-grid span {
+  border: 1px solid rgba(245, 197, 66, 0.2);
+  border-radius: 999px;
+  background: rgba(245, 197, 66, 0.08);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 9px 12px;
+}
+
+@media (max-width: 860px) {
+  .module-backend-panel {
+    flex-direction: column;
+  }
+  .module-backend-grid {
+    flex-basis: auto;
+    justify-content: flex-start;
+  }
+}

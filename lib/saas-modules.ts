@@ -10,11 +10,17 @@ export type SaasModule = {
   accent: string;
   features: string[];
   automations: string[];
+  titleKey: string;
+  summaryKey: string;
+  eyebrowKey: string;
 };
 
 export const saasModules: SaasModule[] = [
   {
     slug: "promote",
+    titleKey: "modules.promote.title",
+    summaryKey: "modules.promote.summary",
+    eyebrowKey: "modules.promote.eyebrow",
     title: "Promote Business",
     eyebrow: "Acquisition bay",
     summary:
@@ -29,6 +35,9 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "reviews",
+    titleKey: "modules.reviews.title",
+    summaryKey: "modules.reviews.summary",
+    eyebrowKey: "modules.reviews.eyebrow",
     title: "Reviews",
     eyebrow: "Trust telemetry",
     summary:
@@ -43,6 +52,9 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "calendar",
+    titleKey: "modules.calendar.title",
+    summaryKey: "modules.calendar.summary",
+    eyebrowKey: "modules.calendar.eyebrow",
     title: "Calendar",
     eyebrow: "Mission scheduling",
     summary:
@@ -57,6 +69,9 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "spreadsheets",
+    titleKey: "modules.spreadsheets.title",
+    summaryKey: "modules.spreadsheets.summary",
+    eyebrowKey: "modules.spreadsheets.eyebrow",
     title: "Spreadsheets",
     eyebrow: "Data operations",
     summary:
@@ -71,6 +86,9 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "outreach",
+    titleKey: "modules.outreach.title",
+    summaryKey: "modules.outreach.summary",
+    eyebrowKey: "modules.outreach.eyebrow",
     title: "Outreach",
     eyebrow: "Signal transmission",
     summary:
@@ -85,6 +103,9 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "assistant",
+    titleKey: "modules.assistant.title",
+    summaryKey: "modules.assistant.summary",
+    eyebrowKey: "modules.assistant.eyebrow",
     title: "Personal Assistant",
     eyebrow: "Concierge AI core",
     summary:

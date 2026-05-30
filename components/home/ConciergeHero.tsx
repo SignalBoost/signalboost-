@@ -12,7 +12,7 @@ interface ConciergeHeroProps {
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const handleScrollToPortal = () => {
-    window.location.href = "/office";
+    window.location.href = "/promote";
   };
 
   return (
@@ -44,7 +44,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
         {/* Grupo de Ações Core */}
         <div style={styles.actionGroup}>
           <button onClick={handleScrollToPortal} style={styles.brandButtonPrimary}>
-            Enter Workspace Dashboard
+            Open marketing tools
           </button>
           <a href="#features" style={styles.brandButtonSecondary}>
             Explore Infrastructure <span style={styles.arrow}>→</span>

@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
-type ModuleName = "concierge" | "calendar" | "reviews" | "spreadsheets" | "outreach";
+type ModuleName = "concierge" | "promote" | "calendar" | "reviews" | "spreadsheets" | "outreach";
 
 type ModuleResult = {
   module: ModuleName;
@@ -36,6 +36,7 @@ type ChatTurn = {
 
 const MODULES: { key: ModuleName; label: string }[] = [
   { key: "concierge", label: "Concierge" },
+  { key: "promote", label: "Promote" },
   { key: "calendar", label: "Calendar" },
   { key: "reviews", label: "Reviews" },
   { key: "spreadsheets", label: "Spreadsheets" },
@@ -126,7 +127,7 @@ export default function Concierge() {
         <p className="cockpit-eyebrow">Persistent AI orchestration</p>
         <h2>Concierge understands, routes, refines, and keeps going.</h2>
         <p>
-          The assistant coordinates Calendar, Reviews, Spreadsheets, Outreach, and Concierge intelligence. If a module is missing data, it shows fallback demo data instead of ending the task.
+          The assistant coordinates Promote, Calendar, Reviews, Spreadsheets, Outreach, and Concierge intelligence. If a module is missing data, it shows fallback demo data instead of ending the task.
         </p>
       </div>
 
