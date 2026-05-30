@@ -9,10 +9,6 @@ import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { label: "Promote", path: "/promote" },
-  { label: "Reviews", path: "/reviews" },
-  { label: "Calendar", path: "/calendar" },
-  { label: "Spreadsheets", path: "/spreadsheets" },
-  { label: "Outreach", path: "/outreach" },
   { label: "Personal Assistant", path: "/assistant" },
   { label: "Pricing", path: "/pricing" },
   { label: "Executive", path: "/dashboard" },
@@ -27,7 +23,10 @@ const oauthProviders = [
 function AuthControls() {
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    if (
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    ) {
       return;
     }
 
@@ -40,9 +39,11 @@ function AuthControls() {
       }
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      },
+    );
 
     return () => {
       mounted = false;
@@ -54,7 +55,11 @@ function AuthControls() {
     <div className="site-auth" aria-label="Authentication and OAuth providers">
       <div className="site-auth__providers" aria-label="OAuth providers">
         {oauthProviders.map((provider) => (
-          <a key={provider.path} href={provider.path} className="site-auth__provider">
+          <a
+            key={provider.path}
+            href={provider.path}
+            className="site-auth__provider"
+          >
             {provider.label}
           </a>
         ))}
@@ -84,11 +89,21 @@ export default function SiteHeader() {
         <span>signal</span>
         <strong>boost</strong>
       </Link>
-      <nav className="site-nav" aria-label="SignalBoost office module navigation">
+      <nav
+        className="site-nav"
+        aria-label="SignalBoost office module navigation"
+      >
         {navItems.map((item) => {
-          const active = item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
+          const active =
+            item.path === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.path);
           return (
-            <Link key={item.path} className={active ? "active" : ""} href={item.path}>
+            <Link
+              key={item.path}
+              className={active ? "active" : ""}
+              href={item.path}
+            >
               {item.label}
             </Link>
           );

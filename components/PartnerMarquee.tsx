@@ -2,7 +2,7 @@
 // File: components/PartnerMarquee.tsx
 
 import React from "react";
-import partnersJson from "@/public/partners.json";
+import partnersJson from "@/partners.json";
 import useTranslation from "./i18n/useTranslation";
 import "./marquee.css";
 
@@ -53,7 +53,9 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
       <section style={styles.wrapper} aria-labelledby="partner-marquee-title">
         <div style={styles.header}>
           <span style={styles.badge}>{title}</span>
-          <h3 id="partner-marquee-title" style={styles.heading}>{empty}</h3>
+          <h3 id="partner-marquee-title" style={styles.heading}>
+            {empty}
+          </h3>
         </div>
       </section>
     );
@@ -63,9 +65,15 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   const topRow = list.slice(0, halfLength);
   const bottomRow = list.slice(halfLength);
 
-  const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
+  const renderRow = (
+    items: Partner[],
+    isReverse: boolean,
+    rowKeyIdentifier: string,
+  ) => {
     if (items.length === 0) return null;
-    const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
+    const animationClass = isReverse
+      ? "force-marquee-right"
+      : "force-marquee-left";
 
     return (
       <div style={styles.rowMask}>
@@ -88,7 +96,8 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
                   onError={(event) => {
                     event.currentTarget.style.display = "none";
                     const fallback = event.currentTarget.nextElementSibling;
-                    if (fallback instanceof HTMLElement) fallback.style.display = "inline";
+                    if (fallback instanceof HTMLElement)
+                      fallback.style.display = "inline";
                   }}
                 />
                 <span style={styles.logoFallback} aria-hidden="true">
@@ -97,7 +106,14 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
               </span>
               <span style={styles.partnerCopy}>
                 <span style={styles.partnerName}>{partner.name}</span>
-                <span style={styles.partnerPlatform}>{partner.network || partner.category_label || partner.category}</span>
+                <span style={styles.partnerPlatform}>
+                  {partner.network ||
+                    partner.category_label ||
+                    partner.category}
+                </span>
+                <span style={styles.partnerDescription}>
+                  {partner.description}
+                </span>
               </span>
             </a>
           ))}
@@ -111,7 +127,10 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
       <div style={styles.header}>
         <span style={styles.badge}>{title}</span>
         <h3 id="partner-marquee-title" style={styles.heading}>
-          {fallbackText(t("partner.marqueeSubtitle"), "Featured brands you can browse on SignalBoost")}
+          {fallbackText(
+            t("partner.marqueeSubtitle"),
+            "Featured brands you can browse on SignalBoost",
+          )}
         </h3>
       </div>
       {renderRow(topRow, false, "top-track")}
@@ -153,8 +172,10 @@ const styles: Record<string, React.CSSProperties> = {
     width: "100%",
     overflow: "hidden",
     padding: "0.5rem 0",
-    WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-    maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+    WebkitMaskImage:
+      "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+    maskImage:
+      "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
   },
   logoChip: {
     display: "inline-flex",
@@ -198,5 +219,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "0.68rem",
     fontWeight: 500,
     lineHeight: 1.1,
+  },
+  partnerDescription: {
+    color: "rgba(255, 255, 255, 0.68)",
+    display: "-webkit-box",
+    fontSize: "0.68rem",
+    lineHeight: 1.25,
+    maxWidth: "240px",
+    overflow: "hidden",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: 2,
   },
 };
