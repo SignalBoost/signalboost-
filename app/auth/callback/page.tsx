@@ -2,22 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-
-const MARKETING_HOME = "/marketplace";
-const SAAS_HOME = "/dashboard";
-
-function isSafeRelativePath(value: string | null) {
-  return Boolean(value?.startsWith("/") && !value.startsWith("//"));
-}
+import { getAuthFlow, normalizePostAuthDestination } from "@/lib/supabase/auth-flows";
 
 function getPostAuthDestination(params: URLSearchParams) {
-  const next = params.get("next");
-
-  if (isSafeRelativePath(next)) {
-    return next as string;
-  }
-
-  return window.location.hostname === "saas.signalboostapp.com" ? SAAS_HOME : MARKETING_HOME;
+  const flow = getAuthFlow(window.location.hostname, params.get("flow"));
+  return normalizePostAuthDestination(params.get("next"), flow);
 }
 
 export default function AuthCallbackPage() {

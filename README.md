@@ -114,3 +114,29 @@ The site is served from the `main` branch root (`/`). The workflow pushes `feed.
 - Only `https://` URLs are included in `feed.json`.
 - Output is capped at **60 items** (`MAX_ITEMS` in `generate-feed.mjs`).
 - Node.js 22 is used in the workflow; the script uses only native `fetch` + `fast-xml-parser`.
+
+---
+
+## Supabase auth flow separation
+
+SignalBoost uses explicit auth-flow routing so the marketing site and SaaS dashboard can be configured as separate Supabase redirect targets.
+
+### Required Supabase redirect URLs
+
+Add both URLs to **Supabase Dashboard → Authentication → URL Configuration → Redirect URLs**:
+
+- `https://signalboostapp.com/auth/callback` for the main marketing/partner site.
+- `https://saas.signalboostapp.com/auth/callback` for the SaaS dashboard.
+
+The app sends `flow=main` for the marketing site and `flow=saas` for the SaaS dashboard. Main-site sign-in defaults to `/promote` and blocks SaaS-only workbench paths from becoming post-login destinations. SaaS sign-in defaults to `/dashboard`.
+
+### Optional hard separation with two Supabase projects
+
+For full isolation, create a second Supabase project for `signalboostapp.com` and keep the existing SaaS project for `saas.signalboostapp.com`:
+
+- Marketing deployment (`signalboostapp.com`): set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to the marketing Supabase project.
+- SaaS deployment (`saas.signalboostapp.com`): set those same env names to the SaaS Supabase project.
+- In the marketing project, allow only `https://signalboostapp.com/auth/callback` unless cross-project providers require local preview URLs too.
+- In the SaaS project, allow only `https://saas.signalboostapp.com/auth/callback` unless preview URLs are needed.
+
+If both deployments intentionally share one Supabase project, keep both redirect URLs in that project and use the host/flow-aware callback routing in this repo.

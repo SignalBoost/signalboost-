@@ -1,8 +1,7 @@
 // → app/auth/login/page.tsx
 //
-// Email + password login & signup on the marketing site. On success the
-// session cookie is written to .signalboostapp.com, so the user is also
-// authenticated on saas.signalboostapp.com without logging in again.
+// Email + password login & signup. Main-site auth returns to marketing/partner
+// pages, while SaaS auth returns to the SaaS dashboard callback.
 //
 // Reads ?mode=signup and ?next=/path from the URL via window.location (no
 // useSearchParams, so no Suspense boundary needed at build time).
@@ -11,6 +10,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getAuthFlow, getProductionCallbackUrl, isLocalHost, normalizePostAuthDestination } from "@/lib/supabase/auth-flows";
 
 const GOLD = "#f5c542";
 const DARK = "#0d1117";
@@ -26,47 +26,31 @@ const SOCIAL_PROVIDERS = [
   { name: "GitHub", path: "/api/auth/github", className: "social-login-button social-login-github" },
 ];
 
-function isSafeRelativePath(value: string | null) {
-  return Boolean(value?.startsWith("/") && !value.startsWith("//"));
-}
-
-function getDefaultDestination() {
-  if (typeof window !== "undefined" && window.location.hostname === "saas.signalboostapp.com") {
-    return "/dashboard";
-  }
-
-  return "/marketplace";
-}
-
 function getEmailRedirectTo(next: string) {
-  const callbackOrigin =
-    window.location.hostname === "saas.signalboostapp.com"
-      ? "https://saas.signalboostapp.com"
-      : window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-        ? window.location.origin
-        : "https://signalboostapp.com";
+  const flow = getAuthFlow(window.location.hostname);
+  const callbackUrl = new URL(
+    isLocalHost(window.location.hostname) ? `${window.location.origin}/auth/callback` : getProductionCallbackUrl(flow)
+  );
 
-  return `${callbackOrigin}/auth/callback?next=${encodeURIComponent(next)}`;
+  callbackUrl.searchParams.set("flow", flow);
+  callbackUrl.searchParams.set("next", normalizePostAuthDestination(next, flow));
+
+  return callbackUrl.toString();
 }
 
 function getSocialLoginHref(path: string, next: string) {
   const params = new URLSearchParams();
+  const flow = typeof window === "undefined" ? "main" : getAuthFlow(window.location.hostname);
 
-  if (isSafeRelativePath(next)) {
-    params.set("next", next);
-  }
+  params.set("flow", flow);
+  params.set("next", normalizePostAuthDestination(next, flow));
 
-  if (typeof window !== "undefined" && window.location.hostname === "saas.signalboostapp.com") {
-    params.set("flow", "saas");
-  }
-
-  const query = params.toString();
-  return query ? `${path}?${query}` : path;
+  return `${path}?${params.toString()}`;
 }
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [next, setNext] = useState("/marketplace");
+  const [next, setNext] = useState("/promote");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -76,8 +60,8 @@ export default function LoginPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("mode") === "signup") setMode("signup");
-    const n = params.get("next");
-    setNext(isSafeRelativePath(n) ? (n as string) : getDefaultDestination());
+    const flow = getAuthFlow(window.location.hostname, params.get("flow"));
+    setNext(normalizePostAuthDestination(params.get("next"), flow));
     if (params.get("error")) setError("Sign-in failed. Please try again.");
   }, []);
 
@@ -169,8 +153,8 @@ export default function LoginPage() {
         </h1>
         <p style={{ color: MUTED, fontSize: 13.5, margin: "0 0 20px" }}>
           {mode === "signup"
-            ? "One account works across the site and the app."
-            : "Log in to continue to SignalBoost."}
+            ? "Create access for SignalBoost marketing and partner tools."
+            : "Log in to continue to SignalBoost marketing and partner tools."}
         </p>
 
         <div className="social-login-stack" aria-label="Social login options">
