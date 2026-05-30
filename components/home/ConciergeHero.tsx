@@ -2,7 +2,22 @@
 
 import React from "react";
 
-export default function ConciergeHero() {
+interface ConciergeHeroProps {
+  lang?: string;
+  regionName?: string;
+  onSubmit?: (rawQuery: string) => Promise<void>;
+  onChip?: (category: string) => void;
+  onBrowseAll?: () => void;
+}
+
+export default function ConciergeHero({
+  lang = "en",
+  regionName = "",
+  onSubmit,
+  onChip,
+  onBrowseAll
+}: ConciergeHeroProps) {
+  
   const handleScrollToPortal = () => {
     window.location.href = "/office";
   };
