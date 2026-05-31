@@ -154,12 +154,12 @@ const styles: Record<string, React.CSSProperties> = {
   pageStack: {
     position: "relative",
     zIndex: 1,
-    maxWidth: "1240px",
+    maxWidth: "100%",
     margin: "0 auto",
-    padding: "24px 20px 110px",
+    padding: "0 0 80px",
     display: "flex",
     flexDirection: "column",
-    gap: "28px",
+    gap: "20px",
   },
 
   panel: {
