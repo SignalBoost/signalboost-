@@ -158,26 +158,36 @@ export const saasModules: SaasModule[] = [
 
 export const executivePanels = [
   {
+    titleKey: "executive.panels.financials.title",
+    detailKey: "executive.panels.financials.detail",
     title: "Financials",
     metric: "$128K",
     detail: "Tracked monthly opportunity across marketplace and SaaS modules.",
   },
   {
+    titleKey: "executive.panels.kpis.title",
+    detailKey: "executive.panels.kpis.detail",
     title: "KPIs",
     metric: "98.2%",
     detail: "Cockpit health across activation, retention, and response SLAs.",
   },
   {
+    titleKey: "executive.panels.crm.title",
+    detailKey: "executive.panels.crm.detail",
     title: "CRM",
     metric: "742",
     detail: "Qualified partner and customer records ready for outreach.",
   },
   {
+    titleKey: "executive.panels.forecasting.title",
+    detailKey: "executive.panels.forecasting.detail",
     title: "Forecasting",
     metric: "+17%",
     detail: "Projected growth based on campaign, review, and calendar signals.",
   },
   {
+    titleKey: "executive.panels.outreach.title",
+    detailKey: "executive.panels.outreach.detail",
     title: "Outreach",
     metric: "1.9K",
     detail: "Messages sequenced with monitored deliverability and replies.",
