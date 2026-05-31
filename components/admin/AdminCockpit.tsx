@@ -5,7 +5,8 @@ export default function AdminCockpit() {
   const panels = [
     { name: "User Management", detail: "Role and access controls" },
     { name: "System Logs", detail: "Operational event stream" },
-    { name: "Telemetry", detail: "Clicks, searches, campaigns, and module health" },
+    { name: "Telemetry", detail: "Clicks, searches, campaigns, review volume, sentiment trends, and module health" },
+    { name: "Reviews Moderation", detail: "27 queued items across Google, Yelp, Trustpilot, Facebook, TripAdvisor, app stores, and private feedback" },
     { name: "Settings", detail: "Production cockpit configuration" },
   ];
 

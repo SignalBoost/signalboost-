@@ -56,7 +56,7 @@ const MODULE_TERMS: Record<OrchestrationModule, string[]> = {
   concierge: ["help", "assistant", "concierge", "what", "how", "explain", "answer", "recommend", "find"],
   promote: ["promote", "marketing", "campaign", "advertise", "offer", "acquisition", "landing", "utm"],
   calendar: ["calendar", "schedule", "booking", "book", "meeting", "appointment", "reminder", "reschedule", "availability"],
-  reviews: ["review", "reviews", "rating", "reputation", "feedback", "testimonial", "sentiment", "google"],
+  reviews: ["review", "reviews", "rating", "reputation", "feedback", "testimonial", "sentiment", "google", "yelp", "trustpilot", "moderation"],
   spreadsheets: ["spreadsheet", "sheet", "csv", "rows", "table", "forecast", "budget", "data", "formula"],
   outreach: ["outreach", "email", "lead", "crm", "sequence", "follow up", "campaign", "message", "prospect"],
 };
@@ -139,11 +139,15 @@ const handlers: Record<OrchestrationModule, ModuleHandler> = {
     );
   },
   reviews(message) {
+    const text = normalize(message);
+    const wantsOutreach = ["testimonial", "outreach", "campaign", "social"].some((term) => includesTerm(text, term));
     return success(
       "reviews",
-      "Reviews can collect feedback, classify sentiment, and draft brand-safe responses.",
-      ["Open review inbox", "Flag negative sentiment", "Draft response options"],
-      { averageRating: 4.8, pendingResponses: 6, sentiment: "positive with two watch items" }
+      wantsOutreach
+        ? "Reviews can turn approved positive feedback into testimonial campaigns while keeping negative feedback private for recovery."
+        : "Reviews can collect localized requests, capture media-rich feedback, sync public platforms, monitor sentiment, and draft compliant replies.",
+      ["Schedule localized review request", "Open unified moderation inbox", "Draft platform-safe response", "Trigger testimonial outreach"],
+      { averageRating: 4.72, reviewVolume: 18432, pendingResponses: 27, sentiment: "89% positive today", connectors: ["google", "yelp", "trustpilot", "facebook", "tripadvisor", "app stores"] }
     );
   },
   spreadsheets(message) {
@@ -185,9 +189,9 @@ const DEMO_FALLBACKS: Record<OrchestrationModule, Omit<ModuleResult, "module" | 
     data: { source: "demo", demoSlots: ["09:30", "13:00", "16:30"] },
   },
   reviews: {
-    summary: "Reviews fallback is active with sample sentiment, pending responses, and response drafting.",
-    actions: ["Review sample sentiment", "Draft response options", "Escalate watch items"],
-    data: { source: "demo", averageRating: 4.8, pendingResponses: 6 },
+    summary: "Reviews fallback is active with sample collection, sync, moderation, response, widget, and analytics data.",
+    actions: ["Review sample sentiment", "Draft response options", "Escalate watch items", "Queue testimonial outreach"],
+    data: { source: "demo", averageRating: 4.72, pendingResponses: 27, reviewVolume: 18432 },
   },
   spreadsheets: {
     summary: "Spreadsheets fallback is active with demo rows, schema guardrails, and forecast snapshots.",

@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "validate:conflicts": "node scripts/validate-conflict-cleanup.mjs"
+    "validate:conflicts": "node scripts/validate-conflict-cleanup.mjs",
+    "test:jest": "jest --runInBand",
+    "test:playwright": "playwright test",
+    "test:reviews": "jest --runInBand tests/reviews && playwright test e2e/reviews.spec.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.33.1",
@@ -24,6 +27,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^15.0.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@playwright/test": "^1.52.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "@types/jest": "^29.5.14"
   }
 }
