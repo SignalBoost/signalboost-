@@ -52,32 +52,161 @@
     "promote": {
       "title": "Promote Business",
       "eyebrow": "Acquisition bay",
-      "summary": "Launch geo-aware campaigns, offer cards, and affiliate placements from one guided control surface."
+      "summary": "Launch geo-aware campaigns, offer cards, and affiliate placements from one guided control surface.",
+      "signal": "+24% intent lift",
+      "status": "Active",
+      "telemetry": "Campaign sync every 15 min",
+      "features": {
+        "1": "Offer builder",
+        "2": "Regional landing paths",
+        "3": "Partner conversion routing"
+      },
+      "automations": {
+        "1": "Concierge campaign prompts",
+        "2": "Audience clustering",
+        "3": "UTM quality checks"
+      }
     },
     "reviews": {
       "title": "Reviews",
       "eyebrow": "Trust telemetry",
-      "summary": "Collect, triage, and respond to customer feedback before reputation drift becomes revenue loss."
+      "summary": "Collect, triage, and respond to customer feedback before reputation drift becomes revenue loss.",
+      "signal": "4.8 avg pulse",
+      "status": "Collecting",
+      "telemetry": "Stage 1 request flow online",
+      "features": {
+        "1": "Review request form",
+        "2": "Supabase review queue",
+        "3": "Email/SMS delivery tracking"
+      },
+      "automations": {
+        "1": "Localized request copy",
+        "2": "Resend email dispatch",
+        "3": "SMS-ready customer queue"
+      }
     },
     "calendar": {
       "title": "Calendar",
       "eyebrow": "Mission scheduling",
-      "summary": "Coordinate bookings, launches, follow-ups, and executive check-ins with cockpit-grade visibility."
+      "summary": "Coordinate bookings, launches, follow-ups, and executive check-ins with cockpit-grade visibility.",
+      "signal": "92% slot health",
+      "status": "Synced",
+      "telemetry": "Availability mesh stable",
+      "features": {
+        "1": "Booking board",
+        "2": "Launch windows",
+        "3": "Team handoffs"
+      },
+      "automations": {
+        "1": "Persistent conflict detection",
+        "2": "Fallback demo slots",
+        "3": "Concierge rescheduling"
+      }
     },
     "spreadsheets": {
       "title": "Spreadsheets",
       "eyebrow": "Data operations",
-      "summary": "Turn rows into decisions with structured sheets for partner data, budgets, inventory, and forecasts."
+      "summary": "Turn rows into decisions with structured sheets for partner data, budgets, inventory, and forecasts.",
+      "signal": "18 live sheets",
+      "status": "Validated",
+      "telemetry": "Schema guard enabled",
+      "features": {
+        "1": "Smart tables",
+        "2": "Import lanes",
+        "3": "Formula guardrails"
+      },
+      "automations": {
+        "1": "Anomaly detection",
+        "2": "CSV cleanup",
+        "3": "Demo-data forecast snapshots"
+      }
     },
     "outreach": {
       "title": "Outreach",
       "eyebrow": "Signal transmission",
-      "summary": "Plan email, partner, and customer sequences with measurable follow-through across every channel."
+      "summary": "Plan email, partner, and customer sequences with measurable follow-through across every channel.",
+      "signal": "31% reply rate",
+      "status": "Broadcasting",
+      "telemetry": "Deliverability nominal",
+      "features": {
+        "1": "Sequence cockpit",
+        "2": "Lead queues",
+        "3": "Partner scripts"
+      },
+      "automations": {
+        "1": "Follow-up timing",
+        "2": "CRM enrichment",
+        "3": "Persistent conversation summaries"
+      }
     },
     "assistant": {
       "title": "Concierge",
       "eyebrow": "Concierge AI core",
-      "summary": "A unified assistant for marketplace discovery, SaaS operations, executive summaries, and next actions."
+      "summary": "A unified assistant for marketplace discovery, SaaS operations, executive summaries, and next actions.",
+      "signal": "24/7 AI copilot",
+      "status": "Online",
+      "telemetry": "Context bridge ready",
+      "features": {
+        "1": "Marketplace matching",
+        "2": "Task drafting",
+        "3": "Executive briefings"
+      },
+      "automations": {
+        "1": "Next-best action",
+        "2": "Clarify-or-default prompts",
+        "3": "Cross-module memory"
+      }
     }
+  },
+  "modulePage": {
+    "missionSignal": "Mission signal",
+    "coreSystems": "Core systems",
+    "conciergeAutomations": "Concierge AI automations",
+    "conciergeEyebrow": "Concierge AI",
+    "conciergeTitle": "Connected to marketplace discovery and SaaS execution",
+    "conciergeDescription": "SignalBoost routes buyer intent, partner data, and operational tasks through a single assistant layer so teams can move from question to action.",
+    "conciergeCta": "Open Concierge",
+    "backendEyebrow": "signalboost-live backend",
+    "backendLoading": "Connecting live module API…",
+    "backendConnected": "Live API connected",
+    "backendFallback": "Fallback API path active",
+    "backendFallbackDescription": "SignalBoost is checking the live backend and will keep this module usable with safe fallback data."
+  },
+  "reviewsStage1": {
+    "eyebrow": "Reviews Stage 1",
+    "title": "Collect customer reviews by email or SMS",
+    "description": "Send a localized request, store the customer in Supabase, and keep the queue ready for Google review display and response monitoring stages.",
+    "businessLabel": "Business name",
+    "customerLabel": "Customer name",
+    "emailLabel": "Customer email",
+    "phoneLabel": "Customer phone",
+    "channelLabel": "Delivery channel",
+    "channelEmail": "Email",
+    "channelSms": "SMS",
+    "channelBoth": "Email + SMS",
+    "ratingLabel": "Private rating",
+    "messageLabel": "Review request note",
+    "messagePlaceholder": "Thanks for visiting us — could you share your experience?",
+    "submit": "Send review request",
+    "sending": "Sending request…",
+    "success": "Review request queued and stored.",
+    "error": "Could not queue the review request. Please try again.",
+    "disclaimer": "SMS delivery is queued in Supabase for provider activation; email sends immediately when RESEND_API_KEY is configured.",
+    "inboxTitle": "Stage 1 collection queue",
+    "inboxDescription": "Each submission creates a Supabase review_requests row with locale, channel, and delivery status metadata."
+  },
+  "marketplace": {
+    "eyebrow": "SignalBoost marketplace",
+    "title": "Regional partner marketplace",
+    "description": "Browse verified affiliate partners with logos that load from trusted brand sources and links resolved for your region when available.",
+    "regionLabel": "Region",
+    "categoryLabel": "Category",
+    "allCategories": "All categories",
+    "partnersCount": "partners",
+    "visit": "Visit regional offer",
+    "details": "Details",
+    "featured": "Featured",
+    "regionalUrl": "Regional link active",
+    "globalUrl": "Global link"
   }
 }

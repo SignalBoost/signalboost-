@@ -24,11 +24,11 @@ export default function ModuleGrid() {
           <Link className="module-card" href={module.href} key={module.slug} style={{ "--module-accent": module.accent } as CSSProperties}>
             <div className="module-card-topline">
               <span>{fallbackText(t(module.eyebrowKey), module.eyebrow)}</span>
-              <strong>{module.status}</strong>
+              <strong>{fallbackText(t(module.statusKey), module.status)}</strong>
             </div>
             <h3>{fallbackText(t(module.titleKey), module.title)}</h3>
             <p>{fallbackText(t(module.summaryKey), module.summary)}</p>
-            <div className="module-signal">{module.signal}</div>
+            <div className="module-signal">{fallbackText(t(module.signalKey), module.signal)}</div>
           </Link>
         ))}
       </div>

@@ -4,6 +4,7 @@
 import React from "react";
 import partnersJson from "@/public/partners.json";
 import useTranslation from "./i18n/useTranslation";
+import { logoSrc } from "@/lib/partner-links";
 import "./marquee.css";
 
 interface Partner {
@@ -25,10 +26,6 @@ interface MarqueeProps {
 }
 
 const partners = partnersJson as Partner[];
-
-function partnerLogoSrc(logo: string) {
-  return `/logos/${logo}`;
-}
 
 function partnerDetailHref(partner: Partner) {
   return `/partners/${partner.id}`;
@@ -81,7 +78,7 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
               <span style={styles.logoChip}>
                 <img
                   className="partner-logo"
-                  src={partnerLogoSrc(partner.logo)}
+                  src={logoSrc(partner.logo)}
                   alt={`${partner.name} logo`}
                   loading="lazy"
                   style={styles.logoImage}

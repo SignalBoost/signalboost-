@@ -13,14 +13,30 @@ export type SaasModule = {
   titleKey: string;
   summaryKey: string;
   eyebrowKey: string;
+  signalKey: string;
+  statusKey: string;
+  telemetryKey: string;
+  featureKeys: string[];
+  automationKeys: string[];
 };
+
+function moduleKeys(slug: string) {
+  return {
+    titleKey: `modules.${slug}.title`,
+    summaryKey: `modules.${slug}.summary`,
+    eyebrowKey: `modules.${slug}.eyebrow`,
+    signalKey: `modules.${slug}.signal`,
+    statusKey: `modules.${slug}.status`,
+    telemetryKey: `modules.${slug}.telemetry`,
+    featureKeys: [1, 2, 3].map((item) => `modules.${slug}.features.${item}`),
+    automationKeys: [1, 2, 3].map((item) => `modules.${slug}.automations.${item}`),
+  };
+}
 
 export const saasModules: SaasModule[] = [
   {
     slug: "promote",
-    titleKey: "modules.promote.title",
-    summaryKey: "modules.promote.summary",
-    eyebrowKey: "modules.promote.eyebrow",
+    ...moduleKeys("promote"),
     title: "Promote Business",
     eyebrow: "Acquisition bay",
     summary:
@@ -35,26 +51,22 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "reviews",
-    titleKey: "modules.reviews.title",
-    summaryKey: "modules.reviews.summary",
-    eyebrowKey: "modules.reviews.eyebrow",
+    ...moduleKeys("reviews"),
     title: "Reviews",
     eyebrow: "Trust telemetry",
     summary:
       "Collect, triage, and respond to customer feedback before reputation drift becomes revenue loss.",
     signal: "4.8 avg pulse",
-    status: "Monitoring",
-    telemetry: "Sentiment scan online",
+    status: "Collecting",
+    telemetry: "Stage 1 request flow online",
     href: "/reviews",
     accent: "#7dd3fc",
-    features: ["Review inbox", "Response drafts", "Escalation lanes"],
-    automations: ["AI tone matching", "Fallback response drafts", "Weekly trust digest"],
+    features: ["Review request form", "Supabase review queue", "Email/SMS delivery tracking"],
+    automations: ["Localized request copy", "Resend email dispatch", "SMS-ready customer queue"],
   },
   {
     slug: "calendar",
-    titleKey: "modules.calendar.title",
-    summaryKey: "modules.calendar.summary",
-    eyebrowKey: "modules.calendar.eyebrow",
+    ...moduleKeys("calendar"),
     title: "Calendar",
     eyebrow: "Mission scheduling",
     summary:
@@ -69,9 +81,7 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "spreadsheets",
-    titleKey: "modules.spreadsheets.title",
-    summaryKey: "modules.spreadsheets.summary",
-    eyebrowKey: "modules.spreadsheets.eyebrow",
+    ...moduleKeys("spreadsheets"),
     title: "Spreadsheets",
     eyebrow: "Data operations",
     summary:
@@ -86,9 +96,7 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "outreach",
-    titleKey: "modules.outreach.title",
-    summaryKey: "modules.outreach.summary",
-    eyebrowKey: "modules.outreach.eyebrow",
+    ...moduleKeys("outreach"),
     title: "Outreach",
     eyebrow: "Signal transmission",
     summary:
@@ -103,9 +111,7 @@ export const saasModules: SaasModule[] = [
   },
   {
     slug: "assistant",
-    titleKey: "modules.assistant.title",
-    summaryKey: "modules.assistant.summary",
-    eyebrowKey: "modules.assistant.eyebrow",
+    ...moduleKeys("assistant"),
     title: "Personal Assistant",
     eyebrow: "Concierge AI core",
     summary:

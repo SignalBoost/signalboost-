@@ -9,6 +9,7 @@ import {
   getCategoryLabel,
   getRegionLabel,
 } from "@/lib/partners";
+import { logoSrc, resolveRegionalPartnerUrl } from "@/lib/partner-links";
 
 export async function generateStaticParams() {
   const partners = getAllPartners();
@@ -87,14 +88,15 @@ export default async function PartnerPage({
 
   const initial = partner.name.charAt(0).toUpperCase();
 
-  const logoSrc = `/logos/${partner.logo}`;
+  const partnerLogo = logoSrc(partner.logo);
+  const partnerUrl = resolveRegionalPartnerUrl(partner, "ot");
 
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: partner.name,
     description: partner.description,
-    url: partner.url,
+    url: partnerUrl,
     areaServed: partner.regions.map(
       getRegionLabel
     ),
@@ -130,7 +132,7 @@ export default async function PartnerPage({
           <div className="partner-top">
             <div className="partner-logo">
               <img
-                src={logoSrc}
+                src={partnerLogo}
                 alt={partner.name}
               />
 
@@ -199,7 +201,7 @@ export default async function PartnerPage({
           )}
 
           <a
-            href={partner.url}
+            href={partnerUrl}
             className="partner-cta"
             target="_blank"
             rel="noopener noreferrer sponsored"
