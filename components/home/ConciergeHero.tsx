@@ -1,610 +1,261 @@
-"use client";
-
-import React, { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { stationWorkflows, workflowConnectorSecurityNotes } from "@/lib/station-workflows";
-import useTranslation from "@/components/i18n/useTranslation";
-import { createClient } from "@/lib/supabase/client";
-import partners from "@/partners.json";
-
-interface ConciergeHeroProps {
-  lang?: string;
-  regionName?: string;
-  onSubmit?: (rawQuery: string) => Promise<void>;
-  onChip?: (category: string) => void;
-  onBrowseAll?: () => void;
-}
-
-type DirPartner = {
-  id: string;
-  name: string;
-  logo?: string;
-  description?: string;
-  category_key?: string;
-  category_label?: string;
-  category?: string;
-  network?: string;
-  featured?: boolean;
-  tier?: number;
-};
-
-const FREE_TRIAL_LIMIT = 3;
-const TRIAL_STORAGE_KEY = "sb_station_trials";
-
-function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
-}
-
-// ---- Full partner directory data ------------------------------------------
-const allPartners: DirPartner[] = ([...(partners as DirPartner[])]).sort(
-  (a, b) => (a.tier ?? 99) - (b.tier ?? 99)
-);
-const totalPartners = allPartners.length;
-
-const categories = (() => {
-  const map = new Map<string, { key: string; label: string; count: number }>();
-  for (const p of allPartners) {
-    const key = p.category_key || p.category || "other";
-    const label = p.category_label || p.category || "Other";
-    const existing = map.get(key);
-    if (existing) existing.count += 1;
-    else map.set(key, { key, label, count: 1 });
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SignalBoost — Signal-wave field</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+  :root{
+    --bg:#040408; --text:#f5f6f8; --muted:#8a909c; --soft:rgba(245,246,248,.72);
+    --line:rgba(255,255,255,.10); --gold:#f5c542; --goldDeep:#dfa837;
+    --display:'Fraunces',Georgia,serif; --ui:'Outfit',system-ui,sans-serif;
   }
-  return Array.from(map.values());
-})();
+  *{box-sizing:border-box}
+  body{ margin:0; background:var(--bg); color:var(--text); font-family:var(--ui); min-height:100vh; overflow-x:hidden; }
+  .wrap{ position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:40px 22px 60px; }
+  .brand{ font-family:var(--display); font-weight:900; font-size:22px; } .brand b{ color:var(--gold); }
+  h1{ font-family:var(--display); font-weight:600; letter-spacing:-.03em; font-size:clamp(26px,4vw,42px); margin:16px 0 6px; }
+  .sub{ color:var(--soft); font-size:15px; max-width:680px; margin:0 0 20px; line-height:1.55; }
 
-// Split for two marquee rows
-const marqueeHalf = Math.ceil(allPartners.length / 2);
-const marqueeRowA = allPartners.slice(0, marqueeHalf);
-const marqueeRowB = allPartners.slice(marqueeHalf);
+  .controls{ display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
+  .search{ width:100%; height:48px; background:rgba(255,255,255,.05); color:var(--text); border:1px solid var(--line); border-radius:14px; padding:0 16px; outline:none; font-family:inherit; font-size:15px; }
+  .search:focus{ border-color:rgba(245,197,66,.55); box-shadow:0 0 0 3px rgba(245,197,66,.1); }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line); background:rgba(255,255,255,.05); color:var(--text); border-radius:999px; padding:8px 13px; font-size:12.5px; font-weight:800; cursor:pointer; font-family:inherit; transition:.16s; }
+  .chip.active{ border-color:rgba(245,197,66,.6); background:rgba(245,197,66,.14); color:var(--gold); }
+  .chip .cnt{ color:var(--muted); font-size:11px; }
+  .barrow{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin:14px 0 8px; }
+  .count{ color:var(--muted); font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
+  .speed{ display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; font-weight:700; }
+  .speed input{ accent-color:var(--gold); }
+  .tog{ border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--soft); border-radius:999px; padding:7px 12px; font-size:12px; font-weight:800; font-family:inherit; cursor:pointer; }
+  .tog.on{ border-color:rgba(245,197,66,.55); color:var(--gold); background:rgba(245,197,66,.1); }
 
-const stationTools = [
-  { label: "Calendar", note: "Schedule & sync", href: "/calendar" },
-  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets" },
-  { label: "Reviews", note: "Reputation", href: "/reviews" },
-  { label: "Outreach", note: "Campaigns", href: "/outreach" },
-  { label: "Promote", note: "Marketing", href: "/promote" },
-  { label: "Personal Assistant", note: "AI tasks", href: "/assistant" },
+  .field{ position:relative; width:100%; height:560px; border:1px solid var(--line); border-radius:22px; overflow:hidden; background:radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%); }
+  #waves{ position:absolute; inset:0; z-index:0; display:block; }
+  .node{
+    position:absolute; z-index:2; display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text);
+    border:1px solid rgba(245,197,66,.18); border-radius:14px;
+    background:linear-gradient(180deg, rgba(18,18,26,.86), rgba(8,8,14,.86));
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    padding:9px 13px 9px 9px; cursor:pointer; white-space:nowrap;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+    transition:opacity .5s, border-color .2s, box-shadow .2s; will-change:transform;
+  }
+  .node:hover{ border-color:rgba(245,197,66,.6); box-shadow:0 16px 44px rgba(0,0,0,.55), 0 0 26px rgba(245,197,66,.2); z-index:30; }
+  .node.gone{ opacity:0; pointer-events:none; }
+  .logo{ width:34px; height:34px; flex-shrink:0; border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#fff; }
+  .meta{ display:flex; flex-direction:column; min-width:0; }
+  .name{ font-size:13px; font-weight:800; }
+  .cat{ color:var(--goldDeep); font-size:10.5px; font-weight:700; }
+  .note{ margin-top:22px; color:var(--muted); font-size:12.5px; line-height:1.6; }
+</style>
+
+<div class="wrap">
+  <div class="brand">signal<b>boost</b></div>
+  <h1>Signal-wave field</h1>
+  <p class="sub">Radio ripples broadcast continuously from the centre — the SignalBoost metaphor made literal. Partners drift as signals within the waves. The colours below are <em>simulated brand colours</em> to show how real logos break up the sameness. Search or filter to steer the field; the waves never stop.</p>
+
+  <div class="controls">
+    <input class="search" id="search" type="text" placeholder="Search partners (e.g. hotels, Brazil, eSIM)…" />
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="barrow">
+    <span class="count" id="count"></span>
+    <label class="speed">drift <input id="speed" type="range" min="0" max="100" value="40"></label>
+    <label class="speed">wave <input id="wspeed" type="range" min="0" max="100" value="50"></label>
+    <button class="tog on" id="pauseHover">pause on hover</button>
+  </div>
+
+  <div class="field" id="field">
+    <canvas id="waves"></canvas>
+  </div>
+
+  <p class="note">Throwaway playground — repo untouched. Continuous on-brand atmosphere: radio waves always emanating, signals always drifting, filtering steers without freezing. Drift + wave sliders tune the feel. Real partner logos would replace the coloured chips and add the variety you noticed was missing.</p>
+</div>
+
+<script>
+const PARTNERS = [
+  {n:"Aviasales",c:"Flights",k:"flights",col:"#2196f3"},{n:"CVC",c:"Flights",k:"flights",col:"#ffb300"},{n:"Oman Air",c:"Flights",k:"flights",col:"#c62828"},{n:"Lastminute",c:"Flights",k:"flights",col:"#e91e63"},
+  {n:"Booking BR",c:"Hotels",k:"hotels",col:"#003580"},{n:"Trivago",c:"Hotels",k:"hotels",col:"#e53935"},{n:"Travelking",c:"Hotels",k:"hotels",col:"#00897b"},{n:"Zenhotels",c:"Hotels",k:"hotels",col:"#5e35b1"},{n:"Planet Hotels",c:"Hotels",k:"hotels",col:"#1e88e5"},
+  {n:"Airalo",c:"SIM",k:"esim",col:"#f4511e"},{n:"Saily",c:"SIM",k:"esim",col:"#7e57c2"},{n:"Yesim",c:"SIM",k:"esim",col:"#26a69a"},{n:"Drimsim",c:"SIM",k:"esim",col:"#43a047"},
+  {n:"Klook",c:"Tours",k:"tours",col:"#ff5722"},{n:"Tiqets",c:"Tours",k:"tours",col:"#00bcd4"},{n:"WeGoTrip",c:"Tours",k:"tours",col:"#ab47bc"},{n:"Searadar",c:"Tours",k:"tours",col:"#039be5"},
+  {n:"Kiwitaxi",c:"Transfers",k:"transfers",col:"#fdd835"},{n:"Welcome Pickups",c:"Transfers",k:"transfers",col:"#ff7043"},{n:"GetTransfer",c:"Transfers",k:"transfers",col:"#1565c0"},
+  {n:"Alamo",c:"Car Rentals",k:"car",col:"#2e7d32"},{n:"Europcar",c:"Car Rentals",k:"car",col:"#33691e"},{n:"QEEQ",c:"Car Rentals",k:"car",col:"#0277bd"},{n:"VIP Cars",c:"Car Rentals",k:"car",col:"#6a1b9a"},
+  {n:"AirHelp",c:"Insurance",k:"ins",col:"#00acc1"},{n:"EKTA",c:"Insurance",k:"ins",col:"#3949ab"},{n:"Compensair",c:"Insurance",k:"ins",col:"#546e7a"},
+  {n:"Amazon",c:"Marketplace",k:"mkt",col:"#ff9900"},{n:"AliExpress",c:"Marketplace",k:"mkt",col:"#e62e04"},{n:"Miravia",c:"Marketplace",k:"mkt",col:"#d81b60"},
 ];
 
-// ---- A single partner tile (used in both marquee + grid) ------------------
-function PartnerTile({ p, variant }: { p: DirPartner; variant: "marquee" | "grid" }) {
-  const isGrid = variant === "grid";
-  return (
-    <Link
-      href={`/partners/${p.id}`}
-      className={isGrid ? "sb-dir-card" : "sb-dir-chip"}
-      title={p.description || p.name}
-      aria-label={`${p.name} — ${p.category_label || p.category || "partner"}`}
-    >
-      <span className="sb-dir-logo">
-        {p.logo ? (
-          <img
-            src={`/logos/${p.logo}`}
-            alt={`${p.name} logo`}
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-              const sib = e.currentTarget.nextElementSibling;
-              if (sib instanceof HTMLElement) sib.style.display = "flex";
-            }}
-          />
-          ) : null}
-        <span className="sb-dir-mono" style={{ display: p.logo ? "none" : "flex" }} aria-hidden="true">
-          {p.name.charAt(0).toUpperCase()}
-        </span>
-      </span>
-      <span className="sb-dir-meta">
-        <span className="sb-dir-name">{p.name}</span>
-        <span className="sb-dir-cat">{p.category_label || p.category || p.network}</span>
-      </span>
-    </Link>
-  );
+const field=document.getElementById('field');
+const canvas=document.getElementById('waves');
+const ctx=canvas.getContext('2d');
+const chipsEl=document.getElementById('chips');
+const search=document.getElementById('search');
+const countEl=document.getElementById('count');
+const speedEl=document.getElementById('speed');
+const wspeedEl=document.getElementById('wspeed');
+const pauseBtn=document.getElementById('pauseHover');
+let activeCat='all', query='', drift=0.40, waveSpeed=0.5, pauseOnHover=true;
+
+const seen=new Map(); PARTNERS.forEach(p=>seen.set(p.k,(seen.get(p.k)||0)+1));
+function catLabel(k){const p=PARTNERS.find(x=>x.k===k);return p?p.c:k;}
+chipsEl.innerHTML=`<button class="chip active" data-k="all">All <span class="cnt">${PARTNERS.length}</span></button>`+
+  [...seen.entries()].map(([k,n])=>`<button class="chip" data-k="${k}">${catLabel(k)} <span class="cnt">${n}</span></button>`).join('');
+chipsEl.onclick=e=>{const b=e.target.closest('.chip'); if(!b)return; activeCat=b.dataset.k; [...chipsEl.children].forEach(c=>c.classList.toggle('active',c===b)); applyFilter();};
+search.oninput=()=>{query=search.value.trim().toLowerCase(); applyFilter();};
+speedEl.oninput=()=>drift=speedEl.value/100;
+wspeedEl.oninput=()=>waveSpeed=wspeedEl.value/100;
+pauseBtn.onclick=()=>{pauseOnHover=!pauseOnHover; pauseBtn.classList.toggle('on',pauseOnHover);};
+
+const W=()=>field.clientWidth, H=()=>field.clientHeight;
+function sizeCanvas(){ const r=field.getBoundingClientRect(); canvas.width=r.width*devicePixelRatio; canvas.height=r.height*devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+
+const nodes=[];
+PARTNERS.forEach(p=>{
+  const el=document.createElement('a');
+  el.className='node'; el.title=p.n;
+  el.innerHTML=`<span class="logo" style="background:${p.col}">${p.n.charAt(0)}</span><span class="meta"><span class="name">${p.n}</span><span class="cat">${p.c}</span></span>`;
+  field.appendChild(el);
+  const node={p,el,x:0,y:0,vx:0,vy:0,w:150,h:52,hover:false,visible:true};
+  el.addEventListener('pointerenter',()=>node.hover=true);
+  el.addEventListener('pointerleave',()=>node.hover=false);
+  nodes.push(node);
+});
+
+function seed(){ const w=W(),h=H(); nodes.forEach(n=>{ n.w=n.el.offsetWidth||150; n.h=n.el.offsetHeight||52; n.x=Math.random()*(w-n.w); n.y=Math.random()*(h-n.h); const a=Math.random()*Math.PI*2,s=0.25+Math.random()*0.35; n.vx=Math.cos(a)*s; n.vy=Math.sin(a)*s; }); }
+
+function vis(n){ if(activeCat!=='all'&&n.p.k!==activeCat)return false; if(!query)return true; return (n.p.n+' '+n.p.c).toLowerCase().includes(query); }
+function applyFilter(){ let c=0; nodes.forEach(n=>{ n.visible=vis(n); n.el.classList.toggle('gone',!n.visible); if(n.visible)c++; }); countEl.textContent=(activeCat==='all'&&!query)?`${c} signals broadcasting`:`${c} ${c===1?'signal':'signals'} matched`; }
+
+let t=0, last=performance.now();
+
+// ---- Cosmic reaction state: sporadic energy arcs between signals ----
+let flash=0;                 // 0..1 field brightening when a reaction fires
+let nextReaction=performance.now()+1500+Math.random()*2500;
+let arcs=[];                 // active arcs {pts:[{x,y}...], life, max, hue}
+
+function jaggedPath(x1,y1,x2,y2,segments,jitter){
+  const pts=[{x:x1,y:y1}];
+  for(let i=1;i<segments;i++){
+    const tt=i/segments;
+    const nx=x1+(x2-x1)*tt + (Math.random()-0.5)*jitter;
+    const ny=y1+(y2-y1)*tt + (Math.random()-0.5)*jitter;
+    pts.push({x:nx,y:ny});
+  }
+  pts.push({x:x2,y:y2});
+  return pts;
 }
 
-export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
-  const { t } = useTranslation();
-  const router = useRouter();
-
-  // Directory state
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [query, setQuery] = useState("");
-
-  // Station / trial state
-  const [isAuthed, setIsAuthed] = useState(false);
-  const [triesUsed, setTriesUsed] = useState(0);
-  const [ranWorkflows, setRanWorkflows] = useState<Record<string, boolean>>({});
-  const [activeWorkflow, setActiveWorkflow] = useState(stationWorkflows[0]);
-  const [showTrialModal, setShowTrialModal] = useState(false);
-
-  const connectorList = useMemo(
-    () => Array.from(new Set(stationWorkflows.flatMap((w) => w.connectors))),
-    []
-  );
-  const compactWorkflows = stationWorkflows.slice(0, 3);
-  const visibleConnectors = connectorList.slice(0, 6);
-  const extraConnectors = connectorList.length - visibleConnectors.length;
-
-  useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(TRIAL_STORAGE_KEY);
-      if (stored) setTriesUsed(Math.min(parseInt(stored, 10) || 0, FREE_TRIAL_LIMIT));
-    } catch {
-      /* ignore */
-    }
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return;
-    const supabase = createClient();
-    let mounted = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (mounted) setIsAuthed(Boolean(data.user));
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-      setIsAuthed(Boolean(session?.user));
-    });
-    return () => {
-      mounted = false;
-      listener.subscription.unsubscribe();
-    };
-  }, []);
-
-  const remaining = Math.max(0, FREE_TRIAL_LIMIT - triesUsed);
-
-  const attemptStationAction = (proceed: () => void) => {
-    if (isAuthed) return proceed();
-    if (triesUsed >= FREE_TRIAL_LIMIT) {
-      setShowTrialModal(true);
-      return;
-    }
-    const next = triesUsed + 1;
-    setTriesUsed(next);
-    try {
-      window.localStorage.setItem(TRIAL_STORAGE_KEY, String(next));
-    } catch {
-      /* ignore */
-    }
-    proceed();
-  };
-
-  const openTool = (href: string) => attemptStationAction(() => router.push(href));
-  const runWorkflow = (slug: string) => {
-    const w = stationWorkflows.find((c) => c.slug === slug) || stationWorkflows[0];
-    setActiveWorkflow(w);
-    attemptStationAction(() => setRanWorkflows((cur) => ({ ...cur, [slug]: true })));
-  };
-
-  const handleLogout = async () => {
-    try {
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        const supabase = createClient();
-        await supabase.auth.signOut();
-      }
-    } catch {
-      /* ignore */
-    }
-    try {
-      window.localStorage.removeItem(TRIAL_STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
-    setIsAuthed(false);
-    setTriesUsed(0);
-    setRanWorkflows({});
-    router.refresh();
-  };
-  const handleResetTries = () => {
-    try {
-      window.localStorage.removeItem(TRIAL_STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
-    setTriesUsed(0);
-    setRanWorkflows({});
-  };
-
-  // ---- Directory filtering -------------------------------------------------
-  const q = query.trim().toLowerCase();
-  const filtered = useMemo(() => {
-    return allPartners.filter((p) => {
-      const catKey = p.category_key || p.category || "other";
-      if (activeCategory !== "all" && catKey !== activeCategory) return false;
-      if (!q) return true;
-      return `${p.name} ${p.category_label || ""} ${p.network || ""}`.toLowerCase().includes(q);
-    });
-  }, [activeCategory, q]);
-
-  const showGrid = activeCategory !== "all" || q.length > 0;
-  const countText = showGrid
-    ? `${filtered.length} ${filtered.length === 1 ? "partner" : "partners"}`
-    : `Showing all ${totalPartners} partners`;
-
-  return (
-    <section style={styles.heroSection} aria-labelledby="partner-hero-title">
-      <div style={styles.glowLeft} aria-hidden="true" />
-      <div style={styles.glowRight} aria-hidden="true" />
-      <div style={styles.gridOverlay} aria-hidden="true" />
-
-      <div className="sb-hero-shell">
-        {/* ============ LEFT: LIVE PARTNER DIRECTORY ============ */}
-        <div style={styles.dirZone}>
-          <div style={styles.dirHeader}>
-            <span style={styles.badgeContainer}>
-              <span style={styles.badgePulse} />
-              <span style={styles.badgeText}>Trusted partner network</span>
-            </span>
-            <h1 id="partner-hero-title" style={styles.dirHeading}>
-              {fallbackText(t("homepage.partnerHeroTitle"), "Trusted partners, all in one place")}
-            </h1>
-            <p style={styles.dirSub}>
-              {totalPartners}+ vetted, affiliate-backed partners across flights, hotels, eSIM, tours, car rentals and
-              more — browse freely, no sign-up needed.
-            </p>
-          </div>
-
-          {/* Search + category filters */}
-          <div style={styles.dirControls}>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search partners (e.g. hotels, Brazil, eSIM)…"
-              style={styles.dirSearch}
-              aria-label="Search partners"
-            />
-            <div style={styles.dirChips} role="tablist" aria-label="Partner categories">
-              <button
-                type="button"
-                onClick={() => setActiveCategory("all")}
-                style={{ ...styles.dirChip, ...(activeCategory === "all" ? styles.dirChipActive : {}) }}
-              >
-                All <span style={styles.dirChipCount}>{totalPartners}</span>
-              </button>
-              {categories.map((c) => (
-                <button
-                  type="button"
-                  key={c.key}
-                  onClick={() => setActiveCategory(c.key)}
-                  style={{ ...styles.dirChip, ...(activeCategory === c.key ? styles.dirChipActive : {}) }}
-                >
-                  {c.label} <span style={styles.dirChipCount}>{c.count}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={styles.dirCount}>{countText}</div>
-
-          {/* Directory body: marquee when idle, grid when filtering/searching */}
-          {showGrid ? (
-            filtered.length ? (
-              <div style={styles.dirGridScroll}>
-                <div style={styles.dirGrid}>
-                  {filtered.map((p) => (
-                    <PartnerTile key={p.id} p={p} variant="grid" />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div style={styles.dirEmpty}>No partners match “{query}”. Try another search or category.</div>
-            )
-          ) : (
-            <div style={styles.dirMarquee}>
-              <div className="sb-dir-row">
-                <div className="sb-dir-track">
-                  {[...marqueeRowA, ...marqueeRowA].map((p, i) => (
-                    <PartnerTile key={`a-${p.id}-${i}`} p={p} variant="marquee" />
-                  ))}
-                </div>
-              </div>
-              <div className="sb-dir-row">
-                <div className="sb-dir-track rev">
-                  {[...marqueeRowB, ...marqueeRowB].map((p, i) => (
-                    <PartnerTile key={`b-${p.id}-${i}`} p={p} variant="marquee" />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div style={styles.dirActions}>
-            <Link href="/marketplace" style={styles.brandButtonPrimary}>
-              See all {totalPartners} partners →
-            </Link>
-            <Link href="/promote" style={styles.brandButtonSecondary}>
-              Become a partner
-            </Link>
-          </div>
-        </div>
-
-        {/* ============ RIGHT: SaaS STATION (compact, far right) ============ */}
-        <aside className="saas-station-panel" style={styles.stationPanel} aria-label="SaaS Stationary Station feature">
-          <div style={styles.stationGlow} aria-hidden="true" />
-
-          <div style={styles.stationHeader}>
-            <span style={styles.stationEyebrow}>Feature • SaaS Station</span>
-            <h2 style={styles.stationTitle}>
-              {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
-            </h2>
-            <p style={styles.stationSubtitle}>
-              Office tasks — calendar, spreadsheets, reviews, outreach, promotion and assistant — in one cockpit. Try{" "}
-              {FREE_TRIAL_LIMIT} free.
-            </p>
-          </div>
-
-          <div
-            style={{
-              ...styles.trialStatus,
-              ...(isAuthed ? styles.trialStatusAuthed : remaining === 0 ? styles.trialStatusEmpty : {}),
-            }}
-            aria-live="polite"
-          >
-            <span style={styles.trialStatusDot} />
-            {isAuthed
-              ? "Signed in — unlimited"
-              : remaining > 0
-              ? `${remaining} of ${FREE_TRIAL_LIMIT} free tries left`
-              : "Free tries used — sign up to keep using"}
-          </div>
-
-          <div style={styles.toolsGrid} aria-label="Station tools">
-            {stationTools.map((tool) => (
-              <button type="button" key={tool.href} style={styles.toolTile} onClick={() => openTool(tool.href)}>
-                <span style={styles.toolTileLabel}>{tool.label}</span>
-                <span style={styles.toolTileNote}>{tool.note}</span>
-              </button>
-            ))}
-          </div>
-
-          <div style={styles.stationTelemetryStrip} aria-label="SaaS station telemetry">
-            <span style={styles.telemetryDot} />
-            <strong>98.2%</strong>
-            <span style={styles.telemetryStripText}>
-              {fallbackText(t("homepage.saasStationTelemetry"), "sync health across finance, CRM, email & payments")}
-            </span>
-          </div>
-
-          <div style={styles.connectorRail} aria-label="Connected SMB apps">
-            {visibleConnectors.map((c) => (
-              <span key={c} style={styles.connectorPill}>{c}</span>
-            ))}
-            {extraConnectors > 0 && <span style={styles.connectorPill}>+{extraConnectors}</span>}
-          </div>
-
-          <div style={styles.compactWorkflowList} aria-label="Station workflows">
-            {compactWorkflows.map((w) => {
-              const ran = ranWorkflows[w.slug];
-              return (
-                <button
-                  type="button"
-                  key={w.slug}
-                  style={{ ...styles.compactWorkflowRow, borderColor: `${w.accent}55` }}
-                  onClick={() => runWorkflow(w.slug)}
-                  aria-label={`Run ${w.title} workflow task`}
-                >
-                  <span style={{ ...styles.workflowAccent, background: w.accent }} />
-                  <span style={styles.workflowRowMain}>
-                    <strong style={styles.workflowRowTitle}>{w.title}</strong>
-                    <span style={styles.workflowRowMetric}>{w.metric}</span>
-                  </span>
-                  <span style={styles.workflowRowCta}>{ran ? "✓ Ran" : "Try →"}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div style={styles.stationFooter}>
-            <button
-              type="button"
-              style={styles.stationCta}
-              onClick={() => attemptStationAction(() => router.push("/dashboard"))}
-            >
-              Open the station →
-            </button>
-            <div style={styles.stationManageRow}>
-              {isAuthed ? (
-                <button type="button" style={styles.stationManageBtn} onClick={() => void handleLogout()}>
-                  Log out
-                </button>
-              ) : (
-                <button type="button" style={styles.stationManageBtn} onClick={handleResetTries}>
-                  Reset tries
-                </button>
-              )}
-            </div>
-            <span style={styles.securityNote}>{workflowConnectorSecurityNotes[0]}</span>
-          </div>
-        </aside>
-      </div>
-
-      {showTrialModal && (
-        <div style={styles.modalBackdrop} role="dialog" aria-modal="true" aria-labelledby="station-trial-title">
-          <div style={styles.modalCard}>
-            <span style={styles.modalEyebrow}>Concierge says</span>
-            <h3 id="station-trial-title" style={styles.modalTitle}>Sign up to keep using your SaaS Station</h3>
-            <p style={styles.modalCopy}>
-              You have used your {FREE_TRIAL_LIMIT} free tries. Create an account to keep Concierge guidance, connector
-              sync, and your office tools active. Browsing partners stays free either way.
-            </p>
-            <div style={styles.modalActions}>
-              <Link href="/auth/login" style={styles.brandButtonPrimary}>Sign Up</Link>
-              <Link href="/pricing" style={styles.brandButtonSecondary}>Upgrade to Pro</Link>
-              <button type="button" style={styles.modalDismiss} onClick={() => setShowTrialModal(false)}>Not now</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <style>{`
-        .sb-hero-shell{
-          position:relative;z-index:10;
-          display:grid;
-          grid-template-columns:minmax(0,1fr) 340px;
-          gap:36px;
-          align-items:start;
-          max-width:1320px;
-          margin:0 auto;
-        }
-        @media (max-width:1024px){
-          .sb-hero-shell{ grid-template-columns:1fr; gap:30px; }
-        }
-
-        /* Directory tiles */
-        .sb-dir-card, .sb-dir-chip{
-          display:flex;align-items:center;gap:11px;text-decoration:none;
-          border:1px solid rgba(245,197,66,.16);border-radius:14px;
-          background:rgba(15,15,22,.72);
-          -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-        }
-        .sb-dir-card{ padding:12px;min-height:64px; }
-        .sb-dir-chip{ padding:10px 14px;white-space:nowrap;flex:0 0 auto; }
-        .sb-dir-card:hover, .sb-dir-chip:hover{ border-color:rgba(245,197,66,.45);background:rgba(245,197,66,.06); }
-        .sb-dir-logo{
-          width:38px;height:38px;flex-shrink:0;border-radius:10px;background:#fff;
-          display:flex;align-items:center;justify-content:center;overflow:hidden;
-          border:1px solid rgba(245,197,66,.28);
-        }
-        .sb-dir-logo img{ width:26px;height:26px;object-fit:contain; }
-        .sb-dir-mono{
-          width:100%;height:100%;align-items:center;justify-content:center;
-          color:#11151c;font-weight:900;font-size:16px;background:linear-gradient(135deg,#f5c542,#dfa837);
-        }
-        .sb-dir-meta{ display:flex;flex-direction:column;min-width:0; }
-        .sb-dir-name{ color:#f8fafc;font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px; }
-        .sb-dir-cat{ color:#dfa837;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px; }
-
-        /* Marquee */
-        .sb-dir-row{ overflow:hidden;
-          -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
-          mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
-        }
-        .sb-dir-track{ display:flex;gap:10px;width:max-content;animation:sbDirLeft 80s linear infinite; }
-        .sb-dir-track.rev{ animation-name:sbDirRight; }
-        .sb-dir-row:hover .sb-dir-track{ animation-play-state:paused; }
-        @keyframes sbDirLeft{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
-        @keyframes sbDirRight{ from{transform:translateX(-50%)} to{transform:translateX(0)} }
-        @media(prefers-reduced-motion:reduce){ .sb-dir-track{ animation:none } }
-      `}</style>
-    </section>
-  );
+function fireReaction(w,h,cx,cy){
+  const live=nodes.filter(n=>n.visible);
+  let ax,ay,bx,by;
+  // from a random visible signal to either another signal or the core
+  if(live.length>=2 && Math.random()<0.7){
+    const a=live[Math.floor(Math.random()*live.length)];
+    let b=live[Math.floor(Math.random()*live.length)];
+    let guard=0; while(b===a && guard++<5) b=live[Math.floor(Math.random()*live.length)];
+    ax=a.x+a.w/2; ay=a.y+a.h/2; bx=b.x+b.w/2; by=b.y+b.h/2;
+  } else if(live.length>=1){
+    const a=live[Math.floor(Math.random()*live.length)];
+    ax=cx; ay=cy; bx=a.x+a.w/2; by=a.y+a.h/2;
+  } else { return; }
+  const dist=Math.hypot(bx-ax,by-ay);
+  const segs=Math.max(5,Math.min(14,Math.round(dist/40)));
+  const hue=Math.random()<0.5?'gold':'cyan';
+  arcs.push({ pts:jaggedPath(ax,ay,bx,by,segs,dist*0.16), life:1, max:1, hue });
+  // sometimes a fork
+  if(Math.random()<0.5){
+    const mid=arcs[arcs.length-1].pts[Math.floor(segs/2)];
+    arcs.push({ pts:jaggedPath(mid.x,mid.y,mid.x+(Math.random()-0.5)*120,mid.y+(Math.random()-0.5)*120,5,40), life:0.8, max:0.8, hue });
+  }
+  flash=Math.min(1, flash+0.55);
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  heroSection: {
-    position: "relative",
-    backgroundColor: "#030305",
-    padding: "120px 24px 64px 24px",
-    overflow: "hidden",
-    borderBottom: "1px solid rgba(245, 197, 66, 0.13)",
-  },
-  glowLeft: { position: "absolute", top: "-14%", left: "8%", width: "520px", height: "520px", background: "radial-gradient(circle, rgba(245, 197, 66, 0.16) 0%, transparent 68%)", pointerEvents: "none" },
-  glowRight: { position: "absolute", top: "8%", right: "8%", width: "620px", height: "620px", background: "radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 62%)", pointerEvents: "none" },
-  gridOverlay: {
-    position: "absolute",
-    inset: 0,
-    backgroundImage:
-      "linear-gradient(rgba(245, 197, 66, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 197, 66, 0.035) 1px, transparent 1px)",
-    backgroundSize: "44px 44px",
-    maskImage: "radial-gradient(circle at 50% 38%, black, transparent 74%)",
-    WebkitMaskImage: "radial-gradient(circle at 50% 38%, black, transparent 74%)",
-    pointerEvents: "none",
-  },
+function drawArcs(dt){
+  for(const a of arcs){
+    a.life-=dt*0.004; // ~250ms
+    if(a.life<=0) continue;
+    const al=a.life/a.max;
+    const col=a.hue==='gold'?`245,197,66`:`56,196,255`;
+    ctx.save();
+    ctx.shadowBlur=14; ctx.shadowColor=`rgba(${col},${al})`;
+    ctx.strokeStyle=`rgba(${col},${al})`;
+    ctx.lineWidth=1.6; ctx.lineJoin='round';
+    ctx.beginPath(); ctx.moveTo(a.pts[0].x,a.pts[0].y);
+    for(let i=1;i<a.pts.length;i++) ctx.lineTo(a.pts[i].x,a.pts[i].y);
+    ctx.stroke();
+    // bright white core of the bolt
+    ctx.shadowBlur=0; ctx.strokeStyle=`rgba(255,255,255,${al*0.8})`; ctx.lineWidth=0.7;
+    ctx.stroke();
+    ctx.restore();
+  }
+  arcs=arcs.filter(a=>a.life>0);
+}
 
-  // ---- Directory zone ----
-  dirZone: { display: "flex", flexDirection: "column", gap: "18px", minWidth: 0 },
-  dirHeader: { display: "flex", flexDirection: "column", gap: "10px" },
-  badgeContainer: { display: "inline-flex", alignItems: "center", gap: "10px", border: "1px solid rgba(245, 197, 66, 0.32)", background: "rgba(245, 197, 66, 0.08)", borderRadius: "999px", padding: "7px 12px", alignSelf: "flex-start" },
-  badgePulse: { width: "8px", height: "8px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)" },
-  badgeText: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" },
-  dirHeading: { color: "#fff", fontSize: "clamp(24px, 3vw, 34px)", lineHeight: 1.05, letterSpacing: "-0.03em", margin: 0 },
-  dirSub: { color: "rgba(255,255,255,.66)", fontSize: "15px", lineHeight: 1.55, margin: 0, maxWidth: "640px" },
+function frame(now){
+  const dt=Math.min(40, now-last); last=now; t+=dt*0.001*(0.4+waveSpeed);
+  const w=W(), h=H(), cx=w/2, cy=h/2;
+  // radio waves — gold + light-blue interweaving at different rhythms
+  ctx.clearRect(0,0,w,h);
 
-  dirControls: { display: "flex", flexDirection: "column", gap: "12px" },
-  dirSearch: {
-    width: "100%",
-    height: "46px",
-    background: "rgba(255,255,255,.05)",
-    color: "#fff",
-    border: "1px solid rgba(255,255,255,.12)",
-    borderRadius: "14px",
-    padding: "0 16px",
-    outline: "none",
-    fontFamily: "inherit",
-    fontSize: "15px",
-  },
-  dirChips: { display: "flex", flexWrap: "wrap", gap: "8px" },
-  dirChip: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "7px",
-    border: "1px solid rgba(255,255,255,.12)",
-    background: "rgba(255,255,255,.05)",
-    color: "#fff",
-    borderRadius: "999px",
-    padding: "8px 13px",
-    fontSize: "12.5px",
-    fontWeight: 800,
-    cursor: "pointer",
-    fontFamily: "inherit",
-  },
-  dirChipActive: { borderColor: "rgba(245,197,66,.6)", background: "rgba(245,197,66,.14)", color: "#f5c542" },
-  dirChipCount: { color: "rgba(255,255,255,.5)", fontSize: "11px", fontWeight: 800 },
+  // sporadic cosmic reaction trigger + fading field flash
+  if(now>=nextReaction){
+    fireReaction(w,h,cx,cy);
+    nextReaction = now + 2200 + Math.random()*4200; // irregular gaps
+  }
+  flash=Math.max(0, flash-dt*0.0022);
+  if(flash>0){
+    const fg=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.hypot(w,h)/1.3);
+    fg.addColorStop(0,`rgba(120,160,220,${flash*0.10})`);
+    fg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=fg; ctx.fillRect(0,0,w,h);
+  }
 
-  dirCount: { color: "rgba(255,255,255,.5)", fontSize: "12px", fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase" },
+  const maxR=Math.hypot(w,h)/1.4;
+  const rings=6;
+  // gold rings
+  for(let i=0;i<rings;i++){
+    const phase=((t*0.18)+(i/rings))%1;
+    const r=phase*maxR;
+    const alpha=(1-phase)*0.5;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(245,197,66,${alpha*0.5})`;
+    ctx.lineWidth=2; ctx.stroke();
+  }
+  // light-blue rings — own rhythm + offset so they cross the gold
+  for(let i=0;i<rings;i++){
+    const phase=((t*0.135)+(i/rings)+0.5)%1;
+    const r=phase*maxR;
+    const alpha=(1-phase)*0.55;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(56,196,255,${alpha*0.5})`;
+    ctx.lineWidth=1.6; ctx.stroke();
+  }
+  // central pulsing core — gold inner, cyan outer halo
+  const core=6+Math.sin(t*2)*2;
+  const gc=ctx.createRadialGradient(cx,cy,0,cx,cy,80);
+  gc.addColorStop(0,'rgba(56,196,255,.18)'); gc.addColorStop(1,'rgba(56,196,255,0)');
+  ctx.fillStyle=gc; ctx.beginPath(); ctx.arc(cx,cy,80,0,Math.PI*2); ctx.fill();
+  const g=ctx.createRadialGradient(cx,cy,0,cx,cy,60);
+  g.addColorStop(0,'rgba(245,197,66,.5)'); g.addColorStop(1,'rgba(245,197,66,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,60,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(245,197,66,.9)'; ctx.beginPath(); ctx.arc(cx,cy,core,0,Math.PI*2); ctx.fill();
 
-  dirMarquee: { display: "flex", flexDirection: "column", gap: "12px" },
+  // cosmic reaction arcs (above waves/core, below DOM nodes)
+  drawArcs(dt);
 
-  dirGridScroll: { maxHeight: "440px", overflowY: "auto", paddingRight: "4px" },
-  dirGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "10px" },
-  dirEmpty: { color: "rgba(255,255,255,.6)", fontSize: "14px", border: "1px dashed rgba(255,255,255,.14)", borderRadius: "14px", padding: "20px", background: "rgba(255,255,255,.02)" },
+  // drifting nodes
+  for(const n of nodes){
+    if(!n.visible) continue;
+    if(!(pauseOnHover&&n.hover)){
+      n.x+=n.vx*drift*(dt/16); n.y+=n.vy*drift*(dt/16);
+      if(n.x<=0){n.x=0;n.vx=Math.abs(n.vx);} else if(n.x>=w-n.w){n.x=w-n.w;n.vx=-Math.abs(n.vx);}
+      if(n.y<=0){n.y=0;n.vy=Math.abs(n.vy);} else if(n.y>=h-n.h){n.y=h-n.h;n.vy=-Math.abs(n.vy);}
+    }
+    n.el.style.transform=`translate(${n.x}px,${n.y}px)`;
+  }
+  requestAnimationFrame(frame);
+}
 
-  dirActions: { display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "4px" },
-  brandButtonPrimary: { display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "999px", border: 0, background: "linear-gradient(135deg, #f5c542, #dfa837)", color: "#11151c", minHeight: "46px", padding: "0 22px", fontWeight: 900, fontSize: "14px", boxShadow: "0 18px 42px rgba(245, 197, 66, 0.24)", cursor: "pointer", textDecoration: "none", fontFamily: "inherit" },
-  brandButtonSecondary: { display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", border: "1px solid rgba(255,255,255,.14)", borderRadius: "999px", background: "rgba(255,255,255,.06)", color: "#fff", minHeight: "46px", padding: "0 20px", fontWeight: 900, fontSize: "14px", textDecoration: "none", fontFamily: "inherit", cursor: "pointer" },
-
-  // ---- Station (compact, far right) ----
-  stationPanel: { position: "relative", overflow: "hidden", width: "100%", maxWidth: "340px", marginLeft: "auto", border: "1px solid rgba(245, 197, 66, 0.30)", borderRadius: "24px", background: "linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(4, 7, 13, 0.94))", padding: "20px", boxShadow: "0 22px 70px rgba(0,0,0,.42), 0 0 48px rgba(245, 197, 66, 0.1)" },
-  stationGlow: { position: "absolute", inset: "-35% -20% auto auto", width: "240px", height: "240px", background: "radial-gradient(circle, rgba(245,197,66,.18), transparent 65%)", pointerEvents: "none" },
-  stationHeader: { position: "relative", zIndex: 1, marginBottom: "14px" },
-  stationEyebrow: { color: "#f5c542", fontSize: "10px", fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase" },
-  stationTitle: { color: "#fff", fontSize: "clamp(18px, 2vw, 22px)", lineHeight: 1.1, margin: "8px 0 6px" },
-  stationSubtitle: { color: "rgba(255,255,255,.62)", fontSize: "12px", lineHeight: 1.5, margin: 0 },
-
-  trialStatus: { position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "8px", borderRadius: "999px", padding: "8px 12px", marginBottom: "14px", fontSize: "11.5px", fontWeight: 800, color: "#f5c542", border: "1px solid rgba(245,197,66,.28)", background: "rgba(245,197,66,.08)" },
-  trialStatusAuthed: { color: "#34d399", border: "1px solid rgba(52,211,153,.3)", background: "rgba(52,211,153,.08)" },
-  trialStatusEmpty: { color: "#fca5a5", border: "1px solid rgba(248,113,113,.3)", background: "rgba(248,113,113,.08)" },
-  trialStatusDot: { width: "7px", height: "7px", borderRadius: "999px", background: "currentColor", flexShrink: 0 },
-
-  toolsGrid: { position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "14px" },
-  toolTile: { display: "flex", flexDirection: "column", gap: "2px", textAlign: "left", border: "1px solid rgba(245,197,66,.18)", borderRadius: "12px", padding: "11px", background: "rgba(245,197,66,.05)", minHeight: "58px", justifyContent: "center", cursor: "pointer", fontFamily: "inherit" },
-  toolTileLabel: { color: "#fff", fontSize: "13px", fontWeight: 800 },
-  toolTileNote: { color: "rgba(255,255,255,.55)", fontSize: "10.5px", fontWeight: 600 },
-
-  stationTelemetryStrip: { position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "9px", border: "1px solid rgba(245, 197, 66, 0.22)", borderRadius: "999px", padding: "8px 12px", color: "rgba(255,255,255,.72)", background: "rgba(245,197,66,.07)", marginBottom: "12px", fontSize: "12px" },
-  telemetryDot: { width: "8px", height: "8px", borderRadius: "999px", background: "#34d399", boxShadow: "0 0 18px #34d399", flexShrink: 0 },
-  telemetryStripText: { color: "rgba(255,255,255,.6)", fontSize: "11px", lineHeight: 1.35 },
-
-  connectorRail: { position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "14px" },
-  connectorPill: { color: "#f5c542", fontSize: "10px", fontWeight: 900, border: "1px solid rgba(245,197,66,.2)", borderRadius: "999px", padding: "5px 8px", background: "rgba(245,197,66,.055)" },
-
-  compactWorkflowList: { position: "relative", zIndex: 1, display: "grid", gap: "8px", marginBottom: "14px" },
-  compactWorkflowRow: { display: "flex", alignItems: "center", gap: "10px", width: "100%", textAlign: "left", cursor: "pointer", border: "1px solid rgba(255,255,255,.12)", borderRadius: "12px", padding: "10px 12px", background: "rgba(3, 7, 18, 0.6)", fontFamily: "inherit" },
-  workflowAccent: { width: "4px", height: "28px", borderRadius: "999px", flexShrink: 0 },
-  workflowRowMain: { display: "flex", flexDirection: "column", minWidth: 0, flex: 1 },
-  workflowRowTitle: { color: "#fff", fontSize: "13px", fontWeight: 800 },
-  workflowRowMetric: { color: "#f5c542", fontSize: "10.5px", fontWeight: 800, marginTop: "2px" },
-  workflowRowCta: { color: "rgba(34,211,238,.86)", fontSize: "10.5px", fontWeight: 900, flexShrink: 0 },
-
-  stationFooter: { position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "8px" },
-  stationCta: { display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "999px", background: "linear-gradient(135deg, #f5c542, #dfa837)", color: "#11151c", minHeight: "42px", padding: "0 16px", fontWeight: 900, fontSize: "12.5px", textDecoration: "none", border: 0, cursor: "pointer", fontFamily: "inherit" },
-  stationManageRow: { display: "flex", justifyContent: "center", gap: "14px" },
-  stationManageBtn: { border: 0, background: "transparent", color: "rgba(255,255,255,.55)", fontSize: "11.5px", fontWeight: 800, cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", textUnderlineOffset: "3px", padding: "2px 4px" },
-  securityNote: { color: "rgba(255,255,255,.5)", fontSize: "10.5px", lineHeight: 1.35, textAlign: "center" },
-
-  modalBackdrop: { position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", background: "rgba(0,0,0,.72)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" },
-  modalCard: { width: "min(520px, 100%)", border: "1px solid rgba(245,197,66,.38)", borderRadius: "28px", padding: "28px", background: "linear-gradient(180deg, rgba(17,24,39,.98), rgba(3,7,18,.98))", boxShadow: "0 0 80px rgba(245,197,66,.2)" },
-  modalEyebrow: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" },
-  modalTitle: { color: "#fff", fontSize: "30px", lineHeight: 1.05, margin: "10px 0 12px" },
-  modalCopy: { color: "rgba(255,255,255,.68)", fontSize: "15px", lineHeight: 1.6, margin: "0 0 22px" },
-  modalActions: { display: "flex", flexWrap: "wrap", gap: "10px" },
-  modalDismiss: { border: 0, background: "transparent", color: "rgba(255,255,255,.62)", fontWeight: 900, padding: "0 8px", cursor: "pointer", fontFamily: "inherit" },
-};
+addEventListener('resize',()=>{ sizeCanvas(); const w=W(),h=H(); nodes.forEach(n=>{ n.x=Math.min(n.x,w-n.w); n.y=Math.min(n.y,h-n.h); }); });
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+requestAnimationFrame(()=>{ sizeCanvas(); seed(); applyFilter(); if(reduce){ drift=0; waveSpeed=0; } requestAnimationFrame(frame); });
+</script>
