@@ -78,11 +78,13 @@ export default async function PartnerPage({
     const categoryLabel = getCategoryLabel(slug);
     return (
       <PartnerCategoryView
+        categoryKey={slug}
         categoryLabel={categoryLabel}
         partners={filtered.map((p) => ({
           id: p.id,
           name: p.name,
           description: p.description,
+          description_i18n: p.description_i18n,
           network: p.network,
           tier: p.tier,
         }))}
@@ -113,18 +115,22 @@ export default async function PartnerPage({
           id: partner.id,
           name: partner.name,
           description: partner.description,
+          description_i18n: partner.description_i18n,
           url: partner.url,
           logo: partner.logo,
           network: partner.network,
           tier: partner.tier,
           featured: partner.featured,
           travel_related: partner.travel_related,
+          categoryKey: partner.category_key,
           categoryLabel,
+          regionKeys: partner.regions,
           regionLabels: partner.regions.map(getRegionLabel),
         }}
         related={related.map((rp) => ({
           id: rp.id,
           name: rp.name,
+          regionKeys: rp.regions,
           regionLabels: rp.regions.map(getRegionLabel),
         }))}
       />
