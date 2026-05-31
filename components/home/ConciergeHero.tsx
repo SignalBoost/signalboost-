@@ -719,7 +719,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <style>{`
         .sb-hero-shell{
           position:relative;z-index:10;
-          display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:start;
+          display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:44px;align-items:start;
           max-width:100%;margin:0 auto;
         }
         @media (max-width:1024px){ .sb-hero-shell{ grid-template-columns:1fr; gap:30px; } }
@@ -775,11 +775,11 @@ const styles: Record<string, React.CSSProperties> = {
   brandButtonPrimary: { display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "999px", border: 0, background: "linear-gradient(135deg, #f5c542, #dfa837)", color: "#11151c", minHeight: "46px", padding: "0 22px", fontWeight: 900, fontSize: "14px", boxShadow: "0 18px 42px rgba(245, 197, 66, 0.24)", cursor: "pointer", textDecoration: "none", fontFamily: "inherit" },
   brandButtonSecondary: { display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", border: "1px solid rgba(255,255,255,.14)", borderRadius: "999px", background: "rgba(255,255,255,.06)", color: "#fff", minHeight: "46px", padding: "0 20px", fontWeight: 900, fontSize: "14px", textDecoration: "none", fontFamily: "inherit", cursor: "pointer" },
 
-  stationPanel: { position: "relative", overflow: "hidden", width: "100%", maxWidth: "340px", marginLeft: "auto", border: "1px solid rgba(245, 197, 66, 0.30)", borderRadius: "24px", background: "linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(4, 7, 13, 0.94))", padding: "20px", boxShadow: "0 22px 70px rgba(0,0,0,.42), 0 0 48px rgba(245, 197, 66, 0.1)" },
+  stationPanel: { position: "relative", overflow: "hidden", width: "100%", border: "1px solid rgba(245, 197, 66, 0.30)", borderRadius: "24px", background: "linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(4, 7, 13, 0.94))", padding: "26px", boxShadow: "0 22px 70px rgba(0,0,0,.42), 0 0 48px rgba(245, 197, 66, 0.1)" },
   stationGlow: { position: "absolute", inset: "-35% -20% auto auto", width: "240px", height: "240px", background: "radial-gradient(circle, rgba(245,197,66,.18), transparent 65%)", pointerEvents: "none" },
   stationHeader: { position: "relative", zIndex: 1, marginBottom: "14px" },
   stationEyebrow: { color: "#f5c542", fontSize: "10px", fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase" },
-  stationTitle: { color: "#fff", fontSize: "clamp(18px, 2vw, 22px)", lineHeight: 1.1, margin: "8px 0 6px" },
+  stationTitle: { color: "#fff", fontSize: "clamp(20px, 2vw, 25px)", lineHeight: 1.1, margin: "8px 0 6px" },
   stationSubtitle: { color: "rgba(255,255,255,.62)", fontSize: "12px", lineHeight: 1.5, margin: 0 },
 
   trialStatus: { position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "8px", borderRadius: "999px", padding: "8px 12px", marginBottom: "14px", fontSize: "11.5px", fontWeight: 800, color: "#f5c542", border: "1px solid rgba(245,197,66,.28)", background: "rgba(245,197,66,.08)" },
@@ -788,7 +788,7 @@ const styles: Record<string, React.CSSProperties> = {
   trialStatusDot: { width: "7px", height: "7px", borderRadius: "999px", background: "currentColor", flexShrink: 0 },
 
   toolsGrid: { position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "14px" },
-  toolTile: { display: "flex", flexDirection: "column", gap: "2px", textAlign: "left", border: "1px solid rgba(245,197,66,.18)", borderRadius: "12px", padding: "11px", background: "rgba(245,197,66,.05)", minHeight: "58px", justifyContent: "center", cursor: "pointer", fontFamily: "inherit" },
+  toolTile: { display: "flex", flexDirection: "column", gap: "3px", textAlign: "left", border: "1px solid rgba(245,197,66,.18)", borderRadius: "12px", padding: "13px", background: "rgba(245,197,66,.05)", minHeight: "66px", justifyContent: "center", cursor: "pointer", fontFamily: "inherit" },
   toolTileLabel: { color: "#fff", fontSize: "13px", fontWeight: 800 },
   toolTileNote: { color: "rgba(255,255,255,.55)", fontSize: "10.5px", fontWeight: 600 },
 
