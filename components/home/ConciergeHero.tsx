@@ -32,6 +32,11 @@ type DirPartner = {
 const FREE_TRIAL_LIMIT = 3;
 const TRIAL_STORAGE_KEY = "sb_station_trials";
 
+// Rotating-population ("tide") settings
+const POOL_SIZE = 30;          // signals visible on the field at one time
+const SWAP_INTERVAL_MS = 3500; // gentle tide: one swap every ~3.5s
+const FADE_MS = 1000;          // slow fade in/out
+
 function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
@@ -73,7 +78,10 @@ type SignalNode = {
   w: number;
   h: number;
   hover: boolean;
-  visible: boolean;
+  eligible: boolean;  // matches the current filter
+  inPool: boolean;    // currently occupying the field
+  fading: "in" | "out" | null;
+  fadeStart: number;
 };
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
@@ -107,22 +115,59 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   // Keep latest filter in a ref for the animation loop
   useEffect(() => {
     filterRef.current = { cat: activeCategory, q: query.trim().toLowerCase() };
-    applyVisibility();
+    rebuildPool();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCategory, query]);
 
-  function nodeVisible(p: DirPartner) {
+  function nodeEligible(p: DirPartner) {
     const { cat, q } = filterRef.current;
     const catKey = p.category_key || p.category || "other";
     if (cat !== "all" && catKey !== cat) return false;
     if (!q) return true;
     return `${p.name} ${p.category_label || ""} ${p.network || ""}`.toLowerCase().includes(q);
   }
-  function applyVisibility() {
-    nodesRef.current.forEach((n) => {
-      n.visible = nodeVisible(n.p);
-      if (n.el) n.el.style.opacity = n.visible ? "1" : "0";
-      if (n.el) n.el.style.pointerEvents = n.visible ? "auto" : "none";
+
+  // Rebuild which signals are eligible, then seed a fresh pool of up to POOL_SIZE.
+  function rebuildPool() {
+    const nodes = nodesRef.current;
+    const field = fieldRef.current;
+    const w = field?.clientWidth || 900;
+    const h = field?.clientHeight || 520;
+    const eligible: SignalNode[] = [];
+    nodes.forEach((n) => {
+      n.eligible = nodeEligible(n.p);
+      if (!n.eligible) {
+        n.inPool = false;
+        n.fading = null;
+        if (n.el) { n.el.style.opacity = "0"; n.el.style.pointerEvents = "none"; }
+      } else {
+        eligible.push(n);
+      }
+    });
+    // shuffle eligible for variety
+    for (let i = eligible.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [eligible[i], eligible[j]] = [eligible[j], eligible[i]];
+    }
+    const take = Math.min(POOL_SIZE, eligible.length);
+    eligible.forEach((n, idx) => {
+      const chosen = idx < take;
+      n.inPool = chosen;
+      n.fading = null;
+      if (n.el) {
+        n.el.style.opacity = chosen ? "1" : "0";
+        n.el.style.pointerEvents = chosen ? "auto" : "none";
+      }
+      if (chosen) {
+        n.w = n.el?.offsetWidth || 160;
+        n.h = n.el?.offsetHeight || 52;
+        n.x = Math.random() * Math.max(1, w - n.w);
+        n.y = Math.random() * Math.max(1, h - n.h);
+        const a = Math.random() * Math.PI * 2;
+        const s = 0.25 + Math.random() * 0.35;
+        n.vx = Math.cos(a) * s;
+        n.vy = Math.sin(a) * s;
+      }
     });
   }
 
@@ -145,21 +190,50 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    // seed positions/velocities
+    // seed the initial pool via rebuildPool (already defined in component scope)
     const nodes = nodesRef.current;
-    function seed() {
-      const w = W();
-      const h = H();
-      nodes.forEach((n) => {
-        n.w = n.el?.offsetWidth || 150;
-        n.h = n.el?.offsetHeight || 50;
-        n.x = Math.random() * Math.max(1, w - n.w);
-        n.y = Math.random() * Math.max(1, h - n.h);
-        const a = Math.random() * Math.PI * 2;
-        const s = 0.25 + Math.random() * 0.35;
-        n.vx = Math.cos(a) * s;
-        n.vy = Math.sin(a) * s;
-      });
+
+    // ---- Tide cycling: swap one pool member for a waiting one ----
+    let lastSwap = performance.now();
+    function cycleTide(now: number) {
+      if (now - lastSwap < SWAP_INTERVAL_MS) return;
+      lastSwap = now;
+      const eligible = nodes.filter((n) => n.eligible);
+      if (eligible.length <= POOL_SIZE) return; // nothing waiting; keep all
+      const inPool = eligible.filter((n) => n.inPool && n.fading !== "out");
+      const waiting = eligible.filter((n) => !n.inPool && n.fading !== "in");
+      if (!inPool.length || !waiting.length) return;
+      // prefer to retire a non-hovered signal
+      const retireable = inPool.filter((n) => !n.hover);
+      const out = (retireable.length ? retireable : inPool)[Math.floor(Math.random() * (retireable.length ? retireable.length : inPool.length))];
+      const incoming = waiting[Math.floor(Math.random() * waiting.length)];
+      out.fading = "out";
+      out.fadeStart = now;
+      incoming.fading = "in";
+      incoming.fadeStart = now;
+      // place incoming somewhere fresh
+      const w = W(); const h = H();
+      incoming.w = incoming.el?.offsetWidth || 160;
+      incoming.h = incoming.el?.offsetHeight || 52;
+      incoming.x = Math.random() * Math.max(1, w - incoming.w);
+      incoming.y = Math.random() * Math.max(1, h - incoming.h);
+      const a = Math.random() * Math.PI * 2; const s = 0.25 + Math.random() * 0.35;
+      incoming.vx = Math.cos(a) * s; incoming.vy = Math.sin(a) * s;
+      incoming.inPool = true;
+      if (incoming.el) incoming.el.style.pointerEvents = "auto";
+    }
+    function tickFades(now: number) {
+      for (const n of nodes) {
+        if (!n.fading || !n.el) continue;
+        const k = Math.min(1, (now - n.fadeStart) / FADE_MS);
+        if (n.fading === "in") {
+          n.el.style.opacity = String(k);
+          if (k >= 1) n.fading = null;
+        } else {
+          n.el.style.opacity = String(1 - k);
+          if (k >= 1) { n.fading = null; n.inPool = false; n.el.style.pointerEvents = "none"; }
+        }
+      }
     }
 
     // cosmic reaction state
@@ -178,7 +252,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       return pts;
     }
     function fireReaction(cx: number, cy: number) {
-      const live = nodes.filter((n) => n.visible);
+      const live = nodes.filter((n) => n.inPool);
       let ax: number, ay: number, bx: number, by: number;
       if (live.length >= 2 && Math.random() < 0.7) {
         const a = live[Math.floor(Math.random() * live.length)];
@@ -275,8 +349,11 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 
       drawArcs(dt);
 
+      if (!reduce) cycleTide(now);
+      tickFades(now);
+
       for (const n of nodes) {
-        if (!n.visible || !n.el) continue;
+        if (!n.inPool || !n.el) continue;
         if (!(n.hover) && !reduce) {
           n.x += n.vx * drift * (dt / 16);
           n.y += n.vy * drift * (dt / 16);
@@ -289,10 +366,9 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     }
 
     sizeCanvas();
-    // wait one frame so node sizes are measured
+    // wait one frame so node sizes are measured, then build the first pool
     raf = requestAnimationFrame(() => {
-      seed();
-      applyVisibility();
+      rebuildPool();
       raf = requestAnimationFrame(frame);
     });
 
@@ -451,7 +527,9 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </div>
 
           <div style={styles.dirCount}>
-            {idle ? `${visibleCount} signals broadcasting` : `${visibleCount} ${visibleCount === 1 ? "signal" : "signals"} matched`}
+            {idle
+              ? `${visibleCount} signals in the network${visibleCount > POOL_SIZE ? ` · ${POOL_SIZE} drifting now` : ""}`
+              : `${visibleCount} ${visibleCount === 1 ? "signal" : "signals"} matched${visibleCount > POOL_SIZE ? ` · ${POOL_SIZE} drifting now` : ""}`}
           </div>
 
           {/* The field: canvas waves + drifting clickable signals */}
@@ -465,11 +543,12 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                   if (existing) {
                     existing.el = el;
                   } else {
-                    nodesRef.current.push({ p, el, x: 0, y: 0, vx: 0, vy: 0, w: 150, h: 50, hover: false, visible: true });
+                    nodesRef.current.push({ p, el, x: 0, y: 0, vx: 0, vy: 0, w: 160, h: 52, hover: false, eligible: true, inPool: false, fading: null, fadeStart: 0 });
                   }
                 }}
                 href={`/partners/${p.id}`}
                 className="sb-signal"
+                style={{ opacity: 0 }}
                 title={p.description || p.name}
                 aria-label={`${p.name} — ${p.category_label || p.category || "partner"}`}
                 onMouseEnter={() => {
