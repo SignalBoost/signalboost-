@@ -1,26 +1,39 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PUBLIC_FILE = /\.[^/]+$/;
-
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const response = NextResponse.next();
 
-  if (pathname.startsWith('/_next') || pathname.startsWith('/api') || PUBLIC_FILE.test(pathname)) {
-    return response;
+  // Skip static files, API routes, and Next.js internals.
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next();
   }
 
-  const country = (req.headers.get('x-vercel-ip-country') || '').toUpperCase();
-  const hasSavedLanguage = Boolean(req.cookies.get('signalboost_language')?.value || req.cookies.get('site-language')?.value);
-  const hasManualLanguage = req.cookies.get('signalboost_language_manual')?.value === '1';
-
-  if (country === 'MX' && !hasSavedLanguage && !hasManualLanguage) {
-    response.cookies.set('signalboost_language', 'es', { path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 * 365 });
-    response.cookies.set('site-language', 'es', { path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 * 365 });
+  // NEVER touch auth routes. The OAuth callback (/auth/callback) carries the
+  // PKCE code + verifier cookie; redirecting it (e.g. to /es/auth/callback)
+  // breaks the code exchange and the login fails. Leave all /auth/* alone.
+  if (pathname.startsWith('/auth')) {
+    return NextResponse.next();
   }
 
-  return response;
+  // Already has an active locale prefix.
+  const hasLocale = ['/en', '/es'].some(
+    (loc) => pathname.startsWith(`${loc}/`) || pathname === loc
+  );
+  if (hasLocale) return NextResponse.next();
+
+  // Geo redirect by Vercel edge country header.
+  const country = req.headers.get('x-vercel-ip-country') || 'US';
+  if (country === 'MX') {
+    req.nextUrl.pathname = `/es${pathname}`;
+    return NextResponse.redirect(req.nextUrl);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
