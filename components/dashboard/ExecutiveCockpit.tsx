@@ -1,35 +1,40 @@
+"use client";
+
 // File: components/dashboard/ExecutiveCockpit.tsx
 // Project: SignalBoost (main production repo)
 
 import { CockpitShell } from "@/components/CockpitShell";
+import useTranslation from "@/components/i18n/useTranslation";
 import { executivePanels } from "@/lib/saas-modules";
 
 export default function ExecutiveCockpit() {
+  const { t } = useTranslation();
+
   return (
     <CockpitShell
-      eyebrow="Executive telemetry"
-      title="Executive dashboard"
-      subtitle="Financials, KPIs, CRM, Forecasting, and Outreach are fused into a NASA-style operating picture."
+      eyebrow={t("executive.eyebrow")}
+      title={t("executive.title")}
+      subtitle={t("executive.subtitle")}
     >
-      <section className="cockpit-section executive-grid" aria-label="Executive cockpit telemetry panels">
+      <section className="cockpit-section executive-grid" aria-label={t("executive.panelsAriaLabel")}>
         {executivePanels.map((panel) => (
-          <article className="executive-panel" key={panel.title}>
-            <span className="telemetry-label">{panel.title}</span>
+          <article className="executive-panel" key={panel.titleKey}>
+            <span className="telemetry-label">{t(panel.titleKey)}</span>
             <strong>{panel.metric}</strong>
-            <p>{panel.detail}</p>
+            <p>{t(panel.detailKey)}</p>
           </article>
         ))}
       </section>
-      <section className="cockpit-section telemetry-strip" aria-label="Admin console telemetry status">
+      <section className="cockpit-section telemetry-strip" aria-label={t("executive.telemetryAriaLabel")}>
         <div>
-          <span className="telemetry-label">Admin Console</span>
-          <strong>Telemetry nominal</strong>
-          <p>Click, search, partner, campaign, and module health signals are prepared for the admin cockpit.</p>
+          <span className="telemetry-label">{t("executive.adminConsole.label")}</span>
+          <strong>{t("executive.adminConsole.status")}</strong>
+          <p>{t("executive.adminConsole.detail")}</p>
         </div>
         <div>
-          <span className="telemetry-label">QA pipeline</span>
-          <strong>Ready for merge deploy</strong>
-          <p>Accessibility, performance, i18n, and executive cockpit checks are represented in the production surface.</p>
+          <span className="telemetry-label">{t("executive.qaPipeline.label")}</span>
+          <strong>{t("executive.qaPipeline.status")}</strong>
+          <p>{t("executive.qaPipeline.detail")}</p>
         </div>
       </section>
     </CockpitShell>
