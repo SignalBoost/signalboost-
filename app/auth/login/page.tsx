@@ -2,14 +2,12 @@
 //
 // Email + password login & signup. Main-site auth returns to marketing/partner
 // pages, while SaaS auth returns to the SaaS dashboard callback.
-//
-// Reads ?mode=signup and ?next=/path from the URL via window.location (no
-// useSearchParams, so no Suspense boundary needed at build time).
 
 "use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import useTranslation from "@/components/i18n/useTranslation";
 import { getAuthFlow, getProductionCallbackUrl, isLocalHost, normalizePostAuthDestination } from "@/lib/supabase/auth-flows";
 
 const GOLD = "#f5c542";
@@ -19,6 +17,10 @@ const CARD = "#111822";
 const BORDER = "#1e2630";
 const TEXT = "#e6edf3";
 const MUTED = "#9aa8b8";
+
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
 
 const SOCIAL_PROVIDERS = [
   { name: "Google", path: "/api/auth/google", className: "social-login-button social-login-google" },
@@ -49,6 +51,7 @@ function getSocialLoginHref(path: string, next: string) {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [next, setNext] = useState("/promote");
   const [email, setEmail] = useState("");
@@ -62,12 +65,13 @@ export default function LoginPage() {
     if (params.get("mode") === "signup") setMode("signup");
     const flow = getAuthFlow(window.location.hostname, params.get("flow"));
     setNext(normalizePostAuthDestination(params.get("next"), flow));
-    if (params.get("error")) setError("Sign-in failed. Please try again.");
+    if (params.get("error")) setError(fallbackText(t("login.errGeneric"), "Sign-in failed. Please try again."));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function submit() {
     if (!email.trim() || !password) {
-      setError("Enter your email and password.");
+      setError(fallbackText(t("login.errFields"), "Enter your email and password."));
       return;
     }
     setBusy(true);
@@ -86,9 +90,9 @@ export default function LoginPage() {
         });
         if (error) throw error;
         if (data.session) {
-          window.location.href = next; // auto-confirm on; session live
+          window.location.href = next;
         } else {
-          setNotice("Check your email to confirm your account, then log in.");
+          setNotice(fallbackText(t("login.noticeConfirm"), "Check your email to confirm your account, then log in."));
           setMode("signin");
         }
       } else {
@@ -100,7 +104,7 @@ export default function LoginPage() {
         window.location.href = next;
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : fallbackText(t("login.errWrong"), "Something went wrong."));
     } finally {
       setBusy(false);
     }
@@ -149,38 +153,40 @@ export default function LoginPage() {
         </div>
 
         <h1 style={{ color: TEXT, fontSize: 20, margin: "14px 0 4px" }}>
-          {mode === "signup" ? "Create your account" : "Welcome back"}
+          {mode === "signup"
+            ? fallbackText(t("login.signupTitle"), "Create your account")
+            : fallbackText(t("login.signinTitle"), "Welcome back")}
         </h1>
         <p style={{ color: MUTED, fontSize: 13.5, margin: "0 0 20px" }}>
           {mode === "signup"
-            ? "Create access for SignalBoost marketing and partner tools."
-            : "Log in to continue to SignalBoost marketing and partner tools."}
+            ? fallbackText(t("login.signupSubtitle"), "Create access for SignalBoost marketing and partner tools.")
+            : fallbackText(t("login.signinSubtitle"), "Log in to continue to SignalBoost marketing and partner tools.")}
         </p>
 
         <div className="social-login-stack" aria-label="Social login options">
           {SOCIAL_PROVIDERS.map((provider) => (
             <a key={provider.name} href={getSocialLoginHref(provider.path, next)} className={provider.className}>
-              Continue with {provider.name}
+              {fallbackText(t("login.continueWith"), `Continue with ${provider.name}`).replace("{provider}", provider.name)}
             </a>
           ))}
         </div>
 
         <div className="login-divider" role="presentation">
-          <span>or continue with email</span>
+          <span>{fallbackText(t("login.orEmail"), "or continue with email")}</span>
         </div>
 
-        <label style={labelStyle}>Email</label>
+        <label style={labelStyle}>{fallbackText(t("login.email"), "Email")}</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && void submit()}
-          placeholder="you@example.com"
+          placeholder={fallbackText(t("login.emailPlaceholder"), "you@example.com")}
           autoComplete="email"
           style={inputStyle}
         />
 
-        <label style={{ ...labelStyle, marginTop: 14 }}>Password</label>
+        <label style={{ ...labelStyle, marginTop: 14 }}>{fallbackText(t("login.password"), "Password")}</label>
         <input
           type="password"
           value={password}
@@ -211,11 +217,17 @@ export default function LoginPage() {
             background: `linear-gradient(135deg, ${GOLD}, #d9a92e)`,
           }}
         >
-          {busy ? "Please wait…" : mode === "signup" ? "Create account" : "Log in"}
+          {busy
+            ? fallbackText(t("login.wait"), "Please wait…")
+            : mode === "signup"
+            ? fallbackText(t("login.createAccount"), "Create account")
+            : fallbackText(t("login.logIn"), "Log in")}
         </button>
 
         <p style={{ color: MUTED, fontSize: 13, textAlign: "center", marginTop: 18 }}>
-          {mode === "signup" ? "Already have an account? " : "New to SignalBoost? "}
+          {mode === "signup"
+            ? fallbackText(t("login.haveAccount"), "Already have an account? ")
+            : fallbackText(t("login.newHere"), "New to SignalBoost? ")}
           <button
             onClick={() => {
               setMode(mode === "signup" ? "signin" : "signup");
@@ -232,7 +244,9 @@ export default function LoginPage() {
               padding: 0,
             }}
           >
-            {mode === "signup" ? "Log in" : "Sign up"}
+            {mode === "signup"
+              ? fallbackText(t("login.toggleToSignin"), "Log in")
+              : fallbackText(t("login.toggleToSignup"), "Sign up")}
           </button>
         </p>
       </div>
