@@ -14,7 +14,7 @@ type BackendSnapshot = {
 };
 
 export default function ModuleBackendPanel({ slug }: { slug: string }) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [snapshot, setSnapshot] = useState<BackendSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +27,7 @@ export default function ModuleBackendPanel({ slug }: { slug: string }) {
   useEffect(() => {
     let alive = true;
     setLoading(true);
-    fetch(`/api/saas/${slug}`, { cache: "no-store" })
+    fetch(`/api/saas/${slug}?lang=${encodeURIComponent(lang)}`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (alive) setSnapshot(data);
@@ -41,7 +41,7 @@ export default function ModuleBackendPanel({ slug }: { slug: string }) {
     return () => {
       alive = false;
     };
-  }, [slug]);
+  }, [slug, lang]);
 
   const heading = loading
     ? fallbackText(t("moduleBackend.connecting"), "Connecting live module API…")
