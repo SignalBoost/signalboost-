@@ -746,11 +746,11 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  heroSection: { position: "relative", backgroundColor: "#030305", padding: "32px 24px 40px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)", minHeight: "calc(100vh - 56px)", display: "flex", flexDirection: "column", justifyContent: "center" },
+  heroSection: { position: "relative", backgroundColor: "#030305", padding: "24px 24px 28px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)", height: "calc(100vh - 56px)", minHeight: "620px", display: "flex", flexDirection: "column", justifyContent: "center" },
   glowLeft: { position: "absolute", top: "-14%", left: "8%", width: "520px", height: "520px", background: "radial-gradient(circle, rgba(245, 197, 66, 0.16) 0%, transparent 68%)", pointerEvents: "none" },
   glowRight: { position: "absolute", top: "8%", right: "8%", width: "620px", height: "620px", background: "radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 62%)", pointerEvents: "none" },
 
-  dirZone: { display: "flex", flexDirection: "column", gap: "12px", minWidth: 0, height: "100%" },
+  dirZone: { display: "flex", flexDirection: "column", gap: "10px", minWidth: 0, minHeight: 0, height: "100%" },
   dirHeader: { display: "flex", flexDirection: "column", gap: "10px" },
   badgeContainer: { display: "inline-flex", alignItems: "center", gap: "10px", border: "1px solid rgba(245, 197, 66, 0.32)", background: "rgba(245, 197, 66, 0.08)", borderRadius: "999px", padding: "7px 12px", alignSelf: "flex-start" },
   badgePulse: { width: "8px", height: "8px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)" },
@@ -767,7 +767,7 @@ const styles: Record<string, React.CSSProperties> = {
 
   dirCount: { color: "rgba(255,255,255,.5)", fontSize: "12px", fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase" },
 
-  field: { position: "relative", width: "100%", flex: 1, minHeight: "320px", border: "1px solid rgba(255,255,255,.1)", borderRadius: "22px", overflow: "hidden", background: "radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%)" },
+  field: { position: "relative", width: "100%", flex: 1, minHeight: "200px", border: "1px solid rgba(255,255,255,.1)", borderRadius: "22px", overflow: "hidden", background: "radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%)" },
   canvas: { position: "absolute", inset: 0, display: "block", zIndex: 0 },
 
   dirActions: { display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "4px" },
