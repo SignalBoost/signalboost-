@@ -491,8 +491,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               {fallbackText(t("homepage.partnerHeroTitle"), "Trusted partners, all in one place")}
             </h1>
             <p style={styles.dirSub}>
-              {totalPartners}+ vetted, affiliate-backed partners — a living network of signals. Search or pick a
-              category to tune the field; hover a signal to lock on, then click to open it.
+              {totalPartners}+ vetted partners — search or pick a category to tune the live field below.
             </p>
           </div>
 
@@ -718,8 +717,8 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 
       <style>{`
         .sb-hero-shell{
-          position:relative;z-index:10;
-          display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:start;
+          position:relative;z-index:10;width:100%;
+          display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:stretch;
           max-width:1280px;margin:0 auto;
         }
         @media (max-width:1024px){ .sb-hero-shell{ grid-template-columns:1fr; gap:30px; } }
@@ -747,16 +746,16 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  heroSection: { position: "relative", backgroundColor: "#030305", padding: "40px 24px 56px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)" },
+  heroSection: { position: "relative", backgroundColor: "#030305", padding: "32px 24px 40px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)", minHeight: "calc(100vh - 56px)", display: "flex", flexDirection: "column", justifyContent: "center" },
   glowLeft: { position: "absolute", top: "-14%", left: "8%", width: "520px", height: "520px", background: "radial-gradient(circle, rgba(245, 197, 66, 0.16) 0%, transparent 68%)", pointerEvents: "none" },
   glowRight: { position: "absolute", top: "8%", right: "8%", width: "620px", height: "620px", background: "radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 62%)", pointerEvents: "none" },
 
-  dirZone: { display: "flex", flexDirection: "column", gap: "18px", minWidth: 0 },
+  dirZone: { display: "flex", flexDirection: "column", gap: "12px", minWidth: 0, height: "100%" },
   dirHeader: { display: "flex", flexDirection: "column", gap: "10px" },
   badgeContainer: { display: "inline-flex", alignItems: "center", gap: "10px", border: "1px solid rgba(245, 197, 66, 0.32)", background: "rgba(245, 197, 66, 0.08)", borderRadius: "999px", padding: "7px 12px", alignSelf: "flex-start" },
   badgePulse: { width: "8px", height: "8px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)" },
   badgeText: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" },
-  dirHeading: { color: "#fff", fontSize: "clamp(24px, 3vw, 34px)", lineHeight: 1.05, letterSpacing: "-0.03em", margin: 0 },
+  dirHeading: { color: "#fff", fontSize: "clamp(20px, 2.4vw, 28px)", lineHeight: 1.05, letterSpacing: "-0.03em", margin: 0 },
   dirSub: { color: "rgba(255,255,255,.66)", fontSize: "15px", lineHeight: 1.55, margin: 0, maxWidth: "640px" },
 
   dirControls: { display: "flex", flexDirection: "column", gap: "12px" },
@@ -768,7 +767,7 @@ const styles: Record<string, React.CSSProperties> = {
 
   dirCount: { color: "rgba(255,255,255,.5)", fontSize: "12px", fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase" },
 
-  field: { position: "relative", width: "100%", height: "520px", border: "1px solid rgba(255,255,255,.1)", borderRadius: "22px", overflow: "hidden", background: "radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%)" },
+  field: { position: "relative", width: "100%", flex: 1, minHeight: "320px", border: "1px solid rgba(255,255,255,.1)", borderRadius: "22px", overflow: "hidden", background: "radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%)" },
   canvas: { position: "absolute", inset: 0, display: "block", zIndex: 0 },
 
   dirActions: { display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "4px" },
