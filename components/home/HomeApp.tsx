@@ -25,6 +25,10 @@ type HomepagePartner = {
   featured?: boolean;
 };
 
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
+
 // Reusable Fathom-style floating panel. Every homepage section is wrapped in
 // one so the whole page reads as a stack of embedded cards on a soft surface.
 function Panel({ children }: { children: React.ReactNode }) {
@@ -46,6 +50,9 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
     return Array.from(map.values());
   }, []);
 
+  const partnerSingular = fallbackText(t("home.partnerSingular"), "partner");
+  const partnerPlural = fallbackText(t("home.partnerPlural"), "partners");
+
   return (
     <main style={styles.mainCanvas}>
       <div style={styles.bgGlow} aria-hidden="true" />
@@ -60,8 +67,8 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
         {/* ---- Browse by category ---- */}
         <Panel>
           <div style={styles.sectionHeaderZone}>
-            <span style={styles.sectionBadge}>Partner marketplace</span>
-            <h2 style={styles.sectionHeading}>Browse trusted partners by category</h2>
+            <span style={styles.sectionBadge}>{fallbackText(t("home.marketplaceBadge"), "Partner marketplace")}</span>
+            <h2 style={styles.sectionHeading}>{fallbackText(t("home.marketplaceHeading"), "Browse trusted partners by category")}</h2>
           </div>
 
           <div style={styles.categoryGrid}>
@@ -70,12 +77,12 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
                 key={category.key}
                 href={`/marketplace?category=${category.key}`}
                 style={styles.categoryCard}
-                aria-label={`Browse ${category.label} partners`}
+                aria-label={fallbackText(t("home.browseCategoryAria"), `Browse ${category.label} partners`).replace("{label}", category.label)}
               >
                 <span style={styles.categoryCardCopy}>
                   <span style={styles.categoryName}>{category.label}</span>
                   <span style={styles.categoryMeta}>
-                    {category.count} {category.count === 1 ? "partner" : "partners"}
+                    {category.count} {category.count === 1 ? partnerSingular : partnerPlural}
                   </span>
                 </span>
                 <span style={styles.categoryArrow} aria-hidden="true">→</span>
@@ -85,7 +92,7 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
 
           <div style={styles.browseAllRow}>
             <Link href="/marketplace" style={styles.browseAllButton}>
-              View the full marketplace
+              {fallbackText(t("home.viewFullMarketplace"), "View the full marketplace")}
             </Link>
           </div>
         </Panel>
@@ -93,8 +100,8 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
         {/* ---- Workspace modules ---- */}
         <Panel>
           <div style={styles.sectionHeaderZone}>
-            <span style={styles.sectionBadge}>Workspace modules</span>
-            <h2 style={styles.sectionHeading}>Promote, assist, price, and report after the hero flow</h2>
+            <span style={styles.sectionBadge}>{fallbackText(t("home.modulesBadge"), "Workspace modules")}</span>
+            <h2 style={styles.sectionHeading}>{fallbackText(t("home.modulesHeading"), "Promote, assist, price, and report after the hero flow")}</h2>
           </div>
           <ModuleGrid />
         </Panel>
@@ -102,26 +109,26 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
         {/* ---- How it works ---- */}
         <Panel>
           <div style={styles.sectionHeaderZone}>
-            <span style={styles.sectionBadge}>How it works</span>
-            <h2 style={styles.sectionHeading}>From discovery to booking in four steps</h2>
+            <span style={styles.sectionBadge}>{fallbackText(t("home.howBadge"), "How it works")}</span>
+            <h2 style={styles.sectionHeading}>{fallbackText(t("home.howHeading"), "From discovery to booking in four steps")}</h2>
           </div>
 
           <div style={styles.stepsGrid}>
             <div style={styles.stepGlassCard}>
               <div style={styles.stepNumberBadge}>01</div>
-              <p style={styles.stepBodyText}>{t("homepage.search_placeholder")}</p>
+              <p style={styles.stepBodyText}>{fallbackText(t("home.step1"), "Search or describe what you need.")}</p>
             </div>
             <div style={styles.stepGlassCard}>
               <div style={styles.stepNumberBadge}>02</div>
-              <p style={styles.stepBodyText}>{t("partner.regions")}</p>
+              <p style={styles.stepBodyText}>{fallbackText(t("home.step2"), "We match you with trusted partners in your region.")}</p>
             </div>
             <div style={styles.stepGlassCard}>
               <div style={styles.stepNumberBadge}>03</div>
-              <p style={styles.stepBodyText}>{t("partner.more")}</p>
+              <p style={styles.stepBodyText}>{fallbackText(t("home.step3"), "Compare options and pick the partner that fits.")}</p>
             </div>
             <div style={styles.stepGlassCard}>
               <div style={styles.stepNumberBadge}>04</div>
-              <p style={styles.stepBodyText}>{t("partner.visit")}</p>
+              <p style={styles.stepBodyText}>{fallbackText(t("home.step4"), "Click through and book directly with the partner.")}</p>
             </div>
           </div>
         </Panel>
