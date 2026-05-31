@@ -524,7 +524,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 onClick={() => setActiveCategory(c.key)}
                 style={{ ...styles.infoChip, ...(activeCategory === c.key ? styles.infoChipActive : {}) }}
               >
-                {c.label} <span style={styles.infoChipCount}>{c.count}</span>
+                {fallbackText(t(`categories.${c.key}`), c.label)} <span style={styles.infoChipCount}>{c.count}</span>
               </button>
             ))}
           </div>
@@ -591,7 +591,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 </span>
                 <span className="sb-signal-meta">
                   <span className="sb-signal-name">{p.name}</span>
-                  <span className="sb-signal-cat">{p.category_label || p.category || p.network}</span>
+                  <span className="sb-signal-cat">{fallbackText(t(`categories.${p.category_key || p.category || ""}`), p.category_label || p.category || p.network || "")}</span>
                 </span>
               </a>
             ))}
