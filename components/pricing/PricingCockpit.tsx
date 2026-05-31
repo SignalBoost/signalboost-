@@ -1,18 +1,31 @@
 // File: components/pricing/PricingCockpit.tsx
 // Project: SignalBoost (main production repo)
+"use client";
 
 import { CockpitShell } from "@/components/CockpitShell";
+import useTranslation from "@/components/i18n/useTranslation";
 
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
+
+// Price numbers are universal; only the unit ("/mo") or "Custom" is translated.
 const tiers = [
   {
+    key: "starter",
     name: "Starter",
-    price: "$19/mo",
+    priceNumber: "$19",
+    priceUnitKey: "pricing.perMonth",
+    priceUnitFallback: "/mo",
     mission: "For solo operators validating marketplace demand.",
     features: ["Marketplace access", "Basic Reviews", "Calendar", "Concierge AI starter prompts"],
   },
   {
+    key: "growth",
     name: "Growth",
-    price: "$49/mo",
+    priceNumber: "$49",
+    priceUnitKey: "pricing.perMonth",
+    priceUnitFallback: "/mo",
     mission: "For teams promoting businesses and coordinating daily execution.",
     featured: true,
     features: [
@@ -24,8 +37,11 @@ const tiers = [
     ],
   },
   {
+    key: "enterprise",
     name: "Enterprise",
-    price: "Custom",
+    priceNumber: "",
+    priceUnitKey: "pricing.custom",
+    priceUnitFallback: "Custom",
     mission: "For executive teams operating a complete revenue cockpit.",
     features: [
       "All SaaS modules",
@@ -38,26 +54,40 @@ const tiers = [
 ];
 
 export default function PricingCockpit() {
+  const { t } = useTranslation();
+
   return (
     <CockpitShell
-      eyebrow="Tiered SaaS modules"
-      title="Pricing cockpit"
-      subtitle="Choose the SignalBoost mission package that matches your marketplace, SaaS, and executive operating needs."
+      eyebrow={fallbackText(t("pricing.eyebrow"), "Tiered SaaS modules")}
+      title={fallbackText(t("pricing.title"), "Pricing cockpit")}
+      subtitle={fallbackText(
+        t("pricing.subtitle"),
+        "Choose the SignalBoost mission package that matches your marketplace, SaaS, and executive operating needs."
+      )}
     >
       <section className="cockpit-section pricing-grid" aria-label="SignalBoost SaaS pricing tiers">
-        {tiers.map((tier) => (
-          <article className={tier.featured ? "pricing-card featured" : "pricing-card"} key={tier.name}>
-            {tier.featured && <span className="pricing-ribbon">Recommended</span>}
-            <h2>{tier.name}</h2>
-            <strong>{tier.price}</strong>
-            <p>{tier.mission}</p>
-            <ul>
-              {tier.features.map((feature) => (
-                <li key={feature}>{feature}</li>
-              ))}
-            </ul>
-          </article>
-        ))}
+        {tiers.map((tier) => {
+          const name = fallbackText(t(`pricing.${tier.key}.name`), tier.name);
+          const mission = fallbackText(t(`pricing.${tier.key}.mission`), tier.mission);
+          const unit = fallbackText(t(tier.priceUnitKey), tier.priceUnitFallback);
+          const price = tier.priceNumber ? `${tier.priceNumber}${unit}` : unit;
+          const features = tier.features.map((f, i) =>
+            fallbackText(t(`pricing.${tier.key}.features.${i}`), f)
+          );
+          return (
+            <article className={tier.featured ? "pricing-card featured" : "pricing-card"} key={tier.key}>
+              {tier.featured && <span className="pricing-ribbon">{fallbackText(t("pricing.recommended"), "Recommended")}</span>}
+              <h2>{name}</h2>
+              <strong>{price}</strong>
+              <p>{mission}</p>
+              <ul>
+                {features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </article>
+          );
+        })}
       </section>
     </CockpitShell>
   );
