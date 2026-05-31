@@ -15,6 +15,7 @@ export type SaasModule = {
   eyebrowKey: string;
   // Keys for the rest of the content (fall back to the English strings above).
   signalKey: string;
+  statusKey: string;
   telemetryKey: string;
   featureKeys: string[];
   automationKeys: string[];
@@ -27,6 +28,7 @@ export const saasModules: SaasModule[] = [
     summaryKey: "modules.promote.summary",
     eyebrowKey: "modules.promote.eyebrow",
     signalKey: "modules.promote.signal",
+    statusKey: "modules.promote.status",
     telemetryKey: "modules.promote.telemetry",
     featureKeys: ["modules.promote.features.0", "modules.promote.features.1", "modules.promote.features.2"],
     automationKeys: ["modules.promote.automations.0", "modules.promote.automations.1", "modules.promote.automations.2"],
@@ -48,6 +50,7 @@ export const saasModules: SaasModule[] = [
     summaryKey: "modules.reviews.summary",
     eyebrowKey: "modules.reviews.eyebrow",
     signalKey: "modules.reviews.signal",
+    statusKey: "modules.reviews.status",
     telemetryKey: "modules.reviews.telemetry",
     featureKeys: ["modules.reviews.features.0", "modules.reviews.features.1", "modules.reviews.features.2"],
     automationKeys: ["modules.reviews.automations.0", "modules.reviews.automations.1", "modules.reviews.automations.2"],
@@ -69,6 +72,7 @@ export const saasModules: SaasModule[] = [
     summaryKey: "modules.calendar.summary",
     eyebrowKey: "modules.calendar.eyebrow",
     signalKey: "modules.calendar.signal",
+    statusKey: "modules.calendar.status",
     telemetryKey: "modules.calendar.telemetry",
     featureKeys: ["modules.calendar.features.0", "modules.calendar.features.1", "modules.calendar.features.2"],
     automationKeys: ["modules.calendar.automations.0", "modules.calendar.automations.1", "modules.calendar.automations.2"],
@@ -90,6 +94,7 @@ export const saasModules: SaasModule[] = [
     summaryKey: "modules.spreadsheets.summary",
     eyebrowKey: "modules.spreadsheets.eyebrow",
     signalKey: "modules.spreadsheets.signal",
+    statusKey: "modules.spreadsheets.status",
     telemetryKey: "modules.spreadsheets.telemetry",
     featureKeys: ["modules.spreadsheets.features.0", "modules.spreadsheets.features.1", "modules.spreadsheets.features.2"],
     automationKeys: ["modules.spreadsheets.automations.0", "modules.spreadsheets.automations.1", "modules.spreadsheets.automations.2"],
@@ -111,6 +116,7 @@ export const saasModules: SaasModule[] = [
     summaryKey: "modules.outreach.summary",
     eyebrowKey: "modules.outreach.eyebrow",
     signalKey: "modules.outreach.signal",
+    statusKey: "modules.outreach.status",
     telemetryKey: "modules.outreach.telemetry",
     featureKeys: ["modules.outreach.features.0", "modules.outreach.features.1", "modules.outreach.features.2"],
     automationKeys: ["modules.outreach.automations.0", "modules.outreach.automations.1", "modules.outreach.automations.2"],
@@ -132,6 +138,7 @@ export const saasModules: SaasModule[] = [
     summaryKey: "modules.assistant.summary",
     eyebrowKey: "modules.assistant.eyebrow",
     signalKey: "modules.assistant.signal",
+    statusKey: "modules.assistant.status",
     telemetryKey: "modules.assistant.telemetry",
     featureKeys: ["modules.assistant.features.0", "modules.assistant.features.1", "modules.assistant.features.2"],
     automationKeys: ["modules.assistant.automations.0", "modules.assistant.automations.1", "modules.assistant.automations.2"],
