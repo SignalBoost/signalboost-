@@ -68,12 +68,12 @@ function isTravel(c: { key: string; label: string }) {
 const chipCategories = categories.filter(isTravel);
 
 const stationTools = [
-  { label: "Calendar", note: "Schedule & sync", href: "/calendar" },
-  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets" },
-  { label: "Reviews", note: "Reputation", href: "/reviews" },
-  { label: "Outreach", note: "Campaigns", href: "/outreach" },
-  { label: "Promote", note: "Marketing", href: "/promote" },
-  { label: "Personal Assistant", note: "AI tasks", href: "/assistant" },
+  { label: "Calendar", note: "Schedule & sync", href: "/calendar", nameKey: "hero.tools.calendar.name", descKey: "hero.tools.calendar.desc" },
+  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets", nameKey: "hero.tools.spreadsheets.name", descKey: "hero.tools.spreadsheets.desc" },
+  { label: "Reviews", note: "Reputation", href: "/reviews", nameKey: "hero.tools.reviews.name", descKey: "hero.tools.reviews.desc" },
+  { label: "Outreach", note: "Campaigns", href: "/outreach", nameKey: "hero.tools.outreach.name", descKey: "hero.tools.outreach.desc" },
+  { label: "Promote", note: "Marketing", href: "/promote", nameKey: "hero.tools.promote.name", descKey: "hero.tools.promote.desc" },
+  { label: "Personal Assistant", note: "AI tasks", href: "/assistant", nameKey: "hero.tools.assistant.name", descKey: "hero.tools.assistant.desc" },
 ];
 
 // Each drifting signal's runtime state
@@ -493,21 +493,21 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
         <div style={styles.infoCol}>
           <span style={styles.badgeContainer}>
             <span style={styles.badgePulse} />
-            <span style={styles.badgeText}>Trusted partner network</span>
+            <span style={styles.badgeText}>{fallbackText(t("hero.badge"), "Trusted partner network")}</span>
           </span>
           <h1 id="partner-hero-title" style={styles.infoHeading}>
-            {fallbackText(t("homepage.partnerHeroTitle"), "Trusted partners, all in one place")}
+            {fallbackText(t("hero.title"), "Trusted partners, all in one place")}
           </h1>
           <p style={styles.infoSub}>
-            {totalPartners}+ vetted partners — a living network of signals. Search or pick a category to tune the field.
+            {fallbackText(t("hero.subtitle"), `${totalPartners}+ vetted partners — a living network of signals. Search or pick a category to tune the field.`).replace("{count}", String(totalPartners))}
           </p>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search partners…"
+            placeholder={fallbackText(t("hero.searchPlaceholder"), "Search partners…")}
             style={styles.infoSearch}
-            aria-label="Search partners"
+            aria-label={fallbackText(t("hero.searchPlaceholder"), "Search partners")}
           />
           <div style={styles.infoChips} role="tablist" aria-label="Partner categories">
             <button
@@ -515,7 +515,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               onClick={() => setActiveCategory("all")}
               style={{ ...styles.infoChip, ...(activeCategory === "all" ? styles.infoChipActive : {}) }}
             >
-              All <span style={styles.infoChipCount}>{totalPartners}</span>
+              {fallbackText(t("hero.all"), "All")} <span style={styles.infoChipCount}>{totalPartners}</span>
             </button>
             {chipCategories.map((c) => (
               <button
@@ -530,10 +530,10 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </div>
           <div style={styles.infoActions}>
             <Link href="/marketplace" style={styles.brandButtonPrimary}>
-              See all {totalPartners} →
+              {fallbackText(t("hero.seeAll"), `See all ${totalPartners} →`).replace("{count}", String(totalPartners))}
             </Link>
             <Link href="/promote" style={styles.brandButtonSecondary}>
-              Become a partner
+              {fallbackText(t("hero.becomePartner"), "Become a partner")}
             </Link>
           </div>
         </div>
@@ -602,13 +602,12 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
         <aside className="saas-station-panel" style={styles.stationPanel} aria-label="SaaS Stationary Station feature">
           <div style={styles.stationGlow} aria-hidden="true" />
           <div style={styles.stationHeader}>
-            <span style={styles.stationEyebrow}>Feature • SaaS Station</span>
+            <span style={styles.stationEyebrow}>{fallbackText(t("hero.station.eyebrow"), "Feature • SaaS Station")}</span>
             <h2 style={styles.stationTitle}>
-              {fallbackText(t("homepage.saasStationTitle"), "Your SaaS Stationary Station")}
+              {fallbackText(t("hero.station.title"), "Your SaaS Stationary Station")}
             </h2>
             <p style={styles.stationSubtitle}>
-              Office tasks — calendar, spreadsheets, reviews, outreach, promotion and assistant — in one cockpit. Try{" "}
-              {FREE_TRIAL_LIMIT} free.
+              {fallbackText(t("hero.station.subtitle"), "Office tasks — calendar, spreadsheets, reviews, outreach, promotion and assistant — in one cockpit. Try 3 free.")}
             </p>
           </div>
 
@@ -621,17 +620,17 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           >
             <span style={styles.trialStatusDot} />
             {isAuthed
-              ? "Signed in — unlimited"
+              ? fallbackText(t("hero.station.signedIn"), "Signed in — unlimited")
               : remaining > 0
-              ? `${remaining} of ${FREE_TRIAL_LIMIT} free tries left`
-              : "Free tries used — sign up to keep using"}
+              ? fallbackText(t("hero.station.triesLeft"), `${remaining} free tries left`).replace("{n}", String(remaining))
+              : fallbackText(t("hero.station.triesUsed"), "Free tries used — sign up to keep using")}
           </div>
 
           <div style={styles.toolsGrid} aria-label="Station tools">
             {stationTools.map((tool) => (
               <button type="button" key={tool.href} style={styles.toolTile} onClick={() => openTool(tool.href)}>
-                <span style={styles.toolTileLabel}>{tool.label}</span>
-                <span style={styles.toolTileNote}>{tool.note}</span>
+                <span style={styles.toolTileLabel}>{fallbackText(t(tool.nameKey), tool.label)}</span>
+                <span style={styles.toolTileNote}>{fallbackText(t(tool.descKey), tool.note)}</span>
               </button>
             ))}
           </div>
@@ -679,16 +678,16 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               style={styles.stationCta}
               onClick={() => attemptStationAction(() => router.push("/dashboard"))}
             >
-              Open the station →
+              {fallbackText(t("hero.station.open"), "Open the station")} →
             </button>
             <div style={styles.stationManageRow}>
               {isAuthed ? (
                 <button type="button" style={styles.stationManageBtn} onClick={() => void handleLogout()}>
-                  Log out
+                  {fallbackText(t("hero.station.logout"), "Log out")}
                 </button>
               ) : (
                 <button type="button" style={styles.stationManageBtn} onClick={handleResetTries}>
-                  Reset tries
+                  {fallbackText(t("hero.station.resetTries"), "Reset tries")}
                 </button>
               )}
             </div>
@@ -700,16 +699,15 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       {showTrialModal && (
         <div style={styles.modalBackdrop} role="dialog" aria-modal="true" aria-labelledby="station-trial-title">
           <div style={styles.modalCard}>
-            <span style={styles.modalEyebrow}>Concierge says</span>
-            <h3 id="station-trial-title" style={styles.modalTitle}>Sign up to keep using your SaaS Station</h3>
+            <span style={styles.modalEyebrow}>{fallbackText(t("hero.station.modalEyebrow"), "Concierge says")}</span>
+            <h3 id="station-trial-title" style={styles.modalTitle}>{fallbackText(t("hero.station.signupTitle"), "Sign up to keep using your SaaS Station")}</h3>
             <p style={styles.modalCopy}>
-              You have used your {FREE_TRIAL_LIMIT} free tries. Create an account to keep Concierge guidance, connector
-              sync, and your office tools active. Browsing partners stays free either way.
+              {fallbackText(t("hero.station.signupBody"), "You have used your free tries. Create an account to keep Concierge guidance, connector sync, and your office tools active. Browsing partners stays free either way.")}
             </p>
             <div style={styles.modalActions}>
-              <Link href="/auth/login" style={styles.brandButtonPrimary}>Sign Up</Link>
-              <Link href="/pricing" style={styles.brandButtonSecondary}>Upgrade to Pro</Link>
-              <button type="button" style={styles.modalDismiss} onClick={() => setShowTrialModal(false)}>Not now</button>
+              <Link href="/auth/login" style={styles.brandButtonPrimary}>{fallbackText(t("hero.station.signupCta"), "Sign Up")}</Link>
+              <Link href="/pricing" style={styles.brandButtonSecondary}>{fallbackText(t("hero.station.upgradeCta"), "Upgrade to Pro")}</Link>
+              <button type="button" style={styles.modalDismiss} onClick={() => setShowTrialModal(false)}>{fallbackText(t("hero.station.notNow"), "Not now")}</button>
             </div>
           </div>
         </div>
