@@ -5,17 +5,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
+import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
 import { getAuthFlow, getDefaultPostAuthDestination, type AuthFlow } from "@/lib/supabase/auth-flows";
+
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
 
 // Navbar = consumer/marketing top level only. SaaS Station modules such as
 // Calendar, Spreadsheets, Reviews, and Outreach stay inside the SaaS cockpit.
 const navItems = [
-  { label: "Home", path: "/" },
-  { label: "Promote", path: "/promote" },
-  { label: "Personal Assistant", path: "/assistant" },
-  { label: "Pricing", path: "/pricing" },
-  { label: "Executive", path: "/dashboard" },
+  { labelKey: "header.home", fallback: "Home", path: "/" },
+  { labelKey: "header.promote", fallback: "Promote", path: "/promote" },
+  { labelKey: "header.assistant", fallback: "Personal Assistant", path: "/assistant" },
+  { labelKey: "header.pricing", fallback: "Pricing", path: "/pricing" },
+  { labelKey: "header.executive", fallback: "Executive", path: "/dashboard" },
 ];
 
 const oauthProviders = [
@@ -51,6 +56,7 @@ function getOAuthHref(path: string, flow: AuthFlow) {
 }
 
 function AuthControls() {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [flow, setFlow] = useState<AuthFlow>("main");
   const loginHref = useMemo(() => getLoginHref(flow), [flow]);
@@ -98,14 +104,14 @@ function AuthControls() {
       </div>
       {user ? (
         <div className="site-auth__state">
-          <span className="site-auth__label">Logged in</span>
+          <span className="site-auth__label">{fallbackText(t("header.loggedIn"), "Logged in")}</span>
           <button type="button" className="site-auth__button" onClick={() => void handleLogout()}>
-            Logout
+            {fallbackText(t("header.logout"), "Logout")}
           </button>
         </div>
       ) : (
         <Link className="site-auth__button site-auth__login" href={loginHref}>
-          Login
+          {fallbackText(t("header.login"), "Login")}
         </Link>
       )}
     </div>
@@ -114,6 +120,7 @@ function AuthControls() {
 
 export default function SiteHeader() {
   const pathname = usePathname() || "/";
+  const { t } = useTranslation();
 
   return (
     <header className="site-header">
@@ -126,7 +133,7 @@ export default function SiteHeader() {
           const active = item.path === "/" ? pathname === "/" : pathname.startsWith(item.path);
           return (
             <Link key={item.path} className={active ? "active" : ""} href={item.path}>
-              {item.label}
+              {fallbackText(t(item.labelKey), item.fallback)}
             </Link>
           );
         })}
