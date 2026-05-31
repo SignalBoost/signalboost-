@@ -52,32 +52,161 @@
     "promote": {
       "title": "Promocionar negocio",
       "eyebrow": "Bahía de adquisición",
-      "summary": "Lanza campañas con geolocalización, tarjetas de oferta y ubicaciones de afiliados desde una superficie guiada."
+      "summary": "Lanza campañas con geolocalización, tarjetas de oferta y ubicaciones de afiliados desde una superficie guiada.",
+      "signal": "+24% de aumento de intención",
+      "status": "Activo",
+      "telemetry": "Sincronización de campañas cada 15 min",
+      "features": {
+        "1": "Constructor de ofertas",
+        "2": "Rutas regionales de aterrizaje",
+        "3": "Enrutamiento de conversión de socios"
+      },
+      "automations": {
+        "1": "Prompts de campaña Concierge",
+        "2": "Agrupación de audiencias",
+        "3": "Revisiones de calidad UTM"
+      }
     },
     "reviews": {
       "title": "Reseñas",
       "eyebrow": "Telemetría de confianza",
-      "summary": "Recopila, clasifica y responde a comentarios de clientes antes de que la reputación afecte los ingresos."
+      "summary": "Recopila, clasifica y responde a comentarios de clientes antes de que la reputación afecte los ingresos.",
+      "signal": "Pulso medio 4,8",
+      "status": "Recolectando",
+      "telemetry": "Flujo de solicitud etapa 1 activo",
+      "features": {
+        "1": "Formulario de solicitud de reseñas",
+        "2": "Cola de reseñas en Supabase",
+        "3": "Seguimiento de entrega por email/SMS"
+      },
+      "automations": {
+        "1": "Texto de solicitud localizado",
+        "2": "Envío de email con Resend",
+        "3": "Cola de clientes lista para SMS"
+      }
     },
     "calendar": {
       "title": "Calendario",
       "eyebrow": "Programación de misión",
-      "summary": "Coordina reservas, lanzamientos, seguimientos y reuniones ejecutivas con visibilidad de cockpit."
+      "summary": "Coordina reservas, lanzamientos, seguimientos y reuniones ejecutivas con visibilidad de cockpit.",
+      "signal": "92% de salud de horarios",
+      "status": "Sincronizado",
+      "telemetry": "Malla de disponibilidad estable",
+      "features": {
+        "1": "Panel de reservas",
+        "2": "Ventanas de lanzamiento",
+        "3": "Traspasos de equipo"
+      },
+      "automations": {
+        "1": "Detección persistente de conflictos",
+        "2": "Horarios demo alternativos",
+        "3": "Reprogramación Concierge"
+      }
     },
     "spreadsheets": {
       "title": "Hojas de cálculo",
       "eyebrow": "Operaciones de datos",
-      "summary": "Convierte filas en decisiones con hojas estructuradas para datos de socios, presupuestos, inventario y pronósticos."
+      "summary": "Convierte filas en decisiones con hojas estructuradas para datos de socios, presupuestos, inventario y pronósticos.",
+      "signal": "18 hojas activas",
+      "status": "Validado",
+      "telemetry": "Guarda de esquema activada",
+      "features": {
+        "1": "Tablas inteligentes",
+        "2": "Carriles de importación",
+        "3": "Barandillas de fórmulas"
+      },
+      "automations": {
+        "1": "Detección de anomalías",
+        "2": "Limpieza CSV",
+        "3": "Instantáneas de previsión con datos demo"
+      }
     },
     "outreach": {
       "title": "Alcance",
       "eyebrow": "Transmisión de señales",
-      "summary": "Planifica secuencias de email, socios y clientes con seguimiento medible en cada canal."
+      "summary": "Planifica secuencias de email, socios y clientes con seguimiento medible en cada canal.",
+      "signal": "31% de respuestas",
+      "status": "Transmitiendo",
+      "telemetry": "Entregabilidad nominal",
+      "features": {
+        "1": "Cockpit de secuencias",
+        "2": "Colas de leads",
+        "3": "Guiones para socios"
+      },
+      "automations": {
+        "1": "Tiempo de seguimiento",
+        "2": "Enriquecimiento CRM",
+        "3": "Resúmenes persistentes de conversación"
+      }
     },
     "assistant": {
       "title": "Concierge",
       "eyebrow": "Núcleo de IA Concierge",
-      "summary": "Un asistente unificado para descubrimiento del marketplace, operaciones SaaS, resúmenes ejecutivos y próximas acciones."
+      "summary": "Un asistente unificado para descubrimiento del marketplace, operaciones SaaS, resúmenes ejecutivos y próximas acciones.",
+      "signal": "Copiloto IA 24/7",
+      "status": "En línea",
+      "telemetry": "Puente de contexto listo",
+      "features": {
+        "1": "Matching de marketplace",
+        "2": "Redacción de tareas",
+        "3": "Informes ejecutivos"
+      },
+      "automations": {
+        "1": "Siguiente mejor acción",
+        "2": "Prompts para aclarar o usar defecto",
+        "3": "Memoria entre módulos"
+      }
     }
+  },
+  "modulePage": {
+    "missionSignal": "Señal de misión",
+    "coreSystems": "Sistemas centrales",
+    "conciergeAutomations": "Automatizaciones de IA Concierge",
+    "conciergeEyebrow": "IA Concierge",
+    "conciergeTitle": "Conectado al descubrimiento del marketplace y la ejecución SaaS",
+    "conciergeDescription": "SignalBoost dirige la intención de compra, los datos de socios y las tareas operativas por una sola capa de asistente para pasar de pregunta a acción.",
+    "conciergeCta": "Abrir Concierge",
+    "backendEyebrow": "backend signalboost-live",
+    "backendLoading": "Conectando la API del módulo en vivo…",
+    "backendConnected": "API en vivo conectada",
+    "backendFallback": "Ruta API alternativa activa",
+    "backendFallbackDescription": "SignalBoost está comprobando el backend en vivo y mantendrá este módulo utilizable con datos alternativos seguros."
+  },
+  "reviewsStage1": {
+    "eyebrow": "Reseñas etapa 1",
+    "title": "Recopila reseñas de clientes por email o SMS",
+    "description": "Envía una solicitud localizada, guarda el cliente en Supabase y deja la cola lista para mostrar reseñas de Google y monitorear respuestas.",
+    "businessLabel": "Nombre del negocio",
+    "customerLabel": "Nombre del cliente",
+    "emailLabel": "Email del cliente",
+    "phoneLabel": "Teléfono del cliente",
+    "channelLabel": "Canal de entrega",
+    "channelEmail": "Email",
+    "channelSms": "SMS",
+    "channelBoth": "Email + SMS",
+    "ratingLabel": "Calificación privada",
+    "messageLabel": "Nota de solicitud de reseña",
+    "messagePlaceholder": "Gracias por visitarnos — ¿podrías compartir tu experiencia?",
+    "submit": "Enviar solicitud de reseña",
+    "sending": "Enviando solicitud…",
+    "success": "Solicitud de reseña en cola y guardada.",
+    "error": "No se pudo poner en cola la solicitud. Inténtalo de nuevo.",
+    "disclaimer": "La entrega SMS queda en cola en Supabase para activar proveedor; el email se envía cuando RESEND_API_KEY está configurada.",
+    "inboxTitle": "Cola de recopilación etapa 1",
+    "inboxDescription": "Cada envío crea una fila review_requests en Supabase con locale, canal y estado de entrega."
+  },
+  "marketplace": {
+    "eyebrow": "Marketplace SignalBoost",
+    "title": "Marketplace regional de socios",
+    "description": "Explora socios afiliados verificados con logos desde fuentes de marca confiables y enlaces resueltos para tu región cuando existan.",
+    "regionLabel": "Región",
+    "categoryLabel": "Categoría",
+    "allCategories": "Todas las categorías",
+    "partnersCount": "socios",
+    "visit": "Visitar oferta regional",
+    "details": "Detalles",
+    "featured": "Destacado",
+    "regionalUrl": "Enlace regional activo",
+    "globalUrl": "Enlace global"
   }
 }

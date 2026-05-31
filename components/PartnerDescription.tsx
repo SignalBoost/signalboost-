@@ -3,6 +3,7 @@
 import React from "react";
 import partnersJson from "@/public/partners.json";
 import useTranslation from "./i18n/useTranslation";
+import { logoSrc } from "@/lib/partner-links";
 
 interface I18n {
   en?: string;
@@ -88,7 +89,7 @@ export default function PartnerDescription({
                 >
                   <span style={styles.logoWrap}>
                     <img
-                      src={`/logos/${partner.logo}`}
+                      src={logoSrc(partner.logo)}
                       alt={`${partner.name} logo`}
                       loading="lazy"
                       style={styles.logo}

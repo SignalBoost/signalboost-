@@ -12,8 +12,7 @@ import { getAuthFlow, getDefaultPostAuthDestination, type AuthFlow } from "@/lib
 // Calendar, Spreadsheets, Reviews, and Outreach stay inside the SaaS cockpit.
 const navItems = [
   { label: "Home", path: "/" },
-  { label: "Promote", path: "/promote" },
-  { label: "Personal Assistant", path: "/assistant" },
+  { label: "Marketplace", path: "/marketplace" },
   { label: "Pricing", path: "/pricing" },
   { label: "Executive", path: "/dashboard" },
 ];
