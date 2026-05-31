@@ -77,10 +77,10 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
                 key={category.key}
                 href={`/marketplace?category=${category.key}`}
                 style={styles.categoryCard}
-                aria-label={fallbackText(t("home.browseCategoryAria"), `Browse ${category.label} partners`).replace("{label}", category.label)}
+                aria-label={fallbackText(t("home.browseCategoryAria"), `Browse ${category.label} partners`).replace("{label}", fallbackText(t(`categories.${category.key}`), category.label))}
               >
                 <span style={styles.categoryCardCopy}>
-                  <span style={styles.categoryName}>{category.label}</span>
+                  <span style={styles.categoryName}>{fallbackText(t(`categories.${category.key}`), category.label)}</span>
                   <span style={styles.categoryMeta}>
                     {category.count} {category.count === 1 ? partnerSingular : partnerPlural}
                   </span>
