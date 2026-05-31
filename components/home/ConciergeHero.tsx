@@ -487,12 +487,9 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               <span style={styles.badgePulse} />
               <span style={styles.badgeText}>Trusted partner network</span>
             </span>
-            <h1 id="partner-hero-title" style={styles.dirHeading}>
+            <h1 id="partner-hero-title" style={styles.srOnly}>
               {fallbackText(t("homepage.partnerHeroTitle"), "Trusted partners, all in one place")}
             </h1>
-            <p style={styles.dirSub}>
-              {totalPartners}+ vetted partners — search or pick a category to tune the live field below.
-            </p>
           </div>
 
           <div style={styles.dirControls}>
@@ -746,7 +743,8 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  heroSection: { position: "relative", backgroundColor: "#030305", padding: "24px 24px 28px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)", height: "calc(100vh - 56px)", minHeight: "620px", display: "flex", flexDirection: "column", justifyContent: "center" },
+  heroSection: { position: "relative", backgroundColor: "#030305", padding: "28px 24px 40px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)", minHeight: "calc(100vh - 56px)", display: "flex", flexDirection: "column", justifyContent: "center" },
+  srOnly: { position: "absolute", width: "1px", height: "1px", padding: 0, margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 },
   glowLeft: { position: "absolute", top: "-14%", left: "8%", width: "520px", height: "520px", background: "radial-gradient(circle, rgba(245, 197, 66, 0.16) 0%, transparent 68%)", pointerEvents: "none" },
   glowRight: { position: "absolute", top: "8%", right: "8%", width: "620px", height: "620px", background: "radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 62%)", pointerEvents: "none" },
 
@@ -767,7 +765,7 @@ const styles: Record<string, React.CSSProperties> = {
 
   dirCount: { color: "rgba(255,255,255,.5)", fontSize: "12px", fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase" },
 
-  field: { position: "relative", width: "100%", flex: 1, minHeight: "200px", border: "1px solid rgba(255,255,255,.1)", borderRadius: "22px", overflow: "hidden", background: "radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%)" },
+  field: { position: "relative", width: "100%", flex: 1, minHeight: "300px", border: "1px solid rgba(255,255,255,.1)", borderRadius: "22px", overflow: "hidden", background: "radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%)" },
   canvas: { position: "absolute", inset: 0, display: "block", zIndex: 0 },
 
   dirActions: { display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "4px" },
