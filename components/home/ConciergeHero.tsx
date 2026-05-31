@@ -719,8 +719,8 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <style>{`
         .sb-hero-shell{
           position:relative;z-index:10;
-          display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:44px;align-items:start;
-          max-width:100%;margin:0 auto;
+          display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:start;
+          max-width:1280px;margin:0 auto;
         }
         @media (max-width:1024px){ .sb-hero-shell{ grid-template-columns:1fr; gap:30px; } }
 
