@@ -1,7 +1,8 @@
 // File: components/partners/PartnerDetailView.tsx
 // Client view for a single partner. The server page (app/partners/[slug]/page.tsx)
 // handles data fetching, metadata, and static params, then passes plain data here
-// so this component can translate the UI chrome via useTranslation.
+// so this component can translate the UI chrome AND category/region values via
+// useTranslation. English labels are passed as fallbacks.
 "use client";
 
 import useTranslation from "@/components/i18n/useTranslation";
@@ -10,23 +11,29 @@ function fallbackText(value: string, fallback: string) {
   return value.includes(".") ? fallback : value;
 }
 
+type I18nText = { en?: string; pt?: string; es?: string; pl?: string; ru?: string };
+
 export type PartnerView = {
   id: string;
   name: string;
   description?: string;
+  description_i18n?: I18nText;
   url: string;
   logo?: string;
   network?: string;
   tier: number | string;
   featured?: boolean;
   travel_related?: boolean;
+  categoryKey: string;
   categoryLabel: string;
+  regionKeys: string[];
   regionLabels: string[];
 };
 
 export type RelatedView = {
   id: string;
   name: string;
+  regionKeys: string[];
   regionLabels: string[];
 };
 
@@ -37,10 +44,20 @@ export default function PartnerDetailView({
   partner: PartnerView;
   related: RelatedView[];
 }) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const initial = partner.name.charAt(0).toUpperCase();
   const logoSrc = `/logos/${partner.logo}`;
-  const extraRegions = partner.regionLabels.length - 3;
+
+  // Translate category/region values via maps, falling back to English label.
+  const categoryLabel = fallbackText(t(`categories.${partner.categoryKey}`), partner.categoryLabel);
+  const regionLabels = partner.regionKeys.map((key, i) =>
+    fallbackText(t(`regions.${key}`), partner.regionLabels[i] ?? key)
+  );
+  const extraRegions = regionLabels.length - 3;
+
+  // Prefer a localized description when available, else the default.
+  const localizedDescription =
+    (partner.description_i18n && partner.description_i18n[lang as keyof I18nText]) || partner.description;
 
   return (
     <>
@@ -61,14 +78,14 @@ export default function PartnerDetailView({
               <h1 className="partner-name">{partner.name}</h1>
 
               <div className="partner-badges">
-                <span className="badge badge-gold">{partner.categoryLabel}</span>
+                <span className="badge badge-gold">{categoryLabel}</span>
                 {partner.featured && (
                   <span className="badge badge-outline">{fallbackText(t("partner.featured"), "Featured")}</span>
                 )}
                 {partner.travel_related && (
                   <span className="badge badge-outline">{fallbackText(t("partner.travel"), "Travel")}</span>
                 )}
-                {partner.regionLabels.slice(0, 3).map((region) => (
+                {regionLabels.slice(0, 3).map((region) => (
                   <span key={region} className="badge badge-region">{region}</span>
                 ))}
                 {extraRegions > 0 && (
@@ -80,7 +97,7 @@ export default function PartnerDetailView({
             </div>
           </div>
 
-          {partner.description && <p className="partner-description">{partner.description}</p>}
+          {localizedDescription && <p className="partner-description">{localizedDescription}</p>}
 
           <a href={partner.url} className="partner-cta" target="_blank" rel="noopener noreferrer sponsored">
             {fallbackText(t("partner.visit"), `Visit ${partner.name}`).replace("{name}", partner.name)}
@@ -91,7 +108,7 @@ export default function PartnerDetailView({
           <div className="partner-detail-grid">
             <div className="detail-cell">
               <div className="detail-label">{fallbackText(t("partner.category"), "Category")}</div>
-              <div className="detail-value">{partner.categoryLabel}</div>
+              <div className="detail-value">{categoryLabel}</div>
             </div>
             <div className="detail-cell">
               <div className="detail-label">{fallbackText(t("partner.network"), "Network")}</div>
@@ -103,7 +120,7 @@ export default function PartnerDetailView({
             </div>
             <div className="detail-cell">
               <div className="detail-label">{fallbackText(t("partner.regions"), "Regions")}</div>
-              <div className="detail-value">{fallbackText(t("partner.regionsN"), `${partner.regionLabels.length} regions`).replace("{n}", String(partner.regionLabels.length))}</div>
+              <div className="detail-value">{fallbackText(t("partner.regionsN"), `${regionLabels.length} regions`).replace("{n}", String(regionLabels.length))}</div>
             </div>
           </div>
         </div>
@@ -111,15 +128,20 @@ export default function PartnerDetailView({
         {related.length > 0 && (
           <section className="related-section">
             <h2 className="related-title">
-              {fallbackText(t("partner.moreIn"), `More in ${partner.categoryLabel}`).replace("{category}", partner.categoryLabel)}
+              {fallbackText(t("partner.moreIn"), `More in ${categoryLabel}`).replace("{category}", categoryLabel)}
             </h2>
             <div className="related-grid">
-              {related.map((rp) => (
-                <a key={rp.id} href={`/partners/${rp.id}`} className="related-card">
-                  <div className="related-card-name">{rp.name}</div>
-                  <div className="related-card-cat">{rp.regionLabels.slice(0, 2).join(" · ")}</div>
-                </a>
-              ))}
+              {related.map((rp) => {
+                const rpRegions = rp.regionKeys.map((key, i) =>
+                  fallbackText(t(`regions.${key}`), rp.regionLabels[i] ?? key)
+                );
+                return (
+                  <a key={rp.id} href={`/partners/${rp.id}`} className="related-card">
+                    <div className="related-card-name">{rp.name}</div>
+                    <div className="related-card-cat">{rpRegions.slice(0, 2).join(" · ")}</div>
+                  </a>
+                );
+              })}
             </div>
           </section>
         )}
