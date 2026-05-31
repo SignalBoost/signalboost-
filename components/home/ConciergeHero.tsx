@@ -58,6 +58,15 @@ const categories = (() => {
   return Array.from(map.values());
 })();
 
+// Categories shown as chips in the hero: travel only (the rest are still in
+// the field, search, and the sections below — just not chipped up top).
+const TRAVEL_HINTS = ["flight", "hotel", "sim", "connect", "tour", "activit", "transfer", "car", "insurance", "claim", "travel"];
+function isTravel(c: { key: string; label: string }) {
+  const hay = `${c.key} ${c.label}`.toLowerCase();
+  return TRAVEL_HINTS.some((h) => hay.includes(h));
+}
+const chipCategories = categories.filter(isTravel);
+
 const stationTools = [
   { label: "Calendar", note: "Schedule & sync", href: "/calendar" },
   { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets" },
@@ -509,7 +518,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               >
                 All <span style={styles.dirChipCount}>{totalPartners}</span>
               </button>
-              {categories.map((c) => (
+              {chipCategories.map((c) => (
                 <button
                   type="button"
                   key={c.key}
@@ -750,6 +759,17 @@ const styles: Record<string, React.CSSProperties> = {
 
   dirZone: { display: "flex", flexDirection: "column", gap: "10px", minWidth: 0, minHeight: 0, height: "100%" },
   dirHeader: { display: "flex", flexDirection: "column", gap: "10px" },
+
+  dirBody: { display: "grid", gridTemplateColumns: "210px minmax(0,1fr)", gap: "16px", flex: 1, minHeight: 0 },
+  rail: { display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto", paddingRight: "4px", maxHeight: "100%" },
+  railSearch: { width: "100%", height: "40px", background: "rgba(255,255,255,.05)", color: "#fff", border: "1px solid rgba(255,255,255,.12)", borderRadius: "12px", padding: "0 12px", outline: "none", fontFamily: "inherit", fontSize: "13px", marginBottom: "6px" },
+  railItem: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", width: "100%", textAlign: "left", border: "1px solid transparent", background: "transparent", color: "rgba(255,255,255,.82)", borderRadius: "10px", padding: "8px 10px", fontSize: "12.5px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" },
+  railItemActive: { borderColor: "rgba(245,197,66,.5)", background: "rgba(245,197,66,.12)", color: "#f5c542" },
+  railItemLabel: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  railCount: { color: "rgba(255,255,255,.45)", fontSize: "11px", fontWeight: 800, flexShrink: 0 },
+  railGroupLabel: { color: "rgba(255,255,255,.4)", fontSize: "10px", fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", margin: "12px 4px 4px" },
+
+  fieldWrap: { display: "flex", flexDirection: "column", gap: "8px", minWidth: 0, minHeight: 0 },
   badgeContainer: { display: "inline-flex", alignItems: "center", gap: "10px", border: "1px solid rgba(245, 197, 66, 0.32)", background: "rgba(245, 197, 66, 0.08)", borderRadius: "999px", padding: "7px 12px", alignSelf: "flex-start" },
   badgePulse: { width: "8px", height: "8px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)" },
   badgeText: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" },
