@@ -719,8 +719,8 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <style>{`
         .sb-hero-shell{
           position:relative;z-index:10;
-          display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:36px;align-items:start;
-          max-width:1320px;margin:0 auto;
+          display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:start;
+          max-width:100%;margin:0 auto;
         }
         @media (max-width:1024px){ .sb-hero-shell{ grid-template-columns:1fr; gap:30px; } }
 
@@ -747,7 +747,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  heroSection: { position: "relative", backgroundColor: "#030305", padding: "120px 24px 64px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)" },
+  heroSection: { position: "relative", backgroundColor: "#030305", padding: "40px 24px 56px 24px", overflow: "hidden", borderBottom: "1px solid rgba(245, 197, 66, 0.13)" },
   glowLeft: { position: "absolute", top: "-14%", left: "8%", width: "520px", height: "520px", background: "radial-gradient(circle, rgba(245, 197, 66, 0.16) 0%, transparent 68%)", pointerEvents: "none" },
   glowRight: { position: "absolute", top: "8%", right: "8%", width: "620px", height: "620px", background: "radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 62%)", pointerEvents: "none" },
 
