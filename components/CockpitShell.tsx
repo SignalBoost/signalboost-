@@ -1,5 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import type { ReactNode } from "react";
+import useTranslation from "@/components/i18n/useTranslation";
+
+function fallbackText(value: string, fallback: string) {
+  return value.includes(".") ? fallback : value;
+}
 
 export function CockpitShell({
   eyebrow,
@@ -12,6 +19,8 @@ export function CockpitShell({
   subtitle: string;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
+
   return (
     <main className="cockpit-page">
       <section className="cockpit-hero" aria-labelledby="cockpit-title">
@@ -21,13 +30,13 @@ export function CockpitShell({
         <p className="cockpit-subtitle">{subtitle}</p>
         <div className="cockpit-actions">
           <Link className="cockpit-primary" href="/pricing">
-            View SaaS pricing
+            {fallbackText(t("cockpit.viewPricing"), "View SaaS pricing")}
           </Link>
           <Link className="cockpit-secondary" href="/dashboard">
-            Executive dashboard
+            {fallbackText(t("cockpit.executiveDashboard"), "Executive dashboard")}
           </Link>
           <Link className="cockpit-secondary concierge-shell-link" href="/assistant">
-            Open Concierge
+            {fallbackText(t("cockpit.openConcierge"), "Open Concierge")}
           </Link>
         </div>
       </section>
