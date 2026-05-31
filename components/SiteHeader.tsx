@@ -11,6 +11,7 @@ import { getAuthFlow, getDefaultPostAuthDestination, type AuthFlow } from "@/lib
 // Navbar = consumer/marketing top level only. SaaS Station modules such as
 // Calendar, Spreadsheets, Reviews, and Outreach stay inside the SaaS cockpit.
 const navItems = [
+  { label: "Home", path: "/" },
   { label: "Promote", path: "/promote" },
   { label: "Personal Assistant", path: "/assistant" },
   { label: "Pricing", path: "/pricing" },
