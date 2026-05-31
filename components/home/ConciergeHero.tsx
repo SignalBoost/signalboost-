@@ -489,54 +489,57 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <div style={styles.glowRight} aria-hidden="true" />
 
       <div className="sb-hero-shell">
-        {/* ============ LEFT: LIVING SIGNAL FIELD ============ */}
-        <div style={styles.dirZone}>
-          <div style={styles.dirHeader}>
-            <span style={styles.badgeContainer}>
-              <span style={styles.badgePulse} />
-              <span style={styles.badgeText}>Trusted partner network</span>
-            </span>
-            <h1 id="partner-hero-title" style={styles.srOnly}>
-              {fallbackText(t("homepage.partnerHeroTitle"), "Trusted partners, all in one place")}
-            </h1>
-          </div>
-
-          <div style={styles.dirControls}>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search partners (e.g. hotels, Brazil, eSIM)…"
-              style={styles.dirSearch}
-              aria-label="Search partners"
-            />
-            <div style={styles.dirChips} role="tablist" aria-label="Partner categories">
+        {/* ============ FAR-LEFT: headline + search + travel chips ============ */}
+        <div style={styles.infoCol}>
+          <span style={styles.badgeContainer}>
+            <span style={styles.badgePulse} />
+            <span style={styles.badgeText}>Trusted partner network</span>
+          </span>
+          <h1 id="partner-hero-title" style={styles.infoHeading}>
+            {fallbackText(t("homepage.partnerHeroTitle"), "Trusted partners, all in one place")}
+          </h1>
+          <p style={styles.infoSub}>
+            {totalPartners}+ vetted partners — a living network of signals. Search or pick a category to tune the field.
+          </p>
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search partners…"
+            style={styles.infoSearch}
+            aria-label="Search partners"
+          />
+          <div style={styles.infoChips} role="tablist" aria-label="Partner categories">
+            <button
+              type="button"
+              onClick={() => setActiveCategory("all")}
+              style={{ ...styles.infoChip, ...(activeCategory === "all" ? styles.infoChipActive : {}) }}
+            >
+              All <span style={styles.infoChipCount}>{totalPartners}</span>
+            </button>
+            {chipCategories.map((c) => (
               <button
                 type="button"
-                onClick={() => setActiveCategory("all")}
-                style={{ ...styles.dirChip, ...(activeCategory === "all" ? styles.dirChipActive : {}) }}
+                key={c.key}
+                onClick={() => setActiveCategory(c.key)}
+                style={{ ...styles.infoChip, ...(activeCategory === c.key ? styles.infoChipActive : {}) }}
               >
-                All <span style={styles.dirChipCount}>{totalPartners}</span>
+                {c.label} <span style={styles.infoChipCount}>{c.count}</span>
               </button>
-              {chipCategories.map((c) => (
-                <button
-                  type="button"
-                  key={c.key}
-                  onClick={() => setActiveCategory(c.key)}
-                  style={{ ...styles.dirChip, ...(activeCategory === c.key ? styles.dirChipActive : {}) }}
-                >
-                  {c.label} <span style={styles.dirChipCount}>{c.count}</span>
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
-
-          <div style={styles.dirCount}>
-            {idle
-              ? `${visibleCount} signals in the network${visibleCount > POOL_SIZE ? ` · ${POOL_SIZE} drifting now` : ""}`
-              : `${visibleCount} ${visibleCount === 1 ? "signal" : "signals"} matched${visibleCount > POOL_SIZE ? ` · ${POOL_SIZE} drifting now` : ""}`}
+          <div style={styles.infoActions}>
+            <Link href="/marketplace" style={styles.brandButtonPrimary}>
+              See all {totalPartners} →
+            </Link>
+            <Link href="/promote" style={styles.brandButtonSecondary}>
+              Become a partner
+            </Link>
           </div>
+        </div>
 
+        {/* ============ CENTER: LIVING SIGNAL FIELD ============ */}
+        <div style={styles.dirZone}>
           {/* The field: canvas waves + drifting clickable signals */}
           <div ref={fieldRef} style={styles.field}>
             <canvas ref={canvasRef} style={styles.canvas} aria-hidden="true" />
@@ -572,7 +575,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 <span className="sb-signal-logo">
                   {p.logo ? (
                     <img
-                      src={`/logos/${p.logo}`}
+                      src={/^https?:\/\//.test(p.logo) ? p.logo : `/logos/${p.logo}`}
                       alt={`${p.name} logo`}
                       loading="lazy"
                       onError={(e) => {
@@ -592,15 +595,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 </span>
               </a>
             ))}
-          </div>
-
-          <div style={styles.dirActions}>
-            <Link href="/marketplace" style={styles.brandButtonPrimary}>
-              See all {totalPartners} partners →
-            </Link>
-            <Link href="/promote" style={styles.brandButtonSecondary}>
-              Become a partner
-            </Link>
           </div>
         </div>
 
@@ -724,8 +718,11 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <style>{`
         .sb-hero-shell{
           position:relative;z-index:10;width:100%;
-          display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:stretch;
-          max-width:1280px;margin:0 auto;
+          display:grid;grid-template-columns:270px minmax(0,1fr) 340px;gap:24px;align-items:stretch;
+          max-width:1360px;margin:0 auto;
+        }
+        @media (max-width:1100px){
+          .sb-hero-shell{ grid-template-columns:1fr; }
         }
         @media (max-width:1024px){ .sb-hero-shell{ grid-template-columns:1fr; gap:30px; } }
 
@@ -757,8 +754,18 @@ const styles: Record<string, React.CSSProperties> = {
   glowLeft: { position: "absolute", top: "-14%", left: "8%", width: "520px", height: "520px", background: "radial-gradient(circle, rgba(245, 197, 66, 0.16) 0%, transparent 68%)", pointerEvents: "none" },
   glowRight: { position: "absolute", top: "8%", right: "8%", width: "620px", height: "620px", background: "radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 62%)", pointerEvents: "none" },
 
-  dirZone: { display: "flex", flexDirection: "column", gap: "10px", minWidth: 0, minHeight: 0, height: "100%" },
+  dirZone: { display: "flex", flexDirection: "column", gap: "8px", minWidth: 0, minHeight: 0, height: "100%" },
   dirHeader: { display: "flex", flexDirection: "column", gap: "10px" },
+
+  infoCol: { display: "flex", flexDirection: "column", gap: "14px", minWidth: 0, justifyContent: "flex-start", paddingTop: "2px" },
+  infoHeading: { color: "#fff", fontFamily: "inherit", fontSize: "clamp(22px, 2.4vw, 30px)", lineHeight: 1.06, letterSpacing: "-0.03em", margin: 0 },
+  infoSub: { color: "rgba(255,255,255,.66)", fontSize: "14px", lineHeight: 1.5, margin: 0 },
+  infoSearch: { width: "100%", height: "44px", background: "rgba(255,255,255,.05)", color: "#fff", border: "1px solid rgba(255,255,255,.12)", borderRadius: "13px", padding: "0 14px", outline: "none", fontFamily: "inherit", fontSize: "14px" },
+  infoChips: { display: "flex", flexWrap: "wrap", gap: "7px" },
+  infoChip: { display: "inline-flex", alignItems: "center", gap: "6px", border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.05)", color: "#fff", borderRadius: "999px", padding: "7px 11px", fontSize: "12px", fontWeight: 800, cursor: "pointer", fontFamily: "inherit" },
+  infoChipActive: { borderColor: "rgba(245,197,66,.6)", background: "rgba(245,197,66,.14)", color: "#f5c542" },
+  infoChipCount: { color: "rgba(255,255,255,.5)", fontSize: "10.5px", fontWeight: 800 },
+  infoActions: { display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "4px" },
 
   dirBody: { display: "grid", gridTemplateColumns: "210px minmax(0,1fr)", gap: "16px", flex: 1, minHeight: 0 },
   rail: { display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto", paddingRight: "4px", maxHeight: "100%" },
@@ -792,7 +799,7 @@ const styles: Record<string, React.CSSProperties> = {
   brandButtonPrimary: { display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "999px", border: 0, background: "linear-gradient(135deg, #f5c542, #dfa837)", color: "#11151c", minHeight: "46px", padding: "0 22px", fontWeight: 900, fontSize: "14px", boxShadow: "0 18px 42px rgba(245, 197, 66, 0.24)", cursor: "pointer", textDecoration: "none", fontFamily: "inherit" },
   brandButtonSecondary: { display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", border: "1px solid rgba(255,255,255,.14)", borderRadius: "999px", background: "rgba(255,255,255,.06)", color: "#fff", minHeight: "46px", padding: "0 20px", fontWeight: 900, fontSize: "14px", textDecoration: "none", fontFamily: "inherit", cursor: "pointer" },
 
-  stationPanel: { position: "relative", overflow: "hidden", width: "100%", border: "1px solid rgba(245, 197, 66, 0.30)", borderRadius: "24px", background: "linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(4, 7, 13, 0.94))", padding: "26px", boxShadow: "0 22px 70px rgba(0,0,0,.42), 0 0 48px rgba(245, 197, 66, 0.1)" },
+  stationPanel: { position: "relative", overflow: "hidden", width: "100%", height: "100%", border: "1px solid rgba(245, 197, 66, 0.30)", borderRadius: "24px", background: "linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(4, 7, 13, 0.94))", padding: "24px", boxShadow: "0 22px 70px rgba(0,0,0,.42), 0 0 48px rgba(245, 197, 66, 0.1)", display: "flex", flexDirection: "column" },
   stationGlow: { position: "absolute", inset: "-35% -20% auto auto", width: "240px", height: "240px", background: "radial-gradient(circle, rgba(245,197,66,.18), transparent 65%)", pointerEvents: "none" },
   stationHeader: { position: "relative", zIndex: 1, marginBottom: "14px" },
   stationEyebrow: { color: "#f5c542", fontSize: "10px", fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase" },
