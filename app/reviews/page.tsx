@@ -60,22 +60,20 @@ export default function Page() {
     });
   }, []);
 
+  async function loadReviews(businessId: string) {
+    setLoadingReviews(true);
+    const r = await getReviewsForBusiness(businessId);
+    setReviews(r);
+    setLoadingReviews(false);
+  }
+
   useEffect(() => {
     if (!activeId) {
       setReviews([]);
       return;
     }
-    let alive = true;
-    setLoadingReviews(true);
-    getReviewsForBusiness(activeId).then((r) => {
-      if (alive) {
-        setReviews(r);
-        setLoadingReviews(false);
-      }
-    });
-    return () => {
-      alive = false;
-    };
+    void loadReviews(activeId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId]);
 
   const active = useMemo(() => businesses.find((b) => b.id === activeId) || null, [businesses, activeId]);
@@ -199,7 +197,17 @@ export default function Page() {
 
                     {/* Reviews list */}
                     <div style={styles.card}>
-                      <span style={styles.telemetryLabel}>Reviews</span>
+                      <div style={styles.reviewsHead}>
+                        <span style={styles.telemetryLabel}>Reviews</span>
+                        <button
+                          type="button"
+                          onClick={() => activeId && loadReviews(activeId)}
+                          disabled={loadingReviews}
+                          style={styles.refreshBtn}
+                        >
+                          {loadingReviews ? "Refreshing…" : "↻ Refresh"}
+                        </button>
+                      </div>
                       {loadingReviews ? (
                         <p style={styles.muted}>Loading reviews…</p>
                       ) : reviews.length === 0 ? (
@@ -257,6 +265,11 @@ const styles: Record<string, CSSProperties> = {
   h2: { color: "#fff", fontSize: 19, fontWeight: 700, margin: "0 0 6px" },
   muted: { color: "#9aa8b8", fontSize: 14, margin: 0, lineHeight: 1.55 },
   telemetryLabel: { display: "block", color: GOLD_DEEP, fontSize: 11, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 },
+  reviewsHead: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
+  refreshBtn: {
+    padding: "6px 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,.14)",
+    background: "rgba(255,255,255,.05)", color: "#cbd5e1", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+  },
   createRow: { display: "flex", gap: 10, marginTop: 14 },
   input: {
     flex: 1, boxSizing: "border-box", padding: "11px 13px", borderRadius: 11,
