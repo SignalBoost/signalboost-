@@ -7,6 +7,7 @@ import { stationWorkflows, workflowConnectorSecurityNotes } from "@/lib/station-
 import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
 import partners from "@/partners.json";
+import { partnerFaviconOrNull } from "@/lib/partner-logo";
 
 interface ConciergeHeroProps {
   lang?: string;
@@ -578,18 +579,13 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 }}
               >
                 <span className="sb-signal-logo">
-                  {p.logo ? (
-                    <img src={/^https?:\/\//.test(p.logo) ? p.logo : `/logos/${p.logo}`}
-                      alt={`${p.name} logo`}
-                      loading="lazy"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                        const sib = e.currentTarget.nextElementSibling;
-                        if (sib instanceof HTMLElement) sib.style.display = "flex";
-                      }}
-                    />
-                  ) : null}
-                  <span className="sb-signal-mono" style={{ display: p.logo ? "none" : "flex" }} aria-hidden="true">
+                  {(() => {
+                    const src = partnerFaviconOrNull({ id: p.id, name: p.name, logo: p.logo });
+                    return src ? (
+                      <img src={src} alt={`${p.name} logo`} loading="lazy" onError={(e) => { e.currentTarget.style.display = "none"; const sib = e.currentTarget.nextElementSibling; if (sib instanceof HTMLElement) sib.style.display = "flex"; }} />
+                    ) : null;
+                  })()}
+                  <span className="sb-signal-mono" style={{ display: partnerFaviconOrNull({ id: p.id, name: p.name, logo: p.logo }) ? "none" : "flex" }} aria-hidden="true">
                     {p.name.charAt(0).toUpperCase()}
                   </span>
                 </span>
