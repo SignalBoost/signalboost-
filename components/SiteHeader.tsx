@@ -11,7 +11,7 @@ import { checkIsAdmin } from "@/lib/admins";
 import { getAuthFlow, getDefaultPostAuthDestination, type AuthFlow } from "@/lib/supabase/auth-flows";
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 // Navbar = consumer/marketing top level only. SaaS Station modules such as
