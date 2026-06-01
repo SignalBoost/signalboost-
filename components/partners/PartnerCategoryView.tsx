@@ -5,7 +5,7 @@
 import useTranslation from "@/components/i18n/useTranslation";
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 type I18nText = { en?: string; pt?: string; es?: string; pl?: string; ru?: string };
