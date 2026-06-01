@@ -8,8 +8,7 @@ import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
 import partners from "@/partners.json";
 import { partnerFaviconOrNull } from "@/lib/partner-logo";
-import { useRegion, WORLDWIDE } from "@/lib/region";
-import { partnerMatchesRegion } from "@/lib/home/partners-home";
+import { useRegion, partnerVisibleInRegion } from "@/lib/region";
 
 interface ConciergeHeroProps {
   lang?: string;
@@ -117,10 +116,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   // A partner shows when it's tagged worldwide OR matches the chosen region.
   const [region] = useRegion();
   const regionPartners = useMemo(
-    () =>
-      allPartners.filter(
-        (p) => partnerMatchesRegion(p, WORLDWIDE) || partnerMatchesRegion(p, region)
-      ),
+    () => allPartners.filter((p) => partnerVisibleInRegion(p, region)),
     [region]
   );
 
@@ -165,7 +161,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   function nodeEligible(p: DirPartner) {
     const { cat, q } = filterRef.current;
     // Region gate: only worldwide or current-region partners are eligible.
-    if (!(partnerMatchesRegion(p, WORLDWIDE) || partnerMatchesRegion(p, regionRef.current))) return false;
+    if (!partnerVisibleInRegion(p, regionRef.current)) return false;
     const catKey = p.category_key || p.category || "other";
     if (cat !== "all" && catKey !== cat) return false;
     if (!q) return true;
