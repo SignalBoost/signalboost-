@@ -67,11 +67,19 @@ function isTravel(c: { key: string; label: string }) {
 }
 const chipCategories = categories.filter(isTravel);
 
+const STATION_COMING_SOON: Record<string, string> = {
+  en: "Coming soon",
+  es: "Próximamente",
+  pt: "Em breve",
+  pl: "Wkrótce",
+  ru: "Скоро",
+};
+
 const stationTools = [
-  { label: "Calendar", note: "Schedule & sync", href: "/calendar", nameKey: "hero.tools.calendar.name", descKey: "hero.tools.calendar.desc" },
-  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets", nameKey: "hero.tools.spreadsheets.name", descKey: "hero.tools.spreadsheets.desc" },
+  { label: "Calendar", note: "Schedule & sync", href: "/calendar", nameKey: "hero.tools.calendar.name", descKey: "hero.tools.calendar.desc", comingSoon: true },
+  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets", nameKey: "hero.tools.spreadsheets.name", descKey: "hero.tools.spreadsheets.desc", comingSoon: true },
   { label: "Reviews", note: "Reputation", href: "/reviews", nameKey: "hero.tools.reviews.name", descKey: "hero.tools.reviews.desc" },
-  { label: "Outreach", note: "Campaigns", href: "/outreach", nameKey: "hero.tools.outreach.name", descKey: "hero.tools.outreach.desc" },
+  { label: "Outreach", note: "Campaigns", href: "/outreach", nameKey: "hero.tools.outreach.name", descKey: "hero.tools.outreach.desc", comingSoon: true },
   { label: "Promote", note: "Marketing", href: "/promote", nameKey: "hero.tools.promote.name", descKey: "hero.tools.promote.desc" },
   { label: "Personal Assistant", note: "AI tasks", href: "/assistant", nameKey: "hero.tools.assistant.name", descKey: "hero.tools.assistant.desc" },
 ];
@@ -94,7 +102,8 @@ type SignalNode = {
 };
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
-  const { t } = useTranslation();
+  const { t, lang: uiLang } = useTranslation();
+  const comingSoonLabel = STATION_COMING_SOON[uiLang] ?? STATION_COMING_SOON.en;
   const router = useRouter();
 
   // Directory state
@@ -625,6 +634,9 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               <button type="button" key={tool.href} style={styles.toolTile} onClick={() => openTool(tool.href)}>
                 <span style={styles.toolTileLabel}>{fallbackText(t(tool.nameKey), tool.label)}</span>
                 <span style={styles.toolTileNote}>{fallbackText(t(tool.descKey), tool.note)}</span>
+                {tool.comingSoon && (
+                  <span style={{ marginTop: 6, alignSelf: "flex-start", fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#dfa837", border: "1px solid rgba(223,168,55,.35)", borderRadius: 999, padding: "2px 7px" }}>{comingSoonLabel}</span>
+                )}
               </button>
             ))}
           </div>
