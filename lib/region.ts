@@ -122,3 +122,17 @@ export function useRegion(): [string, (code: string) => void] {
 
   return [region, setRegion];
 }
+
+// --- Partner region visibility (the revenue rule, corrected) ---------------
+// A partner shows for a region when it EXPLICITLY lists that region, OR when it
+// is truly global (tagged "ot" and nothing else). A partner tagged "ot" PLUS
+// specific regions is regionally targeted, so it only shows in those regions.
+export function partnerVisibleInRegion(
+  p: { regions?: string[] },
+  region: string
+): boolean {
+  const r = Array.isArray(p.regions) ? p.regions : [];
+  if (r.includes(region)) return true;
+  if (r.length === 1 && r[0] === WORLDWIDE) return true;
+  return false;
+}
