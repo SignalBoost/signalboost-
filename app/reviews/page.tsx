@@ -1,11 +1,14 @@
 // File: app/reviews/page.tsx
 // Owner dashboard for the Reviews tool. Logged-in users create businesses,
 // copy a shareable /r/{slug} link to collect reviews, and read what comes in.
+// Translations are kept self-contained in this file (isolated feature) so a
+// locale edit here can never affect the rest of the site.
 "use client";
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import useTranslation from "@/components/i18n/useTranslation";
 import {
   getMyBusinesses,
   createBusiness,
@@ -19,9 +22,193 @@ import {
 const GOLD = "#f5c542";
 const GOLD_DEEP = "#dfa837";
 
+type Strings = {
+  eyebrow: string;
+  title: string;
+  sub: string;
+  loading: string;
+  loginTitle: string;
+  loginBody: string;
+  login: string;
+  createTitle: string;
+  createBody: string;
+  placeholder: string;
+  creating: string;
+  create: string;
+  errLogin: string;
+  errCreate: string;
+  noBiz: string;
+  shareLink: string;
+  copied: string;
+  copy: string;
+  open: string;
+  reviewsLabel: string;
+  refreshing: string;
+  refresh: string;
+  loadingReviews: string;
+  noReviews: string;
+  anonymous: string;
+  deleteAria: string;
+  reviewOne: string;
+  reviewMany: string;
+};
+
+const STRINGS: Record<string, Strings> = {
+  en: {
+    eyebrow: "Trust telemetry",
+    title: "Reviews",
+    sub: "Collect customer feedback with a shareable link, and read it all in one place.",
+    loading: "Loading…",
+    loginTitle: "Log in to manage reviews",
+    loginBody: "You need an account to create a business and collect reviews.",
+    login: "Log in",
+    createTitle: "Create a review page",
+    createBody: "Give it a business name. You'll get a link to share with customers.",
+    placeholder: "e.g. Casa Azul Café",
+    creating: "Creating…",
+    create: "Create",
+    errLogin: "Please log in again.",
+    errCreate: "Could not create.",
+    noBiz: "No review pages yet. Create one above to get started.",
+    shareLink: "Shareable link",
+    copied: "Copied!",
+    copy: "Copy",
+    open: "Open",
+    reviewsLabel: "Reviews",
+    refreshing: "Refreshing…",
+    refresh: "↻ Refresh",
+    loadingReviews: "Loading reviews…",
+    noReviews: "No reviews yet. Share your link to start collecting.",
+    anonymous: "Anonymous",
+    deleteAria: "Delete review",
+    reviewOne: "review",
+    reviewMany: "reviews",
+  },
+  es: {
+    eyebrow: "Telemetría de confianza",
+    title: "Reseñas",
+    sub: "Recopila los comentarios de los clientes con un enlace para compartir y léelos todos en un solo lugar.",
+    loading: "Cargando…",
+    loginTitle: "Inicia sesión para gestionar las reseñas",
+    loginBody: "Necesitas una cuenta para crear un negocio y recopilar reseñas.",
+    login: "Iniciar sesión",
+    createTitle: "Crear una página de reseñas",
+    createBody: "Ponle un nombre al negocio. Obtendrás un enlace para compartir con los clientes.",
+    placeholder: "p. ej., Casa Azul Café",
+    creating: "Creando…",
+    create: "Crear",
+    errLogin: "Vuelve a iniciar sesión.",
+    errCreate: "No se pudo crear.",
+    noBiz: "Aún no hay páginas de reseñas. Crea una arriba para empezar.",
+    shareLink: "Enlace para compartir",
+    copied: "¡Copiado!",
+    copy: "Copiar",
+    open: "Abrir",
+    reviewsLabel: "Reseñas",
+    refreshing: "Actualizando…",
+    refresh: "↻ Actualizar",
+    loadingReviews: "Cargando reseñas…",
+    noReviews: "Aún no hay reseñas. Comparte tu enlace para empezar a recopilar.",
+    anonymous: "Anónimo",
+    deleteAria: "Eliminar reseña",
+    reviewOne: "reseña",
+    reviewMany: "reseñas",
+  },
+  pt: {
+    eyebrow: "Telemetria de confiança",
+    title: "Avaliações",
+    sub: "Colete o feedback dos clientes com um link compartilhável e leia tudo em um só lugar.",
+    loading: "Carregando…",
+    loginTitle: "Entre para gerenciar avaliações",
+    loginBody: "Você precisa de uma conta para criar um negócio e coletar avaliações.",
+    login: "Entrar",
+    createTitle: "Criar uma página de avaliações",
+    createBody: "Dê um nome ao negócio. Você receberá um link para compartilhar com os clientes.",
+    placeholder: "ex.: Casa Azul Café",
+    creating: "Criando…",
+    create: "Criar",
+    errLogin: "Faça login novamente.",
+    errCreate: "Não foi possível criar.",
+    noBiz: "Ainda não há páginas de avaliação. Crie uma acima para começar.",
+    shareLink: "Link compartilhável",
+    copied: "Copiado!",
+    copy: "Copiar",
+    open: "Abrir",
+    reviewsLabel: "Avaliações",
+    refreshing: "Atualizando…",
+    refresh: "↻ Atualizar",
+    loadingReviews: "Carregando avaliações…",
+    noReviews: "Ainda não há avaliações. Compartilhe seu link para começar a coletar.",
+    anonymous: "Anônimo",
+    deleteAria: "Excluir avaliação",
+    reviewOne: "avaliação",
+    reviewMany: "avaliações",
+  },
+  pl: {
+    eyebrow: "Telemetria zaufania",
+    title: "Opinie",
+    sub: "Zbieraj opinie klientów za pomocą linku do udostępnienia i czytaj je wszystkie w jednym miejscu.",
+    loading: "Ładowanie…",
+    loginTitle: "Zaloguj się, aby zarządzać opiniami",
+    loginBody: "Potrzebujesz konta, aby utworzyć firmę i zbierać opinie.",
+    login: "Zaloguj się",
+    createTitle: "Utwórz stronę opinii",
+    createBody: "Nadaj nazwę firmie. Otrzymasz link do udostępnienia klientom.",
+    placeholder: "np. Casa Azul Café",
+    creating: "Tworzenie…",
+    create: "Utwórz",
+    errLogin: "Zaloguj się ponownie.",
+    errCreate: "Nie udało się utworzyć.",
+    noBiz: "Nie ma jeszcze stron opinii. Utwórz jedną powyżej, aby zacząć.",
+    shareLink: "Link do udostępnienia",
+    copied: "Skopiowano!",
+    copy: "Kopiuj",
+    open: "Otwórz",
+    reviewsLabel: "Opinie",
+    refreshing: "Odświeżanie…",
+    refresh: "↻ Odśwież",
+    loadingReviews: "Ładowanie opinii…",
+    noReviews: "Nie ma jeszcze opinii. Udostępnij swój link, aby zacząć je zbierać.",
+    anonymous: "Anonim",
+    deleteAria: "Usuń opinię",
+    reviewOne: "opinia",
+    reviewMany: "opinie",
+  },
+  ru: {
+    eyebrow: "Телеметрия доверия",
+    title: "Отзывы",
+    sub: "Собирайте отзывы клиентов с помощью ссылки для обмена и читайте их все в одном месте.",
+    loading: "Загрузка…",
+    loginTitle: "Войдите, чтобы управлять отзывами",
+    loginBody: "Чтобы создать бизнес и собирать отзывы, нужна учётная запись.",
+    login: "Войти",
+    createTitle: "Создать страницу отзывов",
+    createBody: "Дайте название бизнесу. Вы получите ссылку, чтобы поделиться с клиентами.",
+    placeholder: "напр., Casa Azul Café",
+    creating: "Создание…",
+    create: "Создать",
+    errLogin: "Войдите снова.",
+    errCreate: "Не удалось создать.",
+    noBiz: "Пока нет страниц отзывов. Создайте одну выше, чтобы начать.",
+    shareLink: "Ссылка для обмена",
+    copied: "Скопировано!",
+    copy: "Копировать",
+    open: "Открыть",
+    reviewsLabel: "Отзывы",
+    refreshing: "Обновление…",
+    refresh: "↻ Обновить",
+    loadingReviews: "Загрузка отзывов…",
+    noReviews: "Пока нет отзывов. Поделитесь ссылкой, чтобы начать их собирать.",
+    anonymous: "Аноним",
+    deleteAria: "Удалить отзыв",
+    reviewOne: "отзыв",
+    reviewMany: "отзывов",
+  },
+};
+
 function Stars({ value, size = 16 }: { value: number; size?: number }) {
   return (
-    <span style={{ whiteSpace: "nowrap", letterSpacing: 1 }} aria-label={`${value} of 5`}>
+    <span style={{ whiteSpace: "nowrap", letterSpacing: 1 }} aria-label={`${value} / 5`}>
       {[1, 2, 3, 4, 5].map((n) => (
         <span key={n} style={{ color: n <= Math.round(value) ? GOLD : "rgba(255,255,255,.18)", fontSize: size }}>
           ★
@@ -32,6 +219,9 @@ function Stars({ value, size = 16 }: { value: number; size?: number }) {
 }
 
 export default function Page() {
+  const { lang } = useTranslation();
+  const s = STRINGS[lang] ?? STRINGS.en;
+
   const [authChecked, setAuthChecked] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [businesses, setBusinesses] = useState<ReviewBusiness[]>([]);
@@ -91,7 +281,7 @@ export default function Page() {
       setActiveId(res.business.id);
       setNewName("");
     } else {
-      setCreateError(res.error === "not_authenticated" ? "Please log in again." : res.error || "Could not create.");
+      setCreateError(res.error === "not_authenticated" ? s.errLogin : s.errCreate);
     }
   }
 
@@ -112,55 +302,52 @@ export default function Page() {
     <main style={styles.page}>
       <div style={styles.shell}>
         <header style={styles.header}>
-          <p style={styles.eyebrow}>Trust telemetry</p>
-          <h1 style={styles.h1}>Reviews</h1>
-          <p style={styles.sub}>Collect customer feedback with a shareable link, and read it all in one place.</p>
+          <p style={styles.eyebrow}>{s.eyebrow}</p>
+          <h1 style={styles.h1}>{s.title}</h1>
+          <p style={styles.sub}>{s.sub}</p>
         </header>
 
         {!authChecked ? (
-          <p style={styles.muted}>Loading…</p>
+          <p style={styles.muted}>{s.loading}</p>
         ) : !signedIn ? (
           <div style={styles.card}>
-            <h2 style={styles.h2}>Log in to manage reviews</h2>
-            <p style={styles.muted}>You need an account to create a business and collect reviews.</p>
-            <Link href="/auth/login?next=/reviews" style={styles.primaryBtn}>Log in</Link>
+            <h2 style={styles.h2}>{s.loginTitle}</h2>
+            <p style={styles.muted}>{s.loginBody}</p>
+            <Link href="/auth/login?next=/reviews" style={styles.primaryBtn}>{s.login}</Link>
           </div>
         ) : (
           <>
             {/* Create business */}
             <div style={styles.card}>
-              <h2 style={styles.h2}>Create a review page</h2>
-              <p style={styles.muted}>Give it a business name. You&apos;ll get a link to share with customers.</p>
+              <h2 style={styles.h2}>{s.createTitle}</h2>
+              <p style={styles.muted}>{s.createBody}</p>
               <div style={styles.createRow}>
-                <input
-                  style={styles.input}
+                <input style={styles.input}
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-                  placeholder="e.g. Casa Azul Café"
+                  placeholder={s.placeholder}
                   maxLength={80}
                 />
-                <button
-                  type="button"
+                <button type="button"
                   onClick={handleCreate}
                   disabled={!newName.trim() || creating}
                   style={{ ...styles.primaryBtn, opacity: !newName.trim() || creating ? 0.5 : 1, whiteSpace: "nowrap" }}
                 >
-                  {creating ? "Creating…" : "Create"}
+                  {creating ? s.creating : s.create}
                 </button>
               </div>
               {createError && <p style={styles.error}>{createError}</p>}
             </div>
 
             {businesses.length === 0 ? (
-              <p style={styles.muted}>No review pages yet. Create one above to get started.</p>
+              <p style={styles.muted}>{s.noBiz}</p>
             ) : (
               <>
                 {/* Business selector */}
                 <div style={styles.bizTabs}>
                   {businesses.map((b) => (
-                    <button
-                      key={b.id}
+                    <button key={b.id}
                       type="button"
                       onClick={() => setActiveId(b.id)}
                       style={{ ...styles.bizTab, ...(b.id === activeId ? styles.bizTabActive : {}) }}
@@ -174,13 +361,13 @@ export default function Page() {
                   <>
                     {/* Share link + summary */}
                     <div style={styles.card}>
-                      <span style={styles.telemetryLabel}>Shareable link</span>
+                      <span style={styles.telemetryLabel}>{s.shareLink}</span>
                       <div style={styles.linkRow}>
                         <code style={styles.linkCode}>{origin}/r/{active.slug}</code>
                         <button type="button" onClick={() => copyLink(active.slug)} style={styles.copyBtn}>
-                          {copied === active.slug ? "Copied!" : "Copy"}
+                          {copied === active.slug ? s.copied : s.copy}
                         </button>
-                        <a href={`/r/${active.slug}`} target="_blank" rel="noreferrer" style={styles.openBtn}>Open</a>
+                        <a href={`/r/${active.slug}`} target="_blank" rel="noreferrer" style={styles.openBtn}>{s.open}</a>
                       </div>
 
                       <div style={styles.summaryRow}>
@@ -190,7 +377,7 @@ export default function Page() {
                         </div>
                         <div style={styles.summaryBlock}>
                           <strong style={styles.avgNum}>{reviews.length}</strong>
-                          <span style={styles.muted}>{reviews.length === 1 ? "review" : "reviews"}</span>
+                          <span style={styles.muted}>{reviews.length === 1 ? s.reviewOne : s.reviewMany}</span>
                         </div>
                       </div>
                     </div>
@@ -198,31 +385,30 @@ export default function Page() {
                     {/* Reviews list */}
                     <div style={styles.card}>
                       <div style={styles.reviewsHead}>
-                        <span style={styles.telemetryLabel}>Reviews</span>
-                        <button
-                          type="button"
+                        <span style={styles.telemetryLabel}>{s.reviewsLabel}</span>
+                        <button type="button"
                           onClick={() => activeId && loadReviews(activeId)}
                           disabled={loadingReviews}
                           style={styles.refreshBtn}
                         >
-                          {loadingReviews ? "Refreshing…" : "↻ Refresh"}
+                          {loadingReviews ? s.refreshing : s.refresh}
                         </button>
                       </div>
                       {loadingReviews ? (
-                        <p style={styles.muted}>Loading reviews…</p>
+                        <p style={styles.muted}>{s.loadingReviews}</p>
                       ) : reviews.length === 0 ? (
-                        <p style={styles.muted}>No reviews yet. Share your link to start collecting.</p>
+                        <p style={styles.muted}>{s.noReviews}</p>
                       ) : (
                         <div style={styles.reviewList}>
                           {reviews.map((r) => (
                             <div key={r.id} style={styles.reviewItem}>
                               <div style={styles.reviewTop}>
                                 <Stars value={r.rating} />
-                                <span style={styles.reviewName}>{r.author_name || "Anonymous"}</span>
+                                <span style={styles.reviewName}>{r.author_name || s.anonymous}</span>
                                 <span style={styles.reviewDate}>
-                                  {new Date(r.created_at).toLocaleDateString()}
+                                  {new Date(r.created_at).toLocaleDateString(lang)}
                                 </span>
-                                <button type="button" onClick={() => handleDelete(r.id)} style={styles.deleteBtn} aria-label="Delete review">
+                                <button type="button" onClick={() => handleDelete(r.id)} style={styles.deleteBtn} aria-label={s.deleteAria}>
                                   ✕
                                 </button>
                               </div>
