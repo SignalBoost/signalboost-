@@ -14,33 +14,24 @@ import { useEffect, useState } from "react";
 
 export const WORLDWIDE = "ot";
 
-// Regions the site supports as distinct partner pools. Anything not here maps
-// to WORLDWIDE. Keep in sync with the region codes present in partners.json.
+// The markets SignalBoost actually targets — kept short on purpose. Each maps
+// to a region code present in partners.json with real exclusive partners.
+// Anything else detected falls back to Global ("ot").
 export const REGIONS: { code: string; label: string }[] = [
-  { code: "ot", label: "Worldwide" },
+  { code: "ot", label: "🌍 Global" },
   { code: "us", label: "United States" },
   { code: "pl", label: "Poland" },
   { code: "br", label: "Brazil" },
-  { code: "es-latam", label: "Mexico / Latin America" },
+  { code: "es-latam", label: "Latin America" },
   { code: "ru", label: "Russia" },
-  { code: "uk", label: "United Kingdom" },
-  { code: "ca", label: "Canada" },
-  { code: "de", label: "Germany" },
-  { code: "fr", label: "France" },
-  { code: "it", label: "Italy" },
-  { code: "au", label: "Australia" },
-  { code: "nz", label: "New Zealand" },
-  { code: "ar", label: "Argentina" },
-  { code: "co", label: "Colombia" },
-  { code: "pe", label: "Peru" },
-  { code: "hu", label: "Hungary" },
 ];
 
 const SUPPORTED = new Set(REGIONS.map((r) => r.code));
 const STORAGE_KEY = "sb_region";
 const EVENT = "sb-region-change";
 
-// Map a 2-letter country (from geo) to one of our region codes.
+// Map a 2-letter country (from geo) to one of our region codes. Countries we
+// don't specifically target fall through to Global.
 function countryToRegion(country: string): string {
   const c = (country || "").toUpperCase();
   const map: Record<string, string> = {
@@ -48,20 +39,18 @@ function countryToRegion(country: string): string {
     PL: "pl",
     BR: "br",
     RU: "ru",
-    GB: "uk",
-    UK: "uk",
-    CA: "ca",
-    DE: "de",
-    FR: "fr",
-    IT: "it",
-    AU: "au",
-    NZ: "nz",
+    // Latin America bucket
+    MX: "es-latam",
     AR: "es-latam",
     CO: "es-latam",
     PE: "es-latam",
-    MX: "es-latam",
     CL: "es-latam",
-    HU: "hu",
+    EC: "es-latam",
+    GT: "es-latam",
+    BO: "es-latam",
+    UY: "es-latam",
+    PY: "es-latam",
+    VE: "es-latam",
   };
   return map[c] || WORLDWIDE;
 }
