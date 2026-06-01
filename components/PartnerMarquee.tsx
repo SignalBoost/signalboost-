@@ -4,8 +4,7 @@
 import React from "react";
 import partnersJson from "@/public/partners.json";
 import useTranslation from "./i18n/useTranslation";
-import { useRegion, WORLDWIDE } from "@/lib/region";
-import { partnerMatchesRegion } from "@/lib/home/partners-home";
+import { useRegion, partnerVisibleInRegion } from "@/lib/region";
 import "./marquee.css";
 
 interface Partner {
@@ -44,7 +43,7 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   const sourcePartners = partnersData?.length ? partnersData : partners;
   const list = sourcePartners
     .filter((partner) => partner.featured)
-    .filter((partner) => partnerMatchesRegion(partner, WORLDWIDE) || partnerMatchesRegion(partner, region))
+    .filter((partner) => partnerVisibleInRegion(partner, region))
     .sort((a, b) => (a.tier ?? 99) - (b.tier ?? 99));
 
   const title = fallbackText(t("partner.title"), "Our Partners");
