@@ -1,6 +1,7 @@
 // File: components/pricing/PricingCockpit.tsx
 // Project: SignalBoost (main production repo)
 "use client";
+import React from "react";
 
 import { CockpitShell } from "@/components/CockpitShell";
 import useTranslation from "@/components/i18n/useTranslation";
@@ -53,8 +54,17 @@ const tiers = [
   },
 ];
 
+const COMING_SOON: Record<string, string> = {
+  en: "Coming soon",
+  es: "Próximamente",
+  pt: "Em breve",
+  pl: "Wkrótce",
+  ru: "Скоро",
+};
+
 export default function PricingCockpit() {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
+  const comingSoon = COMING_SOON[lang] ?? COMING_SOON.en;
 
   return (
     <CockpitShell eyebrow={fallbackText(t("pricing.eyebrow"), "Tiered SaaS modules")}
@@ -84,6 +94,7 @@ export default function PricingCockpit() {
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
+              <span className="pricing-coming-soon" aria-disabled="true" style={comingSoonStyle}>{comingSoon}</span>
             </article>
           );
         })}
@@ -91,3 +102,17 @@ export default function PricingCockpit() {
     </CockpitShell>
   );
 }
+
+const comingSoonStyle: React.CSSProperties = {
+  display: "block",
+  marginTop: "auto",
+  textAlign: "center",
+  padding: "11px 16px",
+  borderRadius: 999,
+  border: "1px dashed rgba(245,197,66,.4)",
+  background: "rgba(245,197,66,.06)",
+  color: "#dfa837",
+  fontWeight: 800,
+  fontSize: 13,
+  letterSpacing: "0.04em",
+};
