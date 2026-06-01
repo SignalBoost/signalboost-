@@ -34,7 +34,7 @@ interface PartnerDescriptionProps {
 const partners = partnersJson as Partner[];
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 function localizedDescription(partner: Partner, lang: keyof I18n) {
@@ -81,7 +81,7 @@ export default function PartnerDescription({
           {list.map((partner) => (
             <article key={partner.id} style={styles.card}>
               <div style={styles.cardTop}>
-                <a
+                
                   href={partnerDetailHref(partner)}
                   style={styles.logoLink}
                   aria-label={`${partner.name} partner details`}
@@ -136,7 +136,7 @@ export default function PartnerDescription({
               </dl>
 
               {partner.url && (
-                <a
+                
                   href={partner.url}
                   target="_blank"
                   rel="noopener noreferrer sponsored"
