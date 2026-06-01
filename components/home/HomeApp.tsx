@@ -26,7 +26,7 @@ type HomepagePartner = {
 };
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 // Reusable Fathom-style floating panel. Every homepage section is wrapped in
@@ -73,8 +73,7 @@ export default function HomeApp({ afterHero }: HomeAppProps) {
 
           <div style={styles.categoryGrid}>
             {categories.map((category) => (
-              <Link
-                key={category.key}
+              <Link key={category.key}
                 href={`/marketplace?category=${category.key}`}
                 style={styles.categoryCard}
                 aria-label={fallbackText(t("home.browseCategoryAria"), `Browse ${category.label} partners`).replace("{label}", fallbackText(t(`categories.${category.key}`), category.label))}
