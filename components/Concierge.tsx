@@ -45,7 +45,7 @@ const MODULES: { key: ModuleName; label: string }[] = [
 ];
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 export default function Concierge() {
@@ -157,8 +157,7 @@ export default function Concierge() {
               {fallbackText(t("assistant.autoRoute"), "Auto-route")}
             </button>
             {MODULES.map((module) => (
-              <button
-                className={selectedModule === module.key ? "active" : ""}
+              <button className={selectedModule === module.key ? "active" : ""}
                 key={module.key}
                 onClick={() => setSelectedModule(module.key)}
                 type="button"
@@ -201,8 +200,7 @@ export default function Concierge() {
           </div>
 
           <form className="concierge-composer" onSubmit={handleSubmit}>
-            <textarea
-              aria-label="Ask SignalBoost Concierge"
+            <textarea aria-label="Ask SignalBoost Concierge"
               onChange={(event) => setMessage(event.target.value)}
               placeholder={fallbackText(t("assistant.placeholder"), "Ask for a plan, module task, or general answer...")}
               rows={4}
