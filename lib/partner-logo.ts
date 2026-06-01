@@ -99,8 +99,16 @@ export type LogoResolution =
   | { kind: "favicon"; src: string } // google favicon for a known brand
   | { kind: "monogram"; letter: string };
 
-// Build a Google favicon URL for a domain (no API key, no signup).
+// Build a logo URL for a domain. Prefers logo.dev (real brand logos) when a
+// publishable token is configured via NEXT_PUBLIC_LOGODEV_TOKEN; otherwise
+// falls back to Google's favicon service so logos still render.
+// fallback=404 makes logo.dev return an empty 404 when it has no logo, so the
+// <img> onError handler shows OUR gold monogram instead of logo.dev's plain one.
 function faviconFor(domain: string): string {
+  const token = process.env.NEXT_PUBLIC_LOGODEV_TOKEN;
+  if (token) {
+    return `https://img.logo.dev/${encodeURIComponent(domain)}?token=${token}&size=128&retina=true&fallback=404`;
+  }
   return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
 }
 
