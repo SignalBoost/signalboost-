@@ -635,7 +635,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
                 <span style={styles.toolTileLabel}>{fallbackText(t(tool.nameKey), tool.label)}</span>
                 <span style={styles.toolTileNote}>{fallbackText(t(tool.descKey), tool.note)}</span>
                 {tool.comingSoon && (
-                  <span style={{ marginTop: 6, alignSelf: "flex-start", fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#dfa837", border: "1px solid rgba(223,168,55,.35)", borderRadius: 999, padding: "2px 7px" }}>{comingSoonLabel}</span>
+                  <span style={{ marginTop: 7, alignSelf: "flex-start", fontSize: 10, fontWeight: 900, letterSpacing: "0.08em", textTransform: "uppercase", color: "#06060a", background: "linear-gradient(135deg,#f5c542,#dfa837)", borderRadius: 999, padding: "3px 10px" }}>{comingSoonLabel}</span>
                 )}
               </button>
             ))}
