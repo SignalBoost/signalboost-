@@ -38,7 +38,7 @@ const SWAP_INTERVAL_MS = 3500; // gentle tide: one swap every ~3.5s
 const FADE_MS = 1000;          // slow fade in/out
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 const allPartners: DirPartner[] = ([...(partners as DirPartner[])]).sort(
@@ -501,8 +501,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           <p style={styles.infoSub}>
             {fallbackText(t("hero.subtitle"), `${totalPartners}+ vetted partners — a living network of signals. Search or pick a category to tune the field.`).replace("{count}", String(totalPartners))}
           </p>
-          <input
-            type="text"
+          <input type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={fallbackText(t("hero.searchPlaceholder"), "Search partners…")}
@@ -510,16 +509,14 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             aria-label={fallbackText(t("hero.searchPlaceholder"), "Search partners")}
           />
           <div style={styles.infoChips} role="tablist" aria-label="Partner categories">
-            <button
-              type="button"
+            <button type="button"
               onClick={() => setActiveCategory("all")}
               style={{ ...styles.infoChip, ...(activeCategory === "all" ? styles.infoChipActive : {}) }}
             >
               {fallbackText(t("hero.all"), "All")} <span style={styles.infoChipCount}>{totalPartners}</span>
             </button>
             {chipCategories.map((c) => (
-              <button
-                type="button"
+              <button type="button"
                 key={c.key}
                 onClick={() => setActiveCategory(c.key)}
                 style={{ ...styles.infoChip, ...(activeCategory === c.key ? styles.infoChipActive : {}) }}
@@ -544,8 +541,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           <div ref={fieldRef} style={styles.field}>
             <canvas ref={canvasRef} style={styles.canvas} aria-hidden="true" />
             {allPartners.map((p) => (
-              <a
-                key={p.id}
+              <a key={p.id}
                 ref={(el) => {
                   const existing = nodesRef.current.find((n) => n.p.id === p.id);
                   if (existing) {
@@ -574,8 +570,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               >
                 <span className="sb-signal-logo">
                   {p.logo ? (
-                    <img
-                      src={/^https?:\/\//.test(p.logo) ? p.logo : `/logos/${p.logo}`}
+                    <img src={/^https?:\/\//.test(p.logo) ? p.logo : `/logos/${p.logo}`}
                       alt={`${p.name} logo`}
                       loading="lazy"
                       onError={(e) => {
@@ -611,8 +606,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             </p>
           </div>
 
-          <div
-            style={{
+          <div style={{
               ...styles.trialStatus,
               ...(isAuthed ? styles.trialStatusAuthed : remaining === 0 ? styles.trialStatusEmpty : {}),
             }}
@@ -654,8 +648,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
             {compactWorkflows.map((w) => {
               const ran = ranWorkflows[w.slug];
               return (
-                <button
-                  type="button"
+                <button type="button"
                   key={w.slug}
                   style={{ ...styles.compactWorkflowRow, borderColor: `${w.accent}55` }}
                   onClick={() => runWorkflow(w.slug)}
@@ -673,8 +666,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </div>
 
           <div style={styles.stationFooter}>
-            <button
-              type="button"
+            <button type="button"
               style={styles.stationCta}
               onClick={() => attemptStationAction(() => router.push("/dashboard"))}
             >
