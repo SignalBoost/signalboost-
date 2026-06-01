@@ -19,7 +19,7 @@ const TEXT = "#e6edf3";
 const MUTED = "#9aa8b8";
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 const SOCIAL_PROVIDERS = [
@@ -111,8 +111,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main
-      style={{
+    <main style={{
         minHeight: "100dvh",
         display: "grid",
         placeItems: "center",
@@ -121,8 +120,7 @@ export default function LoginPage() {
         fontFamily: "Arial, Helvetica, sans-serif",
       }}
     >
-      <div
-        style={{
+      <div style={{
           width: "100%",
           maxWidth: 380,
           background: PANEL,
@@ -133,8 +131,7 @@ export default function LoginPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 6 }}>
-          <span
-            style={{
+          <span style={{
               width: 30,
               height: 30,
               borderRadius: 8,
@@ -176,8 +173,7 @@ export default function LoginPage() {
         </div>
 
         <label style={labelStyle}>{fallbackText(t("login.email"), "Email")}</label>
-        <input
-          type="email"
+        <input type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && void submit()}
@@ -187,8 +183,7 @@ export default function LoginPage() {
         />
 
         <label style={{ ...labelStyle, marginTop: 14 }}>{fallbackText(t("login.password"), "Password")}</label>
-        <input
-          type="password"
+        <input type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && void submit()}
@@ -200,8 +195,7 @@ export default function LoginPage() {
         {error && <p style={{ color: "#f8857a", fontSize: 12.5, margin: "12px 0 0" }}>{error}</p>}
         {notice && <p style={{ color: GOLD, fontSize: 12.5, margin: "12px 0 0" }}>{notice}</p>}
 
-        <button
-          onClick={() => void submit()}
+        <button onClick={() => void submit()}
           disabled={busy}
           style={{
             width: "100%",
@@ -228,8 +222,7 @@ export default function LoginPage() {
           {mode === "signup"
             ? fallbackText(t("login.haveAccount"), "Already have an account? ")
             : fallbackText(t("login.newHere"), "New to SignalBoost? ")}
-          <button
-            onClick={() => {
+          <button onClick={() => {
               setMode(mode === "signup" ? "signin" : "signup");
               setError(null);
               setNotice(null);
