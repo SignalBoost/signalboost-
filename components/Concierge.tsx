@@ -54,7 +54,16 @@ export default function Concierge() {
   const STARTER = fallbackText(t("assistant.starterText"), "Plan a launch next week, collect reviews, organize the data, and draft outreach.");
 
   const [message, setMessage] = useState(STARTER);
+  const [composerTouched, setComposerTouched] = useState(false);
   const [selectedModule, setSelectedModule] = useState<ModuleName | "auto">("auto");
+
+  // The translation dictionary loads after the first render, so STARTER is the
+  // English fallback initially. Sync the composer to the localized starter text
+  // once it resolves (and when the language changes) — but stop overwriting as
+  // soon as the user edits the field.
+  useEffect(() => {
+    if (!composerTouched) setMessage(STARTER);
+  }, [STARTER, composerTouched]);
   const [isLoading, setIsLoading] = useState(false);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [snapshots, setSnapshots] = useState<ModuleResult[]>([]);
@@ -201,7 +210,7 @@ export default function Concierge() {
 
           <form className="concierge-composer" onSubmit={handleSubmit}>
             <textarea aria-label="Ask SignalBoost Concierge"
-              onChange={(event) => setMessage(event.target.value)}
+              onChange={(event) => { setComposerTouched(true); setMessage(event.target.value); }}
               placeholder={fallbackText(t("assistant.placeholder"), "Ask for a plan, module task, or general answer...")}
               rows={4}
               value={message}
