@@ -68,7 +68,10 @@ function isTravel(c: { key: string; label: string }) {
 const chipCategories = categories.filter(isTravel);
 
 const stationTools = [
+  { label: "Calendar", note: "Schedule & sync", href: "/calendar", nameKey: "hero.tools.calendar.name", descKey: "hero.tools.calendar.desc" },
+  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets", nameKey: "hero.tools.spreadsheets.name", descKey: "hero.tools.spreadsheets.desc" },
   { label: "Reviews", note: "Reputation", href: "/reviews", nameKey: "hero.tools.reviews.name", descKey: "hero.tools.reviews.desc" },
+  { label: "Outreach", note: "Campaigns", href: "/outreach", nameKey: "hero.tools.outreach.name", descKey: "hero.tools.outreach.desc" },
   { label: "Promote", note: "Marketing", href: "/promote", nameKey: "hero.tools.promote.name", descKey: "hero.tools.promote.desc" },
   { label: "Personal Assistant", note: "AI tasks", href: "/assistant", nameKey: "hero.tools.assistant.name", descKey: "hero.tools.assistant.desc" },
 ];
