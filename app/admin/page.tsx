@@ -1,13 +1,13 @@
 // File: app/admin/page.tsx
-// Admin hub — the landing page behind the ⚙ Admin tab. Server-gated: only
-// users whose email is in the admin allow-list can view it; everyone else is
-// redirected home. Holds links to the admin tools (Add Partner now; Manage and
-// Stats as they're built).
-
+// Admin hub — the landing page behind the Admin tab. Server-gated using the
+// DATABASE as the single source of truth (is_admin() RPC + user_roles), so
+// admins promoted via the Admin team form get access with no code/redeploy.
+// Holds links to the admin tools plus the admin-team management form.
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AdminCockpit from "@/components/admin/AdminCockpit";
+import AdminRoles from "@/components/admin/AdminRoles";
 
 const GOLD = "#f5c542";
 const DARK = "#0d1117";
@@ -15,15 +15,6 @@ const PANEL = "#0f141b";
 const BORDER = "#1e2630";
 const TEXT = "#e6edf3";
 const MUTED = "#9aa8b8";
-
-const OWNER_EMAIL = "cadomos@gmail.com";
-function adminList(): string[] {
-  const env = (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-  return Array.from(new Set([OWNER_EMAIL, ...env]));
-}
 
 const TOOLS: { href: string; title: string; desc: string; ready: boolean }[] = [
   { href: "/admin/partners/add", title: "➕ Add a partner", desc: "Add a new affiliate partner. Goes live on the site instantly — no code.", ready: true },
@@ -37,10 +28,13 @@ export default async function AdminHub() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Not logged in → send to login. Logged in but not admin → send home.
+  // Not logged in → login. Logged in but not a DB admin → home.
   if (!user) redirect("/auth/login");
+
+  const { data: isAdmin } = await supabase.rpc("is_admin");
+  if (isAdmin !== true) redirect("/");
+
   const email = (user.email || "").toLowerCase();
-  if (!adminList().includes(email)) redirect("/");
 
   return (
     <div style={{ minHeight: "100vh", background: DARK, color: TEXT, fontFamily: "system-ui, sans-serif", padding: "40px 18px" }}>
@@ -88,14 +82,13 @@ export default async function AdminHub() {
           )}
         </div>
 
-        <div style={{ marginTop: 34 }}>
-          <AdminCockpit />
+        <div style={{ marginTop: 24 }}>
+          <AdminRoles />
         </div>
 
-        <p style={{ color: MUTED, fontSize: 12, marginTop: 28 }}>
-          To add a teammate as admin: set the <span style={{ color: GOLD }}>ADMIN_EMAILS</span> environment
-          variable in Vercel (comma-separated). The owner email always has access.
-        </p>
+        <div style={{ marginTop: 24 }}>
+          <AdminCockpit />
+        </div>
       </div>
     </div>
   );
