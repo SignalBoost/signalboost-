@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
+import RegionToggle from "@/components/RegionToggle";
 import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
 import { checkIsAdmin } from "@/lib/admins";
@@ -200,13 +201,15 @@ export default function SiteHeader() {
         })}
 
         <div className="nv-mobile-tools">
+          <RegionToggle />
           <LanguageToggle />
           <AuthControls />
         </div>
       </nav>
 
       <div className="nv-tools">
-        <LanguageToggle />
+        <RegionToggle />
+          <LanguageToggle />
         <AuthControls />
       </div>
 
