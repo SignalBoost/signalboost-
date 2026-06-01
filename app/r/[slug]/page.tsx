@@ -1,15 +1,122 @@
 // File: app/r/[slug]/page.tsx
 // Public review collection page. No login required. Customers open this from
 // the shareable link and leave a star rating + optional name + comment.
+// Translations are kept self-contained in this file (isolated public page) so
+// a locale edit here can never affect the rest of the site. Language follows
+// the visitor's detected preference via the shared I18nProvider.
 "use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
+import useTranslation from "@/components/i18n/useTranslation";
 import { getBusinessBySlug, submitReview, type ReviewBusiness } from "@/lib/reviews";
 
 const GOLD = "#f5c542";
 const GOLD_DEEP = "#dfa837";
 
+type Strings = {
+  loading: string;
+  notFoundTitle: string;
+  notFoundBody: string;
+  thankTitle: string;
+  thankBody: string; // contains {name}
+  eyebrow: string;
+  prompt: string;
+  nameLabel: string;
+  namePlaceholder: string;
+  commentLabel: string;
+  commentPlaceholder: string;
+  errGeneric: string;
+  submitting: string;
+  submit: string;
+};
+
+const STRINGS: Record<string, Strings> = {
+  en: {
+    loading: "Loading…",
+    notFoundTitle: "Link not found",
+    notFoundBody: "This review link is invalid or has been removed.",
+    thankTitle: "Thank you!",
+    thankBody: "Your review for {name} has been submitted.",
+    eyebrow: "Leave a review",
+    prompt: "How was your experience? Your feedback helps a lot.",
+    nameLabel: "Your name (optional)",
+    namePlaceholder: "Jane D.",
+    commentLabel: "Comment (optional)",
+    commentPlaceholder: "Tell them what you liked…",
+    errGeneric: "Something went wrong. Please try again.",
+    submitting: "Submitting…",
+    submit: "Submit review",
+  },
+  es: {
+    loading: "Cargando…",
+    notFoundTitle: "Enlace no encontrado",
+    notFoundBody: "Este enlace de reseña no es válido o ha sido eliminado.",
+    thankTitle: "¡Gracias!",
+    thankBody: "Tu reseña para {name} ha sido enviada.",
+    eyebrow: "Deja una reseña",
+    prompt: "¿Cómo fue tu experiencia? Tus comentarios ayudan mucho.",
+    nameLabel: "Tu nombre (opcional)",
+    namePlaceholder: "Juan P.",
+    commentLabel: "Comentario (opcional)",
+    commentPlaceholder: "Cuéntales qué te gustó…",
+    errGeneric: "Algo salió mal. Inténtalo de nuevo.",
+    submitting: "Enviando…",
+    submit: "Enviar reseña",
+  },
+  pt: {
+    loading: "Carregando…",
+    notFoundTitle: "Link não encontrado",
+    notFoundBody: "Este link de avaliação é inválido ou foi removido.",
+    thankTitle: "Obrigado!",
+    thankBody: "Sua avaliação para {name} foi enviada.",
+    eyebrow: "Deixe uma avaliação",
+    prompt: "Como foi sua experiência? Seu feedback ajuda muito.",
+    nameLabel: "Seu nome (opcional)",
+    namePlaceholder: "João S.",
+    commentLabel: "Comentário (opcional)",
+    commentPlaceholder: "Conte o que você gostou…",
+    errGeneric: "Algo deu errado. Tente novamente.",
+    submitting: "Enviando…",
+    submit: "Enviar avaliação",
+  },
+  pl: {
+    loading: "Ładowanie…",
+    notFoundTitle: "Nie znaleziono linku",
+    notFoundBody: "Ten link do opinii jest nieprawidłowy lub został usunięty.",
+    thankTitle: "Dziękujemy!",
+    thankBody: "Twoja opinia o {name} została wysłana.",
+    eyebrow: "Zostaw opinię",
+    prompt: "Jak oceniasz swoje doświadczenie? Twoja opinia bardzo pomaga.",
+    nameLabel: "Twoje imię (opcjonalnie)",
+    namePlaceholder: "Jan K.",
+    commentLabel: "Komentarz (opcjonalnie)",
+    commentPlaceholder: "Napisz, co Ci się podobało…",
+    errGeneric: "Coś poszło nie tak. Spróbuj ponownie.",
+    submitting: "Wysyłanie…",
+    submit: "Wyślij opinię",
+  },
+  ru: {
+    loading: "Загрузка…",
+    notFoundTitle: "Ссылка не найдена",
+    notFoundBody: "Эта ссылка на отзыв недействительна или была удалена.",
+    thankTitle: "Спасибо!",
+    thankBody: "Ваш отзыв для {name} отправлен.",
+    eyebrow: "Оставьте отзыв",
+    prompt: "Как вам наш сервис? Ваш отзыв очень помогает.",
+    nameLabel: "Ваше имя (необязательно)",
+    namePlaceholder: "Иван И.",
+    commentLabel: "Комментарий (необязательно)",
+    commentPlaceholder: "Расскажите, что вам понравилось…",
+    errGeneric: "Что-то пошло не так. Попробуйте снова.",
+    submitting: "Отправка…",
+    submit: "Отправить отзыв",
+  },
+};
+
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { lang } = useTranslation();
+  const s = STRINGS[lang] ?? STRINGS.en;
+
   const [slug, setSlug] = useState<string | null>(null);
   const [business, setBusiness] = useState<ReviewBusiness | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +154,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const res = await submitReview({ businessId: business.id, rating, authorName: name, comment });
     setSubmitting(false);
     if (res.ok) setDone(true);
-    else setError("Something went wrong. Please try again.");
+    else setError(s.errGeneric);
   }
 
   return (
@@ -62,30 +169,29 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         </div>
 
         {loading ? (
-          <p style={styles.muted}>Loading…</p>
+          <p style={styles.muted}>{s.loading}</p>
         ) : !business ? (
           <div>
-            <h1 style={styles.title}>Link not found</h1>
-            <p style={styles.muted}>This review link is invalid or has been removed.</p>
+            <h1 style={styles.title}>{s.notFoundTitle}</h1>
+            <p style={styles.muted}>{s.notFoundBody}</p>
           </div>
         ) : done ? (
           <div style={{ textAlign: "center" }}>
             <div style={styles.bigStar}>★</div>
-            <h1 style={styles.title}>Thank you!</h1>
-            <p style={styles.muted}>Your review for {business.name} has been submitted.</p>
+            <h1 style={styles.title}>{s.thankTitle}</h1>
+            <p style={styles.muted}>{s.thankBody.replace("{name}", business.name)}</p>
           </div>
         ) : (
           <div>
-            <p style={styles.eyebrow}>Leave a review</p>
+            <p style={styles.eyebrow}>{s.eyebrow}</p>
             <h1 style={styles.title}>{business.name}</h1>
-            <p style={styles.muted}>How was your experience? Your feedback helps a lot.</p>
+            <p style={styles.muted}>{s.prompt}</p>
 
             <div style={styles.starRow} role="radiogroup" aria-label="Star rating">
               {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                  key={n}
+                <button key={n}
                   type="button"
-                  aria-label={`${n} star${n > 1 ? "s" : ""}`}
+                  aria-label={`${n} / 5`}
                   onClick={() => setRating(n)}
                   onMouseEnter={() => setHover(n)}
                   onMouseLeave={() => setHover(0)}
@@ -100,28 +206,25 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
               ))}
             </div>
 
-            <label style={styles.label}>Your name (optional)</label>
-            <input
-              style={styles.input}
+            <label style={styles.label}>{s.nameLabel}</label>
+            <input style={styles.input}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Jane D."
+              placeholder={s.namePlaceholder}
               maxLength={80}
             />
 
-            <label style={styles.label}>Comment (optional)</label>
-            <textarea
-              style={{ ...styles.input, minHeight: 96, resize: "vertical" }}
+            <label style={styles.label}>{s.commentLabel}</label>
+            <textarea style={{ ...styles.input, minHeight: 96, resize: "vertical" }}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Tell them what you liked…"
+              placeholder={s.commentPlaceholder}
               maxLength={1000}
             />
 
             {error && <p style={styles.error}>{error}</p>}
 
-            <button
-              type="button"
+            <button type="button"
               onClick={handleSubmit}
               disabled={rating === 0 || submitting}
               style={{
@@ -130,7 +233,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                 cursor: rating === 0 || submitting ? "default" : "pointer",
               }}
             >
-              {submitting ? "Submitting…" : "Submit review"}
+              {submitting ? s.submitting : s.submit}
             </button>
           </div>
         )}
