@@ -35,7 +35,7 @@ function partnerDetailHref(partner: Partner) {
 }
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
@@ -71,16 +71,14 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
       <div style={styles.rowMask}>
         <div className={animationClass}>
           {[...items, ...items].map((partner, index) => (
-            <a
-              key={`${partner.id}-${rowKeyIdentifier}-${index}`}
+            <a key={`${partner.id}-${rowKeyIdentifier}-${index}`}
               href={partnerDetailHref(partner)}
               className="fathom-glass-card-upgrade"
               aria-label={`${partner.name} — ${partner.network || partner.category_label || partner.category}`}
               title={partner.description}
             >
               <span style={styles.logoChip}>
-                <img
-                  className="partner-logo"
+                <img className="partner-logo"
                   src={partnerLogoSrc(partner.logo)}
                   alt={`${partner.name} logo`}
                   loading="lazy"
