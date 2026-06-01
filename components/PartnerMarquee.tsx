@@ -26,9 +26,7 @@ interface MarqueeProps {
 
 const partners = partnersJson as Partner[];
 
-function partnerLogoSrc(logo: string) {
-  return `/logos/${logo}`;
-}
+import { partnerFaviconOrNull } from "@/lib/partner-logo";
 
 function partnerDetailHref(partner: Partner) {
   return `/partners/${partner.id}`;
@@ -78,18 +76,13 @@ export default function PartnerMarquee({ partnersData }: MarqueeProps) {
               title={partner.description}
             >
               <span style={styles.logoChip}>
-                <img className="partner-logo"
-                  src={partnerLogoSrc(partner.logo)}
-                  alt={`${partner.name} logo`}
-                  loading="lazy"
-                  style={styles.logoImage}
-                  onError={(event) => {
-                    event.currentTarget.style.display = "none";
-                    const fallback = event.currentTarget.nextElementSibling;
-                    if (fallback instanceof HTMLElement) fallback.style.display = "inline";
-                  }}
-                />
-                <span style={styles.logoFallback} aria-hidden="true">
+                {(() => {
+                  const src = partnerFaviconOrNull({ id: partner.id, name: partner.name, logo: partner.logo });
+                  return src ? (
+                    <img className="partner-logo" src={src} alt={`${partner.name} logo`} loading="lazy" style={styles.logoImage} onError={(event) => { event.currentTarget.style.display = "none"; const fallback = event.currentTarget.nextElementSibling; if (fallback instanceof HTMLElement) fallback.style.display = "inline"; }} />
+                  ) : null;
+                })()}
+                <span style={{ ...styles.logoFallback, display: partnerFaviconOrNull({ id: partner.id, name: partner.name, logo: partner.logo }) ? "none" : "inline" }} aria-hidden="true">
                   {partner.name.charAt(0).toUpperCase()}
                 </span>
               </span>
