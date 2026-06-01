@@ -1,244 +1,455 @@
-"use client";
-
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import useTranslation from "@/components/i18n/useTranslation";
-
-type ModuleName = "concierge" | "promote" | "calendar" | "reviews" | "spreadsheets" | "outreach";
-
-type ModuleResult = {
-  module: ModuleName;
-  label: string;
-  status: "ok" | "fallback";
-  summary: string;
-  actions: string[];
-  data: Record<string, string | number | boolean | string[]>;
-};
-
-type OrchestrationResponse = {
-  understood: string;
-  status: "completed" | "needs_clarification" | "demo_fallback";
-  answer: string;
-  activeModules: ModuleName[];
-  modules: ModuleResult[];
-  options: string[];
-  nextSteps: string[];
-  persistence: {
-    shouldContinue: boolean;
-    fallbackApplied: boolean;
-    clarificationQuestion?: string;
-  };
-};
-
-type ChatTurn = {
-  role: "user" | "assistant";
-  content: string;
-  response?: OrchestrationResponse;
-};
-
-const MODULES: { key: ModuleName; label: string }[] = [
-  { key: "concierge", label: "Concierge" },
-  { key: "promote", label: "Promote" },
-  { key: "calendar", label: "Calendar" },
-  { key: "reviews", label: "Reviews" },
-  { key: "spreadsheets", label: "Spreadsheets" },
-  { key: "outreach", label: "Outreach" },
-];
-
-const STARTER = "Plan a launch next week, collect reviews, organize the data, and draft outreach.";
-
-function dataLabel(value: string | number | boolean | string[]) {
-  if (Array.isArray(value)) return value.join(", ");
-  if (typeof value === "boolean") return value ? "Yes" : "No";
-  return String(value);
-}
-
-export default function Concierge() {
-  const { lang } = useTranslation();
-  const [message, setMessage] = useState(STARTER);
-  const [selectedModule, setSelectedModule] = useState<ModuleName | "auto">("auto");
-  const [isLoading, setIsLoading] = useState(false);
-  const [turns, setTurns] = useState<ChatTurn[]>([]);
-  const [snapshots, setSnapshots] = useState<ModuleResult[]>([]);
-
-  useEffect(() => {
-    let alive = true;
-    Promise.all(
-      MODULES.filter((module) => module.key !== "concierge").map((module) =>
-        fetch(`/api/saas/${module.key}`, { cache: "no-store" })
-          .then((res) => (res.ok ? res.json() : null))
-          .catch(() => null)
-      )
-    ).then((items) => {
-      if (alive) setSnapshots(items.filter(Boolean));
-    });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const latest = useMemo(() => [...turns].reverse().find((turn) => turn.response)?.response, [turns]);
-
-  async function submit(raw?: string) {
-    const content = (raw ?? message).trim();
-    if (!content || isLoading) return;
-
-    setIsLoading(true);
-    setTurns((current) => [...current, { role: "user", content }]);
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/orchestrate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content, module: selectedModule, lang }),
-      });
-      const data = (await res.json()) as OrchestrationResponse;
-      setTurns((current) => [
-        ...current,
-        {
-          role: "assistant",
-          content: data.answer,
-          response: data,
-        },
-      ]);
-    } catch {
-      const fallback: OrchestrationResponse = {
-        understood: `I understood this as: “${content}”. The live orchestrator did not respond, so I am continuing with demo-safe defaults.`,
-        status: "demo_fallback",
-        answer: "I will not stop the task. Use the Concierge fallback path: clarify the goal, choose Calendar/Reviews/Spreadsheets/Outreach, and continue with demo data until live APIs recover.",
-        activeModules: ["concierge"],
-        modules: [],
-        options: ["Retry live orchestration", "Use demo data", "Switch modules"],
-        nextSteps: ["Confirm the fallback", "Pick a module", "Continue refining"],
-        persistence: { shouldContinue: true, fallbackApplied: true },
-      };
-      setTurns((current) => [...current, { role: "assistant", content: fallback.answer, response: fallback }]);
-    } finally {
-      setIsLoading(false);
+{
+  "navbar": {
+    "marketplace": "Маркетплейс",
+    "reviews": "Отзывы",
+    "calendar": "Календарь",
+    "spreadsheets": "Таблицы",
+    "outreach": "Охват",
+    "assistant": "Личный помощник",
+    "admin": "Администрирование",
+    "promote_business": "Продвижение бизнеса",
+    "pricing": "Цены",
+    "executive": "Руководство",
+    "concierge": "Concierge"
+  },
+  "homepage": {
+    "title": "Ваш децентрализованный цифровой операционный центр",
+    "subtitle": "Защищайте критически важные бизнес-правила и управляйте структурными рабочими процессами.",
+    "search_placeholder": "Попробуйте: 'лучшая eSIM для Японии'",
+    "enter_dashboard": "Войти в панель управления",
+    "explore_infra": "Изучить инфраструктуру",
+    "saasStationTitle": "Ваша стационарная SaaS-станция",
+    "saasStationSubtitle": "Календарь, таблицы, отзывы и outreach остаются в одной выделенной операционной панели.",
+    "saasStationTelemetry": "состояние синхронизации модулей"
+  },
+  "partner": {
+    "featured": "Рекомендуем",
+    "allOffers": "Все предложения",
+    "tier": "Уровень",
+    "travel": "Путешествия",
+    "category": "Категория",
+    "regions": "Регионы",
+    "more": "ещё",
+    "visit": "Перейти к {name}",
+    "title": "Наши партнеры",
+    "empty": "Партнеры недоступны",
+    "marqueeSubtitle": "Рекомендуемые бренды, которые можно просмотреть в SignalBoost",
+    "network": "Сеть",
+    "platform": "Платформа",
+    "directoryTitle": "Каталог партнеров",
+    "tierN": "Уровень {n}",
+    "regionsN": "Регионов: {n}",
+    "moreIn": "Ещё в категории {category}",
+    "directory": "Каталог SignalBoost",
+    "topRegional": "Лучшие поставщики и партнёры {category} по регионам",
+    "categoryIntro": "Сравните проверенных премиальных операторов глобальной инфраструктуры и локальных региональных поставщиков для {category}.",
+    "availableStorefronts": "Доступные интегрированные витрины"
+  },
+  "language": {
+    "label": "Параметры языка",
+    "choose": "Выберите язык рабочего пространства",
+    "local": "Локальный узел"
+  },
+  "modules": {
+    "section": {
+      "eyebrow": "Модули SaaS",
+      "title": "Единые операционные отсеки",
+      "description": "Продвигайте, обслуживайте, планируйте, анализируйте и ведите последующую работу, не покидая кокпит SignalBoost."
+    },
+    "promote": {
+      "title": "Продвижение бизнеса",
+      "eyebrow": "Отсек привлечения",
+      "summary": "Запускайте геотаргетированные кампании, карточки предложений и партнёрские размещения с единой управляемой панели.",
+      "signal": "+24% к намерению",
+      "telemetry": "Синхронизация кампаний каждые 15 мин",
+      "features": [
+        "Конструктор предложений",
+        "Региональные посадочные страницы",
+        "Маршрутизация конверсий партнёров"
+      ],
+      "automations": [
+        "Подсказки кампаний Concierge",
+        "Кластеризация аудитории",
+        "Проверки качества UTM"
+      ],
+      "status": "Активно"
+    },
+    "reviews": {
+      "title": "Отзывы",
+      "eyebrow": "Телеметрия доверия",
+      "summary": "Собирайте, сортируйте и отвечайте на отзывы клиентов до того, как падение репутации обернётся потерей дохода.",
+      "signal": "Средний пульс 4.8",
+      "telemetry": "Анализ тональности активен",
+      "features": [
+        "Входящие отзывы",
+        "Черновики ответов",
+        "Каналы эскалации"
+      ],
+      "automations": [
+        "Подбор тона ИИ",
+        "Запасные черновики ответов",
+        "Еженедельный дайджест доверия"
+      ],
+      "status": "Мониторинг"
+    },
+    "calendar": {
+      "title": "Календарь",
+      "eyebrow": "Планирование миссий",
+      "summary": "Координируйте брони, запуски, последующие действия и встречи руководства с обзором уровня кокпита.",
+      "signal": "92% доступности слотов",
+      "telemetry": "Сетка доступности стабильна",
+      "features": [
+        "Доска бронирований",
+        "Окна запуска",
+        "Передачи между командами"
+      ],
+      "automations": [
+        "Постоянное выявление конфликтов",
+        "Запасные демо-слоты",
+        "Перепланирование Concierge"
+      ],
+      "status": "Синхронизировано"
+    },
+    "spreadsheets": {
+      "title": "Таблицы",
+      "eyebrow": "Операции с данными",
+      "summary": "Превращайте строки в решения с помощью структурированных таблиц для данных партнёров, бюджетов, запасов и прогнозов.",
+      "signal": "18 активных таблиц",
+      "telemetry": "Защита схемы включена",
+      "features": [
+        "Умные таблицы",
+        "Каналы импорта",
+        "Ограничители формул"
+      ],
+      "automations": [
+        "Обнаружение аномалий",
+        "Очистка CSV",
+        "Снимки прогнозов демо-данных"
+      ],
+      "status": "Проверено"
+    },
+    "outreach": {
+      "title": "Охват",
+      "eyebrow": "Передача сигнала",
+      "summary": "Планируйте последовательности писем, партнёров и клиентов с измеримым результатом по каждому каналу.",
+      "signal": "31% ответов",
+      "telemetry": "Доставляемость в норме",
+      "features": [
+        "Кокпит последовательностей",
+        "Очереди лидов",
+        "Скрипты для партнёров"
+      ],
+      "automations": [
+        "Тайминг повторных касаний",
+        "Обогащение CRM",
+        "Постоянные сводки переписок"
+      ],
+      "status": "Вещание"
+    },
+    "assistant": {
+      "title": "Concierge",
+      "eyebrow": "Ядро ИИ Concierge",
+      "summary": "Единый помощник для поиска по маркетплейсу, SaaS-операций, сводок для руководства и следующих действий.",
+      "signal": "ИИ-копилот 24/7",
+      "telemetry": "Контекстный мост готов",
+      "features": [
+        "Подбор по маркетплейсу",
+        "Составление задач",
+        "Сводки для руководства"
+      ],
+      "automations": [
+        "Лучшее следующее действие",
+        "Подсказки: уточнить или по умолчанию",
+        "Память между модулями"
+      ],
+      "status": "В сети"
+    },
+    "detail": {
+      "missionSignal": "Сигнал миссии",
+      "coreSystems": "Основные системы",
+      "automations": "Автоматизации ИИ Concierge"
+    },
+    "concierge": {
+      "eyebrow": "ИИ Concierge",
+      "title": "Связано с поиском по маркетплейсу и выполнением SaaS",
+      "body": "SignalBoost направляет намерения покупателей, данные партнёров и операционные задачи через единый слой ассистента, чтобы команды переходили от вопроса к действию.",
+      "cta": "Открыть Concierge"
     }
+  },
+  "executive": {
+    "panelsAriaLabel": "Панели кокпита руководства",
+    "panels": {
+      "financials": {
+        "title": "Финансы",
+        "detail": "Отслеживаемая месячная возможность по маркетплейсу и модулям SaaS."
+      },
+      "kpis": {
+        "title": "KPI",
+        "detail": "Состояние кокпита по активации, удержанию и SLA ответов."
+      },
+      "crm": {
+        "title": "CRM",
+        "detail": "Квалифицированные записи партнёров и клиентов, готовые к работе."
+      },
+      "forecasting": {
+        "title": "Прогнозы",
+        "detail": "Прогноз роста на основе сигналов кампаний, отзывов и календаря."
+      },
+      "outreach": {
+        "title": "Охват",
+        "detail": "Сообщения в последовательностях с контролем доставляемости и ответов."
+      }
+    },
+    "eyebrow": "Операции руководства",
+    "title": "Кокпит руководства",
+    "subtitle": "Финансы, KPI, CRM, прогнозы и телеметрия охвата в едином центре управления доходами.",
+    "telemetryAriaLabel": "Телеметрия системы",
+    "adminConsole": {
+      "label": "Консоль администратора",
+      "status": "Работает",
+      "detail": "Роли пользователей, разрешения и элементы управления рабочим пространством активны."
+    },
+    "qaPipeline": {
+      "label": "Конвейер QA",
+      "status": "Пройден",
+      "detail": "Автоматические проверки данных, доставляемости и состояния модулей в норме."
+    }
+  },
+  "header": {
+    "home": "Главная",
+    "promote": "Продвижение",
+    "assistant": "Личный помощник",
+    "pricing": "Цены",
+    "executive": "Руководство",
+    "login": "Войти",
+    "loggedIn": "Вы вошли",
+    "logout": "Выйти"
+  },
+  "hero": {
+    "badge": "Сеть проверенных партнёров",
+    "title": "Проверенные партнёры — всё в одном месте",
+    "subtitle": "{count}+ проверенных партнёров — живая сеть сигналов. Ищите или выберите категорию, чтобы настроить поле.",
+    "searchPlaceholder": "Поиск партнёров…",
+    "all": "Все",
+    "seeAll": "Показать все {count} →",
+    "becomePartner": "Стать партнёром",
+    "station": {
+      "eyebrow": "Функция · SaaS-станция",
+      "title": "Ваша стационарная SaaS-станция",
+      "subtitle": "Офисные задачи — календарь, таблицы, отзывы, охват, продвижение и помощник — в одном кокпите. Попробуйте 3 бесплатно.",
+      "triesLeft": "Осталось бесплатных попыток: {n}",
+      "triesUsed": "Бесплатные попытки израсходованы — зарегистрируйтесь, чтобы продолжить",
+      "open": "Открыть станцию",
+      "logout": "Выйти",
+      "resetTries": "Сбросить попытки",
+      "signupTitle": "Зарегистрируйтесь, чтобы продолжить пользоваться SaaS-станцией",
+      "signupBody": "Вы израсходовали бесплатные попытки. Создайте аккаунт, чтобы сохранить подсказки Concierge, синхронизацию коннекторов и активные офисные инструменты. Просмотр партнёров всегда бесплатен.",
+      "signupCta": "Зарегистрироваться",
+      "upgradeCta": "Перейти на Pro",
+      "signedIn": "Вы вошли — без ограничений",
+      "modalEyebrow": "Concierge сообщает",
+      "notNow": "Не сейчас"
+    },
+    "tools": {
+      "calendar": {
+        "name": "Календарь",
+        "desc": "Расписание и синхронизация"
+      },
+      "spreadsheets": {
+        "name": "Таблицы",
+        "desc": "Данные и модели"
+      },
+      "reviews": {
+        "name": "Отзывы",
+        "desc": "Репутация"
+      },
+      "outreach": {
+        "name": "Охват",
+        "desc": "Кампании"
+      },
+      "promote": {
+        "name": "Продвижение",
+        "desc": "Маркетинг"
+      },
+      "assistant": {
+        "name": "Личный помощник",
+        "desc": "Задачи ИИ"
+      }
+    }
+  },
+  "home": {
+    "marketplaceBadge": "Маркетплейс партнёров",
+    "marketplaceHeading": "Просматривайте проверенных партнёров по категориям",
+    "viewFullMarketplace": "Открыть весь маркетплейс",
+    "partnerSingular": "партнёр",
+    "partnerPlural": "партнёров",
+    "browseCategoryAria": "Просмотреть партнёров: {label}",
+    "modulesBadge": "Рабочие модули",
+    "modulesHeading": "Продвигайте, помогайте, оценивайте и отчитывайтесь после hero-потока",
+    "howBadge": "Как это работает",
+    "howHeading": "От поиска до бронирования за четыре шага",
+    "step1": "Найдите или опишите, что вам нужно — авиабилеты, отели, eSIM, туры и не только.",
+    "step2": "Мы подбираем проверенных партнёров, доступных в вашем регионе.",
+    "step3": "Сравните варианты и выберите подходящего партнёра.",
+    "step4": "Перейдите и бронируйте напрямую у партнёра."
+  },
+  "login": {
+    "signupTitle": "Создайте аккаунт",
+    "signinTitle": "С возвращением",
+    "signupSubtitle": "Создайте доступ к маркетинговым и партнёрским инструментам SignalBoost.",
+    "signinSubtitle": "Войдите, чтобы продолжить к маркетинговым и партнёрским инструментам SignalBoost.",
+    "continueWith": "Продолжить с {provider}",
+    "orEmail": "или продолжите по email",
+    "email": "Email",
+    "password": "Пароль",
+    "emailPlaceholder": "vy@primer.com",
+    "wait": "Пожалуйста, подождите…",
+    "createAccount": "Создать аккаунт",
+    "logIn": "Войти",
+    "haveAccount": "Уже есть аккаунт? ",
+    "newHere": "Впервые в SignalBoost? ",
+    "toggleToSignin": "Войти",
+    "toggleToSignup": "Зарегистрироваться",
+    "errGeneric": "Не удалось войти. Попробуйте снова.",
+    "errFields": "Введите email и пароль.",
+    "errWrong": "Что-то пошло не так.",
+    "noticeConfirm": "Проверьте email, чтобы подтвердить аккаунт, затем войдите."
+  },
+  "pricing": {
+    "eyebrow": "Модули SaaS по уровням",
+    "title": "Кокпит цен",
+    "subtitle": "Выберите пакет миссии SignalBoost, соответствующий вашим задачам в маркетплейсе, SaaS и управлении.",
+    "recommended": "Рекомендуем",
+    "perMonth": "/мес",
+    "custom": "Индивидуально",
+    "starter": {
+      "name": "Старт",
+      "mission": "Для отдельных операторов, проверяющих спрос на маркетплейсе.",
+      "features": [
+        "Доступ к маркетплейсу",
+        "Базовые отзывы",
+        "Календарь",
+        "Стартовые подсказки ИИ Concierge"
+      ]
+    },
+    "growth": {
+      "name": "Рост",
+      "mission": "Для команд, продвигающих бизнес и координирующих ежедневную работу.",
+      "features": [
+        "Доступ к маркетплейсу",
+        "Отзывы + Продвижение бизнеса",
+        "Календарь + Таблицы",
+        "Инструменты охвата",
+        "Сводки телеметрии администрирования"
+      ]
+    },
+    "enterprise": {
+      "name": "Корпоративный",
+      "mission": "Для управленческих команд с полным кокпитом доходов.",
+      "features": [
+        "Все модули SaaS",
+        "Личный помощник",
+        "Панель руководства",
+        "Выделенный ИИ Concierge",
+        "Телеметрия прогнозов и CRM"
+      ]
+    }
+  },
+  "cockpit": {
+    "viewPricing": "Цены на SaaS",
+    "executiveDashboard": "Панель руководства",
+    "openConcierge": "Открыть Concierge"
+  },
+  "categories": {
+    "flights": "Авиабилеты",
+    "hotels": "Отели",
+    "car_rentals": "Аренда авто",
+    "esim": "eSIM и связь",
+    "insurance": "Страхование и выплаты",
+    "tours": "Туры и развлечения",
+    "transfers": "Трансферы",
+    "marketplace": "Маркетплейс",
+    "products_tools": "Товары и инструменты",
+    "finance": "Финансы",
+    "travel_services": "Туристические услуги",
+    "specialty_other": "Специальное и прочее",
+    "health_fitness": "Здоровье и фитнес",
+    "sports_outdoors": "Спорт и отдых"
+  },
+  "regions": {
+    "us": "США",
+    "br": "Бразилия",
+    "uk": "Великобритания",
+    "pl": "Польша",
+    "ru": "Россия",
+    "es-latam": "Латинская Америка",
+    "ca": "Канада",
+    "au": "Австралия",
+    "nz": "Новая Зеландия",
+    "de": "Германия",
+    "fr": "Франция",
+    "it": "Италия",
+    "ar": "Аргентина",
+    "co": "Колумбия",
+    "pe": "Перу",
+    "ot": "Глобально"
+  },
+  "moduleBackend": {
+    "eyebrow": "бэкенд signalboost-live",
+    "connecting": "Подключение к живому API модуля…",
+    "connected": "Живой API подключён",
+    "fallback": "Активен резервный путь API",
+    "fallbackSummary": "SignalBoost проверяет живой бэкенд и сохранит работоспособность модуля с безопасными резервными данными.",
+    "yes": "Да",
+    "no": "Нет"
+  },
+  "assistant": {
+    "eyebrow": "Постоянная ИИ-оркестрация",
+    "heading": "Concierge понимает, направляет, уточняет и продолжает.",
+    "intro": "Ассистент координирует Продвижение, Календарь, Отзывы, Таблицы, Охват и интеллект Concierge. Если модулю не хватает данных, он показывает резервные демо-данные вместо завершения задачи.",
+    "autoRoute": "Авто-маршрутизация",
+    "understandTitle": "Что я понял на данный момент",
+    "understandBody": "Вам нужен постоянный ассистент, который уточняет или использует значения по умолчанию при нехватке деталей, а затем направляет работу между модулями SaaS.",
+    "starterLaunch": "Запустить план запуска",
+    "starterReviews": "Отзывы + охват",
+    "starterGeneral": "Общий ответ",
+    "you": "Вы",
+    "concierge": "Concierge",
+    "statusLabel": "Статус",
+    "continueLabel": "Продолжить",
+    "fallbackLabel": "Резерв",
+    "yes": "да",
+    "no": "нет",
+    "active": "активен",
+    "notNeeded": "не требуется",
+    "placeholder": "Запросите план, задачу модуля или общий ответ...",
+    "routing": "Маршрутизация...",
+    "send": "Отправить в Concierge",
+    "sharedAgency": "Совместное управление",
+    "confirmAdjust": "Подтвердить или изменить",
+    "optionsEmpty": "Отправьте запрос, чтобы увидеть варианты подтверждения.",
+    "nextRefinement": "Следующее уточнение",
+    "smallerSteps": "Меньшие шаги",
+    "stepDescribe": "Опишите цель",
+    "stepPick": "Выберите модули",
+    "stepRun": "Запустить/уточнить",
+    "saasApis": "SaaS API",
+    "moduleSignals": "Сигналы модулей",
+    "starterText": "Запланируйте запуск на следующей неделе, соберите отзывы, организуйте данные и составьте охват.",
+    "quickReviews": "Сводка моих отзывов и черновик охвата",
+    "quickGeneral": "Что умеет SignalBoost Concierge?",
+    "fbUnderstood": "Я понял это так: «{msg}». Живой оркестратор не ответил, поэтому я продолжаю с безопасными демо-значениями.",
+    "fbAnswer": "Я не остановлю задачу. Используйте резервный путь Concierge: уточните цель, выберите Календарь/Отзывы/Таблицы/Охват и продолжайте с демо-данными, пока живые API не восстановятся.",
+    "fbOpt1": "Повторить живую оркестрацию",
+    "fbOpt2": "Использовать демо-данные",
+    "fbOpt3": "Сменить модули",
+    "fbStep1": "Подтвердить резерв",
+    "fbStep2": "Выбрать модуль",
+    "fbStep3": "Продолжить уточнение",
+    "statusCompleted": "завершено",
+    "statusNeedsClarification": "нужно уточнение",
+    "statusDemoFallback": "демо-резерв",
+    "dataYes": "Да",
+    "dataNo": "Нет"
   }
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    submit();
-  }
-
-  return (
-    <section className="concierge-console" aria-label="SignalBoost Concierge AI orchestrator">
-      <div className="concierge-console__intro">
-        <p className="cockpit-eyebrow">Persistent AI orchestration</p>
-        <h2>Concierge understands, routes, refines, and keeps going.</h2>
-        <p>
-          The assistant coordinates Promote, Calendar, Reviews, Spreadsheets, Outreach, and Concierge intelligence. If a module is missing data, it shows fallback demo data instead of ending the task.
-        </p>
-      </div>
-
-      <div className="concierge-console__grid">
-        <div className="concierge-chat-panel">
-          <div className="concierge-module-switcher" aria-label="Module routing options">
-            <button className={selectedModule === "auto" ? "active" : ""} onClick={() => setSelectedModule("auto")} type="button">
-              Auto-route
-            </button>
-            {MODULES.map((module) => (
-              <button
-                className={selectedModule === module.key ? "active" : ""}
-                key={module.key}
-                onClick={() => setSelectedModule(module.key)}
-                type="button"
-              >
-                {module.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="concierge-turns" aria-live="polite">
-            {turns.length === 0 ? (
-              <div className="concierge-empty-state">
-                <strong>What I understand so far</strong>
-                <p>You want a persistent assistant that asks or defaults when details are vague, then routes work across SaaS modules.</p>
-                <div className="concierge-options">
-                  <button onClick={() => submit(STARTER)} type="button">Run launch plan</button>
-                  <button onClick={() => submit("Summarize my reviews and draft outreach")} type="button">Reviews + outreach</button>
-                  <button onClick={() => submit("What can SignalBoost Concierge do?")} type="button">General answer</button>
-                </div>
-              </div>
-            ) : (
-              turns.map((turn, index) => (
-                <div className={`concierge-message ${turn.role}`} key={`${turn.role}-${index}`}>
-                  <span>{turn.role === "user" ? "You" : "Concierge"}</span>
-                  <p>{turn.content}</p>
-                  {turn.response && (
-                    <div className="concierge-response-detail">
-                      <strong>{turn.response.understood}</strong>
-                      {turn.response.persistence.clarificationQuestion && <p>{turn.response.persistence.clarificationQuestion}</p>}
-                      <div className="concierge-status-row">
-                        <span>Status: {turn.response.status.replace("_", " ")}</span>
-                        <span>Continue: {turn.response.persistence.shouldContinue ? "yes" : "no"}</span>
-                        <span>Fallback: {turn.response.persistence.fallbackApplied ? "active" : "not needed"}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-
-          <form className="concierge-composer" onSubmit={handleSubmit}>
-            <textarea
-              aria-label="Ask SignalBoost Concierge"
-              onChange={(event) => setMessage(event.target.value)}
-              placeholder="Ask for a plan, module task, or general answer..."
-              rows={4}
-              value={message}
-            />
-            <button disabled={isLoading} type="submit">{isLoading ? "Routing..." : "Send to Concierge"}</button>
-          </form>
-        </div>
-
-        <aside className="concierge-side-panel" aria-label="Orchestration output">
-          <div className="concierge-cardlet">
-            <span className="telemetry-label">Shared agency</span>
-            <h3>Confirm or adjust</h3>
-            <ul>
-              {(latest?.options || ["Send a request to see confirmation options."]).map((option) => (
-                <li key={option}>{option}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="concierge-cardlet">
-            <span className="telemetry-label">Next refinement</span>
-            <h3>Smaller steps</h3>
-            <ol>
-              {(latest?.nextSteps || ["Describe the goal", "Pick modules", "Run/refine"]).map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-            </ol>
-          </div>
-
-          <div className="concierge-cardlet module-results-card">
-            <span className="telemetry-label">SaaS APIs</span>
-            <h3>Module signals</h3>
-            {(latest?.modules.length ? latest.modules : snapshots).map((module) => (
-              <article className="concierge-module-result" key={`${module.module}-${module.summary}`}>
-                <div>
-                  <strong>{module.label}</strong>
-                  <span>{module.status}</span>
-                </div>
-                <p>{module.summary}</p>
-                <dl>
-                  {Object.entries(module.data).slice(0, 3).map(([key, value]) => (
-                    <div key={key}>
-                      <dt>{key}</dt>
-                      <dd>{dataLabel(value)}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </article>
-            ))}
-          </div>
-        </aside>
-      </div>
-    </section>
-  );
 }
