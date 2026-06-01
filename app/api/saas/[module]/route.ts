@@ -8,13 +8,14 @@ type RouteContext = {
   params: Promise<{ module: string }>;
 };
 
-export async function GET(_req: NextRequest, context: RouteContext) {
+export async function GET(req: NextRequest, context: RouteContext) {
   const { module } = await context.params;
   if (!isOrchestrationModule(module)) {
     return NextResponse.json({ error: "Unknown SignalBoost module." }, { status: 404 });
   }
 
-  const fallback = getModuleSnapshot(module);
+  const lang = req.nextUrl.searchParams.get("lang") || undefined;
+  const fallback = getModuleSnapshot(module, lang);
   const live = await fetchLiveModuleSnapshot(module);
 
   return NextResponse.json({
