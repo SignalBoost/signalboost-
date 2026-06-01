@@ -8,6 +8,8 @@ import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
 import partners from "@/partners.json";
 import { partnerFaviconOrNull } from "@/lib/partner-logo";
+import { useRegion, WORLDWIDE } from "@/lib/region";
+import { partnerMatchesRegion } from "@/lib/home/partners-home";
 
 interface ConciergeHeroProps {
   lang?: string;
@@ -111,11 +113,23 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [query, setQuery] = useState("");
 
+  // Visitor region (worldwide by default; auto-detected, user-overridable).
+  // A partner shows when it's tagged worldwide OR matches the chosen region.
+  const [region] = useRegion();
+  const regionPartners = useMemo(
+    () =>
+      allPartners.filter(
+        (p) => partnerMatchesRegion(p, WORLDWIDE) || partnerMatchesRegion(p, region)
+      ),
+    [region]
+  );
+
   // Living-field refs
   const fieldRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const nodesRef = useRef<SignalNode[]>([]);
   const filterRef = useRef({ cat: "all", q: "" });
+  const regionRef = useRef(region);
 
   // Station / trial state
   const [isAuthed, setIsAuthed] = useState(false);
@@ -138,8 +152,20 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCategory, query]);
 
+  // When the region changes, the rendered node set changes too; sync the ref,
+  // drop any nodes whose partner is no longer present, and rebuild the pool.
+  useEffect(() => {
+    regionRef.current = region;
+    const liveIds = new Set(regionPartners.map((p) => p.id));
+    nodesRef.current = nodesRef.current.filter((n) => liveIds.has(n.p.id));
+    rebuildPool();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [region, regionPartners]);
+
   function nodeEligible(p: DirPartner) {
     const { cat, q } = filterRef.current;
+    // Region gate: only worldwide or current-region partners are eligible.
+    if (!(partnerMatchesRegion(p, WORLDWIDE) || partnerMatchesRegion(p, regionRef.current))) return false;
     const catKey = p.category_key || p.category || "other";
     if (cat !== "all" && catKey !== cat) return false;
     if (!q) return true;
@@ -483,13 +509,13 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const visibleCount = useMemo(() => {
     const cat = activeCategory;
     const q = query.trim().toLowerCase();
-    return allPartners.filter((p) => {
+    return regionPartners.filter((p) => {
       const k = p.category_key || p.category || "other";
       if (cat !== "all" && k !== cat) return false;
       if (!q) return true;
       return `${p.name} ${p.category_label || ""} ${p.network || ""}`.toLowerCase().includes(q);
     }).length;
-  }, [activeCategory, query]);
+  }, [activeCategory, query, regionPartners]);
 
   const idle = activeCategory === "all" && !query.trim();
 
@@ -550,7 +576,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           {/* The field: canvas waves + drifting clickable signals */}
           <div ref={fieldRef} style={styles.field}>
             <canvas ref={canvasRef} style={styles.canvas} aria-hidden="true" />
-            {allPartners.map((p) => (
+            {regionPartners.map((p) => (
               <a key={p.id}
                 ref={(el) => {
                   const existing = nodesRef.current.find((n) => n.p.id === p.id);
