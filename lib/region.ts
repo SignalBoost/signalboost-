@@ -128,7 +128,7 @@ export function useRegion(): [string, (code: string) => void] {
 // is truly global (tagged "ot" and nothing else). A partner tagged "ot" PLUS
 // specific regions is regionally targeted, so it only shows in those regions.
 export function partnerVisibleInRegion(
-  p: { regions?: string[] },
+  p: { regions?: string[]; id?: string; name?: string },
   region: string
 ): boolean {
   const r = Array.isArray(p.regions) ? p.regions : [];
