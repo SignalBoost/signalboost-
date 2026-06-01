@@ -81,14 +81,9 @@ export default function PartnerDescription({
           {list.map((partner) => (
             <article key={partner.id} style={styles.card}>
               <div style={styles.cardTop}>
-                
-                  href={partnerDetailHref(partner)}
-                  style={styles.logoLink}
-                  aria-label={`${partner.name} partner details`}
-                >
+                <a href={partnerDetailHref(partner)} style={styles.logoLink} aria-label={`${partner.name} partner details`}>
                   <span style={styles.logoWrap}>
-                    <img
-                      src={`/logos/${partner.logo}`}
+                    <img src={`/logos/${partner.logo}`}
                       alt={`${partner.name} logo`}
                       loading="lazy"
                       style={styles.logo}
@@ -136,12 +131,7 @@ export default function PartnerDescription({
               </dl>
 
               {partner.url && (
-                
-                  href={partner.url}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  style={styles.cta}
-                >
+                <a href={partner.url} target="_blank" rel="noopener noreferrer sponsored" style={styles.cta}>
                   {visitLabel} {partner.name}
                 </a>
               )}
