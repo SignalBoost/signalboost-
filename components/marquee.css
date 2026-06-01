@@ -1,196 +1,63 @@
-"use client";
-// File: components/PartnerMarquee.tsx
-
-import React from "react";
-import partnersJson from "@/public/partners.json";
-import useTranslation from "./i18n/useTranslation";
-import { useRegion, partnerVisibleInRegion } from "@/lib/region";
-import "./marquee.css";
-
-interface Partner {
-  id: string;
-  name: string;
-  url: string;
-  category: string;
-  category_label?: string;
-  logo: string;
-  network?: string;
-  description: string;
-  featured?: boolean;
-  tier?: number;
+/* File: components/marquee.css
+   Styles for PartnerMarquee — scoped so it never affects the rest of the site.
+   DARK theme: dark frosted-glass cards (Fathom style), light readable text. */
+@keyframes productionScrollLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
-
-interface MarqueeProps {
-  partnersData?: Partner[];
-  lang?: string;
+@keyframes productionScrollRight {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
-
-const partners = partnersJson as Partner[];
-
-import { partnerFaviconOrNull } from "@/lib/partner-logo";
-
-function partnerDetailHref(partner: Partner) {
-  return `/partners/${partner.id}`;
+/* Scroll speed: higher seconds = slower. */
+.force-marquee-left {
+  display: flex;
+  gap: 1rem;
+  white-space: nowrap;
+  animation: productionScrollLeft 70s linear infinite;
 }
-
-function fallbackText(value: string, fallback: string) {
-  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
+.force-marquee-right {
+  display: flex;
+  gap: 1rem;
+  white-space: nowrap;
+  animation: productionScrollRight 70s linear infinite;
 }
-
-export default function PartnerMarquee({ partnersData }: MarqueeProps) {
-  const { t } = useTranslation();
-  const [region] = useRegion();
-  const sourcePartners = partnersData?.length ? partnersData : partners;
-  const list = sourcePartners
-    .filter((partner) => partner.featured)
-    .filter((partner) => partnerVisibleInRegion(partner, region))
-    .sort((a, b) => (a.tier ?? 99) - (b.tier ?? 99));
-
-  const title = fallbackText(t("partner.title"), "Our Partners");
-  const empty = fallbackText(t("partner.empty"), "No partners available");
-
-  if (list.length === 0) {
-    return (
-      <section style={styles.wrapper} aria-labelledby="partner-marquee-title">
-        <div style={styles.header}>
-          <span style={styles.badge}>{title}</span>
-          <h3 id="partner-marquee-title" style={styles.heading}>{empty}</h3>
-        </div>
-      </section>
-    );
-  }
-
-  const halfLength = Math.ceil(list.length / 2);
-  const topRow = list.slice(0, halfLength);
-  const bottomRow = list.slice(halfLength);
-
-  const renderRow = (items: Partner[], isReverse: boolean, rowKeyIdentifier: string) => {
-    if (items.length === 0) return null;
-    const animationClass = isReverse ? "force-marquee-right" : "force-marquee-left";
-
-    return (
-      <div style={styles.rowMask}>
-        <div className={animationClass}>
-          {[...items, ...items].map((partner, index) => (
-            <a key={`${partner.id}-${rowKeyIdentifier}-${index}`}
-              href={partnerDetailHref(partner)}
-              className="fathom-glass-card-upgrade"
-              aria-label={`${partner.name} — ${partner.network || partner.category_label || partner.category}`}
-              title={partner.description}
-            >
-              <span style={styles.logoChip}>
-                {(() => {
-                  const src = partnerFaviconOrNull({ id: partner.id, name: partner.name, logo: partner.logo });
-                  return src ? (
-                    <img className="partner-logo" src={src} alt={`${partner.name} logo`} loading="lazy" style={styles.logoImage} onError={(event) => { event.currentTarget.style.display = "none"; const fallback = event.currentTarget.nextElementSibling; if (fallback instanceof HTMLElement) fallback.style.display = "inline"; }} />
-                  ) : null;
-                })()}
-                <span style={{ ...styles.logoFallback, display: partnerFaviconOrNull({ id: partner.id, name: partner.name, logo: partner.logo }) ? "none" : "inline" }} aria-hidden="true">
-                  {partner.name.charAt(0).toUpperCase()}
-                </span>
-              </span>
-              <span style={styles.partnerCopy}>
-                <span style={styles.partnerName}>{partner.name}</span>
-                <span style={styles.partnerPlatform}>{partner.network || partner.category_label || partner.category}</span>
-              </span>
-            </a>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <section style={styles.wrapper} aria-labelledby="partner-marquee-title">
-      <div style={styles.header}>
-        <span style={styles.badge}>{title}</span>
-        <h3 id="partner-marquee-title" style={styles.heading}>
-          {fallbackText(t("partner.marqueeSubtitle"), "Featured brands you can browse on SignalBoost")}
-        </h3>
-      </div>
-      {renderRow(topRow, false, "top-track")}
-      {renderRow(bottomRow, true, "bottom-track")}
-    </section>
-  );
+.force-marquee-left:hover,
+.force-marquee-right:hover {
+  animation-play-state: paused;
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  wrapper: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    gap: "1rem",
-    margin: "0 auto",
-    padding: "72px 0 24px",
-  },
-  header: {
-    textAlign: "center",
-    marginBottom: "1rem",
-    padding: "0 24px",
-  },
-  badge: {
-    fontSize: "0.75rem",
-    fontWeight: 700,
-    color: "#f59e0b",
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
-  },
-  heading: {
-    fontSize: "1.25rem",
-    fontWeight: 500,
-    color: "#9ca3af",
-    marginTop: "0.25rem",
-  },
-  rowMask: {
-    position: "relative",
-    display: "flex",
-    width: "100%",
-    overflow: "hidden",
-    padding: "0.5rem 0",
-    WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-    maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-  },
-  logoChip: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "30px",
-    height: "30px",
-    flexShrink: 0,
-    borderRadius: "7px",
-    background: "#fff",
-    padding: "4px",
-    color: "#111827",
-    fontSize: "0.75rem",
-    fontWeight: 800,
-  },
-  logoImage: {
-    width: "22px",
-    height: "22px",
-    objectFit: "contain",
-    borderRadius: 0,
-  },
-  logoFallback: {
-    display: "none",
-    lineHeight: 1,
-  },
-  partnerCopy: {
-    display: "inline-flex",
-    flexDirection: "column",
-    gap: "2px",
-    minWidth: 0,
-  },
-  partnerName: {
-    color: "#f5f6f8",
-    fontSize: "0.9rem",
-    fontWeight: 600,
-    letterSpacing: "0.02em",
-    lineHeight: 1.1,
-  },
-  partnerPlatform: {
-    color: "#94a3b8",
-    fontSize: "0.68rem",
-    fontWeight: 500,
-    lineHeight: 1.1,
-  },
-};
+.fathom-glass-card-upgrade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem; /* space between the logo and the brand name */
+  min-width: 170px;
+  height: 4rem;
+  padding: 0 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fathom-glass-card-upgrade span {
+  color: #f5f6f8 !important;   /* light, readable on the dark glass cards */
+  font-weight: 600;
+}
+/* Brand logo sitting to the left of the name. */
+.fathom-glass-card-upgrade .partner-logo {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  object-fit: contain;
+}
+.fathom-glass-card-upgrade:hover {
+  border-color: rgba(224, 164, 37, 0.55);
+  background-color: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 8px 22px rgba(224, 164, 37, 0.18);
+  transform: translateY(-2px);
+}
