@@ -6,7 +6,7 @@ import { CockpitShell } from "@/components/CockpitShell";
 import useTranslation from "@/components/i18n/useTranslation";
 
 function fallbackText(value: string, fallback: string) {
-  return value.includes(".") ? fallback : value;
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
 // Price numbers are universal; only the unit ("/mo") or "Custom" is translated.
@@ -57,8 +57,7 @@ export default function PricingCockpit() {
   const { t } = useTranslation();
 
   return (
-    <CockpitShell
-      eyebrow={fallbackText(t("pricing.eyebrow"), "Tiered SaaS modules")}
+    <CockpitShell eyebrow={fallbackText(t("pricing.eyebrow"), "Tiered SaaS modules")}
       title={fallbackText(t("pricing.title"), "Pricing cockpit")}
       subtitle={fallbackText(
         t("pricing.subtitle"),
