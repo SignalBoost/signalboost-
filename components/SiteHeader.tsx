@@ -7,6 +7,7 @@ import type { User } from "@supabase/supabase-js";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
+import { checkIsAdmin } from "@/lib/admins";
 import { getAuthFlow, getDefaultPostAuthDestination, type AuthFlow } from "@/lib/supabase/auth-flows";
 
 function fallbackText(value: string, fallback: string) {
@@ -121,6 +122,31 @@ function AuthControls() {
 export default function SiteHeader() {
   const pathname = usePathname() || "/";
   const { t } = useTranslation();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check admin status (DB-backed) and re-check on auth changes so the Admin
+  // link appears/disappears with login/logout. Hiding the link is UX only —
+  // the /admin page itself must also guard access.
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return;
+    }
+    let mounted = true;
+    const supabase = createClient();
+
+    const refresh = () => {
+      checkIsAdmin().then((ok) => {
+        if (mounted) setIsAdmin(ok);
+      });
+    };
+    refresh();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(() => refresh());
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <header className="site-header">
@@ -137,6 +163,11 @@ export default function SiteHeader() {
             </Link>
           );
         })}
+        {isAdmin && (
+          <Link className={pathname.startsWith("/admin") ? "active" : ""} href="/admin">
+            {fallbackText(t("header.admin"), "Admin")}
+          </Link>
+        )}
       </nav>
       <div className="site-header__tools">
         <LanguageToggle />
