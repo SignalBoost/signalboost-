@@ -1,5 +1,5 @@
 import { saasModules } from "@/lib/saas-modules";
-import partnersData from "../../public/partners.json";
+import partnersData from "@/partners.json";
 
 // Partner directory for the concierge (find-a-company) path. Static import so
 // it ships in the bundle — same source the /api/chat route uses.
@@ -107,7 +107,7 @@ You have a web_search tool. Use it whenever the user asks you to find a company,
 Answer the user's actual question directly and usefully in ${LANG_NAME[lang]}. Be practical and specific. Keep it concise unless the question needs more. Do not invent data; if you searched, base the answer on what you found. Plain text only, no markdown headers.${directoryBlock}`;
 
   const messages = [
-    ...history.slice(-6).map((h) => ({ role: h.role, content: h.content })),
+    ...history.slice(-40).map((h) => ({ role: h.role, content: h.content })),
     { role: "user" as const, content: message },
   ];
 
