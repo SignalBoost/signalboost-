@@ -106,11 +106,18 @@ export default function Concierge() {
     setTurns((current) => [...current, { role: "user", content }]);
     setMessage("");
 
+    // Send the prior conversation so the AI has memory of earlier turns
+    // (e.g. a company it just described). Map to {role, content} and cap length.
+    const priorHistory = turns
+      .filter((tn) => tn.role === "user" || tn.role === "assistant")
+      .map((tn) => ({ role: tn.role, content: tn.content }))
+      .slice(-10);
+
     try {
       const res = await fetch("/api/orchestrate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content, module: selectedModule, lang }),
+        body: JSON.stringify({ message: content, module: selectedModule, lang, history: priorHistory }),
       });
       const data = (await res.json()) as OrchestrationResponse;
       setTurns((current) => [
