@@ -1,76 +1,279 @@
--- ============================================================
--- SignalBoost Calendar Schema
--- Run in Marketing Supabase project (qpblefwtnbivuusxmabv)
--- ============================================================
+import { createClient } from "@/lib/supabase/server";
 
-CREATE TABLE IF NOT EXISTS calendar_services (
-  id                  uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
-  owner_id            uuid        REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  owner_notify_email  text        NOT NULL DEFAULT '',
-  name                text        NOT NULL,
-  slug                text        NOT NULL,
-  duration_minutes    integer     NOT NULL DEFAULT 60,
-  price               numeric(10,2) DEFAULT 0,
-  currency            text        NOT NULL DEFAULT 'USD',
-  description         text        NOT NULL DEFAULT '',
-  color               text        NOT NULL DEFAULT '#f5c542',
-  active              boolean     NOT NULL DEFAULT true,
-  created_at          timestamptz DEFAULT now(),
-  UNIQUE(owner_id, slug)
-);
+export type CalendarService = {
+  id: string;
+  owner_id: string;
+  owner_notify_email: string;
+  name: string;
+  slug: string;
+  duration_minutes: number;
+  price: number;
+  currency: string;
+  description: string;
+  color: string;
+  active: boolean;
+  created_at: string;
+};
 
-CREATE TABLE IF NOT EXISTS calendar_availability (
-  id           uuid    DEFAULT gen_random_uuid() PRIMARY KEY,
-  service_id   uuid    REFERENCES calendar_services(id) ON DELETE CASCADE NOT NULL,
-  owner_id     uuid    REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  day_of_week  integer NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
-  start_time   text    NOT NULL DEFAULT '09:00',
-  end_time     text    NOT NULL DEFAULT '17:00',
-  UNIQUE(service_id, day_of_week)
-);
+export type CalendarAvailability = {
+  id: string;
+  service_id: string;
+  day_of_week: number; // 0=Sun … 6=Sat
+  start_time: string;  // "09:00"
+  end_time: string;    // "17:00"
+};
 
-CREATE TABLE IF NOT EXISTS calendar_blocked_dates (
-  id           uuid    DEFAULT gen_random_uuid() PRIMARY KEY,
-  owner_id     uuid    REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  blocked_date date    NOT NULL,
-  reason       text    NOT NULL DEFAULT '',
-  UNIQUE(owner_id, blocked_date)
-);
+export type CalendarBlockedDate = {
+  id: string;
+  blocked_date: string;
+  reason: string;
+};
 
-CREATE TABLE IF NOT EXISTS calendar_bookings (
-  id                 uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
-  service_id         uuid        REFERENCES calendar_services(id) ON DELETE CASCADE NOT NULL,
-  owner_id           uuid        REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  client_name        text        NOT NULL,
-  client_email       text        NOT NULL,
-  booking_date       date        NOT NULL,
-  booking_time       text        NOT NULL,
-  status             text        NOT NULL DEFAULT 'pending',
-  notes              text        NOT NULL DEFAULT '',
-  confirmation_sent  boolean     NOT NULL DEFAULT false,
-  created_at         timestamptz DEFAULT now()
-);
--- status values: pending | confirmed | cancelled | completed
+export type CalendarBooking = {
+  id: string;
+  service_id: string;
+  owner_id: string;
+  client_name: string;
+  client_email: string;
+  booking_date: string;
+  booking_time: string;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  notes: string;
+  confirmation_sent: boolean;
+  created_at: string;
+  service_name?: string;
+  service_price?: number;
+  service_currency?: string;
+  service_duration?: number;
+};
 
--- RLS
-ALTER TABLE calendar_services       ENABLE ROW LEVEL SECURITY;
-ALTER TABLE calendar_availability   ENABLE ROW LEVEL SECURITY;
-ALTER TABLE calendar_blocked_dates  ENABLE ROW LEVEL SECURITY;
-ALTER TABLE calendar_bookings       ENABLE ROW LEVEL SECURITY;
+// ── Slug ─────────────────────────────────────────────────────
 
--- Services: owner manages, public can read active services
-CREATE POLICY "svc_owner"       ON calendar_services FOR ALL    USING (auth.uid() = owner_id) WITH CHECK (auth.uid() = owner_id);
-CREATE POLICY "svc_public_read" ON calendar_services FOR SELECT USING (active = true);
+export function generateSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
 
--- Availability: owner manages, public can read (needed for slot calculation)
-CREATE POLICY "avail_owner"       ON calendar_availability FOR ALL    USING (auth.uid() = owner_id) WITH CHECK (auth.uid() = owner_id);
-CREATE POLICY "avail_public_read" ON calendar_availability FOR SELECT USING (true);
+// ── Services ──────────────────────────────────────────────────
 
--- Blocked dates: owner manages, public can read (to hide blocked days on booking page)
-CREATE POLICY "blocked_owner"       ON calendar_blocked_dates FOR ALL    USING (auth.uid() = owner_id) WITH CHECK (auth.uid() = owner_id);
-CREATE POLICY "blocked_public_read" ON calendar_blocked_dates FOR SELECT USING (true);
+export async function getServices(ownerId: string): Promise<CalendarService[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("calendar_services")
+    .select("*")
+    .eq("owner_id", ownerId)
+    .order("created_at");
+  if (error) throw error;
+  return data || [];
+}
 
--- Bookings: owner manages, public can INSERT to create bookings and SELECT to check taken slots
-CREATE POLICY "booking_owner"         ON calendar_bookings FOR ALL    USING (auth.uid() = owner_id) WITH CHECK (auth.uid() = owner_id);
-CREATE POLICY "booking_public_insert" ON calendar_bookings FOR INSERT WITH CHECK (true);
-CREATE POLICY "booking_public_read"   ON calendar_bookings FOR SELECT USING (status IN ('pending', 'confirmed'));
+export async function getServiceBySlug(slug: string): Promise<CalendarService | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("calendar_services")
+    .select("*")
+    .eq("slug", slug)
+    .eq("active", true)
+    .maybeSingle();
+  return data || null;
+}
+
+export async function createService(
+  ownerId: string,
+  ownerEmail: string,
+  input: Pick<CalendarService, "name" | "duration_minutes" | "price" | "currency" | "description" | "color">
+): Promise<CalendarService> {
+  const supabase = await createClient();
+  const slug = generateSlug(input.name);
+  const { data, error } = await supabase
+    .from("calendar_services")
+    .insert({ ...input, owner_id: ownerId, owner_notify_email: ownerEmail, slug })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateService(
+  serviceId: string,
+  updates: Partial<Pick<CalendarService, "name" | "duration_minutes" | "price" | "currency" | "description" | "color" | "active">>
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("calendar_services").update(updates).eq("id", serviceId);
+  if (error) throw error;
+}
+
+export async function deleteService(serviceId: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("calendar_services").delete().eq("id", serviceId);
+  if (error) throw error;
+}
+
+// ── Availability ──────────────────────────────────────────────
+
+export async function getAvailability(serviceId: string): Promise<CalendarAvailability[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("calendar_availability")
+    .select("*")
+    .eq("service_id", serviceId)
+    .order("day_of_week");
+  if (error) throw error;
+  return data || [];
+}
+
+export async function setAvailability(
+  ownerId: string,
+  serviceId: string,
+  slots: { day_of_week: number; start_time: string; end_time: string }[]
+): Promise<void> {
+  const supabase = await createClient();
+  await supabase.from("calendar_availability").delete().eq("service_id", serviceId);
+  if (slots.length === 0) return;
+  const { error } = await supabase.from("calendar_availability").insert(
+    slots.map((s) => ({ ...s, service_id: serviceId, owner_id: ownerId }))
+  );
+  if (error) throw error;
+}
+
+// ── Blocked dates ─────────────────────────────────────────────
+
+export async function getBlockedDates(ownerId: string): Promise<CalendarBlockedDate[]> {
+  const supabase = await createClient();
+  const today = new Date().toISOString().split("T")[0];
+  const { data, error } = await supabase
+    .from("calendar_blocked_dates")
+    .select("*")
+    .eq("owner_id", ownerId)
+    .gte("blocked_date", today)
+    .order("blocked_date");
+  if (error) throw error;
+  return data || [];
+}
+
+export async function blockDate(ownerId: string, date: string, reason: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("calendar_blocked_dates")
+    .insert({ owner_id: ownerId, blocked_date: date, reason });
+  if (error) throw error;
+}
+
+export async function unblockDate(id: string): Promise<void> {
+  const supabase = await createClient();
+  await supabase.from("calendar_blocked_dates").delete().eq("id", id);
+}
+
+// ── Bookings ──────────────────────────────────────────────────
+
+export async function getBookings(ownerId: string): Promise<CalendarBooking[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("calendar_bookings")
+    .select("*, calendar_services(name, price, currency, duration_minutes)")
+    .eq("owner_id", ownerId)
+    .order("booking_date")
+    .order("booking_time");
+  if (error) throw error;
+  return (data || []).map((b) => {
+    const svc = b.calendar_services as { name: string; price: number; currency: string; duration_minutes: number } | null;
+    return {
+      ...b,
+      service_name: svc?.name,
+      service_price: svc?.price,
+      service_currency: svc?.currency,
+      service_duration: svc?.duration_minutes,
+    };
+  });
+}
+
+export async function createBooking(input: {
+  service_id: string;
+  owner_id: string;
+  client_name: string;
+  client_email: string;
+  booking_date: string;
+  booking_time: string;
+  notes: string;
+}): Promise<CalendarBooking> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("calendar_bookings")
+    .insert(input)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateBookingStatus(
+  bookingId: string,
+  status: CalendarBooking["status"]
+): Promise<void> {
+  const supabase = await createClient();
+  const updates: Record<string, unknown> = { status };
+  if (status === "confirmed") updates.confirmation_sent = true;
+  const { error } = await supabase
+    .from("calendar_bookings")
+    .update(updates)
+    .eq("id", bookingId);
+  if (error) throw error;
+}
+
+// ── Slot calculation ──────────────────────────────────────────
+
+export function generateTimeSlots(startTime: string, endTime: string, durationMinutes: number): string[] {
+  const toMins = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  const toTime = (m: number) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+  const slots: string[] = [];
+  let cur = toMins(startTime);
+  const end = toMins(endTime);
+  while (cur + durationMinutes <= end) { slots.push(toTime(cur)); cur += durationMinutes; }
+  return slots;
+}
+
+export async function getAvailableSlots(serviceId: string, date: string): Promise<string[]> {
+  const supabase = await createClient();
+  const { data: svc } = await supabase
+    .from("calendar_services")
+    .select("duration_minutes, owner_id")
+    .eq("id", serviceId)
+    .single();
+  if (!svc) return [];
+
+  const { data: blocked } = await supabase
+    .from("calendar_blocked_dates")
+    .select("id")
+    .eq("owner_id", svc.owner_id)
+    .eq("blocked_date", date)
+    .maybeSingle();
+  if (blocked) return [];
+
+  const dayOfWeek = new Date(date + "T12:00:00").getDay();
+  const { data: avail } = await supabase
+    .from("calendar_availability")
+    .select("start_time, end_time")
+    .eq("service_id", serviceId)
+    .eq("day_of_week", dayOfWeek)
+    .maybeSingle();
+  if (!avail) return [];
+
+  const all = generateTimeSlots(avail.start_time, avail.end_time, svc.duration_minutes);
+  const { data: booked } = await supabase
+    .from("calendar_bookings")
+    .select("booking_time")
+    .eq("service_id", serviceId)
+    .eq("booking_date", date)
+    .in("status", ["pending", "confirmed"]);
+
+  const taken = new Set((booked || []).map((b) => b.booking_time));
+  return all.filter((s) => !taken.has(s));
+}
+
+export async function getAvailableDaysOfWeek(serviceId: string): Promise<number[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("calendar_availability")
+    .select("day_of_week")
+    .eq("service_id", serviceId);
+  return (data || []).map((d) => d.day_of_week);
+}
