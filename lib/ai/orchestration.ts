@@ -102,7 +102,9 @@ async function aiAnswer(
 
 The user's request has been routed to: ${focus || "general assistance"}.
 
-Answer the user's actual question directly and usefully in ${LANG_NAME[lang]}. Be practical and specific — give real guidance, steps, or recommendations they can act on, framed around the routed area(s) above. Keep it to 2-6 sentences unless the question needs more. Do not invent data you don't have; if you'd need their specific numbers or account details, say what you'd need. Plain text only, no markdown headers.${directoryBlock}`;
+You have a web_search tool. Use it whenever the user asks you to find a company, service, product, person's business, place, current prices, or any up-to-date public information — search the live web and answer with current, real results (include names and, when useful, what makes each a good fit). Prefer SignalBoost's own partners when they genuinely fit, but you are NOT limited to them: find the best real-world answer worldwide. Do not search for purely conversational or general-knowledge questions you can already answer well.
+
+Answer the user's actual question directly and usefully in ${LANG_NAME[lang]}. Be practical and specific. Keep it concise unless the question needs more. Do not invent data; if you searched, base the answer on what you found. Plain text only, no markdown headers.${directoryBlock}`;
 
   const messages = [
     ...history.slice(-6).map((h) => ({ role: h.role, content: h.content })),
@@ -117,7 +119,13 @@ Answer the user's actual question directly and usefully in ${LANG_NAME[lang]}. B
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
       },
-      body: JSON.stringify({ model: AI_MODEL, max_tokens: 700, system, messages }),
+      body: JSON.stringify({
+        model: AI_MODEL,
+        max_tokens: 1200,
+        system,
+        messages,
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 4 }],
+      }),
     });
     if (!res.ok) return null;
     const data = await res.json();
