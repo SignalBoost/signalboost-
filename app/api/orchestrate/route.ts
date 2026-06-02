@@ -1,5 +1,5 @@
 import { saasModules } from "@/lib/saas-modules";
-import partnersData from "../../public/partners.json";
+import partnersData from "@/partners.json";
 
 // Partner directory for the concierge (find-a-company) path. Static import so
 // it ships in the bundle — same source the /api/chat route uses.
