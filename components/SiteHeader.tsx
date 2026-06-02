@@ -24,30 +24,18 @@ const NAV: NavNode[] = [
   { kind: "link", labelKey: "header.home", fallback: "Home", path: "/" },
   {
     kind: "menu",
-    labelKey: "header.tools",
-    fallback: "Tools",
+    labelKey: "header.cowork",
+    fallback: "Cowork",
     items: [
-      { labelKey: "header.promote", fallback: "Promote", path: "/promote" },
+      { labelKey: "header.promote", fallback: "Promote Business", path: "/promote" },
       { labelKey: "header.reviews", fallback: "Reviews", path: "/reviews" },
+      { labelKey: "header.calendar", fallback: "Calendar", path: "/calendar" },
+      { labelKey: "header.spreadsheets", fallback: "Spreadsheets", path: "/spreadsheets" },
+      { labelKey: "header.outreach", fallback: "Outreach", path: "/outreach" },
       { labelKey: "header.assistant", fallback: "Personal Assistant", path: "/assistant" },
     ],
   },
   { kind: "link", labelKey: "header.pricing", fallback: "Pricing", path: "/pricing" },
-  {
-    kind: "menu",
-    labelKey: "header.company",
-    fallback: "Company",
-    items: [
-      { labelKey: "header.executive", fallback: "Executive", path: "/dashboard" },
-      { labelKey: "header.becomePartner", fallback: "Become a partner", path: "/partners" },
-    ],
-  },
-];
-
-const oauthProviders = [
-  { label: "Google", path: "/api/auth/google" },
-  { label: "Facebook", path: "/api/auth/facebook" },
-  { label: "GitHub", path: "/api/auth/github" },
 ];
 
 function getHeaderAuthFlow(): AuthFlow {
@@ -58,11 +46,6 @@ function getHeaderAuthFlow(): AuthFlow {
 function getLoginHref(flow: AuthFlow) {
   const params = new URLSearchParams({ flow, next: getDefaultPostAuthDestination(flow) });
   return `/auth/login?${params.toString()}`;
-}
-
-function getOAuthHref(path: string, flow: AuthFlow) {
-  const params = new URLSearchParams({ flow, next: getDefaultPostAuthDestination(flow) });
-  return `${path}?${params.toString()}`;
 }
 
 function AuthControls() {
@@ -96,12 +79,7 @@ function AuthControls() {
   }
 
   return (
-    <div className="nv-auth" aria-label="Authentication and OAuth providers">
-      <div className="nv-auth-providers" aria-label="OAuth providers">
-        {oauthProviders.map((provider) => (
-          <a key={provider.path} href={getOAuthHref(provider.path, flow)} className="nv-provider">{provider.label}</a>
-        ))}
-      </div>
+    <div className="nv-auth" aria-label="Authentication">
       {user ? (
         <div className="nv-auth-state">
           <span className="nv-auth-label">{fallbackText(t("header.loggedIn"), "Logged in")}</span>
@@ -155,12 +133,11 @@ export default function SiteHeader() {
 
   const isActive = (path: string) => (path === "/" ? pathname === "/" : pathname.startsWith(path));
 
-  const nav: NavNode[] = NAV.map((node) => {
-    if (node.kind === "menu" && node.labelKey === "header.company" && isAdmin) {
-      return { ...node, items: [...node.items, { labelKey: "header.admin", fallback: "Admin", path: "/admin" }] };
-    }
-    return node;
-  });
+  // Admin is a top-level, admin-only link (the old Company group was removed).
+  const nav: NavNode[] = [...NAV];
+  if (isAdmin) {
+    nav.push({ kind: "link", labelKey: "header.admin", fallback: "Admin", path: "/admin" });
+  }
 
   return (
     <header className="nv-header">
@@ -209,7 +186,7 @@ export default function SiteHeader() {
 
       <div className="nv-tools">
         <RegionToggle />
-          <LanguageToggle />
+        <LanguageToggle />
         <AuthControls />
       </div>
 
@@ -236,9 +213,7 @@ const NV_CSS = `
 .nv-tools{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;}
 .nv-mobile-tools{display:none;}
 .nv-auth{display:inline-flex;align-items:center;gap:8px;}
-.nv-auth-providers{display:inline-flex;gap:6px;}
-.nv-provider,.nv-btn,.nv-auth-label{border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:12px;font-weight:800;padding:7px 12px;color:rgba(255,255,255,.78);text-decoration:none;white-space:nowrap;}
-.nv-provider{background:rgba(255,255,255,.04);}
+.nv-btn,.nv-auth-label{border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:12px;font-weight:800;padding:7px 12px;color:rgba(255,255,255,.78);text-decoration:none;white-space:nowrap;}
 .nv-auth-state{display:inline-flex;align-items:center;gap:8px;}
 .nv-auth-label{border-color:rgba(46,160,67,.4);color:#7ee787;background:rgba(46,160,67,.1);}
 .nv-btn{background:rgba(255,255,255,.05);cursor:pointer;font-family:inherit;}
