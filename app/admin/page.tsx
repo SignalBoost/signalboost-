@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AdminCockpit from "@/components/admin/AdminCockpit";
 import AdminRoles from "@/components/admin/AdminRoles";
+import ExecutiveCockpit from "@/components/dashboard/ExecutiveCockpit";
 
 const GOLD = "#f5c542";
 const DARK = "#0d1117";
@@ -18,7 +19,7 @@ const MUTED = "#9aa8b8";
 
 const TOOLS: { href: string; title: string; desc: string; ready: boolean }[] = [
   { href: "/admin/partners/add", title: "➕ Add a partner", desc: "Add a new affiliate partner. Goes live on the site instantly — no code.", ready: true },
-  { href: "/admin/partners/manage", title: "🗂 Manage partners", desc: "View, edit, and delete existing partners.", ready: false },
+  { href: "/admin/partners/manage", title: "🗂 Manage partners", desc: "View, edit, and delete existing partners.", ready: true },
   { href: "/admin/stats", title: "📊 Statistics", desc: "Clicks, searches, regions — see what's working.", ready: true },
 ];
 
@@ -89,6 +90,10 @@ export default async function AdminHub() {
         <div style={{ marginTop: 24 }}>
           <AdminCockpit />
         </div>
+      </div>
+
+      <div style={{ maxWidth: 1200, margin: "36px auto 0" }}>
+        <ExecutiveCockpit />
       </div>
     </div>
   );
