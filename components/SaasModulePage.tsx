@@ -14,7 +14,7 @@ function fallbackText(value: string, fallback: string) {
 // Tools that are NOT yet functional. Landing on one of these shows an honest
 // "in development" page (no fake telemetry) instead of a tool that does nothing.
 // Remove a slug from this set when its real tool ships.
-const COMING_SOON = new Set(["calendar", "spreadsheets", "outreach"]);
+const COMING_SOON = new Set(["calendar", "outreach"]);
 
 type Notice = {
   badge: string;

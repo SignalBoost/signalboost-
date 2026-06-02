@@ -1,369 +1,303 @@
 // File: app/promote/page.tsx
-// Promote → Offers manager. Logged-in owners create, edit, activate/deactivate,
-// and delete their promotional offers. Real CRUD backed by Supabase (RLS keeps
-// each owner to their own rows). Translations are self-contained in this file.
+// Full campaign management module. Campaign packages are generated/re-written
+// by the Promote AI endpoint, editable in-place, and stored in Supabase under
+// each account's RLS-scoped `campaigns` library.
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import useTranslation from "@/components/i18n/useTranslation";
-import { getMyOffers, createOffer, updateOffer, deleteOffer, type Offer } from "@/lib/offers";
 
 const GOLD = "#f5c542";
-const GOLD_DEEP = "#dfa837";
+const PANEL = "#0f141b";
+const BORDER = "#263241";
+const TEXT = "#e6edf3";
+const MUTED = "#9aa8b8";
+const INPUT = "#080d13";
+const STATUSES = ["active", "paused", "archived"] as const;
+type CampaignStatus = (typeof STATUSES)[number];
 
-type Strings = {
-  eyebrow: string;
-  title: string;
-  sub: string;
-  loading: string;
-  loginTitle: string;
-  loginBody: string;
-  login: string;
-  createTitle: string;
-  createBody: string;
-  titlePh: string;
-  descPh: string;
-  codePh: string;
-  creating: string;
-  create: string;
-  errLogin: string;
-  errCreate: string;
-  noOffers: string;
-  yourOffers: string;
-  active: string;
-  inactive: string;
-  activate: string;
-  deactivate: string;
-  edit: string;
-  save: string;
-  cancel: string;
-  del: string;
-  codeLabel: string;
-  saving: string;
-};
+type CampaignPackage = { headline: string; subheadline: string; body: string; cta: string; links: { email: string; social: string; paid: string } };
+type Campaign = CampaignPackage & { id: string; user_id?: string; name: string; status: CampaignStatus; audience: string; tone: string; goal: string; offer: string; landing_url: string; created_at?: string; updated_at?: string };
 
-const STRINGS: Record<string, Strings> = {
-  en: {
-    eyebrow: "Campaign tools", title: "Promote",
-    sub: "Create and manage your promotional offers in one place.",
-    loading: "Loading…", loginTitle: "Log in to manage offers",
-    loginBody: "You need an account to create and manage offers.", login: "Log in",
-    createTitle: "Create an offer", createBody: "Give it a title. Add a description and a promo code if you like.",
-    titlePh: "e.g. 20% off your first visit", descPh: "Describe the offer (optional)", codePh: "Promo code (optional)",
-    creating: "Creating…", create: "Create offer", errLogin: "Please log in again.", errCreate: "Could not create.",
-    noOffers: "No offers yet. Create one above to get started.", yourOffers: "Your offers",
-    active: "Active", inactive: "Inactive", activate: "Activate", deactivate: "Deactivate",
-    edit: "Edit", save: "Save", cancel: "Cancel", del: "Delete", codeLabel: "Code", saving: "Saving…",
-  },
-  es: {
-    eyebrow: "Herramientas de campaña", title: "Promover",
-    sub: "Crea y gestiona tus ofertas promocionales en un solo lugar.",
-    loading: "Cargando…", loginTitle: "Inicia sesión para gestionar ofertas",
-    loginBody: "Necesitas una cuenta para crear y gestionar ofertas.", login: "Iniciar sesión",
-    createTitle: "Crear una oferta", createBody: "Ponle un título. Agrega una descripción y un código promocional si quieres.",
-    titlePh: "p. ej., 20% de descuento en tu primera visita", descPh: "Describe la oferta (opcional)", codePh: "Código promocional (opcional)",
-    creating: "Creando…", create: "Crear oferta", errLogin: "Vuelve a iniciar sesión.", errCreate: "No se pudo crear.",
-    noOffers: "Aún no hay ofertas. Crea una arriba para empezar.", yourOffers: "Tus ofertas",
-    active: "Activa", inactive: "Inactiva", activate: "Activar", deactivate: "Desactivar",
-    edit: "Editar", save: "Guardar", cancel: "Cancelar", del: "Eliminar", codeLabel: "Código", saving: "Guardando…",
-  },
-  pt: {
-    eyebrow: "Ferramentas de campanha", title: "Promover",
-    sub: "Crie e gerencie suas ofertas promocionais em um só lugar.",
-    loading: "Carregando…", loginTitle: "Entre para gerenciar ofertas",
-    loginBody: "Você precisa de uma conta para criar e gerenciar ofertas.", login: "Entrar",
-    createTitle: "Criar uma oferta", createBody: "Dê um título. Adicione uma descrição e um código promocional se quiser.",
-    titlePh: "ex.: 20% de desconto na primeira visita", descPh: "Descreva a oferta (opcional)", codePh: "Código promocional (opcional)",
-    creating: "Criando…", create: "Criar oferta", errLogin: "Faça login novamente.", errCreate: "Não foi possível criar.",
-    noOffers: "Ainda não há ofertas. Crie uma acima para começar.", yourOffers: "Suas ofertas",
-    active: "Ativa", inactive: "Inativa", activate: "Ativar", deactivate: "Desativar",
-    edit: "Editar", save: "Salvar", cancel: "Cancelar", del: "Excluir", codeLabel: "Código", saving: "Salvando…",
-  },
-  pl: {
-    eyebrow: "Narzędzia kampanii", title: "Promuj",
-    sub: "Twórz i zarządzaj swoimi ofertami promocyjnymi w jednym miejscu.",
-    loading: "Ładowanie…", loginTitle: "Zaloguj się, aby zarządzać ofertami",
-    loginBody: "Potrzebujesz konta, aby tworzyć oferty i nimi zarządzać.", login: "Zaloguj się",
-    createTitle: "Utwórz ofertę", createBody: "Nadaj tytuł. Dodaj opis i kod promocyjny, jeśli chcesz.",
-    titlePh: "np. 20% zniżki na pierwszą wizytę", descPh: "Opisz ofertę (opcjonalnie)", codePh: "Kod promocyjny (opcjonalnie)",
-    creating: "Tworzenie…", create: "Utwórz ofertę", errLogin: "Zaloguj się ponownie.", errCreate: "Nie udało się utworzyć.",
-    noOffers: "Nie ma jeszcze ofert. Utwórz jedną powyżej, aby zacząć.", yourOffers: "Twoje oferty",
-    active: "Aktywna", inactive: "Nieaktywna", activate: "Aktywuj", deactivate: "Dezaktywuj",
-    edit: "Edytuj", save: "Zapisz", cancel: "Anuluj", del: "Usuń", codeLabel: "Kod", saving: "Zapisywanie…",
-  },
-  ru: {
-    eyebrow: "Инструменты кампаний", title: "Продвижение",
-    sub: "Создавайте предложения и управляйте ими в одном месте.",
-    loading: "Загрузка…", loginTitle: "Войдите, чтобы управлять предложениями",
-    loginBody: "Чтобы создавать предложения и управлять ими, нужна учётная запись.", login: "Войти",
-    createTitle: "Создать предложение", createBody: "Укажите заголовок. При желании добавьте описание и промокод.",
-    titlePh: "напр., скидка 20% на первый визит", descPh: "Опишите предложение (необязательно)", codePh: "Промокод (необязательно)",
-    creating: "Создание…", create: "Создать предложение", errLogin: "Войдите снова.", errCreate: "Не удалось создать.",
-    noOffers: "Пока нет предложений. Создайте одно выше, чтобы начать.", yourOffers: "Ваши предложения",
-    active: "Активно", inactive: "Неактивно", activate: "Активировать", deactivate: "Деактивировать",
-    edit: "Изменить", save: "Сохранить", cancel: "Отмена", del: "Удалить", codeLabel: "Код", saving: "Сохранение…",
-  },
-};
+type DbCampaign = Record<string, unknown> & Partial<Campaign> & { package?: unknown; landing_url?: string };
 
-export default function Page() {
-  const { lang } = useTranslation();
-  const s = STRINGS[lang] ?? STRINGS.en;
+function emptyPackage(): CampaignPackage {
+  return { headline: "", subheadline: "", body: "", cta: "", links: { email: "", social: "", paid: "" } };
+}
 
-  const [authChecked, setAuthChecked] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
-  const [offers, setOffers] = useState<Offer[]>([]);
+function normalize(row: DbCampaign): Campaign {
+  const pack = row.package && typeof row.package === "object" ? row.package as Partial<CampaignPackage> : row;
+  const links = pack.links && typeof pack.links === "object" ? pack.links as Partial<CampaignPackage["links"]> : {};
+  return {
+    id: String(row.id),
+    user_id: row.user_id ? String(row.user_id) : undefined,
+    name: String(row.name || row.headline || "Campaign"),
+    status: STATUSES.includes(row.status as CampaignStatus) ? row.status as CampaignStatus : "paused",
+    audience: String(row.audience || ""),
+    tone: String(row.tone || ""),
+    goal: String(row.goal || ""),
+    offer: String(row.offer || ""),
+    landing_url: String(row.landing_url || "https://www.signalboostapp.com"),
+    headline: String(pack.headline || ""),
+    subheadline: String(pack.subheadline || ""),
+    body: String(pack.body || ""),
+    cta: String(pack.cta || ""),
+    links: { email: String(links.email || ""), social: String(links.social || ""), paid: String(links.paid || "") },
+    created_at: row.created_at ? String(row.created_at) : undefined,
+    updated_at: row.updated_at ? String(row.updated_at) : undefined,
+  };
+}
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [code, setCode] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
+function packageOnly(campaign: Campaign): CampaignPackage {
+  return { headline: campaign.headline, subheadline: campaign.subheadline, body: campaign.body, cta: campaign.cta, links: campaign.links };
+}
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDesc, setEditDesc] = useState("");
-  const [editCode, setEditCode] = useState("");
-  const [savingId, setSavingId] = useState<string | null>(null);
+export default function PromotePage() {
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [form, setForm] = useState({ goal: "Launch a SignalBoost partner offer", audience: "local business owners", tone: "confident and practical", offer: "a measurable growth workflow", landingUrl: "https://www.signalboostapp.com/pricing" });
 
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(async ({ data }) => {
-      const isIn = Boolean(data.user);
-      setSignedIn(isIn);
-      setAuthChecked(true);
-      if (isIn) setOffers(await getMyOffers());
-    });
+  const selected = campaigns.find((c) => c.id === selectedId) || campaigns[0] || null;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setErr(null);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setErr("Please log in to manage your campaign library.");
+        setLoading(false);
+        return;
+      }
+      const { data, error } = await supabase.from("campaigns").select("*").order("updated_at", { ascending: false });
+      if (error) throw error;
+      const list = ((data || []) as DbCampaign[]).map(normalize);
+      setCampaigns(list);
+      setSelectedId((cur) => cur || list[0]?.id || null);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not load campaigns.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  async function handleCreate() {
-    const t = title.trim();
-    if (!t || creating) return;
-    setCreating(true);
-    setCreateError(null);
-    const res = await createOffer({ title: t, description, code });
-    setCreating(false);
-    if (res.offer) {
-      setOffers((prev) => [res.offer as Offer, ...prev]);
-      setTitle("");
-      setDescription("");
-      setCode("");
-    } else {
-      setCreateError(res.error === "not_authenticated" ? s.errLogin : s.errCreate);
+  useEffect(() => { void load(); }, [load]);
+
+  const byStatus = useMemo(() => ({
+    active: campaigns.filter((c) => c.status === "active").length,
+    paused: campaigns.filter((c) => c.status === "paused").length,
+    archived: campaigns.filter((c) => c.status === "archived").length,
+  }), [campaigns]);
+
+  async function ai(action: "generate" | "rewrite" | "vary", campaign?: Campaign) {
+    setGenerating(true);
+    setErr(null);
+    try {
+      const res = await fetch("/api/promote/ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...form, campaign: campaign ? packageOnly(campaign) : undefined }) });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "AI request failed.");
+      return json.package as CampaignPackage;
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "AI request failed.");
+      return null;
+    } finally {
+      setGenerating(false);
     }
   }
 
-  async function handleToggle(offer: Offer) {
-    const next = !offer.active;
-    setOffers((prev) => prev.map((o) => (o.id === offer.id ? { ...o, active: next } : o)));
-    const res = await updateOffer(offer.id, { active: next });
-    if (!res.ok) setOffers((prev) => prev.map((o) => (o.id === offer.id ? { ...o, active: offer.active } : o)));
+  async function generateAndSave() {
+    const pack = await ai("generate");
+    if (!pack) return;
+    await saveNew(pack, form.goal);
   }
 
-  function startEdit(offer: Offer) {
-    setEditingId(offer.id);
-    setEditTitle(offer.title);
-    setEditDesc(offer.description ?? "");
-    setEditCode(offer.code ?? "");
-  }
-
-  async function saveEdit(id: string) {
-    if (!editTitle.trim() || savingId) return;
-    setSavingId(id);
-    const res = await updateOffer(id, { title: editTitle, description: editDesc, code: editCode });
-    setSavingId(null);
-    if (res.ok) {
-      setOffers((prev) =>
-        prev.map((o) =>
-          o.id === id
-            ? { ...o, title: editTitle.trim(), description: editDesc.trim() || null, code: editCode.trim() || null }
-            : o
-        )
-      );
-      setEditingId(null);
+  async function saveNew(pack: CampaignPackage, name: string, status: CampaignStatus = "paused") {
+    setSaving(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please log in first.");
+      const insert = { user_id: user.id, name: name || pack.headline, status, audience: form.audience, tone: form.tone, goal: form.goal, offer: form.offer, landing_url: form.landingUrl, package: pack };
+      const { data, error } = await supabase.from("campaigns").insert(insert).select("*").single();
+      if (error) throw error;
+      const campaign = normalize(data as DbCampaign);
+      setCampaigns((cur) => [campaign, ...cur]);
+      setSelectedId(campaign.id);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not save campaign.");
+    } finally {
+      setSaving(false);
     }
   }
 
-  async function handleDelete(id: string) {
-    const res = await deleteOffer(id);
-    if (res.ok) setOffers((prev) => prev.filter((o) => o.id !== id));
+  async function persist(campaign: Campaign) {
+    setSaving(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("campaigns").update({ name: campaign.name, status: campaign.status, audience: campaign.audience, tone: campaign.tone, goal: campaign.goal, offer: campaign.offer, landing_url: campaign.landing_url, package: packageOnly(campaign) }).eq("id", campaign.id);
+      if (error) throw error;
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not save changes.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function updateCampaign(id: string, patch: Partial<Campaign>) {
+    setCampaigns((cur) => cur.map((c) => c.id === id ? { ...c, ...patch } : c));
+  }
+
+  async function updateAndSave(id: string, patch: Partial<Campaign>) {
+    const next = campaigns.map((c) => c.id === id ? { ...c, ...patch } : c).find((c) => c.id === id);
+    updateCampaign(id, patch);
+    if (next) await persist(next);
+  }
+
+  async function rewriteSelected() {
+    if (!selected) return;
+    const pack = await ai("rewrite", selected);
+    if (!pack) return;
+    await updateAndSave(selected.id, { ...pack });
+  }
+
+  async function duplicateAndVary(campaign: Campaign) {
+    const pack = await ai("vary", campaign) || packageOnly(campaign);
+    await saveNew(pack, `${campaign.name} variation`, "paused");
+  }
+
+  async function deleteCampaign(id: string) {
+    if (!confirm("Delete this campaign permanently?")) return;
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("campaigns").delete().eq("id", id);
+      if (error) throw error;
+      setCampaigns((cur) => cur.filter((c) => c.id !== id));
+      setSelectedId((cur) => cur === id ? null : cur);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Delete failed.");
+    }
   }
 
   return (
     <main style={styles.page}>
-      <div style={styles.shell}>
-        <header style={styles.header}>
-          <p style={styles.eyebrow}>{s.eyebrow}</p>
-          <h1 style={styles.h1}>{s.title}</h1>
-          <p style={styles.sub}>{s.sub}</p>
-        </header>
+      <section style={styles.hero}>
+        <p style={styles.eyebrow}>SaaS Station · Promote</p>
+        <h1 style={styles.title}>Campaign management with editable AI packages</h1>
+        <p style={styles.subtitle}>Generate headline, subheadline, body copy, CTA, and UTM-tagged links for email, social, and paid channels. Save, edit, duplicate, vary, pause, activate, or archive every campaign.</p>
+        <div style={styles.heroActions}><Link href="/saas-station" style={styles.secondary}>SaaS Station</Link><Link href="/pricing" style={styles.secondary}>Pricing</Link></div>
+      </section>
 
-        {!authChecked ? (
-          <p style={styles.muted}>{s.loading}</p>
-        ) : !signedIn ? (
-          <div style={styles.card}>
-            <h2 style={styles.h2}>{s.loginTitle}</h2>
-            <p style={styles.muted}>{s.loginBody}</p>
-            <Link href="/auth/login?next=/promote" style={styles.primaryBtn}>{s.login}</Link>
-          </div>
-        ) : (
-          <>
-            <div style={styles.card}>
-              <h2 style={styles.h2}>{s.createTitle}</h2>
-              <p style={styles.muted}>{s.createBody}</p>
-              <input style={{ ...styles.input, marginTop: 14 }}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={s.titlePh}
-                maxLength={120}
-              />
-              <textarea style={{ ...styles.input, marginTop: 10, minHeight: 70, resize: "vertical" }}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder={s.descPh}
-                maxLength={600}
-              />
-              <div style={styles.createRow}>
-                <input style={{ ...styles.input, flex: 1 }}
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder={s.codePh}
-                  maxLength={40}
-                />
-                <button type="button"
-                  onClick={handleCreate}
-                  disabled={!title.trim() || creating}
-                  style={{ ...styles.primaryBtn, opacity: !title.trim() || creating ? 0.5 : 1, whiteSpace: "nowrap" }}
-                >
-                  {creating ? s.creating : s.create}
-                </button>
-              </div>
-              {createError && <p style={styles.error}>{createError}</p>}
+      <section style={styles.metrics}>
+        <div style={styles.metric}><strong>{campaigns.length}</strong><span>Total campaigns</span></div>
+        <div style={styles.metric}><strong>{byStatus.active}</strong><span>Active</span></div>
+        <div style={styles.metric}><strong>{byStatus.paused}</strong><span>Paused</span></div>
+        <div style={styles.metric}><strong>{byStatus.archived}</strong><span>Archived</span></div>
+      </section>
+
+      {err && <div style={styles.error}>{err}</div>}
+      {loading ? <div style={styles.panel}>Loading campaign library…</div> : (
+        <div style={styles.layout}>
+          <section style={styles.panel}>
+            <h2 style={styles.panelTitle}>AI campaign brief</h2>
+            <div style={styles.formGrid}>
+              <label style={styles.label}>Goal<input style={styles.input} value={form.goal} onChange={(e) => setForm({ ...form, goal: e.target.value })} /></label>
+              <label style={styles.label}>Audience<input style={styles.input} value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} /></label>
+              <label style={styles.label}>Tone<input style={styles.input} value={form.tone} onChange={(e) => setForm({ ...form, tone: e.target.value })} /></label>
+              <label style={styles.label}>Offer / value<input style={styles.input} value={form.offer} onChange={(e) => setForm({ ...form, offer: e.target.value })} /></label>
+              <label style={{ ...styles.label, gridColumn: "1 / -1" }}>Landing URL<input style={styles.input} value={form.landingUrl} onChange={(e) => setForm({ ...form, landingUrl: e.target.value })} /></label>
             </div>
+            <div style={styles.actionRow}>
+              <button type="button" style={styles.goldButton} onClick={() => void generateAndSave()} disabled={generating || saving}>{generating ? "Generating…" : "Generate + save campaign"}</button>
+              <button type="button" style={styles.darkButton} onClick={() => void rewriteSelected()} disabled={!selected || generating}>{generating ? "Rewriting…" : "Rewrite selected for brief"}</button>
+            </div>
+          </section>
 
-            {offers.length === 0 ? (
-              <p style={styles.muted}>{s.noOffers}</p>
-            ) : (
-              <div style={styles.card}>
-                <span style={styles.telemetryLabel}>{s.yourOffers}</span>
-                <div style={styles.offerList}>
-                  {offers.map((offer) => (
-                    <div key={offer.id} style={{ ...styles.offerItem, opacity: offer.active ? 1 : 0.55 }}>
-                      {editingId === offer.id ? (
-                        <>
-                          <input style={styles.input}
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            maxLength={120}
-                          />
-                          <textarea style={{ ...styles.input, marginTop: 8, minHeight: 60, resize: "vertical" }}
-                            value={editDesc}
-                            onChange={(e) => setEditDesc(e.target.value)}
-                            maxLength={600}
-                          />
-                          <input style={{ ...styles.input, marginTop: 8 }}
-                            value={editCode}
-                            onChange={(e) => setEditCode(e.target.value)}
-                            maxLength={40}
-                          />
-                          <div style={styles.btnRow}>
-                            <button type="button" onClick={() => saveEdit(offer.id)} disabled={!editTitle.trim() || savingId === offer.id} style={styles.smallPrimary}>
-                              {savingId === offer.id ? s.saving : s.save}
-                            </button>
-                            <button type="button" onClick={() => setEditingId(null)} style={styles.smallGhost}>{s.cancel}</button>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div style={styles.offerTop}>
-                            <strong style={styles.offerTitle}>{offer.title}</strong>
-                            <span style={offer.active ? styles.pillOn : styles.pillOff}>{offer.active ? s.active : s.inactive}</span>
-                          </div>
-                          {offer.description && <p style={styles.offerDesc}>{offer.description}</p>}
-                          {offer.code && (
-                            <p style={styles.offerCode}>{s.codeLabel}: <code>{offer.code}</code></p>
-                          )}
-                          <div style={styles.btnRow}>
-                            <button type="button" onClick={() => handleToggle(offer)} style={styles.smallGhost}>
-                              {offer.active ? s.deactivate : s.activate}
-                            </button>
-                            <button type="button" onClick={() => startEdit(offer)} style={styles.smallGhost}>{s.edit}</button>
-                            <button type="button" onClick={() => handleDelete(offer.id)} style={styles.smallDanger}>{s.del}</button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+          <section style={styles.panel}>
+            <h2 style={styles.panelTitle}>Campaign library</h2>
+            <div style={styles.cards}>
+              {campaigns.map((campaign) => (
+                <article key={campaign.id} style={{ ...styles.card, ...(campaign.id === selected?.id ? styles.cardActive : {}) }} onClick={() => setSelectedId(campaign.id)}>
+                  <div style={styles.cardTop}><strong>{campaign.name}</strong><span style={styles.status}>{campaign.status}</span></div>
+                  <h3 style={styles.cardHeadline}>{campaign.headline}</h3>
+                  <p style={styles.cardText}>{campaign.subheadline}</p>
+                  <div style={styles.cardActions}>
+                    <button type="button" style={styles.darkButtonSmall} onClick={(e) => { e.stopPropagation(); void duplicateAndVary(campaign); }}>Duplicate + vary</button>
+                    <select value={campaign.status} onClick={(e) => e.stopPropagation()} onChange={(e) => void updateAndSave(campaign.id, { status: e.target.value as CampaignStatus })} style={styles.selectSmall}>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
+                    <button type="button" style={styles.dangerSmall} onClick={(e) => { e.stopPropagation(); void deleteCampaign(campaign.id); }}>Delete</button>
+                  </div>
+                </article>
+              ))}
+              {!campaigns.length && <p style={styles.empty}>No campaigns yet. Generate a package from the brief to create your library.</p>}
+            </div>
+          </section>
+
+          <section style={{ ...styles.panel, gridColumn: "1 / -1" }}>
+            <h2 style={styles.panelTitle}>Editable campaign package</h2>
+            {selected ? <CampaignEditor campaign={selected} saving={saving} onChange={updateCampaign} onSave={persist} /> : <p style={styles.empty}>Select or create a campaign to edit every field.</p>}
+          </section>
+        </div>
+      )}
     </main>
   );
 }
 
+function CampaignEditor({ campaign, saving, onChange, onSave }: { campaign: Campaign; saving: boolean; onChange: (id: string, patch: Partial<Campaign>) => void; onSave: (campaign: Campaign) => Promise<void> }) {
+  const patch = (changes: Partial<Campaign>) => onChange(campaign.id, changes);
+  const patchLinks = (links: Partial<Campaign["links"]>) => patch({ links: { ...campaign.links, ...links } });
+  return (
+    <div style={styles.editorGrid}>
+      <label style={styles.label}>Library name<input style={styles.input} value={campaign.name} onChange={(e) => patch({ name: e.target.value })} /></label>
+      <label style={styles.label}>Status<select style={styles.input} value={campaign.status} onChange={(e) => patch({ status: e.target.value as CampaignStatus })}>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select></label>
+      <label style={styles.label}>Headline<input style={styles.input} value={campaign.headline} onChange={(e) => patch({ headline: e.target.value })} /></label>
+      <label style={styles.label}>Subheadline<input style={styles.input} value={campaign.subheadline} onChange={(e) => patch({ subheadline: e.target.value })} /></label>
+      <label style={{ ...styles.label, gridColumn: "1 / -1" }}>Body copy<textarea style={styles.textarea} value={campaign.body} onChange={(e) => patch({ body: e.target.value })} /></label>
+      <label style={styles.label}>CTA<input style={styles.input} value={campaign.cta} onChange={(e) => patch({ cta: e.target.value })} /></label>
+      <label style={styles.label}>Email UTM link<input style={styles.input} value={campaign.links.email} onChange={(e) => patchLinks({ email: e.target.value })} /></label>
+      <label style={styles.label}>Social UTM link<input style={styles.input} value={campaign.links.social} onChange={(e) => patchLinks({ social: e.target.value })} /></label>
+      <label style={styles.label}>Paid UTM link<input style={styles.input} value={campaign.links.paid} onChange={(e) => patchLinks({ paid: e.target.value })} /></label>
+      <button type="button" style={styles.goldButton} onClick={() => void onSave(campaign)}>{saving ? "Saving…" : "Save edits"}</button>
+    </div>
+  );
+}
+
 const styles: Record<string, CSSProperties> = {
-  page: {
-    minHeight: "100dvh",
-    background: "radial-gradient(60vw 40vh at 20% -5%, rgba(245,197,66,.08), transparent 60%), linear-gradient(180deg,#06060a,#0a0a12)",
-    padding: "48px 20px 80px",
-    fontFamily: "'Outfit', system-ui, sans-serif",
-  },
-  shell: { maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 },
-  header: { marginBottom: 6 },
-  eyebrow: { color: GOLD_DEEP, fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 },
-  h1: { color: "#fff", fontSize: 34, fontWeight: 700, margin: "8px 0 6px", letterSpacing: "-0.02em" },
-  sub: { color: "#9aa8b8", fontSize: 15, margin: 0, lineHeight: 1.55 },
-  card: {
-    background: "linear-gradient(180deg, rgba(20,20,28,.8), rgba(10,10,16,.8))",
-    border: "1px solid rgba(255,255,255,.09)",
-    borderRadius: 20,
-    padding: 24,
-    boxShadow: "inset 0 1px 0 rgba(255,255,255,.05)",
-  },
-  h2: { color: "#fff", fontSize: 19, fontWeight: 700, margin: "0 0 6px" },
-  muted: { color: "#9aa8b8", fontSize: 14, margin: 0, lineHeight: 1.55 },
-  telemetryLabel: { display: "block", color: GOLD_DEEP, fontSize: 11, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 },
-  createRow: { display: "flex", gap: 10, marginTop: 10 },
-  input: {
-    width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11,
-    border: "1px solid rgba(255,255,255,.12)", background: "rgba(8,8,12,.7)", color: "#e6edf3",
-    fontSize: 14, fontFamily: "inherit", outline: "none",
-  },
-  primaryBtn: {
-    display: "inline-flex", alignItems: "center", justifyContent: "center",
-    padding: "11px 20px", borderRadius: 11, border: "none", color: "#06060a", fontWeight: 800,
-    fontSize: 14, textDecoration: "none", background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`, cursor: "pointer",
-  },
-  error: { color: "#f8857a", fontSize: 13, margin: "10px 0 0" },
-  offerList: { display: "flex", flexDirection: "column", gap: 14 },
-  offerItem: { padding: 16, borderRadius: 14, background: "rgba(8,8,12,.5)", border: "1px solid rgba(255,255,255,.06)" },
-  offerTop: { display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" },
-  offerTitle: { color: "#f5f6f8", fontSize: 15.5, fontWeight: 700 },
-  offerDesc: { color: "#cbd5e1", fontSize: 14, margin: "8px 0 0", lineHeight: 1.5 },
-  offerCode: { color: "#9aa8b8", fontSize: 13, margin: "8px 0 0" },
-  pillOn: {
-    marginLeft: "auto", fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase",
-    color: "#06060a", background: GOLD, borderRadius: 999, padding: "3px 10px",
-  },
-  pillOff: {
-    marginLeft: "auto", fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase",
-    color: "#9aa8b8", background: "rgba(255,255,255,.08)", borderRadius: 999, padding: "3px 10px",
-  },
-  btnRow: { display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" },
-  smallPrimary: {
-    padding: "7px 14px", borderRadius: 9, border: "none", color: "#06060a", fontWeight: 800,
-    fontSize: 12.5, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`, cursor: "pointer",
-  },
-  smallGhost: {
-    padding: "7px 14px", borderRadius: 9, border: "1px solid rgba(255,255,255,.14)",
-    background: "rgba(255,255,255,.05)", color: "#cbd5e1", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-  },
-  smallDanger: {
-    padding: "7px 14px", borderRadius: 9, border: "1px solid rgba(248,133,122,.3)",
-    background: "rgba(248,133,122,.08)", color: "#f8857a", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-  },
+  page: { minHeight: "100vh", background: "radial-gradient(circle at top right, rgba(245,197,66,.12), transparent 34%), #06060a", color: TEXT, fontFamily: "'Outfit', system-ui, sans-serif", padding: "32px clamp(16px,3vw,40px)" },
+  hero: { maxWidth: 1120, margin: "0 auto 18px", border: `1px solid ${BORDER}`, borderRadius: 26, padding: "28px clamp(18px,4vw,42px)", background: "linear-gradient(135deg,rgba(245,197,66,.12),rgba(34,211,238,.04))" },
+  eyebrow: { color: GOLD, textTransform: "uppercase", letterSpacing: ".16em", fontSize: 12, fontWeight: 900, margin: 0 },
+  title: { fontSize: "clamp(32px,5vw,58px)", lineHeight: 1, letterSpacing: "-.05em", margin: "12px 0", maxWidth: 900 },
+  subtitle: { color: MUTED, fontSize: 16, lineHeight: 1.7, maxWidth: 860 },
+  heroActions: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 },
+  secondary: { border: `1px solid ${BORDER}`, borderRadius: 999, color: TEXT, textDecoration: "none", padding: "10px 14px", fontWeight: 800, background: "rgba(255,255,255,.04)" },
+  metrics: { maxWidth: 1120, margin: "0 auto 18px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: 10 },
+  metric: { border: `1px solid ${BORDER}`, borderRadius: 18, background: PANEL, padding: 16, display: "grid", gap: 3 },
+  layout: { maxWidth: 1120, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0, .9fr) minmax(320px, 1.1fr)", gap: 16 },
+  panel: { border: `1px solid ${BORDER}`, borderRadius: 22, background: "linear-gradient(180deg,rgba(15,20,27,.96),rgba(8,12,18,.96))", padding: 18, minWidth: 0 },
+  panelTitle: { margin: "0 0 14px", fontSize: 21 },
+  formGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 },
+  label: { display: "grid", gap: 6, color: MUTED, fontSize: 12, fontWeight: 900 },
+  input: { minHeight: 42, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: "0 12px", font: "inherit" },
+  textarea: { minHeight: 130, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: 12, font: "inherit", resize: "vertical" },
+  actionRow: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 },
+  goldButton: { border: "none", borderRadius: 12, background: "linear-gradient(135deg,#f5c542,#dfa837)", color: "#05070a", fontWeight: 900, padding: "11px 15px", cursor: "pointer" },
+  darkButton: { border: `1px solid ${BORDER}`, borderRadius: 12, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "11px 15px", cursor: "pointer" },
+  cards: { display: "grid", gap: 10, maxHeight: 560, overflow: "auto", paddingRight: 4 },
+  card: { border: `1px solid ${BORDER}`, borderRadius: 18, padding: 14, background: "rgba(255,255,255,.03)", cursor: "pointer" },
+  cardActive: { borderColor: GOLD, boxShadow: "0 0 0 1px rgba(245,197,66,.18), 0 0 30px rgba(245,197,66,.1)" },
+  cardTop: { display: "flex", justifyContent: "space-between", gap: 10, color: TEXT },
+  status: { border: "1px solid rgba(52,211,153,.28)", color: "#34d399", borderRadius: 999, padding: "3px 8px", fontSize: 11, fontWeight: 900, textTransform: "uppercase" },
+  cardHeadline: { margin: "10px 0 5px", fontSize: 18 },
+  cardText: { color: MUTED, margin: 0, lineHeight: 1.5 },
+  cardActions: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 },
+  darkButtonSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "8px 10px", cursor: "pointer", fontSize: 12 },
+  selectSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: INPUT, color: TEXT, fontWeight: 800, padding: "8px 10px", fontSize: 12 },
+  dangerSmall: { border: "1px solid rgba(255,107,107,.35)", borderRadius: 10, background: "rgba(255,107,107,.08)", color: "#ffd1d1", fontWeight: 800, padding: "8px 10px", cursor: "pointer", fontSize: 12 },
+  empty: { color: MUTED, lineHeight: 1.6 },
+  editorGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 },
+  error: { maxWidth: 1120, margin: "0 auto 18px", border: "1px solid rgba(255,107,107,.35)", color: "#ffd1d1", background: "rgba(255,107,107,.1)", borderRadius: 14, padding: 12 },
 };

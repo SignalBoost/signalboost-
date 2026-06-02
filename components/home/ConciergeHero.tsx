@@ -84,7 +84,7 @@ const STATION_COMING_SOON: Record<string, string> = {
 
 const stationTools = [
   { label: "Calendar", note: "Schedule & sync", href: "/calendar", nameKey: "hero.tools.calendar.name", descKey: "hero.tools.calendar.desc", comingSoon: true },
-  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets", nameKey: "hero.tools.spreadsheets.name", descKey: "hero.tools.spreadsheets.desc", comingSoon: true },
+  { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets", nameKey: "hero.tools.spreadsheets.name", descKey: "hero.tools.spreadsheets.desc" },
   { label: "Reviews", note: "Reputation", href: "/reviews", nameKey: "hero.tools.reviews.name", descKey: "hero.tools.reviews.desc" },
   { label: "Outreach", note: "Campaigns", href: "/outreach", nameKey: "hero.tools.outreach.name", descKey: "hero.tools.outreach.desc", comingSoon: true },
   { label: "Promote", note: "Marketing", href: "/promote", nameKey: "hero.tools.promote.name", descKey: "hero.tools.promote.desc" },
