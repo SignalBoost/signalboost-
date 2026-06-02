@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { stationWorkflows, workflowConnectorSecurityNotes } from "@/lib/station-workflows";
 import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
-import partners from "@/partners.json";
+import partnersSeed from "@/partners.json";
 import { partnerFaviconOrNull } from "@/lib/partner-logo";
 import { useRegion, partnerVisibleInRegion } from "@/lib/region";
 
@@ -43,14 +43,16 @@ function fallbackText(value: string, fallback: string) {
   return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
-const allPartners: DirPartner[] = ([...(partners as DirPartner[])]).sort(
-  (a, b) => (a.tier ?? 99) - (b.tier ?? 99)
-);
-const totalPartners = allPartners.length;
+// Sort partners by tier (top tier first). Used for both the static seed and
+// the live list fetched from /api/partners at runtime.
+function sortPartners(list: DirPartner[]): DirPartner[] {
+  return [...list].sort((a, b) => (a.tier ?? 99) - (b.tier ?? 99));
+}
 
-const categories = (() => {
+// Derive the category list (with counts) from a partner list.
+function buildCategories(list: DirPartner[]): Array<{ key: string; label: string; count: number }> {
   const map = new Map<string, { key: string; label: string; count: number }>();
-  for (const p of allPartners) {
+  for (const p of list) {
     const key = p.category_key || p.category || "other";
     const label = p.category_label || p.category || "Other";
     const existing = map.get(key);
@@ -58,7 +60,11 @@ const categories = (() => {
     else map.set(key, { key, label, count: 1 });
   }
   return Array.from(map.values());
-})();
+}
+
+// Static seed: shown instantly on first paint, then replaced by the live
+// database list once /api/partners responds.
+const seedPartners: DirPartner[] = sortPartners(partnersSeed as DirPartner[]);
 
 // Categories shown as chips in the hero: travel only (the rest are still in
 // the field, search, and the sections below — just not chipped up top).
@@ -67,7 +73,6 @@ function isTravel(c: { key: string; label: string }) {
   const hay = `${c.key} ${c.label}`.toLowerCase();
   return TRAVEL_HINTS.some((h) => hay.includes(h));
 }
-const chipCategories = categories.filter(isTravel);
 
 const STATION_COMING_SOON: Record<string, string> = {
   en: "Coming soon",
@@ -112,12 +117,39 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [query, setQuery] = useState("");
 
+  // Partner list: seeded from the static file for an instant first paint, then
+  // replaced by the LIVE database list (via /api/partners, which reads the
+  // Supabase affiliate_partners table). This is why partners added through the
+  // admin template now appear on the homepage with no redeploy.
+  const [allPartners, setAllPartners] = useState<DirPartner[]>(seedPartners);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/partners")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (active && Array.isArray(data) && data.length > 0) {
+          setAllPartners(sortPartners(data as DirPartner[]));
+        }
+      })
+      .catch(() => {
+        /* keep the static seed on any error */
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const totalPartners = allPartners.length;
+  const categories = useMemo(() => buildCategories(allPartners), [allPartners]);
+  const chipCategories = useMemo(() => categories.filter(isTravel), [categories]);
+
   // Visitor region (worldwide by default; auto-detected, user-overridable).
   // A partner shows when it's tagged worldwide OR matches the chosen region.
   const [region] = useRegion();
   const regionPartners = useMemo(
     () => allPartners.filter((p) => partnerVisibleInRegion(p, region)),
-    [region]
+    [region, allPartners]
   );
 
   // Living-field refs
