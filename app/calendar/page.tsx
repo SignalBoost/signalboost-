@@ -1,10 +1,12 @@
-import SaasModulePage from "@/components/SaasModulePage";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import CalendarDashboard from "@/components/calendar/CalendarDashboard";
 
-export const metadata = {
-  title: "SignalBoost — Calendar",
-  description: "SignalBoost SaaS cockpit module for mission scheduling and booking workflows.",
-};
+export const metadata = { title: "Calendar — SignalBoost" };
 
-export default function Page() {
-  return <SaasModulePage slug="calendar" />;
+export default async function CalendarPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/auth/login");
+  return <CalendarDashboard userId={user.id} />;
 }
