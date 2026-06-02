@@ -23,9 +23,10 @@ const NAV: NavNode[] = [
   { kind: "link", labelKey: "header.home", fallback: "Home", path: "/" },
   {
     kind: "menu",
-    labelKey: "header.cowork",
-    fallback: "Cowork",
+    labelKey: "header.saasStation",
+    fallback: "SaaS Station",
     items: [
+      { labelKey: "header.saasStation", fallback: "SaaS Station Home", path: "/saas-station" },
       { labelKey: "header.promote", fallback: "Promote Business", path: "/promote" },
       { labelKey: "header.reviews", fallback: "Reviews", path: "/reviews" },
       { labelKey: "header.calendar", fallback: "Calendar", path: "/calendar" },
