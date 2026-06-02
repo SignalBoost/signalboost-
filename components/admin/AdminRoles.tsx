@@ -12,6 +12,9 @@ const BORDER = "#1e2630";
 const TEXT = "#e6edf3";
 const MUTED = "#9aa8b8";
 
+// The owner account can never be removed (also enforced in the database).
+const OWNER_EMAIL = "cadomos@gmail.com";
+
 export default function AdminRoles() {
   const [admins, setAdmins] = useState<AdminRole[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,8 +63,7 @@ export default function AdminRoles() {
       </div>
 
       <div style={{ display: "flex", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
-        <input
-          value={email}
+        <input value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handlePromote()}
           placeholder="teammate@example.com"
@@ -70,9 +72,7 @@ export default function AdminRoles() {
             border: `1px solid ${BORDER}`, background: DARKINPUT, color: TEXT, fontSize: 14, outline: "none",
           }}
         />
-        <button
-          type="button"
-          onClick={handlePromote}
+        <button type="button" onClick={handlePromote}
           disabled={!email.trim() || busy}
           style={{
             padding: "10px 18px", borderRadius: 10, border: "none", fontWeight: 800, fontSize: 14,
@@ -93,21 +93,22 @@ export default function AdminRoles() {
       ) : (
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
           {admins.map((a) => (
-            <li
-              key={a.id}
+            <li key={a.id}
               style={{
                 display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
                 padding: "10px 12px", borderRadius: 10, background: "rgba(255,255,255,.03)", border: `1px solid ${BORDER}`,
               }}
             >
               <span style={{ color: TEXT, fontSize: 14 }}>{a.email}</span>
-              <button
-                type="button"
-                onClick={() => handleRevoke(a)}
-                style={{ background: "none", border: "none", color: MUTED, fontSize: 13, cursor: "pointer", fontWeight: 700 }}
-              >
-                Remove
-              </button>
+              {a.email.toLowerCase() === OWNER_EMAIL ? (
+                <span style={{ fontSize: 11, fontWeight: 900, letterSpacing: ".06em", textTransform: "uppercase", color: "#06060a", background: GOLD, borderRadius: 999, padding: "4px 10px" }}>Owner</span>
+              ) : (
+                <button type="button" onClick={() => handleRevoke(a)}
+                  style={{ background: "none", border: "none", color: MUTED, fontSize: 13, cursor: "pointer", fontWeight: 700 }}
+                >
+                  Remove
+                </button>
+              )}
             </li>
           ))}
         </ul>
