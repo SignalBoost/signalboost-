@@ -27,7 +27,7 @@ const OPERATIONS: Tool[] = [
   { href: "/reviews", title: "Reviews", desc: "Collect, triage, and respond to customer feedback.", icon: "⭐", accent: "#7dd3fc" },
   { href: "/outreach", title: "Outreach", desc: "Email, partner, and customer sequences.", icon: "📨", accent: "#fb7185", soon: true },
   { href: "/calendar", title: "Calendar", desc: "Bookings, launches, follow-ups, check-ins.", icon: "🗓", accent: "#a78bfa", soon: true },
-  { href: "/spreadsheets", title: "Spreadsheets", desc: "Partner data, budgets, inventory, forecasts.", icon: "📊", accent: "#34d399", soon: true },
+  { href: "/spreadsheets", title: "Spreadsheets", desc: "Partner data, budgets, inventory, forecasts.", icon: "📊", accent: "#34d399" },
   { href: "/assistant", title: "Personal Assistant", desc: "AI copilot for discovery, tasks, and briefings.", icon: "🤖", accent: "#22d3ee" },
 ];
 
