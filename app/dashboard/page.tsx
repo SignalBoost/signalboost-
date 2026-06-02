@@ -1,10 +1,8 @@
-import ExecutiveCockpit from "@/components/dashboard/ExecutiveCockpit";
+import { redirect } from "next/navigation";
 
-export const metadata = {
-  title: "SignalBoost — Executive Dashboard",
-  description: "Financials, KPIs, CRM, Forecasting, and Outreach telemetry for SignalBoost executives.",
-};
-
-export default function Page() {
-  return <ExecutiveCockpit />;
+// The Executive cockpit moved into the Admin workspace (/admin), which is
+// gated by the is_admin() RPC. Non-admins hitting /admin are bounced to "/".
+// So /dashboard simply forwards there and is no longer a public page.
+export default function DashboardPage() {
+  redirect("/admin");
 }
