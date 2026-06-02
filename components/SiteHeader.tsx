@@ -103,6 +103,7 @@ function AuthControls() {
       </button>
       <div className={open ? "pm-menu pm-menu-open" : "pm-menu"} role="menu">
         <span className="pm-email">{user.email}</span>
+        <Link role="menuitem" className="pm-item" href="/app">{fallbackText(t("header.workspace"), "My workspace")}</Link>
         <Link role="menuitem" className="pm-item" href="/account">{fallbackText(t("header.account"), "Account Settings")}</Link>
         <Link role="menuitem" className="pm-item" href="/subscriptions">{fallbackText(t("header.subscriptions"), "Subscriptions")}</Link>
         <button type="button" role="menuitem" className="pm-item pm-logout" onClick={() => void handleLogout()}>{fallbackText(t("header.logout"), "Logout")}</button>
