@@ -1,7 +1,7 @@
 "use client";
 // File: components/PartnerMarquee.tsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import partnersJson from "@/public/partners.json";
 import useTranslation from "./i18n/useTranslation";
 import { useRegion, partnerVisibleInRegion } from "@/lib/region";
@@ -40,7 +40,30 @@ function fallbackText(value: string, fallback: string) {
 export default function PartnerMarquee({ partnersData }: MarqueeProps) {
   const { t } = useTranslation();
   const [region] = useRegion();
-  const sourcePartners = partnersData?.length ? partnersData : partners;
+
+  // Live partner list from the database (via /api/partners). Seeded from the
+  // static file for instant first paint, then replaced once the fetch returns.
+  // Skipped entirely when a partnersData prop is supplied by the parent.
+  const [livePartners, setLivePartners] = useState<Partner[]>(partners);
+  useEffect(() => {
+    if (partnersData?.length) return;
+    let active = true;
+    fetch("/api/partners")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (active && Array.isArray(data) && data.length > 0) {
+          setLivePartners(data as Partner[]);
+        }
+      })
+      .catch(() => {
+        /* keep the static seed on any error */
+      });
+    return () => {
+      active = false;
+    };
+  }, [partnersData]);
+
+  const sourcePartners = partnersData?.length ? partnersData : livePartners;
   const list = sourcePartners
     .filter((partner) => partner.featured)
     .filter((partner) => partnerVisibleInRegion(partner, region))
