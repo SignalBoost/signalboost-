@@ -43,6 +43,69 @@ export interface OrchestrationResponse {
 
 type Lang = "en" | "es" | "pt" | "pl" | "ru";
 
+// ---- Real AI answer -------------------------------------------------------
+// Generates a genuine response via Anthropic. Module-aware: the detected
+// module(s) are described so the model frames its help correctly. Falls back
+// to null on any error (missing key, network, bad response) so the caller can
+// use the canned summary and never break.
+const AI_MODEL = "claude-sonnet-4-6";
+const AI_URL = "https://api.anthropic.com/v1/messages";
+const LANG_NAME: Record<Lang, string> = { en: "English", es: "Spanish", pt: "Portuguese", pl: "Polish", ru: "Russian" };
+
+const MODULE_PURPOSE: Record<OrchestrationModule, string> = {
+  concierge: "finding and recommending the right affiliate partners/services from the marketplace",
+  promote: "planning marketing campaigns, offers, and promotional placements for the user's business",
+  calendar: "scheduling, bookings, launches, and follow-up timing",
+  reviews: "collecting, triaging, and responding to customer reviews and feedback",
+  spreadsheets: "organizing business data: budgets, inventory, partner lists, forecasts",
+  outreach: "planning email/partner/customer outreach sequences and follow-ups",
+};
+
+async function aiAnswer(
+  message: string,
+  modules: OrchestrationModule[],
+  history: { role: "user" | "assistant"; content: string }[],
+  lang: Lang
+): Promise<string | null> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || !message) return null;
+
+  const focus = modules.map((m) => `${MODULE_LABELS[m]} (${MODULE_PURPOSE[m]})`).join("; ");
+  const system = `You are the SignalBoost Assistant, a warm, concise business copilot on signalboostapp.com. SignalBoost is a geo-aware affiliate marketplace plus a SaaS platform that helps small businesses run operations (Promote, Reviews, Calendar, Spreadsheets, Outreach, and a marketplace Concierge).
+
+The user's request has been routed to: ${focus || "general assistance"}.
+
+Answer the user's actual question directly and usefully in ${LANG_NAME[lang]}. Be practical and specific — give real guidance, steps, or recommendations they can act on, framed around the routed area(s) above. Keep it to 2-5 sentences unless the question needs more. Do not invent data you don't have; if you'd need their specific numbers or account details, say what you'd need. Plain text only, no markdown headers.`;
+
+  const messages = [
+    ...history.slice(-6).map((h) => ({ role: h.role, content: h.content })),
+    { role: "user" as const, content: message },
+  ];
+
+  try {
+    const res = await fetch(AI_URL, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({ model: AI_MODEL, max_tokens: 700, system, messages }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const content = (data as { content?: unknown }).content;
+    if (!Array.isArray(content)) return null;
+    const text = content
+      .map((b) => (b && typeof b === "object" && typeof (b as { text?: unknown }).text === "string" ? (b as { text: string }).text : ""))
+      .join("")
+      .trim();
+    return text || null;
+  } catch {
+    return null;
+  }
+}
+
 function asLang(value?: string): Lang {
   const v = (value || "en").slice(0, 2).toLowerCase();
   return (["en", "es", "pt", "pl", "ru"] as const).includes(v as Lang) ? (v as Lang) : "en";
@@ -497,7 +560,19 @@ export async function orchestrate(request: OrchestrationRequest): Promise<Orches
 
   const vague = !message || isVague(message);
   const fallbackApplied = moduleResults.some((module) => module.status === "fallback") || !message;
-  const status: OrchestrationStatus = vague ? "needs_clarification" : fallbackApplied ? "demo_fallback" : "completed";
+
+  // Real AI answer (falls back to the canned summary if AI is unavailable).
+  const ai = vague ? null : await aiAnswer(message, activeModules, request.history || [], lang);
+  const answer = ai || smartGeneralAnswer(fallbackMessage, moduleResults, lang);
+
+  // If the AI genuinely answered, this is a real completion — not a demo fallback.
+  const status: OrchestrationStatus = vague
+    ? "needs_clarification"
+    : ai
+      ? "completed"
+      : fallbackApplied
+        ? "demo_fallback"
+        : "completed";
   const understood = vague
     ? s.understoodVague
     : s.understoodRouted(message, activeModules.map((module) => MODULE_LABELS[module]).join(", "));
@@ -505,7 +580,7 @@ export async function orchestrate(request: OrchestrationRequest): Promise<Orches
   return {
     understood,
     status,
-    answer: smartGeneralAnswer(fallbackMessage, moduleResults, lang),
+    answer,
     activeModules,
     modules: moduleResults,
     options: s.options,
@@ -516,7 +591,7 @@ export async function orchestrate(request: OrchestrationRequest): Promise<Orches
     ],
     persistence: {
       shouldContinue: true,
-      fallbackApplied,
+      fallbackApplied: ai ? false : fallbackApplied,
       clarificationQuestion: vague ? s.clarification : undefined,
     },
   };
