@@ -9,10 +9,8 @@ type Lead = {
   company?: string;
   category?: string;
   network?: string;
-  affiliate_url?: string;
-  source: string;
+  status: string;
   notes?: string;
-  status: "queued" | "drafted" | "approved" | "sent" | "skipped";
   created_at: string;
 };
 
@@ -62,6 +60,20 @@ function btn(bg2: string, color: string, br?: string): React.CSSProperties {
   };
 }
 
+// Derive which tab a lead belongs to based on its messages (not lead.status,
+// which can be stale due to RLS update race conditions).
+function deriveState(
+  lead: Lead,
+  msgByLead: Record<string, Message>,
+  sentMsgByLead: Record<string, Message>
+): Filter {
+  if (sentMsgByLead[lead.id]) return "sent";
+  const msg = msgByLead[lead.id];
+  if (!msg) return "queued";
+  if (msg.status === "approved") return "approved";
+  return "drafted";
+}
+
 export default function OutreachDashboard({ userId }: { userId: string }) {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -70,7 +82,6 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
   const [filter, setFilter] = useState<Filter>("queued");
   const [notice, setNotice] = useState("");
 
-  // Per-lead state
   const [draftingId, setDraftingId] = useState<string | null>(null);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [editingLeadId, setEditingLeadId] = useState<string | null>(null);
@@ -79,15 +90,12 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
   const [emailEdits, setEmailEdits] = useState<Record<string, string>>({});
   const [savingEmail, setSavingEmail] = useState<string | null>(null);
 
-  // Add lead form
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newCompany, setNewCompany] = useState("");
   const [newNotes, setNewNotes] = useState("");
   const [addingLead, setAddingLead] = useState(false);
-
-  // Import
   const [importing, setImporting] = useState(false);
 
   const load = useCallback(async () => {
@@ -107,25 +115,35 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
 
   useEffect(() => { load(); }, [load]);
 
-  // Latest non-sent message per lead
-  const msgByLead: Record<string, Message> = {};
+  // Build message maps from ALL messages (including sent)
+  const msgByLead: Record<string, Message> = {};     // latest draft/approved
+  const sentMsgByLead: Record<string, Message> = {}; // latest sent
+
   for (const m of messages) {
-    if (m.status === "sent" || m.status === "failed") continue;
-    if (!msgByLead[m.lead_id] || m.created_at > msgByLead[m.lead_id].created_at) {
-      msgByLead[m.lead_id] = m;
+    if (m.status === "sent") {
+      if (!sentMsgByLead[m.lead_id] || m.created_at > sentMsgByLead[m.lead_id].created_at) {
+        sentMsgByLead[m.lead_id] = m;
+      }
+    } else if (m.status === "draft" || m.status === "approved") {
+      if (!msgByLead[m.lead_id] || m.created_at > msgByLead[m.lead_id].created_at) {
+        msgByLead[m.lead_id] = m;
+      }
     }
   }
 
-  const counts: Record<Filter, number> = {
-    queued: leads.filter((l) => l.status === "queued").length,
-    drafted: leads.filter((l) => l.status === "drafted").length,
-    approved: leads.filter((l) => l.status === "approved").length,
-    sent: leads.filter((l) => l.status === "sent").length,
-  };
+  // Counts and visible list derived from message state (not lead.status)
+  const counts: Record<Filter, number> = { queued: 0, drafted: 0, approved: 0, sent: 0 };
+  for (const l of leads) {
+    if (l.status === "skipped") continue;
+    const s = deriveState(l, msgByLead, sentMsgByLead);
+    counts[s]++;
+  }
 
-  const visible = leads.filter((l) => l.status === filter);
+  const visible = leads.filter(
+    (l) => l.status !== "skipped" && deriveState(l, msgByLead, sentMsgByLead) === filter
+  );
 
-  // ── Helpers ──────────────────────────────────────────────
+  // ── Actions ──────────────────────────────────────────────
 
   async function persistEmail(leadId: string, emailValue: string) {
     setSavingEmail(leadId);
@@ -135,6 +153,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
       body: JSON.stringify({ leadId, email: emailValue }),
     });
     setSavingEmail(null);
+    await load();
   }
 
   async function handleImport() {
@@ -176,12 +195,10 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
   }
 
   async function handleDraft(lead: Lead) {
-    // Save email first if there's a pending edit
     const pendingEmail = emailEdits[lead.id];
     if (pendingEmail !== undefined && pendingEmail !== lead.email) {
       await persistEmail(lead.id, pendingEmail);
     }
-
     setDraftingId(lead.id);
     setNotice("");
     try {
@@ -199,8 +216,8 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Draft failed");
-      setNotice(`Draft ready for ${lead.company || lead.name}. Reviewing now.`);
-      setFilter("drafted"); // ← auto-switch so user sees result
+      setNotice(`Draft ready for ${lead.company || lead.name} — see Drafted tab.`);
+      setFilter("drafted");
       await load();
     } catch (e: unknown) {
       setNotice(e instanceof Error ? e.message : "Draft failed");
@@ -244,6 +261,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
     const msg = msgByLead[lead.id];
     if (!msg) return;
     if (todayCount >= 50) { setNotice("Daily limit of 50 reached. Try again tomorrow."); return; }
+    const emailVal = emailEdits[lead.id] !== undefined ? emailEdits[lead.id] : lead.email;
     setSendingId(lead.id);
     try {
       const res = await fetch("/api/outreach/send", {
@@ -252,7 +270,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
         body: JSON.stringify({
           messageId: msg.id,
           leadId: lead.id,
-          toEmail: lead.email,
+          toEmail: emailVal,
           subject: msg.subject,
           body: msg.body,
         }),
@@ -260,7 +278,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Send failed");
       setTodayCount(data.sentToday);
-      setNotice(`Sent to ${lead.email} ✓`);
+      setNotice(`Sent to ${emailVal} ✓`);
       setFilter("sent");
       await load();
     } catch (e: unknown) {
@@ -310,7 +328,6 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
 
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "24px 24px" }}>
 
-        {/* Notice banner */}
         {notice && (
           <div style={{ background: "rgba(245,197,66,0.08)", border: `1px solid rgba(245,197,66,0.25)`, borderRadius: 8, padding: "10px 14px", marginBottom: 16, fontSize: 13, color: gold, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             {notice}
@@ -318,7 +335,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
           </div>
         )}
 
-        {/* Action row */}
+        {/* Actions */}
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20 }}>
           <button onClick={handleImport} disabled={importing} style={btn(importing ? "rgba(255,255,255,0.06)" : gold, importing ? textMuted : "#000")}>
             {importing ? "Importing…" : "⬇ Import Partners"}
@@ -352,52 +369,44 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
         )}
 
         {/* Filter tabs */}
-        <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: `1px solid ${border}`, paddingBottom: 0 }}>
+        <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: `1px solid ${border}` }}>
           {(["queued", "drafted", "approved", "sent"] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              style={{
-                background: "none",
-                border: "none",
-                borderBottom: filter === f ? `2px solid ${gold}` : "2px solid transparent",
-                color: filter === f ? gold : textMuted,
-                fontFamily: "Outfit, sans-serif",
-                fontSize: 13,
-                fontWeight: filter === f ? 700 : 400,
-                padding: "8px 16px 10px",
-                cursor: "pointer",
-                textTransform: "capitalize",
-              }}
-            >
+            <button key={f} onClick={() => setFilter(f)} style={{
+              background: "none", border: "none",
+              borderBottom: filter === f ? `2px solid ${gold}` : "2px solid transparent",
+              color: filter === f ? gold : textMuted,
+              fontFamily: "Outfit, sans-serif", fontSize: 13,
+              fontWeight: filter === f ? 700 : 400,
+              padding: "8px 16px 10px", cursor: "pointer", textTransform: "capitalize",
+            }}>
               {f} <span style={{ fontSize: 11, opacity: 0.7 }}>({counts[f]})</span>
             </button>
           ))}
         </div>
 
-        {/* Lead list */}
+        {/* Empty state */}
         {visible.length === 0 ? (
           <div style={{ background: surface, border: `1px dashed ${border}`, borderRadius: 12, padding: "36px 24px", textAlign: "center", color: textMuted }}>
-            {filter === "queued" ? "No leads queued. Import your affiliate partners or add one manually." :
-             filter === "drafted" ? "No drafted messages yet. Go to Queued and click \"Draft with AI\" on a lead." :
-             filter === "approved" ? "No approved messages. Review a draft and click Approve." :
-             "No sent messages yet."}
+            {filter === "queued" && "No leads queued. Import your affiliate partners or add one manually."}
+            {filter === "drafted" && "No drafts yet. Go to Queued, add an email, and click \"Draft with AI\"."}
+            {filter === "approved" && "No approved messages. Open a draft and click Approve."}
+            {filter === "sent" && "No sent messages yet."}
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {visible.map((lead) => {
               const msg = msgByLead[lead.id];
+              const sentMsg = sentMsgByLead[lead.id];
               const isEditing = editingLeadId === lead.id;
               const isDrafting = draftingId === lead.id;
               const isSending = sendingId === lead.id;
               const emailVal = emailEdits[lead.id] !== undefined ? emailEdits[lead.id] : lead.email;
               const hasEmail = !!emailVal;
-              const isSavingEmail = savingEmail === lead.id;
 
               return (
                 <div key={lead.id} style={{ background: surface, border: `1px solid ${border}`, borderRadius: 12, padding: 18 }}>
 
-                  {/* Lead title row */}
+                  {/* Title */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
                     <div>
                       <span style={{ fontWeight: 700, fontSize: 15 }}>{lead.company || lead.name}</span>
@@ -409,7 +418,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
                     )}
                   </div>
 
-                  {/* Email row */}
+                  {/* Email */}
                   <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 8 }}>
                     <span style={{ fontSize: 12, color: textMuted, width: 24, flexShrink: 0 }}>To:</span>
                     {filter === "sent" ? (
@@ -421,30 +430,21 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
                         onBlur={() => persistEmail(lead.id, emailVal)}
                         onKeyDown={(e) => { if (e.key === "Enter") persistEmail(lead.id, emailVal); }}
                         placeholder="Add contact email before sending…"
-                        style={{
-                          flex: 1,
-                          background: hasEmail ? "transparent" : "rgba(245,197,66,0.05)",
-                          border: `1px solid ${hasEmail ? border : "rgba(245,197,66,0.3)"}`,
-                          borderRadius: 6,
-                          padding: "6px 10px",
-                          color: "#fff",
-                          fontFamily: "Outfit, sans-serif",
-                          fontSize: 13,
-                        }}
+                        style={{ flex: 1, background: hasEmail ? "transparent" : "rgba(245,197,66,0.05)", border: `1px solid ${hasEmail ? border : "rgba(245,197,66,0.3)"}`, borderRadius: 6, padding: "6px 10px", color: "#fff", fontFamily: "Outfit, sans-serif", fontSize: 13 }}
                       />
                     )}
-                    {isSavingEmail && <span style={{ fontSize: 11, color: textMuted }}>saving…</span>}
+                    {savingEmail === lead.id && <span style={{ fontSize: 11, color: textMuted }}>saving…</span>}
                   </div>
 
-                  {/* Sent timestamp */}
-                  {filter === "sent" && (() => {
-                    const sentMsg = messages.find((m) => m.lead_id === lead.id && m.status === "sent");
-                    return sentMsg?.sent_at ? (
-                      <p style={{ margin: "6px 0 0", fontSize: 12, color: textMuted }}>Sent {new Date(sentMsg.sent_at).toLocaleString()}</p>
-                    ) : null;
-                  })()}
+                  {/* Sent info */}
+                  {filter === "sent" && sentMsg && (
+                    <div style={{ marginTop: 12, background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: 12 }}>
+                      <p style={{ margin: "0 0 4px", fontSize: 14, fontWeight: 600 }}>{sentMsg.subject}</p>
+                      {sentMsg.sent_at && <p style={{ margin: 0, fontSize: 12, color: textMuted }}>Sent {new Date(sentMsg.sent_at).toLocaleString()}</p>}
+                    </div>
+                  )}
 
-                  {/* Draft display */}
+                  {/* Draft preview */}
                   {msg && !isEditing && filter !== "sent" && (
                     <div style={{ marginTop: 14, background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: 14 }}>
                       <p style={{ fontSize: 11, color: textMuted, margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Subject</p>
@@ -460,12 +460,8 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
                       <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Subject</label>
                       <input value={editSubject} onChange={(e) => setEditSubject(e.target.value)} style={{ ...inp, marginTop: 4, marginBottom: 10 }} />
                       <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Message</label>
-                      <textarea
-                        value={editBody}
-                        onChange={(e) => setEditBody(e.target.value)}
-                        rows={10}
-                        style={{ ...inp, marginTop: 4, lineHeight: 1.65, resize: "vertical" } as React.CSSProperties}
-                      />
+                      <textarea value={editBody} onChange={(e) => setEditBody(e.target.value)} rows={10}
+                        style={{ ...inp, marginTop: 4, lineHeight: 1.65, resize: "vertical" } as React.CSSProperties} />
                       <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
                         <button onClick={() => saveEdit(lead)} style={btn(gold, "#000")}>Save</button>
                         <button onClick={() => setEditingLeadId(null)} style={btn("transparent", textMuted, border)}>Cancel</button>
@@ -477,34 +473,26 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
                   {filter !== "sent" && !isEditing && (
                     <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
                       {(filter === "queued" || filter === "drafted") && (
-                        <button
-                          onClick={() => handleDraft(lead)}
-                          disabled={isDrafting}
-                          style={btn("rgba(59,130,246,0.12)", isDrafting ? textMuted : "#60a5fa", "rgba(59,130,246,0.3)")}
-                        >
+                        <button onClick={() => handleDraft(lead)} disabled={isDrafting}
+                          style={btn("rgba(59,130,246,0.12)", isDrafting ? textMuted : "#60a5fa", "rgba(59,130,246,0.3)")}>
                           {isDrafting ? "Writing draft…" : msg ? "↺ Re-draft" : "✦ Draft with AI"}
                         </button>
                       )}
-                      {msg && filter === "drafted" && (
+                      {msg && filter === "drafted" && !isEditing && (
                         <>
                           <button onClick={() => startEdit(lead)} style={btn("rgba(255,255,255,0.06)", "rgba(255,255,255,0.7)", border)}>Edit</button>
-                          <button
-                            onClick={() => handleApprove(lead)}
-                            disabled={!hasEmail}
+                          <button onClick={() => handleApprove(lead)} disabled={!hasEmail}
                             title={hasEmail ? undefined : "Add email first"}
-                            style={btn(hasEmail ? "rgba(16,185,129,0.12)" : "rgba(255,255,255,0.04)", hasEmail ? "#34d399" : textMuted, hasEmail ? "rgba(16,185,129,0.3)" : border)}
-                          >
+                            style={btn(hasEmail ? "rgba(16,185,129,0.12)" : "rgba(255,255,255,0.04)", hasEmail ? "#34d399" : textMuted, hasEmail ? "rgba(16,185,129,0.3)" : border)}>
                             ✓ Approve
                           </button>
                         </>
                       )}
                       {msg && filter === "approved" && (
-                        <button
-                          onClick={() => handleSend(lead)}
+                        <button onClick={() => handleSend(lead)}
                           disabled={isSending || !hasEmail || todayCount >= 50}
                           title={!hasEmail ? "Add email first" : todayCount >= 50 ? "Daily limit reached" : undefined}
-                          style={btn(isSending || !hasEmail || todayCount >= 50 ? "rgba(255,255,255,0.06)" : gold, isSending || !hasEmail || todayCount >= 50 ? textMuted : "#000")}
-                        >
+                          style={btn(isSending || !hasEmail || todayCount >= 50 ? "rgba(255,255,255,0.06)" : gold, isSending || !hasEmail || todayCount >= 50 ? textMuted : "#000")}>
                           {isSending ? "Sending…" : "↗ Send Now"}
                         </button>
                       )}
