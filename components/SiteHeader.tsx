@@ -4,8 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
-import LanguageToggle from "@/components/i18n/LanguageToggle";
-import RegionToggle from "@/components/RegionToggle";
+import LocaleMenu from "@/components/LocaleMenu";
 import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
 import { checkIsAdmin } from "@/lib/admins";
@@ -52,7 +51,9 @@ function AuthControls() {
   const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [flow, setFlow] = useState<AuthFlow>("main");
+  const [open, setOpen] = useState(false);
   const loginHref = useMemo(() => getLoginHref(flow), [flow]);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setFlow(getHeaderAuthFlow());
@@ -71,6 +72,15 @@ function AuthControls() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -78,16 +88,25 @@ function AuthControls() {
     window.location.assign("/");
   }
 
+  if (!user) {
+    return (
+      <Link className="nv-btn nv-login" href={loginHref}>{fallbackText(t("header.login"), "Login")}</Link>
+    );
+  }
+
+  const initial = (user.email || "U").trim().charAt(0).toUpperCase() || "U";
+
   return (
-    <div className="nv-auth" aria-label="Authentication">
-      {user ? (
-        <div className="nv-auth-state">
-          <span className="nv-auth-label">{fallbackText(t("header.loggedIn"), "Logged in")}</span>
-          <button type="button" className="nv-btn" onClick={() => void handleLogout()}>{fallbackText(t("header.logout"), "Logout")}</button>
-        </div>
-      ) : (
-        <Link className="nv-btn nv-login" href={loginHref}>{fallbackText(t("header.login"), "Login")}</Link>
-      )}
+    <div className="pm-wrap" ref={ref}>
+      <button type="button" className="pm-avatar" aria-haspopup="true" aria-expanded={open} aria-label="Account menu" onClick={() => setOpen((v) => !v)}>
+        {initial}
+      </button>
+      <div className={open ? "pm-menu pm-menu-open" : "pm-menu"} role="menu">
+        <span className="pm-email">{user.email}</span>
+        <Link role="menuitem" className="pm-item" href="/account">{fallbackText(t("header.account"), "Account Settings")}</Link>
+        <Link role="menuitem" className="pm-item" href="/subscriptions">{fallbackText(t("header.subscriptions"), "Subscriptions")}</Link>
+        <button type="button" role="menuitem" className="pm-item pm-logout" onClick={() => void handleLogout()}>{fallbackText(t("header.logout"), "Logout")}</button>
+      </div>
     </div>
   );
 }
@@ -133,12 +152,6 @@ export default function SiteHeader() {
 
   const isActive = (path: string) => (path === "/" ? pathname === "/" : pathname.startsWith(path));
 
-  // Admin is a top-level, admin-only link (the old Company group was removed).
-  const nav: NavNode[] = [...NAV];
-  if (isAdmin) {
-    nav.push({ kind: "link", labelKey: "header.admin", fallback: "Admin", path: "/admin" });
-  }
-
   return (
     <header className="nv-header">
       <Link className="nv-brand" href="/" aria-label="SignalBoost home">
@@ -150,7 +163,7 @@ export default function SiteHeader() {
       </button>
 
       <nav className={mobileOpen ? "nv-nav nv-nav-open" : "nv-nav"} aria-label="Primary navigation">
-        {nav.map((node) => {
+        {NAV.map((node) => {
           if (node.kind === "link") {
             return (
               <Link key={node.path} className={isActive(node.path) ? "nv-item nv-active" : "nv-item"} href={node.path}>
@@ -178,15 +191,15 @@ export default function SiteHeader() {
         })}
 
         <div className="nv-mobile-tools">
-          <RegionToggle />
-          <LanguageToggle />
+          <LocaleMenu />
+          {isAdmin ? <Link className="nv-item" href="/admin">{fallbackText(t("header.admin"), "Admin")}</Link> : null}
           <AuthControls />
         </div>
       </nav>
 
       <div className="nv-tools">
-        <RegionToggle />
-        <LanguageToggle />
+        <LocaleMenu />
+        {isAdmin ? <Link className={isActive("/admin") ? "nv-item nv-active" : "nv-item"} href="/admin">{fallbackText(t("header.admin"), "Admin")}</Link> : null}
         <AuthControls />
       </div>
 
@@ -196,38 +209,52 @@ export default function SiteHeader() {
 }
 
 const NV_CSS = `
-.nv-header{position:sticky;top:0;z-index:1000;display:flex;align-items:center;gap:18px;min-height:64px;padding:12px clamp(16px,3vw,36px);border-bottom:1px solid rgba(245,197,66,.16);background:rgba(3,5,10,.86);backdrop-filter:blur(18px);box-shadow:0 12px 36px rgba(0,0,0,.28);font-family:'Outfit',system-ui,sans-serif;}
-.nv-brand{display:inline-flex;align-items:baseline;gap:2px;color:#fff;font-size:19px;font-weight:900;letter-spacing:-.03em;white-space:nowrap;text-decoration:none;}
+.nv-header{position:sticky;top:0;z-index:1000;display:flex;align-items:center;gap:18px;min-height:64px;padding:12px clamp(16px,3vw,36px);border-bottom:1px solid rgba(245,197,66,.16);background:rgba(3,5,10,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 12px 36px rgba(0,0,0,.28);font-family:'Outfit',system-ui,sans-serif;}
+.nv-brand{flex:1 1 0;display:inline-flex;align-items:baseline;gap:2px;color:#fff;font-size:19px;font-weight:900;letter-spacing:-.03em;white-space:nowrap;text-decoration:none;}
 .nv-brand strong{color:#f5c542;}
-.nv-nav{display:flex;align-items:center;gap:4px;margin-left:auto;}
-.nv-item{position:relative;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;border-radius:999px;background:none;color:rgba(255,255,255,.74);font-size:13px;font-weight:800;letter-spacing:.01em;padding:9px 14px;white-space:nowrap;cursor:pointer;font-family:inherit;text-decoration:none;transition:border-color .18s ease,color .18s ease,background .18s ease;}
-.nv-item:hover,.nv-item.nv-active{border-color:rgba(245,197,66,.4);background:rgba(245,197,66,.1);color:#fff;}
+.nv-nav{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:10px;}
+.nv-item{position:relative;display:inline-flex;align-items:center;gap:5px;border:none;background:none;color:rgba(255,255,255,.72);font-size:14px;font-weight:700;letter-spacing:.01em;padding:8px 4px;white-space:nowrap;cursor:pointer;font-family:inherit;text-decoration:none;transition:color .18s ease;}
+.nv-item::after{content:"";position:absolute;left:4px;right:4px;bottom:1px;height:2px;border-radius:2px;background:#f5c542;transform:scaleX(0);transform-origin:center;transition:transform .18s ease;}
+.nv-item:hover{color:#fff;}
+.nv-item:hover::after{transform:scaleX(.5);}
+.nv-item.nv-active{color:#fff;}
+.nv-item.nv-active::after{transform:scaleX(1);}
 .nv-caret{font-size:9px;opacity:.7;transition:transform .18s ease;}
 .nv-group{position:relative;}
 .nv-group:hover .nv-caret{transform:translateY(1px);}
-.nv-menu{position:absolute;top:calc(100% + 10px);left:0;min-width:210px;display:flex;flex-direction:column;gap:2px;padding:8px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:linear-gradient(180deg,rgba(18,18,26,.98),rgba(10,10,16,.98));box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .16s ease,transform .16s ease,visibility .16s;}
-.nv-menu::before{content:"";position:absolute;bottom:100%;left:0;right:0;height:12px;}
-.nv-menu-open{opacity:1;visibility:visible;transform:translateY(0);}
+.nv-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-6px);min-width:210px;display:flex;flex-direction:column;gap:2px;padding:8px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:linear-gradient(180deg,rgba(18,18,26,.98),rgba(10,10,16,.98));box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);opacity:0;visibility:hidden;transition:opacity .16s ease,transform .16s ease,visibility .16s;}
+.nv-menu::before{content:"";position:absolute;bottom:100%;left:0;right:0;height:14px;}
+.nv-menu-open{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
 .nv-menu-item{display:block;border-radius:10px;padding:10px 12px;color:rgba(255,255,255,.78);font-size:13.5px;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s ease,color .15s ease;}
 .nv-menu-item:hover,.nv-menu-item.nv-active{background:rgba(245,197,66,.12);color:#f5c542;}
-.nv-tools{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;}
+.nv-tools{flex:1 1 0;display:inline-flex;align-items:center;justify-content:flex-end;gap:12px;}
 .nv-mobile-tools{display:none;}
-.nv-auth{display:inline-flex;align-items:center;gap:8px;}
-.nv-btn,.nv-auth-label{border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:12px;font-weight:800;padding:7px 12px;color:rgba(255,255,255,.78);text-decoration:none;white-space:nowrap;}
-.nv-auth-state{display:inline-flex;align-items:center;gap:8px;}
-.nv-auth-label{border-color:rgba(46,160,67,.4);color:#7ee787;background:rgba(46,160,67,.1);}
-.nv-btn{background:rgba(255,255,255,.05);cursor:pointer;font-family:inherit;}
+.nv-btn,.nv-login{border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:12px;font-weight:800;padding:7px 14px;color:rgba(255,255,255,.82);text-decoration:none;white-space:nowrap;cursor:pointer;font-family:inherit;}
 .nv-login{background:linear-gradient(135deg,#f5c542,#dfa837);color:#06060a;border-color:transparent;}
+.pm-wrap{position:relative;display:inline-flex;}
+.pm-avatar{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:999px;border:1px solid rgba(245,197,66,.5);background:rgba(245,197,66,.12);color:#f5c542;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;transition:background .15s ease;}
+.pm-avatar:hover{background:rgba(245,197,66,.22);}
+.pm-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:210px;display:flex;flex-direction:column;gap:2px;padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:linear-gradient(180deg,rgba(18,18,26,.98),rgba(10,10,16,.98));box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .16s ease,transform .16s ease,visibility .16s;z-index:1100;}
+.pm-menu-open{opacity:1;visibility:visible;transform:translateY(0);}
+.pm-email{display:block;padding:4px 10px 8px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;}
+.pm-item{display:block;width:100%;text-align:left;border:none;background:none;border-radius:10px;padding:9px 10px;color:rgba(255,255,255,.82);font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;font-family:inherit;transition:background .15s ease;}
+.pm-item:hover{background:rgba(255,255,255,.06);}
+.pm-logout{color:#ff6b6b;}
+.pm-logout:hover{background:rgba(255,107,107,.12);}
 .nv-burger{display:none;flex-direction:column;gap:4px;margin-left:auto;background:none;border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:9px;cursor:pointer;}
 .nv-burger span{display:block;width:20px;height:2px;background:#f5c542;border-radius:2px;}
 @media (max-width:860px){
   .nv-burger{display:flex;}
   .nv-tools{display:none;}
+  .nv-brand{flex:1;}
   .nv-nav{position:absolute;top:100%;left:0;right:0;margin:0;flex-direction:column;align-items:stretch;gap:6px;padding:14px clamp(16px,3vw,36px);background:rgba(6,6,12,.98);border-bottom:1px solid rgba(245,197,66,.16);max-height:0;overflow:hidden;opacity:0;visibility:hidden;transition:max-height .2s ease,opacity .2s ease,visibility .2s;}
-  .nv-nav-open{max-height:80vh;overflow:auto;opacity:1;visibility:visible;}
+  .nv-nav-open{max-height:85vh;overflow:auto;opacity:1;visibility:visible;}
+  .nv-item{padding:10px 4px;}
+  .nv-item::after{display:none;}
   .nv-group{width:100%;}
   .nv-trigger{width:100%;justify-content:space-between;}
-  .nv-menu{position:static;opacity:1;visibility:visible;transform:none;min-width:0;box-shadow:none;border:none;background:rgba(255,255,255,.03);margin:4px 0 4px 12px;}
-  .nv-mobile-tools{display:flex;flex-direction:column;gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);}
+  .nv-menu{position:static;left:0;transform:none;opacity:1;visibility:visible;min-width:0;box-shadow:none;border:none;background:rgba(255,255,255,.03);margin:4px 0 4px 12px;}
+  .nv-menu-open{transform:none;}
+  .nv-mobile-tools{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);}
 }
 `;
