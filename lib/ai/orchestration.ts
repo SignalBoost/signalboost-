@@ -1,4 +1,23 @@
 import { saasModules } from "@/lib/saas-modules";
+import partnersData from "../../public/partners.json";
+
+// Partner directory for the concierge (find-a-company) path. Static import so
+// it ships in the bundle — same source the /api/chat route uses.
+type DirItem = { id: string; name: string; category_key?: string; category?: string; regions?: string[]; description?: string; tier?: number; url?: string };
+const DIRECTORY: DirItem[] = (Array.isArray(partnersData) ? (partnersData as DirItem[]) : []);
+
+function buildDirectoryText(region: string): string {
+  const sorted = [...DIRECTORY].sort((a, b) => {
+    const ar = a.regions?.includes(region) ? 0 : 1;
+    const br = b.regions?.includes(region) ? 0 : 1;
+    if (ar !== br) return ar - br;
+    return (a.tier ?? 9) - (b.tier ?? 9);
+  });
+  return sorted
+    .slice(0, 120)
+    .map((p) => `${p.name} | ${p.category_key || p.category || "other"} | regions:${(p.regions || []).join(",") || "ot"} | ${(p.description || "").slice(0, 90)}`)
+    .join("\n");
+}
 
 export type OrchestrationModule =
   | "concierge"
@@ -71,11 +90,19 @@ async function aiAnswer(
   if (!apiKey || !message) return null;
 
   const focus = modules.map((m) => `${MODULE_LABELS[m]} (${MODULE_PURPOSE[m]})`).join("; ");
+  const isConcierge = modules.includes("concierge");
+
+  // When the request is about finding a company/service/partner, give the model
+  // the real partner directory so it can recommend actual partners by name.
+  const directoryBlock = isConcierge
+    ? `\n\nPARTNER DIRECTORY (name | category | regions | description) — recommend the most relevant ones BY NAME when the user is looking for a company/service:\n${buildDirectoryText("ot")}\n\nWhen recommending, name the specific partners and say what each is good for. If none perfectly serve the user's region, still recommend the closest useful options and say they should confirm coverage. Region codes: ot=worldwide, us, pl=Poland, br=Brazil, es-latam=Latin America, ru=Russia.`
+    : "";
+
   const system = `You are the SignalBoost Assistant, a warm, concise business copilot on signalboostapp.com. SignalBoost is a geo-aware affiliate marketplace plus a SaaS platform that helps small businesses run operations (Promote, Reviews, Calendar, Spreadsheets, Outreach, and a marketplace Concierge).
 
 The user's request has been routed to: ${focus || "general assistance"}.
 
-Answer the user's actual question directly and usefully in ${LANG_NAME[lang]}. Be practical and specific — give real guidance, steps, or recommendations they can act on, framed around the routed area(s) above. Keep it to 2-5 sentences unless the question needs more. Do not invent data you don't have; if you'd need their specific numbers or account details, say what you'd need. Plain text only, no markdown headers.`;
+Answer the user's actual question directly and usefully in ${LANG_NAME[lang]}. Be practical and specific — give real guidance, steps, or recommendations they can act on, framed around the routed area(s) above. Keep it to 2-6 sentences unless the question needs more. Do not invent data you don't have; if you'd need their specific numbers or account details, say what you'd need. Plain text only, no markdown headers.${directoryBlock}`;
 
   const messages = [
     ...history.slice(-6).map((h) => ({ role: h.role, content: h.content })),
