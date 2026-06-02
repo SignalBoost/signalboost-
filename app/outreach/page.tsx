@@ -1,10 +1,12 @@
-import SaasModulePage from "@/components/SaasModulePage";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import OutreachDashboard from "@/components/outreach/OutreachDashboard";
 
-export const metadata = {
-  title: "SignalBoost — Outreach",
-  description: "SignalBoost SaaS cockpit module for outreach sequences and CRM follow-through.",
-};
+export const metadata = { title: "Outreach — SignalBoost" };
 
-export default function Page() {
-  return <SaasModulePage slug="outreach" />;
+export default async function OutreachPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/auth/login");
+  return <OutreachDashboard userId={user.id} />;
 }
