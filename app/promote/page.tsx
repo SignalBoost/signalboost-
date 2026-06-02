@@ -1,369 +1,399 @@
 // File: app/promote/page.tsx
-// Promote → Offers manager. Logged-in owners create, edit, activate/deactivate,
-// and delete their promotional offers. Real CRUD backed by Supabase (RLS keeps
-// each owner to their own rows). Translations are self-contained in this file.
+// Promote → campaign manager. Logged-in owners create, edit, activate/pause,
+// duplicate, and delete campaign cards backed by the Supabase `offers` table.
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import useTranslation from "@/components/i18n/useTranslation";
-import { getMyOffers, createOffer, updateOffer, deleteOffer, type Offer } from "@/lib/offers";
+import { createOffer, deleteOffer, getMyOffers, updateOffer, type Offer } from "@/lib/offers";
 
 const GOLD = "#f5c542";
 const GOLD_DEEP = "#dfa837";
+const PANEL = "rgba(15,20,27,.76)";
+const BORDER = "#1e2630";
+const TEXT = "#e6edf3";
+const MUTED = "#9aa8b8";
+const GREEN = "#34d399";
+const ROSE = "#fb7185";
+const BLUE = "#38bdf8";
 
-type Strings = {
-  eyebrow: string;
-  title: string;
-  sub: string;
-  loading: string;
-  loginTitle: string;
-  loginBody: string;
-  login: string;
-  createTitle: string;
-  createBody: string;
-  titlePh: string;
-  descPh: string;
-  codePh: string;
-  creating: string;
-  create: string;
-  errLogin: string;
-  errCreate: string;
-  noOffers: string;
-  yourOffers: string;
-  active: string;
-  inactive: string;
-  activate: string;
-  deactivate: string;
-  edit: string;
-  save: string;
-  cancel: string;
-  del: string;
-  codeLabel: string;
-  saving: string;
+type CampaignStatus = "active" | "paused" | "archived";
+type Channel = "email" | "social" | "paid";
+
+type Campaign = {
+  id: string;
+  headline: string;
+  subheadline: string;
+  body: string;
+  cta: string;
+  status: CampaignStatus;
+  lastUpdated: string;
+  utm: Record<Channel, string>;
+  source?: Offer;
 };
 
-const STRINGS: Record<string, Strings> = {
-  en: {
-    eyebrow: "Campaign tools", title: "Promote",
-    sub: "Create and manage your promotional offers in one place.",
-    loading: "Loading…", loginTitle: "Log in to manage offers",
-    loginBody: "You need an account to create and manage offers.", login: "Log in",
-    createTitle: "Create an offer", createBody: "Give it a title. Add a description and a promo code if you like.",
-    titlePh: "e.g. 20% off your first visit", descPh: "Describe the offer (optional)", codePh: "Promo code (optional)",
-    creating: "Creating…", create: "Create offer", errLogin: "Please log in again.", errCreate: "Could not create.",
-    noOffers: "No offers yet. Create one above to get started.", yourOffers: "Your offers",
-    active: "Active", inactive: "Inactive", activate: "Activate", deactivate: "Deactivate",
-    edit: "Edit", save: "Save", cancel: "Cancel", del: "Delete", codeLabel: "Code", saving: "Saving…",
-  },
-  es: {
-    eyebrow: "Herramientas de campaña", title: "Promover",
-    sub: "Crea y gestiona tus ofertas promocionales en un solo lugar.",
-    loading: "Cargando…", loginTitle: "Inicia sesión para gestionar ofertas",
-    loginBody: "Necesitas una cuenta para crear y gestionar ofertas.", login: "Iniciar sesión",
-    createTitle: "Crear una oferta", createBody: "Ponle un título. Agrega una descripción y un código promocional si quieres.",
-    titlePh: "p. ej., 20% de descuento en tu primera visita", descPh: "Describe la oferta (opcional)", codePh: "Código promocional (opcional)",
-    creating: "Creando…", create: "Crear oferta", errLogin: "Vuelve a iniciar sesión.", errCreate: "No se pudo crear.",
-    noOffers: "Aún no hay ofertas. Crea una arriba para empezar.", yourOffers: "Tus ofertas",
-    active: "Activa", inactive: "Inactiva", activate: "Activar", deactivate: "Desactivar",
-    edit: "Editar", save: "Guardar", cancel: "Cancelar", del: "Eliminar", codeLabel: "Código", saving: "Guardando…",
-  },
-  pt: {
-    eyebrow: "Ferramentas de campanha", title: "Promover",
-    sub: "Crie e gerencie suas ofertas promocionais em um só lugar.",
-    loading: "Carregando…", loginTitle: "Entre para gerenciar ofertas",
-    loginBody: "Você precisa de uma conta para criar e gerenciar ofertas.", login: "Entrar",
-    createTitle: "Criar uma oferta", createBody: "Dê um título. Adicione uma descrição e um código promocional se quiser.",
-    titlePh: "ex.: 20% de desconto na primeira visita", descPh: "Descreva a oferta (opcional)", codePh: "Código promocional (opcional)",
-    creating: "Criando…", create: "Criar oferta", errLogin: "Faça login novamente.", errCreate: "Não foi possível criar.",
-    noOffers: "Ainda não há ofertas. Crie uma acima para começar.", yourOffers: "Suas ofertas",
-    active: "Ativa", inactive: "Inativa", activate: "Ativar", deactivate: "Desativar",
-    edit: "Editar", save: "Salvar", cancel: "Cancelar", del: "Excluir", codeLabel: "Código", saving: "Salvando…",
-  },
-  pl: {
-    eyebrow: "Narzędzia kampanii", title: "Promuj",
-    sub: "Twórz i zarządzaj swoimi ofertami promocyjnymi w jednym miejscu.",
-    loading: "Ładowanie…", loginTitle: "Zaloguj się, aby zarządzać ofertami",
-    loginBody: "Potrzebujesz konta, aby tworzyć oferty i nimi zarządzać.", login: "Zaloguj się",
-    createTitle: "Utwórz ofertę", createBody: "Nadaj tytuł. Dodaj opis i kod promocyjny, jeśli chcesz.",
-    titlePh: "np. 20% zniżki na pierwszą wizytę", descPh: "Opisz ofertę (opcjonalnie)", codePh: "Kod promocyjny (opcjonalnie)",
-    creating: "Tworzenie…", create: "Utwórz ofertę", errLogin: "Zaloguj się ponownie.", errCreate: "Nie udało się utworzyć.",
-    noOffers: "Nie ma jeszcze ofert. Utwórz jedną powyżej, aby zacząć.", yourOffers: "Twoje oferty",
-    active: "Aktywna", inactive: "Nieaktywna", activate: "Aktywuj", deactivate: "Dezaktywuj",
-    edit: "Edytuj", save: "Zapisz", cancel: "Anuluj", del: "Usuń", codeLabel: "Kod", saving: "Zapisywanie…",
-  },
-  ru: {
-    eyebrow: "Инструменты кампаний", title: "Продвижение",
-    sub: "Создавайте предложения и управляйте ими в одном месте.",
-    loading: "Загрузка…", loginTitle: "Войдите, чтобы управлять предложениями",
-    loginBody: "Чтобы создавать предложения и управлять ими, нужна учётная запись.", login: "Войти",
-    createTitle: "Создать предложение", createBody: "Укажите заголовок. При желании добавьте описание и промокод.",
-    titlePh: "напр., скидка 20% на первый визит", descPh: "Опишите предложение (необязательно)", codePh: "Промокод (необязательно)",
-    creating: "Создание…", create: "Создать предложение", errLogin: "Войдите снова.", errCreate: "Не удалось создать.",
-    noOffers: "Пока нет предложений. Создайте одно выше, чтобы начать.", yourOffers: "Ваши предложения",
-    active: "Активно", inactive: "Неактивно", activate: "Активировать", deactivate: "Деактивировать",
-    edit: "Изменить", save: "Сохранить", cancel: "Отмена", del: "Удалить", codeLabel: "Код", saving: "Сохранение…",
-  },
-};
+const CHANNELS: Channel[] = ["email", "social", "paid"];
 
-export default function Page() {
-  const { lang } = useTranslation();
-  const s = STRINGS[lang] ?? STRINGS.en;
+function offerToCampaign(offer: Offer): Campaign {
+  const parts = (offer.description || "").split("\n---\n");
+  const subheadline = parts[0] || "Conversion-ready campaign concept";
+  const body = parts[1] || offer.description || "Use this campaign body to describe the offer, the proof point, and the next action for every channel.";
+  const cta = offer.code || "Get started";
+  const base = `https://signalboostapp.com/r/${encodeURIComponent(offer.id)}`;
+  return {
+    id: offer.id,
+    headline: offer.title,
+    subheadline,
+    body,
+    cta,
+    status: offer.active ? "active" : "paused",
+    lastUpdated: offer.created_at,
+    utm: {
+      email: `${base}?utm_source=email&utm_medium=newsletter&utm_campaign=${encodeURIComponent(offer.title)}`,
+      social: `${base}?utm_source=social&utm_medium=organic&utm_campaign=${encodeURIComponent(offer.title)}`,
+      paid: `${base}?utm_source=paid&utm_medium=cpc&utm_campaign=${encodeURIComponent(offer.title)}`,
+    },
+    source: offer,
+  };
+}
 
-  const [authChecked, setAuthChecked] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
-  const [offers, setOffers] = useState<Offer[]>([]);
+function emptyCampaign(): Campaign {
+  return {
+    id: "draft",
+    headline: "",
+    subheadline: "",
+    body: "",
+    cta: "",
+    status: "active",
+    lastUpdated: new Date().toISOString(),
+    utm: {
+      email: "https://signalboostapp.com/?utm_source=email&utm_medium=newsletter&utm_campaign=new-campaign",
+      social: "https://signalboostapp.com/?utm_source=social&utm_medium=organic&utm_campaign=new-campaign",
+      paid: "https://signalboostapp.com/?utm_source=paid&utm_medium=cpc&utm_campaign=new-campaign",
+    },
+  };
+}
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [code, setCode] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
+function formatDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Recently";
+  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(date);
+}
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDesc, setEditDesc] = useState("");
-  const [editCode, setEditCode] = useState("");
-  const [savingId, setSavingId] = useState<string | null>(null);
+function statusLabel(status: CampaignStatus): string {
+  if (status === "active") return "Active";
+  if (status === "paused") return "Paused";
+  return "Archived";
+}
+
+export default function PromotePage() {
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [draft, setDraft] = useState<Campaign>(emptyCampaign());
+  const [filter, setFilter] = useState<CampaignStatus | "all">("all");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [audience, setAudience] = useState("Local buyers");
+  const [tone, setTone] = useState("Confident");
+
+  const filteredCampaigns = useMemo(
+    () => campaigns.filter((campaign) => filter === "all" || campaign.status === filter),
+    [campaigns, filter],
+  );
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(async ({ data }) => {
-      const isIn = Boolean(data.user);
-      setSignedIn(isIn);
-      setAuthChecked(true);
-      if (isIn) setOffers(await getMyOffers());
-    });
+    async function load() {
+      setLoading(true);
+      setError(null);
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setLoggedIn(Boolean(user));
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      const offers = await getMyOffers();
+      const next = offers.map(offerToCampaign);
+      setCampaigns(next);
+      setSelectedId(next[0]?.id ?? null);
+      setDraft(next[0] ?? emptyCampaign());
+      setLoading(false);
+    }
+    void load();
   }, []);
 
-  async function handleCreate() {
-    const t = title.trim();
-    if (!t || creating) return;
-    setCreating(true);
-    setCreateError(null);
-    const res = await createOffer({ title: t, description, code });
-    setCreating(false);
-    if (res.offer) {
-      setOffers((prev) => [res.offer as Offer, ...prev]);
-      setTitle("");
-      setDescription("");
-      setCode("");
+  function selectCampaign(campaign: Campaign) {
+    setSelectedId(campaign.id);
+    setDraft(campaign);
+    setError(null);
+  }
+
+  function newCampaign() {
+    const fresh = emptyCampaign();
+    setSelectedId(null);
+    setDraft({ ...fresh, headline: "New growth campaign", subheadline: "Launch-ready promise", body: "Describe the target audience, offer mechanics, and reason to act now.", cta: "Book now" });
+    setError(null);
+  }
+
+  async function saveCampaign() {
+    if (!draft.headline.trim()) {
+      setError("Headline is required.");
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    const description = `${draft.subheadline.trim()}\n---\n${draft.body.trim()}`.trim();
+    if (selectedId) {
+      const result = await updateOffer(selectedId, {
+        title: draft.headline,
+        description,
+        code: draft.cta,
+        active: draft.status === "active",
+      });
+      if (!result.ok) setError(result.error || "Could not save campaign.");
+      else {
+        const updated = { ...draft, lastUpdated: new Date().toISOString() };
+        setCampaigns((cur) => cur.map((campaign) => campaign.id === selectedId ? updated : campaign));
+      }
     } else {
-      setCreateError(res.error === "not_authenticated" ? s.errLogin : s.errCreate);
+      const result = await createOffer({ title: draft.headline, description, code: draft.cta });
+      if (result.error || !result.offer) setError(result.error || "Could not create campaign.");
+      else {
+        const campaign = offerToCampaign(result.offer);
+        const merged = { ...campaign, subheadline: draft.subheadline, body: draft.body, cta: draft.cta, utm: draft.utm };
+        setCampaigns((cur) => [merged, ...cur]);
+        setSelectedId(merged.id);
+        setDraft(merged);
+      }
+    }
+    setSaving(false);
+  }
+
+  async function duplicateCampaign() {
+    const result = await createOffer({
+      title: `${draft.headline || "Campaign"} copy`,
+      description: `${draft.subheadline}\n---\n${draft.body}`,
+      code: draft.cta,
+    });
+    if (result.error || !result.offer) {
+      setError(result.error || "Could not duplicate campaign.");
+      return;
+    }
+    const copy = { ...offerToCampaign(result.offer), subheadline: draft.subheadline, body: draft.body, cta: draft.cta, utm: draft.utm };
+    setCampaigns((cur) => [copy, ...cur]);
+    selectCampaign(copy);
+  }
+
+  async function removeCampaign(id: string) {
+    const result = await deleteOffer(id);
+    if (!result.ok) {
+      setError(result.error || "Could not archive campaign.");
+      return;
+    }
+    setCampaigns((cur) => cur.filter((campaign) => campaign.id !== id));
+    if (selectedId === id) {
+      setSelectedId(null);
+      setDraft(emptyCampaign());
     }
   }
 
-  async function handleToggle(offer: Offer) {
-    const next = !offer.active;
-    setOffers((prev) => prev.map((o) => (o.id === offer.id ? { ...o, active: next } : o)));
-    const res = await updateOffer(offer.id, { active: next });
-    if (!res.ok) setOffers((prev) => prev.map((o) => (o.id === offer.id ? { ...o, active: offer.active } : o)));
+  function rewrite() {
+    const benefit = audience === "Returning customers" ? "welcome loyal customers back" : audience === "High-intent leads" ? "convert buyers already comparing options" : "reach local buyers at the right moment";
+    setDraft((cur) => ({
+      ...cur,
+      headline: `${tone} offer to ${benefit}`,
+      subheadline: `Built for ${audience.toLowerCase()} with a ${tone.toLowerCase()} tone and clear next step.`,
+      body: `SignalBoost rewrote this campaign to ${benefit}. Lead with the strongest proof point, remove friction, and keep the CTA consistent across email, social, and paid traffic.`,
+    }));
   }
 
-  function startEdit(offer: Offer) {
-    setEditingId(offer.id);
-    setEditTitle(offer.title);
-    setEditDesc(offer.description ?? "");
-    setEditCode(offer.code ?? "");
+  function setField<K extends keyof Campaign>(key: K, value: Campaign[K]) {
+    setDraft((cur) => ({ ...cur, [key]: value }));
   }
 
-  async function saveEdit(id: string) {
-    if (!editTitle.trim() || savingId) return;
-    setSavingId(id);
-    const res = await updateOffer(id, { title: editTitle, description: editDesc, code: editCode });
-    setSavingId(null);
-    if (res.ok) {
-      setOffers((prev) =>
-        prev.map((o) =>
-          o.id === id
-            ? { ...o, title: editTitle.trim(), description: editDesc.trim() || null, code: editCode.trim() || null }
-            : o
-        )
-      );
-      setEditingId(null);
-    }
-  }
-
-  async function handleDelete(id: string) {
-    const res = await deleteOffer(id);
-    if (res.ok) setOffers((prev) => prev.filter((o) => o.id !== id));
+  function setUtm(channel: Channel, value: string) {
+    setDraft((cur) => ({ ...cur, utm: { ...cur.utm, [channel]: value } }));
   }
 
   return (
     <main style={styles.page}>
       <div style={styles.shell}>
-        <header style={styles.header}>
-          <p style={styles.eyebrow}>{s.eyebrow}</p>
-          <h1 style={styles.h1}>{s.title}</h1>
-          <p style={styles.sub}>{s.sub}</p>
-        </header>
-
-        {!authChecked ? (
-          <p style={styles.muted}>{s.loading}</p>
-        ) : !signedIn ? (
-          <div style={styles.card}>
-            <h2 style={styles.h2}>{s.loginTitle}</h2>
-            <p style={styles.muted}>{s.loginBody}</p>
-            <Link href="/auth/login?next=/promote" style={styles.primaryBtn}>{s.login}</Link>
+        <section style={styles.hero} aria-labelledby="promote-title">
+          <div>
+            <p style={styles.eyebrow}>SaaS Station / Campaign tools</p>
+            <h1 id="promote-title" style={styles.h1}>Promote campaign cockpit</h1>
+            <p style={styles.sub}>Plan headlines, UTMs, AI rewrites, duplication, and campaign status from a single SignalBoost surface.</p>
           </div>
-        ) : (
-          <>
-            <div style={styles.card}>
-              <h2 style={styles.h2}>{s.createTitle}</h2>
-              <p style={styles.muted}>{s.createBody}</p>
-              <input style={{ ...styles.input, marginTop: 14 }}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={s.titlePh}
-                maxLength={120}
-              />
-              <textarea style={{ ...styles.input, marginTop: 10, minHeight: 70, resize: "vertical" }}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder={s.descPh}
-                maxLength={600}
-              />
-              <div style={styles.createRow}>
-                <input style={{ ...styles.input, flex: 1 }}
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder={s.codePh}
-                  maxLength={40}
-                />
-                <button type="button"
-                  onClick={handleCreate}
-                  disabled={!title.trim() || creating}
-                  style={{ ...styles.primaryBtn, opacity: !title.trim() || creating ? 0.5 : 1, whiteSpace: "nowrap" }}
-                >
-                  {creating ? s.creating : s.create}
-                </button>
-              </div>
-              {createError && <p style={styles.error}>{createError}</p>}
-            </div>
+          <Link href="/app" style={styles.workspaceLink}>← My workspace</Link>
+        </section>
 
-            {offers.length === 0 ? (
-              <p style={styles.muted}>{s.noOffers}</p>
-            ) : (
-              <div style={styles.card}>
-                <span style={styles.telemetryLabel}>{s.yourOffers}</span>
-                <div style={styles.offerList}>
-                  {offers.map((offer) => (
-                    <div key={offer.id} style={{ ...styles.offerItem, opacity: offer.active ? 1 : 0.55 }}>
-                      {editingId === offer.id ? (
-                        <>
-                          <input style={styles.input}
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            maxLength={120}
-                          />
-                          <textarea style={{ ...styles.input, marginTop: 8, minHeight: 60, resize: "vertical" }}
-                            value={editDesc}
-                            onChange={(e) => setEditDesc(e.target.value)}
-                            maxLength={600}
-                          />
-                          <input style={{ ...styles.input, marginTop: 8 }}
-                            value={editCode}
-                            onChange={(e) => setEditCode(e.target.value)}
-                            maxLength={40}
-                          />
-                          <div style={styles.btnRow}>
-                            <button type="button" onClick={() => saveEdit(offer.id)} disabled={!editTitle.trim() || savingId === offer.id} style={styles.smallPrimary}>
-                              {savingId === offer.id ? s.saving : s.save}
-                            </button>
-                            <button type="button" onClick={() => setEditingId(null)} style={styles.smallGhost}>{s.cancel}</button>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div style={styles.offerTop}>
-                            <strong style={styles.offerTitle}>{offer.title}</strong>
-                            <span style={offer.active ? styles.pillOn : styles.pillOff}>{offer.active ? s.active : s.inactive}</span>
-                          </div>
-                          {offer.description && <p style={styles.offerDesc}>{offer.description}</p>}
-                          {offer.code && (
-                            <p style={styles.offerCode}>{s.codeLabel}: <code>{offer.code}</code></p>
-                          )}
-                          <div style={styles.btnRow}>
-                            <button type="button" onClick={() => handleToggle(offer)} style={styles.smallGhost}>
-                              {offer.active ? s.deactivate : s.activate}
-                            </button>
-                            <button type="button" onClick={() => startEdit(offer)} style={styles.smallGhost}>{s.edit}</button>
-                            <button type="button" onClick={() => handleDelete(offer.id)} style={styles.smallDanger}>{s.del}</button>
-                          </div>
-                        </>
-                      )}
-                    </div>
+        {!loggedIn && !loading ? (
+          <section style={styles.card}>
+            <h2 style={styles.h2}>Log in to manage campaigns</h2>
+            <p style={styles.muted}>You need an account before SignalBoost can sync campaign library changes.</p>
+            <Link href="/auth/login?flow=main&next=/promote" style={styles.primaryBtn}>Log in</Link>
+          </section>
+        ) : (
+          <div style={styles.layout}>
+            <aside style={styles.libraryPanel} aria-label="Campaign library panel">
+              <div style={styles.panelHeader}>
+                <div>
+                  <p style={styles.telemetryLabel}>CampaignLibraryPanel</p>
+                  <h2 style={styles.h2}>Campaigns</h2>
+                </div>
+                <button type="button" onClick={newCampaign} style={styles.iconBtn}>+</button>
+              </div>
+
+              <div style={styles.filterControls} aria-label="Filter controls">
+                {(["all", "active", "paused", "archived"] as const).map((option) => (
+                  <button key={option} type="button" onClick={() => setFilter(option)} style={filter === option ? styles.filterActive : styles.filterBtn}>
+                    {option}
+                  </button>
+                ))}
+              </div>
+
+              {loading ? <p style={styles.muted}>Loading campaign library…</p> : filteredCampaigns.length === 0 ? (
+                <p style={styles.empty}>No campaigns in this filter. Use NewCampaignButton to create one.</p>
+              ) : (
+                <div style={styles.campaignList}>
+                  {filteredCampaigns.map((campaign) => (
+                    <article key={campaign.id} style={campaign.id === selectedId ? styles.campaignCardActive : styles.campaignCard}>
+                      <button type="button" onClick={() => selectCampaign(campaign)} style={styles.campaignButton}>
+                        <strong>{campaign.headline}</strong>
+                        <span>{statusLabel(campaign.status)}</span>
+                        <small>Last updated {formatDate(campaign.lastUpdated)}</small>
+                      </button>
+                      <button type="button" onClick={() => void removeCampaign(campaign.id)} style={styles.archiveBtn}>×</button>
+                    </article>
                   ))}
                 </div>
+              )}
+
+              <button type="button" onClick={newCampaign} style={styles.newCampaignBtn}>NewCampaignButton</button>
+            </aside>
+
+            <section style={styles.editor} aria-label="Campaign editor">
+              <div style={styles.editorHeader}>
+                <div>
+                  <p style={styles.telemetryLabel}>CampaignEditor</p>
+                  <h2 style={styles.h2}>{selectedId ? "Selected campaign" : "New campaign"}</h2>
+                </div>
+                <span style={draft.status === "active" ? styles.pillOn : styles.pillOff}>{statusLabel(draft.status)}</span>
               </div>
-            )}
-          </>
+
+              {error && <p style={styles.error}>{error}</p>}
+
+              <label style={styles.label}>HeadlineField
+                <input value={draft.headline} onChange={(e) => setField("headline", e.target.value)} style={styles.input} placeholder="Launch headline" />
+              </label>
+              <label style={styles.label}>SubheadlineField
+                <input value={draft.subheadline} onChange={(e) => setField("subheadline", e.target.value)} style={styles.input} placeholder="Supporting promise" />
+              </label>
+              <label style={styles.label}>BodyCopyField
+                <textarea value={draft.body} onChange={(e) => setField("body", e.target.value)} style={styles.textarea} placeholder="Campaign body copy" />
+              </label>
+              <div style={styles.twoCol}>
+                <label style={styles.label}>CTAField
+                  <input value={draft.cta} onChange={(e) => setField("cta", e.target.value)} style={styles.input} placeholder="Book now" />
+                </label>
+                <label style={styles.label}>Status
+                  <select value={draft.status} onChange={(e) => setField("status", e.target.value as CampaignStatus)} style={styles.input}>
+                    <option value="active">active</option>
+                    <option value="paused">paused</option>
+                    <option value="archived">archived</option>
+                  </select>
+                </label>
+              </div>
+
+              <section style={styles.nestedPanel} aria-label="UTM link editor">
+                <p style={styles.telemetryLabel}>UTMLinkEditor</p>
+                {CHANNELS.map((channel) => (
+                  <label key={channel} style={styles.label}>{channel}
+                    <input value={draft.utm[channel]} onChange={(e) => setUtm(channel, e.target.value)} style={styles.input} />
+                  </label>
+                ))}
+              </section>
+
+              <section style={styles.aiPanel} aria-label="AI rewrite panel">
+                <p style={styles.telemetryLabel}>AIRewritePanel</p>
+                <div style={styles.twoCol}>
+                  <label style={styles.label}>AudienceSelector
+                    <select value={audience} onChange={(e) => setAudience(e.target.value)} style={styles.input}>
+                      <option>Local buyers</option>
+                      <option>Returning customers</option>
+                      <option>High-intent leads</option>
+                    </select>
+                  </label>
+                  <label style={styles.label}>ToneSelector
+                    <select value={tone} onChange={(e) => setTone(e.target.value)} style={styles.input}>
+                      <option>Confident</option>
+                      <option>Friendly</option>
+                      <option>Urgent</option>
+                    </select>
+                  </label>
+                </div>
+                <button type="button" onClick={rewrite} style={styles.rewriteBtn}>RewriteButton</button>
+              </section>
+
+              <div style={styles.actionRow}>
+                <button type="button" onClick={() => void saveCampaign()} disabled={saving || !loggedIn} style={{ ...styles.primaryBtn, opacity: saving || !loggedIn ? 0.55 : 1 }}>
+                  {saving ? "Saving…" : "SaveCampaignButton"}
+                </button>
+                <button type="button" onClick={() => void duplicateCampaign()} disabled={!selectedId || !loggedIn} style={styles.ghostBtn}>DuplicateCampaignButton</button>
+              </div>
+            </section>
+          </div>
         )}
+
+        <footer style={styles.footer}>Footer: status ready • sync health {saving ? "syncing" : "healthy"}</footer>
       </div>
     </main>
   );
 }
 
 const styles: Record<string, CSSProperties> = {
-  page: {
-    minHeight: "100dvh",
-    background: "radial-gradient(60vw 40vh at 20% -5%, rgba(245,197,66,.08), transparent 60%), linear-gradient(180deg,#06060a,#0a0a12)",
-    padding: "48px 20px 80px",
-    fontFamily: "'Outfit', system-ui, sans-serif",
-  },
-  shell: { maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 },
-  header: { marginBottom: 6 },
-  eyebrow: { color: GOLD_DEEP, fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 },
-  h1: { color: "#fff", fontSize: 34, fontWeight: 700, margin: "8px 0 6px", letterSpacing: "-0.02em" },
-  sub: { color: "#9aa8b8", fontSize: 15, margin: 0, lineHeight: 1.55 },
-  card: {
-    background: "linear-gradient(180deg, rgba(20,20,28,.8), rgba(10,10,16,.8))",
-    border: "1px solid rgba(255,255,255,.09)",
-    borderRadius: 20,
-    padding: 24,
-    boxShadow: "inset 0 1px 0 rgba(255,255,255,.05)",
-  },
-  h2: { color: "#fff", fontSize: 19, fontWeight: 700, margin: "0 0 6px" },
-  muted: { color: "#9aa8b8", fontSize: 14, margin: 0, lineHeight: 1.55 },
-  telemetryLabel: { display: "block", color: GOLD_DEEP, fontSize: 11, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 },
-  createRow: { display: "flex", gap: 10, marginTop: 10 },
-  input: {
-    width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11,
-    border: "1px solid rgba(255,255,255,.12)", background: "rgba(8,8,12,.7)", color: "#e6edf3",
-    fontSize: 14, fontFamily: "inherit", outline: "none",
-  },
-  primaryBtn: {
-    display: "inline-flex", alignItems: "center", justifyContent: "center",
-    padding: "11px 20px", borderRadius: 11, border: "none", color: "#06060a", fontWeight: 800,
-    fontSize: 14, textDecoration: "none", background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`, cursor: "pointer",
-  },
-  error: { color: "#f8857a", fontSize: 13, margin: "10px 0 0" },
-  offerList: { display: "flex", flexDirection: "column", gap: 14 },
-  offerItem: { padding: 16, borderRadius: 14, background: "rgba(8,8,12,.5)", border: "1px solid rgba(255,255,255,.06)" },
-  offerTop: { display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" },
-  offerTitle: { color: "#f5f6f8", fontSize: 15.5, fontWeight: 700 },
-  offerDesc: { color: "#cbd5e1", fontSize: 14, margin: "8px 0 0", lineHeight: 1.5 },
-  offerCode: { color: "#9aa8b8", fontSize: 13, margin: "8px 0 0" },
-  pillOn: {
-    marginLeft: "auto", fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase",
-    color: "#06060a", background: GOLD, borderRadius: 999, padding: "3px 10px",
-  },
-  pillOff: {
-    marginLeft: "auto", fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase",
-    color: "#9aa8b8", background: "rgba(255,255,255,.08)", borderRadius: 999, padding: "3px 10px",
-  },
-  btnRow: { display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" },
-  smallPrimary: {
-    padding: "7px 14px", borderRadius: 9, border: "none", color: "#06060a", fontWeight: 800,
-    fontSize: 12.5, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`, cursor: "pointer",
-  },
-  smallGhost: {
-    padding: "7px 14px", borderRadius: 9, border: "1px solid rgba(255,255,255,.14)",
-    background: "rgba(255,255,255,.05)", color: "#cbd5e1", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-  },
-  smallDanger: {
-    padding: "7px 14px", borderRadius: 9, border: "1px solid rgba(248,133,122,.3)",
-    background: "rgba(248,133,122,.08)", color: "#f8857a", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-  },
+  page: { minHeight: "100dvh", background: "radial-gradient(60vw 40vh at 20% -5%, rgba(245,197,66,.08), transparent 60%), linear-gradient(180deg,#06060a,#0a0a12)", padding: "36px 20px 72px", fontFamily: "'Outfit', system-ui, sans-serif" },
+  shell: { maxWidth: 1180, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 },
+  hero: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, padding: 24, borderRadius: 24, border: "1px solid rgba(255,255,255,.09)", background: "linear-gradient(135deg, rgba(245,197,66,.11), rgba(56,189,248,.06))" },
+  eyebrow: { color: GOLD_DEEP, fontSize: 11, fontWeight: 900, letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 },
+  h1: { color: "#fff", fontSize: 38, fontWeight: 900, margin: "8px 0 8px", letterSpacing: "-0.04em" },
+  h2: { color: "#fff", fontSize: 19, fontWeight: 800, margin: 0 },
+  sub: { color: MUTED, fontSize: 15, margin: 0, lineHeight: 1.55, maxWidth: 680 },
+  workspaceLink: { color: TEXT, textDecoration: "none", border: `1px solid ${BORDER}`, borderRadius: 999, padding: "8px 13px", fontSize: 13, fontWeight: 800, whiteSpace: "nowrap" },
+  layout: { display: "grid", gridTemplateColumns: "minmax(260px, 330px) minmax(0, 1fr)", gap: 18, alignItems: "start" },
+  card: { background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 20, padding: 24 },
+  libraryPanel: { background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 20, padding: 16, position: "sticky", top: 86 },
+  panelHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 14 },
+  telemetryLabel: { display: "block", color: GOLD_DEEP, fontSize: 10, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 5px" },
+  iconBtn: { width: 34, height: 34, borderRadius: 12, border: "none", background: GOLD, color: "#06060a", fontWeight: 900, fontSize: 20, cursor: "pointer" },
+  filterControls: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 14 },
+  filterBtn: { padding: "8px 10px", borderRadius: 999, border: `1px solid ${BORDER}`, background: "rgba(255,255,255,.04)", color: MUTED, textTransform: "capitalize", fontWeight: 800, cursor: "pointer" },
+  filterActive: { padding: "8px 10px", borderRadius: 999, border: "1px solid rgba(245,197,66,.45)", background: "rgba(245,197,66,.14)", color: GOLD, textTransform: "capitalize", fontWeight: 900, cursor: "pointer" },
+  campaignList: { display: "flex", flexDirection: "column", gap: 10, maxHeight: 560, overflow: "auto" },
+  campaignCard: { display: "flex", border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", background: "rgba(6,8,12,.55)" },
+  campaignCardActive: { display: "flex", border: `1px solid ${BLUE}`, borderRadius: 14, overflow: "hidden", background: "rgba(56,189,248,.10)" },
+  campaignButton: { flex: 1, border: "none", background: "transparent", color: TEXT, padding: 12, textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 5, fontFamily: "inherit" },
+  archiveBtn: { border: "none", borderLeft: `1px solid ${BORDER}`, background: "transparent", color: MUTED, cursor: "pointer", padding: "0 10px", fontSize: 18 },
+  newCampaignBtn: { width: "100%", marginTop: 12, padding: "11px 14px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`, color: "#06060a", fontWeight: 900, cursor: "pointer" },
+  editor: { minWidth: 0, background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 20, padding: 18, display: "flex", flexDirection: "column", gap: 14 },
+  editorHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 },
+  label: { display: "flex", flexDirection: "column", gap: 7, color: MUTED, fontSize: 12, fontWeight: 900, letterSpacing: ".04em", textTransform: "uppercase" },
+  input: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11, border: "1px solid rgba(255,255,255,.12)", background: "rgba(8,8,12,.7)", color: TEXT, fontSize: 14, fontFamily: "inherit", outline: "none", textTransform: "none", letterSpacing: 0, fontWeight: 600 },
+  textarea: { width: "100%", boxSizing: "border-box", minHeight: 120, resize: "vertical", padding: "11px 13px", borderRadius: 11, border: "1px solid rgba(255,255,255,.12)", background: "rgba(8,8,12,.7)", color: TEXT, fontSize: 14, fontFamily: "inherit", outline: "none", textTransform: "none", letterSpacing: 0, fontWeight: 600, lineHeight: 1.5 },
+  twoCol: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 },
+  nestedPanel: { border: `1px solid ${BORDER}`, borderRadius: 16, padding: 14, background: "rgba(6,8,12,.38)", display: "flex", flexDirection: "column", gap: 10 },
+  aiPanel: { border: "1px solid rgba(56,189,248,.22)", borderRadius: 16, padding: 14, background: "rgba(56,189,248,.07)", display: "flex", flexDirection: "column", gap: 12 },
+  actionRow: { display: "flex", gap: 10, flexWrap: "wrap" },
+  primaryBtn: { display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "11px 18px", borderRadius: 11, border: "none", color: "#06060a", fontWeight: 900, fontSize: 14, textDecoration: "none", background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`, cursor: "pointer" },
+  ghostBtn: { padding: "11px 18px", borderRadius: 11, border: `1px solid ${BORDER}`, background: "rgba(255,255,255,.05)", color: TEXT, fontWeight: 800, cursor: "pointer" },
+  rewriteBtn: { alignSelf: "flex-start", padding: "10px 14px", borderRadius: 11, border: "1px solid rgba(56,189,248,.35)", background: "rgba(56,189,248,.13)", color: "#bae6fd", fontWeight: 900, cursor: "pointer" },
+  pillOn: { fontSize: 11, fontWeight: 900, letterSpacing: ".08em", textTransform: "uppercase", color: "#04100b", background: GREEN, borderRadius: 999, padding: "5px 11px" },
+  pillOff: { fontSize: 11, fontWeight: 900, letterSpacing: ".08em", textTransform: "uppercase", color: "#ffe4e6", background: ROSE, borderRadius: 999, padding: "5px 11px" },
+  muted: { color: MUTED, fontSize: 14, lineHeight: 1.55, margin: "0 0 14px" },
+  empty: { color: MUTED, border: `1px dashed ${BORDER}`, borderRadius: 14, padding: 16, textAlign: "center", lineHeight: 1.5 },
+  error: { color: "#f8857a", fontSize: 13, margin: 0 },
+  footer: { color: MUTED, fontSize: 12, borderTop: `1px solid ${BORDER}`, paddingTop: 14 },
 };
