@@ -234,24 +234,18 @@ export default function Concierge() {
             </ol>
           </div>
 
-          {/* Active modules */}
+          {/* Active modules — clickable links, no status badges */}
           <div style={{ padding: "12px 14px", flex: 1, overflowY: "auto" }}>
-            <p style={{ color: gold, fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 4px" }}>{ft(t("assistant.activeModules"), "Active modules")}</p>
-            <p style={{ color: "#fff", fontWeight: 900, fontSize: 13, margin: "0 0 10px" }}>{ft(t("assistant.moduleSignals"), "Module signals")}</p>
+            <p style={{ color: gold, fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 4px" }}>{ft(t("assistant.activeModules"), "Your tools")}</p>
+            <p style={{ color: "#fff", fontWeight: 900, fontSize: 13, margin: "0 0 10px" }}>{ft(t("assistant.moduleSignals"), "Go to module →")}</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {activeModules.map(m => (
-                <div key={m.module} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 10, padding: "9px 11px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <span style={{ fontWeight: 900, fontSize: 12, color: "#fff" }}>{m.label}</span>
-                    <span style={{ background: m.status === "ok" ? "rgba(16,185,129,0.12)" : "rgba(245,197,66,0.1)", color: m.status === "ok" ? "#34d399" : gold, border: `1px solid ${m.status === "ok" ? "rgba(16,185,129,0.3)" : "rgba(245,197,66,0.3)"}`, borderRadius: 6, fontSize: 9, fontWeight: 900, padding: "2px 6px" }}>
-                      {m.status === "ok" ? "OK" : "fallback"}
-                    </span>
-                  </div>
+                <a key={m.module} href={"/" + m.module} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 10, padding: "9px 11px", textDecoration: "none", display: "block", transition: "border-color 0.15s" }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(245,197,66,0.35)")}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = border)}>
+                  <p style={{ fontWeight: 900, fontSize: 12, color: "#fff", margin: "0 0 3px" }}>{m.label} →</p>
                   <p style={{ fontSize: 11, color: muted, margin: 0, lineHeight: 1.4 }}>{m.summary}</p>
-                  {Object.entries(m.data).filter(([k]) => VISIBLE_KEYS.has(k)).slice(0, 1).map(([k, v]) => (
-                    <p key={k} style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", margin: "3px 0 0" }}>{k}: {Array.isArray(v) ? v.join(", ") : String(v)}</p>
-                  ))}
-                </div>
+                </a>
               ))}
             </div>
           </div>
