@@ -91,7 +91,7 @@ function AuthControls() {
 
   if (!user) {
     return (
-      <Link className="nv-btn nv-login" href={loginHref}>{fallbackText(t("header.login"), "Login")}</Link>
+      <Link className="nv-btn nv-login" href={loginHref}>{fallbackText(t("header.getStarted"), "Get Started")}</Link>
     );
   }
 

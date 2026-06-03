@@ -16,6 +16,7 @@ type Booking = {
 };
 type BlockedDate = { id: string; blocked_date: string; reason: string };
 type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
+type CalendarEvent = { id: string; title: string; description?: string | null; start_time: string; end_time: string; timezone: string; recurrence?: { rule?: string; frequency?: number; exceptions?: string[] } };
 type Lang = "en" | "es" | "pt" | "pl" | "ru";
 
 // ── Translations ──────────────────────────────────────────────
@@ -202,6 +203,15 @@ const TIMEZONES = [
   "Australia/Sydney", "Pacific/Auckland",
 ];
 
+
+const EVENT_LABELS: Record<Lang, { tab: string; title: string; newEvent: string; name: string; date: string; start: string; end: string; timezone: string; repeats: string; none: string; weekly: string; monthly: string; yearly: string; save: string; empty: string; export: string; host: string; guest: string; }> = {
+  en: { tab: "Events", title: "UTC event calendar", newEvent: "New appointment", name: "Title", date: "Date", start: "Start", end: "End", timezone: "Host timezone", repeats: "Repeats", none: "None", weekly: "Weekly", monthly: "Monthly", yearly: "Yearly", save: "Save event", empty: "No calendar events yet.", export: "Export", host: "Host", guest: "Guest" },
+  es: { tab: "Eventos", title: "Calendario en UTC", newEvent: "Nueva cita", name: "Título", date: "Fecha", start: "Inicio", end: "Fin", timezone: "Zona horaria", repeats: "Repite", none: "No", weekly: "Semanal", monthly: "Mensual", yearly: "Anual", save: "Guardar evento", empty: "Aún no hay eventos.", export: "Exportar", host: "Anfitrión", guest: "Invitado" },
+  pt: { tab: "Eventos", title: "Calendário em UTC", newEvent: "Novo compromisso", name: "Título", date: "Data", start: "Início", end: "Fim", timezone: "Fuso horário", repeats: "Repete", none: "Não", weekly: "Semanal", monthly: "Mensal", yearly: "Anual", save: "Salvar evento", empty: "Ainda sem eventos.", export: "Exportar", host: "Anfitrião", guest: "Convidado" },
+  pl: { tab: "Wydarzenia", title: "Kalendarz UTC", newEvent: "Nowa wizyta", name: "Tytuł", date: "Data", start: "Start", end: "Koniec", timezone: "Strefa gospodarza", repeats: "Powtarza", none: "Brak", weekly: "Co tydzień", monthly: "Co miesiąc", yearly: "Co rok", save: "Zapisz", empty: "Brak wydarzeń.", export: "Eksport", host: "Gospodarz", guest: "Gość" },
+  ru: { tab: "События", title: "UTC календарь", newEvent: "Новая встреча", name: "Название", date: "Дата", start: "Начало", end: "Конец", timezone: "Часовой пояс", repeats: "Повтор", none: "Нет", weekly: "Еженедельно", monthly: "Ежемесячно", yearly: "Ежегодно", save: "Сохранить", empty: "Событий пока нет.", export: "Экспорт", host: "Организатор", guest: "Гость" },
+};
+
 const gold = "#f5c542";
 const bg = "#06060a";
 const surface = "rgba(255,255,255,0.03)";
@@ -249,10 +259,12 @@ export default function CalendarDashboard({ userId: _userId }: { userId: string 
   const { lang: rawLang } = useTranslation();
   const lang = asLang(rawLang);
   const s = S[lang];
+  const ev = EVENT_LABELS[lang];
 
-  const [tab, setTab] = useState<"services" | "bookings" | "blocked">("services");
+  const [tab, setTab] = useState<"services" | "bookings" | "blocked" | "events">("services");
   const [services, setServices] = useState<Service[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [blocked, setBlocked] = useState<BlockedDate[]>([]);
   const [counts, setCounts] = useState({ pending: 0, confirmed: 0, completed: 0, cancelled: 0 });
   const [revenue, setRevenue] = useState(0);
@@ -278,17 +290,20 @@ export default function CalendarDashboard({ userId: _userId }: { userId: string 
   const [newBlockReason, setNewBlockReason] = useState("");
   const [addingBlock, setAddingBlock] = useState(false);
   const [notice, setNotice] = useState("");
+  const [eventForm, setEventForm] = useState({ title: "Consultation", date: new Date().toISOString().slice(0, 10), start: "09:00", end: "10:00", timezone: "UTC", recurrence: "none" });
 
   const load = useCallback(async () => {
     try {
-      const [sRes, bRes, blRes] = await Promise.all([
+      const [sRes, bRes, blRes, eRes] = await Promise.all([
         fetch("/api/calendar/services"),
         fetch("/api/calendar/bookings"),
         fetch("/api/calendar/blocked"),
+        fetch("/api/calendar/events"),
       ]);
       if (sRes.ok) { const d = await sRes.json(); setServices(d.services || []); }
       if (bRes.ok) { const d = await bRes.json(); setBookings(d.bookings || []); setCounts(d.counts || {}); setRevenue(d.revenue || 0); }
       if (blRes.ok) { const d = await blRes.json(); setBlocked(d.blocked || []); }
+      if (eRes.ok) { const d = await eRes.json(); setEvents(d.events || []); }
     } finally { setLoading(false); }
   }, []);
 
@@ -296,7 +311,7 @@ export default function CalendarDashboard({ userId: _userId }: { userId: string 
 
   // Detect browser timezone on mount
   useEffect(() => {
-    try { setSvcTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone); } catch { setSvcTimezone("UTC"); }
+    try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone; setSvcTimezone(tz); setEventForm((cur) => ({ ...cur, timezone: tz })); } catch { setSvcTimezone("UTC"); }
   }, []);
 
   const selectedSvc = services.find(sv => sv.id === selectedSvcId) || null;
@@ -315,7 +330,7 @@ export default function CalendarDashboard({ userId: _userId }: { userId: string 
   function resetSvcForm() {
     setSvcName(""); setSvcDuration("60"); setSvcPrice("0");
     setSvcCurrency("USD"); setSvcDesc(""); setSvcColor(COLORS[0]);
-    try { setSvcTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone); } catch { setSvcTimezone("UTC"); }
+    try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone; setSvcTimezone(tz); setEventForm((cur) => ({ ...cur, timezone: tz })); } catch { setSvcTimezone("UTC"); }
   }
 
   function populateSvcForm(svc: Service) {
@@ -419,6 +434,27 @@ export default function CalendarDashboard({ userId: _userId }: { userId: string 
     await load();
   }
 
+  async function handleSaveEvent() {
+    await fetch("/api/calendar/events", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ...eventForm, recurrence: { rule: eventForm.recurrence, frequency: 1, exceptions: [] } }),
+    });
+    await load();
+    setNotice(ev.save);
+  }
+
+  function formatEventTime(iso: string, timeZone: string) {
+    try { return new Intl.DateTimeFormat(lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : lang === "pl" ? "pl-PL" : lang === "ru" ? "ru-RU" : "en-US", { timeZone, dateStyle: "medium", timeStyle: "short" }).format(new Date(iso)); }
+    catch { return new Date(iso).toLocaleString(); }
+  }
+
+  function eventExportHref(event: CalendarEvent, provider: "google" | "outlook") {
+    const start = new Date(event.start_time).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+    const end = new Date(event.end_time).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+    const params = new URLSearchParams(provider === "google" ? { action: "TEMPLATE", text: event.title, dates: `${start}/${end}`, details: event.description || "" } : { path: "/calendar/action/compose", rru: "addevent", subject: event.title, startdt: event.start_time, enddt: event.end_time, body: event.description || "" });
+    return provider === "google" ? `https://calendar.google.com/calendar/render?${params}` : `https://outlook.live.com/calendar/0/deeplink/compose?${params}`;
+  }
+
   const visibleBookings = bookings.filter(b => b.status === bkgFilter);
   const bookingLink = (svc: Service) => "https://signalboostapp.com/book/" + svc.slug;
 
@@ -449,13 +485,13 @@ export default function CalendarDashboard({ userId: _userId }: { userId: string 
 
       {/* Tabs */}
       <div style={{ borderBottom: `1px solid ${border}`, display: "flex", padding: "0 28px", flexShrink: 0 }}>
-        {(["services", "bookings", "blocked"] as const).map(t => (
+        {(["services", "events", "bookings", "blocked"] as const).map(t => (
           <button key={t} onClick={() => setTab(t)} style={{
             background: "none", border: "none", borderBottom: tab === t ? "2px solid " + gold : "2px solid transparent",
             color: tab === t ? gold : textMuted, fontFamily: "Outfit, sans-serif", fontSize: 13,
             fontWeight: tab === t ? 700 : 400, padding: "12px 20px 14px", cursor: "pointer",
           }}>
-            {t === "services" ? s.tabs.services : t === "bookings" ? s.tabs.bookings + " (" + (counts.pending + counts.confirmed) + ")" : s.tabs.blocked + " (" + blocked.length + ")"}
+            {t === "services" ? s.tabs.services : t === "events" ? ev.tab + " (" + events.length + ")" : t === "bookings" ? s.tabs.bookings + " (" + (counts.pending + counts.confirmed) + ")" : s.tabs.blocked + " (" + blocked.length + ")"}
           </button>
         ))}
       </div>
@@ -619,6 +655,43 @@ export default function CalendarDashboard({ userId: _userId }: { userId: string 
               )}
             </div>
           </>
+        )}
+
+
+        {tab === "events" && (
+          <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "minmax(280px,420px) minmax(0,1fr)", gap: 18 }}>
+              <section style={{ background: surface, border: `1px solid ${border}`, borderRadius: 12, padding: 20 }}>
+                <h2 style={{ margin: "0 0 14px", fontSize: 18 }}>{ev.newEvent}</h2>
+                <div style={{ display: "grid", gap: 12 }}>
+                  <label>{ev.name}<input style={inp} value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} /></label>
+                  <label>{ev.date}<input type="date" style={{ ...inp, colorScheme: "dark" }} value={eventForm.date} onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })} /></label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <label>{ev.start}<input type="time" style={{ ...inp, colorScheme: "dark" }} value={eventForm.start} onChange={(e) => setEventForm({ ...eventForm, start: e.target.value })} /></label>
+                    <label>{ev.end}<input type="time" style={{ ...inp, colorScheme: "dark" }} value={eventForm.end} onChange={(e) => setEventForm({ ...eventForm, end: e.target.value })} /></label>
+                  </div>
+                  <label>{ev.timezone}<select style={inp} value={eventForm.timezone} onChange={(e) => setEventForm({ ...eventForm, timezone: e.target.value })}>{TIMEZONES.map((tz) => <option key={tz} value={tz}>{tz}</option>)}</select></label>
+                  <label>{ev.repeats}<select style={inp} value={eventForm.recurrence} onChange={(e) => setEventForm({ ...eventForm, recurrence: e.target.value })}><option value="none">{ev.none}</option><option value="weekly">{ev.weekly}</option><option value="monthly">{ev.monthly}</option><option value="yearly">{ev.yearly}</option></select></label>
+                  <Btn variant="gold" onClick={handleSaveEvent}>{ev.save}</Btn>
+                </div>
+              </section>
+              <section>
+                <h2 style={{ margin: "0 0 14px", fontSize: 18 }}>{ev.title}</h2>
+                {events.length === 0 ? <p style={{ color: textMuted }}>{ev.empty}</p> : events.map((event) => {
+                  const guestTz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "UTC"; } })();
+                  return <article key={event.id} style={{ background: surface, border: `1px solid ${border}`, borderRadius: 12, padding: 16, marginBottom: 10 }}>
+                    <strong>{event.title}</strong>
+                    <p style={{ color: textMuted, margin: "8px 0" }}>{ev.host}: {formatEventTime(event.start_time, event.timezone)} · {ev.guest}: {formatEventTime(event.start_time, guestTz)}</p>
+                    <p style={{ color: textMuted, margin: "0 0 10px" }}>{ev.repeats}: {event.recurrence?.rule || "none"}</p>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <a href={eventExportHref(event, "google")} target="_blank" rel="noreferrer" style={{ color: gold }}>Google {ev.export}</a>
+                      <a href={eventExportHref(event, "outlook")} target="_blank" rel="noreferrer" style={{ color: gold }}>Outlook {ev.export}</a>
+                    </div>
+                  </article>;
+                })}
+              </section>
+            </div>
+          </div>
         )}
 
         {/* ── BOOKINGS TAB ── */}
