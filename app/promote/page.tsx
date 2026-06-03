@@ -18,10 +18,6 @@ type CampaignPackage = { headline: string; subheadline: string; body: string; ct
 type Campaign = CampaignPackage & { id: string; account_id?: string; name: string; status: CampaignStatus; audience: string; tone: string; goal: string; offer: string; landing_url: string; created_at?: string; updated_at?: string };
 type DbCampaign = Record<string, unknown> & Partial<Campaign> & { package?: unknown; utm_links?: unknown; landing_url?: string };
 
-function emptyPackage(): CampaignPackage {
-  return { headline: "", subheadline: "", body: "", cta: "", links: { email: "", social: "", paid: "" } };
-}
-
 function normalize(row: DbCampaign): Campaign {
   const legacyPackage = row.package && typeof row.package === "object" ? row.package as Partial<CampaignPackage> : null;
   const pack = legacyPackage || row;
@@ -42,8 +38,8 @@ function normalize(row: DbCampaign): Campaign {
   };
 }
 
-function packageOnly(campaign: Campaign): CampaignPackage {
-  return { headline: campaign.headline, subheadline: campaign.subheadline, body: campaign.body, cta: campaign.cta, links: campaign.links };
+function packageOnly(c: Campaign): CampaignPackage {
+  return { headline: c.headline, subheadline: c.subheadline, body: c.body, cta: c.cta, links: c.links };
 }
 
 export default function PromotePage() {
@@ -53,7 +49,13 @@ export default function PromotePage() {
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [form, setForm] = useState({ goal: "Launch a SignalBoost partner offer", audience: "local business owners", tone: "confident and practical", offer: "a measurable growth workflow", landingUrl: "https://www.signalboostapp.com/pricing" });
+  const [form, setForm] = useState({
+    goal: "Launch a SignalBoost partner offer",
+    audience: "local business owners",
+    tone: "confident and practical",
+    offer: "a measurable growth workflow",
+    landingUrl: "https://www.signalboostapp.com/pricing",
+  });
 
   const selected = campaigns.find((c) => c.id === selectedId) || campaigns[0] || null;
 
@@ -152,7 +154,7 @@ export default function PromotePage() {
   async function duplicateAndVary(campaign: Campaign) {
     const pack = await ai("vary", campaign) || packageOnly(campaign);
     await saveVariation(campaign.id, pack);
-    await saveNew(pack, `${campaign.name} variation`, "paused");
+    await saveNew(pack, campaign.name + " variation", "paused");
   }
 
   async function deleteCampaign(id: string) {
@@ -167,57 +169,78 @@ export default function PromotePage() {
   }
 
   return (
-    <main style={styles.page}>
-      <section style={styles.hero}>
-        <p style={styles.eyebrow}>SaaS Station · Promote</p>
-        <h1 style={styles.title}>Campaign management with editable AI packages</h1>
-        <p style={styles.subtitle}>Generate headline, subheadline, body copy, CTA, and UTM-tagged links for email, social, and paid channels. Save, edit, duplicate, vary, pause, activate, or archive every campaign.</p>
-        <div style={styles.heroActions}><Link href="/saas-station" style={styles.secondary}>SaaS Station</Link><Link href="/pricing" style={styles.secondary}>Pricing</Link></div>
-      </section>
-      <section style={styles.metrics}>
-        <div style={styles.metric}><strong>{campaigns.length}</strong><span>Total campaigns</span></div>
-        <div style={styles.metric}><strong>{byStatus.active}</strong><span>Active</span></div>
-        <div style={styles.metric}><strong>{byStatus.paused}</strong><span>Paused</span></div>
-        <div style={styles.metric}><strong>{byStatus.archived}</strong><span>Archived</span></div>
-      </section>
-      {err && <div style={styles.error}>{err}</div>}
-      {loading ? <div style={styles.panel}>Loading campaign library…</div> : (
-        <div style={styles.layout}>
-          <section style={styles.panel}>
-            <h2 style={styles.panelTitle}>AI campaign brief</h2>
-            <div style={styles.formGrid}>
-              <label style={styles.label}>Goal<input style={styles.input} value={form.goal} onChange={(e) => setForm({ ...form, goal: e.target.value })} /></label>
-              <label style={styles.label}>Audience<input style={styles.input} value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} /></label>
-              <label style={styles.label}>Tone<input style={styles.input} value={form.tone} onChange={(e) => setForm({ ...form, tone: e.target.value })} /></label>
-              <label style={styles.label}>Offer / value<input style={styles.input} value={form.offer} onChange={(e) => setForm({ ...form, offer: e.target.value })} /></label>
-              <label style={{ ...styles.label, gridColumn: "1 / -1" }}>Landing URL<input style={styles.input} value={form.landingUrl} onChange={(e) => setForm({ ...form, landingUrl: e.target.value })} /></label>
+    <main style={s.page}>
+      {/* ── Compact header bar ── */}
+      <div style={s.topBar}>
+        <div>
+          <p style={s.eyebrow}>SaaS Station · Promote</p>
+          <h1 style={s.title}>Campaign management</h1>
+        </div>
+        <div style={s.stats}>
+          {[
+            { n: campaigns.length, label: "Total" },
+            { n: byStatus.active, label: "Active" },
+            { n: byStatus.paused, label: "Paused" },
+            { n: byStatus.archived, label: "Archived" },
+          ].map(({ n, label }) => (
+            <div key={label} style={s.stat}>
+              <strong style={s.statN}>{n}</strong>
+              <span style={s.statL}>{label}</span>
             </div>
-            <div style={styles.actionRow}>
-              <button type="button" style={styles.goldButton} onClick={() => void generateAndSave()} disabled={generating || saving}>{generating ? "Generating…" : "Generate + save campaign"}</button>
-              <button type="button" style={styles.darkButton} onClick={() => void rewriteSelected()} disabled={!selected || generating}>{generating ? "Rewriting…" : "Rewrite selected for brief"}</button>
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+          <Link href="/saas-station" style={s.navBtn}>SaaS Station</Link>
+          <Link href="/pricing" style={s.navBtn}>Pricing</Link>
+        </div>
+      </div>
+
+      {err && <div style={s.error}>{err}</div>}
+
+      {loading ? (
+        <div style={s.panel}>Loading campaign library…</div>
+      ) : (
+        <div style={s.layout}>
+          {/* AI Brief */}
+          <section style={s.panel}>
+            <h2 style={s.panelTitle}>AI campaign brief</h2>
+            <div style={s.formGrid}>
+              <label style={s.label}>Goal<input style={s.input} value={form.goal} onChange={(e) => setForm({ ...form, goal: e.target.value })} /></label>
+              <label style={s.label}>Audience<input style={s.input} value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} /></label>
+              <label style={s.label}>Tone<input style={s.input} value={form.tone} onChange={(e) => setForm({ ...form, tone: e.target.value })} /></label>
+              <label style={s.label}>Offer / value<input style={s.input} value={form.offer} onChange={(e) => setForm({ ...form, offer: e.target.value })} /></label>
+              <label style={{ ...s.label, gridColumn: "1 / -1" }}>Landing URL<input style={s.input} value={form.landingUrl} onChange={(e) => setForm({ ...form, landingUrl: e.target.value })} /></label>
+            </div>
+            <div style={s.actionRow}>
+              <button type="button" style={s.goldBtn} onClick={() => void generateAndSave()} disabled={generating || saving}>{generating ? "Generating…" : "Generate + save campaign"}</button>
+              <button type="button" style={s.darkBtn} onClick={() => void rewriteSelected()} disabled={!selected || generating}>{generating ? "Rewriting…" : "Rewrite selected"}</button>
             </div>
           </section>
-          <section style={styles.panel}>
-            <h2 style={styles.panelTitle}>Campaign library</h2>
-            <div style={styles.cards}>
-              {campaigns.map((campaign) => (
-                <article key={campaign.id} style={{ ...styles.card, ...(campaign.id === selected?.id ? styles.cardActive : {}) }} onClick={() => setSelectedId(campaign.id)}>
-                  <div style={styles.cardTop}><strong>{campaign.name}</strong><span style={styles.status}>{campaign.status}</span></div>
-                  <h3 style={styles.cardHeadline}>{campaign.headline}</h3>
-                  <p style={styles.cardText}>{campaign.subheadline}</p>
-                  <div style={styles.cardActions}>
-                    <button type="button" style={styles.darkButtonSmall} onClick={(e) => { e.stopPropagation(); void duplicateAndVary(campaign); }}>Duplicate + vary</button>
-                    <select value={campaign.status} onClick={(e) => e.stopPropagation()} onChange={(e) => void updateAndSave(campaign.id, { status: e.target.value as CampaignStatus })} style={styles.selectSmall}>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
-                    <button type="button" style={styles.dangerSmall} onClick={(e) => { e.stopPropagation(); void deleteCampaign(campaign.id); }}>Delete</button>
+
+          {/* Campaign library */}
+          <section style={s.panel}>
+            <h2 style={s.panelTitle}>Campaign library</h2>
+            <div style={s.cards}>
+              {campaigns.map((c) => (
+                <article key={c.id} style={{ ...s.card, ...(c.id === selected?.id ? s.cardActive : {}) }} onClick={() => setSelectedId(c.id)}>
+                  <div style={s.cardTop}><strong>{c.name}</strong><span style={s.status}>{c.status}</span></div>
+                  <h3 style={s.cardHeadline}>{c.headline}</h3>
+                  <p style={s.cardText}>{c.subheadline}</p>
+                  <div style={s.cardActions}>
+                    <button type="button" style={s.smBtn} onClick={(e) => { e.stopPropagation(); void duplicateAndVary(c); }}>Duplicate + vary</button>
+                    <select value={c.status} onClick={(e) => e.stopPropagation()} onChange={(e) => void updateAndSave(c.id, { status: e.target.value as CampaignStatus })} style={s.smSel}>{STATUSES.map((st) => <option key={st} value={st}>{st}</option>)}</select>
+                    <button type="button" style={s.dangerBtn} onClick={(e) => { e.stopPropagation(); void deleteCampaign(c.id); }}>Delete</button>
                   </div>
                 </article>
               ))}
-              {!campaigns.length && <p style={styles.empty}>No campaigns yet. Generate a package from the brief to create your library.</p>}
+              {!campaigns.length && <p style={s.empty}>No campaigns yet. Generate a package from the brief to create your library.</p>}
             </div>
           </section>
-          <section style={{ ...styles.panel, gridColumn: "1 / -1" }}>
-            <h2 style={styles.panelTitle}>Editable campaign package</h2>
-            {selected ? <CampaignEditor campaign={selected} saving={saving} onChange={updateCampaign} onSave={persist} /> : <p style={styles.empty}>Select or create a campaign to edit every field.</p>}
+
+          {/* Editor */}
+          <section style={{ ...s.panel, gridColumn: "1 / -1" }}>
+            <h2 style={s.panelTitle}>Editable campaign package</h2>
+            {selected ? <CampaignEditor campaign={selected} saving={saving} onChange={updateCampaign} onSave={persist} /> : <p style={s.empty}>Select or create a campaign to edit every field.</p>}
           </section>
         </div>
       )}
@@ -225,57 +248,57 @@ export default function PromotePage() {
   );
 }
 
-function CampaignEditor({ campaign, saving, onChange, onSave }: { campaign: Campaign; saving: boolean; onChange: (id: string, patch: Partial<Campaign>) => void; onSave: (campaign: Campaign) => Promise<void> }) {
+function CampaignEditor({ campaign, saving, onChange, onSave }: { campaign: Campaign; saving: boolean; onChange: (id: string, patch: Partial<Campaign>) => void; onSave: (c: Campaign) => Promise<void> }) {
   const patch = (changes: Partial<Campaign>) => onChange(campaign.id, changes);
-  const patchLinks = (links: Partial<Campaign["links"]>) => patch({ links: { ...campaign.links, ...links } });
+  const pL = (links: Partial<Campaign["links"]>) => patch({ links: { ...campaign.links, ...links } });
   return (
-    <div style={styles.editorGrid}>
-      <label style={styles.label}>Library name<input style={styles.input} value={campaign.name} onChange={(e) => patch({ name: e.target.value })} /></label>
-      <label style={styles.label}>Status<select style={styles.input} value={campaign.status} onChange={(e) => patch({ status: e.target.value as CampaignStatus })}>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select></label>
-      <label style={styles.label}>Headline<input style={styles.input} value={campaign.headline} onChange={(e) => patch({ headline: e.target.value })} /></label>
-      <label style={styles.label}>Subheadline<input style={styles.input} value={campaign.subheadline} onChange={(e) => patch({ subheadline: e.target.value })} /></label>
-      <label style={{ ...styles.label, gridColumn: "1 / -1" }}>Body copy<textarea style={styles.textarea} value={campaign.body} onChange={(e) => patch({ body: e.target.value })} /></label>
-      <label style={styles.label}>CTA<input style={styles.input} value={campaign.cta} onChange={(e) => patch({ cta: e.target.value })} /></label>
-      <label style={styles.label}>Email UTM link<input style={styles.input} value={campaign.links.email} onChange={(e) => patchLinks({ email: e.target.value })} /></label>
-      <label style={styles.label}>Social UTM link<input style={styles.input} value={campaign.links.social} onChange={(e) => patchLinks({ social: e.target.value })} /></label>
-      <label style={styles.label}>Paid UTM link<input style={styles.input} value={campaign.links.paid} onChange={(e) => patchLinks({ paid: e.target.value })} /></label>
-      <button type="button" style={styles.goldButton} onClick={() => void onSave(campaign)}>{saving ? "Saving…" : "Save edits"}</button>
+    <div style={s.editorGrid}>
+      <label style={s.label}>Library name<input style={s.input} value={campaign.name} onChange={(e) => patch({ name: e.target.value })} /></label>
+      <label style={s.label}>Status<select style={s.input} value={campaign.status} onChange={(e) => patch({ status: e.target.value as CampaignStatus })}>{STATUSES.map((st) => <option key={st} value={st}>{st}</option>)}</select></label>
+      <label style={s.label}>Headline<input style={s.input} value={campaign.headline} onChange={(e) => patch({ headline: e.target.value })} /></label>
+      <label style={s.label}>Subheadline<input style={s.input} value={campaign.subheadline} onChange={(e) => patch({ subheadline: e.target.value })} /></label>
+      <label style={{ ...s.label, gridColumn: "1 / -1" }}>Body copy<textarea style={s.textarea} value={campaign.body} onChange={(e) => patch({ body: e.target.value })} /></label>
+      <label style={s.label}>CTA<input style={s.input} value={campaign.cta} onChange={(e) => patch({ cta: e.target.value })} /></label>
+      <label style={s.label}>Email UTM<input style={s.input} value={campaign.links.email} onChange={(e) => pL({ email: e.target.value })} /></label>
+      <label style={s.label}>Social UTM<input style={s.input} value={campaign.links.social} onChange={(e) => pL({ social: e.target.value })} /></label>
+      <label style={s.label}>Paid UTM<input style={s.input} value={campaign.links.paid} onChange={(e) => pL({ paid: e.target.value })} /></label>
+      <button type="button" style={s.goldBtn} onClick={() => void onSave(campaign)}>{saving ? "Saving…" : "Save edits"}</button>
     </div>
   );
 }
 
-const styles: Record<string, CSSProperties> = {
-  page: { minHeight: "100vh", background: "radial-gradient(circle at top right, rgba(245,197,66,.12), transparent 34%), #06060a", color: TEXT, fontFamily: "'Outfit', system-ui, sans-serif", padding: "16px clamp(16px,3vw,40px)" },
-  hero: { maxWidth: 1120, margin: "0 auto 14px", border: `1px solid ${BORDER}`, borderRadius: 14, padding: "12px 18px", background: "linear-gradient(135deg,rgba(245,197,66,.12),rgba(34,211,238,.04))" },
-  eyebrow: { color: GOLD, textTransform: "uppercase", letterSpacing: ".16em", fontSize: 11, fontWeight: 900, margin: 0 },
-  title: { fontSize: "clamp(18px,2vw,28px)", lineHeight: 1.1, letterSpacing: "-.03em", margin: "6px 0", maxWidth: 900 },
-  subtitle: { color: MUTED, fontSize: 13, lineHeight: 1.55, maxWidth: 860 },
-  heroActions: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 },
-  secondary: { border: `1px solid ${BORDER}`, borderRadius: 999, color: TEXT, textDecoration: "none", padding: "8px 12px", fontWeight: 800, background: "rgba(255,255,255,.04)", fontSize: 13 },
-  metrics: { maxWidth: 1120, margin: "0 auto 14px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: 10 },
-  metric: { border: `1px solid ${BORDER}`, borderRadius: 14, background: PANEL, padding: 14, display: "grid", gap: 3 },
-  layout: { maxWidth: 1120, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0, .9fr) minmax(320px, 1.1fr)", gap: 16 },
-  panel: { border: `1px solid ${BORDER}`, borderRadius: 22, background: "linear-gradient(180deg,rgba(15,20,27,.96),rgba(8,12,18,.96))", padding: 18, minWidth: 0 },
-  panelTitle: { margin: "0 0 14px", fontSize: 18 },
-  formGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 },
-  label: { display: "grid", gap: 6, color: MUTED, fontSize: 12, fontWeight: 900 },
-  input: { minHeight: 40, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: "0 12px", font: "inherit" },
-  textarea: { minHeight: 120, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: 12, font: "inherit", resize: "vertical" },
-  actionRow: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 },
-  goldButton: { border: "none", borderRadius: 12, background: "linear-gradient(135deg,#f5c542,#dfa837)", color: "#05070a", fontWeight: 900, padding: "11px 15px", cursor: "pointer" },
-  darkButton: { border: `1px solid ${BORDER}`, borderRadius: 12, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "11px 15px", cursor: "pointer" },
-  cards: { display: "grid", gap: 10, maxHeight: 500, overflow: "auto", paddingRight: 4 },
-  card: { border: `1px solid ${BORDER}`, borderRadius: 18, padding: 14, background: "rgba(255,255,255,.03)", cursor: "pointer" },
-  cardActive: { borderColor: GOLD, boxShadow: "0 0 0 1px rgba(245,197,66,.18), 0 0 30px rgba(245,197,66,.1)" },
-  cardTop: { display: "flex", justifyContent: "space-between", gap: 10, color: TEXT },
-  status: { border: "1px solid rgba(52,211,153,.28)", color: "#34d399", borderRadius: 999, padding: "3px 8px", fontSize: 11, fontWeight: 900, textTransform: "uppercase" },
-  cardHeadline: { margin: "8px 0 4px", fontSize: 16 },
-  cardText: { color: MUTED, margin: 0, lineHeight: 1.5, fontSize: 13 },
-  cardActions: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 },
-  darkButtonSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "7px 10px", cursor: "pointer", fontSize: 12 },
-  selectSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: INPUT, color: TEXT, fontWeight: 800, padding: "7px 10px", fontSize: 12 },
-  dangerSmall: { border: "1px solid rgba(255,107,107,.35)", borderRadius: 10, background: "rgba(255,107,107,.08)", color: "#ffd1d1", fontWeight: 800, padding: "7px 10px", cursor: "pointer", fontSize: 12 },
+const s: Record<string, CSSProperties> = {
+  page: { minHeight: "100vh", background: "radial-gradient(circle at top right, rgba(245,197,66,.12), transparent 34%), #06060a", color: TEXT, fontFamily: "'Outfit', system-ui, sans-serif", padding: "14px clamp(12px,3vw,32px)" },
+  topBar: { maxWidth: 1120, margin: "0 auto 14px", display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap", borderBottom: `1px solid ${BORDER}`, paddingBottom: 12 },
+  eyebrow: { color: GOLD, textTransform: "uppercase", letterSpacing: ".16em", fontSize: 10, fontWeight: 900, margin: "0 0 2px" },
+  title: { fontSize: 20, fontWeight: 900, letterSpacing: "-.03em", margin: 0, color: TEXT },
+  stats: { display: "flex", gap: 20, flex: 1 },
+  stat: { display: "flex", flexDirection: "column", alignItems: "center", gap: 1 },
+  statN: { fontSize: 22, fontWeight: 900, color: GOLD, lineHeight: 1 },
+  statL: { fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: ".08em" },
+  navBtn: { border: `1px solid ${BORDER}`, borderRadius: 999, color: TEXT, textDecoration: "none", padding: "6px 12px", fontWeight: 800, background: "rgba(255,255,255,.04)", fontSize: 12 },
+  error: { maxWidth: 1120, margin: "0 auto 12px", border: "1px solid rgba(255,107,107,.35)", color: "#ffd1d1", background: "rgba(255,107,107,.1)", borderRadius: 12, padding: "10px 14px", fontSize: 13 },
+  layout: { maxWidth: 1120, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0,.9fr) minmax(320px,1.1fr)", gap: 14 },
+  panel: { border: `1px solid ${BORDER}`, borderRadius: 18, background: "linear-gradient(180deg,rgba(15,20,27,.96),rgba(8,12,18,.96))", padding: 16, minWidth: 0 },
+  panelTitle: { margin: "0 0 12px", fontSize: 16, fontWeight: 900, color: TEXT },
+  formGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 9 },
+  label: { display: "grid", gap: 5, color: MUTED, fontSize: 11, fontWeight: 900 },
+  input: { minHeight: 38, border: `1px solid ${BORDER}`, borderRadius: 10, background: INPUT, color: TEXT, padding: "0 10px", font: "inherit", fontSize: 13 },
+  textarea: { minHeight: 110, border: `1px solid ${BORDER}`, borderRadius: 10, background: INPUT, color: TEXT, padding: 10, font: "inherit", resize: "vertical", fontSize: 13 },
+  actionRow: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 },
+  goldBtn: { border: "none", borderRadius: 10, background: "linear-gradient(135deg,#f5c542,#dfa837)", color: "#05070a", fontWeight: 900, padding: "9px 13px", cursor: "pointer", fontSize: 13 },
+  darkBtn: { border: `1px solid ${BORDER}`, borderRadius: 10, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "9px 13px", cursor: "pointer", fontSize: 13 },
+  cards: { display: "grid", gap: 8, maxHeight: 480, overflow: "auto", paddingRight: 4 },
+  card: { border: `1px solid ${BORDER}`, borderRadius: 14, padding: 12, background: "rgba(255,255,255,.03)", cursor: "pointer" },
+  cardActive: { borderColor: GOLD, boxShadow: "0 0 0 1px rgba(245,197,66,.18)" },
+  cardTop: { display: "flex", justifyContent: "space-between", gap: 8, color: TEXT },
+  status: { border: "1px solid rgba(52,211,153,.28)", color: "#34d399", borderRadius: 999, padding: "2px 7px", fontSize: 10, fontWeight: 900, textTransform: "uppercase" },
+  cardHeadline: { margin: "7px 0 3px", fontSize: 14, fontWeight: 700 },
+  cardText: { color: MUTED, margin: 0, lineHeight: 1.4, fontSize: 12 },
+  cardActions: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 },
+  smBtn: { border: `1px solid ${BORDER}`, borderRadius: 8, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "6px 9px", cursor: "pointer", fontSize: 11 },
+  smSel: { border: `1px solid ${BORDER}`, borderRadius: 8, background: INPUT, color: TEXT, fontWeight: 800, padding: "6px 9px", fontSize: 11 },
+  dangerBtn: { border: "1px solid rgba(255,107,107,.35)", borderRadius: 8, background: "rgba(255,107,107,.08)", color: "#ffd1d1", fontWeight: 800, padding: "6px 9px", cursor: "pointer", fontSize: 11 },
   empty: { color: MUTED, lineHeight: 1.6, fontSize: 13 },
-  editorGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 },
-  error: { maxWidth: 1120, margin: "0 auto 14px", border: "1px solid rgba(255,107,107,.35)", color: "#ffd1d1", background: "rgba(255,107,107,.1)", borderRadius: 14, padding: 12 },
+  editorGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 },
 };
