@@ -183,27 +183,6 @@ export async function createBooking(input: {
   const supabase = await createClient();
   const { data, error } = await supabase.from("calendar_bookings").insert(input).select().single();
   if (error) throw error;
-
-  const { data: svc } = await supabase
-    .from("calendar_services")
-    .select("name, duration_minutes, timezone")
-    .eq("id", input.service_id)
-    .maybeSingle();
-  if (svc) {
-    const startUtc = zonedTimeToUtc(input.booking_date, input.booking_time, svc.timezone || "UTC");
-    const endUtc = new Date(startUtc.getTime() + Number(svc.duration_minutes || 60) * 60000);
-    await createCalendarEvent({
-      account_id: input.owner_id,
-      service_id: input.service_id,
-      title: `${svc.name || "Booking"}: ${input.client_name}`,
-      description: [input.client_email, input.notes].filter(Boolean).join("\n"),
-      start_time: startUtc,
-      end_time: endUtc,
-      timezone: svc.timezone || "UTC",
-      recurrence: { rule: "none", frequency: 1, exceptions: [] },
-    });
-  }
-
   return data;
 }
 
@@ -245,87 +224,4 @@ export async function getAvailableDaysOfWeek(serviceId: string): Promise<number[
   const supabase = await createClient();
   const { data } = await supabase.from("calendar_availability").select("day_of_week").eq("service_id", serviceId);
   return (data || []).map((d) => d.day_of_week);
-}
-
-export type CalendarRecurrence = {
-  rule: "none" | "weekly" | "monthly" | "yearly";
-  frequency?: number;
-  exceptions?: string[];
-};
-
-export type CalendarEvent = {
-  id: string;
-  account_id: string;
-  service_id: string | null;
-  title: string;
-  description: string | null;
-  start_time: string;
-  end_time: string;
-  timezone: string;
-  recurrence: CalendarRecurrence;
-  created_at: string;
-  updated_at: string;
-};
-
-function tzParts(date: Date, timeZone: string) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).formatToParts(date);
-  const pick = (type: string) => Number(parts.find((part) => part.type === type)?.value || 0);
-  return { year: pick("year"), month: pick("month"), day: pick("day"), hour: pick("hour"), minute: pick("minute"), second: pick("second") };
-}
-
-export function zonedTimeToUtc(date: string, time: string, timeZone: string): Date {
-  const [year, month, day] = date.split("-").map(Number);
-  const [hour, minute] = time.split(":").map(Number);
-  let utc = new Date(Date.UTC(year, month - 1, day, hour, minute || 0, 0));
-  for (let i = 0; i < 3; i += 1) {
-    const parts = tzParts(utc, timeZone || "UTC");
-    const asUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
-    const target = Date.UTC(year, month - 1, day, hour, minute || 0, 0);
-    utc = new Date(utc.getTime() + (target - asUtc));
-  }
-  return utc;
-}
-
-export async function createCalendarEvent(input: {
-  account_id: string;
-  service_id?: string | null;
-  title: string;
-  description?: string | null;
-  start_time: string | Date;
-  end_time: string | Date;
-  timezone: string;
-  recurrence?: CalendarRecurrence;
-}): Promise<CalendarEvent | null> {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("calendar_events").insert({
-    account_id: input.account_id,
-    service_id: input.service_id || null,
-    title: input.title,
-    description: input.description || null,
-    start_time: input.start_time instanceof Date ? input.start_time.toISOString() : input.start_time,
-    end_time: input.end_time instanceof Date ? input.end_time.toISOString() : input.end_time,
-    timezone: input.timezone || "UTC",
-    recurrence: input.recurrence || { rule: "none", frequency: 1, exceptions: [] },
-  }).select("*").single();
-  if (error) {
-    console.error("createCalendarEvent", error);
-    return null;
-  }
-  return data;
-}
-
-export async function getCalendarEvents(accountId: string): Promise<CalendarEvent[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("calendar_events").select("*").eq("account_id", accountId).order("start_time");
-  if (error) throw error;
-  return data || [];
 }
