@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslation } from "@/components/i18n/useTranslation";
+import useTranslation from "@/components/i18n/useTranslation";
 
 type Service = {
   id: string; name: string; slug: string; duration_minutes: number;
