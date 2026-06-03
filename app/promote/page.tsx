@@ -18,27 +18,29 @@ const STATUSES = ["active", "paused", "archived"] as const;
 type CampaignStatus = (typeof STATUSES)[number];
 
 type CampaignPackage = { headline: string; subheadline: string; body: string; cta: string; links: { email: string; social: string; paid: string } };
-type Campaign = CampaignPackage & { id: string; user_id?: string; name: string; status: CampaignStatus; audience: string; tone: string; goal: string; offer: string; landing_url: string; created_at?: string; updated_at?: string };
+type Campaign = CampaignPackage & { id: string; account_id?: string; name: string; status: CampaignStatus; audience: string; tone: string; goal: string; offer: string; landing_url: string; created_at?: string; updated_at?: string };
 
-type DbCampaign = Record<string, unknown> & Partial<Campaign> & { package?: unknown; landing_url?: string };
+type DbCampaign = Record<string, unknown> & Partial<Campaign> & { package?: unknown; utm_links?: unknown; landing_url?: string };
 
 function emptyPackage(): CampaignPackage {
   return { headline: "", subheadline: "", body: "", cta: "", links: { email: "", social: "", paid: "" } };
 }
 
 function normalize(row: DbCampaign): Campaign {
-  const pack = row.package && typeof row.package === "object" ? row.package as Partial<CampaignPackage> : row;
-  const links = pack.links && typeof pack.links === "object" ? pack.links as Partial<CampaignPackage["links"]> : {};
+  const legacyPackage = row.package && typeof row.package === "object" ? row.package as Partial<CampaignPackage> : null;
+  const pack = legacyPackage || row;
+  const linksSource = row.utm_links && typeof row.utm_links === "object" ? row.utm_links as Partial<CampaignPackage["links"]> : pack.links;
+  const links = linksSource && typeof linksSource === "object" ? linksSource as Partial<CampaignPackage["links"]> : {};
   return {
     id: String(row.id),
-    user_id: row.user_id ? String(row.user_id) : undefined,
+    account_id: row.account_id ? String(row.account_id) : undefined,
     name: String(row.name || row.headline || "Campaign"),
     status: STATUSES.includes(row.status as CampaignStatus) ? row.status as CampaignStatus : "paused",
     audience: String(row.audience || ""),
     tone: String(row.tone || ""),
-    goal: String(row.goal || ""),
-    offer: String(row.offer || ""),
-    landing_url: String(row.landing_url || "https://www.signalboostapp.com"),
+    goal: String(row.goal || row.headline || ""),
+    offer: String(row.offer || row.subheadline || ""),
+    landing_url: String(row.landing_url || links.email || "https://www.signalboostapp.com"),
     headline: String(pack.headline || ""),
     subheadline: String(pack.subheadline || ""),
     body: String(pack.body || ""),
@@ -123,7 +125,7 @@ export default function PromotePage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please log in first.");
-      const insert = { user_id: user.id, name: name || pack.headline, status, audience: form.audience, tone: form.tone, goal: form.goal, offer: form.offer, landing_url: form.landingUrl, package: pack };
+      const insert = { account_id: user.id, headline: pack.headline || name || "Campaign", subheadline: pack.subheadline, body: pack.body, cta: pack.cta, utm_links: pack.links, status };
       const { data, error } = await supabase.from("campaigns").insert(insert).select("*").single();
       if (error) throw error;
       const campaign = normalize(data as DbCampaign);
@@ -140,7 +142,7 @@ export default function PromotePage() {
     setSaving(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.from("campaigns").update({ name: campaign.name, status: campaign.status, audience: campaign.audience, tone: campaign.tone, goal: campaign.goal, offer: campaign.offer, landing_url: campaign.landing_url, package: packageOnly(campaign) }).eq("id", campaign.id);
+      const { error } = await supabase.from("campaigns").update({ headline: campaign.headline || campaign.name, subheadline: campaign.subheadline, body: campaign.body, cta: campaign.cta, utm_links: campaign.links, status: campaign.status }).eq("id", campaign.id);
       if (error) throw error;
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Could not save changes.");
@@ -164,10 +166,21 @@ export default function PromotePage() {
     const pack = await ai("rewrite", selected);
     if (!pack) return;
     await updateAndSave(selected.id, { ...pack });
+    await saveVariation(selected.id, pack);
+  }
+
+  async function saveVariation(campaignId: string, pack: CampaignPackage) {
+    try {
+      const supabase = createClient();
+      await supabase.from("campaign_variations").insert({ campaign_id: campaignId, audience: form.audience, tone: form.tone, rewritten_copy: pack });
+    } catch {
+      // Campaign edits remain saved even if variation history is unavailable in an older database.
+    }
   }
 
   async function duplicateAndVary(campaign: Campaign) {
     const pack = await ai("vary", campaign) || packageOnly(campaign);
+    await saveVariation(campaign.id, pack);
     await saveNew(pack, `${campaign.name} variation`, "paused");
   }
 

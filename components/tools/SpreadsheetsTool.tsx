@@ -1,8 +1,8 @@
 // File: components/tools/SpreadsheetsTool.tsx
-// Production spreadsheet workspace backed by the Supabase `sheets` table. The
-// sheet payload is stored in JSONB so accounts can keep named operational
-// sheets with typed columns, editable rows, filters, sorting, CSV import/export,
-// and number-column analytics under Supabase RLS.
+// Production spreadsheet workspace backed by the normalized Supabase
+// `spreadsheets`, `spreadsheet_columns`, and `spreadsheet_rows` tables. Accounts
+// get multiple named operational sheets with typed columns, editable rows,
+// filters, sorting, CSV import/export, and number-column analytics.
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
@@ -22,25 +22,28 @@ const INPUT = "#080d13";
 const COLUMN_TYPES = ["text", "number", "date", "select", "checkbox"] as const;
 type ColumnType = (typeof COLUMN_TYPES)[number];
 
-type SheetColumn = { id: string; name: string; type: ColumnType; options: string[] };
-type SheetRow = { id: string; cells: Record<string, string> };
+type SheetColumn = { id: string; name: string; type: ColumnType; options: string[]; created_at?: string };
+type SheetRow = { id: string; cells: Record<string, string>; created_at?: string; updated_at?: string };
 type SheetPayload = { version: 2; columns: SheetColumn[]; rows: SheetRow[] };
 type Sheet = { id: string; name: string; payload: SheetPayload; updated_at?: string };
 type SortState = { columnId: string; direction: "asc" | "desc" } | null;
 
-type LegacySheetRow = Record<string, unknown> & { id: string; name?: string; data?: unknown; rows?: number; cols?: number; updated_at?: string };
+type DbSheetRow = Record<string, unknown> & { id: string; name?: string; updated_at?: string; spreadsheet_columns?: unknown; spreadsheet_rows?: unknown };
 
-const DEFAULT_COLUMNS: SheetColumn[] = [
-  { id: "partner", name: "Partner", type: "text", options: [] },
-  { id: "category", name: "Category", type: "select", options: ["Affiliate", "Vendor", "Customer", "Investor"] },
-  { id: "budget", name: "Budget", type: "number", options: [] },
-  { id: "due", name: "Due date", type: "date", options: [] },
-  { id: "approved", name: "Approved", type: "checkbox", options: [] },
+const DEFAULT_COLUMN_TEMPLATES: Array<Omit<SheetColumn, "id">> = [
+  { name: "Partner", type: "text", options: [] },
+  { name: "Category", type: "select", options: ["Affiliate", "Vendor", "Customer", "Investor"] },
+  { name: "Budget", type: "number", options: [] },
+  { name: "Due date", type: "date", options: [] },
+  { name: "Approved", type: "checkbox", options: [] },
 ];
 
-function uid(prefix: string) {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return `${prefix}_${crypto.randomUUID()}`;
-  return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+function uid(_prefix: string) {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  // RFC4122-ish fallback for browsers without randomUUID.
+  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+    (Number(c) ^ (Math.random() * 16) >> (Number(c) / 4)).toString(16)
+  );
 }
 
 function makeEmptyRow(columns: SheetColumn[]): SheetRow {
@@ -48,7 +51,8 @@ function makeEmptyRow(columns: SheetColumn[]): SheetRow {
 }
 
 function defaultPayload(): SheetPayload {
-  return { version: 2, columns: DEFAULT_COLUMNS.map((c) => ({ ...c, options: [...c.options] })), rows: [makeEmptyRow(DEFAULT_COLUMNS), makeEmptyRow(DEFAULT_COLUMNS), makeEmptyRow(DEFAULT_COLUMNS)] };
+  const columns = DEFAULT_COLUMN_TEMPLATES.map((c) => ({ ...c, id: uid("col"), options: [...c.options] }));
+  return { version: 2, columns, rows: [makeEmptyRow(columns), makeEmptyRow(columns), makeEmptyRow(columns)] };
 }
 
 function columnName(index: number) {
@@ -100,6 +104,41 @@ function normalizePayload(data: unknown, legacyRows = 0, legacyCols = 0): SheetP
   }
 
   return defaultPayload();
+}
+
+function normalizeDbSheet(row: DbSheetRow): Sheet {
+  const rawColumns = Array.isArray(row.spreadsheet_columns) ? row.spreadsheet_columns as Array<Record<string, unknown>> : [];
+  const columns: SheetColumn[] = rawColumns.map((col, index) => {
+    const type = COLUMN_TYPES.includes(col.type as ColumnType) ? col.type as ColumnType : "text";
+    return {
+      id: String(col.id),
+      name: String(col.name || `Column ${index + 1}`),
+      type,
+      options: [],
+      created_at: col.created_at ? String(col.created_at) : undefined,
+    };
+  });
+  const safeColumns = columns.length ? columns : defaultPayload().columns;
+  const rawRows = Array.isArray(row.spreadsheet_rows) ? row.spreadsheet_rows as Array<Record<string, unknown>> : [];
+  const rows = rawRows.map((dbRow) => {
+    const data = dbRow.data && typeof dbRow.data === "object" ? dbRow.data as Record<string, unknown> : {};
+    return {
+      id: String(dbRow.id),
+      cells: Object.fromEntries(safeColumns.map((col) => [col.id, String(data[col.id] ?? "")])),
+      created_at: dbRow.created_at ? String(dbRow.created_at) : undefined,
+      updated_at: dbRow.updated_at ? String(dbRow.updated_at) : undefined,
+    };
+  });
+  const selectOptions = new Map<string, string[]>();
+  safeColumns.filter((col) => col.type === "select").forEach((col) => {
+    selectOptions.set(col.id, Array.from(new Set(rows.map((r) => r.cells[col.id]).filter(Boolean))).slice(0, 30));
+  });
+  return {
+    id: String(row.id),
+    name: String(row.name || "Untitled sheet"),
+    payload: { version: 2, columns: safeColumns.map((col) => ({ ...col, options: col.options.length ? col.options : selectOptions.get(col.id) || [] })), rows },
+    updated_at: row.updated_at,
+  };
 }
 
 function parseCsv(text: string): string[][] {
@@ -199,14 +238,12 @@ export default function SpreadsheetsTool() {
         setLoading(false);
         return;
       }
-      const { data, error } = await supabase.from("sheets").select("*").order("updated_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("spreadsheets")
+        .select("*, spreadsheet_columns(*), spreadsheet_rows(*)")
+        .order("updated_at", { ascending: false });
       if (error) throw error;
-      const list = ((data || []) as LegacySheetRow[]).map((row) => ({
-        id: String(row.id),
-        name: String(row.name || "Untitled sheet"),
-        payload: normalizePayload(row.data, Number(row.rows || 0), Number(row.cols || 0)),
-        updated_at: row.updated_at,
-      }));
+      const list = ((data || []) as DbSheetRow[]).map(normalizeDbSheet);
       setSheets(list);
       setActiveId((cur) => cur || list[0]?.id || null);
     } catch (e) {
@@ -222,11 +259,32 @@ export default function SpreadsheetsTool() {
     setSaving(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase
-        .from("sheets")
-        .update({ name: sheet.name, data: sheet.payload, rows: sheet.payload.rows.length, cols: sheet.payload.columns.length })
-        .eq("id", sheet.id);
-      if (error) throw error;
+      const { error: sheetError } = await supabase.from("spreadsheets").update({ name: sheet.name }).eq("id", sheet.id);
+      if (sheetError) throw sheetError;
+
+      const columnIds = sheet.payload.columns.map((col) => col.id);
+      const rowIds = sheet.payload.rows.map((row) => row.id);
+      if (columnIds.length) {
+        const { error } = await supabase.from("spreadsheet_columns").delete().eq("sheet_id", sheet.id).not("id", "in", `(${columnIds.join(",")})`);
+        if (error) throw error;
+      }
+      if (rowIds.length) {
+        const { error } = await supabase.from("spreadsheet_rows").delete().eq("sheet_id", sheet.id).not("id", "in", `(${rowIds.join(",")})`);
+        if (error) throw error;
+      }
+      if (!columnIds.length) await supabase.from("spreadsheet_columns").delete().eq("sheet_id", sheet.id);
+      if (!rowIds.length) await supabase.from("spreadsheet_rows").delete().eq("sheet_id", sheet.id);
+
+      const { error: colError } = await supabase.from("spreadsheet_columns").upsert(
+        sheet.payload.columns.map((col) => ({ id: col.id, sheet_id: sheet.id, name: col.name, type: col.type })),
+        { onConflict: "id" }
+      );
+      if (colError) throw colError;
+      const { error: rowError } = await supabase.from("spreadsheet_rows").upsert(
+        sheet.payload.rows.map((row) => ({ id: row.id, sheet_id: sheet.id, data: row.cells })),
+        { onConflict: "id" }
+      );
+      if (rowError) throw rowError;
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Save failed.");
     } finally {
@@ -254,12 +312,13 @@ export default function SpreadsheetsTool() {
       if (!user) throw new Error("Please log in first.");
       const payload = defaultPayload();
       const { data, error } = await supabase
-        .from("sheets")
-        .insert({ user_id: user.id, name: "Operations Sheet", data: payload, rows: payload.rows.length, cols: payload.columns.length })
+        .from("spreadsheets")
+        .insert({ account_id: user.id, name: "Operations Sheet" })
         .select("*")
         .single();
       if (error) throw error;
       const sheet = { id: String(data.id), name: String(data.name), payload, updated_at: data.updated_at };
+      await persist(sheet);
       setSheets((cur) => [sheet, ...cur]);
       setActiveId(sheet.id);
     } catch (e) {
@@ -271,7 +330,7 @@ export default function SpreadsheetsTool() {
     if (!confirm("Delete this sheet permanently?")) return;
     try {
       const supabase = createClient();
-      const { error } = await supabase.from("sheets").delete().eq("id", id);
+      const { error } = await supabase.from("spreadsheets").delete().eq("id", id);
       if (error) throw error;
       setSheets((cur) => cur.filter((sheet) => sheet.id !== id));
       setActiveId((cur) => (cur === id ? sheets.find((sheet) => sheet.id !== id)?.id || null : cur));
