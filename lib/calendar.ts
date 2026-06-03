@@ -11,6 +11,7 @@ export type CalendarService = {
   currency: string;
   description: string;
   color: string;
+  timezone: string;
   active: boolean;
   created_at: string;
 };
@@ -18,9 +19,9 @@ export type CalendarService = {
 export type CalendarAvailability = {
   id: string;
   service_id: string;
-  day_of_week: number; // 0=Sun … 6=Sat
-  start_time: string;  // "09:00"
-  end_time: string;    // "17:00"
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
 };
 
 export type CalendarBlockedDate = {
@@ -45,9 +46,8 @@ export type CalendarBooking = {
   service_price?: number;
   service_currency?: string;
   service_duration?: number;
+  service_timezone?: string;
 };
-
-// ── Slug ─────────────────────────────────────────────────────
 
 export function generateSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -80,7 +80,7 @@ export async function getServiceBySlug(slug: string): Promise<CalendarService | 
 export async function createService(
   ownerId: string,
   ownerEmail: string,
-  input: Pick<CalendarService, "name" | "duration_minutes" | "price" | "currency" | "description" | "color">
+  input: Pick<CalendarService, "name" | "duration_minutes" | "price" | "currency" | "description" | "color" | "timezone">
 ): Promise<CalendarService> {
   const supabase = await createClient();
   const slug = generateSlug(input.name);
@@ -95,7 +95,7 @@ export async function createService(
 
 export async function updateService(
   serviceId: string,
-  updates: Partial<Pick<CalendarService, "name" | "duration_minutes" | "price" | "currency" | "description" | "color" | "active">>
+  updates: Partial<Pick<CalendarService, "name" | "duration_minutes" | "price" | "currency" | "description" | "color" | "timezone" | "active">>
 ): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.from("calendar_services").update(updates).eq("id", serviceId);
@@ -104,8 +104,7 @@ export async function updateService(
 
 export async function deleteService(serviceId: string): Promise<void> {
   const supabase = await createClient();
-  const { error } = await supabase.from("calendar_services").delete().eq("id", serviceId);
-  if (error) throw error;
+  await supabase.from("calendar_services").delete().eq("id", serviceId);
 }
 
 // ── Availability ──────────────────────────────────────────────
@@ -152,10 +151,7 @@ export async function getBlockedDates(ownerId: string): Promise<CalendarBlockedD
 
 export async function blockDate(ownerId: string, date: string, reason: string): Promise<void> {
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("calendar_blocked_dates")
-    .insert({ owner_id: ownerId, blocked_date: date, reason });
-  if (error) throw error;
+  await supabase.from("calendar_blocked_dates").insert({ owner_id: ownerId, blocked_date: date, reason });
 }
 
 export async function unblockDate(id: string): Promise<void> {
@@ -169,54 +165,32 @@ export async function getBookings(ownerId: string): Promise<CalendarBooking[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("calendar_bookings")
-    .select("*, calendar_services(name, price, currency, duration_minutes)")
+    .select("*, calendar_services(name, price, currency, duration_minutes, timezone)")
     .eq("owner_id", ownerId)
     .order("booking_date")
     .order("booking_time");
   if (error) throw error;
   return (data || []).map((b) => {
-    const svc = b.calendar_services as { name: string; price: number; currency: string; duration_minutes: number } | null;
-    return {
-      ...b,
-      service_name: svc?.name,
-      service_price: svc?.price,
-      service_currency: svc?.currency,
-      service_duration: svc?.duration_minutes,
-    };
+    const svc = b.calendar_services as { name: string; price: number; currency: string; duration_minutes: number; timezone: string } | null;
+    return { ...b, service_name: svc?.name, service_price: svc?.price, service_currency: svc?.currency, service_duration: svc?.duration_minutes, service_timezone: svc?.timezone };
   });
 }
 
 export async function createBooking(input: {
-  service_id: string;
-  owner_id: string;
-  client_name: string;
-  client_email: string;
-  booking_date: string;
-  booking_time: string;
-  notes: string;
+  service_id: string; owner_id: string; client_name: string;
+  client_email: string; booking_date: string; booking_time: string; notes: string;
 }): Promise<CalendarBooking> {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("calendar_bookings")
-    .insert(input)
-    .select()
-    .single();
+  const { data, error } = await supabase.from("calendar_bookings").insert(input).select().single();
   if (error) throw error;
   return data;
 }
 
-export async function updateBookingStatus(
-  bookingId: string,
-  status: CalendarBooking["status"]
-): Promise<void> {
+export async function updateBookingStatus(bookingId: string, status: CalendarBooking["status"]): Promise<void> {
   const supabase = await createClient();
   const updates: Record<string, unknown> = { status };
   if (status === "confirmed") updates.confirmation_sent = true;
-  const { error } = await supabase
-    .from("calendar_bookings")
-    .update(updates)
-    .eq("id", bookingId);
-  if (error) throw error;
+  await supabase.from("calendar_bookings").update(updates).eq("id", bookingId);
 }
 
 // ── Slot calculation ──────────────────────────────────────────
@@ -233,47 +207,21 @@ export function generateTimeSlots(startTime: string, endTime: string, durationMi
 
 export async function getAvailableSlots(serviceId: string, date: string): Promise<string[]> {
   const supabase = await createClient();
-  const { data: svc } = await supabase
-    .from("calendar_services")
-    .select("duration_minutes, owner_id")
-    .eq("id", serviceId)
-    .single();
+  const { data: svc } = await supabase.from("calendar_services").select("duration_minutes, owner_id").eq("id", serviceId).single();
   if (!svc) return [];
-
-  const { data: blocked } = await supabase
-    .from("calendar_blocked_dates")
-    .select("id")
-    .eq("owner_id", svc.owner_id)
-    .eq("blocked_date", date)
-    .maybeSingle();
+  const { data: blocked } = await supabase.from("calendar_blocked_dates").select("id").eq("owner_id", svc.owner_id).eq("blocked_date", date).maybeSingle();
   if (blocked) return [];
-
   const dayOfWeek = new Date(date + "T12:00:00").getDay();
-  const { data: avail } = await supabase
-    .from("calendar_availability")
-    .select("start_time, end_time")
-    .eq("service_id", serviceId)
-    .eq("day_of_week", dayOfWeek)
-    .maybeSingle();
+  const { data: avail } = await supabase.from("calendar_availability").select("start_time, end_time").eq("service_id", serviceId).eq("day_of_week", dayOfWeek).maybeSingle();
   if (!avail) return [];
-
   const all = generateTimeSlots(avail.start_time, avail.end_time, svc.duration_minutes);
-  const { data: booked } = await supabase
-    .from("calendar_bookings")
-    .select("booking_time")
-    .eq("service_id", serviceId)
-    .eq("booking_date", date)
-    .in("status", ["pending", "confirmed"]);
-
+  const { data: booked } = await supabase.from("calendar_bookings").select("booking_time").eq("service_id", serviceId).eq("booking_date", date).in("status", ["pending", "confirmed"]);
   const taken = new Set((booked || []).map((b) => b.booking_time));
   return all.filter((s) => !taken.has(s));
 }
 
 export async function getAvailableDaysOfWeek(serviceId: string): Promise<number[]> {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("calendar_availability")
-    .select("day_of_week")
-    .eq("service_id", serviceId);
+  const { data } = await supabase.from("calendar_availability").select("day_of_week").eq("service_id", serviceId);
   return (data || []).map((d) => d.day_of_week);
 }
