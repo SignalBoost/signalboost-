@@ -44,8 +44,23 @@ const MODULES: { key: ModuleName; label: string }[] = [
   { key: "outreach", label: "Outreach" },
 ];
 
+// User-visible data keys — internal keys are hidden
+const VISIBLE_DATA_KEYS = new Set(["averageRating", "pendingResponses", "replyRate", "queuedLeads", "rowsReady", "forecastDelta", "campaignLift", "dateHint"]);
+
 function fallbackText(value: string, fallback: string) {
   return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
+}
+
+function dataLabel(value: string | number | boolean | string[], t: (k: string) => string) {
+  if (Array.isArray(value)) return value.join(", ");
+  if (typeof value === "boolean") return value ? fallbackText(t("assistant.dataYes"), "Yes") : fallbackText(t("assistant.dataNo"), "No");
+  return String(value);
+}
+
+function statusText(status: OrchestrationResponse["status"], t: (k: string) => string) {
+  if (status === "completed") return fallbackText(t("assistant.statusCompleted"), "completed");
+  if (status === "needs_clarification") return fallbackText(t("assistant.statusNeedsClarification"), "needs clarification");
+  return fallbackText(t("assistant.statusDemoFallback"), "demo fallback");
 }
 
 export default function Concierge() {
@@ -56,47 +71,35 @@ export default function Concierge() {
   const [message, setMessage] = useState(STARTER);
   const [composerTouched, setComposerTouched] = useState(false);
   const [selectedModule, setSelectedModule] = useState<ModuleName | "auto">("auto");
-
-  // The translation dictionary loads after the first render, so STARTER is the
-  // English fallback initially. Sync the composer to the localized starter text
-  // once it resolves (and when the language changes) — but stop overwriting as
-  // soon as the user edits the field.
-  useEffect(() => {
-    if (!composerTouched) setMessage(STARTER);
-  }, [STARTER, composerTouched]);
   const [isLoading, setIsLoading] = useState(false);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [snapshots, setSnapshots] = useState<ModuleResult[]>([]);
 
-  function dataLabel(value: string | number | boolean | string[]) {
-    if (Array.isArray(value)) return value.join(", ");
-    if (typeof value === "boolean") return value ? fallbackText(t("assistant.dataYes"), "Yes") : fallbackText(t("assistant.dataNo"), "No");
-    return String(value);
-  }
-
-  function statusText(status: OrchestrationResponse["status"]) {
-    if (status === "completed") return fallbackText(t("assistant.statusCompleted"), "completed");
-    if (status === "needs_clarification") return fallbackText(t("assistant.statusNeedsClarification"), "needs clarification");
-    return fallbackText(t("assistant.statusDemoFallback"), "demo fallback");
-  }
+  useEffect(() => {
+    if (!composerTouched) setMessage(STARTER);
+  }, [STARTER, composerTouched]);
 
   useEffect(() => {
     let alive = true;
     Promise.all(
-      MODULES.filter((module) => module.key !== "concierge").map((module) =>
-        fetch(`/api/saas/${module.key}?lang=${encodeURIComponent(lang)}`, { cache: "no-store" })
+      MODULES.filter((m) => m.key !== "concierge").map((m) =>
+        fetch(`/api/saas/${m.key}?lang=${encodeURIComponent(lang)}`, { cache: "no-store" })
           .then((res) => (res.ok ? res.json() : null))
           .catch(() => null)
       )
     ).then((items) => {
       if (alive) setSnapshots(items.filter(Boolean));
     });
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, [lang]);
 
   const latest = useMemo(() => [...turns].reverse().find((turn) => turn.response)?.response, [turns]);
+
+  function handleReset() {
+    setTurns([]);
+    setMessage(STARTER);
+    setComposerTouched(false);
+  }
 
   async function submit(raw?: string) {
     const content = (raw ?? message).trim();
@@ -106,8 +109,6 @@ export default function Concierge() {
     setTurns((current) => [...current, { role: "user", content }]);
     setMessage("");
 
-    // Send the full conversation so the AI remembers the whole session
-    // (capped generously so an extreme thread can't bloat the request).
     const priorHistory = turns
       .filter((tn) => tn.role === "user" || tn.role === "assistant")
       .map((tn) => ({ role: tn.role, content: tn.content }))
@@ -120,17 +121,10 @@ export default function Concierge() {
         body: JSON.stringify({ message: content, module: selectedModule, lang, history: priorHistory }),
       });
       const data = (await res.json()) as OrchestrationResponse;
-      setTurns((current) => [
-        ...current,
-        {
-          role: "assistant",
-          content: data.answer,
-          response: data,
-        },
-      ]);
+      setTurns((current) => [...current, { role: "assistant", content: data.answer, response: data }]);
     } catch {
       const fallback: OrchestrationResponse = {
-        understood: fallbackText(t("assistant.fbUnderstood"), `I understood this as: “${content}”. The live orchestrator did not respond, so I am continuing with demo-safe defaults.`).replace("{msg}", content),
+        understood: fallbackText(t("assistant.fbUnderstood"), `I understood this as: "${content}". The live orchestrator did not respond, so I am continuing with demo-safe defaults.`).replace("{msg}", content),
         status: "demo_fallback",
         answer: fallbackText(t("assistant.fbAnswer"), "I will not stop the task. Use the Concierge fallback path: clarify the goal, choose Calendar/Reviews/Spreadsheets/Outreach, and continue with demo data until live APIs recover."),
         activeModules: ["concierge"],
@@ -158,6 +152,8 @@ export default function Concierge() {
     submit();
   }
 
+  const activeModules = latest?.modules.length ? latest.modules : snapshots;
+
   return (
     <section className="concierge-console" aria-label="SignalBoost Concierge AI orchestrator">
       <div className="concierge-console__intro">
@@ -167,17 +163,14 @@ export default function Concierge() {
       </div>
 
       <div className="concierge-console__grid">
+        {/* ── Chat panel ── */}
         <div className="concierge-chat-panel">
           <div className="concierge-module-switcher" aria-label="Module routing options">
             <button className={selectedModule === "auto" ? "active" : ""} onClick={() => setSelectedModule("auto")} type="button">
               {fallbackText(t("assistant.autoRoute"), "Auto-route")}
             </button>
             {MODULES.map((module) => (
-              <button className={selectedModule === module.key ? "active" : ""}
-                key={module.key}
-                onClick={() => setSelectedModule(module.key)}
-                type="button"
-              >
+              <button className={selectedModule === module.key ? "active" : ""} key={module.key} onClick={() => setSelectedModule(module.key)} type="button">
                 {module.label}
               </button>
             ))}
@@ -204,7 +197,7 @@ export default function Concierge() {
                       <strong>{turn.response.understood}</strong>
                       {turn.response.persistence.clarificationQuestion && <p>{turn.response.persistence.clarificationQuestion}</p>}
                       <div className="concierge-status-row">
-                        <span>{fallbackText(t("assistant.statusLabel"), "Status")}: {statusText(turn.response.status)}</span>
+                        <span>{fallbackText(t("assistant.statusLabel"), "Status")}: {statusText(turn.response.status, t)}</span>
                         <span>{fallbackText(t("assistant.continueLabel"), "Continue")}: {turn.response.persistence.shouldContinue ? fallbackText(t("assistant.yes"), "yes") : fallbackText(t("assistant.no"), "no")}</span>
                         <span>{fallbackText(t("assistant.fallbackLabel"), "Fallback")}: {turn.response.persistence.fallbackApplied ? fallbackText(t("assistant.active"), "active") : fallbackText(t("assistant.notNeeded"), "not needed")}</span>
                       </div>
@@ -216,59 +209,80 @@ export default function Concierge() {
           </div>
 
           <form className="concierge-composer" onSubmit={handleSubmit}>
-            <textarea aria-label="Ask SignalBoost Concierge"
+            <textarea
+              aria-label="Ask SignalBoost Concierge"
               onChange={(event) => { setComposerTouched(true); setMessage(event.target.value); }}
               placeholder={fallbackText(t("assistant.placeholder"), "Ask for a plan, module task, or general answer...")}
               rows={4}
               value={message}
             />
-            <button disabled={isLoading} type="submit">{isLoading ? fallbackText(t("assistant.routing"), "Routing...") : fallbackText(t("assistant.send"), "Send to Concierge")}</button>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button disabled={isLoading} type="submit" style={{ flex: 1 }}>
+                {isLoading ? fallbackText(t("assistant.routing"), "Routing...") : fallbackText(t("assistant.send"), "Send to Concierge")}
+              </button>
+              {turns.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  title={fallbackText(t("assistant.newConversation"), "New conversation")}
+                  style={{ padding: "0 16px", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "rgba(255,255,255,0.6)", cursor: "pointer", fontSize: 18, lineHeight: 1 }}
+                >
+                  ↺
+                </button>
+              )}
+            </div>
           </form>
         </div>
 
+        {/* ── Side panel — clean, no debug fields ── */}
         <aside className="concierge-side-panel" aria-label="Orchestration output">
+
+          {/* Options */}
           <div className="concierge-cardlet">
-            <span className="telemetry-label">{fallbackText(t("assistant.sharedAgency"), "Shared agency")}</span>
+            <span className="telemetry-label">{fallbackText(t("assistant.sharedAgency"), "Options")}</span>
             <h3>{fallbackText(t("assistant.confirmAdjust"), "Confirm or adjust")}</h3>
             <ul>
-              {(latest?.options || [fallbackText(t("assistant.optionsEmpty"), "Send a request to see confirmation options.")]).map((option) => (
+              {(latest?.options || [fallbackText(t("assistant.optionsEmpty"), "Send a request to see options.")]).map((option) => (
                 <li key={option}>{option}</li>
               ))}
             </ul>
           </div>
 
+          {/* Next steps — fixed translation */}
           <div className="concierge-cardlet">
             <span className="telemetry-label">{fallbackText(t("assistant.nextRefinement"), "Next refinement")}</span>
-            <h3>{fallbackText(t("assistant.smallerSteps"), "Smaller steps")}</h3>
+            <h3>{fallbackText(t("assistant.nextSteps"), "Next steps")}</h3>
             <ol>
               {(latest?.nextSteps || [
                 fallbackText(t("assistant.stepDescribe"), "Describe the goal"),
                 fallbackText(t("assistant.stepPick"), "Pick modules"),
-                fallbackText(t("assistant.stepRun"), "Run/refine"),
+                fallbackText(t("assistant.stepRun"), "Run and refine"),
               ]).map((step) => (
                 <li key={step}>{step}</li>
               ))}
             </ol>
           </div>
 
+          {/* Active modules — no raw data keys, no debug fields */}
           <div className="concierge-cardlet module-results-card">
-            <span className="telemetry-label">{fallbackText(t("assistant.saasApis"), "SaaS APIs")}</span>
+            <span className="telemetry-label">{fallbackText(t("assistant.activeModules"), "Active modules")}</span>
             <h3>{fallbackText(t("assistant.moduleSignals"), "Module signals")}</h3>
-            {(latest?.modules.length ? latest.modules : snapshots).map((module) => (
+            {activeModules.map((module) => (
               <article className="concierge-module-result" key={`${module.module}-${module.summary}`}>
                 <div>
                   <strong>{module.label}</strong>
-                  <span>{module.status}</span>
+                  <span>{module.status === "ok" ? "OK" : fallbackText(t("assistant.fallbackLabel"), "fallback")}</span>
                 </div>
                 <p>{module.summary}</p>
-                <dl>
-                  {Object.entries(module.data).slice(0, 3).map(([key, value]) => (
-                    <div key={key}>
-                      <dt>{key}</dt>
-                      <dd>{dataLabel(value)}</dd>
+                {/* Only show user-meaningful data, never internal keys */}
+                {Object.entries(module.data)
+                  .filter(([key]) => VISIBLE_DATA_KEYS.has(key))
+                  .slice(0, 2)
+                  .map(([key, value]) => (
+                    <div key={key} style={{ fontSize: "0.8em", color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
+                      {key}: {dataLabel(value, t)}
                     </div>
                   ))}
-                </dl>
               </article>
             ))}
           </div>
