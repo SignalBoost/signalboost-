@@ -260,4 +260,4 @@ const NV_CSS = `
   .nv-menu-open{transform:none;}
   .nv-mobile-tools{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);}
 }
-`;</document_content>
+`;
