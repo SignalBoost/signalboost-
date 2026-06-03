@@ -1,3 +1,6 @@
+// ===== ConciergeHero.tsx — PART 1 of 2 =====
+// Paste this FIRST, then paste Part 2 directly below it (no gap, no overlap).
+
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -34,22 +37,18 @@ type DirPartner = {
 const FREE_TRIAL_LIMIT = 3;
 const TRIAL_STORAGE_KEY = "sb_station_trials";
 
-// Rotating-population ("tide") settings
-const POOL_SIZE = 30;          // signals visible on the field at one time
-const SWAP_INTERVAL_MS = 3500; // gentle tide: one swap every ~3.5s
-const FADE_MS = 1000;          // slow fade in/out
+const POOL_SIZE = 30;
+const SWAP_INTERVAL_MS = 3500;
+const FADE_MS = 1000;
 
 function fallbackText(value: string, fallback: string) {
   return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
-// Sort partners by tier (top tier first). Used for both the static seed and
-// the live list fetched from /api/partners at runtime.
 function sortPartners(list: DirPartner[]): DirPartner[] {
   return [...list].sort((a, b) => (a.tier ?? 99) - (b.tier ?? 99));
 }
 
-// Derive the category list (with counts) from a partner list.
 function buildCategories(list: DirPartner[]): Array<{ key: string; label: string; count: number }> {
   const map = new Map<string, { key: string; label: string; count: number }>();
   for (const p of list) {
@@ -62,12 +61,8 @@ function buildCategories(list: DirPartner[]): Array<{ key: string; label: string
   return Array.from(map.values());
 }
 
-// Static seed: shown instantly on first paint, then replaced by the live
-// database list once /api/partners responds.
 const seedPartners: DirPartner[] = sortPartners(partnersSeed as DirPartner[]);
 
-// Categories shown as chips in the hero: travel only (the rest are still in
-// the field, search, and the sections below — just not chipped up top).
 const TRAVEL_HINTS = ["flight", "hotel", "sim", "connect", "tour", "activit", "transfer", "car", "insurance", "claim", "travel"];
 function isTravel(c: { key: string; label: string }) {
   const hay = `${c.key} ${c.label}`.toLowerCase();
@@ -83,15 +78,14 @@ const STATION_COMING_SOON: Record<string, string> = {
 };
 
 const stationTools = [
-  { label: "Calendar", note: "Schedule & sync", href: "/calendar", nameKey: "hero.tools.calendar.name", descKey: "hero.tools.calendar.desc", comingSoon: true },
+  { label: "Calendar", note: "Schedule & sync", href: "/calendar", nameKey: "hero.tools.calendar.name", descKey: "hero.tools.calendar.desc" },
   { label: "Spreadsheets", note: "Data & models", href: "/spreadsheets", nameKey: "hero.tools.spreadsheets.name", descKey: "hero.tools.spreadsheets.desc" },
   { label: "Reviews", note: "Reputation", href: "/reviews", nameKey: "hero.tools.reviews.name", descKey: "hero.tools.reviews.desc" },
-  { label: "Outreach", note: "Campaigns", href: "/outreach", nameKey: "hero.tools.outreach.name", descKey: "hero.tools.outreach.desc", comingSoon: true },
+  { label: "Outreach", note: "Campaigns", href: "/outreach", nameKey: "hero.tools.outreach.name", descKey: "hero.tools.outreach.desc" },
   { label: "Promote", note: "Marketing", href: "/promote", nameKey: "hero.tools.promote.name", descKey: "hero.tools.promote.desc" },
   { label: "Personal Assistant", note: "AI tasks", href: "/assistant", nameKey: "hero.tools.assistant.name", descKey: "hero.tools.assistant.desc" },
 ];
 
-// Each drifting signal's runtime state
 type SignalNode = {
   p: DirPartner;
   el: HTMLAnchorElement | null;
@@ -102,25 +96,18 @@ type SignalNode = {
   w: number;
   h: number;
   hover: boolean;
-  eligible: boolean;  // matches the current filter
-  inPool: boolean;    // currently occupying the field
+  eligible: boolean;
+  inPool: boolean;
   fading: "in" | "out" | null;
   fadeStart: number;
 };
 
 export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const { t, lang: uiLang } = useTranslation();
-  const comingSoonLabel = STATION_COMING_SOON[uiLang] ?? STATION_COMING_SOON.en;
   const router = useRouter();
 
-  // Directory state
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [query, setQuery] = useState("");
-
-  // Partner list: seeded from the static file for an instant first paint, then
-  // replaced by the LIVE database list (via /api/partners, which reads the
-  // Supabase affiliate_partners table). This is why partners added through the
-  // admin template now appear on the homepage with no redeploy.
   const [allPartners, setAllPartners] = useState<DirPartner[]>(seedPartners);
 
   useEffect(() => {
@@ -132,34 +119,26 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           setAllPartners(sortPartners(data as DirPartner[]));
         }
       })
-      .catch(() => {
-        /* keep the static seed on any error */
-      });
-    return () => {
-      active = false;
-    };
+      .catch(() => {});
+    return () => { active = false; };
   }, []);
 
   const totalPartners = allPartners.length;
   const categories = useMemo(() => buildCategories(allPartners), [allPartners]);
   const chipCategories = useMemo(() => categories.filter(isTravel), [categories]);
 
-  // Visitor region (worldwide by default; auto-detected, user-overridable).
-  // A partner shows when it's tagged worldwide OR matches the chosen region.
   const [region] = useRegion();
   const regionPartners = useMemo(
     () => allPartners.filter((p) => partnerVisibleInRegion(p, region)),
     [region, allPartners]
   );
 
-  // Living-field refs
   const fieldRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const nodesRef = useRef<SignalNode[]>([]);
   const filterRef = useRef({ cat: "all", q: "" });
   const regionRef = useRef(region);
 
-  // Station / trial state
   const [isAuthed, setIsAuthed] = useState(false);
   const [triesUsed, setTriesUsed] = useState(0);
   const [ranWorkflows, setRanWorkflows] = useState<Record<string, boolean>>({});
@@ -173,15 +152,12 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const visibleConnectors = connectorList.slice(0, 6);
   const extraConnectors = connectorList.length - visibleConnectors.length;
 
-  // Keep latest filter in a ref for the animation loop
   useEffect(() => {
     filterRef.current = { cat: activeCategory, q: query.trim().toLowerCase() };
     rebuildPool();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCategory, query]);
 
-  // When the region changes, the rendered node set changes too; sync the ref,
-  // drop any nodes whose partner is no longer present, and rebuild the pool.
   useEffect(() => {
     regionRef.current = region;
     const liveIds = new Set(regionPartners.map((p) => p.id));
@@ -192,7 +168,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
 
   function nodeEligible(p: DirPartner) {
     const { cat, q } = filterRef.current;
-    // Region gate: only worldwide or current-region partners are eligible.
     if (!partnerVisibleInRegion(p, regionRef.current)) return false;
     const catKey = p.category_key || p.category || "other";
     if (cat !== "all" && catKey !== cat) return false;
@@ -200,7 +175,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     return `${p.name} ${p.category_label || ""} ${p.network || ""}`.toLowerCase().includes(q);
   }
 
-  // Rebuild which signals are eligible, then seed a fresh pool of up to POOL_SIZE.
   function rebuildPool() {
     const nodes = nodesRef.current;
     const field = fieldRef.current;
@@ -217,7 +191,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
         eligible.push(n);
       }
     });
-    // shuffle eligible for variety
     for (let i = eligible.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [eligible[i], eligible[j]] = [eligible[j], eligible[i]];
@@ -237,14 +210,13 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
         n.x = Math.random() * Math.max(1, w - n.w);
         n.y = Math.random() * Math.max(1, h - n.h);
         const a = Math.random() * Math.PI * 2;
-        const s = 0.25 + Math.random() * 0.35;
-        n.vx = Math.cos(a) * s;
-        n.vy = Math.sin(a) * s;
+        const sp = 0.25 + Math.random() * 0.35;
+        n.vx = Math.cos(a) * sp;
+        n.vy = Math.sin(a) * sp;
       }
     });
   }
 
-  // ---- The living signal-wave field (canvas + drifting DOM nodes) ----------
   useEffect(() => {
     const field = fieldRef.current;
     const canvas = canvasRef.current;
@@ -263,20 +235,16 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    // seed the initial pool via rebuildPool (already defined in component scope)
     const nodes = nodesRef.current;
-
-    // ---- Tide cycling: swap one pool member for a waiting one ----
     let lastSwap = performance.now();
     function cycleTide(now: number) {
       if (now - lastSwap < SWAP_INTERVAL_MS) return;
       lastSwap = now;
       const eligible = nodes.filter((n) => n.eligible);
-      if (eligible.length <= POOL_SIZE) return; // nothing waiting; keep all
+      if (eligible.length <= POOL_SIZE) return;
       const inPool = eligible.filter((n) => n.inPool && n.fading !== "out");
       const waiting = eligible.filter((n) => !n.inPool && n.fading !== "in");
       if (!inPool.length || !waiting.length) return;
-      // prefer to retire a non-hovered signal
       const retireable = inPool.filter((n) => !n.hover);
       const out = (retireable.length ? retireable : inPool)[Math.floor(Math.random() * (retireable.length ? retireable.length : inPool.length))];
       const incoming = waiting[Math.floor(Math.random() * waiting.length)];
@@ -284,14 +252,13 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       out.fadeStart = now;
       incoming.fading = "in";
       incoming.fadeStart = now;
-      // place incoming somewhere fresh
       const w = W(); const h = H();
       incoming.w = incoming.el?.offsetWidth || 160;
       incoming.h = incoming.el?.offsetHeight || 52;
       incoming.x = Math.random() * Math.max(1, w - incoming.w);
       incoming.y = Math.random() * Math.max(1, h - incoming.h);
-      const a = Math.random() * Math.PI * 2; const s = 0.25 + Math.random() * 0.35;
-      incoming.vx = Math.cos(a) * s; incoming.vy = Math.sin(a) * s;
+      const a = Math.random() * Math.PI * 2; const sp = 0.25 + Math.random() * 0.35;
+      incoming.vx = Math.cos(a) * sp; incoming.vy = Math.sin(a) * sp;
       incoming.inPool = true;
       if (incoming.el) incoming.el.style.pointerEvents = "auto";
     }
@@ -309,7 +276,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       }
     }
 
-    // cosmic reaction state
     let flash = 0;
     let nextReaction = performance.now() + 1500 + Math.random() * 2500;
     type Arc = { pts: { x: number; y: number }[]; life: number; max: number; hue: "gold" | "cyan" };
@@ -367,7 +333,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       arcs = arcs.filter((a) => a.life > 0);
     }
 
-    let t = 0;
+    let tm = 0;
     let last = performance.now();
     let raf = 0;
     const drift = 0.42;
@@ -376,7 +342,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     function frame(now: number) {
       const dt = Math.min(40, now - last);
       last = now;
-      t += dt * 0.001 * (0.4 + waveSpeed);
+      tm += dt * 0.001 * (0.4 + waveSpeed);
       const w = W();
       const h = H();
       const cx = w / 2;
@@ -398,20 +364,20 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       const maxR = Math.hypot(w, h) / 1.4;
       const rings = 6;
       for (let i = 0; i < rings; i++) {
-        const phase = ((t * 0.18) + i / rings) % 1;
+        const phase = ((tm * 0.18) + i / rings) % 1;
         const r = phase * maxR;
         const alpha = (1 - phase) * 0.5;
         ctx!.beginPath(); ctx!.arc(cx, cy, r, 0, Math.PI * 2);
         ctx!.strokeStyle = `rgba(245,197,66,${alpha * 0.5})`; ctx!.lineWidth = 2; ctx!.stroke();
       }
       for (let i = 0; i < rings; i++) {
-        const phase = ((t * 0.135) + i / rings + 0.5) % 1;
+        const phase = ((tm * 0.135) + i / rings + 0.5) % 1;
         const r = phase * maxR;
         const alpha = (1 - phase) * 0.55;
         ctx!.beginPath(); ctx!.arc(cx, cy, r, 0, Math.PI * 2);
         ctx!.strokeStyle = `rgba(56,196,255,${alpha * 0.5})`; ctx!.lineWidth = 1.6; ctx!.stroke();
       }
-      const core = 6 + Math.sin(t * 2) * 2;
+      const core = 6 + Math.sin(tm * 2) * 2;
       const gc = ctx!.createRadialGradient(cx, cy, 0, cx, cy, 80);
       gc.addColorStop(0, "rgba(56,196,255,.18)"); gc.addColorStop(1, "rgba(56,196,255,0)");
       ctx!.fillStyle = gc; ctx!.beginPath(); ctx!.arc(cx, cy, 80, 0, Math.PI * 2); ctx!.fill();
@@ -439,7 +405,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     }
 
     sizeCanvas();
-    // wait one frame so node sizes are measured, then build the first pool
     raf = requestAnimationFrame(() => {
       rebuildPool();
       raf = requestAnimationFrame(frame);
@@ -459,14 +424,11 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---- Trial / auth ---------------------------------------------------------
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(TRIAL_STORAGE_KEY);
       if (stored) setTriesUsed(Math.min(parseInt(stored, 10) || 0, FREE_TRIAL_LIMIT));
-    } catch {
-      /* ignore */
-    }
+    } catch {}
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return;
     const supabase = createClient();
     let mounted = true;
@@ -494,9 +456,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
     setTriesUsed(next);
     try {
       window.localStorage.setItem(TRIAL_STORAGE_KEY, String(next));
-    } catch {
-      /* ignore */
-    }
+    } catch {}
     proceed();
   };
 
@@ -511,14 +471,10 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
         const supabase = createClient();
         await supabase.auth.signOut();
       }
-    } catch {
-      /* ignore */
-    }
+    } catch {}
     try {
       window.localStorage.removeItem(TRIAL_STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
+    } catch {}
     setIsAuthed(false);
     setTriesUsed(0);
     setRanWorkflows({});
@@ -527,9 +483,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   const handleResetTries = () => {
     try {
       window.localStorage.removeItem(TRIAL_STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
+    } catch {}
     setTriesUsed(0);
     setRanWorkflows({});
   };
@@ -546,6 +500,8 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
   }, [activeCategory, query, regionPartners]);
 
   const idle = activeCategory === "all" && !query.trim();
+// ===== ConciergeHero.tsx — PART 2 of 2 =====
+// Paste this directly after Part 1's last line.
 
   return (
     <section style={styles.heroSection} aria-labelledby="partner-hero-title">
@@ -553,7 +509,7 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
       <div style={styles.glowRight} aria-hidden="true" />
 
       <div className="sb-hero-shell">
-        {/* ============ FAR-LEFT: headline + search + travel chips ============ */}
+        {/* FAR-LEFT: headline + search + travel chips */}
         <div style={styles.infoCol}>
           <span style={styles.badgeContainer}>
             <span style={styles.badgePulse} />
@@ -599,9 +555,8 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </div>
         </div>
 
-        {/* ============ CENTER: LIVING SIGNAL FIELD ============ */}
+        {/* CENTER: LIVING SIGNAL FIELD */}
         <div style={styles.dirZone}>
-          {/* The field: canvas waves + drifting clickable signals */}
           <div ref={fieldRef} style={styles.field}>
             <canvas ref={canvasRef} style={styles.canvas} aria-hidden="true" />
             {regionPartners.map((p) => (
@@ -652,13 +607,13 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
           </div>
         </div>
 
-        {/* ============ RIGHT: SaaS STATION (compact) ============ */}
-        <aside className="saas-station-panel" style={styles.stationPanel} aria-label="SaaS Stationary Station feature">
+        {/* RIGHT: SaaS STATION (compact) */}
+        <aside className="saas-station-panel" style={styles.stationPanel} aria-label="SaaS Station feature">
           <div style={styles.stationGlow} aria-hidden="true" />
           <div style={styles.stationHeader}>
             <span style={styles.stationEyebrow}>{fallbackText(t("hero.station.eyebrow"), "Feature • SaaS Station")}</span>
             <h2 style={styles.stationTitle}>
-              {fallbackText(t("hero.station.title"), "Your SaaS Stationary Station")}
+              {fallbackText(t("hero.station.title"), "Your fixed SaaS station")}
             </h2>
             <p style={styles.stationSubtitle}>
               {fallbackText(t("hero.station.subtitle"), "Office tasks — calendar, spreadsheets, reviews, outreach, promotion and assistant — in one cockpit. Try 3 free.")}
@@ -684,9 +639,6 @@ export default function ConciergeHero({ lang = "en" }: ConciergeHeroProps) {
               <button type="button" key={tool.href} style={styles.toolTile} onClick={() => openTool(tool.href)}>
                 <span style={styles.toolTileLabel}>{fallbackText(t(tool.nameKey), tool.label)}</span>
                 <span style={styles.toolTileNote}>{fallbackText(t(tool.descKey), tool.note)}</span>
-                {tool.comingSoon && (
-                  <span style={{ marginTop: 7, alignSelf: "flex-start", fontSize: 10, fontWeight: 900, letterSpacing: "0.08em", textTransform: "uppercase", color: "#06060a", background: "linear-gradient(135deg,#f5c542,#dfa837)", borderRadius: 999, padding: "3px 10px" }}>{comingSoonLabel}</span>
-                )}
               </button>
             ))}
           </div>
@@ -819,35 +771,13 @@ const styles: Record<string, React.CSSProperties> = {
   infoChipCount: { color: "rgba(255,255,255,.5)", fontSize: "10.5px", fontWeight: 800 },
   infoActions: { display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "4px" },
 
-  dirBody: { display: "grid", gridTemplateColumns: "210px minmax(0,1fr)", gap: "16px", flex: 1, minHeight: 0 },
-  rail: { display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto", paddingRight: "4px", maxHeight: "100%" },
-  railSearch: { width: "100%", height: "40px", background: "rgba(255,255,255,.05)", color: "#fff", border: "1px solid rgba(255,255,255,.12)", borderRadius: "12px", padding: "0 12px", outline: "none", fontFamily: "inherit", fontSize: "13px", marginBottom: "6px" },
-  railItem: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", width: "100%", textAlign: "left", border: "1px solid transparent", background: "transparent", color: "rgba(255,255,255,.82)", borderRadius: "10px", padding: "8px 10px", fontSize: "12.5px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" },
-  railItemActive: { borderColor: "rgba(245,197,66,.5)", background: "rgba(245,197,66,.12)", color: "#f5c542" },
-  railItemLabel: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  railCount: { color: "rgba(255,255,255,.45)", fontSize: "11px", fontWeight: 800, flexShrink: 0 },
-  railGroupLabel: { color: "rgba(255,255,255,.4)", fontSize: "10px", fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", margin: "12px 4px 4px" },
-
-  fieldWrap: { display: "flex", flexDirection: "column", gap: "8px", minWidth: 0, minHeight: 0 },
-  badgeContainer: { display: "inline-flex", alignItems: "center", gap: "10px", border: "1px solid rgba(245, 197, 66, 0.32)", background: "rgba(245, 197, 66, 0.08)", borderRadius: "999px", padding: "7px 12px", alignSelf: "flex-start" },
-  badgePulse: { width: "8px", height: "8px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)" },
-  badgeText: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" },
-  dirHeading: { color: "#fff", fontSize: "clamp(20px, 2.4vw, 28px)", lineHeight: 1.05, letterSpacing: "-0.03em", margin: 0 },
-  dirSub: { color: "rgba(255,255,255,.66)", fontSize: "15px", lineHeight: 1.55, margin: 0, maxWidth: "640px" },
-
-  dirControls: { display: "flex", flexDirection: "column", gap: "12px" },
-  dirSearch: { width: "100%", height: "46px", background: "rgba(255,255,255,.05)", color: "#fff", border: "1px solid rgba(255,255,255,.12)", borderRadius: "14px", padding: "0 16px", outline: "none", fontFamily: "inherit", fontSize: "15px" },
-  dirChips: { display: "flex", flexWrap: "wrap", gap: "8px" },
-  dirChip: { display: "inline-flex", alignItems: "center", gap: "7px", border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.05)", color: "#fff", borderRadius: "999px", padding: "8px 13px", fontSize: "12.5px", fontWeight: 800, cursor: "pointer", fontFamily: "inherit" },
-  dirChipActive: { borderColor: "rgba(245,197,66,.6)", background: "rgba(245,197,66,.14)", color: "#f5c542" },
-  dirChipCount: { color: "rgba(255,255,255,.5)", fontSize: "11px", fontWeight: 800 },
-
-  dirCount: { color: "rgba(255,255,255,.5)", fontSize: "12px", fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase" },
-
   field: { position: "relative", width: "100%", flex: 1, minHeight: "300px", border: "1px solid rgba(255,255,255,.1)", borderRadius: "22px", overflow: "hidden", background: "radial-gradient(circle at 50% 50%, #0a0a14, #040408 70%)" },
   canvas: { position: "absolute", inset: 0, display: "block", zIndex: 0 },
 
-  dirActions: { display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "4px" },
+  badgeContainer: { display: "inline-flex", alignItems: "center", gap: "10px", border: "1px solid rgba(245, 197, 66, 0.32)", background: "rgba(245, 197, 66, 0.08)", borderRadius: "999px", padding: "7px 12px", alignSelf: "flex-start" },
+  badgePulse: { width: "8px", height: "8px", borderRadius: "999px", background: "#f5c542", boxShadow: "0 0 18px rgba(245, 197, 66, 0.9)" },
+  badgeText: { color: "#f5c542", fontSize: "11px", fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase" },
+
   brandButtonPrimary: { display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "999px", border: 0, background: "linear-gradient(135deg, #f5c542, #dfa837)", color: "#11151c", minHeight: "46px", padding: "0 22px", fontWeight: 900, fontSize: "14px", boxShadow: "0 18px 42px rgba(245, 197, 66, 0.24)", cursor: "pointer", textDecoration: "none", fontFamily: "inherit" },
   brandButtonSecondary: { display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", border: "1px solid rgba(255,255,255,.14)", borderRadius: "999px", background: "rgba(255,255,255,.06)", color: "#fff", minHeight: "46px", padding: "0 20px", fontWeight: 900, fontSize: "14px", textDecoration: "none", fontFamily: "inherit", cursor: "pointer" },
 
