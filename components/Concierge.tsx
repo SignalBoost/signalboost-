@@ -187,21 +187,28 @@ export default function Concierge() {
           </div>
 
           {/* Composer */}
-          <div style={{ flexShrink: 0, borderTop: `1px solid ${border}`, padding: "10px 14px", display: "flex", gap: 8, alignItems: "flex-end" }}>
+          <div style={{ flexShrink: 0, borderTop: "2px solid rgba(245,197,66,0.3)", padding: "12px 14px", display: "flex", gap: 8, alignItems: "flex-end", background: "rgba(245,197,66,0.03)" }}>
             <textarea
               value={message}
               onChange={e => { setTouched(true); setMessage(e.target.value); }}
               onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
-              placeholder={ft(t("assistant.placeholder"), "Ask for a plan, task, or general answer... (Enter to send)")}
-              rows={2}
-              style={{ flex: 1, background: cardBg, border: `1px solid ${border}`, borderRadius: 10, color: "#fff", fontFamily: "inherit", fontSize: 13, padding: "9px 12px", resize: "none", outline: "none" }}
+              placeholder={ft(t("assistant.placeholder"), "Ask for a plan, task, or general answer… (Enter to send)")}
+              rows={3}
+              style={{ flex: 1, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(245,197,66,0.35)", borderRadius: 12, color: "#fff", fontFamily: "inherit", fontSize: 13, padding: "11px 14px", resize: "none", outline: "none" }}
             />
-            <button
-              onClick={() => submit()} disabled={loading}
-              style={{ background: gold, border: "none", borderRadius: 10, color: "#11151c", cursor: loading ? "not-allowed" : "pointer", fontWeight: 900, fontSize: 13, padding: "9px 18px", opacity: loading ? 0.6 : 1, whiteSpace: "nowrap" }}
-            >
-              {loading ? "…" : ft(t("assistant.send"), "Send")}
-            </button>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, alignSelf: "stretch" }}>
+              <button
+                onClick={() => submit()} disabled={loading}
+                style={{ flex: 1, background: gold, border: "none", borderRadius: 10, color: "#11151c", cursor: loading ? "not-allowed" : "pointer", fontWeight: 900, fontSize: 13, padding: "0 18px", opacity: loading ? 0.6 : 1, whiteSpace: "nowrap" }}
+              >
+                {loading ? "…" : ft(t("assistant.send"), "Send")}
+              </button>
+              <button
+                onClick={reset}
+                title="New conversation"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: 12, fontWeight: 700, padding: "6px 10px", whiteSpace: "nowrap" }}
+              >&#8635; New</button>
+            </div>
           </div>
         </div>
 
