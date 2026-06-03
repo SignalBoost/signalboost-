@@ -1,7 +1,4 @@
 // File: app/promote/page.tsx
-// Full campaign management module. Campaign packages are generated/re-written
-// by the Promote AI endpoint, editable in-place, and stored in Supabase under
-// each account's RLS-scoped `campaigns` library.
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
@@ -19,7 +16,6 @@ type CampaignStatus = (typeof STATUSES)[number];
 
 type CampaignPackage = { headline: string; subheadline: string; body: string; cta: string; links: { email: string; social: string; paid: string } };
 type Campaign = CampaignPackage & { id: string; account_id?: string; name: string; status: CampaignStatus; audience: string; tone: string; goal: string; offer: string; landing_url: string; created_at?: string; updated_at?: string };
-
 type DbCampaign = Record<string, unknown> & Partial<Campaign> & { package?: unknown; utm_links?: unknown; landing_url?: string };
 
 function emptyPackage(): CampaignPackage {
@@ -32,19 +28,14 @@ function normalize(row: DbCampaign): Campaign {
   const linksSource = row.utm_links && typeof row.utm_links === "object" ? row.utm_links as Partial<CampaignPackage["links"]> : pack.links;
   const links = linksSource && typeof linksSource === "object" ? linksSource as Partial<CampaignPackage["links"]> : {};
   return {
-    id: String(row.id),
-    account_id: row.account_id ? String(row.account_id) : undefined,
+    id: String(row.id), account_id: row.account_id ? String(row.account_id) : undefined,
     name: String(row.name || row.headline || "Campaign"),
     status: STATUSES.includes(row.status as CampaignStatus) ? row.status as CampaignStatus : "paused",
-    audience: String(row.audience || ""),
-    tone: String(row.tone || ""),
-    goal: String(row.goal || row.headline || ""),
-    offer: String(row.offer || row.subheadline || ""),
+    audience: String(row.audience || ""), tone: String(row.tone || ""),
+    goal: String(row.goal || row.headline || ""), offer: String(row.offer || row.subheadline || ""),
     landing_url: String(row.landing_url || links.email || "https://www.signalboostapp.com"),
-    headline: String(pack.headline || ""),
-    subheadline: String(pack.subheadline || ""),
-    body: String(pack.body || ""),
-    cta: String(pack.cta || ""),
+    headline: String(pack.headline || ""), subheadline: String(pack.subheadline || ""),
+    body: String(pack.body || ""), cta: String(pack.cta || ""),
     links: { email: String(links.email || ""), social: String(links.social || ""), paid: String(links.paid || "") },
     created_at: row.created_at ? String(row.created_at) : undefined,
     updated_at: row.updated_at ? String(row.updated_at) : undefined,
@@ -67,16 +58,11 @@ export default function PromotePage() {
   const selected = campaigns.find((c) => c.id === selectedId) || campaigns[0] || null;
 
   const load = useCallback(async () => {
-    setLoading(true);
-    setErr(null);
+    setLoading(true); setErr(null);
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setErr("Please log in to manage your campaign library.");
-        setLoading(false);
-        return;
-      }
+      if (!user) { setErr("Please log in to manage your campaign library."); setLoading(false); return; }
       const { data, error } = await supabase.from("campaigns").select("*").order("updated_at", { ascending: false });
       if (error) throw error;
       const list = ((data || []) as DbCampaign[]).map(normalize);
@@ -84,9 +70,7 @@ export default function PromotePage() {
       setSelectedId((cur) => cur || list[0]?.id || null);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Could not load campaigns.");
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -98,19 +82,14 @@ export default function PromotePage() {
   }), [campaigns]);
 
   async function ai(action: "generate" | "rewrite" | "vary", campaign?: Campaign) {
-    setGenerating(true);
-    setErr(null);
+    setGenerating(true); setErr(null);
     try {
       const res = await fetch("/api/promote/ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...form, campaign: campaign ? packageOnly(campaign) : undefined }) });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "AI request failed.");
       return json.package as CampaignPackage;
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "AI request failed.");
-      return null;
-    } finally {
-      setGenerating(false);
-    }
+    } catch (e) { setErr(e instanceof Error ? e.message : "AI request failed."); return null; }
+    finally { setGenerating(false); }
   }
 
   async function generateAndSave() {
@@ -131,11 +110,8 @@ export default function PromotePage() {
       const campaign = normalize(data as DbCampaign);
       setCampaigns((cur) => [campaign, ...cur]);
       setSelectedId(campaign.id);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Could not save campaign.");
-    } finally {
-      setSaving(false);
-    }
+    } catch (e) { setErr(e instanceof Error ? e.message : "Could not save campaign."); }
+    finally { setSaving(false); }
   }
 
   async function persist(campaign: Campaign) {
@@ -144,11 +120,8 @@ export default function PromotePage() {
       const supabase = createClient();
       const { error } = await supabase.from("campaigns").update({ headline: campaign.headline || campaign.name, subheadline: campaign.subheadline, body: campaign.body, cta: campaign.cta, utm_links: campaign.links, status: campaign.status }).eq("id", campaign.id);
       if (error) throw error;
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Could not save changes.");
-    } finally {
-      setSaving(false);
-    }
+    } catch (e) { setErr(e instanceof Error ? e.message : "Could not save changes."); }
+    finally { setSaving(false); }
   }
 
   function updateCampaign(id: string, patch: Partial<Campaign>) {
@@ -173,9 +146,7 @@ export default function PromotePage() {
     try {
       const supabase = createClient();
       await supabase.from("campaign_variations").insert({ campaign_id: campaignId, audience: form.audience, tone: form.tone, rewritten_copy: pack });
-    } catch {
-      // Campaign edits remain saved even if variation history is unavailable in an older database.
-    }
+    } catch { /* ignore */ }
   }
 
   async function duplicateAndVary(campaign: Campaign) {
@@ -192,9 +163,7 @@ export default function PromotePage() {
       if (error) throw error;
       setCampaigns((cur) => cur.filter((c) => c.id !== id));
       setSelectedId((cur) => cur === id ? null : cur);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Delete failed.");
-    }
+    } catch (e) { setErr(e instanceof Error ? e.message : "Delete failed."); }
   }
 
   return (
@@ -205,14 +174,12 @@ export default function PromotePage() {
         <p style={styles.subtitle}>Generate headline, subheadline, body copy, CTA, and UTM-tagged links for email, social, and paid channels. Save, edit, duplicate, vary, pause, activate, or archive every campaign.</p>
         <div style={styles.heroActions}><Link href="/saas-station" style={styles.secondary}>SaaS Station</Link><Link href="/pricing" style={styles.secondary}>Pricing</Link></div>
       </section>
-
       <section style={styles.metrics}>
         <div style={styles.metric}><strong>{campaigns.length}</strong><span>Total campaigns</span></div>
         <div style={styles.metric}><strong>{byStatus.active}</strong><span>Active</span></div>
         <div style={styles.metric}><strong>{byStatus.paused}</strong><span>Paused</span></div>
         <div style={styles.metric}><strong>{byStatus.archived}</strong><span>Archived</span></div>
       </section>
-
       {err && <div style={styles.error}>{err}</div>}
       {loading ? <div style={styles.panel}>Loading campaign library…</div> : (
         <div style={styles.layout}>
@@ -230,7 +197,6 @@ export default function PromotePage() {
               <button type="button" style={styles.darkButton} onClick={() => void rewriteSelected()} disabled={!selected || generating}>{generating ? "Rewriting…" : "Rewrite selected for brief"}</button>
             </div>
           </section>
-
           <section style={styles.panel}>
             <h2 style={styles.panelTitle}>Campaign library</h2>
             <div style={styles.cards}>
@@ -249,7 +215,6 @@ export default function PromotePage() {
               {!campaigns.length && <p style={styles.empty}>No campaigns yet. Generate a package from the brief to create your library.</p>}
             </div>
           </section>
-
           <section style={{ ...styles.panel, gridColumn: "1 / -1" }}>
             <h2 style={styles.panelTitle}>Editable campaign package</h2>
             {selected ? <CampaignEditor campaign={selected} saving={saving} onChange={updateCampaign} onSave={persist} /> : <p style={styles.empty}>Select or create a campaign to edit every field.</p>}
@@ -280,37 +245,37 @@ function CampaignEditor({ campaign, saving, onChange, onSave }: { campaign: Camp
 }
 
 const styles: Record<string, CSSProperties> = {
-  page: { minHeight: "100vh", background: "radial-gradient(circle at top right, rgba(245,197,66,.12), transparent 34%), #06060a", color: TEXT, fontFamily: "'Outfit', system-ui, sans-serif", padding: "32px clamp(16px,3vw,40px)" },
-  hero: { maxWidth: 1120, margin: "0 auto 18px", border: `1px solid ${BORDER}`, borderRadius: 26, padding: "28px clamp(18px,4vw,42px)", background: "linear-gradient(135deg,rgba(245,197,66,.12),rgba(34,211,238,.04))" },
-  eyebrow: { color: GOLD, textTransform: "uppercase", letterSpacing: ".16em", fontSize: 12, fontWeight: 900, margin: 0 },
-  title: { fontSize: "clamp(32px,5vw,58px)", lineHeight: 1, letterSpacing: "-.05em", margin: "12px 0", maxWidth: 900 },
-  subtitle: { color: MUTED, fontSize: 16, lineHeight: 1.7, maxWidth: 860 },
-  heroActions: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 },
-  secondary: { border: `1px solid ${BORDER}`, borderRadius: 999, color: TEXT, textDecoration: "none", padding: "10px 14px", fontWeight: 800, background: "rgba(255,255,255,.04)" },
-  metrics: { maxWidth: 1120, margin: "0 auto 18px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: 10 },
-  metric: { border: `1px solid ${BORDER}`, borderRadius: 18, background: PANEL, padding: 16, display: "grid", gap: 3 },
+  page: { minHeight: "100vh", background: "radial-gradient(circle at top right, rgba(245,197,66,.12), transparent 34%), #06060a", color: TEXT, fontFamily: "'Outfit', system-ui, sans-serif", padding: "16px clamp(16px,3vw,40px)" },
+  hero: { maxWidth: 1120, margin: "0 auto 14px", border: `1px solid ${BORDER}`, borderRadius: 14, padding: "12px 18px", background: "linear-gradient(135deg,rgba(245,197,66,.12),rgba(34,211,238,.04))" },
+  eyebrow: { color: GOLD, textTransform: "uppercase", letterSpacing: ".16em", fontSize: 11, fontWeight: 900, margin: 0 },
+  title: { fontSize: "clamp(18px,2vw,28px)", lineHeight: 1.1, letterSpacing: "-.03em", margin: "6px 0", maxWidth: 900 },
+  subtitle: { color: MUTED, fontSize: 13, lineHeight: 1.55, maxWidth: 860 },
+  heroActions: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 },
+  secondary: { border: `1px solid ${BORDER}`, borderRadius: 999, color: TEXT, textDecoration: "none", padding: "8px 12px", fontWeight: 800, background: "rgba(255,255,255,.04)", fontSize: 13 },
+  metrics: { maxWidth: 1120, margin: "0 auto 14px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: 10 },
+  metric: { border: `1px solid ${BORDER}`, borderRadius: 14, background: PANEL, padding: 14, display: "grid", gap: 3 },
   layout: { maxWidth: 1120, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0, .9fr) minmax(320px, 1.1fr)", gap: 16 },
   panel: { border: `1px solid ${BORDER}`, borderRadius: 22, background: "linear-gradient(180deg,rgba(15,20,27,.96),rgba(8,12,18,.96))", padding: 18, minWidth: 0 },
-  panelTitle: { margin: "0 0 14px", fontSize: 21 },
+  panelTitle: { margin: "0 0 14px", fontSize: 18 },
   formGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 },
   label: { display: "grid", gap: 6, color: MUTED, fontSize: 12, fontWeight: 900 },
-  input: { minHeight: 42, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: "0 12px", font: "inherit" },
-  textarea: { minHeight: 130, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: 12, font: "inherit", resize: "vertical" },
+  input: { minHeight: 40, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: "0 12px", font: "inherit" },
+  textarea: { minHeight: 120, border: `1px solid ${BORDER}`, borderRadius: 12, background: INPUT, color: TEXT, padding: 12, font: "inherit", resize: "vertical" },
   actionRow: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 },
   goldButton: { border: "none", borderRadius: 12, background: "linear-gradient(135deg,#f5c542,#dfa837)", color: "#05070a", fontWeight: 900, padding: "11px 15px", cursor: "pointer" },
   darkButton: { border: `1px solid ${BORDER}`, borderRadius: 12, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "11px 15px", cursor: "pointer" },
-  cards: { display: "grid", gap: 10, maxHeight: 560, overflow: "auto", paddingRight: 4 },
+  cards: { display: "grid", gap: 10, maxHeight: 500, overflow: "auto", paddingRight: 4 },
   card: { border: `1px solid ${BORDER}`, borderRadius: 18, padding: 14, background: "rgba(255,255,255,.03)", cursor: "pointer" },
   cardActive: { borderColor: GOLD, boxShadow: "0 0 0 1px rgba(245,197,66,.18), 0 0 30px rgba(245,197,66,.1)" },
   cardTop: { display: "flex", justifyContent: "space-between", gap: 10, color: TEXT },
   status: { border: "1px solid rgba(52,211,153,.28)", color: "#34d399", borderRadius: 999, padding: "3px 8px", fontSize: 11, fontWeight: 900, textTransform: "uppercase" },
-  cardHeadline: { margin: "10px 0 5px", fontSize: 18 },
-  cardText: { color: MUTED, margin: 0, lineHeight: 1.5 },
-  cardActions: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 },
-  darkButtonSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "8px 10px", cursor: "pointer", fontSize: 12 },
-  selectSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: INPUT, color: TEXT, fontWeight: 800, padding: "8px 10px", fontSize: 12 },
-  dangerSmall: { border: "1px solid rgba(255,107,107,.35)", borderRadius: 10, background: "rgba(255,107,107,.08)", color: "#ffd1d1", fontWeight: 800, padding: "8px 10px", cursor: "pointer", fontSize: 12 },
-  empty: { color: MUTED, lineHeight: 1.6 },
+  cardHeadline: { margin: "8px 0 4px", fontSize: 16 },
+  cardText: { color: MUTED, margin: 0, lineHeight: 1.5, fontSize: 13 },
+  cardActions: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 },
+  darkButtonSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: "rgba(255,255,255,.04)", color: TEXT, fontWeight: 800, padding: "7px 10px", cursor: "pointer", fontSize: 12 },
+  selectSmall: { border: `1px solid ${BORDER}`, borderRadius: 10, background: INPUT, color: TEXT, fontWeight: 800, padding: "7px 10px", fontSize: 12 },
+  dangerSmall: { border: "1px solid rgba(255,107,107,.35)", borderRadius: 10, background: "rgba(255,107,107,.08)", color: "#ffd1d1", fontWeight: 800, padding: "7px 10px", cursor: "pointer", fontSize: 12 },
+  empty: { color: MUTED, lineHeight: 1.6, fontSize: 13 },
   editorGrid: { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 },
-  error: { maxWidth: 1120, margin: "0 auto 18px", border: "1px solid rgba(255,107,107,.35)", color: "#ffd1d1", background: "rgba(255,107,107,.1)", borderRadius: 14, padding: 12 },
+  error: { maxWidth: 1120, margin: "0 auto 14px", border: "1px solid rgba(255,107,107,.35)", color: "#ffd1d1", background: "rgba(255,107,107,.1)", borderRadius: 14, padding: 12 },
 };
