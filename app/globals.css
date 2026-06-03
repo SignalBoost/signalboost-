@@ -648,31 +648,33 @@ a {
   margin-top: 0;
 }
 
+/* ── Concierge console — compact layout ─────────────────────────────────── */
 .concierge-console {
   display: grid;
-  gap: 22px;
+  gap: 14px;
 }
 .concierge-console__intro {
   border: 1px solid rgba(245, 197, 66, 0.18);
-  border-radius: 28px;
+  border-radius: 20px;
   background: linear-gradient(135deg, rgba(245, 197, 66, 0.1), rgba(34, 211, 238, 0.08));
-  padding: 28px;
+  padding: 16px 22px;
 }
 .concierge-console__intro h2 {
-  margin: 8px 0 10px;
-  font-size: clamp(28px, 4vw, 48px);
-  letter-spacing: -0.05em;
+  margin: 6px 0 8px;
+  font-size: clamp(18px, 2.5vw, 28px);
+  letter-spacing: -0.04em;
 }
 .concierge-console__intro p:not(.cockpit-eyebrow),
 .concierge-cardlet p,
 .concierge-message p,
 .concierge-module-result p {
   color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
 }
 .concierge-console__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr);
+  gap: 14px;
 }
 .concierge-chat-panel,
 .concierge-side-panel,
@@ -682,24 +684,21 @@ a {
 .concierge-chat-panel,
 .concierge-cardlet {
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
+  border-radius: 20px;
   background: linear-gradient(180deg, rgba(17, 24, 39, 0.82), rgba(7, 10, 17, 0.9));
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(18px);
 }
 .concierge-chat-panel {
   display: grid;
-  grid-template-rows: auto minmax(360px, 1fr) auto;
+  grid-template-rows: auto minmax(220px, 1fr) auto;
   overflow: hidden;
 }
-.concierge-module-switcher,
-.concierge-composer {
+.concierge-module-switcher {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 18px;
-}
-.concierge-module-switcher {
+  gap: 6px;
+  padding: 12px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .concierge-module-switcher button,
@@ -709,9 +708,9 @@ a {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
-  padding: 9px 12px;
+  padding: 6px 10px;
 }
 .concierge-module-switcher button.active,
 .concierge-module-switcher button:hover,
@@ -723,19 +722,19 @@ a {
 .concierge-turns {
   display: grid;
   align-content: start;
-  gap: 14px;
-  max-height: 620px;
+  gap: 10px;
+  max-height: 400px;
   overflow: auto;
-  padding: 18px;
+  padding: 14px;
 }
 .concierge-empty-state,
 .concierge-message,
 .concierge-response-detail,
 .concierge-module-result {
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.045);
-  padding: 16px;
+  padding: 12px 14px;
 }
 .concierge-empty-state strong,
 .concierge-message span,
@@ -743,11 +742,21 @@ a {
   color: #fff;
   font-weight: 900;
 }
+.concierge-message span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.concierge-message p {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.55;
+}
 .concierge-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 8px;
+  margin-top: 10px;
 }
 .concierge-message.user {
   justify-self: end;
@@ -760,49 +769,56 @@ a {
   max-width: 92%;
 }
 .concierge-response-detail {
-  margin-top: 12px;
+  margin-top: 8px;
   background: rgba(4, 7, 13, 0.52);
+  font-size: 12px;
 }
 .concierge-status-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 6px;
+  margin-top: 8px;
 }
 .concierge-status-row span,
 .concierge-module-result span {
   border-radius: 999px;
   background: rgba(34, 211, 238, 0.12);
   color: #a5f3fc;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 900;
-  padding: 5px 8px;
+  padding: 3px 7px;
   text-transform: uppercase;
 }
 .concierge-composer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 .concierge-composer textarea {
-  flex: 1 1 320px;
+  flex: 1 1 240px;
   resize: vertical;
-  min-height: 96px;
+  min-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
+  border-radius: 14px;
   background: rgba(0, 0, 0, 0.22);
   color: #fff;
   font: inherit;
-  padding: 14px;
+  font-size: 13px;
+  padding: 10px 12px;
 }
 .concierge-composer button {
   align-self: stretch;
   border: 0;
-  border-radius: 18px;
+  border-radius: 14px;
   background: var(--gold);
   color: #11151c;
   cursor: pointer;
   font-weight: 900;
-  min-width: 170px;
-  padding: 0 18px;
+  font-size: 13px;
+  min-width: 140px;
+  padding: 0 16px;
 }
 .concierge-composer button:disabled {
   cursor: progress;
@@ -811,60 +827,41 @@ a {
 .concierge-side-panel {
   display: grid;
   align-content: start;
-  gap: 18px;
+  gap: 12px;
 }
 .concierge-cardlet {
-  padding: 20px;
+  padding: 14px 16px;
 }
 .concierge-cardlet h3 {
-  margin: 8px 0 12px;
-  font-size: 22px;
-  letter-spacing: -0.04em;
+  margin: 4px 0 10px;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  font-weight: 900;
 }
 .concierge-cardlet ul,
 .concierge-cardlet ol {
   display: grid;
-  gap: 9px;
-  padding-left: 18px;
+  gap: 7px;
+  padding-left: 16px;
   color: rgba(255, 255, 255, 0.76);
+  font-size: 12px;
 }
 .module-results-card {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 .concierge-module-result {
   display: grid;
-  gap: 10px;
-  padding: 14px;
+  gap: 6px;
+  padding: 10px 12px;
 }
 .concierge-module-result > div:first-child {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-}
-.concierge-module-result dl {
-  display: grid;
   gap: 8px;
 }
-.concierge-module-result dl div {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 8px;
-}
-.concierge-module-result dt {
-  color: rgba(255, 255, 255, 0.52);
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-.concierge-module-result dd {
-  color: #fff;
-  font-size: 12px;
-  text-align: right;
-}
+.concierge-module-result strong { font-size: 13px; }
 
 @media (max-width: 980px) {
   .concierge-console__grid {
@@ -1241,4 +1238,54 @@ a {
   .site-header__tools { align-items: flex-start; flex-direction: column; }
   .site-auth { width: 100%; flex-wrap: wrap; }
   .site-auth__providers { overflow-x: auto; max-width: 100%; }
+}
+
+/* ========================================================
+   SIGNALBOOST CONCIERGE MARQUEE & DESIGN SYSTEM CORES
+   ======================================================== */
+@keyframes productionScrollLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes productionScrollRight {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+.force-marquee-left {
+  display: flex !important;
+  gap: 1rem !important;
+  white-space: nowrap !important;
+  animation: productionScrollLeft 90s linear infinite !important;
+}
+.force-marquee-right {
+  display: flex !important;
+  gap: 1rem !important;
+  white-space: nowrap !important;
+  animation: productionScrollRight 90s linear infinite !important;
+}
+.force-marquee-left:hover,
+.force-marquee-right:hover {
+  animation-play-state: paused !important;
+}
+.fathom-glass-card-upgrade {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 180px !important;
+  height: 4.5rem !important;
+  padding: 0 1.5rem !important;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4) !important;
+  text-decoration: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.fathom-glass-card-upgrade:hover {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.1) !important;
+  transform: translateY(-2px) !important;
 }
