@@ -452,7 +452,7 @@ export default function OutreachDashboard({ userId: _userId }: { userId: string 
           </div>
         </div>
 
-        {/* RIGHT: Detail panel — content spreads horizontally and is centered */}
+        {/* RIGHT: Detail panel — single column flow, message full width under the email */}
         <div style={{ flex: 1, overflowY: "auto", padding: "28px 40px" }}>
 
           {showAddForm && (
@@ -486,8 +486,9 @@ export default function OutreachDashboard({ userId: _userId }: { userId: string 
           )}
 
           {selectedLead && !showAddForm && (
-            <div style={{ maxWidth: 920, margin: "0 auto" }}>
+            <div style={{ maxWidth: 760, margin: "0 auto" }}>
 
+              {/* Title */}
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
                 <div>
                   <h2 style={{ fontFamily: "Fraunces, serif", fontSize: 24, fontWeight: 700, margin: "0 0 4px" }}>
@@ -501,124 +502,113 @@ export default function OutreachDashboard({ userId: _userId }: { userId: string 
                   style={{ background: "none", border: "none", color: textMuted, cursor: "pointer", fontSize: 20, padding: "4px 8px" }}>×</button>
               </div>
 
-              {/* Email + message laid out horizontally on wide screens */}
-              <div style={{ display: "flex", gap: 24, alignItems: "flex-start", flexWrap: "wrap" }}>
-
-                {/* Left column: email + actions */}
-                <div style={{ flex: "1 1 260px", minWidth: 240 }}>
-                  <label style={{ fontSize: 11, color: textMuted, display: "block", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                    Contact Email
-                  </label>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <input
-                      value={emailEdit}
-                      onChange={(e) => setEmailEdit(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") persistEmail(); }}
-                      placeholder="contact@partner.com"
-                      style={{ ...inp, borderColor: emailEdit ? border : "rgba(245,197,66,0.35)", background: emailEdit ? "rgba(255,255,255,0.06)" : "rgba(245,197,66,0.05)" }}
-                    />
-                    {emailEdit !== (selectedLead.email || "") && (
-                      <button onClick={persistEmail} disabled={savingEmail}
-                        style={{ background: goldDark, color: "#000", border: "none", borderRadius: 6, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
-                        {savingEmail ? "…" : "Save"}
-                      </button>
-                    )}
-                  </div>
-                  {!emailEdit && (
-                    <p style={{ margin: "6px 0 0", fontSize: 12, color: "rgba(245,197,66,0.6)" }}>
-                      Add email before approving or sending.
-                    </p>
-                  )}
-
-                  {/* Action buttons */}
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 18 }}>
-                    {(selectedState === "queued" || selectedState === "drafted") && selectedMsg && !editingMsg && (
-                      <>
-                        <Btn onClick={() => { setEditSubject(selectedMsg.subject); setEditBody(selectedMsg.body); setEditingMsg(true); }} variant="default">
-                          Edit Draft
-                        </Btn>
-                        <Btn onClick={() => handleDraft()} disabled={!!draftingId} variant="blue">
-                          {draftingId === selectedLead.id ? "Re-writing…" : "↺ Re-draft"}
-                        </Btn>
-                      </>
-                    )}
-                    {selectedState === "drafted" && selectedMsg && !editingMsg && (
-                      <Btn onClick={handleApprove} disabled={!emailEdit || approvingId === selectedLead.id} variant="green">
-                        {approvingId === selectedLead.id ? "Approving…" : "✓ Approve"}
-                      </Btn>
-                    )}
-                    {selectedState === "approved" && selectedMsg && !editingMsg && (
-                      <Btn onClick={handleSend} disabled={sendingId === selectedLead.id || !emailEdit || todayCount >= 50} variant="gold">
-                        {sendingId === selectedLead.id ? "Sending…" : "↗ Send Now"}
-                      </Btn>
-                    )}
-                    {selectedState === "queued" && !selectedMsg && (
-                      <Btn onClick={() => handleDraft()} disabled={!!draftingId} variant="blue">
-                        {draftingId === selectedLead.id ? "Writing draft…" : "✦ Draft with AI"}
-                      </Btn>
-                    )}
-                  </div>
-                </div>
-
-                {/* Right column: the message */}
-                <div style={{ flex: "2 1 420px", minWidth: 320 }}>
-                  {!selectedMsg && !selectedSentMsg && selectedState === "queued" && (
-                    <div style={{ background: panel, border: `1px dashed ${border}`, borderRadius: 12, padding: "32px 24px", textAlign: "center" }}>
-                      <p style={{ margin: "0 0 16px", color: textMuted, fontSize: 14 }}>
-                        No draft yet. Let AI write a warm, personalised message using your playbook.
-                      </p>
-                      <Btn onClick={handleDraft} disabled={!!draftingId} variant="blue">
-                        {draftingId === selectedLead.id ? "Writing draft…" : "✦ Draft with AI"}
-                      </Btn>
-                    </div>
-                  )}
-
-                  {selectedMsg && !editingMsg && (
-                    <div style={{ background: panel, border: `1px solid ${selectedMsg.status === "approved" ? "rgba(16,185,129,0.3)" : border}`, borderRadius: 12, padding: 24 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
-                          color: selectedMsg.status === "approved" ? "#34d399" : "#60a5fa" }}>
-                          {selectedMsg.status === "approved" ? "✓ Approved" : "Draft"}
-                        </span>
-                        <span style={{ fontSize: 11, color: textMuted }}>from: saaspartners@signalboostapp.com</span>
-                      </div>
-                      <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Subject</label>
-                      <p style={{ margin: "4px 0 16px", fontSize: 15, fontWeight: 600 }}>{selectedMsg.subject}</p>
-                      <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Message</label>
-                      <p style={{ margin: "4px 0 0", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap", color: "rgba(255,255,255,0.8)" }}>
-                        {selectedMsg.body}
-                      </p>
-                    </div>
-                  )}
-
-                  {selectedMsg && editingMsg && (
-                    <div style={{ background: panel, border: `1px solid ${border}`, borderRadius: 12, padding: 24 }}>
-                      <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Subject</label>
-                      <input value={editSubject} onChange={(e) => setEditSubject(e.target.value)}
-                        style={{ ...inp, marginTop: 6, marginBottom: 14 }} />
-                      <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Message</label>
-                      <textarea value={editBody} onChange={(e) => setEditBody(e.target.value)} rows={14}
-                        style={{ ...inp, marginTop: 6, lineHeight: 1.7, resize: "vertical" } as React.CSSProperties} />
-                      <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-                        <Btn onClick={handleSaveEdit} variant="gold">Save Changes</Btn>
-                        <Btn onClick={() => setEditingMsg(false)} variant="ghost">Cancel</Btn>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedSentMsg && (
-                    <div style={{ background: "rgba(245,197,66,0.04)", border: `1px solid rgba(245,197,66,0.15)`, borderRadius: 12, padding: 24, marginTop: selectedMsg ? 16 : 0 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: gold, textTransform: "uppercase", letterSpacing: "0.1em" }}>✓ Sent</span>
-                        {selectedSentMsg.sent_at && (
-                          <span style={{ fontSize: 12, color: textMuted }}>{new Date(selectedSentMsg.sent_at).toLocaleString()}</span>
-                        )}
-                      </div>
-                      <p style={{ margin: "0 0 8px", fontSize: 15, fontWeight: 600 }}>{selectedSentMsg.subject}</p>
-                      <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.6)", whiteSpace: "pre-wrap", lineHeight: 1.65 }}>{selectedSentMsg.body}</p>
-                    </div>
+              {/* Email */}
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ fontSize: 11, color: textMuted, display: "block", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                  Contact Email
+                </label>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <input
+                    value={emailEdit}
+                    onChange={(e) => setEmailEdit(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") persistEmail(); }}
+                    placeholder="contact@partner.com"
+                    style={{ ...inp, borderColor: emailEdit ? border : "rgba(245,197,66,0.35)", background: emailEdit ? "rgba(255,255,255,0.06)" : "rgba(245,197,66,0.05)" }}
+                  />
+                  {emailEdit !== (selectedLead.email || "") && (
+                    <button onClick={persistEmail} disabled={savingEmail}
+                      style={{ background: goldDark, color: "#000", border: "none", borderRadius: 6, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
+                      {savingEmail ? "…" : "Save"}
+                    </button>
                   )}
                 </div>
+                {!emailEdit && (
+                  <p style={{ margin: "6px 0 0", fontSize: 12, color: "rgba(245,197,66,0.6)" }}>
+                    Add email before approving or sending.
+                  </p>
+                )}
+              </div>
+
+              {/* Message — full width, directly under the email */}
+              {!selectedMsg && !selectedSentMsg && selectedState === "queued" && (
+                <div style={{ background: panel, border: `1px dashed ${border}`, borderRadius: 12, padding: "32px 24px", textAlign: "center", marginBottom: 16 }}>
+                  <p style={{ margin: "0 0 16px", color: textMuted, fontSize: 14 }}>
+                    No draft yet. Let AI write a warm, personalised message using your playbook.
+                  </p>
+                  <Btn onClick={handleDraft} disabled={!!draftingId} variant="blue">
+                    {draftingId === selectedLead.id ? "Writing draft…" : "✦ Draft with AI"}
+                  </Btn>
+                </div>
+              )}
+
+              {selectedMsg && !editingMsg && (
+                <div style={{ background: panel, border: `1px solid ${selectedMsg.status === "approved" ? "rgba(16,185,129,0.3)" : border}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
+                      color: selectedMsg.status === "approved" ? "#34d399" : "#60a5fa" }}>
+                      {selectedMsg.status === "approved" ? "✓ Approved" : "Draft"}
+                    </span>
+                    <span style={{ fontSize: 11, color: textMuted }}>from: saaspartners@signalboostapp.com</span>
+                  </div>
+                  <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Subject</label>
+                  <p style={{ margin: "4px 0 16px", fontSize: 15, fontWeight: 600 }}>{selectedMsg.subject}</p>
+                  <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Message</label>
+                  <p style={{ margin: "4px 0 0", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap", color: "rgba(255,255,255,0.8)" }}>
+                    {selectedMsg.body}
+                  </p>
+                </div>
+              )}
+
+              {selectedMsg && editingMsg && (
+                <div style={{ background: panel, border: `1px solid ${border}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+                  <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Subject</label>
+                  <input value={editSubject} onChange={(e) => setEditSubject(e.target.value)}
+                    style={{ ...inp, marginTop: 6, marginBottom: 14 }} />
+                  <label style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>Message</label>
+                  <textarea value={editBody} onChange={(e) => setEditBody(e.target.value)} rows={14}
+                    style={{ ...inp, marginTop: 6, lineHeight: 1.7, resize: "vertical" } as React.CSSProperties} />
+                  <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                    <Btn onClick={handleSaveEdit} variant="gold">Save Changes</Btn>
+                    <Btn onClick={() => setEditingMsg(false)} variant="ghost">Cancel</Btn>
+                  </div>
+                </div>
+              )}
+
+              {selectedSentMsg && (
+                <div style={{ background: "rgba(245,197,66,0.04)", border: `1px solid rgba(245,197,66,0.15)`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: gold, textTransform: "uppercase", letterSpacing: "0.1em" }}>✓ Sent</span>
+                    {selectedSentMsg.sent_at && (
+                      <span style={{ fontSize: 12, color: textMuted }}>{new Date(selectedSentMsg.sent_at).toLocaleString()}</span>
+                    )}
+                  </div>
+                  <p style={{ margin: "0 0 8px", fontSize: 15, fontWeight: 600 }}>{selectedSentMsg.subject}</p>
+                  <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.6)", whiteSpace: "pre-wrap", lineHeight: 1.65 }}>{selectedSentMsg.body}</p>
+                </div>
+              )}
+
+              {/* Action buttons — under the message */}
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                {(selectedState === "queued" || selectedState === "drafted") && selectedMsg && !editingMsg && (
+                  <>
+                    <Btn onClick={() => { setEditSubject(selectedMsg.subject); setEditBody(selectedMsg.body); setEditingMsg(true); }} variant="default">
+                      Edit Draft
+                    </Btn>
+                    <Btn onClick={() => handleDraft()} disabled={!!draftingId} variant="blue">
+                      {draftingId === selectedLead.id ? "Re-writing…" : "↺ Re-draft"}
+                    </Btn>
+                  </>
+                )}
+                {selectedState === "drafted" && selectedMsg && !editingMsg && (
+                  <Btn onClick={handleApprove} disabled={!emailEdit || approvingId === selectedLead.id} variant="green">
+                    {approvingId === selectedLead.id ? "Approving…" : "✓ Approve"}
+                  </Btn>
+                )}
+                {selectedState === "approved" && selectedMsg && !editingMsg && (
+                  <Btn onClick={handleSend} disabled={sendingId === selectedLead.id || !emailEdit || todayCount >= 50} variant="gold">
+                    {sendingId === selectedLead.id ? "Sending…" : "↗ Send Now"}
+                  </Btn>
+                )}
               </div>
             </div>
           )}
