@@ -2,8 +2,6 @@
 // Project: SignalBoost (main production repo)
 "use client";
 import React from "react";
-
-import { CockpitShell } from "@/components/CockpitShell";
 import useTranslation from "@/components/i18n/useTranslation";
 
 function fallbackText(value: string, fallback: string) {
@@ -66,14 +64,23 @@ export default function PricingCockpit() {
   const { t, lang } = useTranslation();
   const comingSoon = COMING_SOON[lang] ?? COMING_SOON.en;
 
+  const eyebrow = fallbackText(t("pricing.eyebrow"), "Tiered SaaS modules");
+  const title = fallbackText(t("pricing.title"), "Pricing cockpit");
+  const subtitle = fallbackText(
+    t("pricing.subtitle"),
+    "Choose the SignalBoost mission package that matches your marketplace, SaaS, and executive operating needs."
+  );
+
   return (
-    <CockpitShell eyebrow={fallbackText(t("pricing.eyebrow"), "Tiered SaaS modules")}
-      title={fallbackText(t("pricing.title"), "Pricing cockpit")}
-      subtitle={fallbackText(
-        t("pricing.subtitle"),
-        "Choose the SignalBoost mission package that matches your marketplace, SaaS, and executive operating needs."
-      )}
-    >
+    <div style={pageStyle}>
+      <header style={headerBarStyle}>
+        <div style={headerTextWrap}>
+          <span style={eyebrowStyle}>{eyebrow}</span>
+          <h1 style={titleStyle}>{title}</h1>
+        </div>
+        <p style={subtitleStyle}>{subtitle}</p>
+      </header>
+
       <section className="cockpit-section pricing-grid" aria-label="SignalBoost SaaS pricing tiers">
         {tiers.map((tier) => {
           const name = fallbackText(t(`pricing.${tier.key}.name`), tier.name);
@@ -99,9 +106,58 @@ export default function PricingCockpit() {
           );
         })}
       </section>
-    </CockpitShell>
+    </div>
   );
 }
+
+const pageStyle: React.CSSProperties = {
+  maxWidth: 1100,
+  margin: "0 auto",
+  padding: "20px 20px 48px",
+};
+
+const headerBarStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "baseline",
+  justifyContent: "space-between",
+  gap: 12,
+  padding: "14px 18px",
+  borderRadius: 14,
+  border: "1px solid rgba(245,197,66,.18)",
+  background: "rgba(245,197,66,.04)",
+  marginBottom: 24,
+};
+
+const headerTextWrap: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 2,
+};
+
+const eyebrowStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 800,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  color: "#dfa837",
+};
+
+const titleStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 22,
+  fontWeight: 800,
+  color: "#f5c542",
+  lineHeight: 1.15,
+};
+
+const subtitleStyle: React.CSSProperties = {
+  margin: 0,
+  maxWidth: 520,
+  fontSize: 13,
+  lineHeight: 1.5,
+  color: "rgba(230,232,238,.72)",
+};
 
 const comingSoonStyle: React.CSSProperties = {
   display: "block",
