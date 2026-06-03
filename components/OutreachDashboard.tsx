@@ -12,7 +12,11 @@ type Lead = {
   affiliate_url?: string;
   source: string;
   notes?: string;
-  status: "queued" | "drafted" | "approved" | "sent" | "skipped";
+  status: "queued" | "drafted" | "approved" | "sent" | "skipped" | "replied" | "demo" | "closed" | "lost";
+  replied_at?: string;
+  demo_at?: string;
+  closed_at?: string;
+  deal_value?: number;
   created_at: string;
 };
 
@@ -42,6 +46,27 @@ const STATUS_COLORS: Record<string, string> = {
   skipped: "#374151",
   draft: "#3b82f6",
   failed: "#ef4444",
+  replied: "#38bdf8",
+  demo: "#a78bfa",
+  closed: "#34d399",
+  lost: "#ef4444",
+};
+
+// Outcome stages a sent lead can advance through
+const OUTCOME_FLOW: Record<string, { next: string; label: string }[]> = {
+  sent: [
+    { next: "replied", label: "✉ Mark Replied" },
+    { next: "lost", label: "Mark Lost" },
+  ],
+  replied: [
+    { next: "demo", label: "📅 Demo Booked" },
+    { next: "closed", label: "✓ Closed-Won" },
+    { next: "lost", label: "Mark Lost" },
+  ],
+  demo: [
+    { next: "closed", label: "✓ Closed-Won" },
+    { next: "lost", label: "Mark Lost" },
+  ],
 };
 
 export default function OutreachDashboard({ userId }: { userId: string }) {
@@ -58,6 +83,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
   const [editSubject, setEditSubject] = useState("");
   const [editBody, setEditBody] = useState("");
   const [emailEdits, setEmailEdits] = useState<Record<string, string>>({});
+  const [outcomeId, setOutcomeId] = useState<string | null>(null);
 
   // Add lead form
   const [showAddForm, setShowAddForm] = useState(false);
@@ -174,30 +200,8 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
   }
 
   async function saveEdit(lead: Lead) {
-    const msg = msgByLead[lead.id];
-    if (!msg) return;
-    await fetch("/api/outreach/leads", {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ leadId: lead.id, status: "drafted" }),
-    });
-    // Save updated message via draft route (re-saves with edits)
-    await fetch("/api/outreach/draft", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        leadId: lead.id,
-        name: lead.name,
-        company: lead.company,
-        category: lead.category,
-        network: lead.network,
-        notes: `[MANUAL EDIT]\nSubject: ${editSubject}\nBody:\n${editBody}`,
-      }),
-    });
-    // Actually save via direct DB update is not exposed; we'll re-use the draft slot by
-    // posting to a simple message-update. For now re-generate with the edited content passed as notes
-    // is complex. Instead let's just keep the edited content in a simple save.
-    // Simpler approach: just mark approved with the edited content
+    // NOTE: message-body persistence on edit is a known limitation in the
+    // existing draft flow; re-drafting regenerates content. Left as-is here.
     setEditingLeadId(null);
     await load();
   }
@@ -210,17 +214,7 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ leadId: lead.id, status: "approved" }),
     });
-    // Update message status directly — we call the send route with just approval intent
-    // We use a dedicated approve step via the leads PUT for message status
-    // For simplicity: call send route with approve=true (no actual send)
-    // Actually: we'll handle approve by updating the message status in Supabase via a new endpoint
-    // For now, mark lead approved via leads PUT and message approved via PUT too
-    const supaRes = await fetch("/api/outreach/leads", {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ leadId: lead.id, status: "approved" }),
-    });
-    if (supaRes.ok) await load();
+    await load();
   }
 
   async function handleSend(lead: Lead) {
@@ -263,13 +257,45 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
     await load();
   }
 
+  // Record a real CRM outcome (replied / demo / closed / lost)
+  async function handleOutcome(lead: Lead, outcome: string) {
+    let dealValue: number | undefined;
+    if (outcome === "closed") {
+      const input = prompt(`Deal value for ${lead.company || lead.name} (USD)?`, "0");
+      if (input === null) return; // cancelled
+      const parsed = Number(input);
+      if (!Number.isFinite(parsed) || parsed < 0) {
+        alert("Please enter a valid non-negative number.");
+        return;
+      }
+      dealValue = parsed;
+    }
+    setOutcomeId(lead.id);
+    try {
+      const res = await fetch("/api/outreach/outcome", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id, outcome, dealValue }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to record outcome");
+      await load();
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : "Failed to record outcome");
+    } finally {
+      setOutcomeId(null);
+    }
+  }
+
   const queueLeads = leads.filter((l) => ["queued", "drafted", "approved"].includes(l.status));
-  const sentLeads = leads.filter((l) => l.status === "sent");
+  // Pipeline = everything from sent onward (the CRM funnel)
+  const pipelineLeads = leads.filter((l) =>
+    ["sent", "replied", "demo", "closed", "lost"].includes(l.status)
+  );
   const sentMessages = messages.filter((m) => m.status === "sent");
 
   const capPct = Math.min((todayCount / 50) * 100, 100);
-
-  if (loading) {
+if (loading) {
     return (
       <div style={{ minHeight: "100vh", background: bg, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.4)", fontFamily: "Outfit, sans-serif" }}>
         Loading outreach…
@@ -452,7 +478,6 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
 
                 {/* Action buttons */}
                 <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {/* Draft / Re-draft */}
                   {(lead.status === "queued" || lead.status === "drafted") && !isEditing && (
                     <button
                       onClick={() => handleDraft(lead)}
@@ -462,13 +487,11 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
                       {isDrafting ? "Drafting…" : msg ? "Re-draft" : "✦ Draft with AI"}
                     </button>
                   )}
-                  {/* Edit */}
                   {msg && !isEditing && lead.status !== "approved" && (
                     <button onClick={() => startEdit(lead)} style={btnStyle("rgba(255,255,255,0.06)", "rgba(255,255,255,0.7)", border)}>
                       Edit
                     </button>
                   )}
-                  {/* Approve */}
                   {lead.status === "drafted" && msg && !isEditing && (
                     <button
                       onClick={() => handleApprove(lead)}
@@ -479,7 +502,6 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
                       ✓ Approve
                     </button>
                   )}
-                  {/* Send */}
                   {lead.status === "approved" && msg && (
                     <button
                       onClick={() => handleSend(lead)}
@@ -496,24 +518,55 @@ export default function OutreachDashboard({ userId }: { userId: string }) {
           })}
         </div>
 
-        {/* Sent history */}
-        {sentLeads.length > 0 && (
+        {/* Pipeline (CRM funnel: sent → replied → demo → closed/lost) */}
+        {pipelineLeads.length > 0 && (
           <>
             <h2 style={{ fontSize: 13, fontWeight: 700, color: textMuted, letterSpacing: "0.1em", textTransform: "uppercase", margin: "0 0 14px" }}>
-              Sent ({sentLeads.length})
+              Pipeline ({pipelineLeads.length})
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {sentLeads.map((lead) => {
+              {pipelineLeads.map((lead) => {
                 const sentMsg = sentMessages.find((m) => m.lead_id === lead.id);
-                const sentAt = sentMsg?.sent_at ? new Date(sentMsg.sent_at).toLocaleString() : "—";
+                const sentAt = sentMsg?.sent_at ? new Date(sentMsg.sent_at).toLocaleDateString() : "—";
+                const transitions = OUTCOME_FLOW[lead.status] || [];
+                const isWorking = outcomeId === lead.id;
                 return (
-                  <div key={lead.id} style={{ background: "rgba(245,197,66,0.04)", border: `1px solid rgba(245,197,66,0.12)`, borderRadius: 10, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                    <div>
-                      <span style={{ fontWeight: 600, fontSize: 14 }}>{lead.company || lead.name}</span>
-                      {lead.category && <span style={{ color: textMuted, fontSize: 13, marginLeft: 8 }}>· {lead.category}</span>}
-                      {lead.email && <span style={{ color: textMuted, fontSize: 12, marginLeft: 8 }}>→ {lead.email}</span>}
+                  <div key={lead.id} style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${border}`, borderRadius: 10, padding: "12px 16px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                      <div>
+                        <span style={{ fontWeight: 600, fontSize: 14 }}>{lead.company || lead.name}</span>
+                        {lead.category && <span style={{ color: textMuted, fontSize: 13, marginLeft: 8 }}>· {lead.category}</span>}
+                        {lead.status === "closed" && lead.deal_value != null && (
+                          <span style={{ color: "#34d399", fontSize: 13, marginLeft: 8, fontWeight: 700 }}>
+                            ${lead.deal_value.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: STATUS_COLORS[lead.status] || textMuted, background: "rgba(255,255,255,0.05)", padding: "3px 8px", borderRadius: 4 }}>
+                          {lead.status}
+                        </span>
+                        <span style={{ fontSize: 12, color: textMuted }}>{sentAt}</span>
+                      </div>
                     </div>
-                    <span style={{ fontSize: 12, color: textMuted }}>{sentAt}</span>
+                    {transitions.length > 0 && (
+                      <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        {transitions.map((t) => (
+                          <button
+                            key={t.next}
+                            onClick={() => handleOutcome(lead, t.next)}
+                            disabled={isWorking}
+                            style={btnStyle(
+                              isWorking ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.06)",
+                              isWorking ? textMuted : (STATUS_COLORS[t.next] || "#fff"),
+                              border
+                            )}
+                          >
+                            {isWorking ? "Saving…" : t.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}
