@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import useTranslation from "@/components/i18n/useTranslation";
 
 type ModuleName = "concierge" | "promote" | "calendar" | "reviews" | "spreadsheets" | "outreach";
@@ -22,11 +22,7 @@ type OrchestrationResponse = {
   modules: ModuleResult[];
   options: string[];
   nextSteps: string[];
-  persistence: {
-    shouldContinue: boolean;
-    fallbackApplied: boolean;
-    clarificationQuestion?: string;
-  };
+  persistence: { shouldContinue: boolean; fallbackApplied: boolean; clarificationQuestion?: string };
 };
 
 type ChatTurn = {
@@ -44,269 +40,223 @@ const MODULES: { key: ModuleName; label: string }[] = [
   { key: "outreach", label: "Outreach" },
 ];
 
-const VISIBLE_DATA_KEYS = new Set(["averageRating", "pendingResponses", "replyRate", "queuedLeads", "rowsReady", "forecastDelta", "campaignLift"]);
+const VISIBLE_KEYS = new Set(["averageRating", "pendingResponses", "replyRate", "queuedLeads", "rowsReady", "campaignLift"]);
 
-function fallbackText(value: string, fallback: string) {
-  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
+function ft(v: string, f: string) {
+  return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(v) ? f : v;
 }
 
-function dataLabel(value: string | number | boolean | string[]) {
-  if (Array.isArray(value)) return value.join(", ");
-  if (typeof value === "boolean") return value ? "Yes" : "No";
-  return String(value);
-}
-
-function statusText(status: OrchestrationResponse["status"]) {
-  if (status === "completed") return "completed";
-  if (status === "needs_clarification") return "needs clarification";
-  return "fallback";
-}
-
-const COMPACT_STYLES = `
-  .concierge-console { gap: 12px !important; }
-  .concierge-console__intro { padding: 14px 18px !important; border-radius: 16px !important; }
-  .concierge-console__intro h2 { font-size: clamp(16px, 2vw, 24px) !important; margin: 4px 0 6px !important; letter-spacing: -0.03em !important; }
-  .concierge-console__intro p { font-size: 12px !important; line-height: 1.5 !important; }
-  .cockpit-eyebrow { font-size: 10px !important; }
-  .concierge-console__grid { gap: 12px !important; grid-template-columns: minmax(0,1.4fr) minmax(220px,0.6fr) !important; }
-  .concierge-chat-panel { border-radius: 16px !important; grid-template-rows: auto minmax(180px,1fr) auto !important; }
-  .concierge-module-switcher { gap: 5px !important; padding: 10px 12px !important; }
-  .concierge-module-switcher button { font-size: 10px !important; padding: 5px 9px !important; }
-  .concierge-turns { gap: 8px !important; max-height: 360px !important; padding: 12px !important; }
-  .concierge-message p { font-size: 13px !important; line-height: 1.5 !important; margin-top: 4px !important; }
-  .concierge-message span { font-size: 10px !important; }
-  .concierge-empty-state, .concierge-message, .concierge-response-detail, .concierge-module-result { padding: 10px 12px !important; border-radius: 12px !important; }
-  .concierge-response-detail { font-size: 11px !important; margin-top: 6px !important; }
-  .concierge-status-row { gap: 5px !important; margin-top: 6px !important; }
-  .concierge-status-row span { font-size: 9px !important; padding: 2px 6px !important; }
-  .concierge-composer { gap: 7px !important; padding: 10px 12px !important; }
-  .concierge-composer textarea { min-height: 56px !important; font-size: 13px !important; padding: 8px 10px !important; border-radius: 12px !important; }
-  .concierge-composer button { font-size: 12px !important; min-width: 120px !important; border-radius: 12px !important; }
-  .concierge-side-panel { gap: 10px !important; }
-  .concierge-cardlet { padding: 12px 14px !important; border-radius: 14px !important; }
-  .concierge-cardlet h3 { font-size: 13px !important; margin: 3px 0 8px !important; letter-spacing: -0.01em !important; }
-  .concierge-cardlet ul, .concierge-cardlet ol { gap: 5px !important; font-size: 11px !important; padding-left: 14px !important; }
-  .module-results-card { gap: 6px !important; }
-  .concierge-module-result { gap: 4px !important; padding: 8px 10px !important; border-radius: 10px !important; }
-  .concierge-module-result strong { font-size: 12px !important; }
-  .concierge-module-result p { font-size: 11px !important; }
-  .concierge-module-result span { font-size: 9px !important; padding: 2px 6px !important; }
-  .telemetry-label { font-size: 9px !important; letter-spacing: 0.16em !important; }
-  @media (max-width: 980px) {
-    .concierge-console__grid { grid-template-columns: 1fr !important; }
-  }
-`;
+const gold = "#f5c542";
+const border = "rgba(255,255,255,0.08)";
+const muted = "rgba(255,255,255,0.45)";
+const cardBg = "rgba(255,255,255,0.03)";
 
 export default function Concierge() {
   const { t, lang } = useTranslation();
-
-  const STARTER = fallbackText(t("assistant.starterText"), "Plan a launch next week, collect reviews, organize the data, and draft outreach.");
-
+  const STARTER = ft(t("assistant.starterText"), "Plan a launch, collect reviews, organize data, and draft outreach.");
   const [message, setMessage] = useState(STARTER);
-  const [composerTouched, setComposerTouched] = useState(false);
-  const [selectedModule, setSelectedModule] = useState<ModuleName | "auto">("auto");
-  const [isLoading, setIsLoading] = useState(false);
+  const [touched, setTouched] = useState(false);
+  const [mod, setMod] = useState<ModuleName | "auto">("auto");
+  const [loading, setLoading] = useState(false);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
-  const [snapshots, setSnapshots] = useState<ModuleResult[]>([]);
+  const [snaps, setSnaps] = useState<ModuleResult[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!composerTouched) setMessage(STARTER);
-  }, [STARTER, composerTouched]);
+  useEffect(() => { if (!touched) setMessage(STARTER); }, [STARTER, touched]);
 
   useEffect(() => {
     let alive = true;
-    Promise.all(
-      MODULES.filter((m) => m.key !== "concierge").map((m) =>
-        fetch(`/api/saas/${m.key}?lang=${encodeURIComponent(lang)}`, { cache: "no-store" })
-          .then((res) => (res.ok ? res.json() : null))
-          .catch(() => null)
-      )
-    ).then((items) => {
-      if (alive) setSnapshots(items.filter(Boolean));
-    });
+    Promise.all(MODULES.filter(m => m.key !== "concierge").map(m =>
+      fetch(`/api/saas/${m.key}?lang=${encodeURIComponent(lang)}`, { cache: "no-store" })
+        .then(r => r.ok ? r.json() : null).catch(() => null)
+    )).then(items => { if (alive) setSnaps(items.filter(Boolean)); });
     return () => { alive = false; };
   }, [lang]);
 
-  const latest = useMemo(() => [...turns].reverse().find((turn) => turn.response)?.response, [turns]);
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [turns]);
 
-  function handleReset() {
-    setTurns([]);
-    setMessage(STARTER);
-    setComposerTouched(false);
-  }
+  const latest = useMemo(() => [...turns].reverse().find(t => t.response)?.response, [turns]);
+
+  function reset() { setTurns([]); setMessage(STARTER); setTouched(false); }
 
   async function submit(raw?: string) {
     const content = (raw ?? message).trim();
-    if (!content || isLoading) return;
-    setIsLoading(true);
-    setTurns((current) => [...current, { role: "user", content }]);
+    if (!content || loading) return;
+    setLoading(true);
+    setTurns(c => [...c, { role: "user", content }]);
     setMessage("");
-    const priorHistory = turns
-      .filter((tn) => tn.role === "user" || tn.role === "assistant")
-      .map((tn) => ({ role: tn.role, content: tn.content }))
-      .slice(-40);
+    const history = turns.filter(t => t.role === "user" || t.role === "assistant")
+      .map(t => ({ role: t.role, content: t.content })).slice(-40);
     try {
       const res = await fetch("/api/orchestrate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content, module: selectedModule, lang, history: priorHistory }),
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: content, module: mod, lang, history }),
       });
-      const data = (await res.json()) as OrchestrationResponse;
-      setTurns((current) => [...current, { role: "assistant", content: data.answer, response: data }]);
+      const data = await res.json() as OrchestrationResponse;
+      setTurns(c => [...c, { role: "assistant", content: data.answer, response: data }]);
     } catch {
-      const fallback: OrchestrationResponse = {
-        understood: `I understood: "${content}". Continuing with safe defaults.`,
-        status: "demo_fallback",
-        answer: fallbackText(t("assistant.fbAnswer"), "I will not stop the task. Use the Concierge fallback path: clarify the goal, choose a module, and continue."),
-        activeModules: ["concierge"],
-        modules: [],
-        options: ["Retry", "Use demo data", "Switch modules"],
-        nextSteps: ["Confirm the fallback", "Pick a module", "Continue refining"],
-        persistence: { shouldContinue: true, fallbackApplied: true },
-      };
-      setTurns((current) => [...current, { role: "assistant", content: fallback.answer, response: fallback }]);
-    } finally {
-      setIsLoading(false);
-    }
+      setTurns(c => [...c, { role: "assistant", content: ft(t("assistant.fbAnswer"), "Continuing with safe defaults. Please try again."), response: undefined }]);
+    } finally { setLoading(false); }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    submit();
-  }
+  function handleSubmit(e: FormEvent) { e.preventDefault(); submit(); }
 
-  const activeModules = latest?.modules.length ? latest.modules : snapshots;
+  const activeModules = latest?.modules.length ? latest.modules : snaps;
 
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: COMPACT_STYLES }} />
-      <section className="concierge-console" aria-label="SignalBoost Concierge AI orchestrator">
-        <div className="concierge-console__intro">
-          <p className="cockpit-eyebrow">{fallbackText(t("assistant.eyebrow"), "Persistent AI orchestration")}</p>
-          <h2>{fallbackText(t("assistant.heading"), "Concierge understands, routes, and keeps going.")}</h2>
-          <p>{fallbackText(t("assistant.intro"), "Coordinates Promote, Calendar, Reviews, Spreadsheets, Outreach, and Concierge intelligence.")}</p>
+    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 64px)", fontFamily: "Arial,Helvetica,sans-serif" }}>
+      {/* Top bar */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 20px", borderBottom: `1px solid ${border}`, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ color: gold, fontSize: 10, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase" }}>SignalBoost</span>
+          <span style={{ color: "#fff", fontWeight: 900, fontSize: 15 }}>Concierge</span>
+          <span style={{ color: muted, fontSize: 12 }}>— AI orchestration across all modules</span>
         </div>
+        {turns.length > 0 && (
+          <button onClick={reset} title="New conversation" style={{ background: "none", border: `1px solid ${border}`, borderRadius: 8, color: muted, cursor: "pointer", fontSize: 14, padding: "4px 10px" }}>↺ New</button>
+        )}
+      </div>
 
-        <div className="concierge-console__grid">
-          {/* Chat panel */}
-          <div className="concierge-chat-panel">
-            <div className="concierge-module-switcher">
-              <button className={selectedModule === "auto" ? "active" : ""} onClick={() => setSelectedModule("auto")} type="button">
-                {fallbackText(t("assistant.autoRoute"), "Auto")}
-              </button>
-              {MODULES.map((module) => (
-                <button className={selectedModule === module.key ? "active" : ""} key={module.key} onClick={() => setSelectedModule(module.key)} type="button">
-                  {module.label}
-                </button>
-              ))}
-            </div>
+      {/* Main grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", flex: 1, minHeight: 0, gap: 0 }}>
 
-            <div className="concierge-turns" aria-live="polite">
-              {turns.length === 0 ? (
-                <div className="concierge-empty-state">
-                  <strong>{fallbackText(t("assistant.understandTitle"), "What I understand so far")}</strong>
-                  <p>{fallbackText(t("assistant.understandBody"), "A persistent assistant that routes work across SignalBoost modules.")}</p>
-                  <div className="concierge-options">
-                    <button onClick={() => submit(STARTER)} type="button">{fallbackText(t("assistant.starterLaunch"), "Run launch plan")}</button>
-                    <button onClick={() => submit(fallbackText(t("assistant.quickReviews"), "Summarize my reviews and draft outreach"))} type="button">{fallbackText(t("assistant.starterReviews"), "Reviews + outreach")}</button>
-                    <button onClick={() => submit(fallbackText(t("assistant.quickGeneral"), "What can SignalBoost do?"))} type="button">{fallbackText(t("assistant.starterGeneral"), "General answer")}</button>
-                  </div>
-                </div>
-              ) : (
-                turns.map((turn, index) => (
-                  <div className={`concierge-message ${turn.role}`} key={`${turn.role}-${index}`}>
-                    <span>{turn.role === "user" ? fallbackText(t("assistant.you"), "You") : fallbackText(t("assistant.concierge"), "Concierge")}</span>
-                    <p>{turn.content}</p>
-                    {turn.response && (
-                      <div className="concierge-response-detail">
-                        <strong>{turn.response.understood}</strong>
-                        {turn.response.persistence.clarificationQuestion && <p>{turn.response.persistence.clarificationQuestion}</p>}
-                        <div className="concierge-status-row">
-                          <span>{fallbackText(t("assistant.statusLabel"), "Status")}: {statusText(turn.response.status)}</span>
-                          <span>{fallbackText(t("assistant.continueLabel"), "Continue")}: {turn.response.persistence.shouldContinue ? "yes" : "no"}</span>
-                          <span>{fallbackText(t("assistant.fallbackLabel"), "Fallback")}: {turn.response.persistence.fallbackApplied ? "active" : "not needed"}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
+        {/* Left: chat */}
+        <div style={{ display: "flex", flexDirection: "column", minHeight: 0, borderRight: `1px solid ${border}` }}>
 
-            <form className="concierge-composer" onSubmit={handleSubmit}>
-              <textarea
-                aria-label="Ask SignalBoost Concierge"
-                onChange={(event) => { setComposerTouched(true); setMessage(event.target.value); }}
-                placeholder={fallbackText(t("assistant.placeholder"), "Ask for a plan, module task, or general answer...")}
-                rows={3}
-                value={message}
-              />
-              <div style={{ display: "flex", gap: 8, alignSelf: "stretch" }}>
-                <button disabled={isLoading} type="submit" style={{ flex: 1 }}>
-                  {isLoading ? fallbackText(t("assistant.routing"), "Routing...") : fallbackText(t("assistant.send"), "Send to Concierge")}
-                </button>
-                {turns.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    title="New conversation"
-                    style={{ padding: "0 14px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 12, color: "rgba(255,255,255,0.55)", cursor: "pointer", fontSize: 16 }}
-                  >↺</button>
-                )}
-              </div>
-            </form>
+          {/* Module tabs */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5, padding: "8px 14px", borderBottom: `1px solid ${border}`, flexShrink: 0 }}>
+            {[{ key: "auto" as const, label: "Auto" }, ...MODULES].map(m => (
+              <button key={m.key} onClick={() => setMod(m.key)} style={{
+                background: mod === m.key ? "rgba(245,197,66,0.14)" : "rgba(255,255,255,0.05)",
+                border: `1px solid ${mod === m.key ? "rgba(245,197,66,0.46)" : border}`,
+                borderRadius: 20, color: mod === m.key ? gold : muted,
+                cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "4px 10px",
+              }}>{m.label}</button>
+            ))}
           </div>
 
-          {/* Side panel */}
-          <aside className="concierge-side-panel">
-            <div className="concierge-cardlet">
-              <span className="telemetry-label">{fallbackText(t("assistant.sharedAgency"), "Options")}</span>
-              <h3>{fallbackText(t("assistant.confirmAdjust"), "Confirm or adjust")}</h3>
-              <ul>
-                {(latest?.options || [fallbackText(t("assistant.optionsEmpty"), "Send a request to see options.")]).map((option) => (
-                  <li key={option}>{option}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="concierge-cardlet">
-              <span className="telemetry-label">{fallbackText(t("assistant.nextRefinement"), "Next refinement")}</span>
-              <h3>{fallbackText(t("assistant.nextSteps"), "Next steps")}</h3>
-              <ol>
-                {(latest?.nextSteps || [
-                  fallbackText(t("assistant.stepDescribe"), "Describe the goal"),
-                  fallbackText(t("assistant.stepPick"), "Pick modules"),
-                  fallbackText(t("assistant.stepRun"), "Run and refine"),
-                ]).map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="concierge-cardlet module-results-card">
-              <span className="telemetry-label">{fallbackText(t("assistant.activeModules"), "Active modules")}</span>
-              <h3>{fallbackText(t("assistant.moduleSignals"), "Module signals")}</h3>
-              {activeModules.map((module) => (
-                <article className="concierge-module-result" key={`${module.module}-${module.summary}`}>
-                  <div>
-                    <strong>{module.label}</strong>
-                    <span>{module.status === "ok" ? "OK" : "fallback"}</span>
-                  </div>
-                  <p>{module.summary}</p>
-                  {Object.entries(module.data)
-                    .filter(([key]) => VISIBLE_DATA_KEYS.has(key))
-                    .slice(0, 2)
-                    .map(([key, value]) => (
-                      <div key={key} style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>
-                        {key}: {dataLabel(value)}
+          {/* Messages */}
+          <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+            {turns.length === 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "12px 0" }}>
+                <p style={{ color: muted, fontSize: 13 }}>{ft(t("assistant.understandBody"), "A persistent assistant that routes work across SignalBoost modules.")}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                  {[
+                    { label: ft(t("assistant.starterLaunch"), "Run launch plan"), msg: STARTER },
+                    { label: ft(t("assistant.starterReviews"), "Reviews + outreach"), msg: ft(t("assistant.quickReviews"), "Summarize my reviews and draft outreach") },
+                    { label: ft(t("assistant.starterGeneral"), "What can SignalBoost do?"), msg: ft(t("assistant.quickGeneral"), "What can SignalBoost do?") },
+                  ].map(({ label, msg }) => (
+                    <button key={label} onClick={() => submit(msg)} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 8, color: "rgba(255,255,255,0.75)", cursor: "pointer", fontFamily: "inherit", fontSize: 12, padding: "7px 12px" }}>{label}</button>
+                  ))}
+                </div>
+              </div>
+            ) : turns.map((turn, i) => (
+              <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: turn.role === "user" ? "flex-end" : "flex-start", gap: 3 }}>
+                <span style={{ fontSize: 10, fontWeight: 900, color: muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  {turn.role === "user" ? ft(t("assistant.you"), "You") : "Concierge"}
+                </span>
+                <div style={{
+                  background: turn.role === "user" ? "rgba(245,197,66,0.1)" : cardBg,
+                  border: `1px solid ${turn.role === "user" ? "rgba(245,197,66,0.2)" : border}`,
+                  borderRadius: 12, maxWidth: "88%", padding: "10px 13px",
+                }}>
+                  <p style={{ fontSize: 13, lineHeight: 1.55, color: "rgba(255,255,255,0.88)", margin: 0 }}>{turn.content}</p>
+                  {turn.response && (
+                    <div style={{ marginTop: 8, paddingTop: 8, borderTop: `1px solid ${border}`, fontSize: 11, color: muted }}>
+                      <p style={{ margin: "0 0 4px", color: "rgba(255,255,255,0.6)", fontWeight: 700 }}>{turn.response.understood}</p>
+                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                        <span style={{ background: "rgba(34,211,238,0.1)", color: "#a5f3fc", borderRadius: 6, padding: "2px 7px", fontSize: 10, fontWeight: 700 }}>
+                          {turn.response.status}
+                        </span>
+                        <span style={{ background: "rgba(34,211,238,0.1)", color: "#a5f3fc", borderRadius: 6, padding: "2px 7px", fontSize: 10, fontWeight: 700 }}>
+                          {ft(t("assistant.continueLabel"), "continue")}: {turn.response.persistence.shouldContinue ? "yes" : "no"}
+                        </span>
                       </div>
-                    ))}
-                </article>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div style={{ alignSelf: "flex-start" }}>
+                <div style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 12, padding: "10px 14px", color: muted, fontSize: 13 }}>…</div>
+              </div>
+            )}
+          </div>
+
+          {/* Composer */}
+          <div style={{ flexShrink: 0, borderTop: `1px solid ${border}`, padding: "10px 14px", display: "flex", gap: 8, alignItems: "flex-end" }}>
+            <textarea
+              value={message}
+              onChange={e => { setTouched(true); setMessage(e.target.value); }}
+              onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
+              placeholder={ft(t("assistant.placeholder"), "Ask for a plan, task, or general answer... (Enter to send)")}
+              rows={2}
+              style={{ flex: 1, background: cardBg, border: `1px solid ${border}`, borderRadius: 10, color: "#fff", fontFamily: "inherit", fontSize: 13, padding: "9px 12px", resize: "none", outline: "none" }}
+            />
+            <button
+              onClick={() => submit()} disabled={loading}
+              style={{ background: gold, border: "none", borderRadius: 10, color: "#11151c", cursor: loading ? "not-allowed" : "pointer", fontWeight: 900, fontSize: 13, padding: "9px 18px", opacity: loading ? 0.6 : 1, whiteSpace: "nowrap" }}
+            >
+              {loading ? "…" : ft(t("assistant.send"), "Send")}
+            </button>
+          </div>
+        </div>
+
+        {/* Right: side panel */}
+        <div style={{ display: "flex", flexDirection: "column", overflowY: "auto", gap: 0 }}>
+
+          {/* Options */}
+          <div style={{ padding: "14px 14px 10px", borderBottom: `1px solid ${border}` }}>
+            <p style={{ color: gold, fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 4px" }}>{ft(t("assistant.sharedAgency"), "Options")}</p>
+            <p style={{ color: "#fff", fontWeight: 900, fontSize: 13, margin: "0 0 8px" }}>{ft(t("assistant.confirmAdjust"), "Confirm or adjust")}</p>
+            <ul style={{ paddingLeft: 14, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+              {(latest?.options || [ft(t("assistant.optionsEmpty"), "Send a request to see options.")]).map(o => (
+                <li key={o} style={{ fontSize: 11, color: muted, lineHeight: 1.4 }}>{o}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Next steps */}
+          <div style={{ padding: "12px 14px 10px", borderBottom: `1px solid ${border}` }}>
+            <p style={{ color: gold, fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 4px" }}>{ft(t("assistant.nextRefinement"), "Next refinement")}</p>
+            <p style={{ color: "#fff", fontWeight: 900, fontSize: 13, margin: "0 0 8px" }}>{ft(t("assistant.nextSteps"), "Next steps")}</p>
+            <ol style={{ paddingLeft: 16, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+              {(latest?.nextSteps || [
+                ft(t("assistant.stepDescribe"), "Describe the goal"),
+                ft(t("assistant.stepPick"), "Pick modules"),
+                ft(t("assistant.stepRun"), "Run and refine"),
+              ]).map(s => (
+                <li key={s} style={{ fontSize: 11, color: muted, lineHeight: 1.4 }}>{s}</li>
+              ))}
+            </ol>
+          </div>
+
+          {/* Active modules */}
+          <div style={{ padding: "12px 14px", flex: 1, overflowY: "auto" }}>
+            <p style={{ color: gold, fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 4px" }}>{ft(t("assistant.activeModules"), "Active modules")}</p>
+            <p style={{ color: "#fff", fontWeight: 900, fontSize: 13, margin: "0 0 10px" }}>{ft(t("assistant.moduleSignals"), "Module signals")}</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {activeModules.map(m => (
+                <div key={m.module} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 10, padding: "9px 11px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <span style={{ fontWeight: 900, fontSize: 12, color: "#fff" }}>{m.label}</span>
+                    <span style={{ background: m.status === "ok" ? "rgba(16,185,129,0.12)" : "rgba(245,197,66,0.1)", color: m.status === "ok" ? "#34d399" : gold, border: `1px solid ${m.status === "ok" ? "rgba(16,185,129,0.3)" : "rgba(245,197,66,0.3)"}`, borderRadius: 6, fontSize: 9, fontWeight: 900, padding: "2px 6px" }}>
+                      {m.status === "ok" ? "OK" : "fallback"}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: 11, color: muted, margin: 0, lineHeight: 1.4 }}>{m.summary}</p>
+                  {Object.entries(m.data).filter(([k]) => VISIBLE_KEYS.has(k)).slice(0, 1).map(([k, v]) => (
+                    <p key={k} style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", margin: "3px 0 0" }}>{k}: {Array.isArray(v) ? v.join(", ") : String(v)}</p>
+                  ))}
+                </div>
               ))}
             </div>
-          </aside>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }
