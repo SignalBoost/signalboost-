@@ -67,14 +67,19 @@ export async function getServices(ownerId: string): Promise<CalendarService[]> {
 }
 
 export async function getServiceBySlug(slug: string): Promise<CalendarService | null> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("calendar_services")
-    .select("*")
-    .eq("slug", slug)
-    .eq("active", true)
-    .maybeSingle();
-  return data || null;
+  // Use direct REST API for public pages (no auth cookies required)
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  try {
+    const res = await fetch(
+      url + "/rest/v1/calendar_services?slug=eq." + encodeURIComponent(slug) + "&active=eq.true&select=*&limit=1",
+      { headers: { apikey: key, Authorization: "Bearer " + key }, cache: "no-store" }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return Array.isArray(data) && data[0] ? (data[0] as CalendarService) : null;
+  } catch { return null; }
 }
 
 export async function createService(
@@ -221,7 +226,17 @@ export async function getAvailableSlots(serviceId: string, date: string): Promis
 }
 
 export async function getAvailableDaysOfWeek(serviceId: string): Promise<number[]> {
-  const supabase = await createClient();
-  const { data } = await supabase.from("calendar_availability").select("day_of_week").eq("service_id", serviceId);
-  return (data || []).map((d) => d.day_of_week);
+  // Use direct REST API for public pages
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return [];
+  try {
+    const res = await fetch(
+      url + "/rest/v1/calendar_availability?service_id=eq." + serviceId + "&select=day_of_week",
+      { headers: { apikey: key, Authorization: "Bearer " + key }, cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data.map((d: { day_of_week: number }) => d.day_of_week) : [];
+  } catch { return []; }
 }
