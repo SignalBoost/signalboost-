@@ -11,7 +11,11 @@ export type OutreachLead = {
   affiliate_url?: string;
   source: string;
   notes?: string;
-  status: "queued" | "drafted" | "approved" | "sent" | "skipped";
+  status: "queued" | "drafted" | "approved" | "sent" | "skipped" | "replied" | "demo" | "closed" | "lost";
+  replied_at?: string;
+  demo_at?: string;
+  closed_at?: string;
+  deal_value?: number;
   created_at: string;
 };
 
@@ -63,6 +67,59 @@ export async function updateLead(
     .from("outreach_leads")
     .update(updates)
     .eq("id", leadId);
+  if (error) throw error;
+}
+
+// ── Outcome transitions (CRM stage advancement) ─────────────
+// These record the real funnel beyond "sent": replied → demo → closed/lost.
+// Each sets both the status and the corresponding timestamp so telemetry
+// and forecasting compute from actual recorded events, never guesses.
+
+export async function markReplied(leadId: string, ownerId: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("outreach_leads")
+    .update({ status: "replied", replied_at: new Date().toISOString() })
+    .eq("id", leadId)
+    .eq("owner_id", ownerId);
+  if (error) throw error;
+}
+
+export async function markDemo(leadId: string, ownerId: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("outreach_leads")
+    .update({ status: "demo", demo_at: new Date().toISOString() })
+    .eq("id", leadId)
+    .eq("owner_id", ownerId);
+  if (error) throw error;
+}
+
+export async function markClosed(
+  leadId: string,
+  ownerId: string,
+  dealValue: number
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("outreach_leads")
+    .update({
+      status: "closed",
+      closed_at: new Date().toISOString(),
+      deal_value: dealValue,
+    })
+    .eq("id", leadId)
+    .eq("owner_id", ownerId);
+  if (error) throw error;
+}
+
+export async function markLost(leadId: string, ownerId: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("outreach_leads")
+    .update({ status: "lost" })
+    .eq("id", leadId)
+    .eq("owner_id", ownerId);
   if (error) throw error;
 }
 
