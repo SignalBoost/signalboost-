@@ -33,6 +33,7 @@ const NAV: NavNode[] = [
       { labelKey: "header.spreadsheets", fallback: "Spreadsheets", path: "/spreadsheets" },
       { labelKey: "header.outreach", fallback: "Outreach", path: "/outreach" },
       { labelKey: "header.assistant", fallback: "Personal Assistant", path: "/assistant" },
+      { labelKey: "header.executive", fallback: "Executive Dashboard", path: "/executive" },
     ],
   },
   { kind: "link", labelKey: "header.pricing", fallback: "Pricing", path: "/pricing" },
@@ -259,4 +260,4 @@ const NV_CSS = `
   .nv-menu-open{transform:none;}
   .nv-mobile-tools{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);}
 }
-`;
+`;</document_content>
