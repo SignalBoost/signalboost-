@@ -1,9 +1,11 @@
 // File: app/spreadsheets/page.tsx
-// Real spreadsheets tool, gated to logged-in users. Data is per-user (RLS).
+// Real spreadsheets tool, gated to Growth+ (or admin). Data is per-user (RLS).
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { checkAccess } from "@/lib/access";
 import SpreadsheetsTool from "@/components/tools/SpreadsheetsTool";
+import UpgradeGate from "@/components/UpgradeGate";
 
 export const metadata = { title: "Spreadsheets | SignalBoost" };
 
@@ -11,6 +13,17 @@ export default async function Page() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login?flow=main&next=/spreadsheets");
+
+  const access = await checkAccess("spreadsheets");
+  if (!access.allowed) {
+    return (
+      <UpgradeGate
+        feature="Spreadsheets"
+        requiredPlan={access.requiredPlan}
+        reason={access.reason === "no_user" ? "no_user" : access.reason === "inactive" ? "inactive" : "plan_too_low"}
+      />
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "#06060a", color: "#e6edf3", fontFamily: "'Outfit', system-ui, sans-serif", padding: "28px clamp(16px,3vw,36px)" }}>
