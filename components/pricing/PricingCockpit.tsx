@@ -1,6 +1,6 @@
 // File: components/pricing/PricingCockpit.tsx
-// Project: SignalBoost (main production repo)
 "use client";
+
 import React from "react";
 import useTranslation from "@/components/i18n/useTranslation";
 
@@ -8,7 +8,6 @@ function fallbackText(value: string, fallback: string) {
   return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
-// Price numbers are universal; only the unit ("/mo") or "Custom" is translated.
 const tiers = [
   {
     key: "starter",
@@ -52,17 +51,35 @@ const tiers = [
   },
 ];
 
-const COMING_SOON: Record<string, string> = {
-  en: "Coming soon",
-  es: "Próximamente",
-  pt: "Em breve",
-  pl: "Wkrótce",
-  ru: "Скоро",
-};
-
 export default function PricingCockpit() {
-  const { t, lang } = useTranslation();
-  const comingSoon = COMING_SOON[lang] ?? COMING_SOON.en;
+  const { t } = useTranslation();
+  const [loadingPlan, setLoadingPlan] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+
+  async function startCheckout(plan: string) {
+    try {
+      setError(null);
+      setLoadingPlan(plan);
+
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Could not start checkout.");
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not start checkout.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  }
 
   const eyebrow = fallbackText(t("pricing.eyebrow"), "Tiered SaaS modules");
   const title = fallbackText(t("pricing.title"), "Pricing cockpit");
@@ -90,22 +107,46 @@ export default function PricingCockpit() {
           const features = tier.features.map((f, i) =>
             fallbackText(t(`pricing.${tier.key}.features.${i}`), f)
           );
+
           return (
             <article className={tier.featured ? "pricing-card featured" : "pricing-card"} key={tier.key}>
-              {tier.featured && <span className="pricing-ribbon">{fallbackText(t("pricing.recommended"), "Recommended")}</span>}
+              {tier.featured && (
+                <span className="pricing-ribbon">
+                  {fallbackText(t("pricing.recommended"), "Recommended")}
+                </span>
+              )}
+
               <h2>{name}</h2>
               <strong>{price}</strong>
               <p>{mission}</p>
+
               <ul>
                 {features.map((feature) => (
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
-              <span className="pricing-coming-soon" aria-disabled="true" style={comingSoonStyle}>{comingSoon}</span>
+
+              {tier.key === "enterprise" ? (
+                <a href="/contact" className="pricing-cta" style={ctaStyle}>
+                  Contact sales
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className="pricing-cta"
+                  style={ctaStyle}
+                  onClick={() => startCheckout(tier.key)}
+                  disabled={loadingPlan === tier.key}
+                >
+                  {loadingPlan === tier.key ? "Opening checkout..." : "Subscribe"}
+                </button>
+              )}
             </article>
           );
         })}
       </section>
+
+      {error && <p style={errorStyle}>{error}</p>}
     </div>
   );
 }
@@ -159,16 +200,26 @@ const subtitleStyle: React.CSSProperties = {
   color: "rgba(230,232,238,.72)",
 };
 
-const comingSoonStyle: React.CSSProperties = {
+const ctaStyle: React.CSSProperties = {
   display: "block",
   marginTop: "auto",
   textAlign: "center",
   padding: "11px 16px",
   borderRadius: 999,
-  border: "1px dashed rgba(245,197,66,.4)",
-  background: "rgba(245,197,66,.06)",
-  color: "#dfa837",
+  border: "1px solid rgba(245,197,66,.5)",
+  background: "rgba(245,197,66,.14)",
+  color: "#f5c542",
   fontWeight: 800,
   fontSize: 13,
   letterSpacing: "0.04em",
+  textDecoration: "none",
+  cursor: "pointer",
+  width: "100%",
+};
+
+const errorStyle: React.CSSProperties = {
+  marginTop: 16,
+  textAlign: "center",
+  color: "#ff8a8a",
+  fontWeight: 700,
 };
