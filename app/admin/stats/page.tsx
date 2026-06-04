@@ -79,8 +79,18 @@ export default async function StatsPage() {
   if (!adminList().includes((user.email || "").toLowerCase())) redirect("/");
 
   // Pull recent rows (cap to keep it fast).
-  const { data: clicksData } = await supabase.from("partner_clicks").select("*").limit(5000);
-  const { data: searchesData } = await supabase.from("partner_searches").select("*").limit(5000);
+  const { data: clicksData, error: clicksError } = await supabase
+    .from("partner_clicks")
+    .select("*")
+    .limit(5000);
+  const { data: searchesData, error: searchesError } = await supabase
+    .from("partner_searches")
+    .select("*")
+    .limit(5000);
+
+  if (clicksError) console.error("[stats] partner_clicks read failed:", clicksError.message);
+  if (searchesError) console.error("[stats] partner_searches read failed:", searchesError.message);
+
   const clicks = (clicksData || []) as Row[];
   const searches = (searchesData || []) as Row[];
 
