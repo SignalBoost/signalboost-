@@ -56,6 +56,15 @@ export default function PricingCockpit() {
   const [loadingPlan, setLoadingPlan] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
+  function redirectToSignup(plan: string) {
+    const params = new URLSearchParams({
+      plan,
+      next: `/pricing?checkout_plan=${encodeURIComponent(plan)}`,
+    });
+
+    window.location.href = `/signup?${params.toString()}`;
+  }
+
   async function startCheckout(plan: string) {
     try {
       setError(null);
@@ -68,6 +77,11 @@ export default function PricingCockpit() {
       });
 
       const data = await res.json();
+
+      if (res.status === 401) {
+        redirectToSignup(plan);
+        return;
+      }
 
       if (!res.ok || !data.url) {
         throw new Error(data.error || "Could not start checkout.");
