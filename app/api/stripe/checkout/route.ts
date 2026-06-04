@@ -9,6 +9,8 @@ const PRICE_BY_PLAN: Record<string, string | undefined> = {
   growth: process.env.STRIPE_PRICE_GROWTH,
 };
 
+const ACTIVE_SUBSCRIPTION_STATUSES = ["active", "trialing", "past_due"];
+
 export async function POST(req: NextRequest) {
   try {
     const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -27,6 +29,30 @@ export async function POST(req: NextRequest) {
     const priceId = PRICE_BY_PLAN[plan];
     if (!priceId) {
       return NextResponse.json({ error: "Unknown or non-self-serve plan." }, { status: 400 });
+    }
+
+    const { data: existingSubscription, error: subscriptionError } = await supabase
+      .from("subscriptions")
+      .select("plan,status")
+      .eq("owner_id", user.id)
+      .maybeSingle();
+
+    if (subscriptionError) {
+      console.error("POST /api/stripe/checkout: subscription lookup failed", subscriptionError);
+      return NextResponse.json({ error: "Could not verify current subscription." }, { status: 500 });
+    }
+
+    if (
+      existingSubscription?.plan === plan &&
+      ACTIVE_SUBSCRIPTION_STATUSES.includes(existingSubscription.status)
+    ) {
+      return NextResponse.json(
+        {
+          error: "You already have an active subscription for this plan.",
+          url: "/subscriptions?status=already_active",
+        },
+        { status: 409 }
+      );
     }
 
     const stripe = new Stripe(secretKey);
