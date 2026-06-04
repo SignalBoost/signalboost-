@@ -100,10 +100,7 @@ export default function SubscriptionsContent({
               {loading ? "Opening…" : "Manage billing"}
             </button>
           ) : (
-            
-              href="/pricing"
-              style={{ display: "block", width: "100%", textAlign: "center", background: gold, color: "#06060a", borderRadius: 10, padding: "12px 0", fontFamily: "inherit", fontSize: 15, fontWeight: 800, textDecoration: "none", boxSizing: "border-box" }}
-            >
+            <a href="/pricing" style={{ display: "block", width: "100%", textAlign: "center", background: gold, color: "#06060a", borderRadius: 10, padding: "12px 0", fontFamily: "inherit", fontSize: 15, fontWeight: 800, textDecoration: "none", boxSizing: "border-box" }}>
               View plans
             </a>
           )}
