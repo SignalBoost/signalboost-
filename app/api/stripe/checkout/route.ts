@@ -16,6 +16,29 @@ type ExistingSubscription = {
   status: string | null;
 };
 
+async function hasActiveStripeSubscriptionForPrice(stripe: Stripe, email: string | null | undefined, priceId: string) {
+  if (!email) return false;
+
+  const customers = await stripe.customers.list({ email, limit: 10 });
+
+  for (const customer of customers.data) {
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customer.id,
+      status: "all",
+      limit: 100,
+    });
+
+    const hasMatchingSubscription = subscriptions.data.some((subscription) => {
+      if (!ACTIVE_SUBSCRIPTION_STATUSES.includes(subscription.status)) return false;
+      return subscription.items.data.some((item) => item.price.id === priceId);
+    });
+
+    if (hasMatchingSubscription) return true;
+  }
+
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -36,6 +59,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unknown or non-self-serve plan." }, { status: 400 });
     }
 
+    const stripe = new Stripe(secretKey);
+
     const { data: existingSubscription, error: subscriptionError } = await supabase
       .from("subscriptions")
       .select("plan,status")
@@ -48,14 +73,13 @@ export async function POST(req: NextRequest) {
     }
 
     const existingStatus = existingSubscription?.status ?? "";
-    if (
-      existingSubscription?.plan === plan &&
-      ACTIVE_SUBSCRIPTION_STATUSES.includes(existingStatus)
-    ) {
+    const alreadyHasPlanInSupabase =
+      existingSubscription?.plan === plan && ACTIVE_SUBSCRIPTION_STATUSES.includes(existingStatus);
+    const alreadyHasPlanInStripe = await hasActiveStripeSubscriptionForPrice(stripe, user.email, priceId);
+
+    if (alreadyHasPlanInSupabase || alreadyHasPlanInStripe) {
       return NextResponse.json({ url: "/subscriptions?status=already_active" });
     }
-
-    const stripe = new Stripe(secretKey);
 
     // Where Stripe sends the user after paying / cancelling.
     const origin = req.headers.get("origin") || "https://signalboostapp.com";
