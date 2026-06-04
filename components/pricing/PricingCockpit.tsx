@@ -2,11 +2,20 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import useTranslation from "@/components/i18n/useTranslation";
+import { createClient } from "@/lib/supabase/client";
 
 function fallbackText(value: string, fallback: string) {
   return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
+
+const ACTIVE_SUBSCRIPTION_STATUSES = ["active", "trialing", "past_due"];
+
+type SubscriptionRow = {
+  plan: string | null;
+  status: string | null;
+};
 
 const tiers = [
   {
@@ -55,6 +64,42 @@ export default function PricingCockpit() {
   const { t } = useTranslation();
   const [loadingPlan, setLoadingPlan] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [currentPlan, setCurrentPlan] = React.useState<string | null>(null);
+  const [currentStatus, setCurrentStatus] = React.useState<string | null>(null);
+
+  async function refreshCurrentPlan() {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return;
+
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      setCurrentPlan(null);
+      setCurrentStatus(null);
+      return;
+    }
+
+    const { data } = await supabase
+      .from("subscriptions")
+      .select("plan,status")
+      .eq("owner_id", user.id)
+      .maybeSingle<SubscriptionRow>();
+
+    setCurrentPlan(data?.plan ?? null);
+    setCurrentStatus(data?.status ?? null);
+  }
+
+  React.useEffect(() => {
+    void refreshCurrentPlan();
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return;
+    const supabase = createClient();
+    const { data: listener } = supabase.auth.onAuthStateChange(() => {
+      void refreshCurrentPlan();
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   function redirectToSignup(plan: string) {
     const params = new URLSearchParams({
@@ -101,6 +146,7 @@ export default function PricingCockpit() {
     t("pricing.subtitle"),
     "Choose the SignalBoost mission package that matches your marketplace, SaaS, and executive operating needs."
   );
+  const hasActiveCurrentPlan = currentPlan && ACTIVE_SUBSCRIPTION_STATUSES.includes(currentStatus ?? "");
 
   return (
     <div style={pageStyle}>
@@ -121,6 +167,7 @@ export default function PricingCockpit() {
           const features = tier.features.map((f, i) =>
             fallbackText(t(`pricing.${tier.key}.features.${i}`), f)
           );
+          const isCurrentPlan = hasActiveCurrentPlan && currentPlan === tier.key;
 
           return (
             <article className={tier.featured ? "pricing-card featured" : "pricing-card"} key={tier.key}>
@@ -144,6 +191,10 @@ export default function PricingCockpit() {
                 <a href="/contact" className="pricing-cta" style={ctaStyle}>
                   Contact sales
                 </a>
+              ) : isCurrentPlan ? (
+                <Link href="/subscriptions" className="pricing-cta" style={{ ...ctaStyle, ...currentPlanStyle }}>
+                  Current plan
+                </Link>
               ) : (
                 <button
                   type="button"
@@ -229,6 +280,12 @@ const ctaStyle: React.CSSProperties = {
   textDecoration: "none",
   cursor: "pointer",
   width: "100%",
+};
+
+const currentPlanStyle: React.CSSProperties = {
+  borderColor: "rgba(54,211,153,.5)",
+  background: "rgba(54,211,153,.14)",
+  color: "#6ee7b7",
 };
 
 const errorStyle: React.CSSProperties = {
