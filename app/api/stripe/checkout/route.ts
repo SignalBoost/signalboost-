@@ -11,6 +11,11 @@ const PRICE_BY_PLAN: Record<string, string | undefined> = {
 
 const ACTIVE_SUBSCRIPTION_STATUSES = ["active", "trialing", "past_due"];
 
+type ExistingSubscription = {
+  plan: string | null;
+  status: string | null;
+};
+
 export async function POST(req: NextRequest) {
   try {
     const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -35,24 +40,19 @@ export async function POST(req: NextRequest) {
       .from("subscriptions")
       .select("plan,status")
       .eq("owner_id", user.id)
-      .maybeSingle();
+      .maybeSingle<ExistingSubscription>();
 
     if (subscriptionError) {
       console.error("POST /api/stripe/checkout: subscription lookup failed", subscriptionError);
       return NextResponse.json({ error: "Could not verify current subscription." }, { status: 500 });
     }
 
+    const existingStatus = existingSubscription?.status ?? "";
     if (
       existingSubscription?.plan === plan &&
-      ACTIVE_SUBSCRIPTION_STATUSES.includes(existingSubscription.status)
+      ACTIVE_SUBSCRIPTION_STATUSES.includes(existingStatus)
     ) {
-      return NextResponse.json(
-        {
-          error: "You already have an active subscription for this plan.",
-          url: "/subscriptions?status=already_active",
-        },
-        { status: 409 }
-      );
+      return NextResponse.json({ url: "/subscriptions?status=already_active" });
     }
 
     const stripe = new Stripe(secretKey);
