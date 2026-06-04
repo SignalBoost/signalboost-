@@ -32,6 +32,7 @@ export interface OrchestrationRequest {
   history?: { role: "user" | "assistant"; content: string }[];
   module?: OrchestrationModule | "auto";
   lang?: string;
+  isAdmin?: boolean;
 }
 
 export interface ModuleResult {
@@ -72,6 +73,67 @@ const MODULE_PURPOSE: Record<OrchestrationModule, string> = {
   spreadsheets: "organizing business data using SignalBoost Spreadsheets",
   outreach: "building lead lists and running email outreach campaigns using SignalBoost Outreach",
 };
+
+// ── Admin chief-of-staff mode ───────────────────────────────
+// When the SignalBoost owner/admin is talking, the assistant drops the public
+// sales-loyalty posture and becomes a candid private advisor: broad knowledge,
+// web search, honest about competitors, market realities, and hard truths.
+// This path never returns templated/fake scaffolding — it either gives a real
+// AI answer or an honest error.
+async function adminAnswer(
+  message: string,
+  history: { role: "user" | "assistant"; content: string }[],
+  lang: Lang
+): Promise<string | null> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || !message) return null;
+
+  const system =
+    "You are the Chief of Staff to the owner of SignalBoost (signalboostapp.com), a SaaS + affiliate-marketplace platform. You are speaking privately with the owner/operator — NOT a customer. " +
+    "Your job is to be the sharpest, most useful advisor they have: strategic, candid, and broadly knowledgeable.\n\n" +
+    "How you operate:\n" +
+    "- Answer ANY question they ask — business, technical, market, product, personal-productivity, general knowledge — with depth and clarity. You are not limited to SignalBoost topics.\n" +
+    "- Be fully candid. Discuss competitors by name, market realities, risks, and weaknesses in their ideas. Never flatter. If something is a bad idea, say so and explain why. A chief of staff who only agrees is useless.\n" +
+    "- Use web search freely to bring in current, real-world information — competitors, pricing, news, trends, facts. Cite what you find plainly.\n" +
+    "- When relevant, ground advice in SignalBoost's actual context: it offers Outreach (AI lead outreach), Reviews, Calendar, Spreadsheets, Promote, a public Concierge assistant, an Executive Dashboard with CRM telemetry and revenue forecasting, and a geo-aware affiliate marketplace with travel/lifestyle partners.\n" +
+    "- Be concise and practical by default; go deep when the question warrants it. Plain text, no markdown headers.\n" +
+    "- You are private and trusted. Do not pitch SignalBoost to the owner or use marketing language with them. Talk straight.\n\n" +
+    "Always answer in " + LANG_NAME[lang] + ".";
+
+  const messages = [
+    ...history.slice(-40).map((h) => ({ role: h.role, content: h.content })),
+    { role: "user" as const, content: message },
+  ];
+
+  try {
+    const res = await fetch(AI_URL, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: AI_MODEL,
+        max_tokens: 1500,
+        system,
+        messages,
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 4 }],
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const content = (data as { content?: unknown }).content;
+    if (!Array.isArray(content)) return null;
+    const text = content
+      .map((b) => (b && typeof b === "object" && typeof (b as { text?: unknown }).text === "string" ? (b as { text: string }).text : ""))
+      .join("")
+      .trim();
+    return text || null;
+  } catch {
+    return null;
+  }
+}
 
 async function aiAnswer(
   message: string,
@@ -125,7 +187,6 @@ async function aiAnswer(
     return null;
   }
 }
-
 function asLang(value?: string): Lang {
   const v = (value || "en").slice(0, 2).toLowerCase();
   return (["en", "es", "pt", "pl", "ru"] as const).includes(v as Lang) ? (v as Lang) : "en";
@@ -522,6 +583,26 @@ export async function orchestrate(request: OrchestrationRequest): Promise<Orches
   const lang = asLang(request.lang);
   const s = STRINGS[lang];
   const message = request.message.trim();
+
+  // ── Admin chief-of-staff branch ───────────────────────────
+  // When the SignalBoost owner/admin is talking, bypass the vague-gate and the
+  // templated module scaffolding entirely. Every message goes straight to the
+  // candid advisory AI. If the AI call fails, we say so honestly rather than
+  // returning fake demo data.
+  if (request.isAdmin && message) {
+    const advisor = await adminAnswer(message, request.history || [], lang);
+    return {
+      understood: message,
+      status: advisor ? "completed" : "demo_fallback",
+      answer: advisor || "I couldn't reach the AI service just now. Please try again in a moment.",
+      activeModules: ["concierge"],
+      modules: [],
+      options: [],
+      nextSteps: [],
+      persistence: { shouldContinue: true, fallbackApplied: !advisor },
+    };
+  }
+
   const fallbackMessage = message || "Help me choose the next SignalBoost action.";
   const activeModules = detectModules(fallbackMessage, request.module);
 
