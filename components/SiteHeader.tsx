@@ -14,6 +14,17 @@ function fallbackText(value: string, fallback: string) {
   return /^[a-zA-Z][\w$]*(\.[\w$]+)+$/.test(value) ? fallback : value;
 }
 
+// Pretty label for a plan code (e.g. "starter" -> "Starter")
+function planLabel(plan: string | null): string | null {
+  if (!plan) return null;
+  const p = plan.trim().toLowerCase();
+  if (!p) return null;
+  if (p === "starter") return "Starter";
+  if (p === "growth") return "Growth";
+  if (p === "enterprise") return "Enterprise";
+  return p.charAt(0).toUpperCase() + p.slice(1);
+}
+
 type Leaf = { labelKey: string; fallback: string; path: string };
 type NavNode =
   | ({ kind: "link" } & Leaf)
@@ -52,6 +63,7 @@ function getLoginHref(flow: AuthFlow) {
 function AuthControls() {
   const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
+  const [plan, setPlan] = useState<string | null>(null);
   const [flow, setFlow] = useState<AuthFlow>("main");
   const [open, setOpen] = useState(false);
   const loginHref = useMemo(() => getLoginHref(flow), [flow]);
@@ -62,12 +74,40 @@ function AuthControls() {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return;
     const supabase = createClient();
     let mounted = true;
+
+    // Load the current user's active plan from the subscriptions table.
+    const loadPlan = async (uid: string) => {
+      const { data, error } = await supabase
+        .from("subscriptions")
+        .select("plan, status")
+        .eq("owner_id", uid)
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) {
+        console.error("[header] subscription load failed:", error.message);
+        if (mounted) setPlan(null);
+        return;
+      }
+      if (mounted) setPlan(data?.plan ?? null);
+    };
+
     supabase.auth.getUser().then(({ data }) => {
-      if (mounted) setUser(data.user ?? null);
+      if (!mounted) return;
+      const u = data.user ?? null;
+      setUser(u);
+      if (u) void loadPlan(u.id);
+      else setPlan(null);
     });
+
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) void loadPlan(u.id);
+      else setPlan(null);
     });
+
     return () => {
       mounted = false;
       listener.subscription.unsubscribe();
@@ -87,6 +127,7 @@ function AuthControls() {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
+    setPlan(null);
     window.location.assign("/");
   }
 
@@ -97,14 +138,17 @@ function AuthControls() {
   }
 
   const initial = (user.email || "U").trim().charAt(0).toUpperCase() || "U";
+  const planText = planLabel(plan);
 
   return (
     <div className="pm-wrap" ref={ref}>
-      <button type="button" className="pm-avatar" aria-haspopup="true" aria-expanded={open} aria-label="Account menu" onClick={() => setOpen((v) => !v)}>
-        {initial}
+      <button type="button" className="pm-trigger" aria-haspopup="true" aria-expanded={open} aria-label="Account menu" onClick={() => setOpen((v) => !v)}>
+        <span className="pm-avatar">{initial}</span>
+        {planText ? <span className="pm-plan-badge">{planText}</span> : null}
       </button>
       <div className={open ? "pm-menu pm-menu-open" : "pm-menu"} role="menu">
         <span className="pm-email">{user.email}</span>
+        {planText ? <span className="pm-plan-line">{planText} plan</span> : <span className="pm-plan-line pm-plan-none">No active plan</span>}
         <Link role="menuitem" className="pm-item" href="/app">{fallbackText(t("header.workspace"), "My workspace")}</Link>
         <Link role="menuitem" className="pm-item" href="/account">{fallbackText(t("header.account"), "Account Settings")}</Link>
         <Link role="menuitem" className="pm-item" href="/subscriptions">{fallbackText(t("header.subscriptions"), "Subscriptions")}</Link>
@@ -113,7 +157,6 @@ function AuthControls() {
     </div>
   );
 }
-
 export default function SiteHeader() {
   const pathname = usePathname() || "/";
   const { t } = useTranslation();
@@ -235,11 +278,15 @@ const NV_CSS = `
 .nv-btn,.nv-login{border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:12px;font-weight:800;padding:7px 14px;color:rgba(255,255,255,.82);text-decoration:none;white-space:nowrap;cursor:pointer;font-family:inherit;}
 .nv-login{background:linear-gradient(135deg,#f5c542,#dfa837);color:#06060a;border-color:transparent;}
 .pm-wrap{position:relative;display:inline-flex;}
-.pm-avatar{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:999px;border:1px solid rgba(245,197,66,.5);background:rgba(245,197,66,.12);color:#f5c542;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;transition:background .15s ease;}
-.pm-avatar:hover{background:rgba(245,197,66,.22);}
+.pm-trigger{display:inline-flex;align-items:center;gap:8px;border:none;background:none;padding:0;cursor:pointer;font-family:inherit;}
+.pm-avatar{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:999px;border:1px solid rgba(245,197,66,.5);background:rgba(245,197,66,.12);color:#f5c542;font-size:14px;font-weight:900;transition:background .15s ease;}
+.pm-trigger:hover .pm-avatar{background:rgba(245,197,66,.22);}
+.pm-plan-badge{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:999px;background:rgba(245,197,66,.16);border:1px solid rgba(245,197,66,.4);color:#f5c542;font-size:11px;font-weight:800;letter-spacing:.02em;white-space:nowrap;}
 .pm-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:210px;display:flex;flex-direction:column;gap:2px;padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:linear-gradient(180deg,rgba(18,18,26,.98),rgba(10,10,16,.98));box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .16s ease,transform .16s ease,visibility .16s;z-index:1100;}
 .pm-menu-open{opacity:1;visibility:visible;transform:translateY(0);}
 .pm-email{display:block;padding:4px 10px 8px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;}
+.pm-plan-line{display:block;padding:2px 10px 8px;font-size:12px;font-weight:800;color:#f5c542;}
+.pm-plan-none{color:rgba(255,255,255,.45);font-weight:700;}
 .pm-item{display:block;width:100%;text-align:left;border:none;background:none;border-radius:10px;padding:9px 10px;color:rgba(255,255,255,.82);font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;font-family:inherit;transition:background .15s ease;}
 .pm-item:hover{background:rgba(255,255,255,.06);}
 .pm-logout{color:#ff6b6b;}
