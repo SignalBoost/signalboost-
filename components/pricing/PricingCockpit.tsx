@@ -2,7 +2,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import useTranslation from "@/components/i18n/useTranslation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -191,11 +190,7 @@ export default function PricingCockpit() {
                 <a href="/contact" className="pricing-cta" style={ctaStyle}>
                   Contact sales
                 </a>
-              ) : isCurrentPlan ? (
-                <Link href="/subscriptions" className="pricing-cta" style={{ ...ctaStyle, ...currentPlanStyle }}>
-                  Current plan
-                </Link>
-              ) : (
+              ) : isCurrentPlan ? null : (
                 <button
                   type="button"
                   className="pricing-cta"
@@ -215,7 +210,6 @@ export default function PricingCockpit() {
     </div>
   );
 }
-
 const pageStyle: React.CSSProperties = {
   maxWidth: 1100,
   margin: "0 auto",
@@ -280,12 +274,6 @@ const ctaStyle: React.CSSProperties = {
   textDecoration: "none",
   cursor: "pointer",
   width: "100%",
-};
-
-const currentPlanStyle: React.CSSProperties = {
-  borderColor: "rgba(54,211,153,.5)",
-  background: "rgba(54,211,153,.14)",
-  color: "#6ee7b7",
 };
 
 const errorStyle: React.CSSProperties = {
