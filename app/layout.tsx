@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   description:
     "SignalBoost — geo-aware offers and trusted partners across flights, hotels, eSIM, tours, marketplace and more.",
   metadataBase: new URL("https://www.signalboostapp.com"),
-  // 2. Canonical link — prevents duplicate-content issues
+  // Canonical link — prevents duplicate-content issues
   alternates: {
     canonical: "https://www.signalboostapp.com",
   },
-  // 1. Open Graph tags — rich social sharing previews
+  // Open Graph — social sharing previews (no image)
   openGraph: {
     type: "website",
     url: "https://www.signalboostapp.com",
@@ -22,26 +22,17 @@ export const metadata: Metadata = {
     title: "SignalBoost",
     description:
       "SignalBoost — geo-aware offers and trusted partners across flights, hotels, eSIM, tours, marketplace and more.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "SignalBoost",
-      },
-    ],
   },
-  // Twitter/X card (uses the same OG image)
+  // Twitter/X card
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "SignalBoost",
     description:
       "SignalBoost — geo-aware offers and trusted partners across flights, hotels, eSIM, tours, marketplace and more.",
-    images: ["/og-image.png"],
   },
 };
 
-// 3. JSON-LD structured data (schema.org) — improves search rich results
+// JSON-LD structured data (schema.org) — improves search rich results
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
