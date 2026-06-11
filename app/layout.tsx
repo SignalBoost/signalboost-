@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.signalboostapp.com",
   },
-  // Open Graph — social sharing previews (no image)
+  // Open Graph — social sharing previews
   openGraph: {
     type: "website",
     url: "https://www.signalboostapp.com",
@@ -22,13 +22,22 @@ export const metadata: Metadata = {
     title: "SignalBoost",
     description:
       "SignalBoost — geo-aware offers and trusted partners across flights, hotels, eSIM, tours, marketplace and more.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "SignalBoost — geo-aware offers and trusted partners",
+      },
+    ],
   },
   // Twitter/X card
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "SignalBoost",
     description:
       "SignalBoost — geo-aware offers and trusted partners across flights, hotels, eSIM, tours, marketplace and more.",
+    images: ["/og.png"],
   },
 };
 
