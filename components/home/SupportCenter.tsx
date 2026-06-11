@@ -137,7 +137,7 @@ export default function SupportCenter({ lang = "en" }: SupportCenterProps) {
             href={`mailto:${SUPPORT_EMAIL}`}
           />
           {/* Future items go here, e.g.:
-          <SupportItem icon="❓" label="FAQ" value="Browse common questions" href="/faq" />
+          <SupportItem icon="❓" label="FAQ" value="Browse common questions" href="https://saas.signalboostapp.com/faq" />
           <SupportItem icon="🕑" label="Hours" value="Mon–Fri, 9am–6pm" />
           */}
         </div>
