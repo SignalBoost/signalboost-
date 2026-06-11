@@ -187,7 +187,7 @@ export default function PricingCockpit() {
               </ul>
 
               {tier.key === "enterprise" ? (
-                <a href="/contact" className="pricing-cta" style={ctaStyle}>
+                <a href="mailto:saassupport@signalboostapp.com" className="pricing-cta" style={ctaStyle}>
                   Contact sales
                 </a>
               ) : isCurrentPlan ? null : (
