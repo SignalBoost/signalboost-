@@ -1,29 +1,21 @@
 // File: app/api/partners/route.ts
-// Returns the partner directory as JSON for the homepage to consume.
-// Reads from Supabase (affiliate_partners) via loadPartners(), which itself
-// falls back to the static public/partners.json if the DB is empty/unreachable.
+// Returns the public partner directory from the bundled static JSON file.
 //
-// This lets the client keep its simple fetch() pattern while the source of
-// truth moves to the database. Edits/additions/deletions in Supabase now show
-// on the site (after the short cache window below) with no redeploy.
+// This endpoint intentionally does not query Supabase. The homepage and other
+// public components can be requested frequently by visitors, crawlers, and
+// monitoring services; serving the bundled directory prevents those requests
+// from generating database egress on every cache miss.
 
 import { NextResponse } from "next/server";
-import { loadPartners } from "@/lib/home/partners-source";
+import partners from "@/public/partners.json";
 
-export const runtime = "nodejs";
-// Re-fetch from the DB at most once per 60s (fast for visitors, fresh enough
-// for admin edits). Lower this if you want near-instant propagation.
-export const revalidate = 60;
+export const dynamic = "force-static";
+export const revalidate = false;
 
 export async function GET() {
-  try {
-    const partners = await loadPartners();
-    return NextResponse.json(partners, {
-      headers: {
-        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
-      },
-    });
-  } catch {
-    return NextResponse.json([], { status: 200 });
-  }
+  return NextResponse.json(partners, {
+    headers: {
+      "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+    },
+  });
 }
