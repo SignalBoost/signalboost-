@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run validate:static-partners && next build",
     "start": "next start",
     "lint": "next lint",
-    "validate:conflicts": "node scripts/validate-conflict-cleanup.mjs"
+    "validate:conflicts": "node scripts/validate-conflict-cleanup.mjs",
+    "validate:static-partners": "node scripts/validate-static-partners-api.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.33.1",
