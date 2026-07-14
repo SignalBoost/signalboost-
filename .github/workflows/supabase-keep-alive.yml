@@ -1,0 +1,47 @@
+name: Supabase Keep-Alive Heartbeat
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every Monday.
+    - cron: "0 0 * * 1"
+  # Allows manual testing from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping-db:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate required secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          test -n "$SUPABASE_URL" || { echo "SUPABASE_URL secret is missing"; exit 1; }
+          test -n "$SUPABASE_ANON_KEY" || { echo "SUPABASE_ANON_KEY secret is missing"; exit 1; }
+
+      - name: Read one row from Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -euo pipefail
+
+          # Querying a real table performs an actual database read. The response
+          # body is discarded to keep the workflow log free of application data.
+          http_code=$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" \
+            --get "${SUPABASE_URL%/}/rest/v1/affiliate_partners" \
+            --data-urlencode "select=id" \
+            --data-urlencode "limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            -H "Accept: application/json")
+
+          echo "Supabase returned HTTP ${http_code}"
+          case "$http_code" in
+            200|204) echo "Supabase keep-alive succeeded." ;;
+            *) echo "Supabase keep-alive failed."; exit 1 ;;
+          esac
