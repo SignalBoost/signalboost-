@@ -31,6 +31,7 @@ type NavNode =
 
 const NAV: NavNode[] = [
   { kind: "link", labelKey: "header.home", fallback: "Home", path: "/" },
+  { kind: "link", labelKey: "header.campaignStudio", fallback: "Campaign Studio", path: "/campaign-studio" },
   {
     kind: "menu",
     labelKey: "header.saasStation",
