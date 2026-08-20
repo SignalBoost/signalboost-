@@ -84,7 +84,7 @@ async function loadLivePartners() {
 }
 
 export async function GET() {
-  let partners = null;
+  let partners: ReturnType<typeof normalizePartner>[] | null = null;
 
   try {
     partners = await loadLivePartners();
@@ -92,8 +92,8 @@ export async function GET() {
     partners = null;
   }
 
-  const live = Array.isArray(partners) && partners.length > 0;
-  const body = live ? partners : partnersFallback;
+  const live = partners !== null && partners.length > 0;
+  const body = live && partners ? partners : partnersFallback;
 
   return NextResponse.json(body, {
     headers: {
