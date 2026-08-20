@@ -3,19 +3,35 @@ import { readFile } from "node:fs/promises";
 const routePath = new URL("../app/api/partners/route.ts", import.meta.url);
 const source = await readFile(routePath, "utf8");
 
-// Scan executable source only. Comments intentionally document the historical
-// Supabase implementation and must not trigger the protection check.
 const executableSource = source
   .replace(/\/\*[\s\S]*?\*\//g, "")
   .replace(/^\s*\/\/.*$/gm, "");
 
-const forbiddenPatterns = [
+const requiredPatterns = [
   /NEXT_PUBLIC_SUPABASE_URL/,
-  /SUPABASE_SERVICE_ROLE_KEY/,
+  /NEXT_PUBLIC_SUPABASE_ANON_KEY/,
   /affiliate_partners/,
-  /\/rest\/v1\//,
+  /next\s*:\s*\{\s*revalidate\s*:\s*300\s*\}/,
+  /s-maxage=300/,
+  /bundled-static-fallback/,
+  /supabase-cached/,
+];
+
+const missing = requiredPatterns
+  .filter((pattern) => !pattern.test(executableSource))
+  .map((pattern) => pattern.toString());
+
+if (missing.length > 0) {
+  console.error("Public partner API must use a bounded cached Supabase read with static fallback.");
+  console.error("Missing required guardrails:", missing.join(", "));
+  process.exit(1);
+}
+
+const forbiddenPatterns = [
   /cache\s*:\s*["']no-store["']/,
-  /createClient\s*\(/,
+  /revalidate\s*=\s*false/,
+  /dynamic\s*=\s*["']force-dynamic["']/,
+  /SUPABASE_SERVICE_ROLE_KEY/,
 ];
 
 const violations = forbiddenPatterns
@@ -23,14 +39,9 @@ const violations = forbiddenPatterns
   .map((pattern) => pattern.toString());
 
 if (violations.length > 0) {
-  console.error("Public partner API must not query Supabase.");
+  console.error("Public partner API cache/credential guardrails were violated.");
   console.error("Forbidden executable patterns found:", violations.join(", "));
   process.exit(1);
 }
 
-if (!executableSource.includes('X-Partner-Source": "bundled-static"')) {
-  console.error("Public partner API must identify bundled-static as its source.");
-  process.exit(1);
-}
-
-console.log("Static partner API validation passed.");
+console.log("Cached live partner API validation passed.");
