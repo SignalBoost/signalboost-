@@ -3,13 +3,15 @@
 // Public partner directory endpoint.
 //
 // Supabase is the authoritative source because partners added through the admin
-// UI are written there. To avoid the historical cached-egress problem, this
-// route uses two cache layers:
+// UI are written there. The read happens server-side with the existing service
+// role so RLS cannot make the public directory silently fall back to stale JSON.
+// To avoid the historical cached-egress problem, this route uses two cache layers:
 //   1) the Supabase REST fetch is revalidated only every 5 minutes;
 //   2) the API response is cached at the edge for 5 minutes.
 //
-// If Supabase is unavailable or misconfigured, the bundled partners.json remains
-// a safe fallback so the public marketplace never goes empty.
+// The service-role credential is used only in the server-to-server request and
+// is never included in the response. If Supabase is unavailable or misconfigured,
+// the bundled partners.json remains a safe fallback so the marketplace never empties.
 
 import { NextResponse } from "next/server";
 import partnersFallback from "@/partners.json";
@@ -61,14 +63,14 @@ function normalizePartner(row: PartnerRow) {
 
 async function loadLivePartners() {
   const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!baseUrl || !anonKey) return null;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!baseUrl || !serviceRoleKey) return null;
 
   const url = `${baseUrl.replace(/\/$/, "")}/rest/v1/affiliate_partners?select=*`;
   const response = await fetch(url, {
     headers: {
-      apikey: anonKey,
-      Authorization: `Bearer ${anonKey}`,
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
       Accept: "application/json",
     },
     next: { revalidate: 300 },
@@ -98,7 +100,7 @@ export async function GET() {
   return NextResponse.json(body, {
     headers: {
       "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400",
-      "X-Partner-Source": live ? "supabase-cached" : "bundled-static-fallback",
+      "X-Partner-Source": live ? "supabase-service-role-cached" : "bundled-static-fallback",
       "X-Partner-Count": String(body.length),
     },
   });
