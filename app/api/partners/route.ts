@@ -104,7 +104,10 @@ async function queryPartners(
     throw new Error(`affiliate_partners returned no rows (${credentialSource})`);
   }
 
-  const partners = (data as PartnerRow[])
+  // Supabase cannot infer a row shape from a runtime-built select string, so
+  // cross the SDK boundary through unknown and normalize every public field below.
+  const rows = data as unknown as PartnerRow[];
+  const partners = rows
     .map(normalizePartner)
     .filter((partner) => partner.id && partner.name);
 
