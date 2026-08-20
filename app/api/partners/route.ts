@@ -2,23 +2,41 @@
 //
 // Public partner directory endpoint.
 //
-// Supabase is the authoritative source because partners added through the admin
-// UI are written there. The read happens server-side with the existing service
-// role so RLS cannot make the public directory silently fall back to stale JSON.
-// To avoid the historical cached-egress problem, this route uses two cache layers:
-//   1) the Supabase REST fetch is revalidated only every 5 minutes;
-//   2) the API response is cached at the edge for 5 minutes.
-//
-// The service-role credential is used only in the server-to-server request and
-// is never included in the response. If Supabase is unavailable or misconfigured,
-// the bundled partners.json remains a safe fallback so the marketplace never empties.
+// Supabase is authoritative because partners added through the admin UI are
+// written there. Only SUCCESSFUL Supabase directory reads are cached. A failed
+// live read may use the bundled JSON for that one response, but the fallback is
+// explicitly non-cacheable so a transient failure can never pin the site back
+// to the stale bundled count.
 
 import { NextResponse } from "next/server";
+import { unstable_cache } from "next/cache";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import partnersFallback from "@/partners.json";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 type PartnerRow = Record<string, unknown>;
+type CredentialSource = "service-role" | "anon";
+
+const PARTNER_CACHE_TAG = "affiliate-partners";
+const PUBLIC_PARTNER_COLUMNS = [
+  "id",
+  "name",
+  "category",
+  "category_key",
+  "category_label",
+  "network",
+  "logo",
+  "description",
+  "tier",
+  "featured",
+  "travel_related",
+  "regions",
+  "url",
+  "regional_urls",
+  "placements",
+].join(",");
 
 function parseMaybeJson<T>(value: unknown, fallback: T): T {
   if (value === null || value === undefined || value === "") return fallback;
@@ -61,47 +79,95 @@ function normalizePartner(row: PartnerRow) {
   };
 }
 
-async function loadLivePartners() {
-  const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!baseUrl || !serviceRoleKey) return null;
+type NormalizedPartner = ReturnType<typeof normalizePartner>;
 
-  const url = `${baseUrl.replace(/\/$/, "")}/rest/v1/affiliate_partners?select=*`;
-  const response = await fetch(url, {
-    headers: {
-      apikey: serviceRoleKey,
-      Authorization: `Bearer ${serviceRoleKey}`,
-      Accept: "application/json",
-    },
-    next: { revalidate: 300 },
+type LiveDirectory = {
+  partners: NormalizedPartner[];
+  credentialSource: CredentialSource;
+};
+
+async function queryPartners(
+  baseUrl: string,
+  key: string,
+  credentialSource: CredentialSource
+): Promise<LiveDirectory> {
+  const supabase = createSupabaseClient(baseUrl, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  if (!response.ok) return null;
-  const data = (await response.json()) as unknown;
-  if (!Array.isArray(data) || data.length === 0) return null;
+  const { data, error } = await supabase
+    .from("affiliate_partners")
+    .select(PUBLIC_PARTNER_COLUMNS);
 
-  return (data as PartnerRow[])
-    .map(normalizePartner)
-    .filter((partner) => partner.id && partner.name);
-}
-
-export async function GET() {
-  let partners: ReturnType<typeof normalizePartner>[] | null = null;
-
-  try {
-    partners = await loadLivePartners();
-  } catch {
-    partners = null;
+  if (error) throw new Error(`affiliate_partners read failed (${credentialSource}): ${error.message}`);
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error(`affiliate_partners returned no rows (${credentialSource})`);
   }
 
-  const live = partners !== null && partners.length > 0;
-  const body = live && partners ? partners : partnersFallback;
+  // Supabase cannot infer a row shape from a runtime-built select string, so
+  // cross the SDK boundary through unknown and normalize every public field below.
+  const rows = data as unknown as PartnerRow[];
+  const partners = rows
+    .map(normalizePartner)
+    .filter((partner) => partner.id && partner.name);
 
-  return NextResponse.json(body, {
-    headers: {
-      "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400",
-      "X-Partner-Source": live ? "supabase-service-role-cached" : "bundled-static-fallback",
-      "X-Partner-Count": String(body.length),
-    },
-  });
+  if (partners.length === 0) {
+    throw new Error(`affiliate_partners returned no usable rows (${credentialSource})`);
+  }
+
+  return { partners, credentialSource };
+}
+
+const loadCachedLivePartners = unstable_cache(
+  async (): Promise<LiveDirectory> => {
+    const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!baseUrl) throw new Error("NEXT_PUBLIC_SUPABASE_URL is missing");
+
+    const credentials: Array<{ key: string; source: CredentialSource }> = [];
+    if (serviceRoleKey) credentials.push({ key: serviceRoleKey, source: "service-role" });
+    if (anonKey && anonKey !== serviceRoleKey) credentials.push({ key: anonKey, source: "anon" });
+    if (credentials.length === 0) throw new Error("No Supabase directory credential is configured");
+
+    let lastError: unknown = null;
+    for (const credential of credentials) {
+      try {
+        return await queryPartners(baseUrl, credential.key, credential.source);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError instanceof Error ? lastError : new Error("Unable to read affiliate_partners");
+  },
+  ["public-partner-directory-v3"],
+  { revalidate: 300, tags: [PARTNER_CACHE_TAG] }
+);
+
+export async function GET() {
+  try {
+    const live = await loadCachedLivePartners();
+    return NextResponse.json(live.partners, {
+      headers: {
+        "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400",
+        "X-Partner-Source": `supabase-${live.credentialSource}-cached`,
+        "X-Partner-Count": String(live.partners.length),
+      },
+    });
+  } catch (error) {
+    console.error(
+      "PARTNER_DIRECTORY_LIVE_READ_FAILED:",
+      error instanceof Error ? error.message : "unknown error"
+    );
+
+    return NextResponse.json(partnersFallback, {
+      headers: {
+        "Cache-Control": "no-store, max-age=0",
+        "X-Partner-Source": "bundled-static-fallback-retryable",
+        "X-Partner-Count": String(partnersFallback.length),
+      },
+    });
+  }
 }

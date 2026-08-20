@@ -13,9 +13,12 @@
 // back uniformly.
 
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
+
+const PARTNER_CACHE_TAG = "affiliate-partners";
 
 function slugify(name: string): string {
   return name
@@ -144,5 +147,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: dbError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, id });
+  // New/edited partners should be visible immediately. Cache invalidation is
+  // best-effort because the database write has already succeeded; the directory
+  // also has a 5-minute TTL as a safety net.
+  let cacheInvalidated = false;
+  try {
+    revalidateTag(PARTNER_CACHE_TAG);
+    cacheInvalidated = true;
+  } catch (error) {
+    console.warn(
+      "PARTNER_CACHE_INVALIDATION_FAILED:",
+      error instanceof Error ? error.message : "unknown error"
+    );
+  }
+
+  return NextResponse.json({ ok: true, id, cacheInvalidated });
 }
