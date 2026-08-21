@@ -1,16 +1,19 @@
-// File: app/api/admin/delete-partner/route.ts
-// Deletes one partner (by id) from the Supabase `affiliate_partners` table.
-// Login + admin protected, mirroring save-partner's auth model.
+// Compatibility route: delete one partner (by id) from the dedicated secondary
+// Supabase `affiliate_partners` table. Authentication remains on primary.
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { revalidateTag } from "next/cache";
+import { createClient as createAuthClient } from "@/lib/supabase/server";
+import { createPartnerDatabaseClient } from "@/lib/supabase/partners-server";
 
 export const runtime = "nodejs";
 
+const PARTNER_CACHE_TAG = "affiliate-partners";
+
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
+  const authSupabase = await createAuthClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await authSupabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Not logged in." }, { status: 401 });
@@ -37,9 +40,32 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Partner id is required." }, { status: 400 });
   }
 
-  const { error } = await supabase.from("affiliate_partners").delete().eq("id", id);
+  let partnerDb;
+  try {
+    partnerDb = createPartnerDatabaseClient();
+  } catch (error) {
+    console.error(
+      "PARTNER_DATABASE_CONFIGURATION_FAILED:",
+      error instanceof Error ? error.message : "unknown error"
+    );
+    return NextResponse.json(
+      { error: "Partner database is not configured correctly." },
+      { status: 503 }
+    );
+  }
+
+  const { error } = await partnerDb.from("affiliate_partners").delete().eq("id", id);
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  try {
+    revalidateTag(PARTNER_CACHE_TAG);
+  } catch (error) {
+    console.warn(
+      "PARTNER_CACHE_INVALIDATION_FAILED:",
+      error instanceof Error ? error.message : "unknown error"
+    );
   }
 
   return NextResponse.json({ ok: true, id });
