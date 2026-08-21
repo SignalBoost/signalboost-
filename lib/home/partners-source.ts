@@ -1,13 +1,13 @@
 // File: lib/home/partners-source.ts
 // Single source of truth for loading the partner directory.
 //
-// Partner data lives only in the dedicated secondary Supabase project. The
-// application's primary Supabase project is never queried for affiliate_partners.
-// A static bundled directory remains available only as a read-only availability
-// fallback if the secondary partner database is temporarily unavailable.
+// Partner data lives only in the dedicated secondary Supabase project. Public
+// directory reads use that project's publishable key and never query the primary
+// Supabase project. If secondary is unavailable, return no partners rather than
+// silently showing the obsolete bundled 125-row directory.
 
 import "server-only";
-import { createPartnerDatabaseClient } from "@/lib/supabase/partners-server";
+import { createPartnerReadClient } from "@/lib/supabase/partners-server";
 import type { HomePartner } from "@/lib/home/partners-home";
 
 function parseMaybeJson<T>(val: unknown, fallback: T): T {
@@ -50,33 +50,30 @@ function rowToPartner(row: Record<string, unknown>): HomePartner {
   } as HomePartner;
 }
 
-async function loadStaticFallback(): Promise<HomePartner[]> {
-  try {
-    const mod = await import("../../public/partners.json");
-    const arr = (mod.default ?? mod) as unknown;
-    return Array.isArray(arr) ? (arr as HomePartner[]) : [];
-  } catch {
-    return [];
-  }
-}
-
 export async function loadPartners(): Promise<HomePartner[]> {
   try {
-    const partnerDb = createPartnerDatabaseClient();
+    const partnerDb = createPartnerReadClient();
     const { data, error } = await partnerDb
       .from("affiliate_partners")
-      .select("*");
+      .select("*")
+      .order("name", { ascending: true });
 
-    if (error || !data || data.length === 0) {
-      return loadStaticFallback();
+    if (error) {
+      throw new Error(error.message);
     }
 
-    return (data as Record<string, unknown>[]).map(rowToPartner);
+    if (!data || data.length === 0) {
+      throw new Error("secondary affiliate_partners returned no rows");
+    }
+
+    return (data as Record<string, unknown>[])
+      .map(rowToPartner)
+      .filter((partner) => partner.id && partner.name);
   } catch (error) {
     console.error(
       "PARTNER_SECONDARY_LOAD_FAILED:",
       error instanceof Error ? error.message : "unknown error"
     );
-    return loadStaticFallback();
+    return [];
   }
 }
