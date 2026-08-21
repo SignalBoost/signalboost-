@@ -2,16 +2,15 @@
 // Public partner directory endpoint.
 //
 // The dedicated secondary Supabase project is authoritative for partner data.
-// This route intentionally does not fall back to the application's primary
-// Supabase project. Successful secondary reads are cached internally for five
-// minutes and invalidated after partner writes; the HTTP response itself is not
-// CDN-cached so a save is visible on the next request.
+// Public reads use that project's publishable key and therefore do not depend on
+// hidden Vercel service-role secrets. Successful reads are cached internally for
+// five minutes and invalidated after partner writes; the HTTP response itself is
+// not CDN-cached so a save is visible on the next request.
 
 import { NextResponse } from "next/server";
 import { unstable_cache } from "next/cache";
-import partnersFallback from "@/partners.json";
 import {
-  createPartnerDatabaseClient,
+  createPartnerReadClient,
   getPartnerDatabaseRef,
 } from "@/lib/supabase/partners-server";
 
@@ -88,10 +87,11 @@ type LiveDirectory = {
 };
 
 async function queryPartners(): Promise<LiveDirectory> {
-  const partnerDb = createPartnerDatabaseClient();
+  const partnerDb = createPartnerReadClient();
   const { data, error } = await partnerDb
     .from("affiliate_partners")
-    .select(PUBLIC_PARTNER_COLUMNS);
+    .select(PUBLIC_PARTNER_COLUMNS)
+    .order("name", { ascending: true });
 
   if (error) throw new Error(`affiliate_partners read failed: ${error.message}`);
   if (!Array.isArray(data) || data.length === 0) {
@@ -112,7 +112,7 @@ async function queryPartners(): Promise<LiveDirectory> {
 
 const loadCachedLivePartners = unstable_cache(
   queryPartners,
-  ["public-partner-directory-secondary-v1"],
+  ["public-partner-directory-secondary-v2"],
   { revalidate: 300, tags: [PARTNER_CACHE_TAG] }
 );
 
@@ -128,23 +128,26 @@ export async function GET() {
     return NextResponse.json(live.partners, {
       headers: {
         ...RESPONSE_HEADERS,
-        "X-Partner-Source": "supabase-secondary-cached",
+        "X-Partner-Source": "supabase-secondary-public-cached",
         "X-Partner-Database-Ref": live.databaseRef,
         "X-Partner-Count": String(live.partners.length),
       },
     });
   } catch (error) {
-    console.error(
-      "PARTNER_DIRECTORY_SECONDARY_READ_FAILED:",
-      error instanceof Error ? error.message : "unknown error"
-    );
+    const detail = error instanceof Error ? error.message : "unknown error";
+    console.error("PARTNER_DIRECTORY_SECONDARY_READ_FAILED:", detail);
 
-    return NextResponse.json(partnersFallback, {
+    // Secondary is the single source of truth. Do not silently serve the old
+    // bundled 125-row directory because that makes a database outage look like
+    // valid current data.
+    return NextResponse.json([], {
+      status: 503,
       headers: {
         ...RESPONSE_HEADERS,
-        "X-Partner-Source": "bundled-static-fallback-retryable",
+        "X-Partner-Source": "supabase-secondary-unavailable",
         "X-Partner-Database-Ref": getPartnerDatabaseRef(),
-        "X-Partner-Count": String(partnersFallback.length),
+        "X-Partner-Count": "0",
+        "X-Partner-Error": detail.slice(0, 180),
       },
     });
   }
