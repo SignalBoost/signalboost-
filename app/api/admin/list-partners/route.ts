@@ -1,9 +1,9 @@
 // File: app/api/admin/list-partners/route.ts
-// Returns every partner from the dedicated secondary Supabase
+// Returns every partner from the authoritative secondary Supabase
 // `affiliate_partners` table for the admin Manage screen.
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAuthClient } from "@/lib/supabase/server";
-import { createPartnerDatabaseClient } from "@/lib/supabase/partners-server";
+import { createPartnerReadClient } from "@/lib/supabase/partners-server";
 
 export const runtime = "nodejs";
 
@@ -26,20 +26,7 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ error: "Not an admin account." }, { status: 403 });
   }
 
-  let partnerDb;
-  try {
-    partnerDb = createPartnerDatabaseClient();
-  } catch (error) {
-    console.error(
-      "PARTNER_DATABASE_CONFIGURATION_FAILED:",
-      error instanceof Error ? error.message : "unknown error"
-    );
-    return NextResponse.json(
-      { error: "Partner database is not configured correctly." },
-      { status: 503 }
-    );
-  }
-
+  const partnerDb = createPartnerReadClient();
   const { data, error } = await partnerDb
     .from("affiliate_partners")
     .select("id, name, category, category_key, category_label, network, description, tier, featured, url, regions")
@@ -64,5 +51,5 @@ export async function GET(_req: NextRequest) {
     return { ...row, regions };
   });
 
-  return NextResponse.json({ partners });
+  return NextResponse.json({ partners, count: partners.length, source: "secondary-supabase" });
 }
