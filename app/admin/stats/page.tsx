@@ -3,8 +3,8 @@
 //
 // This page is intentionally useful even before traffic tracking is fully
 // populated. It combines:
-//   1) live partner-directory health from affiliate_partners/static fallback
-//   2) optional traffic/search analytics from partner_clicks + partner_searches
+//   1) live partner-directory health from the dedicated secondary Supabase
+//   2) optional traffic/search analytics from the primary application database
 //
 // Admin access uses the same database-backed is_admin() RPC as /admin.
 
@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { createPartnerDatabaseClient } from "@/lib/supabase/partners-server";
 import { loadPartners } from "@/lib/home/partners-source";
 import type { HomePartner } from "@/lib/home/partners-home";
 
@@ -113,13 +114,14 @@ async function readOptionalTable(supabase: Awaited<ReturnType<typeof createClien
   }
 }
 
-async function readAffiliatePartnerRows(supabase: Awaited<ReturnType<typeof createClient>>): Promise<ReadResult> {
+async function readAffiliatePartnerRows(): Promise<ReadResult> {
   try {
-    const { data, error } = await supabase.from("affiliate_partners").select("*").limit(5000);
+    const partnerDb = createPartnerDatabaseClient();
+    const { data, error } = await partnerDb.from("affiliate_partners").select("*").limit(5000);
     if (error) return { rows: [], error: error.message };
     return { rows: (data ?? []) as Row[] };
   } catch (error) {
-    return { rows: [], error: error instanceof Error ? error.message : "Unable to read affiliate_partners." };
+    return { rows: [], error: error instanceof Error ? error.message : "Unable to read secondary affiliate_partners." };
   }
 }
 
@@ -205,7 +207,7 @@ export default async function StatsPage() {
 
   const [partners, partnerRows, clickReads, searchReads] = await Promise.all([
     loadPartners(),
-    readAffiliatePartnerRows(supabase),
+    readAffiliatePartnerRows(),
     readOptionalTable(supabase, "partner_clicks"),
     readOptionalTable(supabase, "partner_searches"),
   ]);
@@ -234,7 +236,7 @@ export default async function StatsPage() {
     (row) => asString(row.query) || asString(row.search) || asString(row.message)
   ).slice(0, 12);
 
-  const partnerSource = partnerRows.rows.length > 0 ? "Supabase affiliate_partners" : "static partners.json fallback";
+  const partnerSource = partnerRows.rows.length > 0 ? "Secondary Supabase affiliate_partners" : "static partners.json fallback";
   const trackingReady = !clickReads.error && !searchReads.error;
   const latestActivity = [latestDate(realClicks), latestDate(realSearches)]
     .filter((date): date is Date => Boolean(date))
