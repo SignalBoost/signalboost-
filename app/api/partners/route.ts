@@ -7,6 +7,11 @@
 // live read may use the bundled JSON for that one response, but the fallback is
 // explicitly non-cacheable so a transient failure can never pin the site back
 // to the stale bundled count.
+//
+// IMPORTANT: the route response itself is never cached by the CDN. The
+// unstable_cache layer below is the only five-minute cache. This lets a
+// save-partner cache invalidation take effect on the very next /api/partners
+// request instead of leaving an older HTTP response at the edge.
 
 import { NextResponse } from "next/server";
 import { unstable_cache } from "next/cache";
@@ -146,12 +151,18 @@ const loadCachedLivePartners = unstable_cache(
   { revalidate: 300, tags: [PARTNER_CACHE_TAG] }
 );
 
+const RESPONSE_HEADERS = {
+  "Cache-Control": "no-store, max-age=0",
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
+};
+
 export async function GET() {
   try {
     const live = await loadCachedLivePartners();
     return NextResponse.json(live.partners, {
       headers: {
-        "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400",
+        ...RESPONSE_HEADERS,
         "X-Partner-Source": `supabase-${live.credentialSource}-cached`,
         "X-Partner-Count": String(live.partners.length),
       },
@@ -164,7 +175,7 @@ export async function GET() {
 
     return NextResponse.json(partnersFallback, {
       headers: {
-        "Cache-Control": "no-store, max-age=0",
+        ...RESPONSE_HEADERS,
         "X-Partner-Source": "bundled-static-fallback-retryable",
         "X-Partner-Count": String(partnersFallback.length),
       },
