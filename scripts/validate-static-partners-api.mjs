@@ -3,10 +3,12 @@ import { readFile } from "node:fs/promises";
 const routePath = new URL("../app/api/partners/route.ts", import.meta.url);
 const savePath = new URL("../app/api/admin/save-partner/route.ts", import.meta.url);
 const partnerClientPath = new URL("../lib/supabase/partners-server.ts", import.meta.url);
+const homeSourcePath = new URL("../lib/home/partners-source.ts", import.meta.url);
 
 const routeSource = await readFile(routePath, "utf8");
 const saveSource = await readFile(savePath, "utf8");
 const partnerClientSource = await readFile(partnerClientPath, "utf8");
+const homeSource = await readFile(homeSourcePath, "utf8");
 
 const stripComments = (source) =>
   source
@@ -16,17 +18,17 @@ const stripComments = (source) =>
 const executableRouteSource = stripComments(routeSource);
 const executableSaveSource = stripComments(saveSource);
 const executablePartnerClientSource = stripComments(partnerClientSource);
+const executableHomeSource = stripComments(homeSource);
 
 const requiredRoutePatterns = [
-  /createPartnerDatabaseClient/,
+  /createPartnerReadClient/,
   /affiliate_partners/,
   /unstable_cache/,
   /revalidate\s*:\s*300/,
   /tags\s*:\s*\[PARTNER_CACHE_TAG\]/,
   /dynamic\s*=\s*["']force-dynamic["']/,
-  /bundled-static-fallback-retryable/,
   /Cache-Control["']?\s*:\s*["']no-store, max-age=0["']/,
-  /supabase-secondary-cached/,
+  /supabase-secondary-public-cached/,
   /X-Partner-Database-Ref/,
   /PUBLIC_PARTNER_COLUMNS/,
 ];
@@ -36,7 +38,7 @@ const missingRoute = requiredRoutePatterns
   .map((pattern) => pattern.toString());
 
 if (missingRoute.length > 0) {
-  console.error("Public partner API must read only from the dedicated secondary partner database and keep fallback retryable.");
+  console.error("Public partner API must read directly from the authoritative secondary database.");
   console.error("Missing route guardrails:", missingRoute.join(", "));
   process.exit(1);
 }
@@ -62,8 +64,14 @@ if (missingSave.length > 0) {
 }
 
 const requiredPartnerClientPatterns = [
-  /PARTNERS_SUPABASE_URL/,
+  /AUTHORITATIVE_PARTNER_PROJECT_REF/,
+  /AUTHORITATIVE_PARTNER_URL/,
+  /AUTHORITATIVE_PARTNER_PUBLISHABLE_KEY/,
+  /createPartnerReadClient/,
+  /createPartnerDatabaseClient/,
   /PARTNERS_SUPABASE_SERVICE_ROLE_KEY/,
+  /SECONDARY_SUPABASE_SERVICE_ROLE_KEY/,
+  /MARKETING_SUPABASE_SERVICE_ROLE_KEY/,
   /NEXT_PUBLIC_SUPABASE_URL/,
   /PARTNER_DATABASE_NOT_CONFIGURED/,
   /PARTNER_DATABASE_MISCONFIGURED/,
@@ -75,8 +83,24 @@ const missingPartnerClient = requiredPartnerClientPatterns
   .map((pattern) => pattern.toString());
 
 if (missingPartnerClient.length > 0) {
-  console.error("Dedicated partner database client is missing fail-closed configuration guardrails.");
+  console.error("Dedicated partner clients are missing read/write separation guardrails.");
   console.error("Missing partner-client guardrails:", missingPartnerClient.join(", "));
+  process.exit(1);
+}
+
+const requiredHomePatterns = [
+  /createPartnerReadClient/,
+  /affiliate_partners/,
+  /return\s+\[\]/,
+];
+
+const missingHome = requiredHomePatterns
+  .filter((pattern) => !pattern.test(executableHomeSource))
+  .map((pattern) => pattern.toString());
+
+if (missingHome.length > 0) {
+  console.error("Homepage partner loader must use the authoritative public secondary read client.");
+  console.error("Missing home-source guardrails:", missingHome.join(", "));
   process.exit(1);
 }
 
@@ -84,6 +108,8 @@ const forbiddenRoutePatterns = [
   /process\.env\.NEXT_PUBLIC_SUPABASE_URL/,
   /process\.env\.SUPABASE_SERVICE_ROLE_KEY/,
   /process\.env\.NEXT_PUBLIC_SUPABASE_ANON_KEY/,
+  /partnersFallback/,
+  /bundled-static-fallback/,
   /select\s*\(\s*["']\*["']\s*\)/,
   /export\s+const\s+revalidate\s*=\s*false/,
 ];
@@ -93,8 +119,24 @@ const routeViolations = forbiddenRoutePatterns
   .map((pattern) => pattern.toString());
 
 if (routeViolations.length > 0) {
-  console.error("Public partner API must never connect directly to the primary Supabase environment.");
+  console.error("Public partner API must not use primary Supabase or the obsolete bundled partner directory.");
   console.error("Forbidden route patterns found:", routeViolations.join(", "));
+  process.exit(1);
+}
+
+const forbiddenHomePatterns = [
+  /partners\.json/,
+  /loadStaticFallback/,
+  /createPartnerDatabaseClient/,
+];
+
+const homeViolations = forbiddenHomePatterns
+  .filter((pattern) => pattern.test(executableHomeSource))
+  .map((pattern) => pattern.toString());
+
+if (homeViolations.length > 0) {
+  console.error("Homepage must never silently fall back to the obsolete static partner directory.");
+  console.error("Forbidden home-source patterns found:", homeViolations.join(", "));
   process.exit(1);
 }
 
@@ -113,4 +155,4 @@ if (saveViolations.length > 0) {
   process.exit(1);
 }
 
-console.log("Dedicated secondary partner database validation passed.");
+console.log("Authoritative secondary partner database validation passed.");
