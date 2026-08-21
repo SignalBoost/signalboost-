@@ -1,25 +1,18 @@
 // File: lib/home/partners-source.ts
 // Single source of truth for loading the partner directory.
 //
-// Reads from the Supabase `affiliate_partners` table when available, and FALLS
-// BACK to the static public/partners.json if the table is empty or the query
-// errors. This keeps the site fast + safe: live edits work via the database,
-// but a DB hiccup never takes the partners offline.
-//
-// The CSV import stored the nested fields (regions, regional_urls, placements)
-// as JSON TEXT, so we parse them back into real arrays/objects here. Rows that
-// are already objects (e.g. if a column was typed as jsonb) pass through.
+// Partner data lives only in the dedicated secondary Supabase project. The
+// application's primary Supabase project is never queried for affiliate_partners.
+// A static bundled directory remains available only as a read-only availability
+// fallback if the secondary partner database is temporarily unavailable.
 
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPartnerDatabaseClient } from "@/lib/supabase/partners-server";
 import type { HomePartner } from "@/lib/home/partners-home";
 
-// ---- helpers ---------------------------------------------------------------
-
-// Parse a field that may be a JSON string, an already-parsed value, or empty.
 function parseMaybeJson<T>(val: unknown, fallback: T): T {
   if (val === null || val === undefined || val === "") return fallback;
-  if (typeof val === "object") return val as T; // already parsed (jsonb column)
+  if (typeof val === "object") return val as T;
   if (typeof val === "string") {
     try {
       return JSON.parse(val) as T;
@@ -30,13 +23,14 @@ function parseMaybeJson<T>(val: unknown, fallback: T): T {
   return fallback;
 }
 
-// Coerce a DB row (with stringified bools/JSON) into a clean HomePartner.
 function rowToPartner(row: Record<string, unknown>): HomePartner {
-  const asBool = (v: unknown) => v === true || v === "true" || v === "TRUE" || v === 1 || v === "1";
+  const asBool = (v: unknown) =>
+    v === true || v === "true" || v === "TRUE" || v === 1 || v === "1";
   const asNum = (v: unknown) => {
     const n = typeof v === "number" ? v : parseInt(String(v ?? ""), 10);
     return Number.isFinite(n) ? n : 3;
   };
+
   return {
     id: String(row.id ?? ""),
     name: String(row.name ?? ""),
@@ -56,11 +50,8 @@ function rowToPartner(row: Record<string, unknown>): HomePartner {
   } as HomePartner;
 }
 
-// ---- static fallback -------------------------------------------------------
-
 async function loadStaticFallback(): Promise<HomePartner[]> {
   try {
-    // Same import style the API routes use (relative to lib/home → public).
     const mod = await import("../../public/partners.json");
     const arr = (mod.default ?? mod) as unknown;
     return Array.isArray(arr) ? (arr as HomePartner[]) : [];
@@ -69,20 +60,23 @@ async function loadStaticFallback(): Promise<HomePartner[]> {
   }
 }
 
-// ---- main loader -----------------------------------------------------------
-
 export async function loadPartners(): Promise<HomePartner[]> {
   try {
-    const supabase = await createClient();
-    const { data, error } = await supabase
+    const partnerDb = createPartnerDatabaseClient();
+    const { data, error } = await partnerDb
       .from("affiliate_partners")
       .select("*");
 
     if (error || !data || data.length === 0) {
       return loadStaticFallback();
     }
+
     return (data as Record<string, unknown>[]).map(rowToPartner);
-  } catch {
+  } catch (error) {
+    console.error(
+      "PARTNER_SECONDARY_LOAD_FAILED:",
+      error instanceof Error ? error.message : "unknown error"
+    );
     return loadStaticFallback();
   }
 }

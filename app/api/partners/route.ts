@@ -1,23 +1,24 @@
 // File: app/api/partners/route.ts
-//
 // Public partner directory endpoint.
 //
-// Supabase is authoritative because partners added through the admin UI are
-// written there. Only SUCCESSFUL Supabase directory reads are cached. A failed
-// live read may use the bundled JSON for that one response, but the fallback is
-// explicitly non-cacheable so a transient failure can never pin the site back
-// to the stale bundled count.
+// The dedicated secondary Supabase project is authoritative for partner data.
+// This route intentionally does not fall back to the application's primary
+// Supabase project. Successful secondary reads are cached internally for five
+// minutes and invalidated after partner writes; the HTTP response itself is not
+// CDN-cached so a save is visible on the next request.
 
 import { NextResponse } from "next/server";
 import { unstable_cache } from "next/cache";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import partnersFallback from "@/partners.json";
+import {
+  createPartnerDatabaseClient,
+  getPartnerDatabaseRef,
+} from "@/lib/supabase/partners-server";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 type PartnerRow = Record<string, unknown>;
-type CredentialSource = "service-role" | "anon";
 
 const PARTNER_CACHE_TAG = "affiliate-partners";
 const PUBLIC_PARTNER_COLUMNS = [
@@ -83,89 +84,66 @@ type NormalizedPartner = ReturnType<typeof normalizePartner>;
 
 type LiveDirectory = {
   partners: NormalizedPartner[];
-  credentialSource: CredentialSource;
+  databaseRef: string;
 };
 
-async function queryPartners(
-  baseUrl: string,
-  key: string,
-  credentialSource: CredentialSource
-): Promise<LiveDirectory> {
-  const supabase = createSupabaseClient(baseUrl, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-
-  const { data, error } = await supabase
+async function queryPartners(): Promise<LiveDirectory> {
+  const partnerDb = createPartnerDatabaseClient();
+  const { data, error } = await partnerDb
     .from("affiliate_partners")
     .select(PUBLIC_PARTNER_COLUMNS);
 
-  if (error) throw new Error(`affiliate_partners read failed (${credentialSource}): ${error.message}`);
+  if (error) throw new Error(`affiliate_partners read failed: ${error.message}`);
   if (!Array.isArray(data) || data.length === 0) {
-    throw new Error(`affiliate_partners returned no rows (${credentialSource})`);
+    throw new Error("affiliate_partners returned no rows from secondary database");
   }
 
-  // Supabase cannot infer a row shape from a runtime-built select string, so
-  // cross the SDK boundary through unknown and normalize every public field below.
   const rows = data as unknown as PartnerRow[];
   const partners = rows
     .map(normalizePartner)
     .filter((partner) => partner.id && partner.name);
 
   if (partners.length === 0) {
-    throw new Error(`affiliate_partners returned no usable rows (${credentialSource})`);
+    throw new Error("affiliate_partners returned no usable rows from secondary database");
   }
 
-  return { partners, credentialSource };
+  return { partners, databaseRef: getPartnerDatabaseRef() };
 }
 
 const loadCachedLivePartners = unstable_cache(
-  async (): Promise<LiveDirectory> => {
-    const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!baseUrl) throw new Error("NEXT_PUBLIC_SUPABASE_URL is missing");
-
-    const credentials: Array<{ key: string; source: CredentialSource }> = [];
-    if (serviceRoleKey) credentials.push({ key: serviceRoleKey, source: "service-role" });
-    if (anonKey && anonKey !== serviceRoleKey) credentials.push({ key: anonKey, source: "anon" });
-    if (credentials.length === 0) throw new Error("No Supabase directory credential is configured");
-
-    let lastError: unknown = null;
-    for (const credential of credentials) {
-      try {
-        return await queryPartners(baseUrl, credential.key, credential.source);
-      } catch (error) {
-        lastError = error;
-      }
-    }
-
-    throw lastError instanceof Error ? lastError : new Error("Unable to read affiliate_partners");
-  },
-  ["public-partner-directory-v3"],
+  queryPartners,
+  ["public-partner-directory-secondary-v1"],
   { revalidate: 300, tags: [PARTNER_CACHE_TAG] }
 );
+
+const RESPONSE_HEADERS = {
+  "Cache-Control": "no-store, max-age=0",
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
+};
 
 export async function GET() {
   try {
     const live = await loadCachedLivePartners();
     return NextResponse.json(live.partners, {
       headers: {
-        "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400",
-        "X-Partner-Source": `supabase-${live.credentialSource}-cached`,
+        ...RESPONSE_HEADERS,
+        "X-Partner-Source": "supabase-secondary-cached",
+        "X-Partner-Database-Ref": live.databaseRef,
         "X-Partner-Count": String(live.partners.length),
       },
     });
   } catch (error) {
     console.error(
-      "PARTNER_DIRECTORY_LIVE_READ_FAILED:",
+      "PARTNER_DIRECTORY_SECONDARY_READ_FAILED:",
       error instanceof Error ? error.message : "unknown error"
     );
 
     return NextResponse.json(partnersFallback, {
       headers: {
-        "Cache-Control": "no-store, max-age=0",
+        ...RESPONSE_HEADERS,
         "X-Partner-Source": "bundled-static-fallback-retryable",
+        "X-Partner-Database-Ref": getPartnerDatabaseRef(),
         "X-Partner-Count": String(partnersFallback.length),
       },
     });
