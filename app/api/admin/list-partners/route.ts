@@ -1,17 +1,17 @@
 // File: app/api/admin/list-partners/route.ts
-// Returns every partner from the Supabase `affiliate_partners` table for the
-// admin Manage screen (including unfeatured / low-tier ones the public grid may
-// not surface). Login + admin protected, mirroring save-partner's auth model.
+// Returns every partner from the dedicated secondary Supabase
+// `affiliate_partners` table for the admin Manage screen.
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createAuthClient } from "@/lib/supabase/server";
+import { createPartnerDatabaseClient } from "@/lib/supabase/partners-server";
 
 export const runtime = "nodejs";
 
 export async function GET(_req: NextRequest) {
-  const supabase = await createClient();
+  const authSupabase = await createAuthClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await authSupabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Not logged in." }, { status: 401 });
@@ -26,7 +26,21 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ error: "Not an admin account." }, { status: 403 });
   }
 
-  const { data, error } = await supabase
+  let partnerDb;
+  try {
+    partnerDb = createPartnerDatabaseClient();
+  } catch (error) {
+    console.error(
+      "PARTNER_DATABASE_CONFIGURATION_FAILED:",
+      error instanceof Error ? error.message : "unknown error"
+    );
+    return NextResponse.json(
+      { error: "Partner database is not configured correctly." },
+      { status: 503 }
+    );
+  }
+
+  const { data, error } = await partnerDb
     .from("affiliate_partners")
     .select("id, name, category, category_key, category_label, network, description, tier, featured, url, regions")
     .order("name", { ascending: true });
@@ -35,7 +49,6 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // regions is stored as JSON text; parse to a string[] for the client.
   const partners = (data || []).map((row: Record<string, unknown>) => {
     let regions: string[] = [];
     const raw = row.regions;
