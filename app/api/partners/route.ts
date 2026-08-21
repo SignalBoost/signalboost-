@@ -1,25 +1,19 @@
 // File: app/api/partners/route.ts
 // Public partner directory endpoint.
 //
-// The dedicated secondary Supabase project is authoritative for partner data.
-// Public reads use that project's publishable key and therefore do not depend on
-// hidden Vercel service-role secrets. Successful reads are cached internally for
-// five minutes and invalidated after partner writes; the HTTP response itself is
-// not CDN-cached so a save is visible on the next request.
+// Single source of truth: secondary Supabase project vdtxulrusfvyxdtatryx.
+// This route deliberately uses one raw PostgREST request with the project's
+// publishable key. No primary Supabase, no service-role dependency, no static
+// partners.json fallback, and no framework data cache.
 
 import { NextResponse } from "next/server";
-import { unstable_cache } from "next/cache";
-import {
-  createPartnerReadClient,
-  getPartnerDatabaseRef,
-} from "@/lib/supabase/partners-server";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-type PartnerRow = Record<string, unknown>;
-
-const PARTNER_CACHE_TAG = "affiliate-partners";
+const PARTNER_PROJECT_REF = "vdtxulrusfvyxdtatryx";
+const PARTNER_URL = `https://${PARTNER_PROJECT_REF}.supabase.co`;
+const PARTNER_PUBLISHABLE_KEY = "sb_publishable_RibKPLEHTX20TO_6gWaRSQ_H7D6K4aR";
 const PUBLIC_PARTNER_COLUMNS = [
   "id",
   "name",
@@ -37,6 +31,14 @@ const PUBLIC_PARTNER_COLUMNS = [
   "regional_urls",
   "placements",
 ].join(",");
+
+const RESPONSE_HEADERS = {
+  "Cache-Control": "no-store, max-age=0",
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
+};
+
+type PartnerRow = Record<string, unknown>;
 
 function parseMaybeJson<T>(value: unknown, fallback: T): T {
   if (value === null || value === undefined || value === "") return fallback;
@@ -79,73 +81,58 @@ function normalizePartner(row: PartnerRow) {
   };
 }
 
-type NormalizedPartner = ReturnType<typeof normalizePartner>;
-
-type LiveDirectory = {
-  partners: NormalizedPartner[];
-  databaseRef: string;
-};
-
-async function queryPartners(): Promise<LiveDirectory> {
-  const partnerDb = createPartnerReadClient();
-  const { data, error } = await partnerDb
-    .from("affiliate_partners")
-    .select(PUBLIC_PARTNER_COLUMNS)
-    .order("name", { ascending: true });
-
-  if (error) throw new Error(`affiliate_partners read failed: ${error.message}`);
-  if (!Array.isArray(data) || data.length === 0) {
-    throw new Error("affiliate_partners returned no rows from secondary database");
-  }
-
-  const rows = data as unknown as PartnerRow[];
-  const partners = rows
-    .map(normalizePartner)
-    .filter((partner) => partner.id && partner.name);
-
-  if (partners.length === 0) {
-    throw new Error("affiliate_partners returned no usable rows from secondary database");
-  }
-
-  return { partners, databaseRef: getPartnerDatabaseRef() };
-}
-
-const loadCachedLivePartners = unstable_cache(
-  queryPartners,
-  ["public-partner-directory-secondary-v2"],
-  { revalidate: 300, tags: [PARTNER_CACHE_TAG] }
-);
-
-const RESPONSE_HEADERS = {
-  "Cache-Control": "no-store, max-age=0",
-  "CDN-Cache-Control": "no-store",
-  "Vercel-CDN-Cache-Control": "no-store",
-};
-
 export async function GET() {
+  const endpoint = new URL(`${PARTNER_URL}/rest/v1/affiliate_partners`);
+  endpoint.searchParams.set("select", PUBLIC_PARTNER_COLUMNS);
+  endpoint.searchParams.set("order", "name.asc");
+
   try {
-    const live = await loadCachedLivePartners();
-    return NextResponse.json(live.partners, {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        apikey: PARTNER_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${PARTNER_PUBLISHABLE_KEY}`,
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const detail = (await response.text()).slice(0, 240);
+      throw new Error(`secondary PostgREST ${response.status}: ${detail}`);
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error("secondary PostgREST returned a non-array payload");
+    }
+
+    const partners = (data as PartnerRow[])
+      .map(normalizePartner)
+      .filter((partner) => partner.id && partner.name);
+
+    if (partners.length === 0) {
+      throw new Error("secondary PostgREST returned zero usable partners");
+    }
+
+    return NextResponse.json(partners, {
       headers: {
         ...RESPONSE_HEADERS,
-        "X-Partner-Source": "supabase-secondary-public-cached",
-        "X-Partner-Database-Ref": live.databaseRef,
-        "X-Partner-Count": String(live.partners.length),
+        "X-Partner-Source": "secondary-postgrest-direct",
+        "X-Partner-Database-Ref": PARTNER_PROJECT_REF,
+        "X-Partner-Count": String(partners.length),
       },
     });
   } catch (error) {
     const detail = error instanceof Error ? error.message : "unknown error";
-    console.error("PARTNER_DIRECTORY_SECONDARY_READ_FAILED:", detail);
+    console.error("PARTNER_DIRECTORY_DIRECT_READ_FAILED:", detail);
 
-    // Secondary is the single source of truth. Do not silently serve the old
-    // bundled 125-row directory because that makes a database outage look like
-    // valid current data.
     return NextResponse.json([], {
       status: 503,
       headers: {
         ...RESPONSE_HEADERS,
-        "X-Partner-Source": "supabase-secondary-unavailable",
-        "X-Partner-Database-Ref": getPartnerDatabaseRef(),
+        "X-Partner-Source": "secondary-postgrest-error",
+        "X-Partner-Database-Ref": PARTNER_PROJECT_REF,
         "X-Partner-Count": "0",
         "X-Partner-Error": detail.slice(0, 180),
       },

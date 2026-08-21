@@ -21,15 +21,15 @@ const executablePartnerClientSource = stripComments(partnerClientSource);
 const executableHomeSource = stripComments(homeSource);
 
 const requiredRoutePatterns = [
-  /createPartnerReadClient/,
-  /affiliate_partners/,
-  /unstable_cache/,
-  /revalidate\s*:\s*300/,
-  /tags\s*:\s*\[PARTNER_CACHE_TAG\]/,
+  /PARTNER_PROJECT_REF\s*=\s*["']vdtxulrusfvyxdtatryx["']/,
+  /PARTNER_PUBLISHABLE_KEY/,
+  /rest\/v1\/affiliate_partners/,
+  /cache\s*:\s*["']no-store["']/,
   /dynamic\s*=\s*["']force-dynamic["']/,
   /Cache-Control["']?\s*:\s*["']no-store, max-age=0["']/,
-  /supabase-secondary-public-cached/,
+  /secondary-postgrest-direct/,
   /X-Partner-Database-Ref/,
+  /X-Partner-Count/,
   /PUBLIC_PARTNER_COLUMNS/,
 ];
 
@@ -38,7 +38,7 @@ const missingRoute = requiredRoutePatterns
   .map((pattern) => pattern.toString());
 
 if (missingRoute.length > 0) {
-  console.error("Public partner API must read directly from the authoritative secondary database.");
+  console.error("Public partner API must use one direct no-cache PostgREST read from the authoritative secondary database.");
   console.error("Missing route guardrails:", missingRoute.join(", "));
   process.exit(1);
 }
@@ -108,9 +108,11 @@ const forbiddenRoutePatterns = [
   /process\.env\.NEXT_PUBLIC_SUPABASE_URL/,
   /process\.env\.SUPABASE_SERVICE_ROLE_KEY/,
   /process\.env\.NEXT_PUBLIC_SUPABASE_ANON_KEY/,
+  /createPartnerReadClient/,
+  /unstable_cache/,
   /partnersFallback/,
+  /partners\.json/,
   /bundled-static-fallback/,
-  /select\s*\(\s*["']\*["']\s*\)/,
   /export\s+const\s+revalidate\s*=\s*false/,
 ];
 
@@ -119,7 +121,7 @@ const routeViolations = forbiddenRoutePatterns
   .map((pattern) => pattern.toString());
 
 if (routeViolations.length > 0) {
-  console.error("Public partner API must not use primary Supabase or the obsolete bundled partner directory.");
+  console.error("Public partner API must not use primary Supabase, wrapper clients, framework caching, or static partner data.");
   console.error("Forbidden route patterns found:", routeViolations.join(", "));
   process.exit(1);
 }
