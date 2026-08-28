@@ -10,6 +10,7 @@
 "use client";
 
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const GOLD = "#f5c542";
 const DARK = "#0d1117";
@@ -95,9 +96,25 @@ export default function AddPartnerPage() {
     }
     setSaving(true);
     try {
+      // The header already has a valid browser-side Supabase session. Pass that
+      // same access token explicitly so this API call cannot lose authentication
+      // if a stale/legacy browser session is not mirrored into server cookies.
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        setMsg({ type: "err", text: "Your session has expired. Please sign in again." });
+        return;
+      }
+
       const res = await fetch("/api/admin/save-partner", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
         body: JSON.stringify({
           name,
           url,
@@ -111,7 +128,7 @@ export default function AddPartnerPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        if (res.status === 401) setMsg({ type: "err", text: "You need to log in first. Open /auth/login, then come back." });
+        if (res.status === 401) setMsg({ type: "err", text: "Your session could not be verified. Please sign in again." });
         else if (res.status === 403) setMsg({ type: "err", text: "This account is not an admin." });
         else setMsg({ type: "err", text: data?.error || "Save failed." });
         return;
