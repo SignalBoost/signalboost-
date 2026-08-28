@@ -1,11 +1,12 @@
 // File: app/api/admin/save-partner/route.ts
-// Saves (inserts or updates) one partner into the dedicated secondary Supabase
-// `affiliate_partners` table. Login + admin protected.
+// Saves (inserts or updates) one partner into the authoritative secondary
+// Supabase `affiliate_partners` table. Login + admin protected.
 //
-// Authentication remains on the application's primary Supabase project, but
-// partner data is intentionally isolated behind createPartnerDatabaseClient().
-// The partner client fails closed if its dedicated secondary connection is
-// missing or accidentally points at the primary project.
+// Authentication remains on the application's primary Supabase project. The
+// preferred write path is the dedicated secondary service-role connection. If
+// that deployment secret is unavailable, the route falls back to the secondary
+// `partner-admin` Edge Function, which re-verifies the primary session and admin
+// membership before writing with the secondary project's own service role.
 
 import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
@@ -14,6 +15,7 @@ import {
   createPartnerDatabaseClient,
   getPartnerDatabaseRef,
 } from "@/lib/supabase/partners-server";
+import { callPartnerAdminBroker } from "@/lib/supabase/partner-admin-broker";
 
 export const runtime = "nodejs";
 
@@ -26,6 +28,19 @@ function slugify(name: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 60);
+}
+
+function invalidatePartnerCache(): boolean {
+  try {
+    revalidateTag(PARTNER_CACHE_TAG);
+    return true;
+  } catch (error) {
+    console.warn(
+      "PARTNER_CACHE_INVALIDATION_FAILED:",
+      error instanceof Error ? error.message : "unknown error"
+    );
+    return false;
+  }
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -76,18 +91,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not an admin account." }, { status: 403 });
   }
 
-  // --- dedicated partner database: never fall back to primary ---
-  let partnerDb;
+  // Resolve the privileged direct write connection if the deployment has it.
+  // Do not fail yet: the secondary Edge Function is the secure fallback.
+  let partnerDb: ReturnType<typeof createPartnerDatabaseClient> | null = null;
   try {
     partnerDb = createPartnerDatabaseClient();
   } catch (error) {
-    console.error(
-      "PARTNER_DATABASE_CONFIGURATION_FAILED:",
+    console.warn(
+      "PARTNER_DATABASE_DIRECT_CONNECTION_UNAVAILABLE:",
       error instanceof Error ? error.message : "unknown error"
-    );
-    return NextResponse.json(
-      { error: "Partner database is not configured correctly." },
-      { status: 503 }
     );
   }
 
@@ -141,6 +153,34 @@ export async function POST(req: NextRequest) {
     placements: JSON.stringify(placements),
   };
 
+  if (!partnerDb) {
+    const {
+      data: { session },
+    } = await authSupabase.auth.getSession();
+
+    if (!session?.access_token) {
+      return NextResponse.json({ error: "Authenticated session is required." }, { status: 401 });
+    }
+
+    const broker = await callPartnerAdminBroker(session.access_token, {
+      action: "upsert",
+      row,
+    });
+
+    if (!broker.ok) {
+      console.error("PARTNER_ADMIN_BROKER_SAVE_FAILED:", broker.error);
+      return NextResponse.json({ error: broker.error }, { status: broker.status });
+    }
+
+    return NextResponse.json({
+      ok: true,
+      id,
+      cacheInvalidated: invalidatePartnerCache(),
+      partnerDatabaseRef: getPartnerDatabaseRef(),
+      writePath: "secondary-edge-broker",
+    });
+  }
+
   const { data: existing, error: lookupError } = await partnerDb
     .from("affiliate_partners")
     .select("id")
@@ -187,21 +227,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let cacheInvalidated = false;
-  try {
-    revalidateTag(PARTNER_CACHE_TAG);
-    cacheInvalidated = true;
-  } catch (error) {
-    console.warn(
-      "PARTNER_CACHE_INVALIDATION_FAILED:",
-      error instanceof Error ? error.message : "unknown error"
-    );
-  }
-
   return NextResponse.json({
     ok: true,
     id,
-    cacheInvalidated,
+    cacheInvalidated: invalidatePartnerCache(),
     partnerDatabaseRef: getPartnerDatabaseRef(),
+    writePath: "secondary-service-role",
   });
 }
