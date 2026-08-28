@@ -16,6 +16,7 @@ import {
   getPartnerDatabaseRef,
 } from "@/lib/supabase/partners-server";
 import { callPartnerAdminBroker } from "@/lib/supabase/partner-admin-broker";
+import { resolveVerifiedSession } from "@/lib/supabase/resolve-admin-session";
 
 export const runtime = "nodejs";
 
@@ -78,19 +79,17 @@ const TRAVEL_CATS = new Set([
 ]);
 
 export async function POST(req: NextRequest) {
-  // Authenticate against the primary application database. Prefer the browser
-  // access token explicitly sent by the admin page, while preserving cookie
-  // auth as a fallback for normal SSR sessions.
+  // Authenticate against primary Supabase. A stale JWT can survive a signing
+  // key rotation in browser storage, so verify the bearer/cookie session and,
+  // when needed, exchange the refresh token before declaring the user logged out.
   const authSupabase = await createAuthClient();
-  const accessToken = bearerToken(req);
-  const {
-    data: { user },
-  } = await authSupabase.auth.getUser(accessToken || undefined);
+  const resolvedSession = await resolveVerifiedSession(authSupabase, bearerToken(req));
 
-  if (!user) {
+  if (!resolvedSession) {
     return NextResponse.json({ error: "Not logged in." }, { status: 401 });
   }
 
+  const { user, accessToken } = resolvedSession;
   const admins = (process.env.ADMIN_EMAILS || "")
     .split(",")
     .map((e) => e.trim().toLowerCase())
@@ -112,7 +111,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // --- parse body ---
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -163,20 +161,7 @@ export async function POST(req: NextRequest) {
   };
 
   if (!partnerDb) {
-    let brokerAccessToken = accessToken;
-
-    if (!brokerAccessToken) {
-      const {
-        data: { session },
-      } = await authSupabase.auth.getSession();
-      brokerAccessToken = session?.access_token || null;
-    }
-
-    if (!brokerAccessToken) {
-      return NextResponse.json({ error: "Authenticated session is required." }, { status: 401 });
-    }
-
-    const broker = await callPartnerAdminBroker(brokerAccessToken, {
+    const broker = await callPartnerAdminBroker(accessToken, {
       action: "upsert",
       row,
     });
@@ -221,9 +206,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: dbError.message }, { status: 500 });
   }
 
-  // Read back from the dedicated secondary database before reporting success.
-  // This prevents a false-positive save response if a future SDK/configuration
-  // regression ever routes the write incorrectly.
   const { data: verified, error: verificationError } = await partnerDb
     .from("affiliate_partners")
     .select("id, name")
