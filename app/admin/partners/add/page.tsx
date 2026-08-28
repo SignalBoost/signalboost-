@@ -96,16 +96,27 @@ export default function AddPartnerPage() {
     }
     setSaving(true);
     try {
-      // The header already has a valid browser-side Supabase session. Pass that
-      // same access token explicitly so this API call cannot lose authentication
-      // if a stale/legacy browser session is not mirrored into server cookies.
       const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+
+      // Force a refresh-token exchange before the write. This recovers browser
+      // sessions whose cached access JWT was signed by an older Supabase key and
+      // is therefore no longer verifiable by the API.
+      const refreshed = await supabase.auth.refreshSession();
+      let session = refreshed.data.session;
+
+      if (!session?.access_token) {
+        const current = await supabase.auth.getSession();
+        session = current.data.session;
+      }
 
       if (!session?.access_token) {
         setMsg({ type: "err", text: "Your session has expired. Please sign in again." });
+        return;
+      }
+
+      const verified = await supabase.auth.getUser(session.access_token);
+      if (verified.error || !verified.data.user) {
+        setMsg({ type: "err", text: "Your session could not be refreshed. Please sign in again." });
         return;
       }
 
