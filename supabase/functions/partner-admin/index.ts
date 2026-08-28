@@ -1,3 +1,4 @@
+// @ts-nocheck -- Supabase Edge Functions run on Deno; the Next.js app tsconfig does not load Deno globals.
 const PRIMARY_SUPABASE_URL = "https://qpblefwtnbivuusxmabv.supabase.co";
 const PRIMARY_PUBLISHABLE_KEY = "sb_publishable_Hp_uxUv6ue8RPzV6rJsmOA_qAFpIVXQ";
 
