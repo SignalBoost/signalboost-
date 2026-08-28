@@ -1,8 +1,8 @@
 // @ts-nocheck -- Supabase Edge Functions run on Deno; the Next.js app tsconfig does not load Deno globals.
-const PRIMARY_SUPABASE_URL = "https://qpblefwtnbivuusxmabv.supabase.co";
-const PRIMARY_PUBLISHABLE_KEY = "sb_publishable_Hp_uxUv6ue8RPzV6rJsmOA_qAFpIVXQ";
+const MARKETING_PROJECT_REF = "vdtxulrusfvyxdtatryx";
+const MARKETING_SUPABASE_URL = `https://${MARKETING_PROJECT_REF}.supabase.co`;
+const MARKETING_PUBLISHABLE_KEY = "sb_publishable_RibKPLEHTX20TO_6gWaRSQ_H7D6K4aR";
 
-const ALLOWED_ROLES = new Set(["owner", "admin"]);
 const PARTNER_FIELDS = new Set([
   "id",
   "name",
@@ -31,59 +31,54 @@ function json(status: number, body: Record<string, unknown>) {
   });
 }
 
-async function requirePrimaryAdmin(req: Request): Promise<{ ok: true } | { ok: false; response: Response }> {
+async function requireMarketingAdmin(req: Request): Promise<{ ok: true } | { ok: false; response: Response }> {
   const authorization = req.headers.get("Authorization") || "";
   if (!authorization.startsWith("Bearer ")) {
     return { ok: false, response: json(401, { error: "Authenticated session is required." }) };
   }
 
-  const userResponse = await fetch(`${PRIMARY_SUPABASE_URL}/auth/v1/user`, {
+  // The SignalBoost marketing site authenticates against the same Supabase
+  // project that owns affiliate_partners. Validate the incoming marketing-site
+  // token here; do not send it to the separate SaaS Supabase project.
+  const userResponse = await fetch(`${MARKETING_SUPABASE_URL}/auth/v1/user`, {
     method: "GET",
     headers: {
-      apikey: PRIMARY_PUBLISHABLE_KEY,
+      apikey: MARKETING_PUBLISHABLE_KEY,
       Authorization: authorization,
     },
   });
 
   if (!userResponse.ok) {
-    return { ok: false, response: json(401, { error: "Invalid or expired session." }) };
+    console.error("PARTNER_ADMIN_MARKETING_USER_VERIFY_FAILED", userResponse.status);
+    return { ok: false, response: json(401, { error: "Invalid or expired marketing session." }) };
   }
 
   const user = await userResponse.json();
-  const userId = typeof user?.id === "string" ? user.id : "";
-  if (!userId) {
+  if (typeof user?.id !== "string" || !user.id) {
     return { ok: false, response: json(401, { error: "Invalid authenticated user." }) };
   }
 
-  // `team_members` is protected by primary-project RLS. The caller's primary
-  // access token can only read its own membership (or rows it legitimately owns),
-  // so this authorization check needs no cross-project service-role secret.
-  const endpoint = new URL(`${PRIMARY_SUPABASE_URL}/rest/v1/team_members`);
-  endpoint.searchParams.set("select", "role,status");
-  endpoint.searchParams.set("member_id", `eq.${userId}`);
-  endpoint.searchParams.set("limit", "1");
-
-  const adminResponse = await fetch(endpoint, {
-    method: "GET",
+  // Use the same SECURITY DEFINER is_admin() RPC that drives the Admin link in
+  // the marketing UI. It checks the authenticated JWT email against user_roles.
+  const adminResponse = await fetch(`${MARKETING_SUPABASE_URL}/rest/v1/rpc/is_admin`, {
+    method: "POST",
     headers: {
-      apikey: PRIMARY_PUBLISHABLE_KEY,
+      apikey: MARKETING_PUBLISHABLE_KEY,
       Authorization: authorization,
       Accept: "application/json",
+      "Content-Type": "application/json",
     },
+    body: "{}",
   });
 
   if (!adminResponse.ok) {
-    console.error("PARTNER_ADMIN_PRIMARY_MEMBERSHIP_LOOKUP_FAILED", adminResponse.status);
+    console.error("PARTNER_ADMIN_MARKETING_ROLE_LOOKUP_FAILED", adminResponse.status);
     return { ok: false, response: json(503, { error: "Admin authorization service is unavailable." }) };
   }
 
-  const memberships = await adminResponse.json();
-  const membership = Array.isArray(memberships) ? memberships[0] : null;
-  const role = String(membership?.role || "").toLowerCase();
-  const status = String(membership?.status || "").toLowerCase();
-
-  if (!membership || !ALLOWED_ROLES.has(role) || status !== "active") {
-    return { ok: false, response: json(403, { error: "This account is not an active admin." }) };
+  const isAdmin = await adminResponse.json();
+  if (isAdmin !== true) {
+    return { ok: false, response: json(403, { error: "This account is not an admin." }) };
   }
 
   return { ok: true };
@@ -123,15 +118,19 @@ function cleanPartnerRow(value: unknown): Record<string, unknown> | null {
   return row;
 }
 
-async function secondaryRequest(path: string, init: RequestInit): Promise<Response> {
-  const secondaryUrl = Deno.env.get("SUPABASE_URL") || "";
+async function partnerDatabaseRequest(path: string, init: RequestInit): Promise<Response> {
+  const runtimeUrl = (Deno.env.get("SUPABASE_URL") || "").replace(/\/+$/, "");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
-  if (!secondaryUrl || !serviceRoleKey) {
-    throw new Error("Secondary Supabase runtime credentials are unavailable.");
+  if (!runtimeUrl || !serviceRoleKey) {
+    throw new Error("Partner Supabase runtime credentials are unavailable.");
   }
 
-  return fetch(`${secondaryUrl}${path}`, {
+  if (runtimeUrl.toLowerCase() !== MARKETING_SUPABASE_URL.toLowerCase()) {
+    throw new Error("Partner Edge Function is running in the wrong Supabase project.");
+  }
+
+  return fetch(`${runtimeUrl}${path}`, {
     ...init,
     headers: {
       ...(init.headers || {}),
@@ -146,7 +145,7 @@ Deno.serve(async (req: Request) => {
     return json(405, { error: "Method not allowed." });
   }
 
-  const auth = await requirePrimaryAdmin(req);
+  const auth = await requireMarketingAdmin(req);
   if (!auth.ok) return auth.response;
 
   let body: Record<string, unknown>;
@@ -167,7 +166,7 @@ Deno.serve(async (req: Request) => {
     if (!row) return json(400, { error: "Invalid partner payload." });
 
     try {
-      const writeResponse = await secondaryRequest(
+      const writeResponse = await partnerDatabaseRequest(
         "/rest/v1/affiliate_partners?on_conflict=id",
         {
           method: "POST",
@@ -184,7 +183,7 @@ Deno.serve(async (req: Request) => {
         return json(500, { error: "Partner write failed." });
       }
 
-      const verifyResponse = await secondaryRequest(
+      const verifyResponse = await partnerDatabaseRequest(
         `/rest/v1/affiliate_partners?select=id,name&id=eq.${encodeURIComponent(String(row.id))}&limit=1`,
         { method: "GET", headers: { Accept: "application/json" } }
       );
@@ -199,7 +198,7 @@ Deno.serve(async (req: Request) => {
         ok: true,
         action: "upsert",
         id: row.id,
-        partnerDatabaseRef: "vdtxulrusfvyxdtatryx",
+        partnerDatabaseRef: MARKETING_PROJECT_REF,
       });
     } catch (error) {
       console.error("PARTNER_ADMIN_BROKER_UPSERT_EXCEPTION", error instanceof Error ? error.message : "unknown error");
@@ -214,7 +213,7 @@ Deno.serve(async (req: Request) => {
     }
 
     try {
-      const deleteResponse = await secondaryRequest(
+      const deleteResponse = await partnerDatabaseRequest(
         `/rest/v1/affiliate_partners?id=eq.${encodeURIComponent(id)}`,
         {
           method: "DELETE",
@@ -231,7 +230,7 @@ Deno.serve(async (req: Request) => {
         ok: true,
         action: "delete",
         id,
-        partnerDatabaseRef: "vdtxulrusfvyxdtatryx",
+        partnerDatabaseRef: MARKETING_PROJECT_REF,
       });
     } catch (error) {
       console.error("PARTNER_ADMIN_BROKER_DELETE_EXCEPTION", error instanceof Error ? error.message : "unknown error");
