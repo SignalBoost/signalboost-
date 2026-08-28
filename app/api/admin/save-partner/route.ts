@@ -30,6 +30,12 @@ function slugify(name: string): string {
     .slice(0, 60);
 }
 
+function bearerToken(req: NextRequest): string | null {
+  const header = req.headers.get("authorization") || "";
+  const match = header.match(/^Bearer\s+(.+)$/i);
+  return match?.[1]?.trim() || null;
+}
+
 function invalidatePartnerCache(): boolean {
   try {
     revalidateTag(PARTNER_CACHE_TAG);
@@ -72,11 +78,14 @@ const TRAVEL_CATS = new Set([
 ]);
 
 export async function POST(req: NextRequest) {
-  // --- authenticate against the primary application database ---
+  // Authenticate against the primary application database. Prefer the browser
+  // access token explicitly sent by the admin page, while preserving cookie
+  // auth as a fallback for normal SSR sessions.
   const authSupabase = await createAuthClient();
+  const accessToken = bearerToken(req);
   const {
     data: { user },
-  } = await authSupabase.auth.getUser();
+  } = await authSupabase.auth.getUser(accessToken || undefined);
 
   if (!user) {
     return NextResponse.json({ error: "Not logged in." }, { status: 401 });
@@ -154,15 +163,20 @@ export async function POST(req: NextRequest) {
   };
 
   if (!partnerDb) {
-    const {
-      data: { session },
-    } = await authSupabase.auth.getSession();
+    let brokerAccessToken = accessToken;
 
-    if (!session?.access_token) {
+    if (!brokerAccessToken) {
+      const {
+        data: { session },
+      } = await authSupabase.auth.getSession();
+      brokerAccessToken = session?.access_token || null;
+    }
+
+    if (!brokerAccessToken) {
       return NextResponse.json({ error: "Authenticated session is required." }, { status: 401 });
     }
 
-    const broker = await callPartnerAdminBroker(session.access_token, {
+    const broker = await callPartnerAdminBroker(brokerAccessToken, {
       action: "upsert",
       row,
     });
