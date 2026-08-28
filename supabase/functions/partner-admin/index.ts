@@ -54,7 +54,10 @@ async function requirePrimaryAdmin(req: Request): Promise<{ ok: true } | { ok: f
     return { ok: false, response: json(401, { error: "Invalid authenticated user." }) };
   }
 
-  const endpoint = new URL(`${PRIMARY_SUPABASE_URL}/rest/v1/admins`);
+  // `team_members` is protected by primary-project RLS. The caller's primary
+  // access token can only read its own membership (or rows it legitimately owns),
+  // so this authorization check needs no cross-project service-role secret.
+  const endpoint = new URL(`${PRIMARY_SUPABASE_URL}/rest/v1/team_members`);
   endpoint.searchParams.set("select", "role,status");
   endpoint.searchParams.set("member_id", `eq.${userId}`);
   endpoint.searchParams.set("limit", "1");
