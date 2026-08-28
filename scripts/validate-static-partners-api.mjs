@@ -4,11 +4,13 @@ const routePath = new URL("../app/api/partners/route.ts", import.meta.url);
 const savePath = new URL("../app/api/admin/save-partner/route.ts", import.meta.url);
 const partnerClientPath = new URL("../lib/supabase/partners-server.ts", import.meta.url);
 const homeSourcePath = new URL("../lib/home/partners-source.ts", import.meta.url);
+const partnerAdminFunctionPath = new URL("../supabase/functions/partner-admin/index.ts", import.meta.url);
 
 const routeSource = await readFile(routePath, "utf8");
 const saveSource = await readFile(savePath, "utf8");
 const partnerClientSource = await readFile(partnerClientPath, "utf8");
 const homeSource = await readFile(homeSourcePath, "utf8");
+const partnerAdminFunctionSource = await readFile(partnerAdminFunctionPath, "utf8");
 
 const stripComments = (source) =>
   source
@@ -19,6 +21,7 @@ const executableRouteSource = stripComments(routeSource);
 const executableSaveSource = stripComments(saveSource);
 const executablePartnerClientSource = stripComments(partnerClientSource);
 const executableHomeSource = stripComments(homeSource);
+const executablePartnerAdminFunctionSource = stripComments(partnerAdminFunctionSource);
 
 const requiredRoutePatterns = [
   /PARTNER_PROJECT_REF\s*=\s*["']vdtxulrusfvyxdtatryx["']/,
@@ -101,6 +104,44 @@ const missingHome = requiredHomePatterns
 if (missingHome.length > 0) {
   console.error("Homepage partner loader must use the authoritative public secondary read client.");
   console.error("Missing home-source guardrails:", missingHome.join(", "));
+  process.exit(1);
+}
+
+const requiredPartnerAdminFunctionPatterns = [
+  /MARKETING_PROJECT_REF\s*=\s*["']vdtxulrusfvyxdtatryx["']/,
+  /MARKETING_PUBLISHABLE_KEY/,
+  /auth\/v1\/user/,
+  /rest\/v1\/rpc\/is_admin/,
+  /SUPABASE_SERVICE_ROLE_KEY/,
+  /affiliate_partners/,
+  /requireMarketingAdmin/,
+];
+
+const missingPartnerAdminFunction = requiredPartnerAdminFunctionPatterns
+  .filter((pattern) => !pattern.test(executablePartnerAdminFunctionSource))
+  .map((pattern) => pattern.toString());
+
+if (missingPartnerAdminFunction.length > 0) {
+  console.error("Partner admin broker must authenticate against the marketing Supabase project before privileged partner writes.");
+  console.error("Missing partner-admin broker guardrails:", missingPartnerAdminFunction.join(", "));
+  process.exit(1);
+}
+
+const forbiddenPartnerAdminFunctionPatterns = [
+  /qpblefwtnbivuusxmabv/,
+  /PRIMARY_SUPABASE_URL/,
+  /PRIMARY_PUBLISHABLE_KEY/,
+  /rest\/v1\/team_members/,
+  /requirePrimaryAdmin/,
+];
+
+const partnerAdminFunctionViolations = forbiddenPartnerAdminFunctionPatterns
+  .filter((pattern) => pattern.test(executablePartnerAdminFunctionSource))
+  .map((pattern) => pattern.toString());
+
+if (partnerAdminFunctionViolations.length > 0) {
+  console.error("Partner admin broker must never validate marketing-site tokens against the separate SaaS Supabase project.");
+  console.error("Forbidden partner-admin broker patterns found:", partnerAdminFunctionViolations.join(", "));
   process.exit(1);
 }
 
